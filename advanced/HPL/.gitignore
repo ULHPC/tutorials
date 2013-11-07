@@ -1,2 +1,3 @@
 tarballs/*.gz
 tarballs/*.bz2
+plots/*
