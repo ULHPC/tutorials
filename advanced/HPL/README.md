@@ -3,9 +3,11 @@
 
 Copyright (c) 2013 [Sebastien Varrette](mailto:<Sebastien.Varrette@uni.lu>) [www](http://varrette.gforge.uni.lu)
 
-        Time-stamp: <Ven 2013-11-08 10:52 svarrette>
+        Time-stamp: <Ven 2013-11-08 10:57 svarrette>
 
 -------------------
+
+[![UL HPC](https://hpc.uni.lu/images/logo/hpc300x300.png)](http://hpc.uni.lu)
 
 # UL HPC Tutorial: HPL benchmarking on UL HPC platform
 
@@ -236,5 +238,8 @@ In particular:
 In particular, you'll probably want to see the comparison figure extracted from
 the sample run `plots/benchmark_HPL_2H.pdf`
 
-A PNG version of this plot is available on [Github]()
+A PNG version of this plot is available on
+[Github](https://raw.github.com/ULHPC/tutorials/devel/advanced/HPL/plots/benchmark_HPL_2H.png)
+
+![HPL run on 2 hosts](https://raw.github.com/ULHPC/tutorials/devel/advanced/HPL/plots/benchmark_HPL_2H.png)
 
