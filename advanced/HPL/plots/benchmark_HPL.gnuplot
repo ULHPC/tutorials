@@ -1,7 +1,7 @@
 ################################################################################
 # benchmark_HPL.gnuplot - 
 #    Configuration file for Gnuplot (see http://www.gnuplot.info)
-# Time-stamp: <Fri 2013-11-08 10:08 svarrette>
+# Time-stamp: <Ven 2013-11-08 10:50 svarrette>
 #
 # Copyright (c) 2013 Sebastien Varrette <Sebastien.Varrette@uni.lu>
 #               http://varrette.gforge.uni.lu
@@ -153,7 +153,6 @@ plot \
       "< grep WR results_icc_imkl.dat      | tail -n 8" using 7:xtic(3) ls 1 notitle, \
       "< grep WR results_gcc_gotoblas2.dat | tail -n 8" using 7:xtic(3) ls 2 notitle, \
       "< grep WR results_gcc_atlas.dat     | tail -n 8" using 7:xtic(3) ls 3 notitle
-
 
 
 

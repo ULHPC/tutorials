@@ -1,7 +1,7 @@
 ##################################################################################
 # Makefile - Configuration file for GNU make (http://www.gnu.org/software/make/)
 # Creation : 07 Nov 2013
-# Time-stamp: <Thu 2013-11-07 13:21 svarrette>
+# Time-stamp: <Ven 2013-11-08 10:45 svarrette>
 #
 # Copyright (c) 2013 Sebastien Varrette <Sebastien.Varrette@uni.lu>
 #               http://varrette.gforge.uni.lu
@@ -17,6 +17,9 @@
 TOP_SRCDIR  = ../..
 TARBALL_DIR = tarballs
 SRC_DIR     = src
+PLOT_DIR    = plots
+SAMPLE_PLOT = $(PLOT_DIR)/benchmark_HPL_2H.pdf
+
 
 ### Stuff to download
 HPL_URL       = "http://www.netlib.org/benchmark/hpl/hpl-2.1.tar.gz"
@@ -27,15 +30,15 @@ GOTOBLAS2_URL     = "http://www.tacc.utexas.edu/documents/13601/b58aeb8c-9d8d-4e
 GOTOBLAS2_TARBALL = GotoBLAS2-1.13.tar.gz
 GOTOBLAS2_SRCDIR  = $(SRC_DIR)/$(shell basename $(GOTOBLAS2_TARBALL) .tar.gz)
 
-ATLAS_URL     = "http://downloads.sourceforge.net/project/math-atlas/Developer%20%28unstable%29/3.11.17/atlas3.11.17.tar.bz2?r=http%3A%2F%2Fsourceforge.net%2Fprojects%2Fmath-atlas%2Ffiles%2FStable%2F&ts=1383822103&use_mirror=freefr"
+ATLAS_URL     = 'http://downloads.sourceforge.net/project/math-atlas/Developer%20%28unstable%29/3.11.17/atlas3.11.17.tar.bz2?r=http%3A%2F%2Fsourceforge.net%2Fprojects%2Fmath-atlas%2Ffiles%2FStable%2F&ts=1383822103&use_mirror=freefr'
 ATLAS_TARBALL = atlas3.11.17.tar.bz2
 ATLAS_SRCDIR  = $(SRC_DIR)/$(shell basename $(GOTOBLAS2_TARBALL) .tar.bz2)
 
 
 ############################
-.PHONY: all bootstrap clean
+.PHONY: all bootstrap clean plot 
 
-all: bootstrap
+all: bootstrap plot
 
 bootstrap:
 	@if [ ! -f ./$(TARBALL_DIR)/$(HPL_TARBALL) ]; then \
@@ -52,14 +55,18 @@ bootstrap:
 	fi
 	@if [ ! -f ./$(TARBALL_DIR)/$(ATLAS_TARBALL) ]; then \
 		echo "=> downloading ATLAS (Automatically Tuned Linear Algebra Soft) archive $(ATLAS_TARBALL)"; \
-		wget -O $(TARBALL_DIR)/$(ATLAS_TARBALL) "$(ATLAS_URL)"; \
+		wget -O $(TARBALL_DIR)/$(ATLAS_TARBALL) $(ATLAS_URL); \
 	else \
 		echo "=> ATLAS has already been downloaded in $(TARBALL_DIR)/"; \
 	fi
 
+plot:
+	$(MAKE) -C $(PLOT_DIR)/
+	@echo "=> You probably want now to see the comparaison plot: \n\t\t$(SAMPLE_PLOT)"
 
 clean: 
 	@for f in $(HPL_TARBALL) $(GOTOBLAS2_TARBALL) $(ATLAS_TARBALL); do \
 		echo "=> removing $$f"; \
 		rm -f  $(TARBALL_DIR)/$$f; \
 	done
+	$(MAKE) -C $(PLOT_DIR)/ $@
