@@ -1,9 +1,10 @@
 -*- mode: markdown; mode: auto-fill; fill-column: 80 -*-
+
 `README.md`
 
-->[![UL HPC](https://hpc.uni.lu/images/logo/hpc300x300.png)](http://hpc.uni.lu)<-
+Copyright (c) 2013 Sebastien Varrette <Sebastien.Varrette@uni.lu>
 
-        Time-stamp: <Ven 2013-11-08 11:02 svarrette>
+        Time-stamp: <Ven 2013-11-08 11:04 svarrette>
 
 -------------------
 
