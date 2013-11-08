@@ -1,0 +1,4 @@
+tarballs/*.gz
+tarballs/*.bz2
+plots/*.pdf
+plots/*.eps
