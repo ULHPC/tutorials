@@ -1,13 +1,12 @@
 -*- mode: markdown; mode: auto-fill; fill-column: 80 -*-
-`rtoto.md`
+`README.md`
 
-Copyright (c) 2013 [Sebastien Varrette](mailto:<Sebastien.Varrette@uni.lu>) [www](http://varrette.gforge.uni.lu)
+->[![UL HPC](https://hpc.uni.lu/images/logo/hpc300x300.png)](http://hpc.uni.lu)<-
 
-        Time-stamp: <Ven 2013-11-08 10:57 svarrette>
+        Time-stamp: <Ven 2013-11-08 11:02 svarrette>
 
 -------------------
 
-[![UL HPC](https://hpc.uni.lu/images/logo/hpc300x300.png)](http://hpc.uni.lu)
 
 # UL HPC Tutorial: HPL benchmarking on UL HPC platform
 
@@ -28,6 +27,8 @@ In all cases, ensure you are able to [connect to the chaos and gaia cluster](htt
   [tutorial](http://support.suso.com/supki/Screen_tutorial)) on the frontend
   prior to running any `oarsub` command to be more resilient to disconnection.  
 
+The latest version of this tutorial is available on
+[Github](https://github.com/ULHPC/tutorials/tree/devel/advanced/HPL)
 
 ## Objectives
 
@@ -207,9 +208,10 @@ Restart the benchmarking campain (in the three cases) in the following context:
 
 You will find in the [UL HPC tutorial](https://github.com/ULHPC/tutorials)
 repository, under the `advanced/HPL` directory, a set of tools / script that
-facilitate the running and analysis of this tutorial. 
+facilitate the running and analysis of this tutorial that you can use/adapt to
+suit your needs. 
 
-In particular: 
+In particular, once in the `advanced/HPL` directory: 
 
 * running `make bootstrap` will automatically download the archives for HPL,
   GotoBLAS2 and ATLAS (press enter at the end of the last download)
