@@ -1,0 +1,36 @@
+# /home/users/svarrette/TP/osu-micro-benchmarks-4.2/runs/2013-11-12/880081_impi_osu_get_latency_11h15m55.log
+# MPI Run osu_get_latency
+#
+# Initial command: launcher_osu_impi --datadir 2013-11-12
+#
+# Generated @ Tue Nov 12 11:15:55 CET 2013 by:
+#   mpirun  -hostfile /var/lib/oar/880081 -perhost 1 ./osu_get_latency
+# (command performed in /home/users/svarrette/TP/osu-micro-benchmarks-4.2/build.impi/install/libexec/osu-micro-benchmarks/mpi/one-sided/)
+### Starting timestamp: 1384251355
+# OSU One Sided MPI_Get latency Test v4.2
+# Size          Latency (us)
+0                       5.31
+1                       6.66
+2                       6.44
+4                       6.46
+8                       5.87
+16                      5.46
+32                      5.46
+64                      5.47
+128                     5.58
+256                     6.12
+512                     6.29
+1024                    6.77
+2048                    7.66
+4096                    8.43
+8192                   10.05
+16384                  13.33
+32768                  24.31
+65536                  32.81
+131072                 49.69
+262144                 83.88
+524288                151.81
+1048576               288.88
+2097152               558.09
+4194304              1096.60
+### Ending timestamp:     1384251358

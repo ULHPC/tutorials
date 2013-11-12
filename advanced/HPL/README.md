@@ -4,7 +4,7 @@
 
 Copyright (c) 2013 Sebastien Varrette <Sebastien.Varrette@uni.lu>
 
-        Time-stamp: <Ven 2013-11-08 11:04 svarrette>
+        Time-stamp: <Dim 2013-11-10 19:21 svarrette>
 
 -------------------
 
@@ -214,7 +214,7 @@ suit your needs.
 
 In particular, once in the `advanced/HPL` directory: 
 
-* running `make bootstrap` will automatically download the archives for HPL,
+* running `make fetch` will automatically download the archives for HPL,
   GotoBLAS2 and ATLAS (press enter at the end of the last download)
 * some examples of working `Makefile` for HPL used in sample experiments are
   proposed in `src/hpl-2.1`

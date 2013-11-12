@@ -1,3 +1,6 @@
 [submodule ".submodules/Makefiles"]
 	path = .submodules/Makefiles
 	url = https://github.com/Falkor/Makefiles
+[submodule ".submodules/launcher-scripts"]
+	path = .submodules/launcher-scripts
+	url = https://github.com/ULHPC/launcher-scripts.git

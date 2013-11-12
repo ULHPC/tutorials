@@ -1,7 +1,7 @@
 ##################################################################################
 # Makefile - Configuration file for GNU make (http://www.gnu.org/software/make/)
 # Creation : 07 Nov 2013
-# Time-stamp: <Ven 2013-11-08 10:45 svarrette>
+# Time-stamp: <Dim 2013-11-10 19:21 svarrette>
 #
 # Copyright (c) 2013 Sebastien Varrette <Sebastien.Varrette@uni.lu>
 #               http://varrette.gforge.uni.lu
@@ -36,11 +36,11 @@ ATLAS_SRCDIR  = $(SRC_DIR)/$(shell basename $(GOTOBLAS2_TARBALL) .tar.bz2)
 
 
 ############################
-.PHONY: all bootstrap clean plot 
+.PHONY: all fetch clean plot 
 
-all: bootstrap plot
+all: fetch plot
 
-bootstrap:
+fetch:
 	@if [ ! -f ./$(TARBALL_DIR)/$(HPL_TARBALL) ]; then \
 		echo "=> downloading HPL archive  $(HPL_TARBALL)"; \
 		wget -P $(TARBALL_DIR) $(HPL_URL); \
@@ -59,6 +59,15 @@ bootstrap:
 	else \
 		echo "=> ATLAS has already been downloaded in $(TARBALL_DIR)/"; \
 	fi
+
+build: fetch
+	@echo "TODO: define the building approach"
+
+run_interactive:
+	@echo "TODO: define action to run the code interactively"
+
+run:
+	@echo "TODO: define action to run the code, most probably oarsub -S ..."
 
 plot:
 	$(MAKE) -C $(PLOT_DIR)/

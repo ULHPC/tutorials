@@ -1,0 +1,36 @@
+# /home/users/svarrette/TP/osu-micro-benchmarks-4.2/runs/2013-11-12/880081_mvapich2_osu_get_latency_11h28m15.log
+# MPI Run osu_get_latency
+#
+# Initial command: launcher_osu_mvapich2 --datadir 2013-11-12 -v
+#
+# Generated @ Tue Nov 12 11:28:15 CET 2013 by:
+#   mpirun  -launcher ssh -launcher-exec /usr/bin/oarsh  -hostfile /var/lib/oar/880081 -ppn 1 ./osu_get_latency
+# (command performed in /home/users/svarrette/TP/osu-micro-benchmarks-4.2/build.mvapich2/install/libexec/osu-micro-benchmarks/mpi/one-sided/)
+### Starting timestamp: 1384252095
+# OSU One Sided MPI_Get latency Test v4.2
+# Size          Latency (us)
+0                       2.48
+1                       4.64
+2                       3.99
+4                       3.99
+8                       3.98
+16                      3.99
+32                      3.99
+64                      3.81
+128                     3.84
+256                     3.94
+512                     4.15
+1024                    4.54
+2048                    5.17
+4096                    5.83
+8192                    6.86
+16384                   8.98
+32768                  13.27
+65536                  21.87
+131072                 38.82
+262144                 74.06
+524288                140.78
+1048576               276.55
+2097152               548.34
+4194304              1096.55
+### Ending timestamp:     1384252098

@@ -1,0 +1,35 @@
+# /home/users/svarrette/TP/osu-micro-benchmarks-4.2/runs/2013-11-12/880081_impi_osu_get_bw_11h15m59.log
+# MPI Run osu_get_bw
+#
+# Initial command: launcher_osu_impi --datadir 2013-11-12
+#
+# Generated @ Tue Nov 12 11:15:59 CET 2013 by:
+#   mpirun  -hostfile /var/lib/oar/880081 -perhost 1 ./osu_get_bw
+# (command performed in /home/users/svarrette/TP/osu-micro-benchmarks-4.2/build.impi/install/libexec/osu-micro-benchmarks/mpi/one-sided/)
+### Starting timestamp: 1384251359
+# OSU MPI One Sided MPI_Get Bandwidth Test v4.2
+# Size      Bandwidth (MB/s)
+1                       0.75
+2                       1.56
+4                       3.12
+8                       6.23
+16                     12.47
+32                     24.81
+64                     49.82
+128                    98.09
+256                   193.16
+512                   377.77
+1024                  721.28
+2048                 1354.88
+4096                 2336.01
+8192                 3030.88
+16384                3349.28
+32768                1584.84
+65536                2248.95
+131072               2834.71
+262144               3184.99
+524288               3344.69
+1048576              3450.16
+2097152              3586.40
+4194304              3612.80
+### Ending timestamp:     1384251362
