@@ -4,7 +4,7 @@
 
 Copyright (c) 2013 Sebastien Varrette <Sebastien.Varrette@uni.lu>
 
-        Time-stamp: <Dim 2013-11-11 19:21 svarrette>
+        Time-stamp: <Mar 2013-11-12 15:09 svarrette>
 
 -------------------
 
@@ -227,11 +227,11 @@ As before, rely on the [MPI generic launcher](https://github.com/ULHPC/launcher-
 
 Now you can run the launcher script interactively.
 
-	$> ./launcher_osu_openmpi
+	$> ./launcher_osu_mvapich2
 
 You might want also to host the output files in the local directory (under the date)
 
-	$> ./launcher_osu_openmpi --datadir data/`date +%Y-%m-%d`
+	$> ./launcher_osu_mvapich2 --datadir data/`date +%Y-%m-%d`
 
 
 ## Benchmarking on two nodes 
