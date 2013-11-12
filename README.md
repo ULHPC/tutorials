@@ -33,12 +33,17 @@ For each subject, you will have a dedicated directory organized as follows:
   * (eventually) `make plot` to draw a plot illustrating the results obtained
     through the run.
 
+## List of proposed tutorials:
 
-# Proposing a new tutorial / Contributing to this repository 
+* [running the OSU Micro-Banchmarks](https://github.com/ULHPC/tutorials/tree/devel/advanced/OSU_MicroBenchmarks)
+* [running HPL](https://github.com/ULHPC/tutorials/tree/devel/advanced/HPL)
 
-## Pre-requisites
 
-### Git
+## Proposing a new tutorial / Contributing to this repository 
+
+### Pre-requisites
+
+#### Git
 
 You should become familiar (if not yet) with Git. Consider these resources:
 
@@ -46,7 +51,7 @@ You should become familiar (if not yet) with Git. Consider these resources:
 * [Github:help](http://help.github.com/mac-set-up-git/)
 * [Git reference](http://gitref.org/)
 
-### git-flow
+#### git-flow
 
 The Git branching model for this repository follows the guidelines of [gitflow](http://nvie.com/posts/a-successful-git-branching-model/).
 In particular, the central repo (on `github.com`) holds two main branches with an infinite lifetime:
@@ -55,7 +60,7 @@ In particular, the central repo (on `github.com`) holds two main branches with a
 * `devel`: the main branch where the latest developments interviene. This is the
   *default* branch you get when you clone the repo. 
 
-### Local repository setup
+#### Local repository setup
 
 This repository is hosted on out [GitHub](https://github.com/ULHPC/tutorials).
 Once cloned, initiate the potential git submodules etc. by running: 
@@ -63,7 +68,7 @@ Once cloned, initiate the potential git submodules etc. by running:
     $> cd tutorials
     $> make setup
 
-## Fork this repository
+### Fork this repository
 
 You shall now
 [fork this repository](https://help.github.com/articles/fork-a-repo). 
