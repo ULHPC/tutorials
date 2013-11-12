@@ -1,7 +1,7 @@
 ##################################################################################
 # Makefile - Configuration file for GNU make (http://www.gnu.org/software/make/)
 # Creation : 07 Nov 2013
-# Time-stamp: <Mar 2013-11-12 09:55 svarrette>
+# Time-stamp: <Mar 2013-11-12 12:00 svarrette>
 #
 # Copyright (c) 2013 Sebastien Varrette <Sebastien.Varrette@uni.lu>
 #               http://varrette.gforge.uni.lu
@@ -17,7 +17,7 @@
 TOP_SRCDIR  = ../..
 SRC_DIR     = src
 PLOT_DIR    = plots
-SAMPLE_PLOT = $(PLOT_DIR)/benchmark_OSU_MicroBenchs_2H.pdf
+SAMPLE_PLOT = $(PLOT_DIR)/benchmark_OSU_MicroBenchs_2H_latency.pdf $(PLOT_DIR)/benchmark_OSU_MicroBenchs_2H_bandwidth.pdf
 
 
 ### Stuff to download
