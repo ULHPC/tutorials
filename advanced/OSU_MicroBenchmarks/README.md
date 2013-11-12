@@ -106,12 +106,9 @@ We are first going to use the
 [Intel Cluster Toolkit Compiler Edition](http://software.intel.com/en-us/intel-cluster-toolkit-compiler/),
 which provides Intel C/C++ and Fortran compilers, Intel MPI. 
 
-Get the latest release: 
+We will compile the [OSU micro-benchmarks](http://mvapich.cse.ohio-state.edu/benchmarks/) in a specific directory (that a good habbit)
 
-    $> mkdir ~/TP && cd ~/TP
-    $> wget http://mvapich.cse.ohio-state.edu/benchmarks/osu-micro-benchmarks-4.2.tar.gz
-    $> tar xvzf osu-micro-benchmarks-4.2.tar.gz
-    $> cd osu-micro-benchmarks-4.2
+    $> cd ~/TP/osu-micro-benchmarks-4.2
     $> module avail 2>&1 | grep -i MPI
     $> module load ictce
     $> module list
@@ -121,100 +118,124 @@ Get the latest release:
     $> ../configure CC=mpiicc --prefix=`pwd`/install
 	$> make && make install 
 
+If everything goes fine, you shall have the [OSU micro-benchmarks](http://mvapich.cse.ohio-state.edu/benchmarks/) installed in the directory `install/libexec/osu-micro-benchmarks/mpi/`.
+
+
 Once compiled, ensure you are able to run it: 
 
 	$> cd install/libexec/osu-micro-benchmarks/mpi/one-sided/
 	$> mpirun -hostfile $OAR_NODEFILE -perhost 1 ./osu_get_latency
+	$> mpirun -hostfile $OAR_NODEFILE -perhost 1 ./osu_get_bw
 
 Now you can use the [MPI generic launcher](https://github.com/ULHPC/launcher-scripts/blob/devel/bash/MPI/mpi_launcher.sh) to run the code: 
 
 	$> cd ~/TP/osu-micro-benchmarks-4.2/
-	$> mkdir runs.impi && cd runs.impi
-	$> ln -s 
+	$> mkdir runs  && cd runs
+	$> ln -s ~/git/ULHPC/launcher-scripts/bash/MPI/mpi_launcher.sh launcher_osu_impi
+	$> ./launcher_osu_impi --basedir $HOME/TP/osu-micro-benchmarks-4.2/build.impi/install/libexec/osu-micro-benchmarks/mpi/one-sided --npernode 1 --module ictce --exe osu_get_latency,osu_get_bw
 
+If you want to avoid this long list of arguments, just create a file `launcher_osu_impi.default.conf` as follows: 
 
+	$> cat launcher_osu_impi.default.conf
+	cat launcher_osu_impi.default.conf
+	# Defaults settings for running the OSU Micro benchmarks wompiled with Intel MPI
+	NAME=impi
+	
+	MODULE_TO_LOADstr=ictce
+	MPI_PROG_BASEDIR=$HOME/TP/osu-micro-benchmarks-4.2/build.impi/install/libexec/osu-micro-benchmarks/mpi/one-sided/
+	
+	MPI_PROGstr=osu_get_latency,osu_get_bw
+	MPI_NPERNODE=1
 
+Now you can run the launcher script interactively.
 
-### HPL with GCC and GotoBLAS2 and Open MPI
+	$> ./launcher_osu_impi
 
-Another alternative is to rely on [GotoBlas](http://www.tacc.utexas.edu/tacc-projects/gotoblas2/downloads/).  
+You might want also to host the output files in the local directory (under the date)
 
-Get the sources and compile them: 
+	$> ./launcher_osu_impi --datadir `date +%Y-%m-%d`
 
-     # A copy of `GotoBLAS2-1.13.tar.gz` is available in `/tmp` on the access nodes of the cluster
-     $> cd ~/TP
-     $> module purge
-     $> module load OpenMPI
-     $> tar xvzf /tmp/GotoBLAS2-1.13.tar.gz
-     $> mv GotoBLAS2 GotoBLAS2-1.13
-     […]
-     $> make BINARY=64 TARGET=NEHALEM NUM_THREADS=1
-     [...]
-      GotoBLAS build complete.
-      
-        OS               ... Linux
-        Architecture     ... x86_64
-        BINARY           ... 64bit
-        C compiler       ... GCC  (command line : gcc)
-        Fortran compiler ... GFORTRAN  (command line : gfortran)
-        Library Name     ... libgoto2_nehalemp-r1.13.a (Multi threaded; Max num-threads is 12)
+## OSU Micro-benchmarks with OpenMPI
 
+We will repeat the procedure, this time using OpenMPI. 
 
-If you don't use `TARGET=NEHALEM`, you'll encounter the error mentionned
-[here](http://saintaardvarkthecarpeted.com/blog/archive/2011/05/Trouble_compiling_GotoBLAS2_on_newer_CPU.html)) 
-
-Now you can restart HPL compilation by creating (and adapting) a
-`Make.gotoblas2` and running the compilation by:  
-
-	$> make arch=gotoblas2
-
-Once compiled, ensure you are able to run it: 
-
-	$> cd bin/gotoblas2
-	$> cat HPL.dat
-	$> mpirun -x LD_LIBRARY_PATH -hostfile $OAR_NODEFILE ./xhpl
-
-
-### HPL with GCC and ATLAS and MVAPICH2
-
-Here we will rely on the [Automatically Tuned Linear Algebra Software (ATLAS)](http://math-atlas.sourceforge.net/)
-
-Download the [latest version](http://sourceforge.net/projects/math-atlas/files/)
-(3.11.17 at the time of writing) and compile them:  
-
-     $> cd ~/TP
-     $> tar xvf atlas3.11.17.tar.bz2
-     $> mv ATLAS ATLAS-3.11.17 && cd ATLAS-3.11.17
-     $> module purge
-	 $> module load MVAPICH2	
-	 $> less INSTALL.txt
-	 $> mkdir build.gcc_mvapich2 && cd build.gcc_mvapich2
-	 $> ../configure
-	 $> grep ! ../INSTALL.txt
-            make              ! tune and compile library
-            make check        ! perform sanity tests
-            make ptcheck      ! checks of threaded code for multiprocessor systems
-            make time         ! provide performance summary as % of clock rate
-            make install      ! Copy library and include files to other directories
-	 $> make
-
-Take a coffee there, it will compile for a Loooooooooooooong time
-
-Now you can restart HPL compilation by creating (and adapting) a `Make.atlas`
-and running the compilation by:  
-
-	$> make arch=atlas
+	$> cd ~/TP/osu-micro-benchmarks-4.2/
+	$> module purge
+	$> module load OpenMPI
+	$> mkdir build.openmpi && cd build.openmpi
+	$> ../configure CC=mpicc --prefix=`pwd`/install
+	$> make && make install 
+	
+If everything goes fine, you shall have the [OSU micro-benchmarks](http://mvapich.cse.ohio-state.edu/benchmarks/) installed in the directory `install/libexec/osu-micro-benchmarks/mpi/`.
 
 Once compiled, ensure you are able to run it: 
 
-	$> cd bin/atlas
-	$> cat HPL.dat
-	$> mpirun -launcher ssh -launcher-exec /usr/bin/oarsh -hostfile $OAR_NODEFILE ./xhpl
+	$> cd install/libexec/osu-micro-benchmarks/mpi/one-sided/
+	$> mpirun -x LD_LIBRARY_PATH -hostfile $OAR_NODEFILE -npernode 1 ./osu_get_latency
+	$> mpirun -x LD_LIBRARY_PATH -hostfile $OAR_NODEFILE -npernode 1 ./osu_get_bw
+
+Again, we will rely on the [MPI generic launcher](https://github.com/ULHPC/launcher-scripts/blob/devel/bash/MPI/mpi_launcher.sh) to run the code: 
+
+	$> cd ~/TP/osu-micro-benchmarks-4.2/runs
+	$> ln -s ~/git/ULHPC/launcher-scripts/bash/MPI/mpi_launcher.sh launcher_osu_openmpi
+	$> cat launcher_osu_openmpi.default.conf
+	# Defaults settings for running the OSU Micro benchmarks wompiled with OpenMPI
+	NAME=openmpi
+	
+	MODULE_TO_LOADstr=OpenMPI
+	MPI_PROG_BASEDIR=$HOME/TP/osu-micro-benchmarks-4.2/build.openmpi/install/libexec/osu-micro-benchmarks/mpi/one-sided/
+	
+	MPI_PROGstr=osu_get_latency,osu_get_bw
+	MPI_NPERNODE=1
+
+Now you can run the launcher script interactively.
+
+	$> ./launcher_osu_openmpi
+
+You might want also to host the output files in the local directory (under the date)
+
+	$> ./launcher_osu_openmpi --datadir `date +%Y-%m-%d`
+
+
+## OSU Micro-benchmarks with MVAPICH2
+
+Repeat the procedure, this time using MVAPICH2. 
+
+	$> cd ~/TP/osu-micro-benchmarks-4.2/
+	$> module purge
+	$> module load MVAPICH2
+	$> mkdir build.mvapich2 && cd build.mvapich2
+	$> ../configure CC=mpicc --prefix=`pwd`/install
+	$> make && make install 
+	
+If everything goes fine, you shall have the [OSU micro-benchmarks](http://mvapich.cse.ohio-state.edu/benchmarks/) installed in the directory `install/libexec/osu-micro-benchmarks/mpi/`.
+
+As before, rely on the [MPI generic launcher](https://github.com/ULHPC/launcher-scripts/blob/devel/bash/MPI/mpi_launcher.sh) to run the code: 
+
+	$> cd ~/TP/osu-micro-benchmarks-4.2/runs
+	$> ln -s ~/git/ULHPC/launcher-scripts/bash/MPI/mpi_launcher.sh launcher_osu_mvapich2
+	$> cat launcher_osu_mvapich2.default.conf
+	# Defaults settings for running the OSU Micro benchmarks wompiled with MVAPICH2
+	NAME=mvapich2
+	
+	MODULE_TO_LOADstr=MVAPICH2
+	MPI_PROG_BASEDIR=$HOME/TP/osu-micro-benchmarks-4.2/build.mvapich2/install/libexec/osu-micro-benchmarks/mpi/one-sided/
+	
+	MPI_PROGstr=osu_get_latency,osu_get_bw
+	MPI_NPERNODE=1
+
+Now you can run the launcher script interactively.
+
+	$> ./launcher_osu_openmpi
+
+You might want also to host the output files in the local directory (under the date)
+
+	$> ./launcher_osu_openmpi --datadir `date +%Y-%m-%d`
 
 
 ## Benchmarking on two nodes 
 
-Restart the benchmarking campain (in the three cases) in the following context: 
+Operate the benchmarking campain (in the three cases) in the following context: 
 
 * 2 nodes belonging to the same enclosure. Use for that:
 
@@ -227,14 +248,14 @@ Restart the benchmarking campain (in the three cases) in the following context:
 ## Now for Lazy / frustrated persons
 
 You will find in the [UL HPC tutorial](https://github.com/ULHPC/tutorials)
-repository, under the `advanced/HPL` directory, a set of tools / script that
+repository, under the `advanced/OSU_MicroBenchmarks` directory, a set of tools / script that
 facilitate the running and analysis of this tutorial that you can use/adapt to
 suit your needs. 
 
-In particular, once in the `advanced/HPL` directory: 
+In particular, once in the `advanced/OSU_MicroBenchmarks` directory: 
 
-* running `make fetch` will automatically download the archives for HPL,
-  GotoBLAS2 and ATLAS (press enter at the end of the last download)
+* running `make fetch` will automatically download the archives for the [OSU micro-benchmarks](http://mvapich.cse.ohio-state.edu/benchmarks/) in the `src/` directory
+* you will find the patch file in 
 * some examples of working `Makefile` for HPL used in sample experiments are
   proposed in `src/hpl-2.1`
 * a launcher script is proposed in `runs/launch_hpl_bench`. This script was used
