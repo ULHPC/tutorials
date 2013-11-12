@@ -1,0 +1,6 @@
+--- Makefile.am.old	2013-11-12 09:44:11.916456641 +0100
++++ Makefile.am	2013-11-12 09:44:24.363424661 +0100
+@@ -1,2 +1,2 @@
+ one_sideddir = $(pkglibexecdir)/mpi/one-sided
+-one_sided_PROGRAMS = osu_acc_latency osu_passive_acc_latency osu_get_bw osu_get_latency osu_put_bibw osu_put_bw osu_put_latency osu_passive_get_latency osu_passive_get_bw osu_passive_put_latency osu_passive_put_bw osu_cas_flush osu_fop_flush
++one_sided_PROGRAMS = osu_acc_latency osu_passive_acc_latency osu_get_bw osu_get_latency osu_put_bibw osu_put_bw osu_put_latency osu_passive_get_latency osu_passive_get_bw osu_passive_put_latency osu_passive_put_bw
