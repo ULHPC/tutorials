@@ -153,7 +153,7 @@ Now you can run the launcher script interactively.
 
 You might want also to host the output files in the local directory (under the date)
 
-	$> ./launcher_osu_impi --datadir `date +%Y-%m-%d`
+	$> ./launcher_osu_impi --datadir data/`date +%Y-%m-%d`
 
 ## OSU Micro-benchmarks with OpenMPI
 
@@ -194,7 +194,7 @@ Now you can run the launcher script interactively.
 
 You might want also to host the output files in the local directory (under the date)
 
-	$> ./launcher_osu_openmpi --datadir `date +%Y-%m-%d`
+	$> ./launcher_osu_openmpi --datadir data/`date +%Y-%m-%d`
 
 
 ## OSU Micro-benchmarks with MVAPICH2
@@ -230,7 +230,7 @@ Now you can run the launcher script interactively.
 
 You might want also to host the output files in the local directory (under the date)
 
-	$> ./launcher_osu_openmpi --datadir `date +%Y-%m-%d`
+	$> ./launcher_osu_openmpi --datadir data/`date +%Y-%m-%d`
 
 
 ## Benchmarking on two nodes 
@@ -255,34 +255,18 @@ suit your needs.
 In particular, once in the `advanced/OSU_MicroBenchmarks` directory: 
 
 * running `make fetch` will automatically download the archives for the [OSU micro-benchmarks](http://mvapich.cse.ohio-state.edu/benchmarks/) in the `src/` directory
-* you will find the patch file in 
-* some examples of working `Makefile` for HPL used in sample experiments are
-  proposed in `src/hpl-2.1`
-* a launcher script is proposed in `runs/launch_hpl_bench`. This script was used
-  to collect some sample runs for the three experiments mentionned in this
-  tutorial as follows:  
-        
-        # Run for HPL with iMKL (icc + iMPI)
-		(access-chaos)$> oarsub -S "./launch_hpl_bench --module ictce --arch intel64 --serious"
-
-		# Run for HPL with GotoBLAS2 (gcc + OpenMPI)
-        (access-chaos)$> oarsub -S "./launch_hpl_bench --module OpenMPI --arch gotoblas2 --serious"
-
-		# Run for HPL with ATLAS (gcc + MVAPICH2)
-        (access-chaos)$> oarsub -S "./launch_hpl_bench --module MVAPICH2 --arch atlas --serious"
-
-  In particular, the `runs/data/` directory host the results of these runs on 2
-  nodes belonging to the same enclosure 
-  
+* you will find the patch file to apply to the version 4.2 in `src/osu-micro-benchmarks-4.2/mpi/one-sided/Makefile.am.patch`
+* The different configuration files for the [MPI generic launcher](https://github.com/ULHPC/launcher-scripts/blob/devel/bash/MPI/mpi_launcher.sh) in `runs/`
+* Some sample output data in `runs/data/
 * run `make plot` to invoke the [Gnuplot](http://www.gnuplot.info/) script
-  `plots/benchmark_HPL.gnuplot` and generate various plots from the sample
+  `plots/benchmark_OSU.gnuplot` and generate various plots from the sample
   runs. 
 
 In particular, you'll probably want to see the comparison figure extracted from
-the sample run `plots/benchmark_HPL_2H.pdf`
+the sample run `plots/benchmark_OSU_2H.pdf`
 
 A PNG version of this plot is available on
-[Github](https://raw.github.com/ULHPC/tutorials/devel/advanced/HPL/plots/benchmark_HPL_2H.png)
+[Github](https://raw.github.com/ULHPC/tutorials/devel/advanced/OSU_MicroBenchmarks/plots/benchmark_OSU_2H.png)
 
-![HPL run on 2 hosts](https://raw.github.com/ULHPC/tutorials/devel/advanced/HPL/plots/benchmark_HPL_2H.png)
+![HPL run on 2 hosts](https://raw.github.com/ULHPC/tutorials/devel/advanced/OSU_MicroBenchmarks/plots/benchmark_OSU_2H.png)
 
