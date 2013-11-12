@@ -20,7 +20,8 @@ In all cases, ensure you are able to [connect to the chaos and gaia cluster](htt
 
 	/!\ FOR ALL YOUR COMPILING BUSINESS, ENSURE YOU WORK ON A COMPUTING NODE
 	
-	(access)$> 	oarsub -I -l nodes=1,walltime=4
+	(access)$> 	oarsub -I -l enclosure=1/nodes=2,walltime=4
+
 
 **Advanced users only**: rely on `screen` (see
   [tutorial](http://support.suso.com/supki/Screen_tutorial)) on the frontend
@@ -263,10 +264,10 @@ In particular, once in the `advanced/OSU_MicroBenchmarks` directory:
   runs. 
 
 In particular, you'll probably want to see the comparison figure extracted from
-the sample run `plots/benchmark_OSU_2H.pdf`
+the sample run in `plots/benchmark_OSU_2H_latency.pdf` and `plots/benchmark_OSU_2H_bandwidth.pdf`
 
-A PNG version of this plot is available on
-[Github](https://raw.github.com/ULHPC/tutorials/devel/advanced/OSU_MicroBenchmarks/plots/benchmark_OSU_2H.png)
+A PNG version of these plots is available on Github: 
+[OSU latency](https://raw.github.com/ULHPC/tutorials/devel/advanced/OSU_MicroBenchmarks/plots/benchmark_OSU_2H_latency.png) -- [OSU Bandwidth](https://raw.github.com/ULHPC/tutorials/devel/advanced/OSU_MicroBenchmarks/plots/benchmark_OSU_2H_bandwidth.png)
 
-![HPL run on 2 hosts](https://raw.github.com/ULHPC/tutorials/devel/advanced/OSU_MicroBenchmarks/plots/benchmark_OSU_2H.png)
-
+![OSU latency](https://raw.github.com/ULHPC/tutorials/devel/advanced/OSU_MicroBenchmarks/plots/benchmark_OSU_2H_latency.png)
+![OSU Bandwidth](https://raw.github.com/ULHPC/tutorials/devel/advanced/OSU_MicroBenchmarks/plots/benchmark_OSU_2H_bandwidth.png)
