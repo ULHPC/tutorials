@@ -2,3 +2,4 @@ src/*.gz
 src/*.bz2
 plots/*.pdf
 plots/*.eps
+*.rej

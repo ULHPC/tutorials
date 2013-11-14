@@ -1,7 +1,7 @@
 ##################################################################################
 # Makefile - Configuration file for GNU make (http://www.gnu.org/software/make/)
 # Creation : 07 Nov 2013
-# Time-stamp: <Thu 2013-11-14 11:00 svarrette>
+# Time-stamp: <Thu 2013-11-14 11:05 svarrette>
 #
 # Copyright (c) 2013 Sebastien Varrette <Sebastien.Varrette@uni.lu>
 #               http://varrette.gforge.uni.lu
@@ -91,9 +91,9 @@ clean:
 		git checkout $(OSU_MB_SRCDIR); \
 	else echo "no file ./$(SRC_DIR)/$(OSU_MB_TARBALL)"; \
 	fi
-	@echo rm -rf $(OSU_MB_SRCDIR)/autom4te.cache/ $(OSU_MB_SRCDIR)/build.* 
+	rm -rf $(OSU_MB_SRCDIR)/autom4te.cache/ $(OSU_MB_SRCDIR)/build.* 
 	@echo "=> removing $(OSU_MB_TARBALL)"
-	@echo rm -f $(SRC_DIR)/$(OSU_MB_TARBALL)
+	rm -f $(SRC_DIR)/$(OSU_MB_TARBALL)
 	$(MAKE) -C $(PLOT_DIR)/ $@
 
 test:
