@@ -1,7 +1,7 @@
 ##################################################################################
 # Makefile - Configuration file for GNU make (http://www.gnu.org/software/make/)
 # Creation : 07 Nov 2013
-# Time-stamp: <Thu 2013-11-14 11:05 svarrette>
+# Time-stamp: <Jeu 2013-11-14 11:27 svarrette>
 #
 # Copyright (c) 2013 Sebastien Varrette <Sebastien.Varrette@uni.lu>
 #               http://varrette.gforge.uni.lu
@@ -33,6 +33,10 @@ OSU_PATCH_DIR    = $(shell dirname $(OSU_PATCH_FILE))
 OSU_PATCH_REJ_FILE = $(OSU_PATCH_DIR)/$(shell basename $(OSU_PATCH_FILE) .patch).rej
 
 BUILD_SCRIPT = ./$(SCRIPT_DIR)/build.osu
+
+DEFAULT_LAUNCHER_SCRIPT = ./$(RUN_DIR)/default_mpi_launcher.sh
+LAUNCHER_CONF = $(wildcard $(RUN_DIR)/*.default.conf)
+
 
 ############################
 .PHONY: all fetch clean plot 
@@ -73,9 +77,12 @@ build: patch __build.impi __build.openmpi __build.mvapich2
 __build.%:
 	@echo "=> building OSU Micro-benchmarks with $*"
 	$(BUILD_SCRIPT)  $*
+	@echo "=> building complete - see $(OSU_MB_SRCDIR)/build.*"
 
-run_interactive:
+run_interactive: setup
 	@echo "TODO: define action to run the code interactively"
+	@echo "launcher script: $(DEFAULT_LAUNCHER_SCRIPT)"
+	@echo "conf: $(LAUNCHER_CONF)"
 
 run:
 	@echo "TODO: define action to run the code, most probably oarsub -S ..."
