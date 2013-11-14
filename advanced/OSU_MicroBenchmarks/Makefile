@@ -1,7 +1,7 @@
 ##################################################################################
 # Makefile - Configuration file for GNU make (http://www.gnu.org/software/make/)
 # Creation : 07 Nov 2013
-# Time-stamp: <Jeu 2013-11-14 11:27 svarrette>
+# Time-stamp: <Jeu 2013-11-14 11:50 svarrette>
 #
 # Copyright (c) 2013 Sebastien Varrette <Sebastien.Varrette@uni.lu>
 #               http://varrette.gforge.uni.lu
@@ -35,8 +35,8 @@ OSU_PATCH_REJ_FILE = $(OSU_PATCH_DIR)/$(shell basename $(OSU_PATCH_FILE) .patch)
 BUILD_SCRIPT = ./$(SCRIPT_DIR)/build.osu
 
 DEFAULT_LAUNCHER_SCRIPT = ./$(RUN_DIR)/default_mpi_launcher.sh
-LAUNCHER_CONF = $(wildcard $(RUN_DIR)/*.default.conf)
-
+LAUNCHER_CONF    = $(wildcard $(RUN_DIR)/*.default.conf)
+LAUNCHER_SCRIPTS = $(LAUNCHER_CONF:.default.conf=)
 
 ############################
 .PHONY: all fetch clean plot 
@@ -79,10 +79,15 @@ __build.%:
 	$(BUILD_SCRIPT)  $*
 	@echo "=> building complete - see $(OSU_MB_SRCDIR)/build.*"
 
-run_interactive: setup
-	@echo "TODO: define action to run the code interactively"
-	@echo "launcher script: $(DEFAULT_LAUNCHER_SCRIPT)"
-	@echo "conf: $(LAUNCHER_CONF)"
+
+run_interactive: __run_interactive.impi
+
+__run_interactive.%:
+ifndef OAR_NODEFILE
+    $(error OAR_NODEFILE is not set - you have to be in an interactive job)
+endif
+	ln -s $(shell basename $(DEFAULT_LAUNCHER_SCRIPT)) $(RUN_DIR)/launcher_osu_$*
+	echo ./$(RUN_DIR)/launcher_osu_$* --datadir $(RUN_DIR)/data/`date +%Y-%m-%d`
 
 run:
 	@echo "TODO: define action to run the code, most probably oarsub -S ..."
@@ -101,9 +106,12 @@ clean:
 	rm -rf $(OSU_MB_SRCDIR)/autom4te.cache/ $(OSU_MB_SRCDIR)/build.* 
 	@echo "=> removing $(OSU_MB_TARBALL)"
 	rm -f $(SRC_DIR)/$(OSU_MB_TARBALL)
+	@echo "=> removing launchers scripts"
+	rm -f $(LAUNCHER_SCRIPTS)
 	$(MAKE) -C $(PLOT_DIR)/ $@
 
 test:
 	@echo "OSU_PATCH_FILE     = $(OSU_PATCH_FILE)"
 	@echo "OSU_PATCH_DIR      = $(OSU_PATCH_DIR)"
-	@echo "OSU_PATCH_REJ_FILE =  $(OSU_PATCH_REJ_FILE)"
+	@echo "OSU_PATCH_REJ_FILE = $(OSU_PATCH_REJ_FILE)"
+	@echo "LAUNCHER_SCRIPTS   = $(LAUNCHER_SCRIPTS)"
