@@ -1,7 +1,7 @@
 ##################################################################################
 # Makefile - Configuration file for GNU make (http://www.gnu.org/software/make/)
 # Creation : 07 Nov 2013
-# Time-stamp: <Jeu 2013-11-14 11:50 svarrette>
+# Time-stamp: <Jeu 2013-11-14 16:36 svarrette>
 #
 # Copyright (c) 2013 Sebastien Varrette <Sebastien.Varrette@uni.lu>
 #               http://varrette.gforge.uni.lu
@@ -80,17 +80,33 @@ __build.%:
 	@echo "=> building complete - see $(OSU_MB_SRCDIR)/build.*"
 
 
-run_interactive: __run_interactive.impi
+
+
+
+ifndef OAR_NODEFILE
+run_interactive _run_interactive.impi __run_interactive.openmpi __run_interactive.mvapich2: 
+	@echo "OAR_NODEFILE is not set - you have to be in an interactive job"
+
+run: __run.impi
+
+__run.%:
+	ln -sf $(shell basename $(DEFAULT_LAUNCHER_SCRIPT)) $(RUN_DIR)/launcher_osu_$*
+	@echo "FIXME: not working" 
+	@echo oarsub -n "OSU $*" -O OSU_$*-%jobid%.log -E OSU_$*-%jobid%.log -l enclosure=1/nodes=2/core=1 -S "./$(RUN_DIR)/launcher_osu_$* --datadir $(RUN_DIR)/data/`date +%Y-%m-%d`"
+
+
+else
+run __run.impi __run.openmpi __run.mvapich2: 
+	@echo "OAR_NODEFILE is set - you have to be on the access to be able to submit a passive job"
+
+run_interactive: build __run_interactive.impi __run_interactive.openmpi __run_interactive.mvapich2
 
 __run_interactive.%:
-ifndef OAR_NODEFILE
-    $(error OAR_NODEFILE is not set - you have to be in an interactive job)
-endif
-	ln -s $(shell basename $(DEFAULT_LAUNCHER_SCRIPT)) $(RUN_DIR)/launcher_osu_$*
-	echo ./$(RUN_DIR)/launcher_osu_$* --datadir $(RUN_DIR)/data/`date +%Y-%m-%d`
+	ln -sf $(shell basename $(DEFAULT_LAUNCHER_SCRIPT)) $(RUN_DIR)/launcher_osu_$*
+	./$(RUN_DIR)/launcher_osu_$* --datadir $(RUN_DIR)/data/`date +%Y-%m-%d`
 
-run:
-	@echo "TODO: define action to run the code, most probably oarsub -S ..."
+endif
+
 
 plot:
 	$(MAKE) -C $(PLOT_DIR)/
@@ -115,3 +131,4 @@ test:
 	@echo "OSU_PATCH_DIR      = $(OSU_PATCH_DIR)"
 	@echo "OSU_PATCH_REJ_FILE = $(OSU_PATCH_REJ_FILE)"
 	@echo "LAUNCHER_SCRIPTS   = $(LAUNCHER_SCRIPTS)"
+
