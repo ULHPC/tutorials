@@ -175,8 +175,43 @@ Now that we are able to connect __from__ chaos __to__ gaia, we will transfer the
 
 So now **we have setup a bi-directional transparent connection from one cluster to the other.** 
 
+## Step 2bis: Using SSH proxycommand setup to access the clusters despite port filtering
+
+It might happen that the port 8022 is filtered from your working place. You can easily bypass this firewall rule using an SSH proxycommand to setup transparently multi-hop connexions *through* one host (a gateway) to get to the access frontend of the cluster, as depited below: 
+
+     [laptop] -----||--------> 22 [SSH gateway] ---------> 8022 [access-{chaos,gaia}]
+                firewall
+
+The gateway can be any SSH server which have access to the access frontend of the cluster. The [Gforge @ UL](http://gforge.uni.lu) is typically used in this context but you can prefer any other alternative (your personal NAS @ home etc.). Then alter the SSH config on yout laptop (in `~/.ssh/confg` typically) as follows:
+
+* create an entry to be able to connect to the gateway:
+
+		# Alias for the gateway (not really needed, but convenient), below instanciated 
+		Host gw
+		    User anotherlogin
+		    Hostname host.domain.org
+		    ForwardAgent no
+
+		# Automatic connection to UL HPC from the outside via the gateway
+		Host *.ulhpc
+			ProxyCommand ssh gw "nc -q 0 `basename %h .ulhpc` %p"
+
+* ensure you can connect to the gateway:
+
+		(laptop)$> ssh gw
+		(gateway)$> exit # or CTRL-D 
+		
+* the `.ulhpc` suffix we mentionned in the previous configuration is an arbitrary suffix you will now specify in your command lines in order to access the UL HPC platform via the gateway as follows: 
+
+		(laptop)$> ssh gaia.ulhpc
 
 
+			
+	
+
+
+
+ 
 
 
 
