@@ -45,7 +45,7 @@ The general organization of each cluster is depicted below:
 Details on this organization can be found [here](https://hpc.uni.lu/systems/clusters.html#clusters-organization)
 
 
-## Connecting for the first time and preparing your SSH environment
+# Connecting for the first time and preparing your SSH environment
 
 * [Access / SSH Tutorial](https://hpc.uni.lu/users/docs/access.html)
 
@@ -204,6 +204,115 @@ The gateway can be any SSH server which have access to the access frontend of th
 * the `.ulhpc` suffix we mentionned in the previous configuration is an arbitrary suffix you will now specify in your command lines in order to access the UL HPC platform via the gateway as follows: 
 
 		(laptop)$> ssh gaia.ulhpc
+
+# Discovering, visualizing and reserving UL HPC resources
+
+## Step 1: the working environment 
+
+* [reference documentation](http://ulhpc_www.dev/users/docs/env.html)
+
+After a successful login onto one of the access node (see [Cluster Access](https://hpc.uni.lu/users/docs/access.html)), you end into your personal homedir `$HOME` which is shared over NFS between the access node and the computing nodes.
+
+Again, remember that your homedir is placed on __separate__ NFS servers on each site, which __ARE NOT SYNCHRONIZED__: data synchronization between each of them remain at your own responsability. We will see below that the UL HPC team prepared for you a script to facilitate the transfer of data between each site. 
+
+Otherwise, you have to be aware of at least two directories: 
+
+* `$HOME`: your home directory under NFS. 
+* `$SCRATCH`: a non-backed up area put if possible under Lustre for fast I/O operations
+
+Your homedir is under a regular backup policy. Therefore you are asked to pay attention to your disk usage __and__ the number of files you store there. 
+
+* estimate file space usage and summarize disk usage of each FILE, recursively for directories using the `ncdu` command:
+
+		(access)$> ncdu
+		
+* you shall also pay attention to the number of files in your homedirectory. You can count them as follows: 
+
+		(access)$> find . -type f | wc -l
+
+## Step 2: web monitoring interfaces 
+
+Each cluster offers a set of web services to monitore the platform usage: 
+
+* A [pie-chart overview of the platform usage](https://hpc.uni.lu/status/overview.html)
+* [Monika](https://hpc.uni.lu/status/monika.html), the visualization interface of the OAR scheduler, which  display the status of the clusters as regards the jobs running on the platform.
+* [DrawGantt](https://hpc.uni.lu/status/drawgantt.html), the Gantt visualization of jobs scheduled on OAR
+* [Ganglia](https://hpc.uni.lu/status/ganglia.html), a scalable distributed monitoring system for high-performance computing systems such as clusters and Grids.
+* [CDash](http://cdash.uni.lux/) (internal UL network use)
+
+## Step 3: Reserving resources with OAR: the basics
+
+* [reference documentation](https://hpc.uni.lu/users/docs/oar.html)
+
+[OAR](http://oar.imag.fr/) is an open-source batch scheduler which provides simple yet flexible facilities for the exploitation of the UL HPC clusters.
+
+* Connect to one of the UL HPC  frontend. You can request resources in interactive mode:
+
+		(access)$> oarsub -I 
+
+  Notice that with no parameters, oarsub gave you one resource (one core) for two hour. You were also directly connected to the node you reserved with an interactive shell.
+  No exit the reservation: 
+  
+        (node)$> exit      # or CTRL-D
+  
+  When you run exit, you are disconnected and your reservation is terminated. 
+  
+To avoid anticipated termination of your jobs in case or errors (terminal closed by mistake), 
+you can reserve and connect in 2 steps using the job id associated to your reservation. 
+
+* First run a passive job _i.e._ run a predefined command -- here `sleep 10d` to delay the execution for 10 days -- on the first reserved node:
+
+		(access)$> oarsub "sleep 10d"
+		[ADMISSION RULE] Set default walltime to 7200.
+		[ADMISSION RULE] Modify resource description with type constraints
+		OAR_JOB_ID=919309
+ 
+ You noticed that you received a job ID (in the above example: `919309`), which you can later use to connect to the reserved resource(s):
+ 
+        (access)$> oarsub -C 919309        # adapt the job ID accordingly ;)
+        Connect to OAR job 919309 via the node e-cluster1-13
+		[OAR] OAR_JOB_ID=919309
+		[OAR] Your nodes are:
+      		e-cluster1-13*1		
+        
+		(e-cluster1-13)$> java -version
+		(e-cluster1-13)$> hostname -f
+		(e-cluster1-13)$> whoami
+		(e-cluster1-13)$> env | grep OAR   # discover environment variables set by OAR
+		(e-cluster1-13)$> exit             # or CTRL-D
+
+## Step 4: Job management
+
+Normally, the previously run job is still running.
+
+* You can check the status of your running jobs using `oarstat` command:
+
+		(access)$> oarstat      # access all jobs 
+		(access)$> oarstat -u   # access all your jobs
+		
+Then 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 			
