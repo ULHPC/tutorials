@@ -13,7 +13,7 @@ visualization and programming, on top of the [UL HPC](http://hpc.uni.lu) platfor
 
 ## Prerequisites
 
-As part of this tutorial two example scripts have been developed and you will need to download them,
+As part of this tutorial two Matlab example scripts have been developed and you will need to download them,
 along with their dependencies, before following the instructions in the next sections:
 
         (gaia-frontend)$> mkdir ~/matlab-tutorial
@@ -83,10 +83,72 @@ quick executions:
         ans =
         8.1.0.604 (R2013a)
 
- In this command line you are now able to run commands, load and edit scripts, but cannot display plots - they can
- however be generated and exported to file, which you will need to transfer to your own machine for visualisation.
- While the text mode interface is spartan, you still benefit from tab-completion (type the first few letters of
- a command then press TAB TAB) and can run the integrated help with `help command_name` (e.g. help plot3).
+In this command line you are now able to run Matlab commands, load and edit scripts, but cannot display plots - they can
+however be generated and exported to file, which you will need to transfer to your own machine for visualisation.
+While the text mode interface is spartan, you still benefit from tab-completion (type the first few letters of
+a command then press TAB twice to see possible completions) and can run the integrated help with `help command_name` 
+(e.g. help plot3).
+ 
+### Example usage of Matlab in interactive mode
+
+At this point you should have downloaded the example scripts and started Matlab either with the graphical or the text-mode
+interface. We will now test some Matlab commands by using the yahoo\_finance\_data function defined in _yahoo\_finance\_data.m_.
+This function downloads stock market data through the Yahoo! Finance API, and we will use it to get 1 month worth of stock data
+for IBM (whose stock symbol is 'IBM'):
+
+         >> cd('~/matlab-tests')
+         >> [hist_date, hist_high, hist_low, hist_open, hist_close, hist_vol] = yahoo_finance_data('IBM', 2014, 2, 1, 2014, 3, 1);
+         >> size(hist_date)                                                                                                       
+         ans =
+             19     1
+         >> [hist_date{1} ' ' hist_date{end}]     
+         ans =
+         2014-02-03 2014-02-28
+         >> min(hist_low)                                                                                                         
+         ans =
+           171.2512
+         >> max(hist_high)
+         ans =
+           186.1200
+         >> mean(hist_close)
+         ans =
+           180.3184
+         >> std(hist_close) 
+         ans =
+             4.5508
+
+Through these commands we have seen that the function returns column vectors, we were able to get 19 days' worth of information and 
+we used simple statistic functions to get an idea of how the stock varied in the given period. 
+
+Now we will use the example1.m script that shows: 
+  - how to use different plotting methods on the data retrieved with the yahoo\_finance\_data function
+  - how to export the plots in different graphic formats instead of displaying them (which is only available when running the 
+  full graphical environment and also allows the user to visually interact with the plot)
+  
+         >> example1
+         Elapsed time is 2.421686 seconds.
+         >> quit
+         (node)$>
+         (node)$> ls *pdf *eps
+         example1-2dplot.eps  example1-2dplot.pdf  example1-scatter.eps
+
+We have run the example1.m script which has downloaded Apple ('AAPL' ticker) stock data for the year 2013 and generated three plots:
+
+  - example1-2dplot.pdf : color PDF generated with the saveas function, plotting dates (x-axis) vs closing stock price (y-axis)
+  - example1-2dplot.eps : high quality black and white Enhanced PostScript (EPS) generated with the print function, same data as above
+  - example1-scatter.eps : high quality color EPS generated with the print function, showing also the trading volume (z-axis) and 
+using different color datapoints (red) where the closing share price was above 500
+
+The script has also used the tic/toc Matlab commands to time it's execution and we can see it took less than 3 seconds to download
+and process data from the Yahoo Finance API and generate the plots. 
+
+Finally, we have closed our Matlab session and were returned to the cluster's command line prompt where we found the generated plots.
+
+A PNG version of the latter two plots is shown below:
+![2D Plot](https://raw.github.com/ULHPC/tutorials/devel/advanced/MATLAB/plots/example1-2dplot.png)
+![3D Scatter Plot](https://raw.github.com/ULHPC/tutorials/devel/advanced/MATLAB/plots/example1-scatter.png)
+
+Further examples showing serial and parallel executions are given below in the 'Example usage of Matlab in passive mode' section.
         
 ## Matlab execution in passive mode
 
@@ -108,8 +170,9 @@ output file will contain the '>>' characters generated by Matlab as if ran inter
 results of your own commands.
 
 However as the second usage mode runs your script as a command, it __must__ contain the `quit` command at
-the end in order to exit the environment, otherwise after the script has executed Matlab will stay open,
-waiting for further input until the end of the walltime you set for the passive job.
+the end in order to close Matlab, otherwise after the script has executed Matlab will stay open,
+waiting for further input until the end of the walltime you set for the passive job, tying up compute
+resources needlessly.
         
 The following minimal example shows how to run a serial (1 core) MATLAB script for 24 hours in passive mode:
 
@@ -121,7 +184,7 @@ Ideally you __would not__ run MATLAB jobs like this but instead [create/adapt a 
         source /etc/profile
         # REMEMBER to change the following to the correct paths of the input/output files:
         INPUTFILE=your_input_file_name_without_extension
-        OUTPUTFULE=your_output_file_name_with_extension.out
+        OUTPUTFILE=your_output_file_name_with_extension.out
         # Load a specific version of MATLAB and run the input script:
         module load MATLAB/2013b
         matlab -nodisplay -nosplash -r $INPUTFILE -logfile $OUTPUTFILE
@@ -132,3 +195,117 @@ then launch it in a job (e.g. requesting 6 cores on 1 node for 10 hours - assumi
         
 Remember! that the Matlab script you run with the '-r' parameter must contain the `quit` command at the end
 in order to close Matlab properly when the script finishes.
+
+### Example usage of Matlab in passive mode
+
+In this section we will use the _example2.m_ script which shows:
+  - the serial execution of time consuming operations; 1 core on 1 node
+  - the parallel execution (based on the `parfor` command) and relative speedup vs serial execution, setting
+    the maximum number of parallel threads through environment variables; up to 1 full node
+  - GPU-based parallel execution; available only on [GPU-enabled nodes](https://hpc.uni.lu/systems/accelerators.html)
+
+By default the parallel section of the script uses up to 4 threads, thus for a first test we will request 4 cores on 1
+compute node for 5 minutes:
+  
+        (gaia-frontend)$> cd ~/matlab-tests
+        (gaia-frontend)$> cat << EOF > matlab-minlauncher.sh
+        #!/bin/bash
+        source /etc/profile
+        module load MATLAB/2013a
+        matlab -nodisplay -nosplash -r example2 -logfile example2.out
+        EOF
+        (gaia-frontend)$> chmod +x matlab-minlauncher.sh
+        (gaia-frontend)$> oarsub -l nodes=1/core=4,walltime=00:05:00 ~/matlab-tests/matlab-minlauncher.sh
+        # we now wait for the job to complete execution
+        (gaia-frontend)$> cat example2.out
+				    < M A T L A B (R) >
+			  Copyright 1984-2013 The MathWorks, Inc.
+			    R2013a (8.1.0.604) 64-bit (glnxa64)
+				    February 15, 2013
+
+
+	To get started, type one of these: helpwin, helpdesk, or demo. 
+	For product information, visit www.mathworks.com.
+
+	-- Will perform 24 iterations on a 1000x1000 matrix
+
+	-- Serial test
+	-- Execution time: 27.870898s.
+	-- Parallel tests with up to 4 cores
+
+	-- Parallel test using 2 cores
+	Starting matlabpool ... connected to 2 workers.
+	Sending a stop signal to all the workers ... stopped.
+	-- Execution time: 19.869666s.
+	-- Execution time with overhead: 39.025023s.
+
+	-- Parallel test using 3 cores
+	Starting matlabpool ... connected to 3 workers.
+	Sending a stop signal to all the workers ... stopped.
+	-- Execution time: 14.584377s.
+	-- Execution time with overhead: 25.587958s.
+
+	-- Parallel test using 4 cores
+	Starting matlabpool ... connected to 4 workers.
+	Sending a stop signal to all the workers ... stopped.
+	-- Execution time: 12.298823s.
+	-- Execution time with overhead: 22.379418s.
+
+	-- Number of processes, parallel execution time (s), parallel execution time with overhead(s), speedup, speedup with overhead:
+	    1.0000   27.8709   27.8709    1.0000    1.0000
+	    2.0000   19.8697   39.0250    1.4027    0.7142
+	    3.0000   14.5844   25.5880    1.9110    1.0892
+	    4.0000   12.2988   22.3794    2.2661    1.2454
+
+
+	-- GPU-Parallel test not available on this system.
+
+
+The script is also able to read an environment variable _MATLABMP_ and create as many parallel threads as specified in this variable.
+We will now generate another launcher which will set this variable to the number of cores we specified to OAR.
+
+        (gaia-frontend)$> cd ~/matlab-tests
+        (gaia-frontend)$> cat << EOF > matlab-minlauncher2.sh
+        #!/bin/bash
+        source /etc/profile
+        module load MATLAB/2013a
+        export MATLABMP=$(cat $OAR_NODEFILE | wc -l)
+        matlab -nodisplay -nosplash -r example2 -logfile example2.out
+        EOF
+        (gaia-frontend)$> chmod +x matlab-minlauncher2.sh
+        (gaia-frontend)$> oarsub -l nodes=1/core=6,walltime=00:05:00 ~/matlab-tests/matlab-minlauncher2.sh
+        # we now wait for the job to complete execution
+        (gaia-frontend)$> head -n 17 example2.out 
+				      < M A T L A B (R) >
+			    Copyright 1984-2013 The MathWorks, Inc.
+			      R2013a (8.1.0.604) 64-bit (glnxa64)
+				      February 15, 2013
+
+	  
+	  To get started, type one of these: helpwin, helpdesk, or demo.
+	  For product information, visit www.mathworks.com.
+	  
+	  -- Will perform 24 iterations on a 1000x1000 matrix
+
+	  -- Serial test
+	  -- Execution time: 28.193131s.
+
+	  -- Found environment variable MATLABMP=6.
+	  -- Parallel tests with up to 6 cores
+        (gaia-frontend)$>  
+        
+We have submitted an OAR job requesting 6 cores for 5 minutes and used the second launcher. It can be seen that the example2.m script 
+has read the MATLABMP environment variable and has used in its execution.
+
+As shown previously, the jobs we have submitted did not run on GPU-enabled nodes, thus in this last example we will specifically
+target GPU nodes and see that the last test of example2.m will also be executed:
+
+      (gaia-frontend)$> cd ~/matlab-tests
+      (gaia-frontend)$> oarsub -l nodes=1/core=6,walltime=00:05:00 -p "gpu='YES'" ~/matlab-tests/matlab-minlauncher2.sh
+        # we now wait for the job to complete execution
+      (gaia-frontend)$> tail -n 5 example2.out 
+        -- GPU test 
+        -- GPU Execution time: 28.192080s.
+        -- GPU Execution time with overhead: 30.499892s.
+        -- GPU vs Serial speedup: 1.102579.
+        -- GPU with overhead vs Serial speedup: 1.019151.
