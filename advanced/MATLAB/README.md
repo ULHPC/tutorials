@@ -309,3 +309,6 @@ target GPU nodes and see that the last test of example2.m will also be executed:
         -- GPU Execution time with overhead: 30.499892s.
         -- GPU vs Serial speedup: 1.102579.
         -- GPU with overhead vs Serial speedup: 1.019151.
+
+The following plot shows a sample speedup obtained by using parfor on Gaia, with up to 12 parallel threads:
+![Parfor speedup](https://raw.github.com/ULHPC/tutorials/devel/advanced/MATLAB/plots/parfor-speedup.png)
