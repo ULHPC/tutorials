@@ -43,6 +43,7 @@ __Advanced tutorials__:
 
 * [running the OSU Micro-Banchmarks](https://github.com/ULHPC/tutorials/tree/devel/advanced/OSU_MicroBenchmarks)
 * [running HPL](https://github.com/ULHPC/tutorials/tree/devel/advanced/HPL)
+* [running MATLAB](https://github.com/ULHPC/tutorials/tree/devel/advanced/MATLAB)
 
 ## Proposing a new tutorial / Contributing to this repository 
 

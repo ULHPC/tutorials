@@ -312,3 +312,13 @@ target GPU nodes and see that the last test of example2.m will also be executed:
 
 The following plot shows a sample speedup obtained by using parfor on Gaia, with up to 12 parallel threads:
 ![Parfor speedup](https://raw.github.com/ULHPC/tutorials/devel/advanced/MATLAB/plots/parfor-speedup.png)
+
+Relative to the fast execution of the inner instruction (which calculates the eigenvalues of a matrix) 
+the overhead given by the creation of the parallel pool and the task assignations is quite high in this example,
+where for 12 cores the speedup is 5.26x but taking the overhead into account it is only 4x.
+
+## Useful references
+
+  - [Parallel Computing Toolbox documentation](http://www.mathworks.nl/help/distcomp/index.html)
+  - [Parallel for-Loops (parfor) documentation](http://www.mathworks.nl/help/distcomp/getting-started-with-parfor.html)
+  - [GPU Computing documentation](http://www.mathworks.nl/discovery/matlab-gpu.html)
