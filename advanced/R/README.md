@@ -5,11 +5,12 @@ Copyright (c) 2014 Joseph Emeras <joseph.emeras@uni.lu>
 -------------------
 # R Tutorial
 Through this tutorial you will learn how to use R from your local machine or from one of the [UL HPC platform](http://hpc.uni.lu) clusters.
-We will also use the powerfull `ggplot` library to generate nice graphics and export them as pdf files. 
+We will also use the `ggplot` library to generate nice graphics and export them as pdf files. 
+Then, we will see how to organize and group data. Finally we will illustrate how R can benefit from multicore and cluster parallelization.
 
 ## Pre-requisites
 
-### On your local machine
+### Optional: On your local machine
 First of all, let's install R. You will find releases for various distributions available at [CRAN Archive](http://cran.r-project.org/).
 Once installed, to use R interactive session interface, simply open a terminal and type:
 
@@ -24,14 +25,15 @@ The first step is the reservation of a resource. Connect to your favorite cluste
 
     jdoe@localhost:~$ ssh chaos-cluster
 
-Once connected to the user frontend, book 1 core for 2 hours (as we will use R in single-threaded mode, we will need only one core).
+Once connected to the user frontend, book 1 core for half an hour (as we will use R in single-threaded mode, we will need only one core).
 
-    jdoe@access:~$ oarsub -I -l core=1,walltime=2
+    jdoe@access:~$ oarsub -I -l core=1,walltime="00:30:00"
 
-When the job is running and you are connected load R module
+When the job is running and you are connected load R module (version compiled with Intel Compiler).
 
     jdoe@access:~$ module load R/3.0.2-ictce-5.3.0
-<!-->
+
+<!--
     jdoe@access:~$ module load R/3.0.2-goolf-1.4.10
 -->
 Now you should be able to invoke R and see something like this:
@@ -79,7 +81,10 @@ To install libraries you can use the `install.packages()` function. e.g
 
 	> install.packages("ggplot2")
 
-This will install the `ggplot2` library (R might ask you various questions during the installation, using default values is ok).
+This will install the `ggplot2` library.
+
+Note: on the first run, R might ask you various questions during the installation. e.g. selecting a CRAN mirror to use for downloading packages. Select a mirror close to your location. For other questions, using default values is ok.
+
 Now, to load this library call:
 
     > library(ggplot2)
@@ -91,7 +96,7 @@ A call to `sessionInfo()` function will return `ggplot2` version as it is now at
 ## Warm-up Session -- Simple Plotting
 
 ### From Single Dataset 
-Movies dataset, derived from data at [IMDB](imdb.com) is a sample dataset provided in `ggplot2` for testing purpose. Its data description is available [here](http://had.co.nz/data/movies/description.pdf).
+Movies dataset, derived from data provided by [IMDB](http://imdb.com) is a sample dataset available in `ggplot2` for testing purpose. Its data description can be found [here](http://had.co.nz/data/movies/description.pdf).
 Thus, when loading `ggplot2` library, this dataset is available under the name: `movies`.
 
 (OPTIONAL) An other way to get the dataset would be to download, extract and read it with:
@@ -112,6 +117,10 @@ Now let's take a (reproducible) sample of 1000 movies and plot their distributio
     movies_sample = movies[sample(nrow(movies), 1000), ]
     graph = ggplot(data=movies_sample) + geom_histogram(aes(x=rating), binwidth=0.5)
     ggsave(graph, file="movies_hist.pdf", width=8, height=4)
+
+Now you shoud be able to visualize the generated plot on the frontend (may not work on windows stations using PuTTy):
+
+    jdoe@access:~$ epdfview movies_hist.pdf
 
 `ggplot2` proposes many functions to plot data according to your needs. Do not hesitate to wander in the [ggplot2 documentation](http://docs.ggplot2.org/current/) and to read at provided examples to better understand how to use it.
 The `ggsave()` function is convenient to export ggplot graphics as .pdf or .png files
@@ -219,7 +228,64 @@ Plotting the benchmark result gives us a boxplot graph:
 	## flush the output device to save the graph
 	dev.off()
 
+
+### Using `data.table` Package
+
+According to [data.table documentation](http://cran.r-project.org/web/packages/data.table/index.html) `data.table` inherits from `data.frame` to offer fast subset, fast grouping, fast update, fast ordered
+joins and list columns in a short and flexible syntax, for faster development. It uses binary search instead of vector scan to perform its operations and thus is scalable.
+We can convert easily a `data.frame` to a `data.table`.
+
+	> MOVIES = data.table(movies)
+
+Because `data.table` uses binary search, we have to define manually the keys that will be used for this search.
+
+Let's now create a new `data.frame`. We will make it large enough to demonstrate the difference between a vector scan and a binary search.
+
+    grpsize = ceiling(1e7/26^2) # 10 million rows, 676 groups
+    system.time( DF <- data.frame(
+		x=rep(LETTERS,each=26*grpsize),
+		y=rep(letters,each=grpsize),
+		v=runif(grpsize*26^2),
+		stringsAsFactors=FALSE)
+	)	
+
+
+Vector Scan is long compared to binary search
+
+	> system.time(ans1 <- DF[DF$x=="R" & DF$y=="h",]) # vector scan
+	
+	> DT = data.table(DF)
+	> setkey(DT,x,y)
+	> system.time(ans2 <- DT[J("R","h")]) # binary search	
+
+In this case, we are joining DT to the 1 row, 2 column table returned by data.table("R","h"). We use the alias for joining data.tables called J(), short for join.
+
+
+#### Grouping
+
+DataFrame style:
+
+	system.time(tapply(DT$v,DT$x,sum))
+
+`data.table` style, using `by`:
+
+	system.time(DT[,sum(v),by=x])
+
+
+
+
 ## Parallel R
+The first part of the tutorial is now over, you can connect to `gaia` cluster and submit an other job requesting several machines.
+
+	jdoe@localhost:~$ ssh gaia-cluster
+	
+    jdoe@access:~$ oarsub -I -l nodes=2,walltime=1
+
+When the job is running and you are connected load R module (version compiled with GCC).
+
+    jdoe@access:~$ module load R/3.0.2-goolf-1.4.10
+
+
 We will use a large dataset (400K+ rows) to illustrate the effect of parallelization in R.
 
     > air = read.csv(url("http://packages.revolutionanalytics.com/datasets/AirOnTimeCSV2012/airOT201201.csv"))
