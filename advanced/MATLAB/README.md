@@ -96,7 +96,7 @@ interface. We will now test some Matlab commands by using the yahoo\_finance\_da
 This function downloads stock market data through the Yahoo! Finance API, and we will use it to get 1 month worth of stock data
 for IBM (whose stock symbol is 'IBM'):
 
-         >> cd('~/matlab-tests')
+         >> cd('~/matlab-tutorial')
          >> [hist_date, hist_high, hist_low, hist_open, hist_close, hist_vol] = yahoo_finance_data('IBM', 2014, 2, 1, 2014, 3, 1);
          >> size(hist_date)                                                                                                       
          ans =
