@@ -1,6 +1,6 @@
 ####################################################################################
 # Makefile (configuration file for GNU make - see http://www.gnu.org/software/make/)
-# Time-stamp: <Lun 2013-03-11 23:13 svarrette>
+# Time-stamp: <Mer 2014-03-26 17:18 svarrette>
 #     __  __       _         __ _ _       
 #    |  \/  | __ _| | _____ / _(_) | ___  
 #    | |\/| |/ _` | |/ / _ \ |_| | |/ _ \
@@ -28,6 +28,14 @@ TAG_PREFIX = "v"
 GITFLOW_BR_MASTER=production
 GITFLOW_BR_DEVELOP=devel
 
+CURRENT_BRANCH = $(shell git rev-parse --abbrev-ref HEAD)
+GIT_REMOTES    = $(shell git remote | xargs echo )
+GIT_DIRTY      = $(shell git diff --shortstat 2> /dev/null | tail -n1 )
+# Git subtrees repositories 
+# Format: '<url>[|<branch>]' - don't forget the quotes. if branch is ignored, 'master' is used
+#GIT_SUBTREE_REPOS = 'https://github.com/ULHPC/easybuild-framework.git|develop'  \
+					 'https://github.com/hpcugent/easybuild-wiki.git'
+
 VERSION  = $(shell [ -f VERSION ] && head VERSION || echo "0.0.1")
 # OR try to guess directly from the last git tag
 #VERSION    = $(shell  git describe --tags $(LAST_TAG_COMMIT) | sed "s/^$(TAG_PREFIX)//")
@@ -44,8 +52,7 @@ NEXT_MINOR_VERSION = $(MAJOR).$(shell expr $(MINOR) + 1).0-b$(BUILD)
 NEXT_PATCH_VERSION = $(MAJOR).$(MINOR).$(shell expr $(PATCH) + 1)-b$(BUILD)
 
 ### Main variables
-
-.PHONY: all archive clean help release setup start_bump_major start_bump_minor start_bump_patch test versioninfo 
+.PHONY: all archive clean fetch help release setup start_bump_major start_bump_minor start_bump_patch subtree_setup subtree_up subtree_diff test upgrade versioninfo 
 
 ############################### Now starting rules ################################
 # Required rule : what's to be done each time 
@@ -57,6 +64,14 @@ test:
 	@echo "GITFLOW      -> '$(GITFLOW)'"
 	@echo "--- Directories --- "
 	@echo "SUPER_DIR    -> '$(SUPER_DIR)'"
+	@echo "--- Git stuff ---"
+	@echo "GITFLOW            -> '$(GITFLOW)'"
+	@echo "GITFLOW_BR_MASTER  -> '$(GITFLOW_BR_MASTER)'"
+	@echo "GITFLOW_BR_DEVELOP -> '$(GITFLOW_BR_DEVELOP)'"
+	@echo "CURRENT_BRANCH     -> '$(CURRENT_BRANCH)'"
+	@echo "GIT_REMOTES        -> '$(GIT_REMOTES)'"
+	@echo "GIT_DIRTY          -> '$(GIT_DIRTY)'"
+	@echo "GIT_SUBTREE_REPOS  -> '$(GIT_SUBTREE_REPOS)'"
 	@echo ""
 	@echo "Consider running 'make versioninfo' to get info on git versionning variables"
 
@@ -75,8 +90,11 @@ setup:
 	git config gitflow.prefix.hotfix     hotfix/
 	git config gitflow.prefix.support    support/
 	git config gitflow.prefix.versiontag $(TAG_PREFIX)
-	git submodule init
-	git submodule update
+	$(MAKE) update 
+	$(if $(GIT_SUBTREE_REPOS), $(MAKE) subtree_setup)
+
+fetch:
+	git fetch --all -v
 
 versioninfo:
 	@echo "Current version: $(VERSION)"
@@ -87,7 +105,7 @@ versioninfo:
 	@echo "next minor version: $(NEXT_MINOR_VERSION)"
 	@echo "next patch version: $(NEXT_PATCH_VERSION)"
 
-# Git flow management - this should be factorized 
+### Git flow management - this should be factorized 
 ifeq ($(GITFLOW),)
 start_bump_patch start_bump_minor start_bump_major release: 
 	@echo "Unable to find git-flow on your system. "
@@ -120,7 +138,6 @@ start_bump_major: clean
 	@echo "=> remember to update the version number in $(MAIN_TEX)"
 	@echo "=> run 'make release' once you finished the bump"
 
-
 release: clean 
 	git flow release finish -s $(VERSION)
 	git checkout $(GITFLOW_BR_MASTER)
@@ -128,6 +145,60 @@ release: clean
 	git checkout $(GITFLOW_BR_DEVELOP)
 	git push origin
 	git push origin --tags
+endif
+
+### Git submodule management: upgrade to the latest version
+update:
+	git submodule init
+	git submodule update
+
+upgrade: update
+	git submodule foreach 'git fetch origin; git checkout $$(git rev-parse --abbrev-ref HEAD); git reset --hard origin/$$(git rev-parse --abbrev-ref HEAD); git submodule update --recursive; git clean -dfx'
+	@for submoddir in $(shell git submodule status | awk '{ print $$2 }' | xargs echo); do \
+		git commit -s -m "Upgrading Git submodule '$$submoddir' to the latest version" $$submoddir ;\
+	done
+
+
+### Git subtree management 
+ifeq ($(GIT_SUBTREE_REPOS),)
+subtree_setup subtree_diff subtree_up:
+	@echo "no repository configured in GIT_SUBTREE_REPOS..."
+else
+subtree_setup:
+	@for elem in $(GIT_SUBTREE_REPOS); do \
+		url=`echo $$elem | cut -d '|' -f 1`; \
+		repo=`basename $$url .git`; \
+		if [[ ! "$(GIT_REMOTES)" =~ "$$repo"  ]]; then \
+			echo "=> initializing Git remote '$$repo'"; \
+			git remote add -f $$repo $$url; \
+		fi \
+	done
+
+subtree_diff:
+	@for elem in $(GIT_SUBTREE_REPOS); do \
+		url=`echo $$elem | cut -d '|' -f 1`; \
+		repo=`basename $$url .git`; \
+		path=`echo $$repo | tr '-' '/'`; \
+		br=`echo $$elem | cut -d '|' -f 2`;  \
+		[ "$$br" == "$$url" ] && br='master'; \
+		echo -e "\n============ diff on subtree '$$path' with remote '$$repo/$$br' ===========\n"; \
+		git diff $${repo}/$$br $(CURRENT_BRANCH):$$path; \
+	done
+
+subtree_up: 
+	$(if $(GIT_DIRTY), $(error "Unable to pull subtree(s): Dirty Git repository"))
+	@for elem in $(GIT_SUBTREE_REPOS); do \
+		url=`echo $$elem | cut -d '|' -f 1`; \
+		repo=`basename $$url .git`; \
+		path=`echo $$repo | tr '-' '/'`; \
+		br=`echo $$elem | cut -d '|' -f 2`;  \
+		[ "$$br" == "$$url" ] && br='master'; \
+		echo -e "\n===> pulling changes into subtree '$$path' using remote '$$repo/$$br'"; \
+		echo -e "     \__ fetching remote '$$repo'"; \
+		git fetch $$repo; \
+		echo -e "     \__ pulling changes"; \
+		git subtree pull --prefix $$path --squash $${repo} $${br}; \
+	done
 endif
 
 

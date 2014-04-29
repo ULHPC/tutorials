@@ -1,0 +1,174 @@
+%=============================================================================
+% File:  _style.sty --  LaTeX style configuration for the document 
+% Author(s): Sebastien Varrette <Sebastien.Varrette@uni.lu>
+% Time-stamp: <Mar 2014-04-29 16:03 svarrette>
+%
+% Copyright (c) 2010 Sebastien Varrette <Sebastien.Varrette@uni.lu>
+%               http://varrette.gforge.uni.lu
+%=============================================================================
+
+
+\usepackage[T1]{fontenc}
+%\usepackage{mathptmx}
+%\usepackage{times}
+
+\usepackage[english]{babel}
+\usepackage{url}
+% \usepackage[T1]{fontenc}
+\usepackage{epsfig}
+\usepackage{graphicx}
+\usepackage{amsmath}
+% \usepackage{amsthm}
+\usepackage{amsfonts,amssymb}
+\usepackage{float}
+% \usepackage{floatflt}         % floating figures
+
+\usepackage{tikz}
+
+%\usepackage{type1cm}
+%\usepackage{eso-pic}
+%\usepackage{textcomp}
+\usepackage{multirow}
+\usepackage{rotating}
+%\usepackage[colorlinks=true]{hyperref}
+\usepackage{xspace}
+\usepackage{wasysym} % for smiley 
+
+%\usepackage{background}
+\usepackage[nolist]{acronym}          % for acronyms
+%\usepackage{dsfont}
+
+\usepackage[official]{eurosym} % Euro symbol
+
+\usepackage{floatflt}
+%\usepackage[usenames]{color} % see http://en.wikibooks.org/wiki/LaTeX/Colors
+\usepackage{colortbl}
+
+\definecolor{lightgray}{gray}{0.9}
+\definecolor{bcode}{rgb}{0.91,0.91,0.91}  % color for code extract
+\definecolor{lightgray}{rgb}{.9, .9, .9}
+\definecolor{lightgreen}{rgb}{.7, 1, .7}
+\definecolor{darkgray}{rgb}{.4, .4, .4}
+\definecolor{purple}{rgb}{0.65, 0.12, 0.82}
+\definecolor{beamerblue}{rgb}{0.2,0.2,0.7}
+
+% \newtheorem{definition}{Definition}
+%\usepackage{microtype}
+%\usepackage{tabulary}
+
+\graphicspath{{images/}} % Add this directory to the searched paths for graphics
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Code Listings
+% See ftp://ftp.tex.ac.uk/tex-archive/macros/latex/contrib/listings/listings.pdf
+%%%%%%%%%%%%%%
+\usepackage{listings}
+\lstset{numbers=left,numberstyle=\tiny,stepnumber=3,firstnumber=1,language=C++,basicstyle=\small,columns=flexible,backgroundcolor=\color{bcode},showstringspaces=false,emph={uint8_t,uint16_t,uint32_t,size_t,sig_atomic_t,time_t,clock_t,sigset_t,restrict},emphstyle=\bfseries,escapeinside={/*@}{@*/}}
+
+% define some basic styles for lstlisting
+\lstdefinestyle{config}{tabsize=2,numbers=none,basicstyle=\footnotesize,stringstyle=\texttt}
+\lstdefinestyle{codescriptsize}{ tabsize=2,stepnumber=5,caption=\lstname,captionpos=b,aboveskip=12pt,tabsize=2,numbers=left,numberstyle=\tiny,basicstyle=\scriptsize,stringstyle=\texttt,backgroundcolor=\color{lightgray}}
+\lstdefinestyle{codetiny}{stepnumber=5,caption=\lstname,captionpos=b,aboveskip=12pt,tabsize=2,numbers=left,numberstyle=\tiny,basicstyle=\tiny,stringstyle=\texttt,backgroundcolor=\color{lightgray}}
+\lstdefinestyle{output}{stepnumber=5,tabsize=2,numbers=none,breaklines=true,basicstyle=\scriptsize,stringstyle=\texttt}
+
+\lstdefinestyle{verif}{captionpos=b,numbers=none,backgroundcolor=\color{lightgray},columns=flexible,basicstyle=\scriptsize}
+
+\lstdefinestyle{codespdl}{stepnumber=5,caption=\lstname,captionpos=b,aboveskip=12pt,tabsize=2,numbers=left,numberstyle=\tiny,basicstyle=\scriptsize,stringstyle=\texttt,backgroundcolor=\color{lightgray},morekeywords={role,secret,compromised,secret,const,Function,inversekeys,usertype,protocol,var,Nonce,untrusted}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Algorithms
+%%%%%%%%%%%%%%
+%\usepackage[ruled,vlined]{algorithm2e}
+\usepackage{algpseudocode}
+\usepackage{algorithmicx}
+\usepackage{algorithm}
+
+\usepackage{pdfpages}
+\newcommand{\Attachment}[1]{
+  \IfFileExists {#1}{\includepdf[pages={-}]{#1}}
+}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Versionning with day and time
+%%%%%%%%%%%%%%
+% months
+\def\ftoday{\number\day\space
+ \ifcase\month\or
+ january\or february\or march\or april\or may\or june\or
+ july\or august\or september\or october\or november\or december\fi
+ \space\number\year}
+% \isodayandtime to get current date and time
+\begingroup
+\count0=\time \divide\count0by60 % Hour
+\count2=\count0 \multiply\count2by-60 \advance\count2by\time% Min
+\def\2#1{\ifnum#1<10 0\fi\the#1}
+\xdef\isodayandtime{\the\year-\2\month-\2\day\space\2{\count0}:%sec
+\2{\count2}}
+\endgroup
+
+
+% correct bad hyphenation here
+\hyphenation{op-tical net-works semi-conduc-tor}
+% \newtheorem{theorem}{Theorem}[section]
+
+% TODO
+\usepackage[colorinlistoftodos]{todonotes}
+\newcommand{\TODO}[2][]{\todo[inline,color=blue!10,size=\footnotesize,#1]{\textbf{TODO}: #2}}
+\newcommand{\todoSeb}[2][]{\todo[inline, author=Seb, color=blue!50, #1]{#2}}
+
+\newcommand{\todoPB}[2][]{\todo[inline, author=Pascal, color=yellow!50, #1]{#2}}
+\newcommand{\todoBen}[2][]{\todo[inline, author=Ben, color=yellow!50, #1]{#2}}
+\newcommand{\todoJakub}[2][]{\todo[inline, author=Jakub, color=yellow!50, #1]{#2}}
+\newcommand{\todoVal}[2][]{\todo[inline, author=Valentin, color=yellow!50, #1]{#2}}
+\newcommand{\todoMat}[2][]{\todo[inline, author=Mateusz, color=green!50, #1]{#2}}
+\newcommand{\todoAll}[1]{\todo[inline,   author=ALL]{#1}}
+
+
+\newcommand{\R}   {\mathbb{R}}
+\newcommand{\K}   {\mathbb{K}}
+
+
+\newcommand{\prettyfunction}{{\small \texttt{\_\_PRETTY\_FUNCTION\_\_}}\xspace}
+
+\newenvironment{enumerate_si}{
+\begin{enumerate}
+     \setlength{\itemsep}{1pt}
+     \setlength{\parskip}{0pt}
+     \setlength{\parsep}{0pt}}
+{\end{enumerate}
+}
+\newenvironment{itemize_si}{
+\begin{itemize}
+     \setlength{\itemsep}{1pt}
+     \setlength{\parskip}{0pt}
+     \setlength{\parsep}{0pt}}
+{\end{itemize}
+}
+
+
+\renewcommand{\epsilon}{\varepsilon}
+
+% =================== vspace tricks ====================
+\newcommand{\vsitem}{\vspace{0em}}
+\newcommand{\vsfig} {\vspace{-1em}}
+\newcommand{\vssec} {\vspace{0em}}
+
+\newcommand{\cmdlinegaia}[1]{\promptline{(gaia)}{#1}}
+\newcommand{\cmdlinechaos}[1]{\promptline{(chaos)}{#1}}
+\newcommand{\cmdlinefrontend}[1]{\promptline{(frontend)}{#1}}
+\newcommand{\cmdlinenode}[1]{\promptline{(node)}{#1}}
+\newcommand{\cmdlinecomment}[1]{\hfill{\tiny \textcolor{red}{\textit{\# #1}}}}
+\newcommand{\ULHPC}{\href{http://hpc.uni.lu}{UL HPC Platform}\xspace}
+
+
+
+
+
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+% eof
+%
+% Local Variables:
+% mode: latex
+% mode: flyspell
+% End:
