@@ -330,7 +330,7 @@ The `parLapply()` function will create a cluster of processes, which could even 
 Thus you have to load necessary packages and export necessary data and functions to the global environment of the cluster workers.
 
 
-First, load R 3.0.2 GCC version as Intel one does not work for this. Add the module loading at bash login too for enabling it on the nodes. To do so, within a shell type:
+First, load R 3.0.2 compiled with GCC as Intel one does not work for this. Add the module loading at bash login too for enabling it on the nodes. To do so, within a shell type:
 
     echo 'module load R/3.0.2-goolf-1.4.10' >> ~/.bash_login
     module unload R/3.0.2-ictce-5.3.0
@@ -363,24 +363,13 @@ First, load R 3.0.2 GCC version as Intel one does not work for this. Add the mod
 	## compute in parallel through sockets
 	as.data.frame(cbind(dest=dests, nb=parLapply(cl, dests, count_flights)))
 	stopCluster(cl)
-
-
-<!--
-Note1: You can measure the time taken by a function with `system.time()`
-
-Note2: On a single node, `parLapply()` is slightly more efficient than `mclapply()` but datasets need to be exported before (may take some time).
-
-	> microbenchmark(PARLAPPLY=parLapply(cl, dests, count_flights), times=10)
-	Unit: seconds
-	      expr      min       lq   median      uq      max neval
-	 PARLAPPLY 4.287688 4.301338 4.438636 4.59001 4.741495    10
--->
-
  
 
 #### Not Covered by the Tutorial: MPI Communications
 
-It is possible to use mpi communications instead of sockets, we will not cover this in the tutorial however here is the basic procedure.
+It is also possible to use MPI communications instead of sockets.
+We will not cover this in the tutorial because some required modules will be available in the platform in a close future, however here is the basic procedure.
+
 R will need the package `Rmpi` and same as before, we use `makeCluster` but we use `comm_type = "MPI"` instead of `PSOCK` and we call `mpi.exit()` after calling `stopCluster()`.
 Then, you need to call the R script within MPI. i.e. 
    
