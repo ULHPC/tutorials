@@ -1,7 +1,7 @@
 %=============================================================================
 % File:  _style.sty --  LaTeX style configuration for the document 
 % Author(s): Sebastien Varrette <Sebastien.Varrette@uni.lu>
-% Time-stamp: <Lun 2013-12-02 22:33 svarrette>
+% Time-stamp: <Mar 2014-04-29 16:03 svarrette>
 %
 % Copyright (c) 2010 Sebastien Varrette <Sebastien.Varrette@uni.lu>
 %               http://varrette.gforge.uni.lu
@@ -83,6 +83,11 @@
 \usepackage{algorithmicx}
 \usepackage{algorithm}
 
+\usepackage{pdfpages}
+\newcommand{\Attachment}[1]{
+  \IfFileExists {#1}{\includepdf[pages={-}]{#1}}
+}
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Versionning with day and time
@@ -149,6 +154,12 @@
 \newcommand{\vsfig} {\vspace{-1em}}
 \newcommand{\vssec} {\vspace{0em}}
 
+\newcommand{\cmdlinegaia}[1]{\promptline{(gaia)}{#1}}
+\newcommand{\cmdlinechaos}[1]{\promptline{(chaos)}{#1}}
+\newcommand{\cmdlinefrontend}[1]{\promptline{(frontend)}{#1}}
+\newcommand{\cmdlinenode}[1]{\promptline{(node)}{#1}}
+\newcommand{\cmdlinecomment}[1]{\hfill{\tiny \textcolor{red}{\textit{\# #1}}}}
+\newcommand{\ULHPC}{\href{http://hpc.uni.lu}{UL HPC Platform}\xspace}
 
 
 

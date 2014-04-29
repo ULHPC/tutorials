@@ -2,19 +2,13 @@
 % File:  __config.sty --  LaTeX style configuration for the document 
 % Author(s): Sebastien Varrette <Sebastien.Varrette@uni.lu>
 % Creation:  26 Mar 2014
-% Time-stamp: <Mar 2014-04-29 14:59 svarrette>
+% Time-stamp: <Mar 2014-04-29 16:05 svarrette>
 %
 % Copyright (c) 2014 Sebastien Varrette <Sebastien.Varrette@uni.lu>
 % .              http://varrette.gforge.uni.lu
 %=============================================================================
 
 % Macro to facilitate attachment management
-\usepackage{pdfpages}
-\newcommand{\Attachment}[1]{
-  \IfFileExists {#1}{\includepdf[pages={-}]{#1}}
-}
-
-\newcommand{\ULHPC}{\href{http://hpc.uni.lu}{UL HPC Platform}\xspace}
 
 \newcommand{\DatePublished}{2014}
 \newcommand{\EventName}{\href{https://hpc.uni.lu/hpc-school/}{UL HPC School \DatePublished}}
@@ -23,59 +17,6 @@
 \newcommand{\TPghurl}{https://github.com/ULHPC/tutorials/tree/devel/advanced/HPL}
 \newcommand{\authors}{S. Varrette}
 
-
-\newcommand{\cmdlinegaia}[1]{\promptline{(gaia)}{#1}}
-\newcommand{\cmdlinechaos}[1]{\promptline{(chaos)}{#1}}
-\newcommand{\cmdlinefrontend}[1]{\promptline{(frontend)}{#1}}
-\newcommand{\cmdlinenode}[1]{\promptline{(node)}{#1}}
-\newcommand{\cmdlinecomment}[1]{\hfill{\tiny \textcolor{red}{\textit{\# #1}}}}
-        
-
-
-% Key figures for UL HPC platform
-\usepackage{fp}
-
-\def\ulhpcDate{2014\xspace}
-\def\ulhpcClusters{4\xspace}
-\def\ulhpcDisks{444}
-\def\ulhpcCumulInvestment{5,749,432}
-\def\ulhpcCumulHWinvestment{3,487,029}
-\def\ulhpcUsers{288}
-\def\ulhpcSysAdmins{2}
-\def\ulhpcGPUNodes{18}
-
-\def\otherServers{66}
-%%% Chaos
-\def\ulhpcChaosServers{12}
-\def\ulhpcChaosNodes{81}
-\def\ulhpcChaosCores{1120}
-\def\ulhpcChaosTFlops{17.026}
-\FPeval{ulhpcChaosRawStorage}{180+180}
-%%% Gaia
-\def\ulhpcGaiaServers{22}
-\def\ulhpcGaiaNodes{151}
-\def\ulhpcGaiaCores{2000}
-\def\ulhpcGaiaTFlops{21.178}
-\FPeval{ulhpcGaiaRawStorage}{1604}
-%%% G5K
-\def\ulhpcGfiveServers{24}
-\def\ulhpcGfivekNodes{38}
-\def\ulhpcGfivekCores{368}
-\def\ulhpcGfivekTFlops{4.48}
-\def\ulhpcGfivekRawStorage{32.4}
-%%% nyx
-\def\ulhpcNyxServers{5} % 4 for viridis
-\def\ulhpcNyxNodes{98}
-\def\ulhpcNyxCores{392}
-\def\ulhpcNyxTFlops{0.52}
-\def\ulhpcNyxRawStorage{0}
-
-%%% TOTAL
-\FPeval{ulhpcServers}{clip(ulhpcChaosServers + ulhpcGaiaServers + ulhpcGfiveServers + ulhpcNyxServers + otherServers)}
-\FPeval{ulhpcNodes}{clip(ulhpcChaosNodes + ulhpcGaiaNodes + ulhpcGfivekNodes + ulhpcNyxNodes)}
-\FPeval{ulhpcCores}{clip(ulhpcChaosCores + ulhpcGaiaCores + ulhpcGfivekCores + ulhpcNyxCores)}
-\FPeval{ulhpcTFlops}{round(ulhpcChaosTFlops + ulhpcGaiaTFlops + ulhpcGfivekTFlops + ulhpcNyxTFlops, 3)}
-\FPeval{ulhpcRawStorage}{clip(ulhpcChaosRawStorage + ulhpcGaiaRawStorage + ulhpcGfivekRawStorage + ulhpcNyxRawStorage)}
 
 
 
