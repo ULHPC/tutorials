@@ -281,9 +281,16 @@ The first part of the tutorial is now over, you can connect to `gaia` cluster an
 	
     jdoe@access:~$ oarsub -I -l nodes=2,walltime=1
 
+<!-->
 When the job is running and you are connected load R module (version compiled with GCC).
 
     jdoe@access:~$ module load R/3.0.2-goolf-1.4.10
+-->
+
+When the job is running and you are connected load R module (version compiled with Intel Compiler), then run R.
+
+    jdoe@access:~$ module load R/3.0.2-ictce-5.3.0
+	jdoe@access:~$ R
 
 
 We will use a large dataset (400K+ rows) to illustrate the effect of parallelization in R.
@@ -301,7 +308,7 @@ As the dataframe is large it takes some time to compute
 	> microbenchmark(LAPPLY=lapply(dests, count_flights), times=10)
 	Unit: seconds
 	   expr      min       lq   median       uq      max neval
-	 LAPPLY 10.84337 10.97527 11.06003 11.08972 11.37946    10
+	 LAPPLY 1.607961 1.609036 1.609638 1.610269 2.023961    10
 
 ### Single Machine Parallelization
 To parallelize the lapply function we can use `mclapply()` from `multicore` package and give it the number of cores to use.
@@ -309,13 +316,13 @@ To parallelize the lapply function we can use `mclapply()` from `multicore` pack
 Using several cores makes the process shorter.
 
     > library(multicore)
-    > as.data.frame(cbind(dest=dests, nb=mclapply(dests, count_flights, mc.cores=4)))
+    > as.data.frame(cbind(dest=dests, nb=mclapply(dests, count_flights, mc.cores=12)))
 	
 	
-	> microbenchmark(MCLAPPLY=mclapply(dests, count_flights, mc.cores=4), times=10)  # or use `detectCores()` from `parallel` package instead of giving cores value. 
-	Unit: seconds
-	     expr      min       lq   median       uq      max neval
-	 MCLAPPLY 4.353838 4.373936 4.525893 4.982022 5.076462    10
+	> microbenchmark(MCLAPPLY=mclapply(dests, count_flights, mc.cores=12), times=10)  # or use `detectCores()` from `parallel` package instead of giving cores value. 
+	Unit: milliseconds
+	     expr      min       lq   median       uq     max neval
+	 MCLAPPLY 233.8035 235.1089 235.9138 236.6393 263.934    10
     
 
 ### Cluster Parallelization
@@ -323,9 +330,14 @@ The `parLapply()` function will create a cluster of processes, which could even 
 Thus you have to load necessary packages and export necessary data and functions to the global environment of the cluster workers.
 
 
-First, load R 3.0.2 module at bash login. To do so, within a shell type:
+First, load R 3.0.2 GCC version as Intel one does not work for this. Add the module loading at bash login too for enabling it on the nodes. To do so, within a shell type:
 
     echo 'module load R/3.0.2-goolf-1.4.10' >> ~/.bash_login
+    module unload R/3.0.2-ictce-5.3.0
+	module purge
+	module load R/3.0.2-goolf-1.4.10
+
+
 
 #### Socket Communications
     library(parallel)
@@ -353,6 +365,7 @@ First, load R 3.0.2 module at bash login. To do so, within a shell type:
 	stopCluster(cl)
 
 
+<!--
 Note1: You can measure the time taken by a function with `system.time()`
 
 Note2: On a single node, `parLapply()` is slightly more efficient than `mclapply()` but datasets need to be exported before (may take some time).
@@ -361,31 +374,26 @@ Note2: On a single node, `parLapply()` is slightly more efficient than `mclapply
 	Unit: seconds
 	      expr      min       lq   median      uq      max neval
 	 PARLAPPLY 4.287688 4.301338 4.438636 4.59001 4.741495    10
+-->
 
+ 
 
-#### MPI Communications
-Same as before but we use `comm_type = "MPI"` and call `mpi.exit()` after calling `stopCluster()`.
-To run MPI version you need to call the R script within MPI. i.e. 
+#### Not Covered by the Tutorial: MPI Communications
+
+It is possible to use mpi communications instead of sockets, we will not cover this in the tutorial however here is the basic procedure.
+R will need the package `Rmpi` and same as before, we use `makeCluster` but we use `comm_type = "MPI"` instead of `PSOCK` and we call `mpi.exit()` after calling `stopCluster()`.
+Then, you need to call the R script within MPI. i.e. 
    
     mpirun -n <nb_processes> R --slave -f <R_script_file.R>
 
 
-TODO:
-
-    module load OpenMPI/1.7.3-GCC-4.8.2
-    ## In R:
-	# install.packages("Rmpi")
-
-
-
-
-
 ### Usefull links
 
+* [CRAN Archive](http://cran.r-project.org/)
 
-http://cran.r-project.org/web/views/HighPerformanceComputing.html
+* [CRAN HPC Packages](http://cran.r-project.org/web/views/HighPerformanceComputing.html)
 
-
+* [ggplot2 Documentation](http://docs.ggplot2.org/current/)
 
 
 
