@@ -4,3 +4,6 @@
 [submodule ".submodules/launcher-scripts"]
 	path = .submodules/launcher-scripts
 	url = https://github.com/ULHPC/launcher-scripts.git
+[submodule ".submodules/beamerthemeFalkor"]
+	path = .submodules/beamerthemeFalkor
+	url = https://github.com/Falkor/beamerthemeFalkor.git
