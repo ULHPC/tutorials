@@ -207,6 +207,8 @@ The gateway can be any SSH server which have access to the access frontend of th
 
 # Discovering, visualizing and reserving UL HPC resources
 
+In the sequel, replace `<login>` in the proposed commands with you login on the platform (ex: `svarrette`).   
+
 ## Step 1: the working environment 
 
 * [reference documentation](http://ulhpc_www.dev/users/docs/env.html)
@@ -246,6 +248,15 @@ Each cluster offers a set of web services to monitore the platform usage:
 
 [OAR](http://oar.imag.fr/) is an open-source batch scheduler which provides simple yet flexible facilities for the exploitation of the UL HPC clusters.
 
+* it permits to schedule jobs for users on the cluster resource
+* a _OAR resource_ corresponds to a node or part of it (CPU/core)
+* a _OAR job_ is characterized by an execution time (walltime) on a set of resources. 
+  There exists two types of jobs: 
+  * _interactive_: you get a shell on the first reserve node
+  * _passive_: classical batch job where the script passed as argument to `oarsub` is executed **on the first reserved node** 
+
+We will now see the basic commands of OAR. 
+
 * Connect to one of the UL HPC  frontend. You can request resources in interactive mode:
 
 		(access)$> oarsub -I 
@@ -267,7 +278,7 @@ you can reserve and connect in 2 steps using the job id associated to your reser
 		[ADMISSION RULE] Modify resource description with type constraints
 		OAR_JOB_ID=919309
  
- You noticed that you received a job ID (in the above example: `919309`), which you can later use to connect to the reserved resource(s):
+  You noticed that you received a job ID (in the above example: `919309`), which you can later use to connect to the reserved resource(s):
  
         (access)$> oarsub -C 919309        # adapt the job ID accordingly ;)
         Connect to OAR job 919309 via the node e-cluster1-13
@@ -281,6 +292,13 @@ you can reserve and connect in 2 steps using the job id associated to your reser
 		(e-cluster1-13)$> env | grep OAR   # discover environment variables set by OAR
 		(e-cluster1-13)$> exit             # or CTRL-D
 
+**Question: At which moment the job `919309` will end?** 
+
+a. after 10 days
+b. after 2 hours
+c. never, only when I'll delete the job  
+
+
 ## Step 4: Job management
 
 Normally, the previously run job is still running.
@@ -290,7 +308,44 @@ Normally, the previously run job is still running.
 		(access)$> oarstat      # access all jobs 
 		(access)$> oarstat -u   # access all your jobs
 		
-Then 
+  Then you can delete your job by running `oardel` command:
+
+		(access)$> oardel 919309
+		
+		
+* you can see your consumption (in an historical computational measure named _CPU hour_ i.e. the work done by a CPU in one hour of wall clock time) over a given time period using `oarstat --accounting "YYYY-MM-DD, YYYY-MM-DD" -u <youlogin>`:
+
+		(access)$> oarstat --accounting "2013-01-01, 2013-12-31" -u <login>
+
+  In particular, take a look at the difference between the **asked** resources and the **used** ones
+
+In all remaining examples of reservation in this section, remember to delete the reserved jobs afterwards (using `oardel` or `CTRL-D`)
+
+You probably want to use more than one core, and you might want them for a different duration than two hours. 
+The `-l` switch allows you to pass a comma-separated list of parameters specifying the needed resources for the job.
+
+* Reserve interactively 4 cores for 6 hours (delete the job afterwards) 
+
+		(access)$> oarsub -I -l core=6,walltime=6
+
+
+* Reserve interactively 2 nodes for 3h15 (delete the job afterwards): 
+
+		(access)$> oarsub -I -l nodes=3,walltime=3:15
+
+OAR features a very powerful resource filtering/matching engine able to specify resources in a **hierarchical**  way using the `/` delimiter. 
+
+
+*  Reserve interactively 2 cores on 3 different nodes belonging to the same enclosure (**total: 6 cores**) for 3h15:
+
+		(access)$> oarsub -I -l /enclosure=1/nodes=3/core=2,walltime=3:15
+
+
+* Reserve interactively two full nodes belonging to the different  enclosure for 6 hours: 
+
+		(access)$> oarsub -I -l /enclosure=2/nodes=1,walltime=6
+
+
 
 
 
