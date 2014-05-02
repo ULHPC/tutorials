@@ -140,7 +140,8 @@ To know the class of an R object you can use the `class()` function
     > class(diamonds_fair)
       [1] "data.frame"
 
-So we have these two datasets (being of class dataframe), let's check how they are organized with the `names()` function that gives a dataset column names.
+So we have these two datasets, being of class dataframe. In R, a `data.frame` is one kind of data structure whose columns have names and that can contain several rows. Basically it looks like a matrix with columns identified by an index *and* a name, and with rows identified by an index.
+Let's check how they are organized with the `names()` function that gives a dataset column names.
 
     > names(diamonds_fair)
 	  [1] "carat" "price"
@@ -157,6 +158,13 @@ We want to add a column to datasets that will describe from which one it comes f
 
 `cbind()` function is used to add a column to a dataframe, `rbind()` to combine rows of two dataframes (c is for column, r is for row).
 Now we have all data merged in a dataframe and a column that describes the origin of data (the column `cut_class`), let's plot data.
+
+Note: To visualize an extract of your data you can do:
+
+    > diamonds_merge[1:10,]  # returns rows 1 to 10
+	> diamonds_merge[,3]     # return column no.3
+
+Then we construct and save the graph.
 
     graph = ggplot(data=diamonds_merge) + geom_point(aes(x=carat, y=price, colour=cut_class))
 	ggsave(graph, file="diamonds_plot.pdf", width=8, height=4)
@@ -201,7 +209,7 @@ Note: `ddply()` from the `plyr` package is similar to `aggregate()` from base pa
 
 
 ### Perfomance Considerations
-In the previous section for the aggregation, instead of using `ddply`, we could also have used `lapply` (but I recognize in a slightlier more complicated way):
+In the previous section for the aggregation, instead of using `ddply`, we could also have used `lapply` (but in a slightlier more complicated way):
 
     > as.data.frame(cbind(cut=as.character(unique(diamonds$cut)), avg_price=lapply(unique(diamonds$cut), function(x) mean(diamonds$price[which(diamonds$cut == x)]))))
 
@@ -237,7 +245,7 @@ We can convert easily a `data.frame` to a `data.table`.
 
 	> MOVIES = data.table(movies)
 
-Because `data.table` uses binary search, we have to define manually the keys that will be used for this search.
+As `data.table` uses binary search, we have to define manually the keys that will be used for this search, this is done with `setkey()` function.
 
 Let's now create a new `data.frame`. We will make it large enough to demonstrate the difference between a vector scan and a binary search.
 
@@ -250,7 +258,8 @@ Let's now create a new `data.frame`. We will make it large enough to demonstrate
 	)	
 
 
-Vector Scan is long compared to binary search
+
+To illustrate the difference, we take as example the selection in this large dataset of rows where x=="R" and y=="h".
 
 	> system.time(ans1 <- DF[DF$x=="R" & DF$y=="h",]) # vector scan
 	
@@ -258,19 +267,23 @@ Vector Scan is long compared to binary search
 	> setkey(DT,x,y)
 	> system.time(ans2 <- DT[J("R","h")]) # binary search	
 
-In this case, we are joining DT to the 1 row, 2 column table returned by data.table("R","h"). We use the alias for joining data.tables called J(), short for join.
-
+In the first case, we scan the full table twice (once for selecting x's that are equal to "R", then y's that are equal to "h"), then do the selection.
+In the second case, we are joining DT to the 1 row, 2 column table returned by data.table("R","h"). We use the alias for joining data.tables called J(), short for join. As we defined x and y as keys, this works like a database join.
+You can see that vector scan is very long compared to binary search.
 
 #### Grouping
+`data.table` also provides faster operations for reading files and grouping data.
 
-DataFrame style:
+Now you can compare the same aggregation operation with `data.frame` and `data.table`. In both examples we aggregate on x and apply the function `sum()` to corresponding v.
+
+
+`data.frame` style:
 
 	system.time(tapply(DT$v,DT$x,sum))
 
 `data.table` style, using `by`:
 
 	system.time(DT[,sum(v),by=x])
-
 
 
 
@@ -281,7 +294,7 @@ The first part of the tutorial is now over, you can connect to `gaia` cluster an
 	
     jdoe@access:~$ oarsub -I -l nodes=2,walltime=1
 
-<!-->
+<!--
 When the job is running and you are connected load R module (version compiled with GCC).
 
     jdoe@access:~$ module load R/3.0.2-goolf-1.4.10
@@ -365,10 +378,10 @@ First, load R 3.0.2 compiled with GCC as Intel one does not work for this. Add t
 	stopCluster(cl)
  
 
-#### Not Covered by the Tutorial: MPI Communications
+#### Not (yet) Covered by this Tutorial: MPI Communications
 
 It is also possible to use MPI communications instead of sockets.
-We will not cover this in the tutorial because some required modules will be available in the platform in a close future, however here is the basic procedure.
+We will not see this in the tutorial because some required modules will be available in the platform in a close future, however here is the basic procedure.
 
 R will need the package `Rmpi` and same as before, we use `makeCluster` but we use `comm_type = "MPI"` instead of `PSOCK` and we call `mpi.exit()` after calling `stopCluster()`.
 Then, you need to call the R script within MPI. i.e. 

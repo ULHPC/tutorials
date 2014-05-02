@@ -67,7 +67,7 @@
           \myurl{https://github.com/ULHPC/tutorials}
         \item[UL HPC School:] \hfill
           \myurl{http://hpc.uni.lu/hpc-school/}
-        \item[\TPindex tutorial sources:] \hfill
+        \item[\TPindex  tutorial sources:] \hfill
           \myurl{\TPghurl}
       \end{description}
   \end{center}
@@ -84,176 +84,81 @@
 % ===============================================
 \section{Pre-requisites}
 
-% Example of prompt usage
 % .......
 \begin{frame}[fragile]
-    \frametitle{MPI tasks: 3 Suites via \texttt{module}}
+    \frametitle{Install and Run R}
     \begin{enumerate}
-      \item OpenMPI\hfill\myurl{http://www.open-mpi.org/}\\
+      \item On your local machine:
+		\begin{itemize}
+			\item Find a release that fits your distribution\\ at CRAN Archive\hfill\myurl{http://cran.r-project.org/}
+			\item Install and launch R-Studio\hfill\myurl{https://www.rstudio.com/}
+		\end{itemize}
+      \item On the cluster\\
+       First connect to the cluster, then submit a job to run R.
         \begin{cmdline}
-            \cmdlinenode{module load OpenMPI}\\
-            \cmdlinenode{make}\\
-            \cmdlinenode{mpirun -machinefile \$OAR\_NODEFILE /path/to/mpi\_prog}
-
+            \cmdlinelocal{ssh chaos-cluster}\\
+            \cmdlinefrontend{oarsub -I -l core=1,walltime="00:30:00"}\\
+            \cmdlinenode{module load R/3.0.2-ictce-5.3.0}\\
+            \cmdlinenode{R}
         \end{cmdline}
-
-      \item MVAPICH2\hfill\myurl{http://mvapich.cse.ohio-state.edu/overview/mvapich2}\\
-        \begin{cmdline}
-            \cmdlinenode{module purge}\\
-            \cmdlinenode{module load MVAPICH2}\\
-            \cmdlinenode{make clean \&\& make}\\
-            \cmdlinenode{mpirun -machinefile \$OAR\_NODEFILE /path/to/mpi\_prog}
-
-        \end{cmdline}
-
-      \item  Intel Cluster Toolkit Compiler Edition (\texttt{ictce} for short):
-        \begin{cmdline}
-            \cmdlinenode{module purge}\\
-            \cmdlinenode{module load ictce}\\
-            \cmdlinenode{make clean \&\& make}\\
-            \cmdlinenode{mpirun -machinefile \$OAR\_NODEFILE /path/to/mpi\_prog}
-
-        \end{cmdline}
+        \item Install and Load a Package
+            \begin{cmdline}
+              \cmdlineR{install.packages("ggplot2")}\\
+              \cmdlineR{library(ggplot2)}\\
+            \end{cmdline}
     \end{enumerate}
 \end{frame}
 
-
-% .......
-\frame{
-  \frametitle{Full sample example \hfill{\tiny (\textit{i.e.} these slides)}}
-
-  \begin{block}{}
-      \begin{itemize}
-        \item To copy a full working example
-          \begin{cmdline}
-              \cmdlineentry{cd /path/to/cloning/dir}\\
-              \cmdlineentry{git clone https://github.com/Falkor/beamerthemeFalkor.git}\\
-              \cmdlineentry{cd /path/to/working/dir}\\
-              \cmdlineentry{rsync -avzu -L --exclude "*.git" $\backslash$\\~~~~~~~/path/to/cloning/dir/beamerthemeFalkor/ .}\\
-              \cmdlineentry{make}
-          \end{cmdline}
-      \end{itemize}
-  \end{block}
-  \begin{itemize}
-    \item This will generate the file \texttt{sample\_slides.pdf}.
-      \begin{itemize}
-          \itemhook adapt accordingly...
-      \end{itemize}
-  \end{itemize}
-
-}
-
-
 % ===============================================
-\section{Some example slides for the TP}
+\section{Objectives}
 
 % ............
 \frame{
 
-  \frametitle{Objectives of the TP}
+  \frametitle{Objectives of this Practical Session}
 
   \begin{itemize}
-    \item Better understand the usage of XXX on the \ULHPC
-  \end{itemize}
-  \vfill Add logo of the soft
-  \begin{alertblock}{}
-      \begin{itemize}
-        \item Key objective 1
-          \begin{itemize}
-              \itemhook at the heart of ...
-          \end{itemize}
-        \item Key objective 2
-          \begin{itemize}
-              \itemhook select benchmarking tools to reflect an HPC usage
-          \end{itemize}
-      \end{itemize}
-  \end{alertblock}
+    \item Being able to plot data
+     \begin{itemize}
+      \item histogram for data distribution
+      \item plot in different colors from different data sources
+     \end{itemize}
+    \item Know some tips to organize your data
+     \begin{itemize}
+      \item aggregate a dataset by column and apply an aggregation function
+      \item data.table package for binary search in datasets
+      \item performance in R operations
+     \end{itemize}     
+    \item R in parallel
+     \begin{itemize}
+      \item on one machine
+      \item on a cluster with socket communications
+     \end{itemize}
+     
+\end{itemize}      
 
 
-  ~\vfill
-  {\tiny
-    \mycite{SBAC-PAD13} S. Varrette,  M. Guzek, V. Plugaru, J. E. Sanchez, and P. Bouvry.
-    "\textit{HPC Performance and Energy-Efficiency of Xen, KVM and VMware Hypervisors}". In Proc. of the 25th IEEE Symposium on Computer Architecture and High Performance (SBAC-PAD'13), Oct 2013.
-    % Do not forget the below space
 
-  }
 
 }
 
-\frame[containsverbatim]{
-  \frametitle{A slide with listings}%\frametitle{Problem}
-  \begin{block}{A JavaScript program}
-      \begin{lstlisting}[basicstyle=\tiny,numbers=none]
-          function fibo(n)
-          {
-            if( n <= 1 )
-            {
-              return n;
-            }
-            var res = fibo(n-1) + fibo(n-2);
-            return res;
-          }
-          n = parseFloat(arguments[1])
-          nn = fibo(n)
-          print(nn)
-      \end{lstlisting}
 
-  \end{block}
-
-}
-
-\section{Example 1}
+\section{Practical Session}
 
 % .......
 \frame{
-  \frametitle{Example 1}
-  \vfill
-  {\tiny  \href{https://github.com/ULHPC/tutorials/tree/devel/advanced/HPL\#runs-on-a-single-node}{[Online]}}
-  % \begin{exampleblock}{Title}
-  %     \begin{itemize}
-  %       \item recall description of the task (following github link)
-  %     \end{itemize}
-  % \end{exampleblock}
-  % \pause
-  % Eventually give some hint on the solution
-}
-
-\section{Example 2}
-
-% .......
-\frame{
-  \frametitle{Example 2}
-
-  \begin{exampleblock}{Title}
-      \begin{itemize}
-        \item recall description of the task
-      \end{itemize}
-  \end{exampleblock}
-  \pause
-  Eventually give some hint on the solutioon
-}
-
-
-\section{Conclusion: Final plot}
-
-% ............
-\begin{frame}
-    \frametitle{Conclusion}
-
+  \frametitle{Exercises}
     \begin{itemize}
-      \item Summary point 1
-      \item Summary point 2
+      \item Read and understand the tutorial \myurl{\TPghurl}
+      \item Plot a speedup graph
+      \begin{itemize}
+       \item with different number of cores and/or machines
+       \item needs: ggplot, parallel R
+      \end{itemize}
     \end{itemize}
 
-    \begin{block}{Perspectives}
-        \begin{itemize}
-          \item Improve point 1
-          \item Improve point 2
-        \end{itemize}
-    \end{block}
+}
 
-
-\end{frame}
 
 \section*{Thank you for your attention...}
 \frame{
@@ -274,26 +179,14 @@
 % \appendix
 
 \frame{
-  \frametitle{Appendix}
+  \frametitle{Usefull links}
 
-  \begin{acronym}\setlength\itemsep{-0.3em}
-      \acro{DFT}{Discrete Fourier Transform}
-      \acro{EA}{Evolutionary Algorithm}
-      \acro{PRNG}{[Pseudo]-Random Number Generator}
-      \acro{UL}{University of Luxembourg}
-  \end{acronym}
-
-  \textit{*Note: notice the slide number below...}
+    \begin{itemize}
+      \item CRAN Archive \hfill\myurl{http://cran.r-project.org/}
+      \item ggplot2 Documentation \hfill\myurl{http://docs.ggplot2.org/current/}
+      \item CRAN HPC\\ Packages \hfill\myurl{http://cran.r-project.org/web/views/HighPerformanceComputing.html}
+    \end{itemize}
 }
-
-% .......
-\frame{
-  \frametitle{Another appendix slide}
-
-  \textit{Note again the slide number below...}
-
-}
-
 
 \setcounter{framenumber}{\value{finalframe}}
 
