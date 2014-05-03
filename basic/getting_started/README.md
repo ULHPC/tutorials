@@ -333,7 +333,11 @@ The `-l` switch allows you to pass a comma-separated list of parameters specifyi
 
 		(access)$> oarsub -I -l nodes=3,walltime=3:15
 
-OAR features a very powerful resource filtering/matching engine able to specify resources in a **hierarchical**  way using the `/` delimiter. 
+### Hierarchical filtering of resources
+
+OAR features a very powerful resource filtering/matching engine able to specify resources in a **hierarchical**  way using the `/` delimiter. The resource property hierarchy is as follows: 
+
+		enclosure -> nodes -> cpu -> core 
 
 
 *  Reserve interactively 2 cores on 3 different nodes belonging to the same enclosure (**total: 6 cores**) for 3h15:
@@ -341,29 +345,114 @@ OAR features a very powerful resource filtering/matching engine able to specify 
 		(access)$> oarsub -I -l /enclosure=1/nodes=3/core=2,walltime=3:15
 
 
-* Reserve interactively two full nodes belonging to the different  enclosure for 6 hours: 
+* Reserve interactively two full nodes belonging to the different enclosure for 6 hours: 
 
 		(access)$> oarsub -I -l /enclosure=2/nodes=1,walltime=6
 
+**Question: reserve interactively 2 cpus on 2 nodes belonging to the same enclosure for 4 hours**  
+
+**Question: in the following statements, explain the advantage and drawback (in terms of latency/bandwidth etc.) of each of the proposed approaches**
+
+a. `oarsub -I -l /nodes=2/cpu=1` vs `oarsub -I -l cpu=2` vs `oarsub -I -l /nodes=1/cpu=2`
+b. `oarsub -I -l /enclosure=1/nodes=2` vs `oarsub -I -l nodes=2` vs `oarsub -I -l /enclosure=2/nodes=1`
+
+### Using OAR properties
+
+You might have notice on [Monika](https://hpc.uni.lu/status/monika.html) for each site a list of properties assigned to each resources. 
+
+The `-p` switch allows you to specialize (as an SQL syntax) the property you wish to use when selecting the resources. The syntax is as follows: `oarsub -p "< property >='< value >'"`
+
+You can find the available OAR properties on the [UL HPC documentation](https://hpc.uni.lu/users/docs/oar.html#select-nodes-precisely-with-properties). The main ones are described below
+
+|Property        | Description                            | Example                                         |
+|----------------|----------------------------------------|-------------------------------------------------|
+|host            | Full hostname of the resource          | -p "host='h-cluster1-14.chaos-cluster.uni.lux'" |
+|network_address | Short hostname of the resource         | -p "network_address='h-cluster1-14'"            |
+|gpu             | GPU availability (gaia only)           | -p "gpu='YES'"                                  |
+|nodeclass       | Node class (chaos only) 'h','d','e','s'| -p "nodeclass='h'"                              |
+
+* reserve interactively 4 cores on a GPU node for 8 hours (_this holds only on the `gaia` cluster_) (**total: 4 cores**)
+
+		(access-gaia)$> oarsub -I -l nodes=1/core=4,walltime=8 -p "gpu=’YES’"
+
+* reserve interactively 4 cores on the GPU node `gaia-65` for 8 hours (_this holds only on the `gaia` cluster_) (**total: 4 cores**)
+
+		(access-gaia)$> oarsub -I -l nodes=1/core=4,walltime=8 -p "gpu='yes'" -p "network_address='gaia-65'"
 
 
+**Question: reserve interactively 2 nodes among the `h-cluster1-*` nodes (_this holds only on the `chaos` cluster_) using the `nodeclass` property**  
+
+You can combine filters using the `+` sign.
+
+* reserve interactively 4 cores, each on 2 GPU nodes and 20 cores on any other nodes (**total: 28 cores**)
+
+		(access-gaia)$> oarsub -I -l "{gpu='YES'}/nodes=2/core=4+{gpu='NO'}/core=20"
+		[ADMISSION RULE] Set default walltime to 7200.
+		[ADMISSION RULE] Modify resource description with type and ibpool constraints
+		OAR_JOB_ID=2828104
+		Interactive mode : waiting...
+		Starting...
+
+		Connect to OAR job 2828104 via the node gaia-11
+		[OAR] OAR_JOB_ID=2828104
+		[OAR] Your nodes are:
+            gaia-11*12
+            gaia-12*4
+            gaia-59*4
+            gaia-63*4
+            gaia-65*4
+
+### Reserving specific resources `bigsmp`and `bigmem`
+
+Some nodes are very specific (for instance the nodes with 1TB of memory or the BCS subsystem of Gaia composed of 4 motherboards of 4 processors with a total of 160 cores aggregated in a ccNUMA architecture). 
+**Due to this specificity, they are NOT scheduled by default**  and can only be reserved with an explicit oarsub parameter: `-t bigmem` for `-t bigsmp`
+
+* reserve interactively 2 cpu on the bigsmp node belonging to the same board for 3 hours: (**total: 32 cores**)
+
+		(access-gaia)$> oarsub -t bigsmp -I -l /board=1/cpu=2,walltime=3
 
 
+**Question: why are these resources not scheduled by default?**  
 
 
+### OAR Containers
 
+With OAR, it is possible to execute jobs within another one. This functionality is called [container jobs](https://hpc.uni.lu/users/docs/oar.html#container) and is invoked using the `-t container` switch.
 
+* create a container job of 2 nodes for 4h30: 
 
+		(access)$> oarsub -t container -l nodes=2,walltime=4:30:00 "sleep 1d" 
+		[ADMISSION RULE] Modify resource description with type and ibpool constraints
+		OAR_JOB_ID=2828112
+		(access)$> oarstat -u
 
+This creates a kind of "tunnel" inside witch you can push subjobs using the `-t inner=<container_job_id>`.
 
+* reserve 3 sleep jobs (of different delay) over 10 cores within the previously created container job
 
+		(access)$> oarsub -t inner=2828112 -l core=10 "sleep 3m"   # Job 1 
+		(access)$> oarsub -t inner=2828112 -l core=10 "sleep 2m"   # Job 2
+		(access)$> oarsub -t inner=2828112 -l core=10 "sleep 1m"   # Job 3
 
+These jobs will be scheduled as follows
 
+              ^ 
+              |                        
+              +======================== ... ========================+
+              |                      ^       Container Job (4h30)   |
+           ^  |  +--------+----+     |                              |
+        20c|  |  |    J2  | J3 |     |24c                           | 
+           |  |  +--------+----+     |                              |
+           v  |  |      J1     |     v                              | 
+              +==+=============+========= ... ======================+
+              |   <------><--->
+              |     2min    1min
+              +--------------------------------------------------------------> time 
+        
+**Question: Check the way your jobs have been scheduled**
 
-
-
-
-
+a. using `oarstat -u -f -j <subjob_id>` (take a look at the `assigned_resources`)
+b. using the [OAR drawgantt](https://hpc.uni.lu/status/drawgantt.html) interface  
 
 
 
