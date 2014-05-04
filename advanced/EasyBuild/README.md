@@ -7,35 +7,40 @@ Copyright (c) 2014 Xavier Besseron <xavier.besseron@uni.lu>
 
 # UL HPC Tutorial: Build software with EasyBuild on UL HPC platform
 
-The objective of this tutorial is to TODO  
-on UL HPC platform.
+The objective of this tutorial is to show how EasyBuild can be used to ease, automate and script the build of software on the UL HPC platforms. 
 
-Ensure you are able to [connect to the chaos and gaia cluster](https://hpc.uni.lu/users/docs/access.html). 
+Two use-cases are considered. First, we are going to build software that are supported by EasyBuild. In a second time, we will see through a simple example how to add support for a new software in EasyBuild.
 
-	/!\ FOR ALL YOUR COMPILATION WITH EASYBUILD, ENSURE YOU WORK ON A COMPUTING NODE
+The benefit of using EasyBuild for your builds is that it allows automated and reproducable build of software. Once a build has been made, the build script (via the *EasyConfig file*) or the installed software (via the *module file*) can be shared with other users.
+
+Before starting this tutorial, ensure you are able to [connect to the chaos and gaia cluster](https://hpc.uni.lu/users/docs/access.html). 
+**For all your compilation with Easybuild, you must work on a computing node:**
 	
 	(access)$> 	oarsub -I -l nodes=1,walltime=4
+
 
 The latest version of this tutorial is available on
 [Github](https://github.com/ULHPC/tutorials/tree/devel/advanced/EasyBuild)
 
-## Introduction to EasyBuild
+## Short introduction to EasyBuild
 
+EasyBuild is a tool that allows to perform automated and reproducible compilation and installation of software. A large number of scientific software are supported (>XXXX TODO).
+
+All builds and installations are performed at user level, so you don't need the admin rights. 
+The software are installed in your home directory (by default in ...) and a module file is generated (by default in) to use the software.
+
+EasyBuild relies on two main concepts: *Toolchains* and *EasyConfig file*.
+
+A **toolchain** corresponds to a compiler and a set of libraries which are commonly used to build a software. The two main toolchains frequently used on the UL HPC platform are the GOOLF and the ICTCE toolchains. GOOLF is based on the GCC compiler and on open-source libraries (OpenMPI, OpenBLAS, etc.). ICTCE is based on the Intel compiler and on Intel libraries (Intel MPI, Intel Math Kernel Library, etc.). 
+
+An **EasyConfig file** is a simple text file that describes the build process of a software. For most software that uses standard procedure (like `configure`, `make` and `make install`), this file is very simple. Many EasyConfig files are already provided with EasyBuild.
+
+
+EasyConfig files and generatd modules are named using the following convention:
+`<Software-Name>-<Software-Version>-<Toolchain-Name>-<Toolchain-Version>` 
+
+Additional details are available on EasyBuild website:
 TODO
-use cases:
-* build supported software (>XXXX)
-* 
-
-build and install at user level (ie in your home directory), don't need the admin
-
-
-### EasyBuild concepts
-
-
-**Toolchains** and **EasyConfig files** 
-
-
-
 
 
 ## EasyBuild on UL HPC platform
@@ -58,6 +63,11 @@ The EasyBuild command is `eb`. Check the version you have loaded:
     This is EasyBuild 1.10.0 (framework: 1.10.0, easyblocks: 1.10.0) on host gaia-59.
     
 
+Get help on the EasyBuild option flags:
+
+    $> eb -h
+    $> eb -H
+    
 
 
 
@@ -181,7 +191,7 @@ Check which HPL modules are available now:
     $> module avail HPL
     
     -------------- /home/users/xbesseron/.local/easybuild/modules/all --------------
-    HPL/2.0-goolf-1.4.10        HPL/2.0-ictce-6.1.5
+    HPL/2.0-goolf-1.4.10 HPL/2.0-ictce-6.1.5
 
     ----------------------- /opt/apps/HPCBIOS/modules/tools ------------------------
     HPL/2.0-cgmpolf-1.1.6       HPL/2.0-goolf-1.4.10
@@ -197,10 +207,143 @@ The two newly-built versions of HPL are now available for your user. You can use
 
 ## Amending an existing EasyConfig file
 
+It is possible to amend existing EasyConfig file to build software with slightly different parameters. 
+
+For example, we can build the lastest version of HPL (2.1) with ICTCE toolchain. We use the `--try-software-version` option flag to overide the HPL version.
+
+    $> time eb HPL-2.0-ictce-6.1.5.eb --try-software-version=2.1
+    
+    == temporary log file in case of crash /tmp/easybuild-182xZg/easybuild-5dnc25.log
+    == resolving dependencies ...
+    == processing EasyBuild easyconfig /tmp/easybuild-182xZg/HPL-2.1-ictce-6.1.5.eb
+    == building and installing HPL/2.1-ictce-6.1.5...
+    == fetching files...
+    == creating build dir, resetting environment...
+    == unpacking...
+    == patching...
+    == preparing...
+    == configuring...
+    == building...
+    == testing...
+    == installing...
+    == taking care of extensions...
+    == packaging...
+    == postprocessing...
+    == sanity checking...
+    == cleaning up...
+    == creating module...
+    == COMPLETED: Installation ended successfully
+    == Results of the build can be found in the log file /home/users/xbesseron/.local/easybuild/   software/HPL/2.1-ictce-6.1.5/easybuild/easybuild-HPL-2.1-20140430.151656.log
+    == Build succeeded for 1 out of 1
+    == temporary log file /tmp/easybuild-182xZg/easybuild-5dnc25.log has been removed.
+    == temporary directory /tmp/easybuild-182xZg has been removed.
+
+    real    0m59.229s
+    user    0m12.305s
+    sys     0m5.824s
+
+    $> module avail HPL
+    
+    -------------- /home/users/xbesseron/.local/easybuild/modules/all --------------
+    HPL/2.0-goolf-1.4.10 HPL/2.0-ictce-6.1.5
+    HPL/2.1-ictce-6.1.5
+    
+    ----------------------- /opt/apps/HPCBIOS/modules/tools ------------------------
+    HPL/2.0-cgmpolf-1.1.6       HPL/2.0-goolf-1.4.10
+    HPL/2.0-cgmvolf-1.2.7       HPL/2.0-ictce-4.0.6
+    HPL/2.0-cgoolf-1.1.7        HPL/2.0-ictce-5.3.0
+    HPL/2.0-goalf-1.1.0-no-OFED
+
+
+We obtained HPL 2.1 without writing any EasyConfig file.
+
+There are multiple ways to amend a EasyConfig file. Check the `--try-*` option flags for all the possibilities.
 
 
 ## Build a software using your own EasyConfig file
 
 
+As an example, we create an EasyConfig file to build GZip 1.4 with the GOOLF toolchain.
+Open your favorite editor and create a file `gzip-1.4-goolf-1.4.10.eb` with the following content:
+
+    name = 'gzip'
+    version = '1.4'
+    
+    homepage = 'http://www.gnu.org/software/gzip/'
+    description = "gzip (GNU zip) is a popular data compression program as a replacement for compress"
+    
+    # use the GOOLF toolchain
+    toolchain = {'name': 'goolf', 'version': '1.4.10'}
+    
+    # specify that GCC compiler should be used to build gzip
+    preconfigopts = "CC='gcc'"
+    
+    # source tarball filename
+    sources = ['%s-%s.tar.gz'%(name,version)]
+    
+    # download location for source files
+    source_urls = ['http://ftpmirror.gnu.org/gzip']
+    
+    # make sure the gzip and gunzip binaries are available after installation
+    sanity_check_paths = {
+                          'files': ["bin/gunzip", "bin/gzip"],
+                          'dirs': []
+                         }
+    
+    # run 'gzip -h' and 'gzip --version' after installation
+    sanity_check_commands = [True, ('gzip', '--version')]
+
+
+This is a simple EasyConfig. Most of the fields are self-descriptive. No build method is explicitely defined, so it uses by default the standard *configure-make* approach.
+ 
+
+Let's build GZip with this EasyConfig file:
+
+    $> time eb gzip-1.4-goolf-1.4.10.eb
+
+    == temporary log file in case of crash /tmp/easybuild-XYUFBw/easybuild-QXd_vb.log
+    == resolving dependencies ...
+    == processing EasyBuild easyconfig /mnt/nfs/users/homedirs/xbesseron/gzip-1.4-goolf-1.4.10.eb
+    == building and installing gzip/1.4-goolf-1.4.10...
+    == fetching files...
+    == creating build dir, resetting environment...
+    == unpacking...
+    == patching...
+    == preparing...
+    == configuring...
+    == building...
+    == testing...
+    == installing...
+    == taking care of extensions...
+    == packaging...
+    == postprocessing...
+    == sanity checking...
+    == cleaning up...
+    == creating module...
+    == COMPLETED: Installation ended successfully
+    == Results of the build can be found in the log file /home/users/xbesseron/.local/easybuild/software/gzip/1.4-goolf-1.4.10/easybuild/easybuild-gzip-1.4-20140430.151818.log
+    == Build succeeded for 1 out of 1
+    == temporary log file /tmp/easybuild-XYUFBw/easybuild-QXd_vb.log has been removed.
+    == temporary directory /tmp/easybuild-XYUFBw has been removed.
+    
+    real    1m20.706s
+    user    0m12.293s
+    sys     0m5.912s
+
+
+
+We can now check that our version of GZip is available via the modules:
+
+    $> module avail gzip
+
+    -------------- /home/users/xbesseron/.local/easybuild/modules/all --------------
+    gzip/1.4-goolf-1.4.10
+
+    ----------------------- /opt/apps/HPCBIOS/modules/tools ------------------------
+    gzip/1.5-cgoolf-1.1.7 gzip/1.5-ictce-5.3.0  gzip/1.6-ictce-5.3.0
+
+
+
 ## To go further
 
+TODO
