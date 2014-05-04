@@ -7,7 +7,7 @@ Make sure you have followed the tutorial "Getting started".
 
 # Intro
 
-For many users, the typical usage of the HPC facilities is to execute 1 program with many parameter.
+For many users, the typical usage of the HPC facilities is to execute 1 program with many parameters.
 On your local machine, you can just start your program 100 times sequentially.
 However, you will obtain better results if you are parallelize the executions on a HPC Cluster.
 
