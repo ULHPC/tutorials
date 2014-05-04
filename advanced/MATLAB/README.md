@@ -7,9 +7,17 @@ Copyright (c) 2014 Valentin Plugaru <Valentin.Plugaru@gmail.com>
 
 # UL HPC Tutorial: MATLAB execution on the UL HPC platform
 
-The objective of this tutorial is to show the execution of [Matlab](http://www.matlab.com) - 
+The objective of this tutorial is to exemplify the execution of [MATLAB](http://www.matlab.com) - 
 a high-level language and interactive environment for numerical computation, 
 visualization and programming, on top of the [UL HPC](http://hpc.uni.lu) platform.
+
+The tutorial will show you:
+
+1. how to run MATLAB in interactive mode, with either the full graphical interface or the text-mode interface
+2. how to run MATLAB in passive (batch) mode, enabling unattended execution on the clusters
+3. how to use MATLAB script (.m) files
+4. how to plot data, saving the plots to file
+5. how to take advantage of some of the paralelization capabilities of MATLAB to speed up your tasks
 
 ## Prerequisites
 
@@ -22,6 +30,11 @@ along with their dependencies, before following the instructions in the next sec
         (gaia-frontend)$> wget https://raw.github.com/ULHPC/tutorials/devel/advanced/MATLAB/example2.m
         (gaia-frontend)$> wget https://raw.github.com/ULHPC/tutorials/devel/advanced/MATLAB/yahoo_finance_data.m
 
+Or simply clone the full tutorials repository and make a link to the MATLAB tutorial:
+
+        (gaia-frontend)$> git clone https://github.com/ULHPC/tutorials.git
+        (gaia-frontend)$> ln -s tutorials/advanced/MATLAB/ ~/matlab-tutorial
+
 ## Matlab execution in interactive mode
 
 ### Launching the full graphical environment
@@ -30,7 +43,11 @@ Running the full MATLAB environment (e.g. on the Gaia cluster) requires an [inte
 need to enable X11 forwarding in order for the graphical environment to be shown on your 
 local machine:
 
-- on Linux and OS X simply follow the commands below
+- on Linux simply follow the commands below
+
+- on OS X (depending on version) you may not have the X Window System installed, 
+  and thus will need to install [XQuartz](http://xquartz.macosforge.org/landing/) if
+  the first command below returns an 'X11 forwarding request failed on channel 0' error
 
 - on Windows you will need to run [XMing](http://sourceforge.net/projects/xming/) first
   then to configure Putty (Connection -> SSH -> X11 -> Enable X11 forwarding) before

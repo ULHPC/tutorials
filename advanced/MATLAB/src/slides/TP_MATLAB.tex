@@ -84,121 +84,82 @@
 % ===============================================
 \section{Pre-requisites}
 
-% Example of prompt usage
 % .......
 \begin{frame}[fragile]
-    \frametitle{MPI tasks: 3 Suites via \texttt{module}}
-    \begin{enumerate}
-      \item OpenMPI\hfill\myurl{http://www.open-mpi.org/}\\
-        \begin{cmdline}
-            \cmdlinenode{module load OpenMPI}\\
-            \cmdlinenode{make}\\
-            \cmdlinenode{mpirun -machinefile \$OAR\_NODEFILE /path/to/mpi\_prog}
+\frametitle{Tutorial files}
+  Sample MATLAB scripts used in the tutorial\\
+  \begin{itemize}
+   \item download only the scripts: \\
+  \begin{cmdline}
+    \cmdlinefrontend{mkdir \$HOME/matlab-tutorial} \\
+    \cmdlinefrontend{cd \$HOME/matlab-tutorial} \\
+    \cmdlinefrontend{wget \myurl{https://raw.github.com/ULHPC/tutorials/devel/advanced/MATLAB/example1.m}} \\
+    \cmdlinefrontend{wget \myurl{https://raw.github.com/ULHPC/tutorials/devel/advanced/MATLAB/example2.m}} \\
+    \cmdlinefrontend{wget \myurl{https://raw.github.com/ULHPC/tutorials/devel/advanced/MATLAB/yahoo\_finance\_data.m}} \\
+  \end{cmdline}
+  \item \textit{or} download the full repository and link to the MATLAB tutorial: \\
+  \begin{cmdline}
+    \cmdlinefrontend{git clone \myurl{https://github.com/ULHPC/tutorials.git}} \\
+    \cmdlinefrontend{ln -s tutorials/advanced/MATLAB/ \$HOME/matlab-tutorial} \\
+  \end{cmdline}  
+  \end{itemize}
 
-        \end{cmdline}
+\end{frame}
 
-      \item MVAPICH2\hfill\myurl{http://mvapich.cse.ohio-state.edu/overview/mvapich2}\\
-        \begin{cmdline}
-            \cmdlinenode{module purge}\\
-            \cmdlinenode{module load MVAPICH2}\\
-            \cmdlinenode{make clean \&\& make}\\
-            \cmdlinenode{mpirun -machinefile \$OAR\_NODEFILE /path/to/mpi\_prog}
-
-        \end{cmdline}
-
-      \item  Intel Cluster Toolkit Compiler Edition (\texttt{ictce} for short):
-        \begin{cmdline}
-            \cmdlinenode{module purge}\\
-            \cmdlinenode{module load ictce}\\
-            \cmdlinenode{make clean \&\& make}\\
-            \cmdlinenode{mpirun -machinefile \$OAR\_NODEFILE /path/to/mpi\_prog}
-
-        \end{cmdline}
-    \end{enumerate}
+\begin{frame}[fragile]
+\frametitle{X Window System}
+  In order to see locally the MATLAB graphical interface, \\
+  a package providing the X Window System is required:
+  \begin{itemize}
+    \item on OS X: \textbf{XQuartz} \hfill\myurl{http://xquartz.macosforge.org/landing/}
+    \item on Windows: \textbf{XMing} \hfill\myurl{http://sourceforge.net/projects/xming/}
+  \end{itemize}
+  \hfill \\ \hfill \\ %\hfill \\
+  
+  Now you will be able to connect with X11 forwarding enabled:
+  \begin{itemize}
+    \item on Linux \& OS X: \\
+    \begin{cmdline}
+       \cmdlineentry{ssh access-gaia.uni.lu} \textbf{-X}
+    \end{cmdline}
+    \item on Windows, with Putty \\
+     Connection $\rightarrow$ SSH $\rightarrow$ X11 $\rightarrow$ \textbf{Enable X11 forwarding}
+  \end{itemize}  
 \end{frame}
 
 
-% .......
-\frame{
-  \frametitle{Full sample example \hfill{\tiny (\textit{i.e.} these slides)}}
-
-  \begin{block}{}
-      \begin{itemize}
-        \item To copy a full working example
-          \begin{cmdline}
-              \cmdlineentry{cd /path/to/cloning/dir}\\
-              \cmdlineentry{git clone https://github.com/Falkor/beamerthemeFalkor.git}\\
-              \cmdlineentry{cd /path/to/working/dir}\\
-              \cmdlineentry{rsync -avzu -L --exclude "*.git" $\backslash$\\~~~~~~~/path/to/cloning/dir/beamerthemeFalkor/ .}\\
-              \cmdlineentry{make}
-          \end{cmdline}
-      \end{itemize}
-  \end{block}
-  \begin{itemize}
-    \item This will generate the file \texttt{sample\_slides.pdf}.
-      \begin{itemize}
-          \itemhook adapt accordingly...
-      \end{itemize}
-  \end{itemize}
-
-}
 
 
 % ===============================================
-\section{Some example slides for the TP}
+\section{Objectives}
 
 % ............
 \frame{
 
-  \frametitle{Objectives of the TP}
+  \frametitle{Objectives of this PS}
 
   \begin{itemize}
-    \item Better understand the usage of XXX on the \ULHPC
+    \item Better understand the usage of MATLAB on the \ULHPC
   \end{itemize}
-  \vfill Add logo of the soft
   \begin{alertblock}{}
       \begin{itemize}
-        \item Key objective 1
+        \item running in interactive mode
           \begin{itemize}
-              \itemhook at the heart of ...
+              \itemhook with either the full graphical or the text-mode interface
           \end{itemize}
-        \item Key objective 2
+        \item running in passive mode
           \begin{itemize}
-              \itemhook select benchmarking tools to reflect an HPC usage
+              \itemhook several ways of submitting MATLAB jobs
+          \end{itemize}
+	\item using script (.m) files
+	\item plotting data, saving the plots to file
+	\item taking advantage of some parallelization capabilities
+          \begin{itemize}
+              \itemhook use of \textbf{parfor}
+              \itemhook use of GPU-enabled functions
           \end{itemize}
       \end{itemize}
   \end{alertblock}
-
-
-  ~\vfill
-  {\tiny
-    \mycite{SBAC-PAD13} S. Varrette,  M. Guzek, V. Plugaru, J. E. Sanchez, and P. Bouvry.
-    "\textit{HPC Performance and Energy-Efficiency of Xen, KVM and VMware Hypervisors}". In Proc. of the 25th IEEE Symposium on Computer Architecture and High Performance (SBAC-PAD'13), Oct 2013.
-    % Do not forget the below space
-
-  }
-
-}
-
-\frame[containsverbatim]{
-  \frametitle{A slide with listings}%\frametitle{Problem}
-  \begin{block}{A JavaScript program}
-      \begin{lstlisting}[basicstyle=\tiny,numbers=none]
-          function fibo(n)
-          {
-            if( n <= 1 )
-            {
-              return n;
-            }
-            var res = fibo(n-1) + fibo(n-2);
-            return res;
-          }
-          n = parseFloat(arguments[1])
-          nn = fibo(n)
-          print(nn)
-      \end{lstlisting}
-
-  \end{block}
 
 }
 
@@ -206,52 +167,75 @@
 
 % .......
 \frame{
-  \frametitle{Example 1}
-  \vfill
-  {\tiny  \href{https://github.com/ULHPC/tutorials/tree/devel/advanced/HPL\#runs-on-a-single-node}{[Online]}}
-  % \begin{exampleblock}{Title}
-  %     \begin{itemize}
-  %       \item recall description of the task (following github link)
-  %     \end{itemize}
-  % \end{exampleblock}
-  % \pause
-  % Eventually give some hint on the solution
+  \frametitle{Scripts and plots}
+  \textbf{example1.m}: non-interactive script that shows:
+\begin{itemize}
+ \item the use of a stopwatch timer
+ \item how to use an external function (financial data retrieval)
+ \item how to use different plotting methods
+ \item how to export the plots in different graphic formats
+\end{itemize} 
+ \includegraphics[width=0.45\linewidth,keepaspectratio]{plots/example1-2dplot.eps}
+ \includegraphics[width=0.45\linewidth,keepaspectratio]{plots/example1-scatter.eps}  
 }
 
 \section{Example 2}
 
 % .......
 \frame{
-  \frametitle{Example 2}
-
-  \begin{exampleblock}{Title}
-      \begin{itemize}
-        \item recall description of the task
-      \end{itemize}
-  \end{exampleblock}
-  \pause
-  Eventually give some hint on the solutioon
+  \frametitle{Parallelization}
+  \textbf{example2.m}: non-interactive script that shows:
+  \begin{itemize}
+   \item the serial execution of time consuming operations
+   \item the parallel execution and relative speedup vs serial execution
+   \item setting the \# of parallel threads through environment variables
+   \item GPU-based parallel execution
+  \end{itemize}
+  \centering\includegraphics[width=0.45\linewidth,keepaspectratio]{plots/parfor-speedup.eps}
 }
 
 
-\section{Conclusion: Final plot}
+\section{Practical session}
+
+% .......
+\frame{
+  \frametitle{Exercises}
+    \begin{itemize}
+      \item Read and understand the MATLAB tutorial \myurl{\TPghurl} \\
+      $ \hookrightarrow $ \scriptsize{all provided scripts are fully commented}
+      \item Run all the examples \\
+      $ \hookrightarrow $ launching interactive/passive mode MATLAB \\
+      $ \hookrightarrow $ plotting script \\
+      $ \hookrightarrow $ parallel execution script \\
+      \item Plot the speedup graph shown at \href{https://github.com/ULHPC/tutorials/tree/devel/advanced/MATLAB\#useful-references}{tutorial's end}
+    \end{itemize}
+
+}
+\frame {
+  \frametitle{Useful links}
+  \begin{itemize}
+   \item Parallel Computing Toolbox \hfill\myurl{http://www.mathworks.nl/help/distcomp/index.html}
+   \item Parallel for-Loops (parfor) \hfill\myurl{http://www.mathworks.nl/help/distcomp/getting-started-with-parfor.html}
+   \item GPU Computing \hfill\myurl{http://www.mathworks.nl/discovery/matlab-gpu.html}
+  \end{itemize}
+}  
+\section{Conclusion}
 
 % ............
 \begin{frame}
-    \frametitle{Conclusion}
-
-    \begin{itemize}
-      \item Summary point 1
-      \item Summary point 2
-    \end{itemize}
+  \frametitle{Conclusion}
+  
+  \begin{itemize}
+    \item MATLAB execution modes on the \ULHPC
+    \item Plotting and parallel execution
+  \end{itemize}
 
     \begin{block}{Perspectives}
         \begin{itemize}
-          \item Improve point 1
-          \item Improve point 2
+          \item Personalize the UL HPC launchers with the MATLAB commands
+          \item Parallelize your own tasks using parfor/GPU-enabled instructions
         \end{itemize}
     \end{block}
-
 
 \end{frame}
 
@@ -273,27 +257,17 @@
 
 % \appendix
 
-\frame{
-  \frametitle{Appendix}
-
-  \begin{acronym}\setlength\itemsep{-0.3em}
-      \acro{DFT}{Discrete Fourier Transform}
-      \acro{EA}{Evolutionary Algorithm}
-      \acro{PRNG}{[Pseudo]-Random Number Generator}
-      \acro{UL}{University of Luxembourg}
-  \end{acronym}
-
-  \textit{*Note: notice the slide number below...}
-}
-
-% .......
-\frame{
-  \frametitle{Another appendix slide}
-
-  \textit{Note again the slide number below...}
-
-}
-
+% \frame{
+%   \frametitle{Appendix}
+% 
+%   \begin{acronym}\setlength\itemsep{-0.3em}
+%       \acro{DFT}{Discrete Fourier Transform}
+%       \acro{EA}{Evolutionary Algorithm}
+%       \acro{PRNG}{[Pseudo]-Random Number Generator}
+%       \acro{UL}{University of Luxembourg}
+%   \end{acronym}
+% 
+% }
 
 \setcounter{framenumber}{\value{finalframe}}
 
