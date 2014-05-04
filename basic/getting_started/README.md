@@ -298,6 +298,28 @@ a. after 10 days
 b. after 2 hours
 c. never, only when I'll delete the job  
 
+**Question: manipulate the `$OAR_NODEFILE` variable over the command-line to extract the following information, once connected to your job**
+
+a. the list of hostnames where a core is reserved (one per line) 
+   * _hint_: `man cat`
+b. number of reserved cores (one per line)
+   * _hint_: `man wc` --  use `wc -l` over the pipe `|` command
+c. number of reserved nodes (one per line)
+   * _hint_: `man uniq` -- use `uniq` over the pipe `|` command
+d. number of cores reserved per node together with the node name (one per line)
+   * Example of output: 
+    	
+    	    12 gaia-11
+    	    12 gaia-15
+    
+   * _hint_: `man uniq` -- use `uniq -c` over the pipe `|` command
+e. **(for geeks)** output the number of reserved nodes times number of cores per node
+   * Example of output:
+   
+	        gaia-11*12
+	        gaia-15*12
+
+   * _hint_: `man awk` -- use `printf` command of `awk` over the pipe command, for instance `awk '{ printf "%s*%d\n",$2,$1 }'`. You might prefer `sed` or any other advanced geek command.
 
 ## Step 4: Job management
 
@@ -448,24 +470,150 @@ These jobs will be scheduled as follows
               |   <------><--->
               |     2min    1min
               +--------------------------------------------------------------> time 
+
         
 **Question: Check the way your jobs have been scheduled**
 
 a. using `oarstat -u -f -j <subjob_id>` (take a look at the `assigned_resources`)
 b. using the [OAR drawgantt](https://hpc.uni.lu/status/drawgantt.html) interface  
 
+**Question: explain the interest of container jobs for the platform managers**
 
 
+### Reservation at a given period of time
+
+You can use the `-r "YYYY-MM-DD HH:MM:SS"` option of `oarsub` to specify the date you wish the reservation to be issued. This is of particular interest for you to book in advance resources out of the working hours (at night and/or over week ends) 
 
 
+## Step 5: Using modules
 
-			
+[Environment Modules](http://modules.sourceforge.net/) is a software package that allows us to provide a [multitude of applications and libraries in multiple versions](http://hpc.uni.lu/users/software/) on the UL HPC platform. The tool itself is used to manage environment variables such as `PATH`, `LD_LIBRARY_PATH` and `MANPATH`, enabling the easy loading and unloading of application/library profiles and their dependencies.
+
+We will have multiple occasion to use modules in the other tutorials so there is nothing special we foresee here. You are just encouraged to read the following resources: 
+
+* [Introduction to Environment Modules by Wolfgang Baumann](https://www.hlrn.de/home/view/System/ModulesUsage)
+* [Modules tutorial @ NERSC](https://www.nersc.gov/users/software/nersc-user-environment/modules/)
+* [UL HPC documentation on modules](https://hpc.uni.lu/users/docs/modules.html)
+
+
+## Step 6 (advanced): Job management and Persistent Terminal Sessions using GNU Screen
+
+[GNU Screen](http://www.gnu.org/software/screen/‎) is a tool to manage persistent terminal sessions. 
+It becomes interesting since you will probably end at some moment with the following  scenario:
+
+> you frequently program and run computations on the UL HPC platforma _i.e_ on a remote Linux/Unix computer, typically working in six different terminal logins to the access server from your office workstation, cranking up long-running computations that are still not finished and are outputting important information (calculation status or results), when you have not 2 interactive jobs running... But it's time to catch the bus and/or the train to go back home. 
+
+Probably what you do in the above scenario is to 
+
+a. clear and shutdown all running terminal sessions
+b. once at home when the kids are in bed, you're logging in again... And have to set up the whole environment again (six logins, 2 interactive jobs etc. )
+c. repeat the following morning when you come back to the office. 
+
+Enter the long-existing and very simple, but totally indispensable [GNU screen](www.gnu.org/software/screen/) command. It has the ability to completely detach running processes from one terminal and reattach it intact (later) from a different terminal login. 
+
+### Pre-requisite: screen configuration file `~/.screenrc`
+
+While not mandatory, we advise you to rely on our customized configuration file for screen `.screenrc` available on [Github](https://github.com/ULHPC/dotfiles/blob/master/screen/screenrc).   
+Normally, you have nothing to do since we already setup this file for you in your homedir.
+Otherwise, simply clone the [ULHPC dotfile repository](https://github.com/ULHPC/dotfiles/) and make a symbolic link `~/.screenrc` targeting the file `screen/screenrc` of the repository.
+
+### Basic commands
 	
+You can start a screen session (_i.e._ creates a single window with a shell in it) with the `screen` command.
+Its main command-lines options are listed below: 
+
+* `screen`: start a new screen 
+* `screen -ls`: does not start screen, but prints a list of `pid.tty.host` strings identifying your current screen sessions. 
+* `screen -r`: resumes a detached screen session
+* `screen -x`: attach to a not detached screen session. (Multi display mode _i.e._ when you and another user are trying to access the same session at the same time)
 
 
+Once within a screen, you can invoke a screen command which consist of a "`CTRL + a`" sequence followed by one other character. The main commands are: 
 
- 
+* `CTRL + a c`: (create) creates a new Screen window. The default Screen number is zero.
+* `CTRL + a n`: (next) switches to the next window.
+* `CTRL + a p`: (prev) switches to the previous window.
+* `CTRL + a d`: (detach) detaches from a Screen
+* `CTRL + a A`: (title) rename the current window
+* `CTRL + a 0-9`: switches between windows 0 through 9.
+* `CTRL + a k` or `CTRL + d`: (kill) destroy the current window
+* `CTRL + a ?`: (help) display a list of all the command options available for Screen.
 
+### Sample Usage on the UL HPC platform: Kernel compilation
+
+We will illustrate the usage of GNU screen by performing a compilation of a recent linux kernel.
+
+* start a new screen session
+
+        (access)$> screen
+		
+* rename the screen window "Frontend" (using `CTRL+a A`)
+* create the directory to host the files
+
+		(access)$> mkdir -p $WORK/PS1/src
+		(access)$> cd $WORK/PS1/src
+
+* create a new window and rename it "Compile"
+* within this new window, start a new interactive job over 1 nodes for 6 hours
+
+		(access)$> oarsub -I -l nodes=1,walltime=6
+
+* detach from this screen (using `CTRL+a d`)
+* kill your current SSH connection and your terminal
+* re-open your terminal and connect back to the cluster frontend 
+* list your running screens: 
+		
+		(access)$> screen -ls
+		There is a screen on:
+			9143.pts-0.access	(05/04/2014 11:29:43 PM) (Detached)
+		1 Socket in /var/run/screen/S-svarrette.
+		
+* re-attach your previous screen session
+
+		(access)$> screen -r      # OR screen -r 9143.pts-0.access (see above socket name)
+
+* in the "Compile" windows, go to the working directory and download the Linux kernel sources
+
+		(node)$> cd $WORK/PS1/src
+		(node)$> wget -q -c http://www.kernel.org/pub/linux/kernel/v3.x/linux-3.13.6.tar.gz
+
+   **IMPORTANT** to ovoid overloading the **shared** file system with the many small files involves in the kernel compilation (_i.e._ NFS and/or Lustre), we will perform the compilation in the **local** file system, _i.e._ either in `/tmp` or (probably more efficient) in `/dev/shm` (_i.e_ in the RAM):
+
+		(node)$> mkdir /dev/shm/PS1
+		(node)$> cd /dev/shm/PS1
+		(node)$> tar xzf $WORK/PS1/src/linux-3.13.6.tar.gz
+		(node)$> cd linux-3.13.6
+		(node)$> make mrproper
+		(node)$> make alldefconfig
+		(node)$> make 2>&1 | tee /dev/shm/PS1/kernel_compile.log
+		
+* You can now detach from the screen and take a coffee
+
+The last compilation command make use of `tee`, a nice tool which read from standard input and write to standard output _and_ files. This permits to save in a log file the message written in the standard output. 
+
+**Question: why using the `make 2>&1` sequence in the last command?** 
+
+**Question: why working in `/dev/shm` is more efficient?**
+
+
+* Reattach from time to time to your screen to see the status of the compilation
+* Your compilation is successful if it ends with the sequence: 
+
+		[...]
+		Kernel: arch/x86/boot/bzImage is ready  (#2)
+
+* Restart the compilation, this time using parallel jobs within the Makefile invocation (`-j` option of make)
+
+		(node)$> make clean
+		(node)$> time make -j `cat $OAR_NODEFILE|wc -l` 2>&1 | tee /dev/shm/PS1/kernel_compile.2.log 
+
+The table below should convince you to always run `make` with the `-j` option whenever you can...
+
+|   Context                          | time (`make`) | time (`make -j 16`) |
+|------------------------------------|---------------|---------------------|
+| Compilation in `/tmp`(HDD / chaos) | 4m6.656s      | 0m22.981s           |
+| Compilation in `/tmp`(SSD / gaia)  | 3m52.895s     | 0m17.508s           |
+| Compilation in `/dev/shm` (RAM)    | 3m11.649s     | 0m17.990s           |
 
 
 
