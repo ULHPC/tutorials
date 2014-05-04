@@ -76,8 +76,8 @@ Edit the following variables:
 * `TASK` must contain the path of the executable, 
 * `ARG_TASK_FILE` must contain the path of your parameter file.
 
-    TASK="$WORK/PS2/circuit"
-    ARG_TASK_FILE=$WORK/PS2/param_file
+        TASK="$WORK/PS2/circuit"
+        ARG_TASK_FILE=$WORK/PS2/param_file
 
 Launch the job, in interactive mode:
 
