@@ -253,9 +253,9 @@ This script will drive the full experiment.
 ([Chaos](https://hpc.uni.lu/chaos/ganglia), [Gaia](https://hpc.uni.lu/gaia/ganglia))
 
 
-## The end, please, clean up your home and work directories :)
+## At the end, please, clean up your home and work directories :)
 
-Please, don't store unecessary files on the cluster's storage servers
+Please, don't store unnecessary files on the cluster's storage servers
 
     rm -rf $WORK/PS2
 
