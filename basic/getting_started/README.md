@@ -616,4 +616,5 @@ The table below should convince you to always run `make` with the `-j` option wh
 | Compilation in `/dev/shm` (RAM)    | 3m11.649s     | 0m17.990s           |
 
 
+* Use the [Ganglia](https://hpc.uni.lu/status/monika.html) interface on the node you monitor the impact of the compilation process on the node
 

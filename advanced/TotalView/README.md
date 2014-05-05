@@ -41,3 +41,20 @@ While TotalView is available on the [UL HPC Platform](http://hpc.uni.lu), the sp
   * the PDF documents describing the practical session.
 
 If the participants did not have the time to download the ISO, they shall come with a USB stick having a capacity of at least 2GB.
+
+To create a new VM: 
+
+* Open VirtualBox
+* Select the `New` icon
+  * Name: `TotalView`
+  * Type: `Linux`
+  * Version: `Ubuntu 64 bits`
+  * Memory Size: `512MB`
+  * `Create a virtual hard drive now`
+  
+  Click on "Create": select a VDI format, dynamically allocated. 
+* Now select the `Start` icon over the newly created VM
+  * open the folder icon to browse your disk and select the  `tv_trainingcdU10_20140815.iso` ISO on which you'll boot
+  
+ You're now ready for the tutorial.
+
