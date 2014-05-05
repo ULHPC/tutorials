@@ -24,7 +24,7 @@ The latest version of this tutorial is available on
 
 ## Short introduction to EasyBuild
 
-EasyBuild is a tool that allows to perform automated and reproducible compilation and installation of software. A large number of scientific software are supported (>XXXX TODO).
+EasyBuild is a tool that allows to perform automated and reproducible compilation and installation of software. A large number of scientific software are supported (479 software package in the last release).
 
 All builds and installations are performed at user level, so you don't need the admin rights. 
 The software are installed in your home directory (by default in ...) and a module file is generated (by default in) to use the software.
@@ -40,7 +40,13 @@ EasyConfig files and generatd modules are named using the following convention:
 `<Software-Name>-<Software-Version>-<Toolchain-Name>-<Toolchain-Version>` 
 
 Additional details are available on EasyBuild website:
-TODO
+
+- [EasyBuild homepage](http://hpcugent.github.io/easybuild)
+- [EasyBuild documentation](http://hpcugent.github.io/easybuild/)
+- [What is EasyBuild?](https://github.com/hpcugent/easybuild/wiki/EasyBuild)
+- [Toolchains](https://github.com/hpcugent/easybuild/wiki/Compiler-toolchains)
+- [EasyConfig files](https://github.com/hpcugent/easybuild/wiki/Easyconfig-files)
+- [List of supported software packages](https://github.com/hpcugent/easybuild/wiki/List-of-supported-software-packages)
 
 
 ## EasyBuild on UL HPC platform
@@ -346,4 +352,9 @@ We can now check that our version of GZip is available via the modules:
 
 ## To go further
 
-TODO
+
+- [EasyBuild homepage](http://hpcugent.github.io/easybuild)
+- [EasyBuild documentation](http://hpcugent.github.io/easybuild/)
+- [Getting started](https://github.com/hpcugent/easybuild/wiki/Getting-started)
+- [Using EasyBuild](https://github.com/hpcugent/easybuild/wiki/Using-EasyBuild)
+- [Step-by-step guide](https://github.com/hpcugent/easybuild/wiki/Step-by-step-guide)
