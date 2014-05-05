@@ -15,6 +15,7 @@ The targeted applications are:
 * [ABySS](http://www.bcgsc.ca/platform/bioinfo/software/abyss)
 * [Gromacs](http://www.gromacs.org/)
 * [Bowtie2](http://bowtie-bio.sourceforge.net/bowtie2/index.shtml) / [TopHat](http://tophat.cbcb.umd.edu/)
+* [mpiBLAST](http://www.mpiblast.org/)
 
 The tutorial will:
 
@@ -27,11 +28,12 @@ The tutorial will:
 This tutorial relies on several input files for the bioinformatics packages, thus you will need to download them
 before following the instructions in the next sections:
 
-        (gaia-frontend)$> mkdir -p ~/bioinfo-tutorial/gromacs ~/bioinfo-tutorial/tophat 
+        (gaia-frontend)$> mkdir -p ~/bioinfo-tutorial/gromacs ~/bioinfo-tutorial/tophat ~/bioinfo-tutorial/mpiblast
         (gaia-frontend)$> cd ~/bioinfo-tutorial
         (gaia-frontend)$> wget https://raw.github.com/ULHPC/tutorials/devel/advanced/Bioinformatics/gromacs/pr.tpr -O gromacs/pr.tpr
         (gaia-frontend)$> wget https://raw.github.com/ULHPC/tutorials/devel/advanced/Bioinformatics/tophat/test_data.tar.gz -O tophat/test_data.tar.gz
         (gaia-frontend)$> wget https://raw.github.com/ULHPC/tutorials/devel/advanced/Bioinformatics/tophat/test2_path -O tophat/test2_path
+        (gaia-frontend)$> wget https://raw.github.com/ULHPC/tutorials/devel/advanced/Bioinformatics/mpiblast/test.fa -O mpiblast/test.fa
 
 Or simply clone the full tutorials repository and make a link to the Bioinformatics tutorial:
 
@@ -90,7 +92,9 @@ the `abyss-pe` launcher.
         
         # Launch the paired end assembler:
         (node)$> abyss-pe mpirun="mpirun -x PATH -x LD_LIBRARY_PATH -hostfile $OAR_NODEFILE" name=${ABYSSNAME} np=${ABYSSNPROC} k=31 n=10 lib=pairedend pairedend="${ABYSSINPDIR}/SRR001666_1.fastq.bz2 ${ABYSSINPDIR}/SRR001666_2.fastq.bz2" > ${ABYSSNAME}.out 2> ${ABYSSNAME}.err
- 
+
+**Question: Why do we use the -x VARIABLE parameters for mpirun?**
+        
 Several options seen on the `abyss-pe` command line are crucial:
 
 * we explicitly set the mpirun command
@@ -116,6 +120,7 @@ Several exercises are proposed for ABySS:
 1. create a launcher for ABySS using the commands shown in the previous section
 2. launch jobs using 1 node: 4, 8 and 12 cores, then 2 and 4 nodes and measure the speedup obtained
 3. unpack the two input files and place them on a node's /dev/shm, then rerun the experiment with 4, 8 and 12 cores and measure the speedup
+
 
 
 
@@ -147,10 +152,12 @@ Several GROMACS builds are available, we will focus only on the ones correspondi
 * GROMACS/4.6.5-goolf-1.4.10-hybrid,  GROMACS/4.6.5-goolfc-2.6.10-hybrid
 * GROMACS/4.6.5-goolf-1.4.10-mt, GROMACS/4.6.5-goolfc-2.6.10-mt
 
+**Question: What is the difference between the -goolf- and the -goolfc- version?** 
+
 We notice here two details:
 
 * the `goolf` and `goolfc` toolchains used to compile GROMACS
-  - the major difference here is that `goolfc` contains CUDA support
+  - the major difference here is that the `goolfc` version contains CUDA support
 * the `hybrid` and `mt` versions
   - the hybrid version is OpenMP and MPI-enabled, all binaries have a '\_mpi' suffix
   - the mt version is only OpenMP-enabled, as such it can take advantage of only one node's cores (however it may be faster on
@@ -182,7 +189,10 @@ We will perform our tests with the hybrid version:
         
 We notice here that we are running `mdrun_mpi` in parallel with mpirun on 12 cores, and we explicitly export the OMP_NUM_THREADS
 variable to any remote node such that only one thread per MPI process will be created.
-GROMACS has many parallelization options and several things can be tuned to give you better performance depending on your workflow, see the references in the last section of this tutorial.
+
+**Question: What will happen if we do not set the number of OpenMP threads to 1?** 
+
+GROMACS has many parallelization options and several parameters can be tuned to give you better performance depending on your workflow, see the references in the last section of this tutorial.
  
 The used input corresponds to the [Ribonuclease S-peptide](http://manual.gromacs.org/online/speptide.html) example,
 which has been changed to perform 50k steps in the Molecular Dynamics run with position restraints on the peptide.
@@ -194,6 +204,9 @@ Several exercises are proposed for GROMACS:
 1. create a launcher for GROMACS using the commands shown in the previous section
 2. launch jobs using 1 node: 1, 2, 4, 8, 10 and 12 cores and measure the speedup obtained
 3. check what happens when executing mdrun with 16 and 24 cores
+4. launch a job using one full node that has GPU cards and run the GPU-enabled GROMACS to see if a speedup is obtained
+
+
 
 
 ## Bowtie2/TopHat
@@ -260,6 +273,7 @@ Now we will make a quick TopHat test, using the provided sample files:
         (node)$> tophat -p 12 -r 20 test_ref reads_1.fq reads_2.fq
 
 We can see that for this fast execution, increasing the number of threads does not improve the calculation time due to the relatively high overhead of thread creation.
+Note that TopHat / Bowtie are not MPI applications and as such can take advantage of at most one compute node.
 
 Next, we will make a longer test, where it will be interesting to monitor the TopHat pipeline (with `htop` for example) to see the transitions between the serial
 and parallel stages (left as an exercise).
@@ -279,6 +293,66 @@ The following exercises are proposed for TopHat/Bowtie2:
 
 1. create a launcher for TopHat using the commands shown in the previous section
 2. launch jobs with 1, 2, 4, 8 and 10 cores on one node, using the second test files, and measure the speedup obtained
+
+
+
+
+## mpiBLAST
+
+### Description
+
+__mpiBLAST__: Open-Source Parallel BLAST
+
+mpiBLAST is a freely available, open-source, parallel implementation of NCBI BLAST. By efficiently utilizing distributed computational resources through database fragmentation, query segmentation, intelligent scheduling, and parallel I/O, mpiBLAST improves NCBI BLAST performance by several orders of magnitude while scaling to hundreds of processors  [\[\*\]](http://www.mpiblast.org/).
+
+### Example
+
+This example will be ran in an [interactive OAR session](https://hpc.uni.lu/users/docs/oar.html#concepts), with batch-mode executions
+being proposed later on as exercises.
+
+        # Connect to Gaia (Linux/OS X):
+        (yourmachine)$> ssh access-gaia.uni.lu
+     
+        # Request 1 full node in an interactive job:
+        (gaia-frontend)$> oarsub -I -l node=1,walltime=00:30:00
+
+        # Check the mpiBLAST versions installed on the clusters:
+        (node)$> module available 2>&1 | grep -i mpiblast
+
+        # Load a specific mpiBLAST version:
+        (node)$> module load mpiBLAST/1.6.0-goolf-1.4.10
+
+        # Check that it has been loaded, along with its dependencies:
+        (node)$> module list
+        
+        # The mpiBLAST binaries should now be in your path
+        (node)$> mpiformatdb --version
+        (node)$> mpiblast --version
+
+mpiBLAST requires access to NCBI substitution matrices and pre-formatted BLAST databases. For the purposes of this tutorial, a FASTA (NR) 
+database has been formatted and split into 12 fragments, enabling the parallel alignment of a query against the database. 
+A `.ncbirc` file containing the paths to the necessary data files can be downloaded from [here](https://raw.github.com/ULHPC/tutorials/devel/advanced/Bioinformatics/mpiblast/.ncbirc)
+and placed in your $HOME directory (make sure to backup an existing $HOME/.ncbirc before overwriting it with the one in this tutorial).
+
+**Question: Knowing that the databases can take tens of gigabytes, what is an appropriate storage location for them on the clusters?** 
+
+We will run a test using mpiBLAST. Note that mpiBLAST requires running with at least 3 processes, 2 dedicated for scheduling tasks and 
+coordinating file output, with the additional processes performing the search.
+
+        # Go to the test directory and execute mpiBLAST with one core for search
+        (node)$> cd ~/bioinfo-tutorial/mpiblast
+        (node)$> mpirun -np 3 mpiblast -p blastp -d nr -i test.fa -o test.out
+        
+        # Note the speedup when using a full node of 12 cores
+        (node)$> mpirun -np 14 mpiblast -p blastp -d nr -i test.fa -o test.out
+        
+### Proposed exercises
+
+The following exercises are proposed for mpiBLAST:
+
+1. create a launcher for mpiBLAST, making sure to export the required environment to the remote nodes
+2. launch jobs with 8, 14 and 24 cores across two nodes and measure the speedup obtained
+
         
 ## Useful references
 
