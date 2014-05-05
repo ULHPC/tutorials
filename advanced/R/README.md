@@ -428,6 +428,6 @@ Then, you need to call the R script within MPI. i.e.
 
 * [ggplot2 Documentation](http://docs.ggplot2.org/current/)
 
-
+* [Advanced R programming by Hadley Wickham](http://adv-r.had.co.nz/)
 
 
