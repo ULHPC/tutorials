@@ -186,7 +186,7 @@ On your laptop, transfer the files in the current directory and look at them wit
     rsync -avz chaos-cluster:/work/users/<LOGIN>/PS2/images .
 
 
-**Question**: which nodes are you using, identify your node with the command `oarstat -f -j <JOBID>` or Monika
+**Question**: which nodes are you using, identify your nodes with the command `oarstat -f -j <JOBID>` or Monika
 ([Chaos](https://hpc.uni.lu/chaos/monika), [Gaia](https://hpc.uni.lu/gaia/monika))
 
 
