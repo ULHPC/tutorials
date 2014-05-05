@@ -130,12 +130,13 @@ If we try to build `HPL-2.0-goolf-1.4.10`, nothing will be done as it is already
 
 
 However the build can be forced using the `-f` option flag. Then this software will be re-built.
+(Tip: prefix your command with `time` to know its duration)
 
-    $> eb HPL-2.0-goolf-1.4.10.eb -f
+    $> time eb HPL-2.0-goolf-1.4.10.eb -f
     
-    == temporary log file in case of crash /tmp/easybuild-deSylf/easybuild-0rfbYU.log
+    == temporary log file in case of crash /tmp/easybuild-FWc7Dl/easybuild-MEhAw4.log
     == resolving dependencies ...
-    == processing EasyBuild easyconfig /opt/apps/HPCBIOS.20131224/software/EasyBuild/1.10.0/lib/    python2.6/site-packages/easybuild_easyconfigs-1.10.0.0-py2.6.egg/easybuild/easyconfigs/h/HPL/HPL-2.0-goolf-1.4.10.eb
+    == processing EasyBuild easyconfig /opt/apps/HPCBIOS.20131224/software/EasyBuild/1.10.0/lib/python2.6/site-packages/easybuild_easyconfigs-1.10.0.0-py2.6.egg/easybuild/easyconfigs/h/HPL/HPL-2.0-goolf-1.4.10.eb
     == building and installing HPL/2.0-goolf-1.4.10...
     == fetching files...
     == creating build dir, resetting environment...
@@ -156,10 +157,15 @@ However the build can be forced using the `-f` option flag. Then this software w
     == 
     WARNING: Build exited with exit code 0. 2 possible error(s) were detected in the build logs, please verify the build.
     
-    == Results of the build can be found in the log file /home/users/xbesseron/.local/easybuild/software/HPL/2.0-goolf-1.4.10/easybuild/easybuild-HPL-2.0-20140505.171252.log
+    == Results of the build can be found in the log file /home/users/xbesseron/.local/easybuild/software/HPL/2.0-goolf-1.4.10/easybuild/easybuild-HPL-2.0-20140505.195534.log
     == Build succeeded for 1 out of 1
-    == temporary log file /tmp/easybuild-deSylf/easybuild-0rfbYU.log has been removed.
-    == temporary directory /tmp/easybuild-deSylf has been removed.
+    == temporary log file /tmp/easybuild-FWc7Dl/easybuild-MEhAw4.log has been removed.
+    == temporary directory /tmp/easybuild-FWc7Dl has been removed.
+    
+    real    0m18.573s
+    user    0m9.689s
+    sys     0m3.936s
+    
     
 
 Let's have a look at `HPL-2.0-ictce-6.1.5` which is not installed yet. 
