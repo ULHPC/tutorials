@@ -31,6 +31,7 @@ before following the instructions in the next sections:
         (gaia-frontend)$> cd ~/bioinfo-tutorial
         (gaia-frontend)$> wget https://raw.github.com/ULHPC/tutorials/devel/advanced/Bioinformatics/gromacs/pr.tpr -O gromacs/pr.tpr
         (gaia-frontend)$> wget https://raw.github.com/ULHPC/tutorials/devel/advanced/Bioinformatics/tophat/test_data.tar.gz -O tophat/test_data.tar.gz
+        (gaia-frontend)$> wget https://raw.github.com/ULHPC/tutorials/devel/advanced/Bioinformatics/tophat/test2_path -O tophat/test2_path
 
 Or simply clone the full tutorials repository and make a link to the Bioinformatics tutorial:
 
@@ -180,8 +181,8 @@ We will perform our tests with the hybrid version:
         (node)$> mpirun -np 12 -hostfile $OAR_NODEFILE -x OMP_NUM_THREADS -x PATH -x LD_LIBRARY_PATH mdrun_mpi -v -s pr -e pr -o pr -c after_pr -g prlog > test.out 2>&1
         
 We notice here that we are running `mdrun_mpi` in parallel with mpirun on 12 cores, and we explicitly export the OMP_NUM_THREADS
-variable to any remote nodes such that only one thread per MPI process will be created.
-GROMACS , see also the references in the last section of this tutorial.
+variable to any remote node such that only one thread per MPI process will be created.
+GROMACS has many parallelization options and several things can be tuned to give you better performance depending on your workflow, see the references in the last section of this tutorial.
  
 The used input corresponds to the [Ribonuclease S-peptide](http://manual.gromacs.org/online/speptide.html) example,
 which has been changed to perform 50k steps in the Molecular Dynamics run with position restraints on the peptide.
@@ -192,8 +193,7 @@ Several exercises are proposed for GROMACS:
 
 1. create a launcher for GROMACS using the commands shown in the previous section
 2. launch jobs using 1 node: 1, 2, 4, 8, 10 and 12 cores and measure the speedup obtained
-3. check what happens when running mdrun with 16 and 24 cores
-
+3. check what happens when executing mdrun with 16 and 24 cores
 
 
 ## Bowtie2/TopHat
@@ -247,21 +247,38 @@ versions prebuilt for Linux by the developers.
         (node)$> bowtie2 --version
         (node)$> tophat2 --version
 
-Next, we will make a fast TopHat run, using the provided sample files:
+Now we will make a quick TopHat test, using the provided sample files:
 
         # Go to the test directory and unpack the sample dataset
         (node)$> cd ~/bioinfo-tutorial/tophat
         (node)$> tar xzvf test_data.tar.gz
         
+        # Launch TopHat, with Bowtie2 in serial mode
+        (node)$> tophat -r 20 test_ref reads_1.fq reads_2.fq
+        
         # Launch TopHat, with Bowtie2 in parallel mode
-        (node)$> tophat -p 6 -r 20 test_ref reads_1.fq reads_2.fq
+        (node)$> tophat -p 12 -r 20 test_ref reads_1.fq reads_2.fq
+
+We can see that for this fast execution, increasing the number of threads does not improve the calculation time due to the relatively high overhead of thread creation.
+
+Next, we will make a longer test, where it will be interesting to monitor the TopHat pipeline (with `htop` for example) to see the transitions between the serial
+and parallel stages (left as an exercise).
+
+        # Load the file which will export $TOPHATTEST2 in the environment
+        (node)$> source ~/bioinfo-tutoria/tophat/test2_path
+        
+        # Launch TopHat, with Bowtie2 in parallel mode
+        (node)$> tophat2 -p 12 -g 1 -r 200 --mate-std-dev 30 -o ./  $TOPHATTEST2/chr10.hs $TOPHATTEST2/SRR027888.SRR027890_chr10_1.fastq $TOPHATTEST2/SRR027888.SRR027890_chr10_2.fastq
+         
+The input data for the first test corresponds to the [TopHat test set](http://tophat.cbcb.umd.edu/tutorial.shtm),
+while the second test is an example of aligning reads to the chromosome 10 of the human genome [as given here](http://www.bigre.ulb.ac.be/courses/statistics_bioinformatics/practicals/ASG1_2012/rnaseq_td/rnaseq_td.html).
 
 ### Proposed exercises
 
 The following exercises are proposed for TopHat/Bowtie2:
 
 1. create a launcher for TopHat using the commands shown in the previous section
-2. launch jobs with 1, 2, 4, 8, 10 and 12 cores on one node and measure the speedup obtained
+2. launch jobs with 1, 2, 4, 8 and 10 cores on one node, using the second test files, and measure the speedup obtained
         
 ## Useful references
 
@@ -269,3 +286,4 @@ The following exercises are proposed for TopHat/Bowtie2:
   - [Gromacs parallelization](http://www.gromacs.org/Documentation/Acceleration_and_parallelization)
   - [Gromacs GPU acceleration](http://www.gromacs.org/GPU_acceleration)
   - [Gromacs USA workshop](http://www.gromacs.org/Documentation/Tutorials/GROMACS_USA_Workshop_and_Conference_2013)
+  - [Tutorial on GROMACS parallelization schemes](http://www.gromacs.org/Documentation/Tutorials/GROMACS_USA_Workshop_and_Conference_2013/Parallelization_schemes_and_GPU_acceleration%3a_Szilard_Pall%2c_Session_2B)
