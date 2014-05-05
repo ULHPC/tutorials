@@ -24,10 +24,10 @@ The latest version of this tutorial is available on
 
 ## Short introduction to EasyBuild
 
-EasyBuild is a tool that allows to perform automated and reproducible compilation and installation of software. A large number of scientific software are supported (479 software package in the last release).
+EasyBuild is a tool that allows to perform automated and reproducible compilation and installation of software. A large number of scientific software are supported (479 software packages in the last release).
 
 All builds and installations are performed at user level, so you don't need the admin rights. 
-The software are installed in your home directory (by default in ...) and a module file is generated (by default in) to use the software.
+The software are installed in your home directory (by default in `$HOME/.local/easybuild/software/`) and a module file is generated (by default in `$HOME/.local/easybuild/modules/`) to use the software.
 
 EasyBuild relies on two main concepts: *Toolchains* and *EasyConfig file*.
 
@@ -36,7 +36,7 @@ A **toolchain** corresponds to a compiler and a set of libraries which are commo
 An **EasyConfig file** is a simple text file that describes the build process of a software. For most software that uses standard procedure (like `configure`, `make` and `make install`), this file is very simple. Many EasyConfig files are already provided with EasyBuild.
 
 
-EasyConfig files and generatd modules are named using the following convention:
+EasyConfig files and generated modules are named using the following convention:
 `<Software-Name>-<Software-Version>-<Toolchain-Name>-<Toolchain-Version>` 
 
 Additional details are available on EasyBuild website:
@@ -69,7 +69,7 @@ The EasyBuild command is `eb`. Check the version you have loaded:
     This is EasyBuild 1.10.0 (framework: 1.10.0, easyblocks: 1.10.0) on host gaia-59.
     
 
-Get help on the EasyBuild option flags:
+To get help on the EasyBuild options, use the `-h` or `-H` option flags:
 
     $> eb -h
     $> eb -H
@@ -77,7 +77,7 @@ Get help on the EasyBuild option flags:
 
 
 
-## Build using provided EasyConfig file
+## Build software using provided EasyConfig file
 
 In this part, we propose to be High Performance Linpack (HPL) using EasyBuild. 
 HPL is supported by EasyBuild, this means that an EasyConfig file allowing to build HPL is already provided with EasyBuild.
@@ -94,7 +94,7 @@ First, let's see which HPL are available on the cluster:
     HPL/2.0-goalf-1.1.0-no-OFED
     
 
-Then, search for available EasyConfig files with HPL in their name:
+Then, search for available EasyConfig files with HPL in their name. The EasyConfig files are named with the `.eb` extension.
 
     $> eb -S HPL
     
@@ -129,7 +129,7 @@ If we try to build `HPL-2.0-goolf-1.4.10`, nothing will be done as it is already
     == temporary directory /tmp/easybuild-4Cy8Qn has been removed.
 
 
-However the build can be forced using the `-f` option flag:
+However the build can be forced using the `-f` option flag. Then this software will be re-built.
 
     $> eb HPL-2.0-goolf-1.4.10.eb -f
     
@@ -242,7 +242,7 @@ The two newly-built versions of HPL are now available for your user. You can use
 
 It is possible to amend existing EasyConfig file to build software with slightly different parameters. 
 
-For example, we can build the lastest version of HPL (2.1) with ICTCE toolchain. We use the `--try-software-version` option flag to overide the HPL version.
+As a example, we are going to build the lastest version of HPL (2.1) with ICTCE toolchain. We use the `--try-software-version` option flag to overide the HPL version.
 
     $> time eb HPL-2.0-ictce-6.1.5.eb --try-software-version=2.1
     
@@ -293,11 +293,11 @@ We obtained HPL 2.1 without writing any EasyConfig file.
 There are multiple ways to amend a EasyConfig file. Check the `--try-*` option flags for all the possibilities.
 
 
-## Build a software using your own EasyConfig file
+## Build software using your own EasyConfig file
 
 
-As an example, we create an EasyConfig file to build GZip 1.4 with the GOOLF toolchain.
-Open your favorite editor and create a file `gzip-1.4-goolf-1.4.10.eb` with the following content:
+For this example, we create an EasyConfig file to build GZip 1.4 with the GOOLF toolchain.
+Open your favorite editor and create a file named `gzip-1.4-goolf-1.4.10.eb` with the following content:
 
     name = 'gzip'
     version = '1.4'
@@ -327,7 +327,7 @@ Open your favorite editor and create a file `gzip-1.4-goolf-1.4.10.eb` with the 
     sanity_check_commands = [True, ('gzip', '--version')]
 
 
-This is a simple EasyConfig. Most of the fields are self-descriptive. No build method is explicitely defined, so it uses by default the standard *configure-make* approach.
+This is a simple EasyConfig. Most of the fields are self-descriptive. No build method is explicitely defined, so it uses by default the standard *configure/make/make install* approach.
  
 
 Let's build GZip with this EasyConfig file:
