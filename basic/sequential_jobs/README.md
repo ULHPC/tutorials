@@ -114,7 +114,7 @@ Submit the job with `oarsub`
 * Naive workflow: time = 13m 30s
 * Parallel workflow: time = 1m 23s
 
-**/!\ In order to compare execution times, you must always use the same type of node (CPU/Memory), 
+**/!\ In order to compare execution times, you must always use the same type of nodes (CPU/Memory), 
 using [properties](https://hpc.uni.lu/users/docs/oar.html#select-nodes-precisely-with-properties)
 in your `oarsub` command.**
 
