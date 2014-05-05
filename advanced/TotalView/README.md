@@ -35,7 +35,7 @@ While TotalView is available on the [UL HPC Platform](http://hpc.uni.lu), the sp
 ## Pre-Requisites
 
 * Install [Oracle's VirtualBox](http://www.virtualbox.org/)
-* Download the bootable ISO `tv_trainingcdU10_20140815.iso` which contains: 
+* Download the bootable ISO `tv_trainingcdU10_20140815.iso` (md5sum: *30a844ddda80ddf505c28eb4f4b6f1bf*) which contains: 
   * a bootable Linux Ubuntu distribition
   * a version of TotalView
   * the PDF documents describing the practical session.
