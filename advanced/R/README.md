@@ -34,6 +34,7 @@ Once connected to the user frontend, book 1 core for half an hour (as we will us
     jdoe@access:~$ oarsub -I -l core=1,walltime="00:30:00"
 
 When the job is running and you are connected load R module (version compiled with Intel Compiler).
+For a complete list of availbale modules see: [Software page](https://hpc.uni.lu/users/software/).
 
     jdoe@access:~$ module load R/3.0.2-ictce-5.3.0
 
@@ -376,7 +377,7 @@ First, load R 3.0.2 compiled with GCC as Intel one does not work for this. Add t
 	module purge
 	module load R/3.0.2-goolf-1.4.10
 
-
+**Warning:** do not forget to clean your ~/.bash_login file after the PS (remove the 'module load R/3.0.2-goolf-1.4.10' line).
 
 #### Socket Communications
     library(parallel)
@@ -391,6 +392,7 @@ First, load R 3.0.2 compiled with GCC as Intel one does not work for this. Add t
 	connector = paste0("OAR_JOB_ID=", oar_job_id)
 	connector = paste0(connector, " oarsh")
 	comm_type = "PSOCK"
+	
 	## set up the cluster
 	cl = makeCluster(nodes, type = comm_type, rshcmd = connector)	
 	## If a particular library <LIB> is needed, load it on the nodes with
@@ -399,8 +401,10 @@ First, load R 3.0.2 compiled with GCC as Intel one does not work for this. Add t
 	# clusterEvalQ(cl, sessionInfo())
 	## export air dataset on all the nodes
 	clusterExport(cl, varlist=c("air"))
+	
 	## compute in parallel through sockets
 	as.data.frame(cbind(dest=dests, nb=parLapply(cl, dests, count_flights)))
+	
 	stopCluster(cl)
  
 
