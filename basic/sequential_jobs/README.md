@@ -114,7 +114,7 @@ Submit the job with `oarsub`
 * Naive workflow: time = 13m 30s
 * Parallel workflow: time = 1m 23s
 
-**/!\ In order to compare execution time, you must always use the same type of node (CPU/Memory), 
+**/!\ In order to compare execution times, you must always use the same type of node (CPU/Memory), 
 using [properties](https://hpc.uni.lu/users/docs/oar.html#select-nodes-precisely-with-properties)
 in your `oarsub` command.**
 
@@ -186,6 +186,8 @@ On your laptop, transfer the files in the current directory and look at them wit
     rsync -avz chaos-cluster:/work/users/<LOGIN>/PS2/images .
 
 
+**Question**: which nodes are you using, identify your node with the command `oarstat -f -j <JOBID>` or Monika
+([Chaos](https://hpc.uni.lu/chaos/monika), [Gaia](https://hpc.uni.lu/gaia/monika))
 
 
 ## Exercise 3: Advanced use case, using a Java program: "JCell"
@@ -247,10 +249,7 @@ This script will drive the full experiment.
         rsync -avz chaos-cluster:/work/users/<LOGIN>/PS2/jcell/results .
 
 
-**Question 1**: which nodes are you using, identify your node with Monika
-([Chaos](https://hpc.uni.lu/chaos/monika), [Gaia](https://hpc.uni.lu/gaia/monika))
-
-**Question 2**: check the system load and memory usage with Ganglia
+**Question**: check the system load and memory usage with Ganglia
 ([Chaos](https://hpc.uni.lu/chaos/ganglia), [Gaia](https://hpc.uni.lu/gaia/ganglia))
 
 
