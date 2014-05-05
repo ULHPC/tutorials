@@ -57,17 +57,16 @@ Clone the repositories `ULHPC/tutorials` and `ULHPC/launcher-scripts.git`
 
 ## Exercise 1: C program & circuit satisfiability
 
-Get the source code and compile it:
+Get the source code and compile it on a node:
 
+    oarsub -I
+    cd $WORK/PS2
     gcc tutorials/basic/sequential_jobs/scripts/circuit.c -o circuit
+    exit
 
 We want to test all the parameters, so we create a parameter file with all the numbers from 1 to 65535.
 
-    seq 65535 > $WORK/param_file
-
-Clone the launcher repository:
-
-    git clone https://github.com/ULHPC/launcher-scripts
+    seq 65535 > $WORK/PS2/param_file
 
 
 #### Step 1: Naive workflow
@@ -90,9 +89,11 @@ Execute the launcher:
 
     $WORK/PS2/launcher-scripts/bash/serial/NAIVE_AKA_BAD_launcher_serial.sh
 
-Or in passive mode
+Or in passive mode (the output will be written in a file named `OAR.<JOBID>.stdout`)
 
     oarsub -l core=1 $WORK/PS2/launcher-scripts/bash/serial/NAIVE_AKA_BAD_launcher_serial.sh
+
+
 
 #### Step 2: Optimal method using GNU parallel (GNU Parallel)
 
@@ -100,10 +101,12 @@ We will use the launcher `launcher_serial.sh` in `$WORK/PS2/launcher-scripts/bas
 
 Edit the following variables:
 
-    TASK="$WORK/circuit"
-    ARG_TASK_FILE=$WORK/param_file
-  
-    oarsub -l core=1 $WORK/PS2/launcher-scripts/bash/serial/launcher_serial.sh
+    TASK="$WORK/PS2/circuit"
+    ARG_TASK_FILE=$WORK/PS2/param_file
+
+Submit the job with `oarsub`
+
+    oarsub -l nodes=1 $WORK/PS2/launcher-scripts/bash/serial/launcher_serial.sh
 
 
 **Question**: compare and explain the execution time with both launchers:
@@ -111,7 +114,9 @@ Edit the following variables:
 * Naive workflow: time = 13m 30s
 * Parallel workflow: time = 1m 23s
 
-
+**/!\ In order to compare execution time, you must always use the same type of node (CPU/Memory), 
+using [properties](https://hpc.uni.lu/users/docs/oar.html#select-nodes-precisely-with-properties)
+in your `oarsub` command.**
 
 
 ## Exercise 2: Watermarking images in Python
