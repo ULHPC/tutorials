@@ -8,6 +8,10 @@ Through this tutorial you will learn how to use R from your local machine or fro
 We will also use the `ggplot` library to generate nice graphics and export them as pdf files. 
 Then, we will see how to organize and group data. Finally we will illustrate how R can benefit from multicore and cluster parallelization.
 
+Warning: this tutorial does not focus on the learning of R language but aims at showing you nice startup tips.  
+If you're also looking for a good tutorial on R's data structures you can take a look at: [Hadley Wickham's page](http://adv-r.had.co.nz/Data-structures.html).
+ 
+
 ## Pre-requisites
 
 ### Optional: On your local machine
@@ -424,6 +428,6 @@ Then, you need to call the R script within MPI. i.e.
 
 * [ggplot2 Documentation](http://docs.ggplot2.org/current/)
 
-
+* [Advanced R programming by Hadley Wickham](http://adv-r.had.co.nz/)
 
 
