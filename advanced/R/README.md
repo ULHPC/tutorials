@@ -373,7 +373,6 @@ Thus you have to load necessary packages and export necessary data and functions
 First, load R 3.0.2 compiled with GCC as Intel one does not work for this. Add the module loading at bash login too for enabling it on the nodes. To do so, within a shell type:
 
     echo 'module load R/3.0.2-goolf-1.4.10' >> ~/.bash_login
-    module unload R/3.0.2-ictce-5.3.0
 	module purge
 	module load R/3.0.2-goolf-1.4.10
 
