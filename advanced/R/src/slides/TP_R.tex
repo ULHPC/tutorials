@@ -160,6 +160,28 @@
 }
 
 
+\frame[containsverbatim]{
+  \frametitle{PS Questions}
+  \begin{block}{Question: use ddply instead of tapply in the first example}
+      \begin{lstlisting}[basicstyle=\tiny,numbers=none]
+          ddply(DT, .(x), summarize, sum(v))
+      \end{lstlisting}
+  \end{block}   
+  
+  \begin{block}{Question: return the min and max instead of the sum.}
+      \begin{lstlisting}[basicstyle=\tiny,numbers=none]
+          min_max = function(data){
+  			c(min(data), max(data))
+		  }
+          DT[,min_max(v),by=x]
+          
+          ## or  
+                  
+          DT[,c(min(v), max(v)),by=x]	
+      \end{lstlisting}
+  \end{block}  
+}
+
 \section*{Thank you for your attention...}
 \frame{
   \frametitle{Questions?}

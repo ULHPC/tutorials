@@ -101,22 +101,22 @@ Thus, when loading `ggplot2` library, this dataset is available under the name: 
 
 (OPTIONAL) An other way to get the dataset would be to download, extract and read it with:
 
-    movies_url = "http://had.co.nz/data/movies/movies.tab.gz"
-	## Download the file from given url to given destination file
-    download.file(movies_url, destfile="/tmp/movies.tab.gz")
+    movies_url = "http://had.co.nz/data/movies/movies.tab.gz"								# this is the http url of data file
+	## Download the file from given url to given destination file					
+    download.file(movies_url, destfile="/tmp/movies.tab.gz")								# we download the data file with `download.file()` function and save it in /tmp
 	## Extract the .gz using system's gzip command
-    system("gzip -d /tmp/movies.tab.gz")
+    system("gzip -d /tmp/movies.tab.gz")													# `system()` function executes system calls
 	## Load the file in a dataframe with read.table() function
-    movies = read.table("/tmp/movies.tab", sep="\t", header=TRUE, quote="", comment="")
+    movies = read.table("/tmp/movies.tab", sep="\t", header=TRUE, quote="", comment="")		# `read.table()` function reads a file and stores it in a data.frame object
 
 
 Now let's take a (reproducible) sample of 1000 movies and plot their distribution regarding their rating.
 
-    library(ggplot2)
-    set.seed(5689)
-    movies_sample = movies[sample(nrow(movies), 1000), ]
-    graph = ggplot(data=movies_sample) + geom_histogram(aes(x=rating), binwidth=0.5)
-    ggsave(graph, file="movies_hist.pdf", width=8, height=4)
+    library(ggplot2)																		# load ggplot2 library to use packages functions
+    set.seed(5689)																			# set the seed for random selection used in `sample()` function
+    movies_sample = movies[sample(nrow(movies), 1000), ]									# movies is the data.frame name, from this data.frame, randomly select 1000 rows
+    graph = ggplot(data=movies_sample) + geom_histogram(aes(x=rating), binwidth=0.5)		# construct the graph -- movies_sample will be used as data, we will plot an histogram where x=movies_sample$rating and with a bin size=0.5
+    ggsave(graph, file="movies_hist.pdf", width=8, height=4)								# save the graph in a pdf file
 
 Now you shoud be able to visualize the generated plot on the frontend (may not work on windows stations using PuTTy):
 
@@ -152,21 +152,22 @@ Let's check how they are organized with the `names()` function that gives a data
 Thus for each dataset row we have the price and the carat value for a given diamond.
 We want to add a column to datasets that will describe from which one it comes from, then we will merge these into one single dataset.
 
-	diamonds_fair = cbind(diamonds_fair, cut_class="Fair")
-	diamonds_good = cbind(diamonds_good, cut_class="Good")
-    diamonds_merge = rbind(diamonds_fair, diamonds_good)
+	diamonds_fair = cbind(diamonds_fair, cut_class="Fair")									# add a column named cut_class with all values being "Fair" to data.frame diamonds_fair
+	diamonds_good = cbind(diamonds_good, cut_class="Good")									# same with "Good"
+    diamonds_merge = rbind(diamonds_fair, diamonds_good)									# combine the 2 data.frame with `rbind()` as they both have the same structure
 
 `cbind()` function is used to add a column to a dataframe, `rbind()` to combine rows of two dataframes (c is for column, r is for row).
 Now we have all data merged in a dataframe and a column that describes the origin of data (the column `cut_class`), let's plot data.
 
 Note: To visualize an extract of your data you can do:
 
-    > diamonds_merge[1:10,]  # returns rows 1 to 10
-	> diamonds_merge[,3]     # return column no.3
+    > diamonds_merge[1:10,]  		# returns rows 1 to 10
+	> diamonds_merge[,3]     		# returns column no.3
+	> diamonds_merge$cut_class		# returns column named cut_class
 
 Then we construct and save the graph.
 
-    graph = ggplot(data=diamonds_merge) + geom_point(aes(x=carat, y=price, colour=cut_class))
+    graph = ggplot(data=diamonds_merge) + geom_point(aes(x=carat, y=price, colour=cut_class))	# this time we use ggplot's function `geom_point()` to plot data points. colour=cut_class aestetics option will plot the points according to cut_class values
 	ggsave(graph, file="diamonds_plot.pdf", width=8, height=4)
 
 Remember, to get help about a particular function you can type `?function_name`. e.g.
@@ -195,7 +196,7 @@ You will first need to install and load `plyr`.
 	library(plyr)
 Now we are ready to call `ddply()`. The first parameter will be the dataset, the second will be the column of the dataset we want to aggregate on, third parameter will be the call to the `summarize()` function that will enable to aggregate data on the `cut` column. The forth parameter will be the operation we will do for each of the aggregated classes. Thus: 
 
-	> ddply(diamonds, .(cut), summarize, avg_price=mean(price))
+	> ddply(diamonds, .(cut), summarize, avg_price=mean(price))				# in the data.frame named diamonds, aggregate by column named cut and apply the function mean() on the price of aggregated rows
 	        cut avg_price
 	1      Fair  4358.758
 	2      Good  3928.864
@@ -230,18 +231,18 @@ We can use the `microbenchmark()` function on several expressions, with a given 
 Plotting the benchmark result gives us a boxplot graph:
 
     ## save the output graph as png file
-	png("benchmark_boxplot.png")
+	png("benchmark_boxplot.png")										# other method to save graphics that are not generated with ggplot. We give a name to the output graphic
 	## plot the graph
-	plot(m)
+	plot(m)																# then we plot it
 	## flush the output device to save the graph
-	dev.off()
+	dev.off()															# finally we close the output device, this will save the graphic in the output file
 
 
 ### Using `data.table` Package
 
 According to [data.table documentation](http://cran.r-project.org/web/packages/data.table/index.html) `data.table` inherits from `data.frame` to offer fast subset, fast grouping, fast update, fast ordered
 joins and list columns in a short and flexible syntax, for faster development. It uses binary search instead of vector scan to perform its operations and thus is scalable.
-We can convert easily a `data.frame` to a `data.table`.
+We can convert easily a `data.frame` to a `data.table`:
 
 	> MOVIES = data.table(movies)
 
@@ -257,15 +258,14 @@ Let's now create a new `data.frame`. We will make it large enough to demonstrate
 		stringsAsFactors=FALSE)
 	)	
 
-
-
+This generated a data.frame named DF with 3 columns. Column x is a repetition of uppercase letters from A to Z, column y is minorcase letters. Column v is a random uniform value.
 To illustrate the difference, we take as example the selection in this large dataset of rows where x=="R" and y=="h".
 
-	> system.time(ans1 <- DF[DF$x=="R" & DF$y=="h",]) # vector scan
+	> system.time(ans1 <- DF[DF$x=="R" & DF$y=="h",]) 		# vector scan. we select rows where x="R" and y="h". For this we have to scan the full data.frame twice.
 	
-	> DT = data.table(DF)
-	> setkey(DT,x,y)
-	> system.time(ans2 <- DT[J("R","h")]) # binary search	
+	> DT = data.table(DF)									# convert the data.frame to a data.table
+	> setkey(DT,x,y)										# set column x and y as data.table keys.
+	> system.time(ans2 <- DT[J("R","h")]) 					# binary search. We select rows that match the join between DT and the data.table row: data.table("R","h"). This will return the same result as before but much faster.
 
 In the first case, we scan the full table twice (once for selecting x's that are equal to "R", then y's that are equal to "h"), then do the selection.
 In the second case, we are joining DT to the 1 row, 2 column table returned by data.table("R","h"). We use the alias for joining data.tables called J(), short for join. As we defined x and y as keys, this works like a database join.
@@ -286,6 +286,29 @@ Now you can compare the same aggregation operation with `data.frame` and `data.t
 	system.time(DT[,sum(v),by=x])
 
 
+**Question: use `ddply()` instead of `tapply()` in the first example.**
+
+<!--
+ddply(DT, .(x), summarize, sum(v))
+-->
+
+**Question: return the min and max instead of the sum.**
+
+Hint: you can create a function named min_max to help you doing this. Example:
+
+	dummy_function = function(x){ x }					# dummy_function(x) will return x.
+	dummy_function2 = function(x, y){ c(x, y) }			# dummy_function2(x, y) will return a vector (x,y).
+
+<!--
+min_max = function(data){
+  c(min(data), max(data))
+}
+DT[,min_max(v),by=x]
+	
+or
+
+DT[,c(min(v), max(v)),by=x]	
+-->
 
 ## Parallel R
 The first part of the tutorial is now over, you can connect to `gaia` cluster and submit an other job requesting several machines.
@@ -377,6 +400,10 @@ First, load R 3.0.2 compiled with GCC as Intel one does not work for this. Add t
 	as.data.frame(cbind(dest=dests, nb=parLapply(cl, dests, count_flights)))
 	stopCluster(cl)
  
+
+
+**Exercise: Plot a speedup graph with different number of cores and/or machines used.**
+
 
 #### Not (yet) Covered by this Tutorial: MPI Communications
 
