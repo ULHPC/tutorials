@@ -373,13 +373,16 @@ Thus you have to load necessary packages and export necessary data and functions
 
 First, load R 3.0.2 compiled with GCC as Intel one does not work for this. Add the module loading at bash login too for enabling it on the nodes. To do so, within a shell type:
 
-    echo 'module load R/3.0.2-goolf-1.4.10' >> ~/.bash_login
+    echo 'module load R/3.0.2-goolf-1.4.10' >> ~/.bash_login		# /!\ TO REMOVE AT THE END OF PS /!\
 	module purge
 	module load R/3.0.2-goolf-1.4.10
 
-**Warning:** do not forget to clean your ~/.bash_login file after the PS (remove the 'module load R/3.0.2-goolf-1.4.10' line).
+**Warning: do not forget to clean your ~/.bash_login file after the PS (remove the 'module load R/3.0.2-goolf-1.4.10' line).**
 
 #### Socket Communications
+
+First, let's load data and initialize variables.
+
     library(parallel)
 	
 	air = read.csv(url("http://packages.revolutionanalytics.com/datasets/AirOnTimeCSV2012/airOT201201.csv"))
@@ -393,6 +396,8 @@ First, load R 3.0.2 compiled with GCC as Intel one does not work for this. Add t
 	connector = paste0(connector, " oarsh")
 	comm_type = "PSOCK"
 	
+Then, setup the cluster.
+	
 	## set up the cluster
 	cl = makeCluster(nodes, type = comm_type, rshcmd = connector)	
 	## If a particular library <LIB> is needed, load it on the nodes with
@@ -402,8 +407,12 @@ First, load R 3.0.2 compiled with GCC as Intel one does not work for this. Add t
 	## export air dataset on all the nodes
 	clusterExport(cl, varlist=c("air"))
 	
+Do the parallel computation.
+	
 	## compute in parallel through sockets
 	as.data.frame(cbind(dest=dests, nb=parLapply(cl, dests, count_flights)))
+	
+Finalize and cleanup things.
 	
 	stopCluster(cl)
  
