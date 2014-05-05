@@ -56,7 +56,7 @@ The way SSH handles the keys and the configuration files is illustrated in the f
 In order to be able to login to the clusters, you have sent us through the Account request form the **public key** (i.e. `id_dsa.pub`, `id_rsa.pub` or the **public key** as saved by PuttY) you initially generated, enabling us to configure the `~/.ssh/authorized_keys` file of your account.  
 
 
-### Step 1: Connect to UL HPC 
+### Step 1a: Connect to UL HPC (Linux / Mac OS / Unix)
 
 Run the following commands in a terminal (substituting *yourlogin* with the login name you received from us):
 
@@ -86,12 +86,37 @@ Now you shall be able to issue the following (simpler) command to connect to the
 		(laptop)$> ssh chaos-cluster
 
 In the sequel, we assume these aliases to be defined. 
+
+### Step 1b: Connect to UL HPC (Windows)
+
+* Download [all the Putty tools](http://the.earth.li/~sgtatham/putty/latest/x86/putty.zip)
+  * extract them in an easy-to-find place, such as `C:\Putty`
+* load your private key under Pageant
+* open `Putty.exe` (connection type: `SSH`)
+  * In `Category:Session`:
+    * Host Name: `access-{chaos,gaia}.uni.lu`
+    * Port: 8022
+    * Saved session: `{Chaos,Gaia}`
+  * In `Category:Connection:Data` :
+    * Auto-login username: `yourlogin`
+  * Go back to `Category:Session` and click on "Save"
+  * Click on "Open"
+
 		
 ## Step 2: configure your SSH environment on all clusters
 
 The SSH key you provided us secure your connection __from__ your laptop (or personal workstation) __to__ the cluster frontends. It is thus important to protect them by a passphrase. 
 
-We will now configure a passphrase-free SSH key pair to permit a transparent connection from one cluster to another. 
+You shall have also a new key pair configured in your account to permit a bi-directional transparent connection from one cluster to the other (you can check that in your `~/.ssh/authorized_keys` and by successfully running: 
+
+		(access-gaia)$> ssh chaos-cluster
+
+or 
+
+		(access-chaos)$> ssh gaia-cluster
+
+If that's the case, you can ignore the rest of this section. 
+*Otherwise*, you will now have to configure a passphrase-free SSH key pair to permit a transparent connection from one cluster to another. 
 
 
 * Connect to the `chaos` cluster: 
