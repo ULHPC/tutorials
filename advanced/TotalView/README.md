@@ -4,7 +4,7 @@
 
 Copyright (c) 2014 Sebastien Varrette <Sebastien.Varrette@uni.lu>
 
-        Time-stamp: <Mar 2014-05-01 15:09 svarrette>
+        Time-stamp: <Mar 2014-05-06 13:15 svarrette>
 
 -------------------
 
@@ -20,7 +20,8 @@ This practical session will be organized as follows:
 * Action points (TP)
 * Examination and Data Analysis (TP)
 * Debugging Parallel Applications (TP)
-* Memory reports using MemoryScape (TP)* Remote Debugging
+* Memory reports using MemoryScape (TP)
+* Remote Debugging
 * CUDA Debugging
 * Xeon Phi Debugging
 * Memory Debugging with MemoryScape
@@ -35,7 +36,7 @@ While TotalView is available on the [UL HPC Platform](http://hpc.uni.lu), the sp
 ## Pre-Requisites
 
 * Install [Oracle's VirtualBox](http://www.virtualbox.org/)
-* Download the bootable ISO `tv_trainingcdU10_20140815.iso` (md5sum: *30a844ddda80ddf505c28eb4f4b6f1bf*) which contains: 
+* Download the bootable ISO [`tv_trainingcdU10_20140815.iso`](https://hpc.uni.lu/download/tv_trainingcdU10_20140815.iso) (md5sum: *30a844ddda80ddf505c28eb4f4b6f1bf*) which contains: 
   * a bootable Linux Ubuntu distribition
   * a version of TotalView
   * the PDF documents describing the practical session.
