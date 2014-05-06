@@ -87,65 +87,21 @@
 % Example of prompt usage
 % .......
 \begin{frame}[fragile]
-    \frametitle{MPI tasks: 3 Suites via \texttt{module}}
+    \frametitle{Pre-requisites}
+
     \begin{enumerate}
-      \item OpenMPI\hfill\myurl{http://www.open-mpi.org/}\\
-        \begin{cmdline}
-            \cmdlinenode{module load OpenMPI}\\
-            \cmdlinenode{make}\\
-            \cmdlinenode{mpirun -machinefile \$OAR\_NODEFILE /path/to/mpi\_prog}
-
-        \end{cmdline}
-
-      \item MVAPICH2\hfill\myurl{http://mvapich.cse.ohio-state.edu/overview/mvapich2}\\
-        \begin{cmdline}
-            \cmdlinenode{module purge}\\
-            \cmdlinenode{module load MVAPICH2}\\
-            \cmdlinenode{make clean \&\& make}\\
-            \cmdlinenode{mpirun -machinefile \$OAR\_NODEFILE /path/to/mpi\_prog}
-
-        \end{cmdline}
-
-      \item  Intel Cluster Toolkit Compiler Edition (\texttt{ictce} for short):
-        \begin{cmdline}
-            \cmdlinenode{module purge}\\
-            \cmdlinenode{module load ictce}\\
-            \cmdlinenode{make clean \&\& make}\\
-            \cmdlinenode{mpirun -machinefile \$OAR\_NODEFILE /path/to/mpi\_prog}
-
-        \end{cmdline}
+      \item HPC account
+      \item Have a look at the website hpc.uni.lu
+      \item Preferably use a Mac or Linux environment
     \end{enumerate}
 \end{frame}
 
 
-% .......
-\frame{
-  \frametitle{Full sample example \hfill{\tiny (\textit{i.e.} these slides)}}
 
-  \begin{block}{}
-      \begin{itemize}
-        \item To copy a full working example
-          \begin{cmdline}
-              \cmdlineentry{cd /path/to/cloning/dir}\\
-              \cmdlineentry{git clone https://github.com/Falkor/beamerthemeFalkor.git}\\
-              \cmdlineentry{cd /path/to/working/dir}\\
-              \cmdlineentry{rsync -avzu -L --exclude "*.git" $\backslash$\\~~~~~~~/path/to/cloning/dir/beamerthemeFalkor/ .}\\
-              \cmdlineentry{make}
-          \end{cmdline}
-      \end{itemize}
-  \end{block}
-  \begin{itemize}
-    \item This will generate the file \texttt{sample\_slides.pdf}.
-      \begin{itemize}
-          \itemhook adapt accordingly...
-      \end{itemize}
-  \end{itemize}
-
-}
 
 
 % ===============================================
-\section{Some example slides for the TP}
+\section{Objectives}
 
 % ............
 \frame{
@@ -153,107 +109,62 @@
   \frametitle{Objectives of the TP}
 
   \begin{itemize}
-    \item Better understand the usage of XXX on the \ULHPC
+    \item Connecting to the \ULHPC
+      \begin{itemize}
+    		\itemhook SSH configuration
+    		\itemhook Internal SSH key
+    		\itemhook overcome port filtering with ProxyCommand
+	    \end{itemize}
+    \item Discovering, visualizing and reserving UL HPC resources
+      \begin{itemize}
+    		\itemhook Working environment
+    		\itemhook Web monitoring interfaces
+    		\itemhook using OAR
+    		\itemhook Job management
+    		\itemhook Modules
+	    \end{itemize}
+
   \end{itemize}
-  \vfill Add logo of the soft
-  \begin{alertblock}{}
-      \begin{itemize}
-        \item Key objective 1
-          \begin{itemize}
-              \itemhook at the heart of ...
-          \end{itemize}
-        \item Key objective 2
-          \begin{itemize}
-              \itemhook select benchmarking tools to reflect an HPC usage
-          \end{itemize}
-      \end{itemize}
-  \end{alertblock}
-
-
-  ~\vfill
-  {\tiny
-    \mycite{SBAC-PAD13} S. Varrette,  M. Guzek, V. Plugaru, J. E. Sanchez, and P. Bouvry.
-    "\textit{HPC Performance and Energy-Efficiency of Xen, KVM and VMware Hypervisors}". In Proc. of the 25th IEEE Symposium on Computer Architecture and High Performance (SBAC-PAD'13), Oct 2013.
-    % Do not forget the below space
-
-  }
 
 }
 
-\frame[containsverbatim]{
-  \frametitle{A slide with listings}%\frametitle{Problem}
-  \begin{block}{A JavaScript program}
-      \begin{lstlisting}[basicstyle=\tiny,numbers=none]
-          function fibo(n)
-          {
-            if( n <= 1 )
-            {
-              return n;
-            }
-            var res = fibo(n-1) + fibo(n-2);
-            return res;
-          }
-          n = parseFloat(arguments[1])
-          nn = fibo(n)
-          print(nn)
-      \end{lstlisting}
-
-  \end{block}
-
-}
-
-\section{Example 1}
+\section{Connecting to the ULHPC}
 
 % .......
 \frame{
-  \frametitle{Example 1}
-  \vfill
-  {\tiny  \href{https://github.com/ULHPC/tutorials/tree/devel/advanced/HPL\#runs-on-a-single-node}{[Online]}}
-  % \begin{exampleblock}{Title}
-  %     \begin{itemize}
-  %       \item recall description of the task (following github link)
-  %     \end{itemize}
-  % \end{exampleblock}
-  % \pause
-  % Eventually give some hint on the solution
+  \frametitle{SSH set-up}
+
+      \begin{itemize}
+    	\item SSH configuration
+
+            \begin{cmdline}
+              \cmdlineentry{ssh chaos-cluster}\\
+              \cmdlineentry{ssh gaia-cluster}\\
+          \end{cmdline}
+    	
+    	
+    	\item Internal SSH key
+    	
+   		\item Overcome port filtering with ProxyCommand
+      \end{itemize}
+      
 }
 
-\section{Example 2}
+\section{Discovering, visualizing and reserving UL HPC resources}
 
 % .......
 \frame{
-  \frametitle{Example 2}
+  \frametitle{Basic usage}
 
-  \begin{exampleblock}{Title}
       \begin{itemize}
-        \item recall description of the task
+    		\item Working environment
+    		\item Web monitoring interfaces
+    		\item using OAR
+    		\item Job management
+    		\item Modules
       \end{itemize}
-  \end{exampleblock}
-  \pause
-  Eventually give some hint on the solutioon
 }
 
-
-\section{Conclusion: Final plot}
-
-% ............
-\begin{frame}
-    \frametitle{Conclusion}
-
-    \begin{itemize}
-      \item Summary point 1
-      \item Summary point 2
-    \end{itemize}
-
-    \begin{block}{Perspectives}
-        \begin{itemize}
-          \item Improve point 1
-          \item Improve point 2
-        \end{itemize}
-    \end{block}
-
-
-\end{frame}
 
 \section*{Thank you for your attention...}
 \frame{
@@ -268,36 +179,13 @@
   }
 }
 
-\newcounter{finalframe}
-\setcounter{finalframe}{\value{framenumber}}
-
-% \appendix
-
-\frame{
-  \frametitle{Appendix}
-
-  \begin{acronym}\setlength\itemsep{-0.3em}
-      \acro{DFT}{Discrete Fourier Transform}
-      \acro{EA}{Evolutionary Algorithm}
-      \acro{PRNG}{[Pseudo]-Random Number Generator}
-      \acro{UL}{University of Luxembourg}
-  \end{acronym}
-
-  \textit{*Note: notice the slide number below...}
-}
-
-% .......
-\frame{
-  \frametitle{Another appendix slide}
-
-  \textit{Note again the slide number below...}
-
-}
-
-
-\setcounter{framenumber}{\value{finalframe}}
-
 \end{document}
+$\backslash$\\~~~~~~~/path/to/cloning/dir/beamerthemeFalkor/ .}\\
+              \cmdlineentry{make}
+          \end{cmdline}
+
+}
+
 
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 % eof
