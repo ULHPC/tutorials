@@ -3,7 +3,7 @@
 
 Copyright (c) 2014 [Sebastien Varrette](mailto:<Sebastien.Varrette@uni.lu>) [www](http://varrette.gforge.uni.lu)
 
-        Time-stamp: <Fri 2014-02-28 10:41 svarrette>
+        Time-stamp: <Mar 2014-05-06 10:53 svarrette>
 
 -------------------
 
@@ -160,7 +160,7 @@ If that's the case, you can ignore the rest of this section.
   		
 * add an alias to facilitate the connection to each cluster by adding the following SSH configuration entry in the file `~/.ssh/config`: 
 
-		Host gaia chaos
+		Host gaia-cluster chaos-cluster
     		User yourlogin
     		Port 8022
 
