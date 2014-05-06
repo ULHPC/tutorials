@@ -3,7 +3,7 @@
 
 Copyright (c) 2014 [Sebastien Varrette](mailto:<Sebastien.Varrette@uni.lu>) [www](http://varrette.gforge.uni.lu)
 
-        Time-stamp: <Mar 2014-05-06 10:54 svarrette>
+        Time-stamp: <Mar 2014-05-06 12:06 svarrette>
 
 -------------------
 
@@ -236,7 +236,7 @@ In the sequel, replace `<login>` in the proposed commands with you login on the 
 
 ## Step 1: the working environment 
 
-* [reference documentation](http://ulhpc_www.dev/users/docs/env.html)
+* [reference documentation](http://hpc.uni.lu/users/docs/env.html)
 
 After a successful login onto one of the access node (see [Cluster Access](https://hpc.uni.lu/users/docs/access.html)), you end into your personal homedir `$HOME` which is shared over NFS between the access node and the computing nodes.
 

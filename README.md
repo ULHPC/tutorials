@@ -3,7 +3,7 @@
 
 Copyright (c) 2013 [Sebastien Varrette](mailto:<Sebastien.Varrette@uni.lu>) [www](http://varrette.gforge.uni.lu)
 
-        Time-stamp: <Lun 2014-03-17 22:35 svarrette>
+        Time-stamp: <Mar 2014-05-06 13:11 svarrette>
 
 -------------------
 
@@ -33,17 +33,21 @@ For each subject, you will have a dedicated directory organized as follows:
   * (eventually) `make plot` to draw a plot illustrating the results obtained
     through the run.
 
-## List of proposed tutorials:
+## List of proposed tutorials (cf [UL HPC School](http://hpc.uni.lu/hpc-school/)):
 
 __Basic tutorials__:
 
-* [Getting started](https://github.com/ULHPC/tutorials/tree/devel/basic/getting_started)
+* PS1: [Getting started](https://github.com/ULHPC/tutorials/tree/devel/basic/getting_started)
+* PS2: [HPC workflow with sequential jobs](https://github.com/ULHPC/tutorials/tree/devel/basic/sequential_jobs)
 
 __Advanced tutorials__:
 
-* [running the OSU Micro-Banchmarks](https://github.com/ULHPC/tutorials/tree/devel/advanced/OSU_MicroBenchmarks)
-* [running HPL](https://github.com/ULHPC/tutorials/tree/devel/advanced/HPL)
-* [running MATLAB](https://github.com/ULHPC/tutorials/tree/devel/advanced/MATLAB)
+* PS3: [running the OSU Micro-Banchmarks](https://github.com/ULHPC/tutorials/tree/devel/advanced/OSU_MicroBenchmarks)
+* PS3: [running HPL](https://github.com/ULHPC/tutorials/tree/devel/advanced/HPL)
+* PS4: [Direct, Reverse and parallel Memory debugging with TotalView](https://github.com/ULHPC/tutorials/tree/devel/advanced/TotalView))
+* PS5: [running MATLAB](https://github.com/ULHPC/tutorials/tree/devel/advanced/MATLAB)
+* PS6: [running R](https://github.com/ULHPC/tutorials/tree/devel/advanced/R)
+* PS7: [running Bio-informatic softwares](https://github.com/ULHPC/tutorials/tree/devel/advanced/Bioinformatics)
 
 ## Proposing a new tutorial / Contributing to this repository 
 
