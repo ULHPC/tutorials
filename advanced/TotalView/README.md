@@ -60,7 +60,7 @@ To create a new VM:
  You're now ready for the tutorial.
 
 
-# Tutorial
+## Tutorial
 
 
 - [Content of the tutorial](https://github.com/ULHPC/tutorials/blob/devel/advanced/TotalView/TV_TrainingLab_Manual20130603_EN.pdf?raw=true)
