@@ -3,7 +3,7 @@
 
 Copyright (c) 2014 [Sebastien Varrette](mailto:<Sebastien.Varrette@uni.lu>) [www](http://varrette.gforge.uni.lu)
 
-        Time-stamp: <Mar 2014-05-06 10:53 svarrette>
+        Time-stamp: <Mar 2014-05-06 10:54 svarrette>
 
 -------------------
 
@@ -164,9 +164,9 @@ If that's the case, you can ignore the rest of this section.
     		User yourlogin
     		Port 8022
 
-		Host gaia
+		Host gaia-cluster
     		Hostname access-gaia.uni.lu
-		Host chaos
+		Host chaos-cluster
     		Hostname access-chaos.uni.lu
   		
 You'll have to setup the same key package on the gaia cluster such that you can then work indefferently on one or another cluster. It's also the occasion to learn how to add a new SSH key to your authorized key portfolio. 
