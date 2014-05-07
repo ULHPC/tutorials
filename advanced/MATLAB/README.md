@@ -224,7 +224,8 @@ In this section we will use the _example2.m_ script which shows:
 By default the parallel section of the script uses up to 4 threads, thus for a first test we will request 4 cores on 1
 compute node for 5 minutes:
   
-        (gaia-frontend)$> cd ~/matlab-tests
+        (gaia-frontend)$> cd ~/matlab-tutorial
+        # Create a file called matlab-minlauncher.sh with launching commands
         (gaia-frontend)$> cat << EOF > matlab-minlauncher.sh
         #!/bin/bash
         source /etc/profile
@@ -232,7 +233,7 @@ compute node for 5 minutes:
         matlab -nodisplay -nosplash -r example2 -logfile example2.out
         EOF
         (gaia-frontend)$> chmod +x matlab-minlauncher.sh
-        (gaia-frontend)$> oarsub -l nodes=1/core=4,walltime=00:05:00 ~/matlab-tests/matlab-minlauncher.sh
+        (gaia-frontend)$> oarsub -l nodes=1/core=4,walltime=00:05:00 ~/matlab-tutorial/matlab-minlauncher.sh
         # we now wait for the job to complete execution
         (gaia-frontend)$> cat example2.out
 				    < M A T L A B (R) >
@@ -281,7 +282,7 @@ compute node for 5 minutes:
 The script is also able to read an environment variable _MATLABMP_ and create as many parallel threads as specified in this variable.
 We will now generate another launcher which will set this variable to the number of cores we specified to OAR.
 
-        (gaia-frontend)$> cd ~/matlab-tests
+        (gaia-frontend)$> cd ~/matlab-tutorial
         (gaia-frontend)$> cat << EOF > matlab-minlauncher2.sh
         #!/bin/bash
         source /etc/profile
@@ -290,7 +291,7 @@ We will now generate another launcher which will set this variable to the number
         matlab -nodisplay -nosplash -r example2 -logfile example2.out
         EOF
         (gaia-frontend)$> chmod +x matlab-minlauncher2.sh
-        (gaia-frontend)$> oarsub -l nodes=1/core=6,walltime=00:05:00 ~/matlab-tests/matlab-minlauncher2.sh
+        (gaia-frontend)$> oarsub -l nodes=1/core=6,walltime=00:05:00 ~/matlab-tutorial/matlab-minlauncher2.sh
         # we now wait for the job to complete execution
         (gaia-frontend)$> head -n 17 example2.out 
 				      < M A T L A B (R) >
@@ -317,8 +318,8 @@ has read the MATLABMP environment variable and has used in its execution.
 As shown previously, the jobs we have submitted did not run on GPU-enabled nodes, thus in this last example we will specifically
 target GPU nodes and see that the last test of example2.m will also be executed:
 
-      (gaia-frontend)$> cd ~/matlab-tests
-      (gaia-frontend)$> oarsub -l nodes=1/core=6,walltime=00:05:00 -p "gpu='YES'" ~/matlab-tests/matlab-minlauncher2.sh
+      (gaia-frontend)$> cd ~/matlab-tutorial
+      (gaia-frontend)$> oarsub -l nodes=1/core=6,walltime=00:05:00 -p "gpu='YES'" ~/matlab-tutorial/matlab-minlauncher2.sh
         # we now wait for the job to complete execution
       (gaia-frontend)$> tail -n 5 example2.out 
         -- GPU test 
