@@ -4,7 +4,7 @@
 
 Copyright (c) 2013 Sebastien Varrette <Sebastien.Varrette@uni.lu>
 
-        Time-stamp: <Mer 2014-05-07 16:52 svarrette>
+        Time-stamp: <Mer 2014-05-07 16:59 svarrette>
 
 -------------------
 
@@ -75,7 +75,13 @@ Now you shall get the latest release of the [OSU micro-benchmarks](http://mvapic
     $> tar xvzf osu-micro-benchmarks-4.3.tar.gz
     $> cd osu-micro-benchmarks-4.3
 
-There are two tests, `osu_cas_flush` and `osu_fop_flush`, which uses some MPI primitives defined in the MPI 3.0 standard, thus unavailable in OpenMPI and iMPI on the cluster. So we will have to patch the sources to prevent the generation of these two benchamrks:
+### Below notes only apply for OSU Micro-benchmark 4.2 !!! 
+
+In the 4.2 version of the micro-benchmarks, there are two tests required to be
+compiled `osu_cas_flush` and `osu_fop_flush`, which uses some MPI primitives
+defined in the MPI 3.0 standard, thus unavailable in OpenMPI and iMPI on the
+cluster. So we will have to patch the sources to prevent the generation of these
+two benchamrks: 
 
 	$> cd ~/TP/osu-micro-benchmarks-4.3
 	$> cd mpi/one-sided
