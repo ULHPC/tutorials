@@ -60,7 +60,7 @@ being proposed later on as exercises.
         (yourmachine)$> ssh access-gaia.uni.lu
      
         # Request 1 full node in an interactive job:
-        (gaia-frontend)$> oarsub -I -l node=1,walltime=00:30:00
+        (gaia-frontend)$> oarsub -I -l nodes=1,walltime=00:30:00
 
         # Check the ABySS versions installed on the clusters:
         (node)$> module available 2>&1 | grep -i abyss
@@ -142,7 +142,7 @@ being proposed later on as exercises.
         (yourmachine)$> ssh access-gaia.uni.lu
      
         # Request 1 full node in an interactive job:
-        (gaia-frontend)$> oarsub -I -l node=1,walltime=00:30:00
+        (gaia-frontend)$> oarsub -I -l nodes=1,walltime=00:30:00
 
         # Check the GROMACS versions installed on the clusters:
         (node)$> module available 2>&1 | grep -i gromacs
@@ -231,7 +231,7 @@ versions prebuilt for Linux by the developers.
         (yourmachine)$> ssh access-gaia.uni.lu
      
         # Request 1 full node in an interactive job:
-        (gaia-frontend)$> oarsub -I -l node=1,walltime=00:30:00
+        (gaia-frontend)$> oarsub -I -l nodes=1,walltime=00:30:00
 
         # Create a folder for the new software and go to it
         (node)$> mkdir $WORK/newsoft
@@ -314,7 +314,7 @@ being proposed later on as exercises.
         (yourmachine)$> ssh access-gaia.uni.lu
      
         # Request 1 full node in an interactive job:
-        (gaia-frontend)$> oarsub -I -l node=1,walltime=00:30:00
+        (gaia-frontend)$> oarsub -I -l nodes=1,walltime=00:30:00
 
         # Check the mpiBLAST versions installed on the clusters:
         (node)$> module available 2>&1 | grep -i mpiblast
