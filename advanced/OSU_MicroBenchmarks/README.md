@@ -4,7 +4,7 @@
 
 Copyright (c) 2013 Sebastien Varrette <Sebastien.Varrette@uni.lu>
 
-        Time-stamp: <Mer 2014-05-07 17:07 svarrette>
+        Time-stamp: <Mer 2014-05-07 17:22 svarrette>
 
 -------------------
 
@@ -136,7 +136,7 @@ We will repeat the procedure, this time using OpenMPI.
 
 	$> cd ~/TP/osu-micro-benchmarks-4.3/
 	$> module purge
-	$> module load OpenMPI
+	$> module load OpenMPI/1.7.3-GCC-4.8.2
 	$> mkdir build.openmpi && cd build.openmpi
 	$> ../configure CC=mpicc --prefix=`pwd`/install
 	$> make && make install 
@@ -157,7 +157,7 @@ Again, we will rely on the [MPI generic launcher](https://github.com/ULHPC/launc
 	# Defaults settings for running the OSU Micro benchmarks wompiled with OpenMPI
 	NAME=openmpi
 	
-	MODULE_TO_LOADstr=OpenMPI
+	MODULE_TO_LOADstr=OpenMPI/1.7.3-GCC-4.8.2
 	MPI_PROG_BASEDIR=$HOME/TP/osu-micro-benchmarks-4.3/build.openmpi/install/libexec/osu-micro-benchmarks/mpi/one-sided/
 	
 	MPI_PROGstr=osu_get_latency,osu_get_bw
