@@ -233,7 +233,7 @@ In particular, once in the `advanced/OSU_MicroBenchmarks` directory:
 * you will find the patch file to apply to the version 4.3 in `src/osu-micro-benchmarks-4.2/mpi/one-sided/Makefile.am.patch`
 * The different configuration files for the [MPI generic launcher](https://github.com/ULHPC/launcher-scripts/blob/devel/bash/MPI/mpi_launcher.sh) in `runs/`
 * Some sample output data in `runs/data/`
-* run `make build` to build teh different versions of the OSU Micro-benchmarks
+* run `make build` to build the different versions of the OSU Micro-benchmarks
 * run `make run_interactive` to run the benchmarks, assuming you are in an interactive job
 * run `make run` to run a passive job executing the benchmarks
 * run `make plot` to invoke the [Gnuplot](http://www.gnuplot.info/) script

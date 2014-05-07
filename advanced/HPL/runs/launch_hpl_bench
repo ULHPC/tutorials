@@ -144,7 +144,7 @@ EOF
 print_help() {
     less <<EOF
 NAME
-    $COMMAND -- Launch an HPL run on teh reserve nodes
+    $COMMAND -- Launch an HPL run on the reserve nodes
 
 SYNOPSIS
     $COMMAND [-V | -h]
