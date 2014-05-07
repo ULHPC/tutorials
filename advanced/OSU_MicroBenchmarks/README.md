@@ -4,7 +4,7 @@
 
 Copyright (c) 2013 Sebastien Varrette <Sebastien.Varrette@uni.lu>
 
-        Time-stamp: <Mer 2014-05-07 17:02 svarrette>
+        Time-stamp: <Mer 2014-05-07 17:07 svarrette>
 
 -------------------
 
@@ -113,7 +113,6 @@ Now you can use the [MPI generic launcher](https://github.com/ULHPC/launcher-scr
 If you want to avoid this long list of arguments, just create a file `launcher_osu_impi.default.conf` as follows: 
 
 	$> cat launcher_osu_impi.default.conf
-	cat launcher_osu_impi.default.conf
 	# Defaults settings for running the OSU Micro benchmarks wompiled with Intel MPI
 	NAME=impi
 	
