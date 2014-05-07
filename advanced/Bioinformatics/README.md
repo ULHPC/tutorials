@@ -176,13 +176,9 @@ We will perform our tests with the hybrid version:
         # Check the capabilities of the mdrun binary, note its suffix:
         (node)$> mdrun_mpi -version 2>/dev/null
 
-        # Create a test directory and go to it
-        (node)$> mkdir ~/bioinfo-tutorial/gromacs
+        # Go to the test directory
         (node)$> cd ~/bioinfo-tutorial/gromacs
        
-        # Copy the input file to the current directory
-        (node)$> cp /scratch/users/vplugaru/bioinfo-inputs/gromacs/pr.tpr .
-        
         # Set the number of OpenMP threads to 1
         (node)$> export OMP_NUM_THREADS=1
         
@@ -264,9 +260,11 @@ versions prebuilt for Linux by the developers.
 
 Now we will make a quick TopHat test, using the provided sample files:
 
-        # Go to the test directory and unpack the sample dataset
+        # Go to the test directory, unpack the sample dataset and go to it
         (node)$> cd ~/bioinfo-tutorial/tophat
         (node)$> tar xzvf test_data.tar.gz
+        (node)$> cd test_data
+
         
         # Launch TopHat, with Bowtie2 in serial mode
         (node)$> tophat -r 20 test_ref reads_1.fq reads_2.fq
@@ -281,7 +279,7 @@ Next, we will make a longer test, where it will be interesting to monitor the To
 and parallel stages (left as an exercise).
 
         # Load the file which will export $TOPHATTEST2 in the environment
-        (node)$> source ~/bioinfo-tutoria/tophat/test2_path
+        (node)$> source ~/bioinfo-tutorial/tophat/test2_path
         
         # Launch TopHat, with Bowtie2 in parallel mode
         (node)$> tophat2 -p 12 -g 1 -r 200 --mate-std-dev 30 -o ./  $TOPHATTEST2/chr10.hs $TOPHATTEST2/SRR027888.SRR027890_chr10_1.fastq $TOPHATTEST2/SRR027888.SRR027890_chr10_2.fastq
