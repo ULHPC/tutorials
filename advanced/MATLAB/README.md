@@ -290,12 +290,12 @@ We will now generate another launcher which will set this variable to the number
         module load MATLAB/2013a
         cd ~/matlab-tutorial
         export MATLABMP=$(cat $OAR_NODEFILE | wc -l)
-        matlab -nodisplay -nosplash -r example2 -logfile example2.out
+        matlab -nodisplay -nosplash -r example2 -logfile example2b.out
         EOF
         (gaia-frontend)$> chmod +x matlab-minlauncher2.sh
         (gaia-frontend)$> oarsub -l nodes=1/core=6,walltime=00:05:00 ~/matlab-tutorial/matlab-minlauncher2.sh
         # we now wait for the job to complete execution
-        (gaia-frontend)$> head -n 17 example2.out 
+        (gaia-frontend)$> head -n 17 example2b.out 
 				      < M A T L A B (R) >
 			    Copyright 1984-2013 The MathWorks, Inc.
 			      R2013a (8.1.0.604) 64-bit (glnxa64)
@@ -318,12 +318,14 @@ We have submitted an OAR job requesting 6 cores for 5 minutes and used the secon
 has read the MATLABMP environment variable and has used in its execution.
 
 As shown previously, the jobs we have submitted did not run on GPU-enabled nodes, thus in this last example we will specifically
-target GPU nodes and see that the last test of example2.m will also be executed:
+target GPU nodes and see that the last test of example2.m will also be executed.
+Before testing the following commands, edit the `matlab-minlauncher2.sh` script and make MATLAB store its output in a `example2c.out`
+file.
 
       (gaia-frontend)$> cd ~/matlab-tutorial
       (gaia-frontend)$> oarsub -l nodes=1/core=6,walltime=00:05:00 -p "gpu='YES'" ~/matlab-tutorial/matlab-minlauncher2.sh
-        # we now wait for the job to complete execution
-      (gaia-frontend)$> tail -n 5 example2.out 
+      # now wait for the job to complete execution, then check the output file
+      (gaia-frontend)$> tail -n 5 example2c.out 
         -- GPU test 
         -- GPU Execution time: 28.192080s.
         -- GPU Execution time with overhead: 30.499892s.
