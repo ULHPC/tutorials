@@ -334,10 +334,14 @@ When the job is running and you are connected load R module (version compiled wi
 	jdoe@access:~$ R
 
 
-We will use a large dataset (400K+ rows) to illustrate the effect of parallelization in R.
+We will use a large dataset (400K+ rows) to illustrate the effect of parallelization in R (as dataset is large, the following line may take time to complete depending on your network speed).
 
     > air = read.csv(url("http://packages.revolutionanalytics.com/datasets/AirOnTimeCSV2012/airOT201201.csv"))
 
+**NOTE**: If downloading the air dataset (above line) takes too much time you can load it from a file on the cluster:
+
+	> load("~jemeras/data/air.rda")
+ 
 If we want to have the number of flights for each destination `DEST` we can do the following:
 
     dests = as.character(unique(air$DEST))
@@ -366,6 +370,12 @@ Using several cores makes the process shorter.
 	 MCLAPPLY 233.8035 235.1089 235.9138 236.6393 263.934    10
     
 
+You can now save the `air` R object to reuse it in an other R session.
+
+    > save(air, file="./air.rda")
+
+Then quit your current R session but **do not** end your current oar job.
+
 ### Cluster Parallelization
 The `parLapply()` function will create a cluster of processes, which could even reside on different machines on the network, and they communicate via TCP/IP or MPI in order to pass the tasks and results between each other.
 Thus you have to load necessary packages and export necessary data and functions to the global environment of the cluster workers.
@@ -385,8 +395,9 @@ First, let's load data and initialize variables.
 
     library(parallel)
 	
-	air = read.csv(url("http://packages.revolutionanalytics.com/datasets/AirOnTimeCSV2012/airOT201201.csv"))
-    dests = as.character(unique(air$DEST))
+	# air = read.csv(url("http://packages.revolutionanalytics.com/datasets/AirOnTimeCSV2012/airOT201201.csv"))  # load again the air data.table from http
+    load("./air.rda")	# read saved R object from file "air.rda"
+	dests = as.character(unique(air$DEST))
 	count_flights = function(x){length(which(air$DEST == x))}
 	
 	## set cluster characteristics -- get OAR nodes to use, type of communication
