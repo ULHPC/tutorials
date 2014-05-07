@@ -4,7 +4,7 @@
 
 Copyright (c) 2013 Sebastien Varrette <Sebastien.Varrette@uni.lu>
 
-        Time-stamp: <Mer 2014-05-07 16:59 svarrette>
+        Time-stamp: <Mer 2014-05-07 17:02 svarrette>
 
 -------------------
 
@@ -74,37 +74,6 @@ Now you shall get the latest release of the [OSU micro-benchmarks](http://mvapic
     $> wget http://mvapich.cse.ohio-state.edu/benchmarks/osu-micro-benchmarks-4.3.tar.gz
     $> tar xvzf osu-micro-benchmarks-4.3.tar.gz
     $> cd osu-micro-benchmarks-4.3
-
-### Below notes only apply for OSU Micro-benchmark 4.2 !!! 
-
-In the 4.2 version of the micro-benchmarks, there are two tests required to be
-compiled `osu_cas_flush` and `osu_fop_flush`, which uses some MPI primitives
-defined in the MPI 3.0 standard, thus unavailable in OpenMPI and iMPI on the
-cluster. So we will have to patch the sources to prevent the generation of these
-two benchamrks: 
-
-	$> cd ~/TP/osu-micro-benchmarks-4.3
-	$> cd mpi/one-sided
-	
-Now create a file `Makefile.am.patch` with the following content: 
-
-	$> cat Makefile.am.patch
-	--- Makefile.am.old     2013-11-12 09:44:11.916456641 +0100
-	+++ Makefile.am 2013-11-12 09:44:24.363424661 +0100
-	@@ -1,2 +1,2 @@
-	 one_sideddir = $(pkglibexecdir)/mpi/one-sided
-	-one_sided_PROGRAMS = osu_acc_latency osu_passive_acc_latency osu_get_bw osu_get_latency osu_put_bibw osu_put_bw osu_put_latency osu_passive_get_latency osu_passive_get_bw osu_passive_put_latency osu_passive_put_bw osu_cas_flush osu_fop_flush
-	+one_sided_PROGRAMS = osu_acc_latency osu_passive_acc_latency osu_get_bw osu_get_latency osu_put_bibw osu_put_bw osu_put_latency osu_passive_get_latency osu_passive_get_bw osu_passive_put_latency osu_passive_put_bw
-	
-… And apply the patch as follows:
-
-	$> patch -p0 < Makefile.am.patch
-	patching file Makefile.am
-	
-And update the Autotools chain configuration :
-
-	$> cd ~/TP/osu-micro-benchmarks-4.3
-	$> autoreconf && automake
 
 
 ## OSU Micro-benchmarks with Intel MPI
