@@ -26,9 +26,9 @@ along with their dependencies, before following the instructions in the next sec
 
         (gaia-frontend)$> mkdir ~/matlab-tutorial
         (gaia-frontend)$> cd ~/matlab-tutorial
-        (gaia-frontend)$> wget https://raw.github.com/ULHPC/tutorials/devel/advanced/MATLAB/example1.m
-        (gaia-frontend)$> wget https://raw.github.com/ULHPC/tutorials/devel/advanced/MATLAB/example2.m
-        (gaia-frontend)$> wget https://raw.github.com/ULHPC/tutorials/devel/advanced/MATLAB/yahoo_finance_data.m
+        (gaia-frontend)$> wget --no-check-certificate https://raw.github.com/ULHPC/tutorials/devel/advanced/MATLAB/example1.m
+        (gaia-frontend)$> wget --no-check-certificate https://raw.github.com/ULHPC/tutorials/devel/advanced/MATLAB/example2.m
+        (gaia-frontend)$> wget --no-check-certificate https://raw.github.com/ULHPC/tutorials/devel/advanced/MATLAB/yahoo_finance_data.m
 
 Or simply clone the full tutorials repository and make a link to the MATLAB tutorial:
 
