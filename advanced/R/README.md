@@ -107,12 +107,13 @@ Thus, when loading `ggplot2` library, this dataset is available under the name: 
 (OPTIONAL) An other way to get the dataset would be to download, extract and read it with:
 
     movies_url = "http://had.co.nz/data/movies/movies.tab.gz"								# this is the http url of data file
-	## Download the file from given url to given destination file					
-    download.file(movies_url, destfile="/tmp/movies.tab.gz")								# we download the data file with `download.file()` function and save it in /tmp
+	## Download the file from given url to given destination file
+	system("mkdir ~/tmp")					
+    download.file(movies_url, destfile="~/tmp/movies.tab.gz")								# we download the data file with `download.file()` function and save it in /tmp
 	## Extract the .gz using system's gzip command
-    system("gzip -d /tmp/movies.tab.gz")													# `system()` function executes system calls
+    system("gzip -d ~/tmp/movies.tab.gz")													# `system()` function executes system calls
 	## Load the file in a dataframe with read.table() function
-    movies = read.table("/tmp/movies.tab", sep="\t", header=TRUE, quote="", comment="")		# `read.table()` function reads a file and stores it in a data.frame object
+    movies = read.table("~/tmp/movies.tab", sep="\t", header=TRUE, quote="", comment="")		# `read.table()` function reads a file and stores it in a data.frame object
 
 
 Now let's take a (reproducible) sample of 1000 movies and plot their distribution regarding their rating.
