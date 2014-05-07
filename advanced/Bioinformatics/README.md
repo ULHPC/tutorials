@@ -106,6 +106,8 @@ The execution should take around 12 minutes, meanwhile we can check its progress
          (gaia-frontend)$> tail -f ~/bioinfo-tutorial/abyss/abysstest.*
          # We exit the tail program with CTRL-C
 
+We can also connect to the job (recall oarsub -C $JOBID) from a different terminal or Screen window and see the different ABySS phases with `htop`.
+
 Because the `abyss-pe` workflow (pipeline) includes several processing steps with different applications of which only ABYSS-P is MPI-parallel,
 the speedup obtained by using more than one node will be limited to ABYSS-P's execution. Several of the other applications that are part of the 
 processing stages are however parallelized using OpenMP and pthreads and will thus take advantage of the cores available on the node where
