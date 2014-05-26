@@ -9,7 +9,7 @@ Make sure you have followed the tutorial "Getting started".
 
 For many users, the typical usage of the HPC facilities is to execute 1 program with many parameters.
 On your local machine, you can just start your program 100 times sequentially.
-However, you will obtain better results if you are parallelize the executions on a HPC Cluster.
+However, you will obtain better results if you parallelize the executions on a HPC Cluster.
 
 During this session, we will see 3 use cases:
 
@@ -25,13 +25,13 @@ We will use the following github repositories:
 
 # Practical session 2
 
-## Connect the the cluster and set-up the environment for this tutorial
+## Connect the the cluster access node, and set-up the environment for this tutorial
 
-    ssh chaos-cluster
+    (yourmachine)$> ssh chaos-cluster
 
 If your network connection is unstable, use [screen](http://www.mechanicalkeys.com/files/os/notes/tm.html):
 
-    screen
+    (access)$> screen
 
 
 We will use 2 directory:
@@ -42,71 +42,79 @@ We will use 2 directory:
 
 Create a sub directory $WORK/PS2, and work inside it
 
-    mkdir $WORK/PS2
-    cd $WORK/PS2
+    (access)$> mkdir $WORK/PS2
+    (access)$> cd $WORK/PS2
 
 In the following parts, we will assume that you are working in this directory.
 
 Clone the repositories `ULHPC/tutorials` and `ULHPC/launcher-scripts.git`
 
-    git clone https://github.com/ULHPC/launcher-scripts.git
-    git clone https://github.com/ULHPC/tutorials.git
+    (access)$> git clone https://github.com/ULHPC/launcher-scripts.git
+    (access)$> git clone https://github.com/ULHPC/tutorials.git
 
+In order to edit files in your terminal, you are expected to use your preferred text editor:
 
+* [nano](http://www.howtogeek.com/howto/42980/the-beginners-guide-to-nano-the-linux-command-line-text-editor/)
+* [vim](http://vimdoc.sourceforge.net/htmldoc/usr_toc.html)
+* [emacs](http://www.jesshamrick.com/2012/09/10/absolute-beginners-guide-to-emacs/)
+* ...
+
+If you have never used any of them, `nano` is intuitive, but vim and emacs are more powerful.
 
 
 ## Exercise 1: C program & circuit satisfiability
 
 Get the source code and compile it on a node:
 
-    oarsub -I
-    cd $WORK/PS2
-    gcc tutorials/basic/sequential_jobs/scripts/circuit.c -o circuit
-    exit
+    (access)$> oarsub -I
+    (node)$> cd $WORK/PS2
+    (node)$> gcc tutorials/basic/sequential_jobs/scripts/circuit.c -o circuit
+    (node)$> exit
 
 We want to test all the parameters, so we create a parameter file with all the numbers from 1 to 65535.
 
-    seq 65535 > $WORK/PS2/param_file
+    (access)$> seq 65535 > $WORK/PS2/param_file
 
 
 #### Step 1: Naive workflow
 
-We will use the launcher `NAIVE_AKA_BAD_launcher_serial.sh` in `$WORK/PS2/launcher-scripts/bash/serial/`.
+We will use the launcher `NAIVE_AKA_BAD_launcher_serial.sh` (full path: `$WORK/PS2/launcher-scripts/bash/serial/NAIVE_AKA_BAD_launcher_serial.sh`).
 
 Edit the following variables:
 
 * `TASK` must contain the path of the executable, 
 * `ARG_TASK_FILE` must contain the path of your parameter file.
 
+        (node)$> nano $WORK/PS2/launcher-scripts/bash/serial/NAIVE_AKA_BAD_launcher_serial.sh
+
         TASK="$WORK/PS2/circuit"
         ARG_TASK_FILE=$WORK/PS2/param_file
 
-Launch the job, in interactive mode:
+Launch the job, in interactive mode and execute the launcher:
 
-    oarsub -I -l core=1
+    (access)$> oarsub -I -l core=1
+    (node)$ $WORK/PS2/launcher-scripts/bash/serial/NAIVE_AKA_BAD_launcher_serial.sh
 
-Execute the launcher:
+**Or** in passive mode (the output will be written in a file named `OAR.<JOBID>.stdout`)
 
-    $WORK/PS2/launcher-scripts/bash/serial/NAIVE_AKA_BAD_launcher_serial.sh
-
-Or in passive mode (the output will be written in a file named `OAR.<JOBID>.stdout`)
-
-    oarsub -l core=1 $WORK/PS2/launcher-scripts/bash/serial/NAIVE_AKA_BAD_launcher_serial.sh
+    (access)$> oarsub -l core=1 $WORK/PS2/launcher-scripts/bash/serial/NAIVE_AKA_BAD_launcher_serial.sh
 
 
 
 #### Step 2: Optimal method using GNU parallel (GNU Parallel)
 
-We will use the launcher `launcher_serial.sh` in `$WORK/PS2/launcher-scripts/bash/serial/`.
+We will use the launcher `launcher_serial.sh` (full path: `$WORK/PS2/launcher-scripts/bash/serial/launcher_serial.sh`).
 
 Edit the following variables:
+
+    (access)$> nano $WORK/PS2/launcher-scripts/bash/serial/launcher_serial.sh
 
     TASK="$WORK/PS2/circuit"
     ARG_TASK_FILE=$WORK/PS2/param_file
 
-Submit the job with `oarsub`
+Submit the (passive) job with `oarsub`
 
-    oarsub -l nodes=1 $WORK/PS2/launcher-scripts/bash/serial/launcher_serial.sh
+    (access)$> oarsub -l nodes=1 $WORK/PS2/launcher-scripts/bash/serial/launcher_serial.sh
 
 
 **Question**: compare and explain the execution time with both launchers:
@@ -122,8 +130,9 @@ in your `oarsub` command.**
 ## Exercise 2: Watermarking images in Python
 
 
-We will use another program, `watermark.py`, and we will distribute the computation
-on 2 nodes with the launcher `parallel_launcher.sh` in `$WORK/PS2/launcher-scripts/bash/generic``
+We will use another program, `watermark.py` (full path: `$WORK/PS2/tutorials/basic/sequential_jobs/scripts/watermark.py`),
+and we will distribute the computation on 2 nodes with the launcher `parallel_launcher.sh`
+(full path: `$WORK/PS2/launcher-scripts/bash/generic/parallel_launcher.sh`).
 
 This python script will apply a watermark to the images (using the Python Imaging library).
 
@@ -134,17 +143,17 @@ The command works like this:
 
 We will work with 2 files:
 
-* copyright.png: a transparent images, which can be applied as a watermark
-* images.tgz: a compressed file, containing 30 JPG pictures (of the Gaia Cluster :) ).
+* `copyright.png`: a transparent images, which can be applied as a watermark
+* `images.tgz`: a compressed file, containing 30 JPG pictures (of the Gaia Cluster :) ).
 
 #### Step 1: Prepare the input files
 
 Copy the source files in your $WORK directory.
 
-    tar xvf /tmp/images.tgz -C $WORK/PS2/
-    cp /tmp/copyright.png $WORK/PS2
+    (access)>$ tar xvf /tmp/images.tgz -C $WORK/PS2/
+    (access)>$ cp /tmp/copyright.png $WORK/PS2
 
-    cd $WORK/PS2
+    (access)>$ cd $WORK/PS2
 
 #### Step 2: Create a list of parameters
 
@@ -161,9 +170,12 @@ We must create a file containing a list of parameters, each line will be passed 
 
 #### Step 3: Configure the launcher
 
-We will use the launcher `parallel_launcher.sh` in `$WORK/PS2/launcher-scripts/bash/generic/`.
+We will use the launcher `parallel_launcher.sh` (full path: `$WORK/PS2/launcher-scripts/bash/generic/parallel_launcher.sh`).
 
 Edit the following variables:
+    
+
+    (access)$> nano $WORK/PS2/launcher-scripts/bash/generic/parallel_launcher.sh
 
     TASK="$WORK/PS2/tutorials/basic/sequential_jobs/scripts/watermark.py"
     ARG_TASK_FILE="$WORK/PS2/generic_launcher_param"
@@ -176,14 +188,14 @@ Edit the following variables:
 
 We will spawn 1 process / 2 cores
 
-    oarsub -l nodes=2 $WORK/PS2/launcher-scripts/bash/generic/parallel_launcher.sh
+    (access)$> oarsub -l nodes=2 $WORK/PS2/launcher-scripts/bash/generic/parallel_launcher.sh
 
 
 #### Step 5: Download the files
 
 On your laptop, transfer the files in the current directory and look at them with your favorite viewer:
 
-    rsync -avz chaos-cluster:/work/users/<LOGIN>/PS2/images .
+    (yourmachine)$> rsync -avz chaos-cluster:/work/users/<LOGIN>/PS2/images .
 
 
 **Question**: which nodes are you using, identify your nodes with the command `oarstat -f -j <JOBID>` or Monika
@@ -196,31 +208,32 @@ Let's use [JCell](https://jcell.gforge.uni.lu/), a framework for working with ge
 
 We will use 3 scripts:
 
-* `jcell_config_gen.sh`
+* `jcell_config_gen.sh` (full path: `$WORK/PS2/tutorials/basic/sequential_jobs/scripts/jcell_config_gen.sh`)
 
 We want to execute Jcell, and change the parameters MutationProb and CrossoverProb.
 This script will install JCell, generate a tarball containing all the configuration files,
 and the list of parameters to be given to the launcher.
 
-* `jcell_wrapper.sh`
+* `jcell_wrapper.sh` (full path: `$WORK/PS2/tutorials/basic/sequential_jobs/scripts/jcell_wrapper.sh`)
 
 This script is a wrapper, and will start one execution of jcell with the configuration file given in parameter.
 If a result already exists, then the execution will be skipped.
 Thanks to this simple test, our workflow is fault tolerant, 
 if the job is interrupted and restarted, only the missing results will be computed.
 
-* `parallel_launcher.sh`
+* `parallel_launcher.sh` (full path: `$WORK/PS2/launcher-scripts/bash/generic/parallel_launcher.sh`)
 
 This script will drive the full experiment.
 
 
 #### Step 1: Generate the configuration files:
 
+Execute this script:
 
-        $WORK/PS2/tutorials/basic/sequential_jobs/scripts/jcell_config_gen.sh
+        (access)$> $WORK/PS2/tutorials/basic/sequential_jobs/scripts/jcell_config_gen.sh
 
 
-  You will find the following files in `$WORK/PS2/jcell`:
+This script will generate the following files in `$WORK/PS2/jcell`:
   
   * `config.tgz`
   * `jcell_param`
@@ -228,6 +241,8 @@ This script will drive the full experiment.
 
 #### Step 2: Edit the launcher configuration, in the file `$WORK/PS2/launcher-scripts/bash/generic/parallel_launcher.sh`.
 
+
+        (access)$> nano $WORK/PS2/launcher-scripts/bash/generic/parallel_launcher.sh
 
         TASK="$WORK/PS2/tutorials/basic/sequential_jobs/scripts/jcell_wrapper.sh"
         ARG_TASK_FILE="$WORK/PS2/jcell/jcell_param"
@@ -240,13 +255,13 @@ This script will drive the full experiment.
 #### Step 3: Submit the job
 
 
-        oarsub -l nodes=2 $WORK/PS2/launcher-scripts/bash/generic/parallel_launcher.sh
+        (access)$> oarsub -l nodes=2 $WORK/PS2/launcher-scripts/bash/generic/parallel_launcher.sh
 
 
 #### Step 4. Retrieve the results on your laptop:
 
 
-        rsync -avz chaos-cluster:/work/users/<LOGIN>/PS2/jcell/results .
+        (yourmachine)$> rsync -avz chaos-cluster:/work/users/<LOGIN>/PS2/jcell/results .
 
 
 **Question**: check the system load and memory usage with Ganglia
@@ -255,9 +270,9 @@ This script will drive the full experiment.
 
 ## At the end, please, clean up your home and work directories :)
 
-Please, don't store unnecessary files on the cluster's storage servers
+Please, don't store unnecessary files on the cluster's storage servers:
 
-    rm -rf $WORK/PS2
+    (access)$> rm -rf $WORK/PS2
 
 
 # Going further:
