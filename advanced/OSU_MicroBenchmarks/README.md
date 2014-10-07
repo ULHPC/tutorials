@@ -38,7 +38,7 @@ The [OSU micro-benchmarks](http://mvapich.cse.ohio-state.edu/benchmarks/) featur
 * __Collective MPI Benchmarks__: Collective latency tests for various MPI collective operations such as MPI_Allgather, MPI_Alltoall, MPI_Allreduce, MPI_Barrier, MPI_Bcast, MPI_Gather, MPI_Reduce, MPI_Reduce_Scatter, MPI_Scatter and vector collectives.
 * __One-sided MPI Benchmarks__: one-sided put latency (active/passive), one-sided put bandwidth (active/passive), one-sided put bidirectional bandwidth, one-sided get latency (active/passive), one-sided get bandwidth (active/passive), one-sided accumulate latency (active/passive), compare and swap latency (passive), and fetch and operate (passive) for MVAPICH2 (MPI-2 and MPI-3).
 
-The latest version (4.2 at the time of writting) also features [OpenSHMEM]() benchmarks, a 1-sided communications library.
+The 4.3 version also features [OpenSHMEM]() benchmarks, a 1-sided communications library.
 
 In this tutorial, we will focus on two of the available tests:
 
