@@ -24,7 +24,7 @@ PLOT_DIR    = plots
 SAMPLE_PLOT = $(PLOT_DIR)/benchmark_OSU_MicroBenchs_2H_latency.pdf $(PLOT_DIR)/benchmark_OSU_MicroBenchs_2H_bandwidth.pdf
 
 ### Stuff to download
-OSU_MB_URL       = "http://mvapich.cse.ohio-state.edu/download/mvapich/osu-micro-benchmarks-4.4.tar.gz"
+OSU_MB_URL       = "https://scm.mvapich.cse.ohio-state.edu/benchmarks/osu-micro-benchmarks-4.3.tar.gz"
 OSU_MB_TARBALL   = $(shell basename $(OSU_MB_URL) )  
 OSU_MB_SRCDIR    = $(SRC_DIR)/$(shell basename $(OSU_MB_TARBALL) .tar.gz)
 
@@ -49,7 +49,7 @@ setup:
 fetch:
 	@if [ ! -f ./$(SRC_DIR)/$(OSU_MB_TARBALL) ]; then \
 		echo "=> downloading HPL archive  $(OSU_MB_TARBALL)"; \
-		wget -P $(SRC_DIR) $(OSU_MB_URL); \
+		wget --no-check-certificate -P $(SRC_DIR) $(OSU_MB_URL); \
 	else \
 		echo "=> OSU Micro-benchmarks has already been downloaded in $(SRC_DIR)/"; \
 	fi
@@ -64,7 +64,7 @@ uncompress: fetch
 
 patch : uncompress
 	@if [ ! -f "./$(OSU_PATCH_REJ_FILE)" ]; then \
-		echo "=> apply the patch for 4.2"; \
+		echo "=> apply the patch for 4.3"; \
 		patch --forward -d $(shell dirname $(OSU_PATCH_FILE)) -p0 < $(OSU_PATCH_FILE); \
 		echo "=> running back automake to commit the patch"; \
 		cd $(OSU_MB_SRCDIR) && pwd && autoreconf && automake && cd -; \
