@@ -24,7 +24,7 @@ PLOT_DIR    = plots
 SAMPLE_PLOT = $(PLOT_DIR)/benchmark_OSU_MicroBenchs_2H_latency.pdf $(PLOT_DIR)/benchmark_OSU_MicroBenchs_2H_bandwidth.pdf
 
 ### Stuff to download
-OSU_MB_URL       = "http://mvapich.cse.ohio-state.edu/benchmarks/osu-micro-benchmarks-4.2.tar.gz"
+OSU_MB_URL       = "http://mvapich.cse.ohio-state.edu/download/mvapich/osu-micro-benchmarks-4.4.tar.gz"
 OSU_MB_TARBALL   = $(shell basename $(OSU_MB_URL) )  
 OSU_MB_SRCDIR    = $(SRC_DIR)/$(shell basename $(OSU_MB_TARBALL) .tar.gz)
 
