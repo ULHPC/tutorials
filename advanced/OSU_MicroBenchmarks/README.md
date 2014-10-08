@@ -179,7 +179,7 @@ Repeat the procedure, this time using MVAPICH2.
 
 	$> cd ~/TP/osu-micro-benchmarks-4.3/
 	$> module purge
-	$> module load MVAPICH2
+	$> module load MVAPICH2/1.7-GCC-4.6.3
 	$> mkdir build.mvapich2 && cd build.mvapich2
 	$> ../configure CC=mpicc --prefix=`pwd`/install
 	$> make && make install 
@@ -194,7 +194,7 @@ As before, rely on the [MPI generic launcher](https://github.com/ULHPC/launcher-
 	# Defaults settings for running the OSU Micro benchmarks wompiled with MVAPICH2
 	NAME=mvapich2
 	
-	MODULE_TO_LOADstr=MVAPICH2
+	MODULE_TO_LOADstr=MVAPICH2/1.7-GCC-4.6.3
 	MPI_PROG_BASEDIR=$HOME/TP/osu-micro-benchmarks-4.3/build.mvapich2/install/libexec/osu-micro-benchmarks/mpi/one-sided/
 	
 	MPI_PROGstr=osu_get_latency,osu_get_bw
