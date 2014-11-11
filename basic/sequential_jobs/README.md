@@ -20,7 +20,7 @@ During this session, we will see 3 use cases:
 We will use the following github repositories:
 
 * [ULHPC/launcher-scripts](https://github.com/ULHPC/launcher-scripts)
-* [ULHPC/tutorial](https://github.com/ULHPC/tutorial)
+* [ULHPC/tutorials](https://github.com/ULHPC/tutorials)
 
 
 # Practical session 2
