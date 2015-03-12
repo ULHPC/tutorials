@@ -114,8 +114,8 @@ Submit the (passive) job with `oarsub`
 
 **Question**: compare and explain the execution time with both launchers:
 
-* Naive workflow: time = 13m 30s
-* Parallel workflow: time = 1m 23s
+* Naive workflow: time = 16m 32s
+* Parallel workflow: time = 2m 11s
 
 **/!\ In order to compare execution times, you must always use the same type of nodes (CPU/Memory), 
 using [properties](https://hpc.uni.lu/users/docs/oar.html#select-nodes-precisely-with-properties)
@@ -219,7 +219,7 @@ if the job is interrupted and restarted, only the missing results will be comput
 
 * `parallel_launcher.sh` (full path: `$WORK/PS2/launcher-scripts/bash/generic/parallel_launcher.sh`)
 
-This script will drive the full experiment.
+This script will drive the experiment, start and balance the java processes on all the reserved resources.
 
 
 #### Step 1: Generate the configuration files:
@@ -237,16 +237,15 @@ This script will generate the following files in `$WORK/PS2/jcell`:
 
 #### Step 2: Edit the launcher configuration, in the file `$WORK/PS2/launcher-scripts/bash/generic/parallel_launcher.sh`.
 
+This application is cpu-bound and not memory-bound, so we can set the value of `NB_CORE_PER_TASK` to 1.
+Using these parameters, the launcher will spaw one java process per core on all the reserved nodes.
 
         (access)$> nano $WORK/PS2/launcher-scripts/bash/generic/parallel_launcher.sh
 
         TASK="$WORK/PS2/tutorials/basic/sequential_jobs/scripts/jcell_wrapper.sh"
         ARG_TASK_FILE="$WORK/PS2/jcell/jcell_param"
         # number of cores needed for 1 task
-        NB_CORE_PER_TASK=2
-        # Number of job slots
-        NB_JOBS=12
-
+        NB_CORE_PER_TASK=1
 
 #### Step 3: Submit the job
 
