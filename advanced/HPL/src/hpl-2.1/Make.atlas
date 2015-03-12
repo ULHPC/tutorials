@@ -92,9 +92,9 @@ MPlib        =
 # header files,  LAlib  is defined  to be the name of  the library to be
 # used. The variable LAdir is only used for defining LAinc and LAlib.
 #
-LAdir        = $(HOME)/TP/ATLAS-3.11.17/build.gcc_mvapich2
+LAdir        = $(HOME)/TP/ATLAS-3.11.32/build.gcc_mvapich2
 LAinc        = -I$(LAdir)/include
-LAlib        = $(LAdir)/lib/libf77blas.a  $(LAdir)/lib/libatlas.a $(LAdir)/lib/libptcblas.a
+LAlib        = $(LAdir)/lib/libf77blas.a  $(LAdir)/lib/libatlas.a $(LAdir)/lib/libptcblas.a -lgfortran
 #LAlib        = $(LAdir)/lib -latlas -lcblas 
 #
 # ----------------------------------------------------------------------
