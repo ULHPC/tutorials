@@ -160,11 +160,12 @@ Once compiled, ensure you are able to run it:
 
 Here we will rely on the [Automatically Tuned Linear Algebra Software (ATLAS)](http://math-atlas.sourceforge.net/)
 
-Download the [3.11.17 test version](http://sourceforge.net/projects/math-atlas/files/) and compile it:  
+Download the [latest version](http://sourceforge.net/projects/math-atlas/files/) 
+(3.11.32 at the time of writing) and compile it:  
 
      $> cd ~/TP
-     $> tar xvf atlas3.11.17.tar.bz2
-     $> mv ATLAS ATLAS-3.11.17 && cd ATLAS-3.11.17
+     $> tar xvf atlas3.11.32.tar.bz2
+     $> mv ATLAS ATLAS-3.11.32 && cd ATLAS-3.11.32
      $> module purge
 	 $> module load MVAPICH2	
 	 $> less INSTALL.txt
