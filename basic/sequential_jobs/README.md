@@ -62,18 +62,14 @@ In order to edit files in your terminal, you are expected to use your preferred 
 If you have never used any of them, `nano` is intuitive, but vim and emacs are more powerful.
 
 
-## Exercise 1: C program & circuit satisfiability
+## Exercise 1: Parametric experiment with Gromacs
 
-Get the source code and compile it on a node:
+Gromacs is a popular molecular dynamics software.
+In this exercise, we will process some example input files, and make the parameter `fourier_spacing` varies from 0.1 to 0.2 in increments of 0.005.
 
-    (access)$> oarsub -I
-    (node)$> cd $WORK/PS2
-    (node)$> gcc tutorials/basic/sequential_jobs/scripts/circuit.c -o circuit
-    (node)$> exit
+Create a file which contains the list of parameters
 
-We want to test all the parameters, so we create a parameter file with all the numbers from 1 to 65535.
-
-    (access)$> seq 65535 > $WORK/PS2/param_file
+  (access)$> seq 0.1 0.005 0.2 > $WORK/PS2/param_file
 
 
 #### Step 1: Naive workflow
@@ -87,7 +83,7 @@ Edit the following variables:
 
         (node)$> nano $WORK/PS2/launcher-scripts/bash/serial/NAIVE_AKA_BAD_launcher_serial.sh
 
-        TASK="$WORK/PS2/circuit"
+        TASK="$WORK/PS2/tutorials/basic/sequential_jobs/scripts/run_gromacs_sim.sh"
         ARG_TASK_FILE=$WORK/PS2/param_file
 
 Launch the job, in interactive mode and execute the launcher:
@@ -100,7 +96,6 @@ Launch the job, in interactive mode and execute the launcher:
     (access)$> oarsub -l core=1 $WORK/PS2/launcher-scripts/bash/serial/NAIVE_AKA_BAD_launcher_serial.sh
 
 
-
 #### Step 2: Optimal method using GNU parallel (GNU Parallel)
 
 We will use the launcher `launcher_serial.sh` (full path: `$WORK/PS2/launcher-scripts/bash/serial/launcher_serial.sh`).
@@ -109,7 +104,7 @@ Edit the following variables:
 
     (access)$> nano $WORK/PS2/launcher-scripts/bash/serial/launcher_serial.sh
 
-    TASK="$WORK/PS2/circuit"
+    TASK="$WORK/PS2/tutorials/basic/sequential_jobs/scripts/run_gromacs_sim.sh"
     ARG_TASK_FILE=$WORK/PS2/param_file
 
 Submit the (passive) job with `oarsub`
@@ -125,6 +120,7 @@ Submit the (passive) job with `oarsub`
 **/!\ In order to compare execution times, you must always use the same type of nodes (CPU/Memory), 
 using [properties](https://hpc.uni.lu/users/docs/oar.html#select-nodes-precisely-with-properties)
 in your `oarsub` command.**
+
 
 
 ## Exercise 2: Watermarking images in Python
