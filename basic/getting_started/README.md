@@ -230,6 +230,80 @@ The gateway can be any SSH server which have access to the access frontend of th
 
 		(laptop)$> ssh gaia.ulhpc
 
+## Step 3: transferring files
+Directories such as `$HOME`, `$WORK` or `$SCRATCH` are shared among the nodes of the cluster that you are using (including the front-end) via shared filesystems (NFS, Lustre) meaning that:
+
+* every file/directory pushed or created on the front-end is available on the computing nodes
+* every file/directory pushed or created on the computing nodes is available on the front-end
+
+
+### Step 3a: Linux / OS X / Unix command line tools
+The two most common commands you can use for data transfers over SSH:
+
+* `scp`: for the full transfer of files and directories (only works fine for single files or directories of small/trivial size)
+* `rsync`: a software application which synchronizes files and directories from one location to another while minimizing data transfer as only the outdated or inexistent elements are transfered (practically required for lengthy complex transfers, which are more likely to be interrupted in the middle).
+
+Of both, normally the second approach should be preferred, as more generic; note that, both ensure a secure transfer of the data, within an encrypted tunnel.
+
+* Create a new directory on your local machine and download a file to transfer (next-gen sequencing data from the NIH Roadmap Epigenomics Project):
+
+		(laptop)$> mkdir file_transfer
+		(laptop)$> cd file_transfer
+		(laptop)$> wget "ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM409nnn/GSM409307/suppl/GSM409307_UCSD.H1.H3K4me1.LL228.bed.gz"
+	
+* Transfer the file with scp:
+
+		(laptop)$> scp GSM409307_UCSD.H1.H3K4me1.LL228.bed.gz gaia-cluster:
+		
+* Connect to the cluster, check if the file is there and delete it.
+
+		(laptop)$> ssh gaia-cluster
+		(access-gaia)$> ls
+		(access-gaia)$> rm GSM409307_UCSD.H1.H3K4me1.LL228.bed.gz
+		(access-gaia)$> exit
+		
+* Transfer the directory with rsync:
+
+		(laptop)$> cd ..
+		(laptop)$> rsync -avzu file_transfer gaia-cluster:
+		
+* Delete the file and retrieve it from the cluster:
+
+		(laptop)$> rm file_transfer/GSM409307_UCSD.H1.H3K4me1.LL228.bed.gz
+		(laptop)$> rsync -avzu gaia-cluster:file_transfer .
+		
+* **Bonus**: Check where the file is located on the cluster after the rsync.
+
+You can get more information about these transfer methods in the [file transfer documentation](https://hpc.uni.lu/users/docs/filetransfer.html).
+
+
+
+## Step 3b: Windows / Linux / OS X / Unix GUI tools
+* Download the FileZilla program from [filezilla-project.org](https://filezilla-project.org/download.php?type=client) and install it.
+* Start the application and in the main window click on the `Site Manager` button on the top left or select `Site Manager` from the `File` menu.
+* Click on the `New Site` button and enter/select the following:
+  * Host: `access-gaia.uni.lu`
+  * Protocol: `SFTP - SSH File Transfer Protocol`
+  * Logon Type: `Ask for password`
+  * User: your login
+  
+![Connection settings](src/images/site_manager.jpg)
+  
+* Click on the `Connect` button.
+* Enter your password when asked and accept the certificate.
+
+You should now something similar to the following window:
+
+![Connection settings](src/images/filezilla.jpg)
+
+On the very top, beneath the quick connect, you see the message log. Below you have the directory tree and the contents of the current directory for you local computer on the left and the remote location on the right.
+
+To transfer a file, simply drag and drop it from the directory listing on the left side to destination directory on the right (to transfer from local to remote) or vice versa (to transfer from remote to local). You can also select a file by left clicking on it once and then right click on it to get the context menu and select "Upload" or "Download" to transfer it.
+
+When you click the fifth icon on the top with the two green arrows to toogle the transfer queue, you can see the status of ongoing transfers on the very bottom of the window.
+
+![Connection settings](src/images/transfer.jpg)
+
 # Discovering, visualizing and reserving UL HPC resources
 
 In the sequel, replace `<login>` in the proposed commands with you login on the platform (ex: `svarrette`).   
