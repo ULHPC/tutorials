@@ -41,7 +41,7 @@ HPL rely on an efficient implementation of the Basic Linear Algebra Subprograms
 
 * Intel MKL
 * [ATLAS](http://math-atlas.sourceforge.net/atlas_install/)
-* [GotoBlas](http://www.tacc.utexas.edu/tacc-projects/gotoblas2/downloads/)  
+* [GotoBlas](https://www.tacc.utexas.edu/research-development/tacc-software/gotoblas2/)  
 
 The objective of this practical session is to compare the performances of HPL
 runs compiled under different combination:  
