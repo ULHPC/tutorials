@@ -25,5 +25,5 @@ module load GROMACS/4.6.1-goolf-1.4.10-mt
 
 sed -i "s/^fourier_spacing.*$/fourier_spacing=${VALUE}/" pme_verlet.mdp
 grompp -f pme_verlet.mdp -c conf.gro -p topol.top -o bench_rnase_cubic.tpr
-mdrun -s bench_rnase_cubic.tpr -nsteps 1000
+mdrun -nt 1 -s bench_rnase_cubic.tpr -nsteps 1000
 
