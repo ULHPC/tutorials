@@ -300,6 +300,8 @@ On the very top, beneath the quick connect, you see the message log. Below you h
 
 To transfer a file, simply drag and drop it from the directory listing on the left side to destination directory on the right (to transfer from local to remote) or vice versa (to transfer from remote to local). You can also select a file by left clicking on it once and then right click on it to get the context menu and select "Upload" or "Download" to transfer it.
 
+If you skipped step 3a, you may download [this file](ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM409nnn/GSM409307/suppl/GSM409307_UCSD.H1.H3K4me1.LL228.bed.gz) (50 MB) for testing.
+
 When you click the fifth icon on the top with the two green arrows to toogle the transfer queue, you can see the status of ongoing transfers on the very bottom of the window.
 
 ![Connection settings](src/images/transfer.jpg)
