@@ -153,10 +153,12 @@ If that's the case, you can ignore the rest of this section.
 		(access-chaos)$> cat ~/.ssh/id_dsa.pub  >> ~/.ssh/authorized_keys
 		
   * you can check that it works by connecting to localhost: 
-  
-  		(access-chaos)$> ssh -p 8022 localhost
-  		[...]
-  		(access-chaos)$> exit   # or CTRL-D
+
+		```
+		(access-chaos)$> ssh -p 8022 localhost
+		[...]
+		(access-chaos)$> exit   # or CTRL-D
+		```
   		
 * add an alias to facilitate the connection to each cluster by adding the following SSH configuration entry in the file `~/.ssh/config`: 
 
