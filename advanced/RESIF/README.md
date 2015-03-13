@@ -21,7 +21,7 @@ Environment Modules allow us to provide a multitude of applications and librarie
 
 Firstly, we activate the newest software stack:
 
-    source /opt/apps/resif/devel/v0.9-20150310/LOADME-v0.9-20150310.sh
+    source /opt/apps/resif/devel/v0.9-20150310/LOADME-v0.9-20150310-out-place.sh
 
 By using `module available` (or the shorter forms `module avail` or `module av`) we can list all the software modules of the software stack:  
 
