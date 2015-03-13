@@ -10,7 +10,7 @@ The [third chapter](#replicating-the-architecture-of-the-platform-on-a-local-env
 
 ## Using the software environment available on the UL HPC platform
 
-Before starting this tutorial, please make sure you are on a compute node of Gaia/Chaos and not on the access node. To get resources on a compute node, use the following command:  
+Before starting this tutorial, please make sure you are on a compute node of Gaia and not on the access node. To get resources on a compute node, use the following command:  
 `(access)$> oarsub -I -l nodes=1,walltime=1:00:00`  
 (for more details about this command and the node reservation process on the clusters, please referer to the [ULHPC documentation](https://hpc.uni.lu/users/docs/oar.html).)
 
@@ -21,7 +21,7 @@ Environment Modules allow us to provide a multitude of applications and librarie
 
 Firstly, we activate the newest software stack:
 
-    source /opt/apps/resif/devel/v0.9-20150310/LOADME-v0.9-20150310.sh
+    source /opt/apps/resif/devel/v0.9-20150310/LOADME-v0.9-20150310-out-place.sh
 
 By using `module available` (or the shorter forms `module avail` or `module av`) we can list all the software modules of the software stack:  
 
@@ -127,8 +127,8 @@ RESIF installation:
 
 Initially, we need to add the following paths to the environment:
 
-        (node)$> export PATH=$PATH:~/local/bin
-        (node)$> export PYTHONPATH=$PYTHONPATH:~/local/lib/python2.6/site-packages
+        (node)$> export PATH=$PATH:~/.local/bin
+        (node)$> export PYTHONPATH=$PYTHONPATH:~/.local/lib/python2.6/site-packages
 
 Also, 
 

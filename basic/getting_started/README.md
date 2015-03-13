@@ -238,7 +238,7 @@ Directories such as `$HOME`, `$WORK` or `$SCRATCH` are shared among the nodes of
 
 
 ### Step 3a: Linux / OS X / Unix command line tools
-The two most common commands you can use for data transfers over SSH:
+The two most common tools you can use for data transfers over SSH:
 
 * `scp`: for the full transfer of files and directories (only works fine for single files or directories of small/trivial size)
 * `rsync`: a software application which synchronizes files and directories from one location to another while minimizing data transfer as only the outdated or inexistent elements are transfered (practically required for lengthy complex transfers, which are more likely to be interrupted in the middle).
@@ -279,7 +279,7 @@ You can get more information about these transfer methods in the [file transfer 
 
 
 ## Step 3b: Windows / Linux / OS X / Unix GUI tools
-* Download the FileZilla program from [filezilla-project.org](https://filezilla-project.org/download.php?type=client) and install it.
+* Download the FileZilla client application from [filezilla-project.org](https://filezilla-project.org/download.php?type=client) and install it.
 * Start the application and in the main window click on the `Site Manager` button on the top left or select `Site Manager` from the `File` menu.
 * Click on the `New Site` button and enter/select the following:
   * Host: `access-gaia.uni.lu`
@@ -292,13 +292,16 @@ You can get more information about these transfer methods in the [file transfer 
 * Click on the `Connect` button.
 * Enter your password when asked and accept the certificate.
 
-You should now something similar to the following window:
+You should now see something similar to the following window:
 
 ![Connection settings](src/images/filezilla.jpg)
 
 On the very top, beneath the quick connect, you see the message log. Below you have the directory tree and the contents of the current directory for you local computer on the left and the remote location on the right.
 
 To transfer a file, simply drag and drop it from the directory listing on the left side to destination directory on the right (to transfer from local to remote) or vice versa (to transfer from remote to local). You can also select a file by left clicking on it once and then right click on it to get the context menu and select "Upload" or "Download" to transfer it.
+
+If you skipped step 3a, you may download the following file (50 MB) for testing: <br />
+[ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM409nnn/GSM409307/suppl/GSM409307_UCSD.H1.H3K4me1.LL228.bed.gz](ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM409nnn/GSM409307/suppl/GSM409307_UCSD.H1.H3K4me1.LL228.bed.gz) (next-gen sequencing data from the NIH Roadmap Epigenomics Project)
 
 When you click the fifth icon on the top with the two green arrows to toogle the transfer queue, you can see the status of ongoing transfers on the very bottom of the window.
 
