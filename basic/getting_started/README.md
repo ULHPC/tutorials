@@ -238,7 +238,7 @@ Directories such as `$HOME`, `$WORK` or `$SCRATCH` are shared among the nodes of
 
 
 ### Step 3a: Linux / OS X / Unix command line tools
-The two most common commands you can use for data transfers over SSH:
+The two most common tools you can use for data transfers over SSH:
 
 * `scp`: for the full transfer of files and directories (only works fine for single files or directories of small/trivial size)
 * `rsync`: a software application which synchronizes files and directories from one location to another while minimizing data transfer as only the outdated or inexistent elements are transfered (practically required for lengthy complex transfers, which are more likely to be interrupted in the middle).
@@ -279,7 +279,7 @@ You can get more information about these transfer methods in the [file transfer 
 
 
 ## Step 3b: Windows / Linux / OS X / Unix GUI tools
-* Download the FileZilla program from [filezilla-project.org](https://filezilla-project.org/download.php?type=client) and install it.
+* Download the FileZilla client application from [filezilla-project.org](https://filezilla-project.org/download.php?type=client) and install it.
 * Start the application and in the main window click on the `Site Manager` button on the top left or select `Site Manager` from the `File` menu.
 * Click on the `New Site` button and enter/select the following:
   * Host: `access-gaia.uni.lu`
