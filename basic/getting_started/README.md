@@ -292,7 +292,7 @@ You can get more information about these transfer methods in the [file transfer 
 * Click on the `Connect` button.
 * Enter your password when asked and accept the certificate.
 
-You should now something similar to the following window:
+You should now see something similar to the following window:
 
 ![Connection settings](src/images/filezilla.jpg)
 
