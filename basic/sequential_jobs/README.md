@@ -177,8 +177,6 @@ Edit the following variables:
     ARG_TASK_FILE="$WORK/PS2/generic_launcher_param"
     # number of cores needed for 1 task
     NB_CORE_PER_TASK=2
-    # Number of job slots
-    NB_JOBS=12
 
 #### Step 4: Submit the job
 
