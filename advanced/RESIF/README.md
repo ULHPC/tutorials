@@ -127,8 +127,8 @@ RESIF installation:
 
 Initially, we need to add the following paths to the environment:
 
-        (node)$> export PATH=$PATH:~/local/bin
-        (node)$> export PYTHONPATH=$PYTHONPATH:~/local/lib/python2.6/site-packages
+        (node)$> export PATH=$PATH:~/.local/bin
+        (node)$> export PYTHONPATH=$PYTHONPATH:~/.local/lib/python2.6/site-packages
 
 Also, 
 
