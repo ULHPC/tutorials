@@ -458,7 +458,7 @@ Finalize and cleanup things.
 
 **Exercise: Plot a speedup graph with different number of cores and/or machines used.**
 
-
+<!--
 #### Not (yet) Covered by this Tutorial: MPI Communications
 
 It is also possible to use MPI communications instead of sockets.
@@ -468,7 +468,7 @@ R will need the package `Rmpi` and same as before, we use `makeCluster` but we u
 Then, you need to call the R script within MPI. i.e. 
    
     mpirun -n <nb_processes> R --slave -f <R_script_file.R>
-
+-->
 
 ### Usefull links
 
