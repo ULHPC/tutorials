@@ -33,7 +33,7 @@ set terminal postscript eps enhanced #color
 
 
 # -- Gestion des axes --
-set title  "OSU One Sided MPI Get latency Test v4.2"
+set title  "OSU One Sided MPI Get latency Test v4.3"
 set xlabel "Packet size (bits) - LOGSCALE"    
 set format x "10^%T"
 set ylabel "Latency ({/Symbol m}s) - LOGSCALE - the LOWER the better"    # Label Axe Y (avec 2 axes: set y{1|2}label)
@@ -86,7 +86,7 @@ plot \
 ############################################################
 set output "benchmark_OSU_2H_bandwidth.eps"
 
-set title  "OSU MPI One Sided MPI Get Bandwidth Test v4.2"  
+set title  "OSU MPI One Sided MPI Get Bandwidth Test v4.3"  
 set ylabel "Bandwidth (MB/s) - LOGSCALE - the HIGHER the better"
 
 # set yrange [1:10000] 

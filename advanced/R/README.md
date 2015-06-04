@@ -11,6 +11,11 @@ Then, we will see how to organize and group data. Finally we will illustrate how
 Warning: this tutorial does not focus on the learning of R language but aims at showing you nice startup tips.  
 If you're also looking for a good tutorial on R's data structures you can take a look at: [Hadley Wickham's page](http://adv-r.had.co.nz/Data-structures.html).
  
+**Conventions used in this tutorial:**
+
+* commands that have to be typed on the cluster start with a prompt like this: `jdoe@access:~$ `
+* commands that have to be typed on your local machine start with a prompt like this: `jdoe@localhost:~$ `
+* code blocks containing one or several `>` should not be pasted "as it", they are meant for you to observe the output of each function; others can be pasted in R terminal "as it".
 
 ## Pre-requisites
 
@@ -25,9 +30,9 @@ Thus you can use whether R interactive shell or R-Studio embedded shell.
 
 ### On the cluster
 R is already available in `Chaos` and `Gaia` clusters as a module. 
-The first step is the reservation of a resource. Connect to your favorite cluster frontend (here: `chaos`)
+The first step is the reservation of a resource. Connect to your favorite cluster frontend (here: `gaia`)
 
-    jdoe@localhost:~$ ssh chaos-cluster
+    jdoe@localhost:~$ ssh gaia-cluster
 
 Once connected to the user frontend, book 1 core for half an hour (as we will use R in single-threaded mode, we will need only one core).
 
@@ -36,7 +41,7 @@ Once connected to the user frontend, book 1 core for half an hour (as we will us
 When the job is running and you are connected load R module (version compiled with Intel Compiler).
 For a complete list of availbale modules see: [Software page](https://hpc.uni.lu/users/software/).
 
-    jdoe@access:~$ module load R/3.0.2-ictce-5.3.0
+    jdoe@access:~$ module load lang/R/3.2.0-ictce-7.3.5-bare
 
 <!--
     jdoe@access:~$ module load R/3.0.2-goolf-1.4.10
@@ -44,21 +49,21 @@ For a complete list of availbale modules see: [Software page](https://hpc.uni.lu
 Now you should be able to invoke R and see something like this:
 
     jdoe@cluster-node-1:~$ R
-    R version 3.0.2 (2013-09-25) -- "Frisbee Sailing"
-    Copyright (C) 2013 The R Foundation for Statistical Computing
-    Platform: x86_64-unknown-linux-gnu (64-bit)
-    
-    R is free software and comes with ABSOLUTELY NO WARRANTY.
-    You are welcome to redistribute it under certain conditions.
-    Type 'license()' or 'licence()' for distribution details.
-    
-    R is a collaborative project with many contributors.
-    Type 'contributors()' for more information and
-    'citation()' on how to cite R or R packages in publications.
-    
-    Type 'demo()' for some demos, 'help()' for on-line help, or
-    'help.start()' for an HTML browser interface to help.
-    Type 'q()' to quit R.
+	R version 3.2.0 (2015-04-16) -- "Full of Ingredients"
+	Copyright (C) 2015 The R Foundation for Statistical Computing
+	Platform: x86_64-unknown-linux-gnu (64-bit)
+	
+	R is free software and comes with ABSOLUTELY NO WARRANTY.
+	You are welcome to redistribute it under certain conditions.
+	Type 'license()' or 'licence()' for distribution details.
+	
+	R is a collaborative project with many contributors.
+	Type 'contributors()' for more information and
+	'citation()' on how to cite R or R packages in publications.
+	
+	Type 'demo()' for some demos, 'help()' for on-line help, or
+	'help.start()' for an HTML browser interface to help.
+	Type 'q()' to quit R.
     
     >
 
@@ -67,9 +72,10 @@ Now you should be able to invoke R and see something like this:
 `sessionInfo()` function gives information about R version, loaded libraries etc.
 
     > sessionInfo()
-    R version 3.0.2 (2013-09-25)
-    Platform: x86_64-unknown-linux-gnu (64-bit)
-    
+	R version 3.2.0 (2015-04-16)    
+	Platform: x86_64-unknown-linux-gnu (64-bit)
+    Running under: Debian GNU/Linux 7 (wheezy)
+	
     locale:
     [1] C
     
@@ -128,9 +134,9 @@ Now let's take a (reproducible) sample of 1000 movies and plot their distributio
     graph = ggplot(data=movies_sample) + geom_histogram(aes(x=rating), binwidth=0.5)		# construct the graph -- movies_sample will be used as data, we will plot an histogram where x=movies_sample$rating and with a bin size=0.5
     ggsave(graph, file="movies_hist.pdf", width=8, height=4)								# save the graph in a pdf file
 
-Now you shoud be able to visualize the generated plot on the frontend (may not work on windows stations using PuTTy):
+Now you retrieve the generated pdf on your local workstation for visualization:
 
-    jdoe@access:~$ epdfview movies_hist.pdf
+    jdoe@localhost:~$ scp gaia-cluster:movies_hist.pdf .
 
 `ggplot2` proposes many functions to plot data according to your needs. Do not hesitate to wander in the [ggplot2 documentation](http://docs.ggplot2.org/current/) and to read at provided examples to better understand how to use it.
 The `ggsave()` function is convenient to export ggplot graphics as .pdf or .png files
@@ -252,7 +258,9 @@ Plotting the benchmark result gives us a boxplot graph:
 
 According to [data.table documentation](http://cran.r-project.org/web/packages/data.table/index.html) `data.table` inherits from `data.frame` to offer fast subset, fast grouping, fast update, fast ordered
 joins and list columns in a short and flexible syntax, for faster development. It uses binary search instead of vector scan to perform its operations and thus is scalable.
-We can convert easily a `data.frame` to a `data.table`:
+We can convert easily a `data.frame` to a `data.table`.
+
+First install and load the "data.table" package then convert the `data.frame` to a `data.table`:
 
 	> MOVIES = data.table(movies)
 
@@ -335,7 +343,7 @@ When the job is running and you are connected load R module (version compiled wi
 
 When the job is running and you are connected load R module (version compiled with Intel Compiler), then run R.
 
-    jdoe@access:~$ module load R/3.0.2-ictce-5.3.0
+    jdoe@access:~$ module load lang/R/3.2.0-ictce-7.3.5-bare
 	jdoe@access:~$ R
 
 
@@ -346,7 +354,9 @@ We will use a large dataset (400K+ rows) to illustrate the effect of paralleliza
 **NOTE**: If downloading the air dataset (above line) takes too much time you can load it from a file on the cluster:
 
 	> load("~jemeras/data/air.rda")
- 
+
+(For information you can save your `air` object just as showed above with: `save(air,file= "~/data/air.rda")`)
+
 If we want to have the number of flights for each destination `DEST` we can do the following:
 
     dests = as.character(unique(air$DEST))
@@ -361,11 +371,11 @@ As the dataframe is large it takes some time to compute
 	 LAPPLY 1.607961 1.609036 1.609638 1.610269 2.023961    10
 
 ### Single Machine Parallelization
-To parallelize the lapply function we can use `mclapply()` from `multicore` package and give it the number of cores to use.
+To parallelize the lapply function we can use `mclapply()` from `parallel` package and give it the number of cores to use.
 `mclapply()` uses the underlying operating system fork() functionality to achieve parallelization.
 Using several cores makes the process shorter.
 
-    > library(multicore)
+    > library(parallel)
     > as.data.frame(cbind(dest=dests, nb=mclapply(dests, count_flights, mc.cores=12)))
 	
 	
@@ -375,7 +385,19 @@ Using several cores makes the process shorter.
 	 MCLAPPLY 233.8035 235.1089 235.9138 236.6393 263.934    10
     
 
-You can now save the `air` R object to reuse it in an other R session.
+It is nice to visualize all your cores working on your node with `htop` for example. You can connect to the same node from another terminal by typing:
+
+	jdoe@access:~$ oarstat -u
+	Job id     Name           User           Submission Date     S Queue
+	---------- -------------- -------------- ------------------- - ----------
+	6664321                   jdoe           2015-06-03 14:24:23 R default
+Note the `Job id` field. Put this job id in the next command:
+
+	jdoe@access:~$ oarsub -C 6664321
+Then `htop` will show you your cores working if you call again the `mclapply()` function.
+
+
+Finally you can save the `air` R object to reuse it in an other R session.
 
     > save(air, file="./air.rda")
 
@@ -386,13 +408,13 @@ The `parLapply()` function will create a cluster of processes, which could even 
 Thus you have to load necessary packages and export necessary data and functions to the global environment of the cluster workers.
 
 
-First, load R 3.0.2 compiled with GCC as Intel one does not work for this. Add the module loading at bash login too for enabling it on the nodes. To do so, within a shell type:
+First, add the module loading at bash login too for enabling it on the nodes. To do so, within a shell type:
 
-    echo 'module load R/3.0.2-goolf-1.4.10' >> ~/.bash_login		# /!\ TO REMOVE AT THE END OF PS /!\
+    echo 'module load lang/R/3.2.0-ictce-7.3.5-bare' >> ~/.bash_login		# /!\ TO REMOVE AT THE END OF PS /!\
 	module purge
-	module load R/3.0.2-goolf-1.4.10
+	module load lang/R/3.2.0-ictce-7.3.5-bare
 
-**Warning: do not forget to clean your ~/.bash_login file after the PS (remove the 'module load R/3.0.2-goolf-1.4.10' line).**
+**Warning: do not forget to clean your ~/.bash_login file after the PS (remove the 'module load lang/R/3.2.0-ictce-7.3.5-bare' line).**
 
 #### Socket Communications
 
@@ -409,7 +431,7 @@ First, let's load data and initialize variables.
 	nodes = scan(Sys.getenv("OAR_NODE_FILE"), what=character(0))
 	oar_job_id = as.numeric(Sys.getenv("OAR_JOB_ID"))
 	connector = paste0("OAR_JOB_ID=", oar_job_id)
-	connector = paste0(connector, " oarsh")
+	connector = paste0(connector, " ~jemeras/bin/roarsh")
 	comm_type = "PSOCK"
 	
 Then, setup the cluster.
@@ -436,7 +458,7 @@ Finalize and cleanup things.
 
 **Exercise: Plot a speedup graph with different number of cores and/or machines used.**
 
-
+<!--
 #### Not (yet) Covered by this Tutorial: MPI Communications
 
 It is also possible to use MPI communications instead of sockets.
@@ -446,7 +468,7 @@ R will need the package `Rmpi` and same as before, we use `makeCluster` but we u
 Then, you need to call the R script within MPI. i.e. 
    
     mpirun -n <nb_processes> R --slave -f <R_script_file.R>
-
+-->
 
 ### Usefull links
 

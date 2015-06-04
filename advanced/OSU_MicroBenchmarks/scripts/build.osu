@@ -20,7 +20,7 @@ SCRIPTFILENAME=$(basename $0)
 SCRIPTDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 TOP_DIR=`realpath "${SCRIPTDIR}/.."`
-TOP_SRCDIR="${TOP_DIR}/src/osu-micro-benchmarks-4.2"
+TOP_SRCDIR="${TOP_DIR}/src/osu-micro-benchmarks-4.3"
 TOP_RUNDIR="${TOP_DIR}/runs"
 
 OSU_BENCH_SUBDIR="install/libexec/osu-micro-benchmarks/mpi/one-sided/"

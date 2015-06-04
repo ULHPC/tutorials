@@ -32,13 +32,13 @@ The latest version of this tutorial is available on
 
 ## Objectives
 
-The [OSU micro-benchmarks](http://mvapich.cse.ohio-state.edu/benchmarks/) features a serie of MPI benchmarks to measure the performances of various MPI operations: 
+The [OSU micro-benchmarks](http://mvapich.cse.ohio-state.edu/benchmarks/) feature a series of MPI benchmarks that measure the performances of various MPI operations: 
 
 * __Point-to-Point MPI Benchmarks__: Latency, multi-threaded latency, multi-pair latency, multiple bandwidth / message rate test bandwidth, bidirectional bandwidth
 * __Collective MPI Benchmarks__: Collective latency tests for various MPI collective operations such as MPI_Allgather, MPI_Alltoall, MPI_Allreduce, MPI_Barrier, MPI_Bcast, MPI_Gather, MPI_Reduce, MPI_Reduce_Scatter, MPI_Scatter and vector collectives.
 * __One-sided MPI Benchmarks__: one-sided put latency (active/passive), one-sided put bandwidth (active/passive), one-sided put bidirectional bandwidth, one-sided get latency (active/passive), one-sided get bandwidth (active/passive), one-sided accumulate latency (active/passive), compare and swap latency (passive), and fetch and operate (passive) for MVAPICH2 (MPI-2 and MPI-3).
 
-The latest version (4.2 at the time of writting) also features [OpenSHMEM]() benchmarks, a 1-sided communications library.
+The 4.3 version also features OpenSHMEM benchmarks, a 1-sided communications library.
 
 In this tutorial, we will focus on two of the available tests:
 
@@ -68,10 +68,11 @@ Clone the [launcher-script repository](https://github.com/ULHPC/launcher-scripts
 	$> mkdir -p git/ULHPC && cd  git/ULHPC
 	$> git clone https://github.com/ULHPC/launcher-scripts.git
 	
-Now you shall get the latest release of the [OSU micro-benchmarks](http://mvapich.cse.ohio-state.edu/benchmarks/) (4.3 at the moment of writing)
+Now you shall get the 4.3 release of the [OSU micro-benchmarks](http://mvapich.cse.ohio-state.edu/benchmarks/)
 
-	$> mkdir ~/TP && cd ~/TP
-    $> wget http://mvapich.cse.ohio-state.edu/benchmarks/osu-micro-benchmarks-4.3.tar.gz
+    $> mkdir ~/TP 
+    $> cd ~/TP
+    $> wget --no-check-certificate https://scm.mvapich.cse.ohio-state.edu/benchmarks/osu-micro-benchmarks-4.3.tar.gz
     $> tar xvzf osu-micro-benchmarks-4.3.tar.gz
     $> cd osu-micro-benchmarks-4.3
 
@@ -86,13 +87,13 @@ We will compile the [OSU micro-benchmarks](http://mvapich.cse.ohio-state.edu/ben
 
     $> cd ~/TP/osu-micro-benchmarks-4.3
     $> module avail 2>&1 | grep -i MPI
-    $> module load ictce
+    $> module load ictce/6.1.5
     $> module list
-	Currently Loaded Modulefiles:
-			1) icc/2013.5.192     2) ifort/2013.5.192   3) impi/4.1.1.036     4) imkl/11.0.5.192    5) ictce/5.5.0
+    Currently Loaded Modulefiles:
+       1) icc/2013_sp1.1.106     2) ifort/2013_sp1.1.106   3) impi/4.1.3.045         4) imkl/11.1.1.106        5) ictce/6.1.5
     $> mkdir build.impi && cd build.impi
     $> ../configure CC=mpiicc --prefix=`pwd`/install
-	$> make && make install 
+    $> make && make install 
 
 If everything goes fine, you shall have the [OSU micro-benchmarks](http://mvapich.cse.ohio-state.edu/benchmarks/) installed in the directory `install/libexec/osu-micro-benchmarks/mpi/`.
 
@@ -108,15 +109,15 @@ Now you can use the [MPI generic launcher](https://github.com/ULHPC/launcher-scr
 	$> cd ~/TP/osu-micro-benchmarks-4.3/
 	$> mkdir runs  && cd runs
 	$> ln -s ~/git/ULHPC/launcher-scripts/bash/MPI/mpi_launcher.sh launcher_osu_impi
-	$> ./launcher_osu_impi --basedir $HOME/TP/osu-micro-benchmarks-4.3/build.impi/install/libexec/osu-micro-benchmarks/mpi/one-sided --npernode 1 --module ictce --exe osu_get_latency,osu_get_bw
+	$> ./launcher_osu_impi --basedir $HOME/TP/osu-micro-benchmarks-4.3/build.impi/install/libexec/osu-micro-benchmarks/mpi/one-sided --npernode 1 --module ictce/6.1.5 --exe osu_get_latency,osu_get_bw
 
-If you want to avoid this long list of arguments, just create a file `launcher_osu_impi.default.conf` as follows: 
+If you want to avoid this long list of arguments, just create a file `launcher_osu_impi.default.conf` to contain: 
 
-	$> cat launcher_osu_impi.default.conf
-	# Defaults settings for running the OSU Micro benchmarks wompiled with Intel MPI
+	$> cat launcher_osu_impi.default.conf # this command will fail if you have not already created the file !
+	# Defaults settings for running the OSU Micro benchmarks compiled with Intel MPI
 	NAME=impi
 	
-	MODULE_TO_LOADstr=ictce
+	MODULE_TO_LOADstr=ictce/6.1.5
 	MPI_PROG_BASEDIR=$HOME/TP/osu-micro-benchmarks-4.3/build.impi/install/libexec/osu-micro-benchmarks/mpi/one-sided/
 	
 	MPI_PROGstr=osu_get_latency,osu_get_bw
@@ -153,7 +154,7 @@ Again, we will rely on the [MPI generic launcher](https://github.com/ULHPC/launc
 
 	$> cd ~/TP/osu-micro-benchmarks-4.3/runs
 	$> ln -s ~/git/ULHPC/launcher-scripts/bash/MPI/mpi_launcher.sh launcher_osu_openmpi
-	$> cat launcher_osu_openmpi.default.conf
+	$> cat launcher_osu_openmpi.default.conf  # this command will fail if you have not already created the file !
 	# Defaults settings for running the OSU Micro benchmarks wompiled with OpenMPI
 	NAME=openmpi
 	
@@ -178,7 +179,7 @@ Repeat the procedure, this time using MVAPICH2.
 
 	$> cd ~/TP/osu-micro-benchmarks-4.3/
 	$> module purge
-	$> module load MVAPICH2
+	$> module load MVAPICH2/1.7-GCC-4.6.3
 	$> mkdir build.mvapich2 && cd build.mvapich2
 	$> ../configure CC=mpicc --prefix=`pwd`/install
 	$> make && make install 
@@ -189,11 +190,11 @@ As before, rely on the [MPI generic launcher](https://github.com/ULHPC/launcher-
 
 	$> cd ~/TP/osu-micro-benchmarks-4.3/runs
 	$> ln -s ~/git/ULHPC/launcher-scripts/bash/MPI/mpi_launcher.sh launcher_osu_mvapich2
-	$> cat launcher_osu_mvapich2.default.conf
+	$> cat launcher_osu_mvapich2.default.conf # this command will fail if you have not already created the file !
 	# Defaults settings for running the OSU Micro benchmarks wompiled with MVAPICH2
 	NAME=mvapich2
 	
-	MODULE_TO_LOADstr=MVAPICH2
+	MODULE_TO_LOADstr=MVAPICH2/1.7-GCC-4.6.3
 	MPI_PROG_BASEDIR=$HOME/TP/osu-micro-benchmarks-4.3/build.mvapich2/install/libexec/osu-micro-benchmarks/mpi/one-sided/
 	
 	MPI_PROGstr=osu_get_latency,osu_get_bw
@@ -230,7 +231,7 @@ suit your needs.
 In particular, once in the `advanced/OSU_MicroBenchmarks` directory: 
 
 * running `make fetch` will automatically download the archives for the [OSU micro-benchmarks](http://mvapich.cse.ohio-state.edu/benchmarks/) in the `src/` directory
-* you will find the patch file to apply to the version 4.3 in `src/osu-micro-benchmarks-4.2/mpi/one-sided/Makefile.am.patch`
+* you will find the patch file to apply to the version 4.3 in `src/osu-micro-benchmarks-4.3/mpi/one-sided/Makefile.am.patch`
 * The different configuration files for the [MPI generic launcher](https://github.com/ULHPC/launcher-scripts/blob/devel/bash/MPI/mpi_launcher.sh) in `runs/`
 * Some sample output data in `runs/data/`
 * run `make build` to build the different versions of the OSU Micro-benchmarks

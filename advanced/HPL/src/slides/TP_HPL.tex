@@ -117,143 +117,127 @@
     \end{enumerate}
 \end{frame}
 
-
-% .......
-\frame{
-  \frametitle{Full sample example \hfill{\tiny (\textit{i.e.} these slides)}}
-
-  \begin{block}{}
-      \begin{itemize}
-        \item To copy a full working example
-          \begin{cmdline}
-              \cmdlineentry{cd /path/to/cloning/dir}\\
-              \cmdlineentry{git clone https://github.com/Falkor/beamerthemeFalkor.git}\\
-              \cmdlineentry{cd /path/to/working/dir}\\
-              \cmdlineentry{rsync -avzu -L --exclude "*.git" $\backslash$\\~~~~~~~/path/to/cloning/dir/beamerthemeFalkor/ .}\\
-              \cmdlineentry{make}
-          \end{cmdline}
-      \end{itemize}
-  \end{block}
-  \begin{itemize}
-    \item This will generate the file \texttt{sample\_slides.pdf}.
-      \begin{itemize}
-          \itemhook adapt accordingly...
-      \end{itemize}
-  \end{itemize}
-
-}
-
-
-% ===============================================
-\section{Some example slides for the TP}
-
-% ............
-\frame{
-
-  \frametitle{Objectives of the TP}
-
-  \begin{itemize}
-    \item Better understand the usage of XXX on the \ULHPC
-  \end{itemize}
-  \vfill Add logo of the soft
-  \begin{alertblock}{}
-      \begin{itemize}
-        \item Key objective 1
-          \begin{itemize}
-              \itemhook at the heart of ...
-          \end{itemize}
-        \item Key objective 2
-          \begin{itemize}
-              \itemhook select benchmarking tools to reflect an HPC usage
-          \end{itemize}
-      \end{itemize}
-  \end{alertblock}
-
-
-  ~\vfill
-  {\tiny
-    \mycite{SBAC-PAD13} S. Varrette,  M. Guzek, V. Plugaru, J. E. Sanchez, and P. Bouvry.
-    "\textit{HPC Performance and Energy-Efficiency of Xen, KVM and VMware Hypervisors}". In Proc. of the 25th IEEE Symposium on Computer Architecture and High Performance (SBAC-PAD'13), Oct 2013.
-    % Do not forget the below space
-
-  }
-
-}
-
-\frame[containsverbatim]{
-  \frametitle{A slide with listings}%\frametitle{Problem}
-  \begin{block}{A JavaScript program}
-      \begin{lstlisting}[basicstyle=\tiny,numbers=none]
-          function fibo(n)
-          {
-            if( n <= 1 )
-            {
-              return n;
-            }
-            var res = fibo(n-1) + fibo(n-2);
-            return res;
-          }
-          n = parseFloat(arguments[1])
-          nn = fibo(n)
-          print(nn)
-      \end{lstlisting}
-
-  \end{block}
-
-}
-
-\section{Example 1}
-
-% .......
-\frame{
-  \frametitle{Example 1}
-  \vfill
-  {\tiny  \href{https://github.com/ULHPC/tutorials/tree/devel/advanced/HPL\#runs-on-a-single-node}{[Online]}}
-  % \begin{exampleblock}{Title}
-  %     \begin{itemize}
-  %       \item recall description of the task (following github link)
-  %     \end{itemize}
-  % \end{exampleblock}
-  % \pause
-  % Eventually give some hint on the solution
-}
-
-\section{Example 2}
-
-% .......
-\frame{
-  \frametitle{Example 2}
-
-  \begin{exampleblock}{Title}
-      \begin{itemize}
-        \item recall description of the task
-      \end{itemize}
-  \end{exampleblock}
-  \pause
-  Eventually give some hint on the solutioon
-}
-
-
-\section{Conclusion: Final plot}
-
-% ............
+\section{Parallelism using MPI}
+\subsection{Basic execution}
 \begin{frame}
-    \frametitle{Conclusion}
+  \frametitle{Basic // execution with MPI}
 
-    \begin{itemize}
-      \item Summary point 1
-      \item Summary point 2
-    \end{itemize}
-
-    \begin{block}{Perspectives}
-        \begin{itemize}
-          \item Improve point 1
-          \item Improve point 2
-        \end{itemize}
-    \end{block}
-
+  \begin{block}{MPI allows \emph{multi-node} parallel execution}
+       \begin{itemize}
+        \item \emph{MPI-enabled} applications are (generally) run through \emph{mpirun}
+          \begin{cmdline}
+              \cmdlineentry{mpirun \textit{[options]} ./application}
+          \end{cmdline}
+        \pause
+        \item Common options are \texttt{-n} and \texttt{-hostfile}
+        \begin{cmdline}
+              \cmdlineentry{mpirun -n \textit{NUM} ./application}
+              
+	      \cmdlineentry{mpirun -hostfile \textit{FILE} ./application}
+	      
+	      \cmdlineentry{mpirun -n \textit{NUM} -hostfile \textit{FILENAME} ./application}
+        \end{cmdline}
+        \pause
+        \item If only \texttt{-n} is specified, the // processes are run \emph{locally}
+        \pause
+        \item If only \texttt{-hostfile} is specified, as many // processes are started as defined in the hostfile (\emph{locally} and/or \emph{remotely})
+        \pause
+        \item Using both options, one explicitly defines how many // processes are run (\emph{locally} and/or \emph{remotely})
+      \end{itemize}
+  \vspace{-2ex}
+  \end{block}
 
 \end{frame}
+
+
+\subsection{A concrete example}
+
+\begin{frame}[fragile]
+  \frametitle{A concrete example on UL HPC (I)}
+
+  \begin{enumerate}
+   \item Request computing resources and check them
+   \begin{lstlisting}[basicstyle=\tiny,numbers=none]
+   (access)$> oarsub -I -l nodes=2/core=2
+   (gaia-12)$> cat $OAR_NODEFILE
+   gaia-12
+   gaia-12
+   gaia-15
+   gaia-15
+\end{lstlisting}
+ \pause
+ \item Run the application without MPI, then load an MPI stack
+   \begin{lstlisting}[basicstyle=\tiny,numbers=none]
+   (gaia-12)$> ./mpi_hello_world 
+   Hello world from processor gaia-12, rank 0 out of 1 processors
+   (gaia-12)$> module load OpenMPI/1.7.3-GCC-4.8.2
+   \end{lstlisting}
+ \pause
+ \item Run the application with MPI, locally
+   \begin{lstlisting}[basicstyle=\tiny,numbers=none]
+   (gaia-12)$> $ mpirun -n 3 ./mpi_hello_world 
+   Hello world from processor gaia-12, rank 2 out of 3 processors
+   Hello world from processor gaia-12, rank 1 out of 3 processors
+   Hello world from processor gaia-12, rank 0 out of 3 processors
+   \end{lstlisting}
+ \end{enumerate}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{A concrete example on UL HPC (II)}
+   \begin{enumerate}
+     \setcounter{enumi}{3}
+     \item Run the application with MPI on all available resources
+      \begin{lstlisting}[basicstyle=\tiny,numbers=none]
+        (gaia-12)$> mpirun -hostfile $OAR_NODEFILE ./mpi_hello_world 
+	Hello world from processor gaia-12, rank 1 out of 4 processors
+	Hello world from processor gaia-12, rank 0 out of 4 processors
+	Hello world from processor gaia-15, rank 2 out of 4 processors
+	Hello world from processor gaia-15, rank 3 out of 4 processors
+        \end{lstlisting}
+	\pause
+      \item  Run the application with MPI on part of the available resources
+        \begin{lstlisting}[basicstyle=\tiny,numbers=none]
+	(gaia-12)$> mpirun -n 3 -hostfile $OAR_NODEFILE ./mpi_hello_world 
+	Hello world from processor gaia-12, rank 0 out of 3 processors
+	Hello world from processor gaia-12, rank 1 out of 3 processors
+	Hello world from processor gaia-15, rank 2 out of 3 processors
+	\end{lstlisting}
+  \end{enumerate}
+\end{frame}
+
+
+\section{Parallelism using MPI/OpenMP}
+
+\begin{frame}
+  \frametitle{MPI and OpenMP hybrids}
+  \vspace{-2ex}
+  \begin{block}{Reminder}
+    \begin{itemize}
+      \item MPI enables \emph{single and multi-node} parallel execution
+      \item OpenMP allows \emph{single-node} parallel execution
+    \end{itemize}
+  \vspace{-2ex}
+  \end{block}
+  \pause
+   \begin{block}{Hybrid MPI/OpenMP software}
+      \begin{itemize}
+	\item Efficient use of resources by:
+	  \begin{itemize}
+	    \item using OpenMP to run things in parallel \emph{locally}
+	    \item using 1 MPI process per compute node to enable \emph{multi-node} parallelism
+	  \end{itemize}
+      \pause
+	\item Require additional specific instructions when launching the application
+	  \begin{itemize}
+	    \item e.g. use \emph{mpirun -npernode 1} for MPI
+	    \item use environment variables (e.g. OMP\_NUM\_THREADS) or application-specific parameters for OpenMP
+	  \end{itemize}
+      \end{itemize}
+  \vspace{-2ex}
+  \end{block}
+\end{frame}
+
 
 \section*{Thank you for your attention...}
 \frame{
@@ -277,20 +261,13 @@
   \frametitle{Appendix}
 
   \begin{acronym}\setlength\itemsep{-0.3em}
-      \acro{DFT}{Discrete Fourier Transform}
-      \acro{EA}{Evolutionary Algorithm}
-      \acro{PRNG}{[Pseudo]-Random Number Generator}
       \acro{UL}{University of Luxembourg}
   \end{acronym}
-
-  \textit{*Note: notice the slide number below...}
 }
 
 % .......
 \frame{
   \frametitle{Another appendix slide}
-
-  \textit{Note again the slide number below...}
 
 }
 

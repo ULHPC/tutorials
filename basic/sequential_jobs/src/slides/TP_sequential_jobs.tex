@@ -147,38 +147,35 @@
 
 
 
-\section{Exercise 1: C program and circuit satisfiability}
+\section{Exercise 1: parametric execution of Gromacs}
 
 % .......
 \frame{
-  \frametitle{Circuit satisfiability}
-    \begin{columns}
-      \column{0.52\textwidth}
-      \includegraphics[scale=0.45]{images_custom/ps2-1-circuit.pdf}
-      \column{0.5\textwidth}
-      \begin{block}{}
-          \begin{itemize}
-            \item 16 inputs \\
-              $\Rightarrow$ $2^{16}$ possibilities
-            \item partitionning:\\ 1 task / possibility
-            \item implementation: circuit.c
-            \begin{itemize}
-                \itemhook
-                  1 parameter in [0,65535]
-                \itemhook 
-                  success: exit code = 0
-                \itemhook 
-                  failure: exit code > 0
-            \end{itemize}
-          \end{itemize}
-      \end{block}
-  \end{columns}
+  \frametitle{Gromacs}
 
+  \textbf{GROMACS}: GROningen MAchine for Chemical Simulations \\                                                                                                     
+  \hfill \scriptsize{versatile package for molecular dynamics, primarily designed for biochemical molecules}
+  \\ \hfill \\
+  \begin{itemize}
+    \item very large codebase: 1.836.917 SLOC
+    \item many applications in the package, several parallelization modes
+    \item \textbf{mdrun}: computational chemistry engine, performing:\\
+      {
+      \scriptsize
+      $ \hookrightarrow $ molecular dynamics simulations \\
+      $ \hookrightarrow $ Brownian Dynamics, Langevin Dynamics \\
+      $ \hookrightarrow $ Conjugate Gradient \\
+      $ \hookrightarrow $ L-BFGS \\
+      $ \hookrightarrow $ Steepest Descents energy minimization \\
+      $ \hookrightarrow $ Normal Mode Analysis \\
+      }
+    \item \textbf{mdrun} - parallelized using MPI, OpenMP, pthreads and with support for GPU acceleration
+  \end{itemize}
 }
 
 % .......
 \frame{
-  \frametitle{Exercise 1: circuit satisfiability}
+  \frametitle{Exercise 1: parametric execution}
     
   \begin{exampleblock}{2 approaches}
       \begin{itemize}
@@ -186,8 +183,8 @@
 		\item Parallized (with GNU parallel)
       \end{itemize}
   \end{exampleblock}
-
-  \center \includegraphics[scale=0.45]{images_custom/ps2-1-comparison}
+\vspace{-1em}
+  \center \includegraphics[scale=0.6]{images_custom/ps2-1-comparison}
 
 
 }
