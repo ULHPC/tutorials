@@ -282,17 +282,26 @@ You can get more information about these transfer methods in the [file transfer 
 
 ## Step 3b: Windows / Linux / OS X / Unix GUI tools
 * Download the FileZilla client application from [filezilla-project.org](https://filezilla-project.org/download.php?type=client) and install it.
-* Start the application and in the main window click on the `Site Manager` button on the top left or select `Site Manager` from the `File` menu.
+* First we need to tell FileZilla about our ssh key:
+	* Start the application.
+	* Go to the `Settings` (either under `Edit` or `FileZilla` depending on the OS).
+	* In the category `Connection` select `SFTP`. 
+	* Click on the button `Add keyfile...` and select your private keyfile (you may need to convert it).
+	* Finally click `OK` to save and close the settings.
+	
+![Add ssh key](src/images/filezilla_key.jpg)
+
+* Back in the main window click on the `Site Manager` button on the top left or select `Site Manager` from the `File` menu.
 * Click on the `New Site` button and enter/select the following:
   * Host: `access-gaia.uni.lu`
   * Protocol: `SFTP - SSH File Transfer Protocol`
-  * Logon Type: `Ask for password`
+  * Logon Type: `Interactive`
   * User: your login
   
 ![Connection settings](src/images/site_manager.jpg)
   
 * Click on the `Connect` button.
-* Enter your password when asked and accept the certificate.
+* Accept the certificate.
 
 You should now see something similar to the following window:
 
