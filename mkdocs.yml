@@ -1,0 +1,21 @@
+site_name: UL HPC Tutorials
+pages:
+- ['index.md', 'Home']
+- ['basic/getting_started.md', 'Basic Tutorials', 'Getting Started']
+- ['basic/sequential_jobs.md', 'Basic Tutorials', 'HPC workflow with sequential jobs']
+- ['advanced/RESIF.md',     'Advanced Software Management', 'RESIF']
+- ['advanced/easybuild.md', 'Advanced Software Management', 'Easybuild']
+- ['advanced/OSU_MicroBenchmarks.md', 'MPI', 'The OSU Micro-benchmarks']
+- ['advanced/HPL.md',                 'MPI', 'High Performance Linpack (HPL)']
+- ['advanced/MATLAB.md', 'Mathematics', 'MATLAB']
+- ['advanced/R.md',      'Mathematics', 'R - statistical computing ']
+- ['advanced/Bioinformatics.md',         'Bio-informatic', 'Running bioinformatics software']
+- ['advanced/Bioinformatics.md#gromacs', 'Bio-informatic', 'CPU intensive, little I/O: Gromacs' ]
+- ['advanced/Bioinformatics.md#mpiblast','Bio-informatic', 'Data intensive, little RAM, native parallelization: mpiBLAST']
+- ['advanced/Bioinformatics.md#bowtie2tophat','Bio-informatic', 'Data intensive, RAM intensive: Bowtie2/TopHat']
+- ['advanced/Allinea.md',   'Parallel Debuggers', 'Allinea']
+- ['advanced/TotalView.md', 'Parallel Debuggers', 'TotalView']
+- ['contributing.md', 'Documentation', 'Contributing']
+- ['rtfd.md', 'Documentation', 'RTFD']
+- ['contacts.md', 'Contacts']
+theme: readthedocs
