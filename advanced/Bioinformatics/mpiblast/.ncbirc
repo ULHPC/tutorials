@@ -1,0 +1,6 @@
+[NCBI]
+data=/scratch/users/vplugaru/bioinfo-inputs/mpiblast/blast-data/
+
+[mpiBLAST]
+Shared=/scratch/users/vplugaru/bioinfo-inputs/mpiblast/
+Local=/tmp 

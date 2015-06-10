@@ -4,7 +4,7 @@
 
 Copyright (c) 2013 Sebastien Varrette <Sebastien.Varrette@uni.lu>
 
-        Time-stamp: <Dim 2013-11-11 19:21 svarrette>
+        Time-stamp: <Mer 2014-05-07 17:22 svarrette>
 
 -------------------
 
@@ -32,20 +32,20 @@ The latest version of this tutorial is available on
 
 ## Objectives
 
-The [OSU micro-benchmarks](http://mvapich.cse.ohio-state.edu/benchmarks/) features a serie of MPI benchmarks to measure the performances of various MPI operations: 
+The [OSU micro-benchmarks](http://mvapich.cse.ohio-state.edu/benchmarks/) feature a series of MPI benchmarks that measure the performances of various MPI operations: 
 
 * __Point-to-Point MPI Benchmarks__: Latency, multi-threaded latency, multi-pair latency, multiple bandwidth / message rate test bandwidth, bidirectional bandwidth
 * __Collective MPI Benchmarks__: Collective latency tests for various MPI collective operations such as MPI_Allgather, MPI_Alltoall, MPI_Allreduce, MPI_Barrier, MPI_Bcast, MPI_Gather, MPI_Reduce, MPI_Reduce_Scatter, MPI_Scatter and vector collectives.
 * __One-sided MPI Benchmarks__: one-sided put latency (active/passive), one-sided put bandwidth (active/passive), one-sided put bidirectional bandwidth, one-sided get latency (active/passive), one-sided get bandwidth (active/passive), one-sided accumulate latency (active/passive), compare and swap latency (passive), and fetch and operate (passive) for MVAPICH2 (MPI-2 and MPI-3).
 
-The latest version (4.2 at the time of writting) also features [OpenSHMEM]() benchmarks, a 1-sided communications library.
+The 4.3 version also features OpenSHMEM benchmarks, a 1-sided communications library.
 
 In this tutorial, we will focus on two of the available tests:
 
-* `osu_latency` - Latency Test
+* `osu_get_latency` - Latency Test
 
   The latency tests are carried out in a ping-pong fashion. The sender sends a message with a certain data size to the receiver and waits for a reply from the receiver. The receiver receives the message from the sender and sends back a reply with the same data size. Many iterations of this ping-pong test are carried out and average one-way latency numbers are obtained. Blocking version of MPI functions (MPI_Send and MPI_Recv) are used in the tests.
-* `osu_bw` - Bandwidth Test
+* `osu_get_bw` - Bandwidth Test
 
   The bandwidth tests were carried out by having the sender sending out a fixed number (equal to the window size) of back-to-back messages to the receiver and then waiting for a reply from the receiver. The receiver sends the reply only after receiving all these messages. This process is repeated for several iterations and the bandwidth is calculated based on the elapsed time (from the time sender sends the first message until the time it receives the reply back from the receiver) and the number of bytes sent by the sender. The objective of this bandwidth test is to determine the maximum sustained date rate that can be achieved at the network level. Thus, non-blocking version of MPI functions (MPI_Isend and MPI_Irecv) were used in the test.
 
@@ -68,37 +68,13 @@ Clone the [launcher-script repository](https://github.com/ULHPC/launcher-scripts
 	$> mkdir -p git/ULHPC && cd  git/ULHPC
 	$> git clone https://github.com/ULHPC/launcher-scripts.git
 	
-Now you shall get the latest release of the [OSU micro-benchmarks](http://mvapich.cse.ohio-state.edu/benchmarks/) (4.2 at the moment of writing)
+Now you shall get the 4.3 release of the [OSU micro-benchmarks](http://mvapich.cse.ohio-state.edu/benchmarks/)
 
-	$> mkdir ~/TP && cd ~/TP
-    $> wget http://mvapich.cse.ohio-state.edu/benchmarks/osu-micro-benchmarks-4.2.tar.gz
-    $> tar xvzf osu-micro-benchmarks-4.2.tar.gz
-    $> cd osu-micro-benchmarks-4.2
-
-There are two tests, `osu_cas_flush` and `osu_fop_flush`, which uses some MPI primitives defined in the MPI 3.0 standard, thus unavailable in OpenMPI and iMPI on the cluster. So we will have to patch the sources to prevent the generation of these two benchamrks:
-
-	$> cd ~/TP/osu-micro-benchmarks-4.2
-	$> cd mpi/one-sided
-	
-Now create a file `Makefile.am.patch` with the following content: 
-
-	$> cat Makefile.am.patch
-	--- Makefile.am.old     2013-11-12 09:44:11.916456641 +0100
-	+++ Makefile.am 2013-11-12 09:44:24.363424661 +0100
-	@@ -1,2 +1,2 @@
-	 one_sideddir = $(pkglibexecdir)/mpi/one-sided
-	-one_sided_PROGRAMS = osu_acc_latency osu_passive_acc_latency osu_get_bw osu_get_latency osu_put_bibw osu_put_bw osu_put_latency osu_passive_get_latency osu_passive_get_bw osu_passive_put_latency osu_passive_put_bw osu_cas_flush osu_fop_flush
-	+one_sided_PROGRAMS = osu_acc_latency osu_passive_acc_latency osu_get_bw osu_get_latency osu_put_bibw osu_put_bw osu_put_latency osu_passive_get_latency osu_passive_get_bw osu_passive_put_latency osu_passive_put_bw
-	
-… And apply the patch as follows:
-
-	$> patch -p0 < Makefile.am.patch
-	patching file Makefile.am
-	
-And update the Autotools chain configuration :
-
-	$> cd ~/TP/osu-micro-benchmarks-4.2
-	$> autoreconf && automake
+    $> mkdir ~/TP 
+    $> cd ~/TP
+    $> wget --no-check-certificate https://scm.mvapich.cse.ohio-state.edu/benchmarks/osu-micro-benchmarks-4.3.tar.gz
+    $> tar xvzf osu-micro-benchmarks-4.3.tar.gz
+    $> cd osu-micro-benchmarks-4.3
 
 
 ## OSU Micro-benchmarks with Intel MPI
@@ -109,15 +85,15 @@ which provides Intel C/C++ and Fortran compilers, Intel MPI.
 
 We will compile the [OSU micro-benchmarks](http://mvapich.cse.ohio-state.edu/benchmarks/) in a specific directory (that a good habbit)
 
-    $> cd ~/TP/osu-micro-benchmarks-4.2
+    $> cd ~/TP/osu-micro-benchmarks-4.3
     $> module avail 2>&1 | grep -i MPI
-    $> module load ictce
+    $> module load ictce/6.1.5
     $> module list
-	Currently Loaded Modulefiles:
-			1) icc/2013.5.192     2) ifort/2013.5.192   3) impi/4.1.1.036     4) imkl/11.0.5.192    5) ictce/5.5.0
+    Currently Loaded Modulefiles:
+       1) icc/2013_sp1.1.106     2) ifort/2013_sp1.1.106   3) impi/4.1.3.045         4) imkl/11.1.1.106        5) ictce/6.1.5
     $> mkdir build.impi && cd build.impi
     $> ../configure CC=mpiicc --prefix=`pwd`/install
-	$> make && make install 
+    $> make && make install 
 
 If everything goes fine, you shall have the [OSU micro-benchmarks](http://mvapich.cse.ohio-state.edu/benchmarks/) installed in the directory `install/libexec/osu-micro-benchmarks/mpi/`.
 
@@ -130,20 +106,19 @@ Once compiled, ensure you are able to run it:
 
 Now you can use the [MPI generic launcher](https://github.com/ULHPC/launcher-scripts/blob/devel/bash/MPI/mpi_launcher.sh) to run the code: 
 
-	$> cd ~/TP/osu-micro-benchmarks-4.2/
+	$> cd ~/TP/osu-micro-benchmarks-4.3/
 	$> mkdir runs  && cd runs
 	$> ln -s ~/git/ULHPC/launcher-scripts/bash/MPI/mpi_launcher.sh launcher_osu_impi
-	$> ./launcher_osu_impi --basedir $HOME/TP/osu-micro-benchmarks-4.2/build.impi/install/libexec/osu-micro-benchmarks/mpi/one-sided --npernode 1 --module ictce --exe osu_get_latency,osu_get_bw
+	$> ./launcher_osu_impi --basedir $HOME/TP/osu-micro-benchmarks-4.3/build.impi/install/libexec/osu-micro-benchmarks/mpi/one-sided --npernode 1 --module ictce/6.1.5 --exe osu_get_latency,osu_get_bw
 
-If you want to avoid this long list of arguments, just create a file `launcher_osu_impi.default.conf` as follows: 
+If you want to avoid this long list of arguments, just create a file `launcher_osu_impi.default.conf` to contain: 
 
-	$> cat launcher_osu_impi.default.conf
-	cat launcher_osu_impi.default.conf
-	# Defaults settings for running the OSU Micro benchmarks wompiled with Intel MPI
+	$> cat launcher_osu_impi.default.conf # this command will fail if you have not already created the file !
+	# Defaults settings for running the OSU Micro benchmarks compiled with Intel MPI
 	NAME=impi
 	
-	MODULE_TO_LOADstr=ictce
-	MPI_PROG_BASEDIR=$HOME/TP/osu-micro-benchmarks-4.2/build.impi/install/libexec/osu-micro-benchmarks/mpi/one-sided/
+	MODULE_TO_LOADstr=ictce/6.1.5
+	MPI_PROG_BASEDIR=$HOME/TP/osu-micro-benchmarks-4.3/build.impi/install/libexec/osu-micro-benchmarks/mpi/one-sided/
 	
 	MPI_PROGstr=osu_get_latency,osu_get_bw
 	MPI_NPERNODE=1
@@ -160,9 +135,9 @@ You might want also to host the output files in the local directory (under the d
 
 We will repeat the procedure, this time using OpenMPI. 
 
-	$> cd ~/TP/osu-micro-benchmarks-4.2/
+	$> cd ~/TP/osu-micro-benchmarks-4.3/
 	$> module purge
-	$> module load OpenMPI
+	$> module load OpenMPI/1.7.3-GCC-4.8.2
 	$> mkdir build.openmpi && cd build.openmpi
 	$> ../configure CC=mpicc --prefix=`pwd`/install
 	$> make && make install 
@@ -177,14 +152,14 @@ Once compiled, ensure you are able to run it:
 
 Again, we will rely on the [MPI generic launcher](https://github.com/ULHPC/launcher-scripts/blob/devel/bash/MPI/mpi_launcher.sh) to run the code: 
 
-	$> cd ~/TP/osu-micro-benchmarks-4.2/runs
+	$> cd ~/TP/osu-micro-benchmarks-4.3/runs
 	$> ln -s ~/git/ULHPC/launcher-scripts/bash/MPI/mpi_launcher.sh launcher_osu_openmpi
-	$> cat launcher_osu_openmpi.default.conf
+	$> cat launcher_osu_openmpi.default.conf  # this command will fail if you have not already created the file !
 	# Defaults settings for running the OSU Micro benchmarks wompiled with OpenMPI
 	NAME=openmpi
 	
-	MODULE_TO_LOADstr=OpenMPI
-	MPI_PROG_BASEDIR=$HOME/TP/osu-micro-benchmarks-4.2/build.openmpi/install/libexec/osu-micro-benchmarks/mpi/one-sided/
+	MODULE_TO_LOADstr=OpenMPI/1.7.3-GCC-4.8.2
+	MPI_PROG_BASEDIR=$HOME/TP/osu-micro-benchmarks-4.3/build.openmpi/install/libexec/osu-micro-benchmarks/mpi/one-sided/
 	
 	MPI_PROGstr=osu_get_latency,osu_get_bw
 	MPI_NPERNODE=1
@@ -202,9 +177,9 @@ You might want also to host the output files in the local directory (under the d
 
 Repeat the procedure, this time using MVAPICH2. 
 
-	$> cd ~/TP/osu-micro-benchmarks-4.2/
+	$> cd ~/TP/osu-micro-benchmarks-4.3/
 	$> module purge
-	$> module load MVAPICH2
+	$> module load MVAPICH2/1.7-GCC-4.6.3
 	$> mkdir build.mvapich2 && cd build.mvapich2
 	$> ../configure CC=mpicc --prefix=`pwd`/install
 	$> make && make install 
@@ -213,25 +188,25 @@ If everything goes fine, you shall have the [OSU micro-benchmarks](http://mvapic
 
 As before, rely on the [MPI generic launcher](https://github.com/ULHPC/launcher-scripts/blob/devel/bash/MPI/mpi_launcher.sh) to run the code: 
 
-	$> cd ~/TP/osu-micro-benchmarks-4.2/runs
+	$> cd ~/TP/osu-micro-benchmarks-4.3/runs
 	$> ln -s ~/git/ULHPC/launcher-scripts/bash/MPI/mpi_launcher.sh launcher_osu_mvapich2
-	$> cat launcher_osu_mvapich2.default.conf
+	$> cat launcher_osu_mvapich2.default.conf # this command will fail if you have not already created the file !
 	# Defaults settings for running the OSU Micro benchmarks wompiled with MVAPICH2
 	NAME=mvapich2
 	
-	MODULE_TO_LOADstr=MVAPICH2
-	MPI_PROG_BASEDIR=$HOME/TP/osu-micro-benchmarks-4.2/build.mvapich2/install/libexec/osu-micro-benchmarks/mpi/one-sided/
+	MODULE_TO_LOADstr=MVAPICH2/1.7-GCC-4.6.3
+	MPI_PROG_BASEDIR=$HOME/TP/osu-micro-benchmarks-4.3/build.mvapich2/install/libexec/osu-micro-benchmarks/mpi/one-sided/
 	
 	MPI_PROGstr=osu_get_latency,osu_get_bw
 	MPI_NPERNODE=1
 
 Now you can run the launcher script interactively.
 
-	$> ./launcher_osu_openmpi
+	$> ./launcher_osu_mvapich2
 
 You might want also to host the output files in the local directory (under the date)
 
-	$> ./launcher_osu_openmpi --datadir data/`date +%Y-%m-%d`
+	$> ./launcher_osu_mvapich2 --datadir data/`date +%Y-%m-%d`
 
 
 ## Benchmarking on two nodes 
@@ -256,9 +231,12 @@ suit your needs.
 In particular, once in the `advanced/OSU_MicroBenchmarks` directory: 
 
 * running `make fetch` will automatically download the archives for the [OSU micro-benchmarks](http://mvapich.cse.ohio-state.edu/benchmarks/) in the `src/` directory
-* you will find the patch file to apply to the version 4.2 in `src/osu-micro-benchmarks-4.2/mpi/one-sided/Makefile.am.patch`
+* you will find the patch file to apply to the version 4.3 in `src/osu-micro-benchmarks-4.3/mpi/one-sided/Makefile.am.patch`
 * The different configuration files for the [MPI generic launcher](https://github.com/ULHPC/launcher-scripts/blob/devel/bash/MPI/mpi_launcher.sh) in `runs/`
-* Some sample output data in `runs/data/
+* Some sample output data in `runs/data/`
+* run `make build` to build the different versions of the OSU Micro-benchmarks
+* run `make run_interactive` to run the benchmarks, assuming you are in an interactive job
+* run `make run` to run a passive job executing the benchmarks
 * run `make plot` to invoke the [Gnuplot](http://www.gnuplot.info/) script
   `plots/benchmark_OSU.gnuplot` and generate various plots from the sample
   runs. 

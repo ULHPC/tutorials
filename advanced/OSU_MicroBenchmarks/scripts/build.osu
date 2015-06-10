@@ -1,0 +1,94 @@
+#! /bin/bash
+################################################################################
+# build.osu - Build OSU Micro-benchmarks
+################################################################################
+set -e
+
+# Load Modules
+if [ -f  /etc/profile ]; then
+    .  /etc/profile
+fi
+
+DEBUG=""
+SIMULATION=""
+
+### Local variables
+SUITE=openmpi
+
+STARTDIR="$(pwd)"
+SCRIPTFILENAME=$(basename $0)
+SCRIPTDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+TOP_DIR=`realpath "${SCRIPTDIR}/.."`
+TOP_SRCDIR="${TOP_DIR}/src/osu-micro-benchmarks-4.3"
+TOP_RUNDIR="${TOP_DIR}/runs"
+
+OSU_BENCH_SUBDIR="install/libexec/osu-micro-benchmarks/mpi/one-sided/"
+OSU_BENCHS=(osu_get_latency osu_get_bw)
+
+
+######################
+print_error_and_exit() {
+    echo "*** ERROR *** $*"
+    exit 1
+}
+debug()   { [ -n "$DEBUG"   ] && echo $* || true; }
+verbose() { [ -n "$VERBOSE" ] && echo $* || true; }
+#####
+# execute a local command
+# usage: execute command
+###
+execute() {
+    [ $# -eq 0 ] && print_error_and_exit "[$FUNCNAME] missing command argument"
+    debug "[$FUNCNAME] $*"
+    [ -n "${SIMULATION}" ] && echo "(simulation) $*" || eval $*
+    local exit_status=$?
+    debug "[$FUNCNAME] exit status: $exit_status"
+    [ $exit_status -ne 0 ] && print_error_and_exit "Command '$*' failed with exit code $exit_status"
+    return $exit_status
+}
+
+
+##################################
+# Check for command-line options
+while [ $# -ge 1 ]; do
+    case $1 in
+        -h | --help)    
+            echo "Usage: $0 [--srcdir DIR] {openmpi | ictce | mvapich2}"
+            exit 0;;
+        --debug)  DEBUG="$1";;
+        -v)       VERBOSE="$1";;
+        -n | --dry-run) SIMULATION="$1";;
+        --srcdir) SRC_DIR=$1; shift;; 
+        openmpi | mvapich2 | ictce | impi) 
+            SUITE=$1;;
+    esac
+    shift
+done
+
+# echo "TOP_DIR    = ${TOP_DIR}"
+# echo "TOP_SRCDIR = ${TOP_SRCDIR}"
+
+[ ! -d "${TOP_SRCDIR}" ] && echo "unable to find the source directory" && exit 1
+
+build_dir=${TOP_SRCDIR}/build.${SUITE}
+
+mkdir -p ${build_dir}
+
+case ${SUITE} in 
+    openmpi)      MPICC=mpicc;  MODULE=OpenMPI;;
+    mvapich*)     MPICC=mpicc;  MODULE=MVAPICH2;;
+    ictce | impi) MPICC=mpiicc; MODULE=ictce;;
+esac
+
+echo "=> installing OSU Micro-benchmarks with ${MODULE}"
+
+if [ -d "${build_dir}" ]; then 
+    execute "module purge"
+    execute "module load ${MODULE}"
+    execute "module list"
+    execute "cd ${build_dir}"
+    execute "../configure CC=${MPICC} --prefix=`pwd`/install"
+    execute "make && make install"
+    execute "cd -"
+fi

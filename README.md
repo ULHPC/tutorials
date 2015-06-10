@@ -1,71 +1,88 @@
--*- mode: markdown; mode: auto-fill; fill-column: 80 -*-
-`README.md`
+-*- mode: markdown; mode: visual-line;  -*-
 
-Copyright (c) 2013 [Sebastien Varrette](mailto:<Sebastien.Varrette@uni.lu>) [www](http://varrette.gforge.uni.lu)
-
-        Time-stamp: <Dim 2013-11-10 21:28 svarrette>
+       Time-stamp: <Wed 2015-06-10 10:30 svarrette>
 
 -------------------
 
 # UL HPC Tutorials 
 
+[![License](http://img.shields.io/:license-GPL3.0-blue.svg)](LICENSE)
+[![Documentation Status](https://readthedocs.org/projects/ulhpc-tutorials/badge/?version=latest)](https://readthedocs.org/projects/ulhpc-tutorials/?badge=latest)
+[![By ULHPC](https://img.shields.io/badge/by-ULHPC-blue.svg)](http://hpc.uni.lu)
+
+      Copyright (c) 2013-2015 UL HPC Team aka. S. Varrette, H. Cartiaux, V. Plugaru, S. Diehl <hpc-sysadmins@uni.lu>
+
+| [Project Page](https://github.com/ULHPC/tutorials) |  [Documentation](https://ulhpc-tutorials.readthedocs.org/en/latest/) | [Issues](https://github.com/ULHPC/tutorials/issues) |
+
 ## Synopsis
 
-This repository holds a set of tutorials to help the users of the
-[UL HPC](https://hpc.uni.lu) platform to better understand or simply use our
-platform. 
+This repository holds a set of tutorials to help the users of the [UL HPC](https://hpc.uni.lu) platform to better understand or simply use our platform. 
 
 ## Tutorials layout
 
 For each subject, you will have a dedicated directory organized as follows:
 
 * `README.md`: hold the description of the tutorial
-* `Makefile`: a [GNU make](http://www.gnu.org/software/make/) configuration
-  file, consistent with the following conventions for the lazy users who do not
-  wish to do all the steps proposed in the tutorial: 
+* (eventually) `Makefile`: a [GNU make](http://www.gnu.org/software/make/) configuration file, consistent with the following conventions for the lazy users who do not wish to do all the steps proposed in the tutorial: 
   
-  * `make fetch` will retrieve whatever archives / sources are required to
+   - `make fetch` will retrieve whatever archives / sources are required to
     perform the tutorial
-  * `make build` will automate the build of the software
-  * `make run_interactive` to perform a sample run in interactive mode
-  * `make run` to perform a sample run in passive mode (_i.e_  via `oarsub -S
-    ...` typically)
-  * (eventually) `make plot` to draw a plot illustrating the results obtained
-    through the run.
+   - `make build` will automate the build of the software
+   - `make run_interactive` to perform a sample run in interactive mode
+   - `make run` to perform a sample run in passive mode (_i.e_  via `oarsub -S ...` typically)
+   - (eventually) `make plot` to draw a plot illustrating the results obtained through the run.
 
+## List of proposed tutorials
 
-# Proposing a new tutorial / Contributing to this repository 
+The organization and indexing of the tutorials follows the program of the last [UL HPC School](http://hpc.uni.lu/hpc-school/) and thus is subject to changes over time. 
+ 
+__Basic tutorials__:
 
-## Pre-requisites
+* PS1B: [Getting Started on the UL HPC platform (SSH, data transfer, OAR, modules, monitoring)](/basic/getting_started)
+* PS2A: [HPC workflow with sequential jobs](/basic/sequential_jobs)
 
-### Git
+__MPI__
 
-You should become familiar (if not yet) with Git. Consider these resources:
+* PS3A-1: [running the OSU Micro-Banchmarks](/advanced/OSU_MicroBenchmarks)
+* PS3A-2: [running HPL](/advanced/HPL)
 
-* [Git book](http://book.git-scm.com/index.html)
-* [Github:help](http://help.github.com/mac-set-up-git/)
-* [Git reference](http://gitref.org/)
+__Mathematics__:
 
-### git-flow
+* PS3B: [running MATLAB](/advanced/MATLAB)
+* PS3C: [running R](/advanced/R)
 
-The Git branching model for this repository follows the guidelines of [gitflow](http://nvie.com/posts/a-successful-git-branching-model/).
-In particular, the central repo (on `github.com`) holds two main branches with an infinite lifetime:
+__Advanced Software Management__
 
-* `production`: the *production-ready* tutorials
-* `devel`: the main branch where the latest developments interviene. This is the
-  *default* branch you get when you clone the repo. 
+* PS 4A: [Software environment generation: RESIF/Easybuild](/advanced/RESIF/)
 
-### Local repository setup
+__Bio-informatic__
 
-This repository is hosted on out [GitHub](https://github.com/ULHPC/tutorials).
-Once cloned, initiate the potential git submodules etc. by running: 
+* PS 6A: [Running Bio-informatics software: test cases on Abyss, GROMACS, Bowtie2/TopHat, mpiBLAST](/advanced/Bioinformatics/)
 
-    $> cd tutorials
-    $> make setup
+__Parallel Debuggers__
 
-## Fork this repository
+* [Direct, Reverse and parallel Memory debugging with TotalView](/advanced/TotalView)
+* [Allinea](/advanced/Allinea)
 
-You shall now
-[fork this repository](https://help.github.com/articles/fork-a-repo). 
+## Issues / Feature request
 
-Try to be compliant with the above mentioned rules.
+You can submit bug / issues / feature request using the [ULHPC/tutorials Tracker](https://github.com/ULHPC/tutorials/issues). 
+
+## Developments / Contributing to the code 
+
+If you want to contribute to the code, you shall be aware of the way this module is organized. 
+These elements are detailed on [`docs/contributing.md`](contributing.md).
+
+You are more than welcome to contribute to its development by [sending a pull request](https://help.github.com/articles/using-pull-requests). 
+
+## Online Documentation
+
+[Read the Docs](https://readthedocs.org/) aka RTFD hosts documentation for the open source community and the [ULHPC/sysadmins](https://github.com/ULHPC/tutorials) has its documentation (see the `docs/` directly) hosted on [readthedocs](http://ulhpc-tutorials.rtfd.org).
+
+See [`docs/rtfd.md`](rtfd.md) for more details.
+
+## Licence
+
+This project and the sources proposed within this repository are released under the terms of the [GPL-3.0](LICENCE) licence.
+
+[![Licence](https://www.gnu.org/graphics/gplv3-88x31.png)](LICENSE)

@@ -41,7 +41,7 @@ HPL rely on an efficient implementation of the Basic Linear Algebra Subprograms
 
 * Intel MKL
 * [ATLAS](http://math-atlas.sourceforge.net/atlas_install/)
-* [GotoBlas](http://www.tacc.utexas.edu/tacc-projects/gotoblas2/downloads/)  
+* [GotoBlas](https://www.tacc.utexas.edu/research-development/tacc-software/gotoblas2/)  
 
 The objective of this practical session is to compare the performances of HPL
 runs compiled under different combination:  
@@ -118,7 +118,7 @@ and expected performances and adapt `bin/intel64/HPL.dat` accordingly.
 
 ### HPL with GCC and GotoBLAS2 and Open MPI
 
-Another alternative is to rely on [GotoBlas](http://www.tacc.utexas.edu/tacc-projects/gotoblas2/downloads/).  
+Another alternative is to rely on [GotoBlas](https://www.tacc.utexas.edu/research-development/tacc-software/gotoblas2/).  
 
 Get the sources and compile them: 
 
@@ -160,12 +160,12 @@ Once compiled, ensure you are able to run it:
 
 Here we will rely on the [Automatically Tuned Linear Algebra Software (ATLAS)](http://math-atlas.sourceforge.net/)
 
-Download the [latest version](http://sourceforge.net/projects/math-atlas/files/)
-(3.11.17 at the time of writing) and compile them:  
+Download the [latest version](http://sourceforge.net/projects/math-atlas/files/) 
+(3.11.32 at the time of writing) and compile it:  
 
      $> cd ~/TP
-     $> tar xvf atlas3.11.17.tar.bz2
-     $> mv ATLAS ATLAS-3.11.17 && cd ATLAS-3.11.17
+     $> tar xvf atlas3.11.32.tar.bz2
+     $> mv ATLAS ATLAS-3.11.32 && cd ATLAS-3.11.32
      $> module purge
 	 $> module load MVAPICH2	
 	 $> less INSTALL.txt
