@@ -459,16 +459,25 @@ Finalize and cleanup things.
 **Exercise: Plot a speedup graph with different number of cores and/or machines used.**
 
 <!--
-#### Not (yet) Covered by this Tutorial: MPI Communications
+#### MPI Communications
 
-It is also possible to use MPI communications instead of sockets.
-We will not see this in the tutorial because some required modules will be available in the platform in a close future, however here is the basic procedure.
+In this section we will use R with MPI connections. We will use the OpenMPI implementation and thus we need to load a custom R easybuild module.
 
-R will need the package `Rmpi` and same as before, we use `makeCluster` but we use `comm_type = "MPI"` instead of `PSOCK` and we call `mpi.exit()` after calling `stopCluster()`.
-Then, you need to call the R script within MPI. i.e. 
-   
-    mpirun -n <nb_processes> R --slave -f <R_script_file.R>
+First unload all previously loaded modules.
+
+	module purge
+
+Then load the custom module
+
+	module use /home/users/jemeras/.easybuild/modules/all/
+	module load lang/R/3.2.0-goolf-1.4.10-bare
+
+Install `Rmpi` and `snow` packages in R (you might need to specify manually the MPI type before installing the package, this can be done via the RMPI_TYPE env variable).
+
+	> Sys.setenv(RMPI_TYPE='OPENMPI')
+	> install.packages("Rmpi", "snow")
 -->
+
 
 ### Usefull links
 
