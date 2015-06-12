@@ -1,6 +1,6 @@
 `README.md`
 
-Copyright (c) 2014 Valentin Plugaru <Valentin.Plugaru@gmail.com>
+Copyright (c) 2014, 2015 Valentin Plugaru <Valentin.Plugaru@gmail.com> and Sarah Diehl <Sarah.Diehl@uni.lu>
 
 -------------------
 
@@ -24,6 +24,13 @@ The tutorial will:
 3. discuss the parallelization capabilities of these applications
 
 ## Prerequisites
+When you look at the [software page](https://hpc.uni.lu/users/software/) you will notice that some of the applications are part of the *lcsb* software set. The modules in this set are not visible be default. To use them within a job you have to do:
+
+	(node)$> module use $RESIF_ROOTINSTALL/lcsb/modules/all
+	
+If you want them to always be available, you can add the following line to your `.bash_private`:
+
+	command -v module >/dev/null 2>&1 && module use $RESIF_ROOTINSTALL/lcsb/modules/all
 
 This tutorial relies on several input files for the bioinformatics packages, thus you will need to download them
 before following the instructions in the next sections:
@@ -63,16 +70,16 @@ being proposed later on as exercises.
         (gaia-frontend)$> oarsub -I -l nodes=1,walltime=00:30:00
 
         # Check the ABySS versions installed on the clusters:
-        (node)$> module available 2>&1 | grep -i abyss
+        (node)$> module avail 2>&1 | grep -i abyss
         
         # Load a specific ABySS version:
-        (node)$> module load ABySS/1.3.4-goolf-1.4.10-Python-2.7.3
+        (node)$> module load bio/ABySS/1.5.2-goolf-1.4.10
 
         # Check that it has been loaded, along with its dependencies:
         (node)$> module list
         
         # All the ABySS binaries are now in your path (check with TAB autocompletion)
-        (node)$> abyss-<TAB><TAB>
+        (node)$> abyss-<TAB>
 
 In the ABySS package only the `ABYSS-P` application is parallelized using MPI and can be run on several cores (and across several nodes) using
 the `abyss-pe` launcher.
@@ -147,20 +154,15 @@ being proposed later on as exercises.
         (gaia-frontend)$> oarsub -I -l nodes=1,walltime=00:30:00
 
         # Check the GROMACS versions installed on the clusters:
-        (node)$> module available 2>&1 | grep -i gromacs
+        (node)$> module avail 2>&1 | grep -i gromacs
         
 Several GROMACS builds are available, we will focus only on the ones corresponding to the version 4.6.5:
 
-* GROMACS/4.6.5-goolf-1.4.10-hybrid,  GROMACS/4.6.5-goolfc-2.6.10-hybrid
-* GROMACS/4.6.5-goolf-1.4.10-mt, GROMACS/4.6.5-goolfc-2.6.10-mt
+* bio/GROMACS/4.6.5-goolf-1.4.10-hybrid
+* bio/GROMACS/4.6.5-goolf-1.4.10-mt
 
-**Question: What is the difference between the -goolf- and the -goolfc- version?** 
+We notice that there is a `hybrid` and a `mt` version
 
-We notice here two details:
-
-* the `goolf` and `goolfc` toolchains used to compile GROMACS
-  - the major difference here is that the `goolfc` version contains CUDA support
-* the `hybrid` and `mt` versions
   - the hybrid version is OpenMP and MPI-enabled, all binaries have a '\_mpi' suffix
   - the mt version is only OpenMP-enabled, as such it can take advantage of only one node's cores (however it may be faster on
 single-node executions than the hybrid version)
@@ -168,7 +170,7 @@ single-node executions than the hybrid version)
 We will perform our tests with the hybrid version:
 
         # Load the MPI-enabled Gromacs, without CUDA support:
-        (node)$> module load GROMACS/4.6.5-goolf-1.4.10-hybrid
+        (node)$> module load bio/GROMACS/4.6.5-goolf-1.4.10-hybrid
 
         # Check that it has been loaded, along with its dependencies:
         (node)$> module list
@@ -217,7 +219,7 @@ Bowtie 2 is an ultrafast and memory-efficient tool for aligning sequencing reads
 
 __TopHat__ : A spliced read mapper for RNA-Seq
 
-TopHat is a program that aligns RNA-Seq reads to a genome in order to identify exon-exon splice junctions. It is built on the ultrafast short read mapping program Bowtie [\[\*\]](http://tophat.cbcb.umd.edu/manual.shtml#whis).
+TopHat is a program that aligns RNA-Seq reads to a genome in order to identify exon-exon splice junctions. It is built on the ultrafast short read mapping program Bowtie [\[\*\]](http://ccb.jhu.edu/software/tophat/index.shtml).
 
 ### Example
 
@@ -236,22 +238,22 @@ versions prebuilt for Linux by the developers.
         (node)$> cd $WORK/newsoft
         
         # Download latest Bowtie2 and Tophat, plus the SAM tools dependency:
-        (node)$> wget http://downloads.sourceforge.net/project/bowtie-bio/bowtie2/2.2.2/bowtie2-2.2.2-linux-x86_64.zip
-        (node)$> wget http://tophat.cbcb.umd.edu/downloads/tophat-2.0.11.Linux_x86_64.tar.gz
-        (node)$> wget http://downloads.sourceforge.net/project/samtools/samtools/0.1.19/samtools-0.1.19.tar.bz2
+        (node)$> wget http://downloads.sourceforge.net/project/bowtie-bio/bowtie2/2.2.5/bowtie2-2.2.5-linux-x86_64.zip
+        (node)$> wget http://ccb.jhu.edu/software/tophat/downloads/tophat-2.0.14.Linux_x86_64.tar.gz
+        (node)$> wget http://downloads.sourceforge.net/project/samtools/samtools/1.2/samtools-1.2.tar.bz2
         
         # Unpack the three archives
-        (node)$> unzip bowtie2-2.2.2-linux-x86_64.zip
-        (node)$> tar xzvf tophat-2.0.11.Linux_x86_64.tar.gz
-        (node)$> tar xjvf samtools-0.1.19.tar.bz2
+        (node)$> unzip bowtie2-2.2.5-linux-x86_64.zip
+        (node)$> tar xzvf tophat-2.0.14.Linux_x86_64.tar.gz
+        (node)$> tar xjvf samtools-1.2.tar.bz2
         
         # SAM tools requires compilation
-        (node)$> cd samtools-0.1.19 && make && cd ..
+        (node)$> cd samtools-1.2 && make && cd ..
         
         # Create a file containing the paths to the binaries, to be sourced when needed
-        (node)$> echo "export PATH=$WORK/newsoft/bowtie2-2.2.2:\$PATH" > newsoft
-        (node)$> echo "export PATH=$WORK/newsoft/tophat-2.0.11.Linux_x86_64:\$PATH" >> newsoft
-        (node)$> echo "export PATH=$WORK/newsoft/samtools-0.1.19:\$PATH" >> newsoft
+        (node)$> echo "export PATH=$WORK/newsoft/bowtie2-2.2.5:\$PATH" > newsoft
+        (node)$> echo "export PATH=$WORK/newsoft/tophat-2.0.14.Linux_x86_64:\$PATH" >> newsoft
+        (node)$> echo "export PATH=$WORK/newsoft/samtools-1.2:\$PATH" >> newsoft
         (node)$> source newsoft
         
         # You can now check that both main applications can be run:
@@ -284,7 +286,7 @@ and parallel stages (left as an exercise).
         # Launch TopHat, with Bowtie2 in parallel mode
         (node)$> tophat2 -p 12 -g 1 -r 200 --mate-std-dev 30 -o ./  $TOPHATTEST2/chr10.hs $TOPHATTEST2/SRR027888.SRR027890_chr10_1.fastq $TOPHATTEST2/SRR027888.SRR027890_chr10_2.fastq
          
-The input data for the first test corresponds to the [TopHat test set](http://tophat.cbcb.umd.edu/tutorial.shtm),
+The input data for the first test corresponds to the [TopHat test set](http://ccb.jhu.edu/software/tophat/tutorial.shtml),
 while the second test is an example of aligning reads to the chromosome 10 of the human genome [as given here](http://www.bigre.ulb.ac.be/courses/statistics_bioinformatics/practicals/ASG1_2012/rnaseq_td/rnaseq_td.html).
 
 ### Proposed exercises
@@ -315,12 +317,15 @@ being proposed later on as exercises.
      
         # Request 1 full node in an interactive job:
         (gaia-frontend)$> oarsub -I -l nodes=1,walltime=00:30:00
+        
+        # Load the lcsb software set
+        (node)$> module use $RESIF_ROOTINSTALL/lcsb/modules/all
 
         # Check the mpiBLAST versions installed on the clusters:
-        (node)$> module available 2>&1 | grep -i mpiblast
+        (node)$> module avail 2>&1 | grep -i mpiblast
 
         # Load a specific mpiBLAST version:
-        (node)$> module load mpiBLAST/1.6.0-goolf-1.4.10
+        (node)$> module load bio/mpiBLAST/1.6.0-goolf-1.4.10
 
         # Check that it has been loaded, along with its dependencies:
         (node)$> module list
