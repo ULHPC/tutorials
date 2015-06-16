@@ -1,21 +1,4 @@
 % =============================================================================
-% File:  sample_slides.tex --  Example of the use of the Falkor Beamer theme
-% Author(s): Sebastien Varrette <Sebastien.Varrette@uni.lu>
-% Time-stamp: <Mar 2014-04-29 16:06 svarrette>
-% 
-% Copyright (c) 2012 Sebastien Varrette <Sebastien.Varrette@uni.lu>
-% .             http://varrette.gforge.uni.lu
-% 
-% For more information:
-% - LaTeX: http://www.latex-project.org/
-% - Beamer: https://bitbucket.org/rivanvx/beamer/
-% - LaTeX symbol list:
-% http://www.ctan.org/tex-archive/info/symbols/comprehensive/symbols-a4.pdf
-% 
-% Latest version of these files can be found on Github:
-% 
-
-% =============================================================================
 \documentclass{beamer}
 % \documentclass[draft]{beamer}
 \usepackage{_style}
