@@ -126,6 +126,12 @@ Thus, when loading `ggplot2` library, this dataset is available under the name: 
     movies = read.table(dest_file, sep="\t", header=TRUE, quote="", comment="")				# `read.table()` function reads a file and stores it in a data.frame object
 
 
+(OPTIONAL 2) An third way to get the dataset is by using the `readr` library that can uncompress by itself:
+
+	library(readr)
+	system("wget http://had.co.nz/data/movies/movies.tab.gz")
+	movies = read_tsv("movies.tab.gz", col_names = TRUE)
+
 Now let's take a (reproducible) sample of 1000 movies and plot their distribution regarding their rating.
 
     library(ggplot2)																		# load ggplot2 library to use packages functions
@@ -252,6 +258,12 @@ Plotting the benchmark result gives us a boxplot graph:
 	plot(m)																# then we plot it
 	## flush the output device to save the graph
 	dev.off()															# finally we close the output device, this will save the graphic in the output file
+
+
+Note: the `dplyr` library is a new package which provides a set of tools for efficiently manipulating datasets in R. `dplyr` is the next iteration of `plyr`, focussing on only data frames. `dplyr` is faster, has a more consistent API and should be easier to use.
+By using `dplyr` instead of `ddply()` from the `plyr` package in this example you can obtain a significant speedup, however its syntax may first seem a bit confusing.
+
+	diamonds %>% group_by(cut) %>% summarize(avg_price = mean(price))
 
 
 ### Using `data.table` Package
