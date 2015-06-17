@@ -10,27 +10,31 @@ The [third chapter](#replicating-the-architecture-of-the-platform-on-a-local-env
 
 ## Using the software environment available on the UL HPC platform
 
-Before starting this tutorial, please make sure you are on a compute node of Gaia and not on the access node. To get resources on a compute node, use the following command:  
+Before starting this tutorial, please make sure you are on a compute node of Gaia/Chaos and not on the access node. To get resources on a compute node, use the following command:  
 `(access)$> oarsub -I -l nodes=1,walltime=1:00:00`  
 (for more details about this command and the node reservation process on the clusters, please referer to the [ULHPC documentation](https://hpc.uni.lu/users/docs/oar.html).)
 
-Using the software available on the UL HPC platform is done through [environment modules](http://modules.sourceforge.net/)/[Lmod](https://www.tacc.utexas.edu/research-development/tacc-projects/lmod) which provide a `module` command that we review in the following section.
-Environment Modules allow us to provide a multitude of applications and libraries in multiple versions. These tools use special files named "modules" that define ways to manage environment variables such as PATH, LD_LIBRARY_PATH and MANPATH, enabling the easy loading and unloading of application/library profiles and their dependencies.
+Using the software available on the UL HPC platform is done through [Lmod](https://www.tacc.utexas.edu/research-development/tacc-projects/lmod) which provide a `module` command that we review in the following section.
+Lmod allows us to provide a multitude of applications and libraries in multiple versions. These tools use special files named "modules" that define ways to manage environment variables such as PATH, LD_LIBRARY_PATH and MANPATH, enabling the easy loading and unloading of application/library profiles and their dependencies.
 
 ### `module` command basics and workflow
+
+Firstly, we activate the newest software stack:
+
+    source /opt/apps/resif/default_user.sh
 
 By using `module available` (or the shorter forms `module avail` or `module av`) we can list all the software modules of the software stack:  
 
     (node)$> module avail
-    ------------------- /opt/apps/devel/v0.0-20150212/core/modules/bio ----------------
+    ------------------- /opt/apps/devel/v1.1-20150414/core/modules/bio ----------------
     bio/ABySS/1.3.4-goolf-1.4.10-Python-2.7.3        bio/Bowtie2/2.2.2-goolf-1.4.10   (D)
     bio/ABySS/1.3.4-ictce-5.3.0-Python-2.7.3  (D)    bio/Cufflinks/2.0.2-goolf-1.4.10
     [...]
 Note that this command returns a lot of information since there is a lot of installed software. To reduce the output we can search for what we are interested in, for example:
     
-    (node)$> module avail 2>&1 | grep -i gromacs
-    bio/GROMACS/4.6.1-ictce-5.3.0-hybrid
-    bio/GROMACS/4.6.1-ictce-5.3.0-mt
+    (node)$> module avail gromacs
+    ----------- /opt/apps/devel/v1.1-20150414/core/modules/bio --------------
+    bio/GROMACS/4.6.1-ictce-5.3.0-hybrid    bio/GROMACS/4.6.1-ictce-5.3.0-mt
     bio/GROMACS/4.6.5-goolf-1.4.10-mt (D)
     [...]
 This will only output the software modules from the software stack that contain "gromacs" (case insensitive) in their name.
@@ -83,21 +87,21 @@ The `module avail` command will thus have the output shown below, where we can n
 - the default module for each application is marked with a `(D)`, thus by loading `compiler/GCC` the system would in effect load `compiler/GCC/4.8.2`
 
         ```
-        ------------------------------------------------------------------------------ /opt/apps/resif/devel/v0.9-20150310/core/modules/bio -------------------------------------------------------------------------------
+        ------------------------------------------------------------------------------ /opt/apps/resif/devel/v1.1-20150414/core/modules/bio -------------------------------------------------------------------------------
            bio/ABySS/1.3.4-goolf-1.4.10-Python-2.7.3        bio/Bowtie2/2.2.2-goolf-1.4.10   (D)    bio/GROMACS/4.6.1-ictce-5.3.0-hybrid     bio/GROMACS/4.6.5-goolf-1.4.10-mt (D)
            bio/Bowtie2/2.0.2-ictce-5.3.0                    bio/Cufflinks/2.0.2-ictce-5.3.0  (D)    bio/GROMACS/4.6.5-goolf-1.4.10-hybrid    bio/SAMtools/0.1.18-ictce-5.3.0   (D)
         
-        ------------------------------------------------------------------------------ /opt/apps/resif/devel/v0.9-20150310/core/modules/cae -------------------------------------------------------------------------------
+        ------------------------------------------------------------------------------ /opt/apps/resif/devel/v1.1-20150414/core/modules/cae -------------------------------------------------------------------------------
            cae/ABAQUS/6.11.1    cae/OpenFOAM/2.3.0-goolf-1.4.10    cae/OpenFOAM/2.3.0-ictce-5.3.0 (D)
         
-        ------------------------------------------------------------------------------ /opt/apps/resif/devel/v0.9-20150310/core/modules/chem ------------------------------------------------------------------------------
+        ------------------------------------------------------------------------------ /opt/apps/resif/devel/v1.1-20150414/core/modules/chem ------------------------------------------------------------------------------
            chem/ABINIT/7.2.1-x86_64_linux_gnu4.5                chem/GPAW/0.9.0.8965-goolf-1.4.10-Python-2.7.3        chem/QuantumESPRESSO/5.0.2-goolf-1.4.10              chem/libctl/3.2.1-goolf-1.4.10
            chem/ASE/3.6.0.2515-ictce-5.3.0-Python-2.7.3  (D)    chem/QuantumESPRESSO/5.0.2-goolf-1.4.10-hybrid        chem/QuantumESPRESSO/5.0.2-ictce-5.3.0        (D)
         
-        ---------------------------------------------------------------------------- /opt/apps/resif/devel/v0.9-20150310/core/modules/compiler ----------------------------------------------------------------------------
+        ---------------------------------------------------------------------------- /opt/apps/resif/devel/v1.1-20150414/core/modules/compiler ----------------------------------------------------------------------------
            compiler/GCC/4.7.2    compiler/GCC/4.8.2 (D)    compiler/icc/2013.3.163    compiler/ifort/2013.3.163
         
-        ------------------------------------------------------------------------------ /opt/apps/resif/devel/v0.9-20150310/core/modules/data ------------------------------------------------------------------------------
+        ------------------------------------------------------------------------------ /opt/apps/resif/devel/v1.1-20150414/core/modules/data ------------------------------------------------------------------------------
            data/HDF5/1.8.7-goolf-1.4.10    data/HDF5/1.8.10-patch1-goolf-1.4.10        data/netCDF/4.2-goolf-1.4.10            data/netCDF-C++/4.2-goolf-1.4.10
            data/HDF5/1.8.9-ictce-5.3.0     data/h5utils/1.12.1-ictce-5.3.0      (D)    data/netCDF/4.2.1.1-ictce-5.3.0  (D)    data/netCDF-Fortran/4.2-ictce-5.3.0  (D)
         ```
@@ -123,8 +127,8 @@ RESIF installation:
 
 Initially, we need to add the following paths to the environment:
 
-        (node)$> export PATH=$PATH:~/.local/bin
-        (node)$> export PYTHONPATH=$PYTHONPATH:~/.local/lib/python2.6/site-packages
+        (node)$> export PATH=$PATH:~/local/bin
+        (node)$> export PYTHONPATH=$PYTHONPATH:~/local/lib/python2.6/site-packages
 
 Also, 
 
@@ -157,12 +161,12 @@ It can list as many software, divided in as many software sets as we require to 
 
 Now we install the software using `resif build`:
 
-        (node)$> resif build --installdir ~/.local/resif --swsets-config ~/swsets.yaml mysoftware
+        (node)$> resif build --installdir $HOME/.local/resif --swsets-config ~/swsets.yaml mysoftware
 This will install the software using ~/.local/resif as the root of the installation.
 
 To make the software modules available through the `module` command, we need to add their path:
 
-        (node)$> module use ~/.local/resif/mysoftware/modules/all
+        (node)$> module use $HOME/.local/resif/mysoftware/modules/all
 
 Now, we can see `bzip2` at the very beginning of the output of the list of the software modules:
 
