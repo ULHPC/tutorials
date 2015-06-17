@@ -458,6 +458,59 @@ Finalize and cleanup things.
 
 **Exercise: Plot a speedup graph with different number of cores and/or machines used.**
 
+#### MPI Communications
+In this section we will use R with MPI connections. 
+For that purpose we need to install two libraries: `rmpi` and `snow`.
+
+As we are using R compiled with Intel compiler we will have to specify manually some paths and which version of MPI we are using when installing `rmpi`.
+
+	> install.packages("Rmpi",
+	                   configure.args =
+	                   c(paste("--with-Rmpi-include=",Sys.getenv("EBROOTIMPI"),"/include64",sep=""),
+	                     paste("--with-Rmpi-libpath=",Sys.getenv("EBROOTIMPI"),"/lib64",sep=""),
+	                     paste("--with-mpi=",Sys.getenv("EBROOTIMPI"),sep=""),
+	                     "--with-Rmpi-type=OPENMPI"))
+
+Then, outside of R shell write a file named `parallelSum.R` with the following code:
+
+	library(Rmpi)
+	library(snow)
+	
+	# Initiate the cluster
+	cluster <- makeMPIcluster(length(readLines(Sys.getenv("OAR_NODE_FILE"))))
+	
+	# Function that prints the hostname of the caller
+	sayhello <- function()
+	{
+	    info <- Sys.info()[c("nodename", "machine")]
+	    paste("Hello from", info[1])
+	}
+	
+	# Call the 'sayhello' function on each node of the cluster
+	names <- clusterCall(cluster, sayhello)
+	print(unlist(names))
+	
+	# Compute row sums in parallel using all processes,
+	# then a grand sum at the end on the master process
+	parallelSum <- function(m, n)
+	{
+	    A <- matrix(rnorm(m*n), nrow = m, ncol = n)
+		
+		# parApply function will call the sum function on each row of the matrix, this in parallel of course
+	    row.sums <- parApply(cluster, A, 1, sum)
+	    print(paste0("Matrix Sum is: ", sum(row.sums)))
+	}
+	parallelSum(500, 500)
+	
+	# Terminate the cluster
+	stopCluster(cluster)
+
+
+Then, still outside of R and on your job head node run: 
+
+	mpirun -np 1 -machinefile $OAR_NODE_FILE Rscript parallelSum.R
+You may find strange the `-np 1`, in fact this is because it is `snow` that manages the processes spawning.
+
 <!--
 #### MPI Communications
 
