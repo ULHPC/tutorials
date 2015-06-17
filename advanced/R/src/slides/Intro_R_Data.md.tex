@@ -1,0 +1,234 @@
+\begin{frame}{R?}
+
+R (pronounced aRrgh -- pirate style) is a programming language and
+environment for statistical computing and graphics
+
+\begin{itemize}
+\item
+  oriented towards data handling analysis and storage facility
+\item
+  R Base
+\item
+  Packages tools and functions (user contributed)
+\item
+  R Base and most R packages are available from the
+  \href{cran.r-project.org}{Comprehensive R Archive Network (CRAN)}
+\item
+  Use R console or IDE: \textbf{Rstudio}, Deducer, vim/emacs\ldots{}
+\item
+  Comment is \textbf{\#}, help is \textbf{?} before a function name
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}[fragile]{Using R}
+
+\begin{block}{\textbf{Installing/using packages}}
+
+Install and load the \texttt{ggplot2} package (even if already
+installed)
+
+\begin{verbatim}
+install.packages("ggplot2")
+library(ggplot2)
+\end{verbatim}
+
+Or in one step, install if not available then load:
+
+\begin{verbatim}
+require(ggplot2) || {install.packages("ggplot2");
+                     require(ggplot2)}
+\end{verbatim}
+
+\end{block}
+
+\end{frame}
+
+\begin{frame}{Using R}
+
+\begin{block}{\textbf{Usefull Functions}}
+
+\begin{itemize}
+\item
+  List all objects in memory: \texttt{ls()}
+\item
+  Save an object: \texttt{save(obj,\ file)}
+\item
+  Load an object: \texttt{load(file)}
+\item
+  Set working directory: \texttt{setwd(dir)}
+\end{itemize}
+
+\end{block}
+
+\end{frame}
+
+\begin{frame}{Data Structures}
+
+\begin{itemize}
+\item
+  scalar:
+
+  s = 3.14
+\item
+  vector:
+
+  v = c(1, 2, ``ron'')
+\item
+  list:
+
+  l = list(1:10, `a', pi)
+\item
+  matrix:
+
+  m = matrix(seq(1:6), 2)
+\item
+  \textbf{dataframe}:
+
+  df = data.frame(``col1'' = seq(1:4), ``col2'' = c(5, 6, ``cerveza'',
+  6*7))
+\item
+  \ldots{}
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}[fragile]{Entering Data}
+
+\begin{block}{Reading CSV or text files}
+
+\begin{verbatim}
+# comma separated values
+dat.csv <- read.csv(<file or url>)
+# tab separated values
+dat.tab <- read.table(<file or url>, 
+    header=TRUE, sep = "\t")
+\end{verbatim}
+
+\end{block}
+
+\end{frame}
+
+\begin{frame}[fragile]{Entering Data}
+
+\begin{block}{Reading data from other software: Excel, SPSS\ldots{}}
+
+Excel Spreadsheets -- need \texttt{xlsx} package
+
+\begin{verbatim}
+read.xlsx()
+\end{verbatim}
+
+SPSS and Stata both need the \texttt{foreign} package
+
+\begin{verbatim}
+dat.spss <- read.spss(<file or url>, 
+                      to.data.frame=TRUE)
+             
+dat.dta <- read.dta(<file or url>)
+\end{verbatim}
+
+\end{block}
+
+\end{frame}
+
+\begin{frame}{Data Frames}
+
+Most easy structure to use, have a matrix structure.
+
+\begin{itemize}
+\item
+  \textbf{Observations} are arranged as \textbf{rows} and
+  \textbf{variables}, either numerical or categorical, are arranged as
+  \textbf{columns}.
+\item
+  Individual rows, columns, and cells in a data frame can be accessed
+  through many methods of indexing.
+\item
+  We most commonly use \textbf{object{[}row,column{]}} notation.
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}[fragile]{Accessing Items in a \texttt{data.frame}}
+
+Aside with R are provided example datasets, i.e. \texttt{mtcars} that
+can be used
+
+\begin{verbatim}
+data(mtcars)
+head(mtcars)
+colnames(mtcars)
+
+# single cell value
+mtcars[2,3]
+# omitting row value implies all rows
+mtcars[,3]
+# omitting column values implies all columns
+mtcars[2,]
+\end{verbatim}
+
+\end{frame}
+
+\begin{frame}[fragile]{Accessing Items in a \texttt{data.frame}}
+
+We can also access variables directly by using their names, either with
+\textbf{object{[},``variable''{]}} notation or \textbf{object\$variable}
+notation.
+
+\begin{verbatim}
+# get first 10 rows of variable `mpg` using two methods:
+mtcars[1:10, "mpg"]
+mtcars$mpg[1:10]
+\end{verbatim}
+
+\end{frame}
+
+\begin{frame}{Exploring Data}
+
+\begin{block}{Description Of Dataset}
+
+\begin{itemize}
+\item
+  Using \textbf{dim}, we get the number of observations(rows) and
+  variables(columns) in the dataset.
+\item
+  Using \textbf{str}, we get the structure of the dataset, including the
+  class(type) of all variables.
+
+  dim(mtcars) str(mtcars)
+\item
+  \textbf{summary} when used on a dataset, returns distributional
+  summaries of variables in the dataset.
+
+  summary(mtcars)
+\item
+  \textbf{quantile} function enables to get statistical metrics on the
+  selected data
+
+  quantile(mtcars\$mpg)
+\end{itemize}
+
+\end{block}
+
+\end{frame}
+
+\begin{frame}{Exploring Data}
+
+\begin{block}{Conditional Exploration}
+
+\begin{itemize}
+\item
+  \textbf{subset} enables to explore data conditionally
+
+  subset(mtcars, cyl \textless{}= 5)
+\item
+  \textbf{by} enables to call a particular function to sub-groups of
+  data
+
+  by(mtcars, mtcars\$cyl, summary)
+\end{itemize}
+
+\end{block}
+
+\end{frame}
