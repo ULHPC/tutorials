@@ -483,6 +483,12 @@ As we are using R compiled with Intel compiler we will have to specify manually 
 	                     paste("--with-mpi=",Sys.getenv("EBROOTIMPI"),sep=""),
 	                     "--with-Rmpi-type=OPENMPI"))
 
+**NOTE**: if the installation fails you can try using the module with `Rmpi` already installed:
+
+	module purge
+	module load lang/R/3.2.0-ictce-7.3.5-Rmpi
+
+
 Then, outside of R shell write a file named `parallelSum.R` with the following code:
 
 	library(Rmpi)
