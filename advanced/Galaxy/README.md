@@ -5,7 +5,7 @@ Copyright (c) 2015 Sarah Diehl <sarah.diehl@uni.lu>
 # Galaxy Introduction Exercise: From Peaks to Genes
 ## Introduction
 
-Slides as PDF: Dataset 'introduction_to_galaxy_unilu.pdf'
+Slides as PDF: [Introduction to Galaxy](https://github.com/ULHPC/tutorials/raw/devel/advanced/Galaxy/introduction_to_galaxy_unilu.pdf)
 
 For a version of this tutorial with the results of important steps embedded and direct links to workflows, go to the Galaxy server, select "Shared Data" and then "Published Pages" from the top menu.
 
