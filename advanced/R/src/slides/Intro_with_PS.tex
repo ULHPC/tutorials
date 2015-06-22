@@ -89,7 +89,7 @@
       \item On the cluster\\
        First connect to the cluster, then submit a job to run R.
         \begin{cmdline}
-            \cmdlinelocal{ssh chaos-cluster}\\
+            \cmdlinelocal{ssh gaia-cluster}\\
             \cmdlinefrontend{oarsub -I -l core=1,walltime="00:30:00"}\\
             \cmdlinenode{module load lang/R/3.2.0-ictce-7.3.5-bare}\\
             \cmdlinenode{R}

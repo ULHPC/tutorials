@@ -471,7 +471,7 @@ Finalize and cleanup things.
 **Exercise: Plot a speedup graph with different number of cores and/or machines used.**
 
 #### MPI Communications
-In this section we will use R with MPI connections. 
+In this section we will use the same example as previously but with MPI connections. 
 For that purpose we need to install two libraries: `rmpi` and `snow`.
 
 As we are using R compiled with Intel compiler we will have to specify manually some paths and which version of MPI we are using when installing `rmpi`.
@@ -489,7 +489,10 @@ As we are using R compiled with Intel compiler we will have to specify manually 
 	module load lang/R/3.2.0-ictce-7.3.5-Rmpi
 
 
-Then, outside of R shell write a file named `parallelSum.R` with the following code:
+Then, outside of R shell write a file named `parallelAirDests.R` with the following code.
+
+**Warning**: when using parallelization in R, please keep in mind that communication is much slower than computation. Thus if your problem is involving a long computation then you are right to use it, otherwise, if your problem is a large quantity of data you must use `data.table` or `dplyr`.
+
 
 	library(Rmpi)
 	library(snow)
@@ -497,7 +500,7 @@ Then, outside of R shell write a file named `parallelSum.R` with the following c
 	# Initiate the cluster
 	cluster <- makeMPIcluster(length(readLines(Sys.getenv("OAR_NODE_FILE"))))
 	
-	# Function that prints the hostname of the caller
+	# Function that prints the hostname of the caller, just for fun
 	sayhello <- function()
 	{
 	    info <- Sys.info()[c("nodename", "machine")]
@@ -508,17 +511,16 @@ Then, outside of R shell write a file named `parallelSum.R` with the following c
 	names <- clusterCall(cluster, sayhello)
 	print(unlist(names))
 	
-	# Compute row sums in parallel using all processes,
-	# then a grand sum at the end on the master process
-	parallelSum <- function(m, n)
-	{
-	    A <- matrix(rnorm(m*n), nrow = m, ncol = n)
 		
-		# parApply function will call the sum function on each row of the matrix, this in parallel of course
-	    row.sums <- parApply(cluster, A, 1, sum)
-	    print(paste0("Matrix Sum is: ", sum(row.sums)))
-	}
-	parallelSum(500, 500)
+	# Compute the number of flights for a given destination. 
+	# Same as previous examples but with MPI communications.
+	load("~jemeras/data/air.rda")
+	dests = as.character(unique(air$DEST))
+	count_flights = function(x){length(which(air$DEST == x))}
+	#as.data.frame(cbind(dest=dests, nb=lapply(dests, count_flights)))
+	clusterExport(cluster, "air")
+	
+	print(as.data.frame(cbind(dest=dests, nb=parLapply(cluster, dests, count_flights))))
 	
 	# Terminate the cluster
 	stopCluster(cluster)
@@ -526,8 +528,27 @@ Then, outside of R shell write a file named `parallelSum.R` with the following c
 
 Then, still outside of R and on your job head node run: 
 
-	mpirun -np 1 -machinefile $OAR_NODE_FILE Rscript parallelSum.R
+	mpirun -np 1 -machinefile $OAR_NODE_FILE Rscript parallelAirDests.R
 You may find strange the `-np 1`, in fact this is because it is `snow` that manages the processes spawning.
+
+
+<!--
+# With dplyr
+DPLYR = air %>% dplyr::group_by(DEST) %>% dplyr::summarize(length(FL_NUM))
+
+# With data.table
+DT = data.table(air)[, .N, by=DEST]
+
+microbenchmark(DPLYR, DT, times=1000)
+Unit: nanoseconds
+  expr min lq   mean median uq   max neval
+ DPLYR  33 43 61.213     46 48  8844  1000
+    DT  31 42 94.902     44 46 50623  1000
+
+## DPLYR can be more efficient than data.table...
+-->
+
+
 
 <!--
 #### MPI Communications
