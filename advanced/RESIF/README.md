@@ -185,6 +185,11 @@ In this part, we are going to create a software stack from scratch. This is espe
 We assume that RESIF is already installed as per the instructions described [above](#installation-of-resif).  
 Note: RESIF internally depends on [EasyBuild](http://easybuild.readthedocs.org/en/latest/) which is compatible with Linux/OSX but not Windows. On Windows, you can configure a Linux Virtual Machine to use RESIF and the software built using it.
 
+**At this point, please make sure to unset the RESIF_ROOTINSTALL environment variable.** This is a necessary step since this variable would interfere with the creation of a new software stack (which defines a new rootinstall).  
+To do so, execute the following command:
+
+        unset RESIF_ROOTINSTALL
+
 ### Direct method
 
 A `swsets.yaml` file that describes which software we want to install needs to be created.  
