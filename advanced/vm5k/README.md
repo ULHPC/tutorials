@@ -193,7 +193,7 @@ This is an example, munin will allow you to monitor the activity on all the VMs.
 
 * Spawn 100 VMs
 
-    (frontend) vm5k --n_vm 100 -r luxembourg -o hpcschool2015 -o vm5k_xp
+    (frontend) vm5k --n_vm 50 -w 2:00:00 -r luxembourg -o hpcschool2015 -o vm5k_xp
 
 * Launch a script on all the VMs after their deployment, we will use `taktuk` (you could also clush, pdsh, etc)
 
@@ -206,12 +206,12 @@ This is an example, munin will allow you to monitor the activity on all the VMs.
 
 Choose the first virtual machines
 
-    (frontend) head -n 1 vm5k-xp/vms.list
+    (frontend) head -n 1 vm5k_xp/vms.list
     10.172.1.45     vm-1
 
 Transfer the list of virtual machines to the VM
 
-    (frontend) scp vm5k-xp/vms.list root@10.172.1.45:/tmp/
+    (frontend) scp vm5k_xp/vms.list root@10.172.1.45:/tmp/
 
 Connect to the VM in order to install and configure munin
 
@@ -219,12 +219,14 @@ Connect to the VM in order to install and configure munin
 
     (vm-1) apt-get install munin apache2
 
-    (vm-1)  sed -i '/[aA]llow/d' /etc/apache2/conf.d/munin
+Configure the Apache http server
+
+    (vm-1) sed -i '/[aA]llow/d' /etc/apache2/conf.d/munin
     (vm-1) apache2ctl restart
 
 Generate the munin configuration
 
-    (vm-1) cat /tmp/vms.list  | awk '{print "["$2".g5k]\n    address "$1}' >> /etc/munin/munin.conf
+    (vm-1) cat /tmp/vms.list  | awk '{print "["$2".g5k]\n    address "$1"\n    use_node_name yes\n"}' >> /etc/munin/munin.conf
     (vm-1) /etc/init.d/munin restart
 
 
@@ -234,7 +236,7 @@ Let's generate a fake activity, stress the VM during 60 seconds
 
     (frontend) taktuk -l root -f hpcschool2015/vms.list broadcast exec [ 'stress -c 1 -t 60' ]
 
-Open a ssh tunnel
+Open a ssh tunnel on port 80
 
     (user) ssh -L1080:10.172.1.45:80 <login>@grid5000.uni.lu
 
