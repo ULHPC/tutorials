@@ -19,8 +19,8 @@ Before starting this tutorial, ensure you are able to [connect to the chaos and 
 	(access)$> 	oarsub -I -l nodes=1,walltime=4
 
 
-The latest version of this tutorial is available on
-[Github](https://github.com/ULHPC/tutorials/tree/devel/advanced/EasyBuild)
+The latest version of this tutorial is available on our
+[readthedocs](http://ulhpc-tutorials.readthedocs.org/en/latest/advanced/easybuild/) documentation.
 
 ## Short introduction to EasyBuild
 
