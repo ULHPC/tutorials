@@ -106,6 +106,7 @@ Edit the following variables:
 
     (access)$> nano $WORK/PS2/launcher-scripts/bash/serial/launcher_serial.sh
 
+    MODULE_TO_LOAD=(bio/GROMACS)
     TASK="$WORK/PS2/tutorials/basic/sequential_jobs/scripts/run_gromacs_sim.sh"
     ARG_TASK_FILE=$WORK/PS2/param_file
 
