@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>High Performance Linpack (HPL) - UL HPC Tutorials</title>
+  
+
+  <link rel="shortcut icon" href="../../../img/favicon.ico">
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" href="../../../css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../css/theme_extra.css" type="text/css" />
+  <link rel="stylesheet" href="../../../css/highlight.css">
+
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "High Performance Linpack (HPL)";
+  </script>
+  
+  <script src="../../../js/jquery-2.1.1.min.js"></script>
+  <script src="../../../js/modernizr-2.8.3.min.js"></script>
+  <script type="text/javascript" src="../../../js/highlight.pack.js"></script>
+  <script src="../../../js/theme.js"></script> 
+
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+      <div class="wy-side-nav-search">
+        <a href="../../.." class="icon icon-home"> UL HPC Tutorials</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        <ul class="current">
+          
+            <li>
+    <li class="toctree-l1 ">
+        <a class="" href="../../..">Home</a>
+        
+    </li>
+<li>
+          
+            <li>
+    <ul class="subnav">
+    <li><span>Basic Tutorials</span></li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../../basic/getting_started/README/">Getting Started</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../../basic/sequential_jobs/README/">HPC workflow with sequential jobs</a>
+        
+    </li>
+
+        
+    </ul>
+<li>
+          
+            <li>
+    <ul class="subnav">
+    <li><span>Advanced Software Management</span></li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../RESIF/README/">RESIF</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../EasyBuild/README/">Easybuild</a>
+        
+    </li>
+
+        
+    </ul>
+<li>
+          
+            <li>
+    <ul class="subnav">
+    <li><span>MPI</span></li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../OSU_MicroBenchmarks/README/">The OSU Micro-benchmarks</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 current">
+        <a class="current" href="./">High Performance Linpack (HPL)</a>
+        
+            <ul>
+            
+                <li class="toctree-l3"><a href="#ul-hpc-tutorial-hpl-benchmarking-on-ul-hpc-platform">UL HPC Tutorial: HPL benchmarking on UL HPC platform</a></li>
+                
+                    <li><a class="toctree-l4" href="#objectives">Objectives</a></li>
+                
+                    <li><a class="toctree-l4" href="#runs-on-a-single-node">Runs on a single node</a></li>
+                
+                    <li><a class="toctree-l4" href="#benchmarking-on-two-nodes">Benchmarking on two nodes</a></li>
+                
+                    <li><a class="toctree-l4" href="#now-for-lazy-frustrated-persons">Now for Lazy / frustrated persons</a></li>
+                
+            
+            </ul>
+        
+    </li>
+
+        
+    </ul>
+<li>
+          
+            <li>
+    <ul class="subnav">
+    <li><span>Mathematics</span></li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../MATLAB/README/">MATLAB</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../R/README/">R - statistical computing </a>
+        
+    </li>
+
+        
+    </ul>
+<li>
+          
+            <li>
+    <ul class="subnav">
+    <li><span>Bio-informatic</span></li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../Bioinformatics/README/">Running bioinformatics software</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../Galaxy/README/">Galaxy</a>
+        
+    </li>
+
+        
+    </ul>
+<li>
+          
+            <li>
+    <ul class="subnav">
+    <li><span>Parallel Debuggers</span></li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../Allinea/README/">Allinea</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../TotalView/README/">TotalView</a>
+        
+    </li>
+
+        
+    </ul>
+<li>
+          
+            <li>
+    <ul class="subnav">
+    <li><span>Virtualization</span></li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../Vagrant/README/">Vagrant</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../vm5k/README/">Grid5000: Automatic VM deployment with VM5K</a>
+        
+    </li>
+
+        
+    </ul>
+<li>
+          
+            <li>
+    <ul class="subnav">
+    <li><span>Documentation</span></li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../../contributing/">Contributing</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../../rtfd/">RTFD</a>
+        
+    </li>
+
+        
+    </ul>
+<li>
+          
+            <li>
+    <li class="toctree-l1 ">
+        <a class="" href="../../../contacts/">Contacts</a>
+        
+    </li>
+<li>
+          
+        </ul>
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../../..">UL HPC Tutorials</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../..">Docs</a> &raquo;</li>
+    
+      
+        
+          <li>MPI &raquo;</li>
+        
+      
+    
+    <li>High Performance Linpack (HPL)</li>
+    <li class="wy-breadcrumbs-aside">
+      
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <p>-<em>- mode: markdown; mode: auto-fill; fill-column: 80 -</em>-</p>
+<p><code>README.md</code></p>
+<p>Copyright (c) 2013 Sebastien Varrette <a href="../&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#83;&#101;&#98;&#97;&#115;&#116;&#105;&#101;&#110;&#46;&#86;&#97;&#114;&#114;&#101;&#116;&#116;&#101;&#64;&#117;&#110;&#105;&#46;&#108;&#117;">&#83;&#101;&#98;&#97;&#115;&#116;&#105;&#101;&#110;&#46;&#86;&#97;&#114;&#114;&#101;&#116;&#116;&#101;&#64;&#117;&#110;&#105;&#46;&#108;&#117;</a></p>
+<pre><code>    Time-stamp: &lt;Dim 2013-11-10 19:21 svarrette&gt;
+</code></pre>
+<hr />
+<h1 id="ul-hpc-tutorial-hpl-benchmarking-on-ul-hpc-platform">UL HPC Tutorial: HPL benchmarking on UL HPC platform</h1>
+<p>The objective of this tutorial is to compile and run on of the reference HPC
+benchmarks, <a href="http://www.netlib.org/benchmark/hpl/">HPL</a>, on top of the
+<a href="http://hpc.uni.lu">UL HPC</a> platform.  </p>
+<p>You can work in groups for this training, yet individual work is encouraged to
+ensure you understand and practice the usage of an HPC platform.  </p>
+<p>In all cases, ensure you are able to <a href="https://hpc.uni.lu/users/docs/access.html">connect to the chaos and gaia cluster</a>. </p>
+<pre><code>/!\ FOR ALL YOUR COMPILING BUSINESS, ENSURE YOU WORK ON A COMPUTING NODE
+
+(access)$&gt;  oarsub -I -l nodes=1,walltime=4
+</code></pre>
+<p><strong>Advanced users only</strong>: rely on <code>screen</code> (see
+  <a href="http://support.suso.com/supki/Screen_tutorial">tutorial</a>) on the frontend
+  prior to running any <code>oarsub</code> command to be more resilient to disconnection.  </p>
+<p>The latest version of this tutorial is available on
+<a href="https://github.com/ULHPC/tutorials/tree/devel/advanced/HPL">Github</a></p>
+<h2 id="objectives">Objectives</h2>
+<p><a href="http://www.netlib.org/benchmark/hpl/">HPL</a> is a portable implementation of
+HPLinpack used to provide data for the <a href="http://top500.org">Top500</a> list  </p>
+<p>HPL rely on an efficient implementation of the Basic Linear Algebra Subprograms
+(BLAS). You have several choices at this level: </p>
+<ul>
+<li>Intel MKL</li>
+<li><a href="http://math-atlas.sourceforge.net/atlas_install/">ATLAS</a></li>
+<li><a href="https://www.tacc.utexas.edu/research-development/tacc-software/gotoblas2/">GotoBlas</a>  </li>
+</ul>
+<p>The objective of this practical session is to compare the performances of HPL
+runs compiled under different combination:  </p>
+<ol>
+<li>HPL + Intel MKL + Intel MPI</li>
+<li>HPL + GCC + GotoBLAS2 + Open MPI</li>
+<li>HPL + GCC + ATLAS + MPICH2</li>
+</ol>
+<p>The benchamrking campain will typically involves successively: </p>
+<ul>
+<li>a single node </li>
+<li>two nodes, ideally belonging to the same enclosure</li>
+<li>two nodes, belonging to different enclosures</li>
+</ul>
+<h2 id="runs-on-a-single-node">Runs on a single node</h2>
+<h3 id="high-performance-linpack-hpl-with-intel-suite">High-Performance Linpack (HPL) with Intel Suite</h3>
+<p>We are first going to use the
+<a href="http://software.intel.com/en-us/intel-cluster-toolkit-compiler/">Intel Cluster Toolkit Compiler Edition</a>,
+which provides Intel C/C++ and Fortran compilers, Intel MPI &amp; Intel MKL. </p>
+<p>Resources: </p>
+<ul>
+<li><a href="http://www.netlib.org/benchmark/hpl/">HPL</a></li>
+</ul>
+<p>Get the latest release: </p>
+<pre><code>$&gt; mkdir ~/TP &amp;&amp; cd ~/TP
+$&gt; wget http://www.netlib.org/benchmark/hpl/hpl-2.1.tar.gz
+$&gt; tar xvzf hpl-2.1.tar.gz
+$&gt; cd hpl-2.1     
+$&gt; module avail 2&gt;&amp;1 | grep -i MPI
+$&gt; module load ictce
+$&gt; module list
+Currently Loaded Modulefiles:
+        1) icc/2013.5.192     2) ifort/2013.5.192   3) impi/4.1.1.036     4) imkl/11.0.5.192    5) ictce/5.5.0
+$&gt; module show impi
+$&gt; module show imkl
+</code></pre>
+<p>You notice that Intel MKL is now loaded. </p>
+<p>Read the <code>INSTALL</code> file. </p>
+<p>In particular, you'll have to edit and adapt a new makefile <code>Make.intel64</code>
+(inspired from <code>setup/Make.Linux_PII_CBLAS</code> typically) and run the compilation
+by  </p>
+<pre><code>$&gt; make arch=intel64 clean_arch_all
+$&gt; make arch=intel64
+</code></pre>
+<p>Some hint to succeed: </p>
+<ul>
+<li>rely on <code>mpiicc</code> as compiler and linker</li>
+<li>rely on <code>$(I_MPI_ROOT)</code> (see <code>module show impi</code>) for the <code>MPdir</code> entry </li>
+<li>similarly, use <code>$(MKLROOT)</code> for the <code>LAdir</code> entry (see <code>module show imkl</code>)</li>
+<li>Effective use of MKL (in particular): <pre><code>LAdir        = $(MKLROOT)
+LAinc        = -I$(LAdir)/mkl/include
+LAlib        = -L$(LAdir)/mkl/lib/intel64 -Wl,--start-group $(LAdir)/mkl/lib/intel64/libmkl_intel_lp64.a $(LAdir)/mkl/lib/intel64/libmkl_intel_thread.a $(LAdir)/mkl/lib/intel64/libmkl_core.a -Wl,--end-group -lpthread
+</code></pre>
+</li>
+</ul>
+<p>Once compiled, ensure you are able to run it: </p>
+<pre><code>$&gt; cd bin/intel64
+$&gt; cat HPL.dat
+$&gt; mpirun -hostfile $OAR_NODEFILE ./xhpl
+</code></pre>
+<p>Now you'll have to find the optimal set of parameters for using a single
+node. You can use the following site:
+<a href="http://hpl-calculator.sourceforge.net/">HPL Calculator</a> to find good parameters
+and expected performances and adapt <code>bin/intel64/HPL.dat</code> accordingly. </p>
+<h3 id="hpl-with-gcc-and-gotoblas2-and-open-mpi">HPL with GCC and GotoBLAS2 and Open MPI</h3>
+<p>Another alternative is to rely on <a href="https://www.tacc.utexas.edu/research-development/tacc-software/gotoblas2/">GotoBlas</a>.  </p>
+<p>Get the sources and compile them: </p>
+<pre><code> # A copy of `GotoBLAS2-1.13.tar.gz` is available in `/tmp` on the access nodes of the cluster
+ $&gt; cd ~/TP
+ $&gt; module purge
+ $&gt; module load OpenMPI
+ $&gt; tar xvzf /tmp/GotoBLAS2-1.13.tar.gz
+ $&gt; mv GotoBLAS2 GotoBLAS2-1.13
+ […]
+ $&gt; make BINARY=64 TARGET=NEHALEM NUM_THREADS=1
+ [...]
+  GotoBLAS build complete.
+
+    OS               ... Linux
+    Architecture     ... x86_64
+    BINARY           ... 64bit
+    C compiler       ... GCC  (command line : gcc)
+    Fortran compiler ... GFORTRAN  (command line : gfortran)
+    Library Name     ... libgoto2_nehalemp-r1.13.a (Multi threaded; Max num-threads is 12)
+</code></pre>
+<p>If you don't use <code>TARGET=NEHALEM</code>, you'll encounter the error mentionned
+<a href="http://saintaardvarkthecarpeted.com/blog/archive/2011/05/Trouble_compiling_GotoBLAS2_on_newer_CPU.html">here</a>) </p>
+<p>Now you can restart HPL compilation by creating (and adapting) a
+<code>Make.gotoblas2</code> and running the compilation by:  </p>
+<pre><code>$&gt; make arch=gotoblas2
+</code></pre>
+<p>Once compiled, ensure you are able to run it: </p>
+<pre><code>$&gt; cd bin/gotoblas2
+$&gt; cat HPL.dat
+$&gt; mpirun -x LD_LIBRARY_PATH -hostfile $OAR_NODEFILE ./xhpl
+</code></pre>
+<h3 id="hpl-with-gcc-and-atlas-and-mvapich2">HPL with GCC and ATLAS and MVAPICH2</h3>
+<p>Here we will rely on the <a href="http://math-atlas.sourceforge.net/">Automatically Tuned Linear Algebra Software (ATLAS)</a></p>
+<p>Download the <a href="http://sourceforge.net/projects/math-atlas/files/">latest version</a> 
+(3.11.32 at the time of writing) and compile it:  </p>
+<pre><code> $&gt; cd ~/TP
+ $&gt; tar xvf atlas3.11.32.tar.bz2
+ $&gt; mv ATLAS ATLAS-3.11.32 &amp;&amp; cd ATLAS-3.11.32
+ $&gt; module purge
+ $&gt; module load MVAPICH2    
+ $&gt; less INSTALL.txt
+ $&gt; mkdir build.gcc_mvapich2 &amp;&amp; cd build.gcc_mvapich2
+ $&gt; ../configure
+ $&gt; grep ! ../INSTALL.txt
+        make              ! tune and compile library
+        make check        ! perform sanity tests
+        make ptcheck      ! checks of threaded code for multiprocessor systems
+        make time         ! provide performance summary as % of clock rate
+        make install      ! Copy library and include files to other directories
+ $&gt; make
+</code></pre>
+<p>Take a coffee there, it will compile for a Loooooooooooooong time</p>
+<p>Now you can restart HPL compilation by creating (and adapting) a <code>Make.atlas</code>
+and running the compilation by:  </p>
+<pre><code>$&gt; make arch=atlas
+</code></pre>
+<p>Once compiled, ensure you are able to run it: </p>
+<pre><code>$&gt; cd bin/atlas
+$&gt; cat HPL.dat
+$&gt; mpirun -launcher ssh -launcher-exec /usr/bin/oarsh -hostfile $OAR_NODEFILE ./xhpl
+</code></pre>
+<h2 id="benchmarking-on-two-nodes">Benchmarking on two nodes</h2>
+<p>Restart the benchmarking campain (in the three cases) in the following context: </p>
+<ul>
+<li>
+<p>2 nodes belonging to the same enclosure. Use for that:</p>
+<pre><code>$&gt; oarsub -l enclosure=1/nodes=2,walltime=8 […]
+</code></pre>
+</li>
+<li>
+<p>2 nodes belonging to the different enclosures:</p>
+<pre><code>$&gt; oarsub -l enclosure=2/core=1,walltime=8 […]
+</code></pre>
+</li>
+</ul>
+<h2 id="now-for-lazy-frustrated-persons">Now for Lazy / frustrated persons</h2>
+<p>You will find in the <a href="https://github.com/ULHPC/tutorials">UL HPC tutorial</a>
+repository, under the <code>advanced/HPL</code> directory, a set of tools / script that
+facilitate the running and analysis of this tutorial that you can use/adapt to
+suit your needs. </p>
+<p>In particular, once in the <code>advanced/HPL</code> directory: </p>
+<ul>
+<li>running <code>make fetch</code> will automatically download the archives for HPL,
+  GotoBLAS2 and ATLAS (press enter at the end of the last download)</li>
+<li>some examples of working <code>Makefile</code> for HPL used in sample experiments are
+  proposed in <code>src/hpl-2.1</code></li>
+<li>a launcher script is proposed in <code>runs/launch_hpl_bench</code>. This script was used
+  to collect some sample runs for the three experiments mentionned in this
+  tutorial as follows:  <pre><code># Run for HPL with iMKL (icc + iMPI)
+(access-chaos)$&gt; oarsub -S "./launch_hpl_bench --module ictce --arch intel64 --serious"
+
+# Run for HPL with GotoBLAS2 (gcc + OpenMPI)
+(access-chaos)$&gt; oarsub -S "./launch_hpl_bench --module OpenMPI --arch gotoblas2 --serious"
+
+# Run for HPL with ATLAS (gcc + MVAPICH2)
+(access-chaos)$&gt; oarsub -S "./launch_hpl_bench --module MVAPICH2 --arch atlas --serious"
+</code></pre>
+</li>
+</ul>
+<p>In particular, the <code>runs/data/</code> directory host the results of these runs on 2
+  nodes belonging to the same enclosure </p>
+<ul>
+<li>run <code>make plot</code> to invoke the <a href="http://www.gnuplot.info/">Gnuplot</a> script
+  <code>plots/benchmark_HPL.gnuplot</code> and generate various plots from the sample
+  runs. </li>
+</ul>
+<p>In particular, you'll probably want to see the comparison figure extracted from
+the sample run <code>plots/benchmark_HPL_2H.pdf</code></p>
+<p>A PNG version of this plot is available on
+<a href="https://raw.github.com/ULHPC/tutorials/devel/advanced/HPL/plots/benchmark_HPL_2H.png">Github</a></p>
+<p><img alt="HPL run on 2 hosts" src="https://raw.github.com/ULHPC/tutorials/devel/advanced/HPL/plots/benchmark_HPL_2H.png" /></p>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../../MATLAB/README/" class="btn btn-neutral float-right" title="MATLAB"/>Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href="../../OSU_MicroBenchmarks/README/" class="btn btn-neutral" title="The OSU Micro-benchmarks"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+  </div>
+
+  Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+	  
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+<div class="rst-versions" role="note" style="cursor: pointer">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+      
+        <span><a href="../../OSU_MicroBenchmarks/README/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+        <span style="margin-left: 15px"><a href="../../MATLAB/README/" style="color: #fcfcfc">Next &raquo;</a></span>
+      
+    </span>
+</div>
+
+</body>
+</html>

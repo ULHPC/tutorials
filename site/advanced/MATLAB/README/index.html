@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>MATLAB - UL HPC Tutorials</title>
+  
+
+  <link rel="shortcut icon" href="../../../img/favicon.ico">
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" href="../../../css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../css/theme_extra.css" type="text/css" />
+  <link rel="stylesheet" href="../../../css/highlight.css">
+
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "MATLAB";
+  </script>
+  
+  <script src="../../../js/jquery-2.1.1.min.js"></script>
+  <script src="../../../js/modernizr-2.8.3.min.js"></script>
+  <script type="text/javascript" src="../../../js/highlight.pack.js"></script>
+  <script src="../../../js/theme.js"></script> 
+
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+      <div class="wy-side-nav-search">
+        <a href="../../.." class="icon icon-home"> UL HPC Tutorials</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        <ul class="current">
+          
+            <li>
+    <li class="toctree-l1 ">
+        <a class="" href="../../..">Home</a>
+        
+    </li>
+<li>
+          
+            <li>
+    <ul class="subnav">
+    <li><span>Basic Tutorials</span></li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../../basic/getting_started/README/">Getting Started</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../../basic/sequential_jobs/README/">HPC workflow with sequential jobs</a>
+        
+    </li>
+
+        
+    </ul>
+<li>
+          
+            <li>
+    <ul class="subnav">
+    <li><span>Advanced Software Management</span></li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../RESIF/README/">RESIF</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../EasyBuild/README/">Easybuild</a>
+        
+    </li>
+
+        
+    </ul>
+<li>
+          
+            <li>
+    <ul class="subnav">
+    <li><span>MPI</span></li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../OSU_MicroBenchmarks/README/">The OSU Micro-benchmarks</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../HPL/README/">High Performance Linpack (HPL)</a>
+        
+    </li>
+
+        
+    </ul>
+<li>
+          
+            <li>
+    <ul class="subnav">
+    <li><span>Mathematics</span></li>
+
+        
+            
+    <li class="toctree-l1 current">
+        <a class="current" href="./">MATLAB</a>
+        
+            <ul>
+            
+                <li class="toctree-l3"><a href="#ul-hpc-tutorial-matlab-execution-on-the-ul-hpc-platform">UL HPC Tutorial: MATLAB execution on the UL HPC platform</a></li>
+                
+                    <li><a class="toctree-l4" href="#prerequisites">Prerequisites</a></li>
+                
+                    <li><a class="toctree-l4" href="#matlab-execution-in-interactive-mode">Matlab execution in interactive mode</a></li>
+                
+                    <li><a class="toctree-l4" href="#matlab-execution-in-passive-mode">Matlab execution in passive mode</a></li>
+                
+                    <li><a class="toctree-l4" href="#useful-references">Useful references</a></li>
+                
+            
+            </ul>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../R/README/">R - statistical computing </a>
+        
+    </li>
+
+        
+    </ul>
+<li>
+          
+            <li>
+    <ul class="subnav">
+    <li><span>Bio-informatic</span></li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../Bioinformatics/README/">Running bioinformatics software</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../Galaxy/README/">Galaxy</a>
+        
+    </li>
+
+        
+    </ul>
+<li>
+          
+            <li>
+    <ul class="subnav">
+    <li><span>Parallel Debuggers</span></li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../Allinea/README/">Allinea</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../TotalView/README/">TotalView</a>
+        
+    </li>
+
+        
+    </ul>
+<li>
+          
+            <li>
+    <ul class="subnav">
+    <li><span>Virtualization</span></li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../Vagrant/README/">Vagrant</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../vm5k/README/">Grid5000: Automatic VM deployment with VM5K</a>
+        
+    </li>
+
+        
+    </ul>
+<li>
+          
+            <li>
+    <ul class="subnav">
+    <li><span>Documentation</span></li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../../contributing/">Contributing</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../../rtfd/">RTFD</a>
+        
+    </li>
+
+        
+    </ul>
+<li>
+          
+            <li>
+    <li class="toctree-l1 ">
+        <a class="" href="../../../contacts/">Contacts</a>
+        
+    </li>
+<li>
+          
+        </ul>
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../../..">UL HPC Tutorials</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../..">Docs</a> &raquo;</li>
+    
+      
+        
+          <li>Mathematics &raquo;</li>
+        
+      
+    
+    <li>MATLAB</li>
+    <li class="wy-breadcrumbs-aside">
+      
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <p><code>README.md</code></p>
+<p>Copyright (c) 2014 Valentin Plugaru <a href="../&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#86;&#97;&#108;&#101;&#110;&#116;&#105;&#110;&#46;&#80;&#108;&#117;&#103;&#97;&#114;&#117;&#64;&#103;&#109;&#97;&#105;&#108;&#46;&#99;&#111;&#109;">&#86;&#97;&#108;&#101;&#110;&#116;&#105;&#110;&#46;&#80;&#108;&#117;&#103;&#97;&#114;&#117;&#64;&#103;&#109;&#97;&#105;&#108;&#46;&#99;&#111;&#109;</a></p>
+<hr />
+<h1 id="ul-hpc-tutorial-matlab-execution-on-the-ul-hpc-platform">UL HPC Tutorial: MATLAB execution on the UL HPC platform</h1>
+<p>The objective of this tutorial is to exemplify the execution of <a href="http://www.matlab.com">MATLAB</a> - 
+a high-level language and interactive environment for numerical computation, 
+visualization and programming, on top of the <a href="http://hpc.uni.lu">UL HPC</a> platform.</p>
+<p>The tutorial will show you:</p>
+<ol>
+<li>how to run MATLAB in interactive mode, with either the full graphical interface or the text-mode interface</li>
+<li>how to run MATLAB in passive (batch) mode, enabling unattended execution on the clusters</li>
+<li>how to use MATLAB script (.m) files</li>
+<li>how to plot data, saving the plots to file</li>
+<li>how to take advantage of some of the paralelization capabilities of MATLAB to speed up your tasks</li>
+</ol>
+<h2 id="prerequisites">Prerequisites</h2>
+<p>As part of this tutorial two Matlab example scripts have been developed and you will need to download them,
+along with their dependencies, before following the instructions in the next sections:</p>
+<pre><code>    (gaia-frontend)$&gt; mkdir ~/matlab-tutorial
+    (gaia-frontend)$&gt; cd ~/matlab-tutorial
+    (gaia-frontend)$&gt; wget --no-check-certificate https://raw.github.com/ULHPC/tutorials/devel/advanced/MATLAB/example1.m
+    (gaia-frontend)$&gt; wget --no-check-certificate https://raw.github.com/ULHPC/tutorials/devel/advanced/MATLAB/example2.m
+    (gaia-frontend)$&gt; wget --no-check-certificate https://raw.github.com/ULHPC/tutorials/devel/advanced/MATLAB/yahoo_finance_data.m
+</code></pre>
+<p>Or simply clone the full tutorials repository and make a link to the MATLAB tutorial:</p>
+<pre><code>    (gaia-frontend)$&gt; git clone https://github.com/ULHPC/tutorials.git
+    (gaia-frontend)$&gt; ln -s tutorials/advanced/MATLAB/ ~/matlab-tutorial
+</code></pre>
+<h2 id="matlab-execution-in-interactive-mode">Matlab execution in interactive mode</h2>
+<h3 id="launching-the-full-graphical-environment">Launching the full graphical environment</h3>
+<p>Running the full MATLAB environment (e.g. on the Gaia cluster) requires an <a href="https://hpc.uni.lu/users/docs/oar.html#concepts">interactive OAR session</a>. When connecting to the clusters you will
+need to enable X11 forwarding in order for the graphical environment to be shown on your 
+local machine:</p>
+<ul>
+<li>
+<p>on Linux simply follow the commands below</p>
+</li>
+<li>
+<p>on OS X (depending on version) you may not have the X Window System installed, 
+  and thus will need to install <a href="http://xquartz.macosforge.org/landing/">XQuartz</a> if
+  the first command below returns an 'X11 forwarding request failed on channel 0' error</p>
+</li>
+<li>
+<p>on Windows you will need to run <a href="http://sourceforge.net/projects/xming/">XMing</a> first
+  then to configure Putty (Connection -&gt; SSH -&gt; X11 -&gt; Enable X11 forwarding) before
+  logging in to the clusters.</p>
+<pre><code># Connect to Gaia with X11 forwarding enabled (Linux/OS X):
+(yourmachine)$&gt; ssh access-gaia.uni.lu -X
+
+# Request an interactive job (the default parameters get you 1 core for 2 hours):
+(gaia-frontend)$&gt; oarsub -I
+
+# Check the Matlab versions installed on the clusters:
+(node)$&gt; module available 2&gt;&amp;1 | grep -i matlab
+
+# Load a specific MATLAB version:
+(node)$&gt; module load MATLAB/2013a
+
+# Check that it has been loaded, along with Java:
+(node)$&gt; module list
+
+# Launch MATLAB
+(node)$&gt; matlab
+</code></pre>
+</li>
+</ul>
+<p>After a delay, the full Matlab interface will be displayed on your machine and you will be able to run commands, load and edit
+scripts and generate plots. An alternative to the graphical interface is the command-line (text-mode) interface, which is
+enabled through specific parameters, described in the following section.</p>
+<h3 id="launching-the-command-line-environment">Launching the command-line environment</h3>
+<p>Running the text-mode MATLAB interface in an interactive session, is much faster than
+using the full graphical environment through the network and is useful for commands/scripts testing and 
+quick executions:</p>
+<pre><code>    # First, connect to an UL cluster (e.g. Gaia):
+
+    (yourmachine)$&gt; ssh access-gaia.uni.lu
+    (gaia-frontend)$&gt; oarsub -I
+    (node)$&gt; module load MATLAB/2013a
+
+    # Launch MATLAB with the graphical display mode disabled (critical parameters):
+    (node)$&gt; matlab -nodisplay -nosplash
+    Opening log file:  /home/users/vplugaru/java.log.3258
+                                                                    &lt; M A T L A B (R) &gt;
+                                                          Copyright 1984-2013 The MathWorks, Inc.
+                                                            R2013a (8.1.0.604) 64-bit (glnxa64)
+                                                                     February 15, 2013
+    To get started, type one of these: helpwin, helpdesk, or demo.
+    For product information, visit www.mathworks.com.
+    &gt;&gt; version()
+    ans =
+    8.1.0.604 (R2013a)
+</code></pre>
+<p>In this command line you are now able to run Matlab commands, load and edit scripts, but cannot display plots - they can
+however be generated and exported to file, which you will need to transfer to your own machine for visualisation.
+While the text mode interface is spartan, you still benefit from tab-completion (type the first few letters of
+a command then press TAB twice to see possible completions) and can run the integrated help with <code>help command_name</code> 
+(e.g. help plot3).</p>
+<h3 id="example-usage-of-matlab-in-interactive-mode">Example usage of Matlab in interactive mode</h3>
+<p>At this point you should have downloaded the example scripts and started Matlab either with the graphical or the text-mode
+interface. We will now test some Matlab commands by using the yahoo_finance_data function defined in <em>yahoo_finance_data.m</em>.
+This function downloads stock market data through the Yahoo! Finance API, and we will use it to get 1 month worth of stock data
+for IBM (whose stock symbol is 'IBM'):</p>
+<pre><code>     &gt;&gt; cd('~/matlab-tutorial')
+     &gt;&gt; [hist_date, hist_high, hist_low, hist_open, hist_close, hist_vol] = yahoo_finance_data('IBM', 2014, 2, 1, 2014, 3, 1);
+     &gt;&gt; size(hist_date)                                                                                                       
+     ans =
+         19     1
+     &gt;&gt; [hist_date{1} ' ' hist_date{end}]     
+     ans =
+     2014-02-03 2014-02-28
+     &gt;&gt; min(hist_low)                                                                                                         
+     ans =
+       171.2512
+     &gt;&gt; max(hist_high)
+     ans =
+       186.1200
+     &gt;&gt; mean(hist_close)
+     ans =
+       180.3184
+     &gt;&gt; std(hist_close) 
+     ans =
+         4.5508
+</code></pre>
+<p>Through these commands we have seen that the function returns column vectors, we were able to get 19 days' worth of information and 
+we used simple statistic functions to get an idea of how the stock varied in the given period. </p>
+<p>Now we will use the example1.m script that shows: 
+  - how to use different plotting methods on the data retrieved with the yahoo_finance_data function
+  - how to export the plots in different graphic formats instead of displaying them (which is only available when running the 
+  full graphical environment and also allows the user to visually interact with the plot)</p>
+<pre><code>     &gt;&gt; example1
+     Elapsed time is 2.421686 seconds.
+     &gt;&gt; quit
+     (node)$&gt;
+     (node)$&gt; ls *pdf *eps
+     example1-2dplot.eps  example1-2dplot.pdf  example1-scatter.eps
+</code></pre>
+<p>We have run the example1.m script which has downloaded Apple ('AAPL' ticker) stock data for the year 2013 and generated three plots:</p>
+<ul>
+<li>example1-2dplot.pdf : color PDF generated with the saveas function, plotting dates (x-axis) vs closing stock price (y-axis)</li>
+<li>example1-2dplot.eps : high quality black and white Enhanced PostScript (EPS) generated with the print function, same data as above</li>
+<li>example1-scatter.eps : high quality color EPS generated with the print function, showing also the trading volume (z-axis) and 
+using different color datapoints (red) where the closing share price was above 500</li>
+</ul>
+<p>The script has also used the tic/toc Matlab commands to time it's execution and we can see it took less than 3 seconds to download
+and process data from the Yahoo Finance API and generate the plots. </p>
+<p>Finally, we have closed our Matlab session and were returned to the cluster's command line prompt where we found the generated plots.</p>
+<p>A PNG version of the latter two plots is shown below:
+<img alt="2D Plot" src="https://raw.github.com/ULHPC/tutorials/devel/advanced/MATLAB/plots/example1-2dplot.png" />
+<img alt="3D Scatter Plot" src="https://raw.github.com/ULHPC/tutorials/devel/advanced/MATLAB/plots/example1-scatter.png" /></p>
+<p>Further examples showing serial and parallel executions are given below in the 'Example usage of Matlab in passive mode' section.</p>
+<h2 id="matlab-execution-in-passive-mode">Matlab execution in passive mode</h2>
+<p>For non-interactive or long executions, MATLAB can be ran in passive mode, reading all commands from
+an input file you provide (e.g. named INPUTFILE.m) and saving the results in an output file (e.g. named OUTPUTFILE.out),
+by either:</p>
+<ol>
+<li>
+<p>using redirection operators:</p>
+<pre><code>$&gt; matlab -nodisplay -nosplash &lt; INPUTFILE.m &gt; OUTPUTFILE.out
+</code></pre>
+</li>
+<li>
+<p>running the input file as a command (notice the missing '.m' extension) and copying output 
+(as a log) to the output file:</p>
+<pre><code>$&gt; matlab -nodisplay -nosplash -r INPUTFILE -logfile OUTPUTFILE.out
+</code></pre>
+</li>
+</ol>
+<p>The second usage mode is recommended as it corresponds to the batch-mode execution. In the first case your 
+output file will contain the '&gt;&gt;' characters generated by Matlab as if ran interactively, along with the
+results of your own commands.</p>
+<p>However as the second usage mode runs your script as a command, it <strong>must</strong> contain the <code>quit</code> command at
+the end in order to close Matlab, otherwise after the script has executed Matlab will stay open,
+waiting for further input until the end of the walltime you set for the passive job, tying up compute
+resources needlessly.</p>
+<p>The following minimal example shows how to run a serial (1 core) MATLAB script for 24 hours in passive mode:</p>
+<pre><code>    (gaia-frontend)$&gt; oarsub -l walltime=24:00:00 "source /etc/profile; module load MATLAB; matlab -nodisplay -nosplash &lt; INPUTFILE.m &gt; OUTPUTFILE.out"
+</code></pre>
+<p>Ideally you <strong>would not</strong> run MATLAB jobs like this but instead <a href="https://github.com/ULHPC/launcher-scripts">create/adapt a launcher script</a> to contain those instructions. A minimal shell script (e.g. named 'your_matlab_launcher.sh') could be:</p>
+<pre><code>    #!/bin/bash
+    source /etc/profile
+    # REMEMBER to change the following to the correct paths of the input/output files:
+    INPUTFILE=your_input_file_name_without_extension
+    OUTPUTFILE=your_output_file_name_with_extension.out
+    # Load a specific version of MATLAB and run the input script:
+    module load MATLAB/2013b
+    matlab -nodisplay -nosplash -r $INPUTFILE -logfile $OUTPUTFILE
+</code></pre>
+<p>then launch it in a job (e.g. requesting 6 cores on 1 node for 10 hours - assuming your input file takes advantage of the parallel cores):</p>
+<pre><code>    (gaia-frontend)$&gt; oarsub -l nodes=1/core=6,walltime=10:00:00 your_matlab_launcher.sh
+</code></pre>
+<p>Remember! that the Matlab script you run with the '-r' parameter must contain the <code>quit</code> command at the end
+in order to close Matlab properly when the script finishes.</p>
+<h3 id="example-usage-of-matlab-in-passive-mode">Example usage of Matlab in passive mode</h3>
+<p>In this section we will use the <em>example2.m</em> script which shows:
+  - the serial execution of time consuming operations; 1 core on 1 node
+  - the parallel execution (based on the <code>parfor</code> command) and relative speedup vs serial execution, setting
+    the maximum number of parallel threads through environment variables; up to 1 full node
+  - GPU-based parallel execution; available only on <a href="https://hpc.uni.lu/systems/accelerators.html">GPU-enabled nodes</a></p>
+<p>By default the parallel section of the script uses up to 4 threads, thus for a first test we will request 4 cores on 1
+compute node for 5 minutes:</p>
+<pre><code>    (gaia-frontend)$&gt; cd ~/matlab-tutorial
+    # Create a file called matlab-minlauncher.sh with launching commands
+    (gaia-frontend)$&gt; cat &lt;&lt; EOF &gt; matlab-minlauncher.sh
+    #!/bin/bash
+    source /etc/profile
+    module load MATLAB/2013a
+    cd ~/matlab-tutorial
+    matlab -nodisplay -nosplash -r example2 -logfile example2.out
+    EOF
+    (gaia-frontend)$&gt; chmod +x matlab-minlauncher.sh
+    (gaia-frontend)$&gt; oarsub -l nodes=1/core=4,walltime=00:05:00 ~/matlab-tutorial/matlab-minlauncher.sh
+    # we now wait for the job to complete execution
+    (gaia-frontend)$&gt; cat example2.out
+                &lt; M A T L A B (R) &gt;
+          Copyright 1984-2013 The MathWorks, Inc.
+            R2013a (8.1.0.604) 64-bit (glnxa64)
+                February 15, 2013
+
+
+To get started, type one of these: helpwin, helpdesk, or demo. 
+For product information, visit www.mathworks.com.
+
+-- Will perform 24 iterations on a 1000x1000 matrix
+
+-- Serial test
+-- Execution time: 27.870898s.
+-- Parallel tests with up to 4 cores
+
+-- Parallel test using 2 cores
+Starting matlabpool ... connected to 2 workers.
+Sending a stop signal to all the workers ... stopped.
+-- Execution time: 19.869666s.
+-- Execution time with overhead: 39.025023s.
+
+-- Parallel test using 3 cores
+Starting matlabpool ... connected to 3 workers.
+Sending a stop signal to all the workers ... stopped.
+-- Execution time: 14.584377s.
+-- Execution time with overhead: 25.587958s.
+
+-- Parallel test using 4 cores
+Starting matlabpool ... connected to 4 workers.
+Sending a stop signal to all the workers ... stopped.
+-- Execution time: 12.298823s.
+-- Execution time with overhead: 22.379418s.
+
+-- Number of processes, parallel execution time (s), parallel execution time with overhead(s), speedup, speedup with overhead:
+    1.0000   27.8709   27.8709    1.0000    1.0000
+    2.0000   19.8697   39.0250    1.4027    0.7142
+    3.0000   14.5844   25.5880    1.9110    1.0892
+    4.0000   12.2988   22.3794    2.2661    1.2454
+
+
+-- GPU-Parallel test not available on this system.
+</code></pre>
+<p>The script is also able to read an environment variable <em>MATLABMP</em> and create as many parallel threads as specified in this variable.
+We will now generate another launcher which will set this variable to the number of cores we specified to OAR.</p>
+<pre><code>    (gaia-frontend)$&gt; cd ~/matlab-tutorial
+    (gaia-frontend)$&gt; cat &lt;&lt; EOF &gt; matlab-minlauncher2.sh
+    #!/bin/bash
+    source /etc/profile
+    module load MATLAB/2013a
+    cd ~/matlab-tutorial
+    export MATLABMP=$(cat $OAR_NODEFILE | wc -l)
+    matlab -nodisplay -nosplash -r example2 -logfile example2b.out
+    EOF
+    (gaia-frontend)$&gt; chmod +x matlab-minlauncher2.sh
+    (gaia-frontend)$&gt; oarsub -l nodes=1/core=6,walltime=00:05:00 ~/matlab-tutorial/matlab-minlauncher2.sh
+    # we now wait for the job to complete execution
+    (gaia-frontend)$&gt; head -n 17 example2b.out 
+                  &lt; M A T L A B (R) &gt;
+            Copyright 1984-2013 The MathWorks, Inc.
+              R2013a (8.1.0.604) 64-bit (glnxa64)
+                  February 15, 2013
+
+
+  To get started, type one of these: helpwin, helpdesk, or demo.
+  For product information, visit www.mathworks.com.
+
+  -- Will perform 24 iterations on a 1000x1000 matrix
+
+  -- Serial test
+  -- Execution time: 28.193131s.
+
+  -- Found environment variable MATLABMP=6.
+  -- Parallel tests with up to 6 cores
+    (gaia-frontend)$&gt;
+</code></pre>
+<p>We have submitted an OAR job requesting 6 cores for 5 minutes and used the second launcher. It can be seen that the example2.m script 
+has read the MATLABMP environment variable and has used in its execution.</p>
+<p>As shown previously, the jobs we have submitted did not run on GPU-enabled nodes, thus in this last example we will specifically
+target GPU nodes and see that the last test of example2.m will also be executed.
+Before testing the following commands, edit the <code>matlab-minlauncher2.sh</code> script and make MATLAB store its output in a <code>example2c.out</code>
+file.</p>
+<pre><code>  (gaia-frontend)$&gt; cd ~/matlab-tutorial
+  (gaia-frontend)$&gt; oarsub -l nodes=1/core=6,walltime=00:05:00 -p "gpu='YES'" ~/matlab-tutorial/matlab-minlauncher2.sh
+  # now wait for the job to complete execution, then check the output file
+  (gaia-frontend)$&gt; tail -n 5 example2c.out 
+    -- GPU test 
+    -- GPU Execution time: 28.192080s.
+    -- GPU Execution time with overhead: 30.499892s.
+    -- GPU vs Serial speedup: 1.102579.
+    -- GPU with overhead vs Serial speedup: 1.019151.
+</code></pre>
+<p>The following plot shows a sample speedup obtained by using parfor on Gaia, with up to 12 parallel threads:
+<img alt="Parfor speedup" src="https://raw.github.com/ULHPC/tutorials/devel/advanced/MATLAB/plots/parfor-speedup.png" /></p>
+<p>Relative to the fast execution of the inner instruction (which calculates the eigenvalues of a matrix) 
+the overhead given by the creation of the parallel pool and the task assignations is quite high in this example,
+where for 12 cores the speedup is 5.26x but taking the overhead into account it is only 4x.</p>
+<h2 id="useful-references">Useful references</h2>
+<ul>
+<li><a href="http://www.mathworks.nl/help/distcomp/index.html">Parallel Computing Toolbox documentation</a></li>
+<li><a href="http://www.mathworks.nl/help/distcomp/getting-started-with-parfor.html">Parallel for-Loops (parfor) documentation</a></li>
+<li><a href="http://www.mathworks.nl/discovery/matlab-gpu.html">GPU Computing documentation</a></li>
+</ul>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../../R/README/" class="btn btn-neutral float-right" title="R - statistical computing "/>Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href="../../HPL/README/" class="btn btn-neutral" title="High Performance Linpack (HPL)"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+  </div>
+
+  Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+	  
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+<div class="rst-versions" role="note" style="cursor: pointer">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+      
+        <span><a href="../../HPL/README/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+        <span style="margin-left: 15px"><a href="../../R/README/" style="color: #fcfcfc">Next &raquo;</a></span>
+      
+    </span>
+</div>
+
+</body>
+</html>

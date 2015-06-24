@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Grid5000: Automatic VM deployment with VM5K - UL HPC Tutorials</title>
+  
+
+  <link rel="shortcut icon" href="../../../img/favicon.ico">
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" href="../../../css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../css/theme_extra.css" type="text/css" />
+  <link rel="stylesheet" href="../../../css/highlight.css">
+
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "Grid5000: Automatic VM deployment with VM5K";
+  </script>
+  
+  <script src="../../../js/jquery-2.1.1.min.js"></script>
+  <script src="../../../js/modernizr-2.8.3.min.js"></script>
+  <script type="text/javascript" src="../../../js/highlight.pack.js"></script>
+  <script src="../../../js/theme.js"></script> 
+
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+      <div class="wy-side-nav-search">
+        <a href="../../.." class="icon icon-home"> UL HPC Tutorials</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        <ul class="current">
+          
+            <li>
+    <li class="toctree-l1 ">
+        <a class="" href="../../..">Home</a>
+        
+    </li>
+<li>
+          
+            <li>
+    <ul class="subnav">
+    <li><span>Basic Tutorials</span></li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../../basic/getting_started/README/">Getting Started</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../../basic/sequential_jobs/README/">HPC workflow with sequential jobs</a>
+        
+    </li>
+
+        
+    </ul>
+<li>
+          
+            <li>
+    <ul class="subnav">
+    <li><span>Advanced Software Management</span></li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../RESIF/README/">RESIF</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../EasyBuild/README/">Easybuild</a>
+        
+    </li>
+
+        
+    </ul>
+<li>
+          
+            <li>
+    <ul class="subnav">
+    <li><span>MPI</span></li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../OSU_MicroBenchmarks/README/">The OSU Micro-benchmarks</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../HPL/README/">High Performance Linpack (HPL)</a>
+        
+    </li>
+
+        
+    </ul>
+<li>
+          
+            <li>
+    <ul class="subnav">
+    <li><span>Mathematics</span></li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../MATLAB/README/">MATLAB</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../R/README/">R - statistical computing </a>
+        
+    </li>
+
+        
+    </ul>
+<li>
+          
+            <li>
+    <ul class="subnav">
+    <li><span>Bio-informatic</span></li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../Bioinformatics/README/">Running bioinformatics software</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../Galaxy/README/">Galaxy</a>
+        
+    </li>
+
+        
+    </ul>
+<li>
+          
+            <li>
+    <ul class="subnav">
+    <li><span>Parallel Debuggers</span></li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../Allinea/README/">Allinea</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../TotalView/README/">TotalView</a>
+        
+    </li>
+
+        
+    </ul>
+<li>
+          
+            <li>
+    <ul class="subnav">
+    <li><span>Virtualization</span></li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../Vagrant/README/">Vagrant</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 current">
+        <a class="current" href="./">Grid5000: Automatic VM deployment with VM5K</a>
+        
+            <ul>
+            
+                <li class="toctree-l3"><a href="#deploying-virtual-machines-with-vm5k-on-grid5000">Deploying virtual machines with Vm5k on Grid'5000</a></li>
+                
+            
+                <li class="toctree-l3"><a href="#the-grid5000-platform">The Grid'5000 platform</a></li>
+                
+            
+                <li class="toctree-l3"><a href="#getting-started">Getting started</a></li>
+                
+                    <li><a class="toctree-l4" href="#user-charter">User charter</a></li>
+                
+                    <li><a class="toctree-l4" href="#account">Account</a></li>
+                
+                    <li><a class="toctree-l4" href="#connection">Connection</a></li>
+                
+                    <li><a class="toctree-l4" href="#reservation-and-deployment">Reservation and deployment</a></li>
+                
+                    <li><a class="toctree-l4" href="#tutorials">Tutorials</a></li>
+                
+            
+                <li class="toctree-l3"><a href="#vm5k">VM5K</a></li>
+                
+                    <li><a class="toctree-l4" href="#installation-from-git">Installation (from git)</a></li>
+                
+                    <li><a class="toctree-l4" href="#usage">Usage</a></li>
+                
+                    <li><a class="toctree-l4" href="#basic-features">Basic features</a></li>
+                
+                    <li><a class="toctree-l4" href="#experiment">Experiment</a></li>
+                
+            
+            </ul>
+        
+    </li>
+
+        
+    </ul>
+<li>
+          
+            <li>
+    <ul class="subnav">
+    <li><span>Documentation</span></li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../../contributing/">Contributing</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../../rtfd/">RTFD</a>
+        
+    </li>
+
+        
+    </ul>
+<li>
+          
+            <li>
+    <li class="toctree-l1 ">
+        <a class="" href="../../../contacts/">Contacts</a>
+        
+    </li>
+<li>
+          
+        </ul>
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../../..">UL HPC Tutorials</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../..">Docs</a> &raquo;</li>
+    
+      
+        
+          <li>Virtualization &raquo;</li>
+        
+      
+    
+    <li>Grid5000: Automatic VM deployment with VM5K</li>
+    <li class="wy-breadcrumbs-aside">
+      
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <h1 id="deploying-virtual-machines-with-vm5k-on-grid5000">Deploying virtual machines with Vm5k on Grid'5000</h1>
+<h1 id="the-grid5000-platform">The Grid'5000 platform</h1>
+<p>Grid’5000 is a scientific instrument distributed in 10 sites (mainly in France)
+for research in large-scale parallel and distributed systems. It aims at providing
+a highly reconfigurable, controllable and monitorable experimental platform to its users.</p>
+<p>The infrastructure has reached 1035 nodes and 7782 cores and all sites are connected
+to RENATER with a 10 GB/s link, except Reims and Nantes (1 GB/s).</p>
+<p>The goals of these tutorial is to:
+<em> connect to Grid'5000
+</em> discover the basic features of Grid'5000
+* use vm5k in order to deploy virtual machines on the grid</p>
+<h1 id="getting-started">Getting started</h1>
+<h2 id="user-charter">User charter</h2>
+<p>You should first read the <a href="https://www.grid5000.fr/mediawiki/index.php/Grid5000:UserCharter">User Charter</a>.
+The mains points are:</p>
+<ul>
+<li>maintain your <a href="https://api.grid5000.fr/sid/reports/_admin/index.html">user reports</a> up-to-date (publications, experiments, etc)</li>
+<li>during working days and office hours (09:00 to 19:00), you should not use more than the equivalent of 2 hours of all the resources available in a cluster</li>
+<li>your jobs should not cross the 09:00 and 19:00 boundaries during week days</li>
+<li>you should not have more than 2 reservations in advance</li>
+</ul>
+<p>Basically: develop your experiments during day time, launch them over the nights and week-ends</p>
+<h2 id="account">Account</h2>
+<p>Fill the <a href="https://www.grid5000.fr/mediawiki/index.php/Special:G5KRequestAccountUMS">account request form</a>
+At the Manager entry where you’re asked the Grid’5000 login of the person
+who’s responsible of the account you’re requesting, answer <strong>svarrett</strong></p>
+<h2 id="connection">Connection</h2>
+<p>Grid'5000 provided 2 national access servers, located in Lille and Sophia.
+These servers allow the user to connect the site's frontend.</p>
+<pre><code>(user)   ssh &lt;login&gt;@access.grid5000.fr
+(access) ssh luxembourg
+</code></pre>
+<p>As an alternative, we can connect directly to the Luxembourg frontend from within the UL network:</p>
+<pre><code>(user)   ssh &lt;login&gt;@grid5000.uni.lu
+</code></pre>
+<h2 id="reservation-and-deployment">Reservation and deployment</h2>
+<p>Grid'5000 uses OAR, all the oar commands you use on Gaia and Chaos clusters are valid.</p>
+<ul>
+<li><a href="https://hpc.uni.lu/users/docs/oar.html">OAR documentation on hpc.uni.lu</a></li>
+</ul>
+<p>Additionally to the computing nodes, G5K provides more resources:</p>
+<ul>
+<li>subnets (ranges of IP for virtualization / cloud experiments)</li>
+<li>vlan (reconfigure the network equipments)</li>
+<li>storage (iscsi / nfs)</li>
+<li>...</li>
+</ul>
+<p>The job type "deploy" is also supported, which means that you can use kadeploy to reinstall
+a cluster node and gain root access during the time of your jobs</p>
+<h2 id="tutorials">Tutorials</h2>
+<p>It is highly recommended to read and follow the <a href="https://www.grid5000.fr/mediawiki/index.php/Getting_Started">Getting Started tutorial</a>,
+and all the others tutorials available in the <a href="https://www.grid5000.fr/mediawiki/index.php/Category:Portal:User">User Portal</a></p>
+<h1 id="vm5k">VM5K</h1>
+<p><a href="https://vm5k.readthedocs.org/">Vm5k</a> is a tool used to deploy a large number of virtual machines on the Grid‘5000 platform.</p>
+<p>In short, Vm5k</p>
+<ul>
+<li>manages the reservation, locally if you work on one site, or globally with <code>oargridsub</code></li>
+<li>install the hosts with kadeploy, and configure the virtualization stack for you</li>
+<li>configure the network (bridges)</li>
+<li>deploy the virtual machines</li>
+</ul>
+<h2 id="installation-from-git">Installation (from git)</h2>
+<p>You will install VM5K in your home directory.</p>
+<ul>
+<li>
+<p>Specify the proxy configuration</p>
+<pre><code>(frontend) export http_proxy="http://proxy:3128"
+(frontend) export https_proxy="https://proxy:3128"
+</code></pre>
+</li>
+<li>
+<p>Install execo, which is a dependency of vm5k</p>
+<pre><code>(frontend) easy_install --user execo
+</code></pre>
+</li>
+<li>
+<p>Clone the git repository of vm5k and install it</p>
+<pre><code>(frontend) git clone https://github.com/lpouillo/vm5k.git
+(frontend) cd vm5k
+(frontend) python setup.py  install --user
+</code></pre>
+</li>
+<li>
+<p>In your bashrc file, add the ~/.local/bin directory to the PATH environment variable</p>
+<pre><code>(frontend) echo 'export PATH=$PATH:~/.local/bin' &gt;&gt; ~/.bashrc
+</code></pre>
+</li>
+</ul>
+<h2 id="usage">Usage</h2>
+<h2 id="basic-features">Basic features</h2>
+<p>Each deployment takes around 20 minutes, so you don't have to execute all the following examples:</p>
+<ul>
+<li>spawn 20 VMs on the granduc cluster, with a walltime of 30 minutes, and write the output files in the directory <code>vm5k_test</code>:<pre><code>(frontend) vm5k --n_vm 10 -r granduc -w 0:30:00 -o vm5k_test
+</code></pre>
+</li>
+</ul>
+<p>You'll find the list of VMs with their ips in the file vm5k_test/vms.list</p>
+<pre><code>10.172.1.45     vm-1
+10.172.1.46     vm-2
+10.172.1.47     vm-3
+10.172.1.48     vm-4
+10.172.1.49     vm-5
+10.172.1.50     vm-6
+10.172.1.51     vm-7
+10.172.1.52     vm-8
+...
+</code></pre>
+<ul>
+<li>
+<p>Let's spawn 100 VMs on 2 hosts in Nancy and Luxembourg</p>
+<pre><code>(frontend) vm5k --n_vm 10 -r nancy:1,luxembourg:1 -w 0:30:00 -o vm5k_test
+</code></pre>
+</li>
+<li>
+<p>We can also specify the VM template (resources) with the parameter <code>--vm_template</code></p>
+<pre><code>(frontend) vm5k --n_vm 10 -r nancy:2,luxembourg:2 -w 0:30:00 -o vm5k_test --vm_template '&lt;vm mem="4096" hdd="10" n_cpu="4" cpuset="auto"/&gt;'
+</code></pre>
+</li>
+</ul>
+<h3 id="distribution">Distribution</h3>
+<ul>
+<li>
+<p>Balance the nodes on all the reserved hosts</p>
+<pre><code>(frontend) vm5k --n_vm 100 -r granduc:4 -o vm5k_test -d n_by_hosts
+</code></pre>
+</li>
+<li>
+<p>Concentrate the VMs on a minimal number of hosts</p>
+<pre><code>(frontend) vm5k -r grid5000:20 -n 100 -o vm5k_test -d concentrated
+</code></pre>
+</li>
+</ul>
+<h3 id="advanced-feature-define-the-deployment-topology">Advanced feature: define the deployment topology</h3>
+<p>You can control the deployment topology, and specify finely the clusters, nodes and virtual machines per node.</p>
+<p>Create a file named <code>topology.xml</code>, and change the sites, cluster and host id as needed:</p>
+<pre><code>&lt;vm5k&gt;
+  &lt;site id="luxembourg"&gt;
+    &lt;cluster id="granduc"&gt;
+      &lt;host id="granduc-2"&gt;
+        &lt;vm mem="2048" hdd="4" id="vm-33" cpu="1"/&gt;
+        &lt;vm mem="2048" hdd="4" id="vm-34" cpu="1"/&gt;
+        &lt;vm mem="2048" hdd="4" id="vm-35" cpu="1"/&gt;
+      &lt;/host&gt;
+      &lt;host id="granduc-3"&gt;
+        &lt;vm mem="2048" hdd="4" id="vm-43" cpu="1"/&gt;
+        &lt;vm mem="2048" hdd="4" id="vm-44" cpu="1"/&gt;
+        &lt;vm mem="2048" hdd="4" id="vm-45" cpu="1"/&gt;
+        &lt;vm mem="2048" hdd="4" id="vm-43" cpu="1"/&gt;
+        &lt;vm mem="2048" hdd="4" id="vm-44" cpu="1"/&gt;
+      &lt;/host&gt;
+    &lt;/cluster&gt;
+  &lt;/site&gt;
+  &lt;site id="nancy"&gt;
+    &lt;cluster id="graphene"&gt;
+      &lt;host id="graphene-30"&gt;
+        &lt;vm mem="2048" hdd="4" id="vm-30" cpu="1"/&gt;
+        &lt;vm mem="2048" hdd="4" id="vm-31" cpu="1"/&gt;
+      &lt;/host&gt;
+    &lt;/cluster&gt;
+  &lt;/site&gt;
+&lt;/vm5k&gt;
+</code></pre>
+<p>Give this file to vm5k</p>
+<pre><code>(frontend) vm5k -i topology.xml -w 0:30:0 -o vm5k_test
+</code></pre>
+<h2 id="experiment">Experiment</h2>
+<p>We will deploy 100 VMs and deploy the munin monitoring software.
+This is an example, munin will allow you to monitor the activity on all the VMs.</p>
+<h3 id="install-munin-clients-on-all-the-other-servers">Install munin clients on all the other servers</h3>
+<ul>
+<li>
+<p>Spawn 100 VMs</p>
+<pre><code>(frontend) vm5k --n_vm 50 -w 2:00:00 -r luxembourg -o hpcschool2015 -o vm5k_xp
+</code></pre>
+</li>
+<li>
+<p>Launch a script on all the VMs after their deployment, we will use <code>taktuk</code> (you could also clush, pdsh, etc)</p>
+<pre><code>(frontend) taktuk -l root -f vm5k_xp/vms.list broadcast exec [ apt-get update ]
+(frontend) taktuk -l root -f vm5k_xp/vms.list broadcast exec [ apt-get install -y munin-node stress ]
+(frontend) taktuk -l root -f vm5k_xp/vms.list broadcast exec [ 'echo cidr_allow 10.0.0.0/8 &gt;&gt; /etc/munin/munin-node.conf' ]
+(frontend) taktuk -l root -f vm5k_xp/vms.list broadcast exec [ '/etc/init.d/munin-node restart' ]
+</code></pre>
+</li>
+</ul>
+<h3 id="install-munin-server-on-the-first-physical-host">Install munin server on the first physical host</h3>
+<ul>
+<li>
+<p>Choose the first virtual machines</p>
+<pre><code>(frontend) head -n 1 vm5k_xp/vms.list
+10.172.1.45     vm-1
+</code></pre>
+</li>
+<li>
+<p>Transfer the list of virtual machines to the VM</p>
+<pre><code>(frontend) scp vm5k_xp/vms.list root@10.172.1.45:/tmp/
+</code></pre>
+</li>
+<li>
+<p>Connect to the VM in order to install and configure munin</p>
+<pre><code>(frontend) ssh root@10.172.1.45
+
+(vm-1) apt-get install munin apache2
+</code></pre>
+</li>
+<li>
+<p>Configure the Apache http server</p>
+<pre><code>(vm-1) sed -i '/[aA]llow/d' /etc/apache2/conf.d/munin
+(vm-1) apache2ctl restart
+</code></pre>
+</li>
+<li>
+<p>Generate the munin configuration</p>
+<pre><code>(vm-1) cat /tmp/vms.list  | awk '{print "["$2".g5k]\n    address "$1"\n    use_node_name yes\n"}' &gt;&gt; /etc/munin/munin.conf
+(vm-1) /etc/init.d/munin restart
+</code></pre>
+</li>
+</ul>
+<h3 id="connect-to-munin">Connect to munin</h3>
+<ul>
+<li>
+<p>Let's generate a fake activity, stress the VM during 60 seconds</p>
+<pre><code>(frontend) taktuk -l root -f hpcschool2015/vms.list broadcast exec [ 'stress -c 1 -t 60' ]
+</code></pre>
+</li>
+<li>
+<p>Open a ssh tunnel on port 80</p>
+<pre><code>(user) ssh -L1080:10.172.1.45:80 &lt;login&gt;@grid5000.uni.lu
+</code></pre>
+</li>
+</ul>
+<p>Open a browser and navigates to <a href="http://localhost:1080">http://localhost:1080</a></p>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../../../contributing/" class="btn btn-neutral float-right" title="Contributing"/>Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href="../../Vagrant/README/" class="btn btn-neutral" title="Vagrant"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+  </div>
+
+  Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+	  
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+<div class="rst-versions" role="note" style="cursor: pointer">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+      
+        <span><a href="../../Vagrant/README/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+        <span style="margin-left: 15px"><a href="../../../contributing/" style="color: #fcfcfc">Next &raquo;</a></span>
+      
+    </span>
+</div>
+
+</body>
+</html>

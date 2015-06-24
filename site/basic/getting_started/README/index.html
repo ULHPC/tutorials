@@ -1,0 +1,1094 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Getting Started - UL HPC Tutorials</title>
+  
+
+  <link rel="shortcut icon" href="../../../img/favicon.ico">
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" href="../../../css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../css/theme_extra.css" type="text/css" />
+  <link rel="stylesheet" href="../../../css/highlight.css">
+
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "Getting Started";
+  </script>
+  
+  <script src="../../../js/jquery-2.1.1.min.js"></script>
+  <script src="../../../js/modernizr-2.8.3.min.js"></script>
+  <script type="text/javascript" src="../../../js/highlight.pack.js"></script>
+  <script src="../../../js/theme.js"></script> 
+
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+      <div class="wy-side-nav-search">
+        <a href="../../.." class="icon icon-home"> UL HPC Tutorials</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        <ul class="current">
+          
+            <li>
+    <li class="toctree-l1 ">
+        <a class="" href="../../..">Home</a>
+        
+    </li>
+<li>
+          
+            <li>
+    <ul class="subnav">
+    <li><span>Basic Tutorials</span></li>
+
+        
+            
+    <li class="toctree-l1 current">
+        <a class="current" href="./">Getting Started</a>
+        
+            <ul>
+            
+                <li class="toctree-l3"><a href="#ul-hpc-tutorial-getting-started">UL HPC Tutorial: Getting Started</a></li>
+                
+                    <li><a class="toctree-l4" href="#convention">Convention</a></li>
+                
+                    <li><a class="toctree-l4" href="#platform-overview">Platform overview.</a></li>
+                
+            
+                <li class="toctree-l3"><a href="#connecting-for-the-first-time-and-preparing-your-ssh-environment">Connecting for the first time and preparing your SSH environment</a></li>
+                
+                    <li><a class="toctree-l4" href="#step-1a-connect-to-ul-hpc-linux-mac-os-unix">Step 1a: Connect to UL HPC (Linux / Mac OS / Unix)</a></li>
+                
+                    <li><a class="toctree-l4" href="#step-1b-connect-to-ul-hpc-windows">Step 1b: Connect to UL HPC (Windows)</a></li>
+                
+                    <li><a class="toctree-l4" href="#step-2-configure-your-ssh-environment-on-all-clusters">Step 2: configure your SSH environment on all clusters</a></li>
+                
+                    <li><a class="toctree-l4" href="#step-2bis-using-ssh-proxycommand-setup-to-access-the-clusters-despite-port-filtering">Step 2bis: Using SSH proxycommand setup to access the clusters despite port filtering</a></li>
+                
+                    <li><a class="toctree-l4" href="#step-3-transferring-files">Step 3: transferring files</a></li>
+                
+                    <li><a class="toctree-l4" href="#step-3b-windows-linux-os-x-unix-gui-tools">Step 3b: Windows / Linux / OS X / Unix GUI tools</a></li>
+                
+            
+                <li class="toctree-l3"><a href="#discovering-visualizing-and-reserving-ul-hpc-resources">Discovering, visualizing and reserving UL HPC resources</a></li>
+                
+                    <li><a class="toctree-l4" href="#step-1-the-working-environment">Step 1: the working environment</a></li>
+                
+                    <li><a class="toctree-l4" href="#step-2-web-monitoring-interfaces">Step 2: web monitoring interfaces</a></li>
+                
+                    <li><a class="toctree-l4" href="#step-3-reserving-resources-with-oar-the-basics">Step 3: Reserving resources with OAR: the basics</a></li>
+                
+                    <li><a class="toctree-l4" href="#step-4-job-management">Step 4: Job management</a></li>
+                
+                    <li><a class="toctree-l4" href="#step-5-using-modules">Step 5: Using modules</a></li>
+                
+                    <li><a class="toctree-l4" href="#step-6-advanced-job-management-and-persistent-terminal-sessions-using-gnu-screen">Step 6 (advanced): Job management and Persistent Terminal Sessions using GNU Screen</a></li>
+                
+            
+            </ul>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../sequential_jobs/README/">HPC workflow with sequential jobs</a>
+        
+    </li>
+
+        
+    </ul>
+<li>
+          
+            <li>
+    <ul class="subnav">
+    <li><span>Advanced Software Management</span></li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../../advanced/RESIF/README/">RESIF</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../../advanced/EasyBuild/README/">Easybuild</a>
+        
+    </li>
+
+        
+    </ul>
+<li>
+          
+            <li>
+    <ul class="subnav">
+    <li><span>MPI</span></li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../../advanced/OSU_MicroBenchmarks/README/">The OSU Micro-benchmarks</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../../advanced/HPL/README/">High Performance Linpack (HPL)</a>
+        
+    </li>
+
+        
+    </ul>
+<li>
+          
+            <li>
+    <ul class="subnav">
+    <li><span>Mathematics</span></li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../../advanced/MATLAB/README/">MATLAB</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../../advanced/R/README/">R - statistical computing </a>
+        
+    </li>
+
+        
+    </ul>
+<li>
+          
+            <li>
+    <ul class="subnav">
+    <li><span>Bio-informatic</span></li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../../advanced/Bioinformatics/README/">Running bioinformatics software</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../../advanced/Galaxy/README/">Galaxy</a>
+        
+    </li>
+
+        
+    </ul>
+<li>
+          
+            <li>
+    <ul class="subnav">
+    <li><span>Parallel Debuggers</span></li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../../advanced/Allinea/README/">Allinea</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../../advanced/TotalView/README/">TotalView</a>
+        
+    </li>
+
+        
+    </ul>
+<li>
+          
+            <li>
+    <ul class="subnav">
+    <li><span>Virtualization</span></li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../../advanced/Vagrant/README/">Vagrant</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../../advanced/vm5k/README/">Grid5000: Automatic VM deployment with VM5K</a>
+        
+    </li>
+
+        
+    </ul>
+<li>
+          
+            <li>
+    <ul class="subnav">
+    <li><span>Documentation</span></li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../../contributing/">Contributing</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../../rtfd/">RTFD</a>
+        
+    </li>
+
+        
+    </ul>
+<li>
+          
+            <li>
+    <li class="toctree-l1 ">
+        <a class="" href="../../../contacts/">Contacts</a>
+        
+    </li>
+<li>
+          
+        </ul>
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../../..">UL HPC Tutorials</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../..">Docs</a> &raquo;</li>
+    
+      
+        
+          <li>Basic Tutorials &raquo;</li>
+        
+      
+    
+    <li>Getting Started</li>
+    <li class="wy-breadcrumbs-aside">
+      
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <p>-<em>- mode: markdown; mode: auto-fill; fill-column: 80 -</em>-
+<code>README.md</code></p>
+<p>Copyright (c) 2014 <a href="mailto:&lt;Sebastien.Varrette@uni.lu&gt;">Sebastien Varrette</a> <a href="http://varrette.gforge.uni.lu">www</a></p>
+<pre><code>    Time-stamp: &lt;Mar 2014-05-06 12:06 svarrette&gt;
+</code></pre>
+<hr />
+<h1 id="ul-hpc-tutorial-getting-started">UL HPC Tutorial: Getting Started</h1>
+<p>This tutorial will guide you through your first steps on the
+<a href="http://hpc.uni.lu">UL HPC platform</a>.  </p>
+<p>Before proceeding: </p>
+<ul>
+<li>make sure you have an account (if not, follow <a href="https://hpc.uni.lu/get_an_account">this procedure</a>), and an SSH client.</li>
+<li>take a look at the <a href="https://hpc.uni.lu/users/getting_started.html">quickstart guide</a></li>
+<li>ensure you operate from a Linux / Mac environement. Most commands below assumes running in a Terminal in this context. If you're running Windows, you can use Putty tools etc. as described <a href="https://hpc.uni.lu/users/docs/access.html#installing-ssh-on-windows">on this page</a> yet it's probably better that you familiarize "natively" with Linux-based environment by having a Linux Virtual Machine (consider for that <a href="https://www.virtualbox.org/">VirtualBox</a>). </li>
+</ul>
+<p>From a general perspective, the <a href="https://hpc.uni.lu/users/docs/report_pbs.html">Support page</a> describes how to get help during your UL HPC usage. </p>
+<h2 id="convention">Convention</h2>
+<p>In the below tutorial, you'll proposed terminal commands where the prompt is denoted by <code>$&gt;</code>. </p>
+<p>In general, we will prefix to precise the execution context (<em>i.e.</em> your laptop, a cluster frontend or a node). Remember that <code>#</code> character is a comment. Example: </p>
+<pre><code>    # This is a comment 
+    $&gt; hostname
+
+    (laptop)$&gt; hostname         # executed from your personal laptop / workstation
+
+    (access-gaia)$&gt; hostname    # executed from access server of the Gaia cluster
+</code></pre>
+<h2 id="platform-overview">Platform overview.</h2>
+<p>You can find a brief overview of the platform with key characterization numbers <a href="https://hpc.uni.lu/systems/overview.html">on this page</a>.</p>
+<p>The general organization of each cluster is depicted below:</p>
+<p><img alt="UL HPC clusters general organization" src="https://hpc.uni.lu/images/overview/clusters_general_organization.png" /></p>
+<p>Details on this organization can be found <a href="https://hpc.uni.lu/systems/clusters.html#clusters-organization">here</a></p>
+<h1 id="connecting-for-the-first-time-and-preparing-your-ssh-environment">Connecting for the first time and preparing your SSH environment</h1>
+<ul>
+<li><a href="https://hpc.uni.lu/users/docs/access.html">Access / SSH Tutorial</a></li>
+</ul>
+<p>The way SSH handles the keys and the configuration files is illustrated in the following figure:</p>
+<p><img alt="SSH key management" src="https://hpc.uni.lu/images/docssh/schema.png" /></p>
+<p>In order to be able to login to the clusters, you have sent us through the Account request form the <strong>public key</strong> (i.e. <code>id_dsa.pub</code>, <code>id_rsa.pub</code> or the <strong>public key</strong> as saved by PuttY) you initially generated, enabling us to configure the <code>~/.ssh/authorized_keys</code> file of your account.  </p>
+<h3 id="step-1a-connect-to-ul-hpc-linux-mac-os-unix">Step 1a: Connect to UL HPC (Linux / Mac OS / Unix)</h3>
+<p>Run the following commands in a terminal (substituting <em>yourlogin</em> with the login name you received from us):</p>
+<pre><code>    (laptop)$&gt; ssh -p 8022 yourlogin@access-chaos.uni.lu
+</code></pre>
+<p>If you want to connect to the gaia cluster, </p>
+<pre><code>    (laptop)$&gt; ssh -p 8022 yourlogin@access-gaia.uni.lu
+</code></pre>
+<p>Now you probably want to avoid taping this long command to connect to the platform. You can customize SSH aliases for that. Edit the file <code>~/.ssh/config</code> (create it if it does not already exist) and adding the following entries: </p>
+<pre><code>    Host chaos-cluster
+        Hostname access-chaos.uni.lu
+
+    Host gaia-cluster
+        Hostname access-gaia.uni.lu
+
+    Host *-cluster
+        User yourlogin
+        Port 8022
+        ForwardAgent no
+</code></pre>
+<p>Now you shall be able to issue the following (simpler) command to connect to the cluster and obtain the welcome banner: </p>
+<pre><code>    (laptop)$&gt; ssh gaia-cluster
+
+    (laptop)$&gt; ssh chaos-cluster
+</code></pre>
+<p>In the sequel, we assume these aliases to be defined. </p>
+<h3 id="step-1b-connect-to-ul-hpc-windows">Step 1b: Connect to UL HPC (Windows)</h3>
+<ul>
+<li>Download <a href="http://the.earth.li/~sgtatham/putty/latest/x86/putty.zip">all the Putty tools</a></li>
+<li>extract them in an easy-to-find place, such as <code>C:\Putty</code></li>
+<li>load your private key under Pageant</li>
+<li>open <code>Putty.exe</code> (connection type: <code>SSH</code>)</li>
+<li>In <code>Category:Session</code>:<ul>
+<li>Host Name: <code>access-{chaos,gaia}.uni.lu</code></li>
+<li>Port: 8022</li>
+<li>Saved session: <code>{Chaos,Gaia}</code></li>
+</ul>
+</li>
+<li>In <code>Category:Connection:Data</code> :<ul>
+<li>Auto-login username: <code>yourlogin</code></li>
+</ul>
+</li>
+<li>Go back to <code>Category:Session</code> and click on "Save"</li>
+<li>Click on "Open"</li>
+</ul>
+<h2 id="step-2-configure-your-ssh-environment-on-all-clusters">Step 2: configure your SSH environment on all clusters</h2>
+<p>The SSH key you provided us secure your connection <strong>from</strong> your laptop (or personal workstation) <strong>to</strong> the cluster frontends. It is thus important to protect them by a passphrase. </p>
+<p>You shall have also a new key pair configured in your account to permit a bi-directional transparent connection from one cluster to the other (you can check that in your <code>~/.ssh/authorized_keys</code> and by successfully running: </p>
+<pre><code>    (access-gaia)$&gt; ssh chaos-cluster
+</code></pre>
+<p>or </p>
+<pre><code>    (access-chaos)$&gt; ssh gaia-cluster
+</code></pre>
+<p>If that's the case, you can ignore the rest of this section. 
+<em>Otherwise</em>, you will now have to configure a passphrase-free SSH key pair to permit a transparent connection from one cluster to another. </p>
+<ul>
+<li>
+<p>Connect to the <code>chaos</code> cluster: </p>
+<pre><code>(laptop)$&gt; ssh chaos-cluster
+</code></pre>
+</li>
+<li>
+<p>generate a new SSH key pair with <code>ssh-keygen</code> (leave the passphrase empty):</p>
+<pre><code>(access-chaos)$&gt; ssh-keygen -t dsa
+Generating public/private dsa key pair.
+Enter file in which to save the key (/home/users/yourlogin/.ssh/id_dsa): 
+Enter passphrase (empty for no passphrase): 
+Your identification has been saved in /home/users/yourlogin/.ssh/id_dsa.
+Your public key has been saved in /home/users/yourlogin/.ssh/id_dsa.pub.
+The key fingerprint is:
+1f:1d:a5:66:3b:4a:68:bc:7d:8c:7f:33:c9:77:0d:4a yourlogin@access.chaos-cluster.uni.lux
+The key's randomart image is:
+`-[ DSA 1024]---`
+|              .  |
+|             o   |
+|            =    |
+|       . . + o   |
+|        S o +    |
+|       . = =E..  |
+|        . =.oo o.|
+|           o. * +|
+|            .. +.|
+`---------------`
+</code></pre>
+</li>
+<li>
+<p>authorize the newly generated public key to be used during challenge/response authentication:</p>
+<pre><code>(access-chaos)$&gt; cat ~/.ssh/id_dsa.pub 
+ssh-dss AAAAB[...]B2== yourlogin@access.chaos-cluster.uni.lux
+(access-chaos)$&gt; cat ~/.ssh/id_dsa.pub  &gt;&gt; ~/.ssh/authorized_keys
+</code></pre>
+</li>
+<li>
+<p>you can check that it works by connecting to localhost: </p>
+<pre><code>```
+(access-chaos)$&gt; ssh -p 8022 localhost
+[...]
+(access-chaos)$&gt; exit   # or CTRL-D
+```
+</code></pre>
+</li>
+<li>
+<p>add an alias to facilitate the connection to each cluster by adding the following SSH configuration entry in the file <code>~/.ssh/config</code>: </p>
+<pre><code>Host gaia-cluster chaos-cluster
+    User yourlogin
+    Port 8022
+
+Host gaia-cluster
+    Hostname access-gaia.uni.lu
+Host chaos-cluster
+    Hostname access-chaos.uni.lu
+</code></pre>
+</li>
+</ul>
+<p>You'll have to setup the same key package on the gaia cluster such that you can then work indefferently on one or another cluster. It's also the occasion to learn how to add a new SSH key to your authorized key portfolio. </p>
+<ul>
+<li>
+<p>Open another terminal and connect to the gaia cluster </p>
+<pre><code>(laptop)$&gt; ssh gaia-cluster
+</code></pre>
+</li>
+<li>
+<p>edit the file <code>~/.ssh/authorized_keys</code> to add your previously generated key on chaos (use <code>:wq</code> in <a href="http://tnerual.eriogerg.free.fr/vimqrc.pdf">vim</a> to save and quit):</p>
+<pre><code>(access-gaia)$&gt; vim ~/.ssh/authorized_keys
+</code></pre>
+</li>
+<li>
+<p>go back to the terminal where you're connected on chaos, you shall now be able to connect to gaia, and reversely: </p>
+<pre><code>(access-chaos)$&gt; ssh gaia
+[...]
+(access-gaia)$&gt; exit     # or CRTL-D
+</code></pre>
+</li>
+</ul>
+<p>You have a different home directory on each UL HPC site, so you will usually use Rsync or scp to move data around (see <a href="https://hpc.uni.lu/users/docs/filetransfer.html">transfering files tutorials</a>).</p>
+<p>Now that we are able to connect <strong>from</strong> chaos <strong>to</strong> gaia, we will transfer the SSH keys and configuration in place from chaos and check that we can connnect back: </p>
+<pre><code>    (access-chaos)$&gt; scp ~/.ssh/id_dsa* gaia:.ssh/
+    (access-chaos)$&gt; scp ~/.ssh/config  gaia:.ssh/
+    (access-chaos)$&gt; ssh gaia
+    [...]
+    (access-gaia)$&gt;  ssh chaos
+    (access-chaos)$&gt; exit     # or CRTL-D
+    (access-gaia)$&gt;  exit     # or CRTL-D
+</code></pre>
+<p>So now <strong>we have setup a bi-directional transparent connection from one cluster to the other.</strong> </p>
+<h2 id="step-2bis-using-ssh-proxycommand-setup-to-access-the-clusters-despite-port-filtering">Step 2bis: Using SSH proxycommand setup to access the clusters despite port filtering</h2>
+<p>It might happen that the port 8022 is filtered from your working place. You can easily bypass this firewall rule using an SSH proxycommand to setup transparently multi-hop connexions <em>through</em> one host (a gateway) to get to the access frontend of the cluster, as depited below: </p>
+<pre><code> [laptop] -----||--------&gt; 22 [SSH gateway] ---------&gt; 8022 [access-{chaos,gaia}]
+            firewall
+</code></pre>
+<p>The gateway can be any SSH server which have access to the access frontend of the cluster. The <a href="http://gforge.uni.lu">Gforge @ UL</a> is typically used in this context but you can prefer any other alternative (your personal NAS @ home etc.). Then alter the SSH config on yout laptop (in <code>~/.ssh/confg</code> typically) as follows:</p>
+<ul>
+<li>
+<p>create an entry to be able to connect to the gateway:</p>
+<pre><code># Alias for the gateway (not really needed, but convenient), below instanciated 
+Host gw
+    User anotherlogin
+    Hostname host.domain.org
+    ForwardAgent no
+
+# Automatic connection to UL HPC from the outside via the gateway
+Host *.ulhpc
+    ProxyCommand ssh gw "nc -q 0 `basename %h .ulhpc` %p"
+</code></pre>
+</li>
+<li>
+<p>ensure you can connect to the gateway:</p>
+<pre><code>(laptop)$&gt; ssh gw
+(gateway)$&gt; exit # or CTRL-D
+</code></pre>
+</li>
+<li>
+<p>the <code>.ulhpc</code> suffix we mentionned in the previous configuration is an arbitrary suffix you will now specify in your command lines in order to access the UL HPC platform via the gateway as follows: </p>
+<pre><code>(laptop)$&gt; ssh gaia.ulhpc
+</code></pre>
+</li>
+</ul>
+<h2 id="step-3-transferring-files">Step 3: transferring files</h2>
+<p>Directories such as <code>$HOME</code>, <code>$WORK</code> or <code>$SCRATCH</code> are shared among the nodes of the cluster that you are using (including the front-end) via shared filesystems (NFS, Lustre) meaning that:</p>
+<ul>
+<li>every file/directory pushed or created on the front-end is available on the computing nodes</li>
+<li>every file/directory pushed or created on the computing nodes is available on the front-end</li>
+</ul>
+<h3 id="step-3a-linux-os-x-unix-command-line-tools">Step 3a: Linux / OS X / Unix command line tools</h3>
+<p>The two most common tools you can use for data transfers over SSH:</p>
+<ul>
+<li><code>scp</code>: for the full transfer of files and directories (only works fine for single files or directories of small/trivial size)</li>
+<li><code>rsync</code>: a software application which synchronizes files and directories from one location to another while minimizing data transfer as only the outdated or inexistent elements are transfered (practically required for lengthy complex transfers, which are more likely to be interrupted in the middle).</li>
+</ul>
+<p>Of both, normally the second approach should be preferred, as more generic; note that, both ensure a secure transfer of the data, within an encrypted tunnel.</p>
+<ul>
+<li>
+<p>Create a new directory on your local machine and download a file to transfer (next-gen sequencing data from the NIH Roadmap Epigenomics Project):</p>
+<pre><code>(laptop)$&gt; mkdir file_transfer
+(laptop)$&gt; cd file_transfer
+(laptop)$&gt; wget "ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM409nnn/GSM409307/suppl/GSM409307_UCSD.H1.H3K4me1.LL228.bed.gz"
+</code></pre>
+</li>
+<li>
+<p>Transfer the file with scp:</p>
+<pre><code>(laptop)$&gt; scp GSM409307_UCSD.H1.H3K4me1.LL228.bed.gz gaia-cluster:
+</code></pre>
+</li>
+<li>
+<p>Connect to the cluster, check if the file is there and delete it.</p>
+<pre><code>(laptop)$&gt; ssh gaia-cluster
+(access-gaia)$&gt; ls
+(access-gaia)$&gt; rm GSM409307_UCSD.H1.H3K4me1.LL228.bed.gz
+(access-gaia)$&gt; exit
+</code></pre>
+</li>
+<li>
+<p>Transfer the directory with rsync:</p>
+<pre><code>(laptop)$&gt; cd ..
+(laptop)$&gt; rsync -avzu file_transfer gaia-cluster:
+</code></pre>
+</li>
+<li>
+<p>Delete the file and retrieve it from the cluster:</p>
+<pre><code>(laptop)$&gt; rm file_transfer/GSM409307_UCSD.H1.H3K4me1.LL228.bed.gz
+(laptop)$&gt; rsync -avzu gaia-cluster:file_transfer .
+</code></pre>
+</li>
+<li>
+<p><strong>Bonus</strong>: Check where the file is located on the cluster after the rsync.</p>
+</li>
+</ul>
+<p>You can get more information about these transfer methods in the <a href="https://hpc.uni.lu/users/docs/filetransfer.html">file transfer documentation</a>.</p>
+<h2 id="step-3b-windows-linux-os-x-unix-gui-tools">Step 3b: Windows / Linux / OS X / Unix GUI tools</h2>
+<ul>
+<li>Download the FileZilla client application from <a href="https://filezilla-project.org/download.php?type=client">filezilla-project.org</a> and install it.</li>
+<li>First we need to tell FileZilla about our ssh key:<ul>
+<li>Start the application.</li>
+<li>Go to the <code>Settings</code> (either under <code>Edit</code> or <code>FileZilla</code> depending on the OS).</li>
+<li>In the category <code>Connection</code> select <code>SFTP</code>. </li>
+<li>Click on the button <code>Add keyfile...</code> and select your private keyfile (you may need to convert it).</li>
+<li>Finally click <code>OK</code> to save and close the settings.</li>
+</ul>
+</li>
+</ul>
+<p><img alt="Add ssh key" src="../src/images/filezilla_key.jpg" /></p>
+<ul>
+<li>Back in the main window click on the <code>Site Manager</code> button on the top left or select <code>Site Manager</code> from the <code>File</code> menu.</li>
+<li>Click on the <code>New Site</code> button and enter/select the following:</li>
+<li>Host: <code>access-gaia.uni.lu</code></li>
+<li>Protocol: <code>SFTP - SSH File Transfer Protocol</code></li>
+<li>Logon Type: <code>Interactive</code></li>
+<li>User: your login</li>
+</ul>
+<p><img alt="Connection settings" src="../src/images/site_manager.jpg" /></p>
+<ul>
+<li>Click on the <code>Connect</code> button.</li>
+<li>Accept the certificate.</li>
+</ul>
+<p>You should now see something similar to the following window:</p>
+<p><img alt="Connection settings" src="../src/images/filezilla.jpg" /></p>
+<p>On the very top, beneath the quick connect, you see the message log. Below you have the directory tree and the contents of the current directory for you local computer on the left and the remote location on the right.</p>
+<p>To transfer a file, simply drag and drop it from the directory listing on the left side to destination directory on the right (to transfer from local to remote) or vice versa (to transfer from remote to local). You can also select a file by left clicking on it once and then right click on it to get the context menu and select "Upload" or "Download" to transfer it.</p>
+<p>If you skipped step 3a, you may download the following file (50 MB) for testing: <br />
+<a href="ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM409nnn/GSM409307/suppl/GSM409307_UCSD.H1.H3K4me1.LL228.bed.gz">ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM409nnn/GSM409307/suppl/GSM409307_UCSD.H1.H3K4me1.LL228.bed.gz</a> (next-gen sequencing data from the NIH Roadmap Epigenomics Project)</p>
+<p>When you click the fifth icon on the top with the two green arrows to toogle the transfer queue, you can see the status of ongoing transfers on the very bottom of the window.</p>
+<p><img alt="Connection settings" src="../src/images/transfer.jpg" /></p>
+<h1 id="discovering-visualizing-and-reserving-ul-hpc-resources">Discovering, visualizing and reserving UL HPC resources</h1>
+<p>In the sequel, replace <code>&lt;login&gt;</code> in the proposed commands with you login on the platform (ex: <code>svarrette</code>).   </p>
+<h2 id="step-1-the-working-environment">Step 1: the working environment</h2>
+<ul>
+<li><a href="http://hpc.uni.lu/users/docs/env.html">reference documentation</a></li>
+</ul>
+<p>After a successful login onto one of the access node (see <a href="https://hpc.uni.lu/users/docs/access.html">Cluster Access</a>), you end into your personal homedir <code>$HOME</code> which is shared over NFS between the access node and the computing nodes.</p>
+<p>Again, remember that your homedir is placed on <strong>separate</strong> NFS servers on each site, which <strong>ARE NOT SYNCHRONIZED</strong>: data synchronization between each of them remain at your own responsability. We will see below that the UL HPC team prepared for you a script to facilitate the transfer of data between each site. </p>
+<p>Otherwise, you have to be aware of at least two directories: </p>
+<ul>
+<li><code>$HOME</code>: your home directory under NFS. </li>
+<li><code>$SCRATCH</code>: a non-backed up area put if possible under Lustre for fast I/O operations</li>
+</ul>
+<p>Your homedir is under a regular backup policy. Therefore you are asked to pay attention to your disk usage <strong>and</strong> the number of files you store there. </p>
+<ul>
+<li>
+<p>estimate file space usage and summarize disk usage of each FILE, recursively for directories using the <code>ncdu</code> command:</p>
+<pre><code>(access)$&gt; ncdu
+</code></pre>
+</li>
+<li>
+<p>you shall also pay attention to the number of files in your homedirectory. You can count them as follows: </p>
+<pre><code>(access)$&gt; find . -type f | wc -l
+</code></pre>
+</li>
+</ul>
+<h2 id="step-2-web-monitoring-interfaces">Step 2: web monitoring interfaces</h2>
+<p>Each cluster offers a set of web services to monitore the platform usage: </p>
+<ul>
+<li>A <a href="https://hpc.uni.lu/status/overview.html">pie-chart overview of the platform usage</a></li>
+<li><a href="https://hpc.uni.lu/status/monika.html">Monika</a>, the visualization interface of the OAR scheduler, which  display the status of the clusters as regards the jobs running on the platform.</li>
+<li><a href="https://hpc.uni.lu/status/drawgantt.html">DrawGantt</a>, the Gantt visualization of jobs scheduled on OAR</li>
+<li><a href="https://hpc.uni.lu/status/ganglia.html">Ganglia</a>, a scalable distributed monitoring system for high-performance computing systems such as clusters and Grids.</li>
+<li><a href="http://cdash.uni.lux/">CDash</a> (internal UL network use)</li>
+</ul>
+<h2 id="step-3-reserving-resources-with-oar-the-basics">Step 3: Reserving resources with OAR: the basics</h2>
+<ul>
+<li><a href="https://hpc.uni.lu/users/docs/oar.html">reference documentation</a></li>
+</ul>
+<p><a href="http://oar.imag.fr/">OAR</a> is an open-source batch scheduler which provides simple yet flexible facilities for the exploitation of the UL HPC clusters.</p>
+<ul>
+<li>it permits to schedule jobs for users on the cluster resource</li>
+<li>a <em>OAR resource</em> corresponds to a node or part of it (CPU/core)</li>
+<li>a <em>OAR job</em> is characterized by an execution time (walltime) on a set of resources. 
+  There exists two types of jobs: </li>
+<li><em>interactive</em>: you get a shell on the first reserve node</li>
+<li><em>passive</em>: classical batch job where the script passed as argument to <code>oarsub</code> is executed <strong>on the first reserved node</strong> </li>
+</ul>
+<p>We will now see the basic commands of OAR. </p>
+<ul>
+<li>Connect to one of the UL HPC  frontend. You can request resources in interactive mode:<pre><code>(access)$&gt; oarsub -I
+</code></pre>
+</li>
+</ul>
+<p>Notice that with no parameters, oarsub gave you one resource (one core) for two hour. You were also directly connected to the node you reserved with an interactive shell.
+  No exit the reservation: </p>
+<pre><code>    (node)$&gt; exit      # or CTRL-D
+</code></pre>
+<p>When you run exit, you are disconnected and your reservation is terminated. </p>
+<p>To avoid anticipated termination of your jobs in case or errors (terminal closed by mistake), 
+you can reserve and connect in 2 steps using the job id associated to your reservation. </p>
+<ul>
+<li>First run a passive job <em>i.e.</em> run a predefined command -- here <code>sleep 10d</code> to delay the execution for 10 days -- on the first reserved node:<pre><code>(access)$&gt; oarsub "sleep 10d"
+[ADMISSION RULE] Set default walltime to 7200.
+[ADMISSION RULE] Modify resource description with type constraints
+OAR_JOB_ID=919309
+</code></pre>
+</li>
+</ul>
+<p>You noticed that you received a job ID (in the above example: <code>919309</code>), which you can later use to connect to the reserved resource(s):</p>
+<pre><code>    (access)$&gt; oarsub -C 919309        # adapt the job ID accordingly ;)
+    Connect to OAR job 919309 via the node e-cluster1-13
+    [OAR] OAR_JOB_ID=919309
+    [OAR] Your nodes are:
+        e-cluster1-13*1
+
+    (e-cluster1-13)$&gt; java -version
+    (e-cluster1-13)$&gt; hostname -f
+    (e-cluster1-13)$&gt; whoami
+    (e-cluster1-13)$&gt; env | grep OAR   # discover environment variables set by OAR
+    (e-cluster1-13)$&gt; exit             # or CTRL-D
+</code></pre>
+<p><strong>Question: At which moment the job <code>919309</code> will end?</strong> </p>
+<p>a. after 10 days
+b. after 2 hours
+c. never, only when I'll delete the job  </p>
+<p><strong>Question: manipulate the <code>$OAR_NODEFILE</code> variable over the command-line to extract the following information, once connected to your job</strong></p>
+<p>a. the list of hostnames where a core is reserved (one per line) 
+   * <em>hint</em>: <code>man cat</code>
+b. number of reserved cores (one per line)
+   * <em>hint</em>: <code>man wc</code> --  use <code>wc -l</code> over the pipe <code>|</code> command
+c. number of reserved nodes (one per line)
+   * <em>hint</em>: <code>man uniq</code> -- use <code>uniq</code> over the pipe <code>|</code> command
+d. number of cores reserved per node together with the node name (one per line)
+   * Example of output: </p>
+<pre><code>        12 gaia-11
+        12 gaia-15
+</code></pre>
+<ul>
+<li><em>hint</em>: <code>man uniq</code> -- use <code>uniq -c</code> over the pipe <code>|</code> command
+e. <strong>(for geeks)</strong> output the number of reserved nodes times number of cores per node</li>
+<li>
+<p>Example of output:</p>
+<pre><code>    gaia-11*12
+    gaia-15*12
+</code></pre>
+</li>
+<li>
+<p><em>hint</em>: <code>man awk</code> -- use <code>printf</code> command of <code>awk</code> over the pipe command, for instance <code>awk '{ printf "%s*%d\n",$2,$1 }'</code>. You might prefer <code>sed</code> or any other advanced geek command.</p>
+</li>
+</ul>
+<h2 id="step-4-job-management">Step 4: Job management</h2>
+<p>Normally, the previously run job is still running.</p>
+<ul>
+<li>You can check the status of your running jobs using <code>oarstat</code> command:<pre><code>(access)$&gt; oarstat      # access all jobs 
+(access)$&gt; oarstat -u   # access all your jobs
+</code></pre>
+</li>
+</ul>
+<p>Then you can delete your job by running <code>oardel</code> command:</p>
+<pre><code>    (access)$&gt; oardel 919309
+</code></pre>
+<ul>
+<li>you can see your consumption (in an historical computational measure named <em>CPU hour</em> i.e. the work done by a CPU in one hour of wall clock time) over a given time period using <code>oarstat --accounting "YYYY-MM-DD, YYYY-MM-DD" -u &lt;youlogin&gt;</code>:<pre><code>(access)$&gt; oarstat --accounting "2013-01-01, 2013-12-31" -u &lt;login&gt;
+</code></pre>
+</li>
+</ul>
+<p>In particular, take a look at the difference between the <strong>asked</strong> resources and the <strong>used</strong> ones</p>
+<p>In all remaining examples of reservation in this section, remember to delete the reserved jobs afterwards (using <code>oardel</code> or <code>CTRL-D</code>)</p>
+<p>You probably want to use more than one core, and you might want them for a different duration than two hours. 
+The <code>-l</code> switch allows you to pass a comma-separated list of parameters specifying the needed resources for the job.</p>
+<ul>
+<li>
+<p>Reserve interactively 4 cores for 6 hours (delete the job afterwards) </p>
+<pre><code>(access)$&gt; oarsub -I -l core=6,walltime=6
+</code></pre>
+</li>
+<li>
+<p>Reserve interactively 2 nodes for 3h15 (delete the job afterwards): </p>
+<pre><code>(access)$&gt; oarsub -I -l nodes=3,walltime=3:15
+</code></pre>
+</li>
+</ul>
+<h3 id="hierarchical-filtering-of-resources">Hierarchical filtering of resources</h3>
+<p>OAR features a very powerful resource filtering/matching engine able to specify resources in a <strong>hierarchical</strong>  way using the <code>/</code> delimiter. The resource property hierarchy is as follows: </p>
+<pre><code>    enclosure -&gt; nodes -&gt; cpu -&gt; core
+</code></pre>
+<ul>
+<li>
+<p>Reserve interactively 2 cores on 3 different nodes belonging to the same enclosure (<strong>total: 6 cores</strong>) for 3h15:</p>
+<pre><code>(access)$&gt; oarsub -I -l /enclosure=1/nodes=3/core=2,walltime=3:15
+</code></pre>
+</li>
+<li>
+<p>Reserve interactively two full nodes belonging to the different enclosure for 6 hours: </p>
+<pre><code>(access)$&gt; oarsub -I -l /enclosure=2/nodes=1,walltime=6
+</code></pre>
+</li>
+</ul>
+<p><strong>Question: reserve interactively 2 cpus on 2 nodes belonging to the same enclosure for 4 hours</strong>  </p>
+<p><strong>Question: in the following statements, explain the advantage and drawback (in terms of latency/bandwidth etc.) of each of the proposed approaches</strong></p>
+<p>a. <code>oarsub -I -l /nodes=2/cpu=1</code> vs <code>oarsub -I -l cpu=2</code> vs <code>oarsub -I -l /nodes=1/cpu=2</code>
+b. <code>oarsub -I -l /enclosure=1/nodes=2</code> vs <code>oarsub -I -l nodes=2</code> vs <code>oarsub -I -l /enclosure=2/nodes=1</code></p>
+<h3 id="using-oar-properties">Using OAR properties</h3>
+<p>You might have notice on <a href="https://hpc.uni.lu/status/monika.html">Monika</a> for each site a list of properties assigned to each resources. </p>
+<p>The <code>-p</code> switch allows you to specialize (as an SQL syntax) the property you wish to use when selecting the resources. The syntax is as follows: <code>oarsub -p "&lt; property &gt;='&lt; value &gt;'"</code></p>
+<p>You can find the available OAR properties on the <a href="https://hpc.uni.lu/users/docs/oar.html#select-nodes-precisely-with-properties">UL HPC documentation</a>. The main ones are described below</p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Description</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>host</td>
+<td>Full hostname of the resource</td>
+<td>-p "host='h-cluster1-14.chaos-cluster.uni.lux'"</td>
+</tr>
+<tr>
+<td>network_address</td>
+<td>Short hostname of the resource</td>
+<td>-p "network_address='h-cluster1-14'"</td>
+</tr>
+<tr>
+<td>gpu</td>
+<td>GPU availability (gaia only)</td>
+<td>-p "gpu='YES'"</td>
+</tr>
+<tr>
+<td>nodeclass</td>
+<td>Node class (chaos only) 'h','d','e','s'</td>
+<td>-p "nodeclass='h'"</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>
+<p>reserve interactively 4 cores on a GPU node for 8 hours (<em>this holds only on the <code>gaia</code> cluster</em>) (<strong>total: 4 cores</strong>)</p>
+<pre><code>(access-gaia)$&gt; oarsub -I -l nodes=1/core=4,walltime=8 -p "gpu=’YES’"
+</code></pre>
+</li>
+<li>
+<p>reserve interactively 4 cores on the GPU node <code>gaia-65</code> for 8 hours (<em>this holds only on the <code>gaia</code> cluster</em>) (<strong>total: 4 cores</strong>)</p>
+<pre><code>(access-gaia)$&gt; oarsub -I -l nodes=1/core=4,walltime=8 -p "gpu='yes'" -p "network_address='gaia-65'"
+</code></pre>
+</li>
+</ul>
+<p><strong>Question: reserve interactively 2 nodes among the <code>h-cluster1-*</code> nodes (<em>this holds only on the <code>chaos</code> cluster</em>) using the <code>nodeclass</code> property</strong>  </p>
+<p>You can combine filters using the <code>+</code> sign.</p>
+<ul>
+<li>reserve interactively 4 cores, each on 2 GPU nodes and 20 cores on any other nodes (<strong>total: 28 cores</strong>)<pre><code>(access-gaia)$&gt; oarsub -I -l "{gpu='YES'}/nodes=2/core=4+{gpu='NO'}/core=20"
+[ADMISSION RULE] Set default walltime to 7200.
+[ADMISSION RULE] Modify resource description with type and ibpool constraints
+OAR_JOB_ID=2828104
+Interactive mode : waiting...
+Starting...
+
+Connect to OAR job 2828104 via the node gaia-11
+[OAR] OAR_JOB_ID=2828104
+[OAR] Your nodes are:
+    gaia-11*12
+    gaia-12*4
+    gaia-59*4
+    gaia-63*4
+    gaia-65*4
+</code></pre>
+</li>
+</ul>
+<h3 id="reserving-specific-resources-bigsmpand-bigmem">Reserving specific resources <code>bigsmp</code>and <code>bigmem</code></h3>
+<p>Some nodes are very specific (for instance the nodes with 1TB of memory or the BCS subsystem of Gaia composed of 4 motherboards of 4 processors with a total of 160 cores aggregated in a ccNUMA architecture). 
+<strong>Due to this specificity, they are NOT scheduled by default</strong>  and can only be reserved with an explicit oarsub parameter: <code>-t bigmem</code> for <code>-t bigsmp</code></p>
+<ul>
+<li>reserve interactively 2 cpu on the bigsmp node belonging to the same board for 3 hours: (<strong>total: 32 cores</strong>)<pre><code>(access-gaia)$&gt; oarsub -t bigsmp -I -l /board=1/cpu=2,walltime=3
+</code></pre>
+</li>
+</ul>
+<p><strong>Question: why are these resources not scheduled by default?</strong>  </p>
+<h3 id="oar-containers">OAR Containers</h3>
+<p>With OAR, it is possible to execute jobs within another one. This functionality is called <a href="https://hpc.uni.lu/users/docs/oar.html#container">container jobs</a> and is invoked using the <code>-t container</code> switch.</p>
+<ul>
+<li>create a container job of 2 nodes for 4h30: <pre><code>(access)$&gt; oarsub -t container -l nodes=2,walltime=4:30:00 "sleep 1d" 
+[ADMISSION RULE] Modify resource description with type and ibpool constraints
+OAR_JOB_ID=2828112
+(access)$&gt; oarstat -u
+</code></pre>
+</li>
+</ul>
+<p>This creates a kind of "tunnel" inside witch you can push subjobs using the <code>-t inner=&lt;container_job_id&gt;</code>.</p>
+<ul>
+<li>reserve 3 sleep jobs (of different delay) over 10 cores within the previously created container job<pre><code>(access)$&gt; oarsub -t inner=2828112 -l core=10 "sleep 3m"   # Job 1 
+(access)$&gt; oarsub -t inner=2828112 -l core=10 "sleep 2m"   # Job 2
+(access)$&gt; oarsub -t inner=2828112 -l core=10 "sleep 1m"   # Job 3
+</code></pre>
+</li>
+</ul>
+<p>These jobs will be scheduled as follows</p>
+<pre><code>          ^ 
+          |                        
+          +======================== ... ========================+
+          |                      ^       Container Job (4h30)   |
+       ^  |  +--------+----+     |                              |
+    20c|  |  |    J2  | J3 |     |24c                           | 
+       |  |  +--------+----+     |                              |
+       v  |  |      J1     |     v                              | 
+          +==+=============+========= ... ======================+
+          |   &lt;------&gt;&lt;---&gt;
+          |     2min    1min
+          +--------------------------------------------------------------&gt; time
+</code></pre>
+<p><strong>Question: Check the way your jobs have been scheduled</strong></p>
+<p>a. using <code>oarstat -u -f -j &lt;subjob_id&gt;</code> (take a look at the <code>assigned_resources</code>)
+b. using the <a href="https://hpc.uni.lu/status/drawgantt.html">OAR drawgantt</a> interface  </p>
+<p><strong>Question: explain the interest of container jobs for the platform managers</strong></p>
+<h3 id="reservation-at-a-given-period-of-time">Reservation at a given period of time</h3>
+<p>You can use the <code>-r "YYYY-MM-DD HH:MM:SS"</code> option of <code>oarsub</code> to specify the date you wish the reservation to be issued. This is of particular interest for you to book in advance resources out of the working hours (at night and/or over week ends) </p>
+<h2 id="step-5-using-modules">Step 5: Using modules</h2>
+<p><a href="http://modules.sourceforge.net/">Environment Modules</a> is a software package that allows us to provide a <a href="http://hpc.uni.lu/users/software/">multitude of applications and libraries in multiple versions</a> on the UL HPC platform. The tool itself is used to manage environment variables such as <code>PATH</code>, <code>LD_LIBRARY_PATH</code> and <code>MANPATH</code>, enabling the easy loading and unloading of application/library profiles and their dependencies.</p>
+<p>We will have multiple occasion to use modules in the other tutorials so there is nothing special we foresee here. You are just encouraged to read the following resources: </p>
+<ul>
+<li><a href="https://www.hlrn.de/home/view/System/ModulesUsage">Introduction to Environment Modules by Wolfgang Baumann</a></li>
+<li><a href="https://www.nersc.gov/users/software/nersc-user-environment/modules/">Modules tutorial @ NERSC</a></li>
+<li><a href="https://hpc.uni.lu/users/docs/modules.html">UL HPC documentation on modules</a></li>
+</ul>
+<h2 id="step-6-advanced-job-management-and-persistent-terminal-sessions-using-gnu-screen">Step 6 (advanced): Job management and Persistent Terminal Sessions using GNU Screen</h2>
+<p><a href="http://www.gnu.org/software/screen/‎">GNU Screen</a> is a tool to manage persistent terminal sessions. 
+It becomes interesting since you will probably end at some moment with the following  scenario:</p>
+<blockquote>
+<p>you frequently program and run computations on the UL HPC platforma <em>i.e</em> on a remote Linux/Unix computer, typically working in six different terminal logins to the access server from your office workstation, cranking up long-running computations that are still not finished and are outputting important information (calculation status or results), when you have not 2 interactive jobs running... But it's time to catch the bus and/or the train to go back home. </p>
+</blockquote>
+<p>Probably what you do in the above scenario is to </p>
+<p>a. clear and shutdown all running terminal sessions
+b. once at home when the kids are in bed, you're logging in again... And have to set up the whole environment again (six logins, 2 interactive jobs etc. )
+c. repeat the following morning when you come back to the office. </p>
+<p>Enter the long-existing and very simple, but totally indispensable <a href="../www.gnu.org/software/screen/">GNU screen</a> command. It has the ability to completely detach running processes from one terminal and reattach it intact (later) from a different terminal login. </p>
+<h3 id="pre-requisite-screen-configuration-file-screenrc">Pre-requisite: screen configuration file <code>~/.screenrc</code></h3>
+<p>While not mandatory, we advise you to rely on our customized configuration file for screen <code>.screenrc</code> available on <a href="https://github.com/ULHPC/dotfiles/blob/master/screen/screenrc">Github</a>. <br />
+Normally, you have nothing to do since we already setup this file for you in your homedir.
+Otherwise, simply clone the <a href="https://github.com/ULHPC/dotfiles/">ULHPC dotfile repository</a> and make a symbolic link <code>~/.screenrc</code> targeting the file <code>screen/screenrc</code> of the repository.</p>
+<h3 id="basic-commands">Basic commands</h3>
+<p>You can start a screen session (<em>i.e.</em> creates a single window with a shell in it) with the <code>screen</code> command.
+Its main command-lines options are listed below: </p>
+<ul>
+<li><code>screen</code>: start a new screen </li>
+<li><code>screen -ls</code>: does not start screen, but prints a list of <code>pid.tty.host</code> strings identifying your current screen sessions. </li>
+<li><code>screen -r</code>: resumes a detached screen session</li>
+<li><code>screen -x</code>: attach to a not detached screen session. (Multi display mode <em>i.e.</em> when you and another user are trying to access the same session at the same time)</li>
+</ul>
+<p>Once within a screen, you can invoke a screen command which consist of a "<code>CTRL + a</code>" sequence followed by one other character. The main commands are: </p>
+<ul>
+<li><code>CTRL + a c</code>: (create) creates a new Screen window. The default Screen number is zero.</li>
+<li><code>CTRL + a n</code>: (next) switches to the next window.</li>
+<li><code>CTRL + a p</code>: (prev) switches to the previous window.</li>
+<li><code>CTRL + a d</code>: (detach) detaches from a Screen</li>
+<li><code>CTRL + a A</code>: (title) rename the current window</li>
+<li><code>CTRL + a 0-9</code>: switches between windows 0 through 9.</li>
+<li><code>CTRL + a k</code> or <code>CTRL + d</code>: (kill) destroy the current window</li>
+<li><code>CTRL + a ?</code>: (help) display a list of all the command options available for Screen.</li>
+</ul>
+<h3 id="sample-usage-on-the-ul-hpc-platform-kernel-compilation">Sample Usage on the UL HPC platform: Kernel compilation</h3>
+<p>We will illustrate the usage of GNU screen by performing a compilation of a recent linux kernel.</p>
+<ul>
+<li>
+<p>start a new screen session</p>
+<pre><code>(access)$&gt; screen
+</code></pre>
+</li>
+<li>
+<p>rename the screen window "Frontend" (using <code>CTRL+a A</code>)</p>
+</li>
+<li>
+<p>create the directory to host the files</p>
+<pre><code>(access)$&gt; mkdir -p $WORK/PS1/src
+(access)$&gt; cd $WORK/PS1/src
+</code></pre>
+</li>
+<li>
+<p>create a new window and rename it "Compile"</p>
+</li>
+<li>
+<p>within this new window, start a new interactive job over 1 nodes for 6 hours</p>
+<pre><code>(access)$&gt; oarsub -I -l nodes=1,walltime=6
+</code></pre>
+</li>
+<li>
+<p>detach from this screen (using <code>CTRL+a d</code>)</p>
+</li>
+<li>kill your current SSH connection and your terminal</li>
+<li>re-open your terminal and connect back to the cluster frontend </li>
+<li>
+<p>list your running screens: </p>
+<pre><code>(access)$&gt; screen -ls
+There is a screen on:
+    9143.pts-0.access   (05/04/2014 11:29:43 PM) (Detached)
+1 Socket in /var/run/screen/S-svarrette.
+</code></pre>
+</li>
+<li>
+<p>re-attach your previous screen session</p>
+<pre><code>(access)$&gt; screen -r      # OR screen -r 9143.pts-0.access (see above socket name)
+</code></pre>
+</li>
+<li>
+<p>in the "Compile" windows, go to the working directory and download the Linux kernel sources</p>
+<pre><code>(node)$&gt; cd $WORK/PS1/src
+(node)$&gt; wget -q -c http://www.kernel.org/pub/linux/kernel/v3.x/linux-3.13.6.tar.gz
+</code></pre>
+</li>
+</ul>
+<p><strong>IMPORTANT</strong> to ovoid overloading the <strong>shared</strong> file system with the many small files involves in the kernel compilation (<em>i.e.</em> NFS and/or Lustre), we will perform the compilation in the <strong>local</strong> file system, <em>i.e.</em> either in <code>/tmp</code> or (probably more efficient) in <code>/dev/shm</code> (<em>i.e</em> in the RAM):</p>
+<pre><code>    (node)$&gt; mkdir /dev/shm/PS1
+    (node)$&gt; cd /dev/shm/PS1
+    (node)$&gt; tar xzf $WORK/PS1/src/linux-3.13.6.tar.gz
+    (node)$&gt; cd linux-3.13.6
+    (node)$&gt; make mrproper
+    (node)$&gt; make alldefconfig
+    (node)$&gt; make 2&gt;&amp;1 | tee /dev/shm/PS1/kernel_compile.log
+</code></pre>
+<ul>
+<li>You can now detach from the screen and take a coffee</li>
+</ul>
+<p>The last compilation command make use of <code>tee</code>, a nice tool which read from standard input and write to standard output <em>and</em> files. This permits to save in a log file the message written in the standard output. </p>
+<p><strong>Question: why using the <code>make 2&gt;&amp;1</code> sequence in the last command?</strong> </p>
+<p><strong>Question: why working in <code>/dev/shm</code> is more efficient?</strong></p>
+<ul>
+<li>Reattach from time to time to your screen to see the status of the compilation</li>
+<li>
+<p>Your compilation is successful if it ends with the sequence: </p>
+<pre><code>[...]
+Kernel: arch/x86/boot/bzImage is ready  (#2)
+</code></pre>
+</li>
+<li>
+<p>Restart the compilation, this time using parallel jobs within the Makefile invocation (<code>-j</code> option of make)</p>
+<pre><code>(node)$&gt; make clean
+(node)$&gt; time make -j `cat $OAR_NODEFILE|wc -l` 2&gt;&amp;1 | tee /dev/shm/PS1/kernel_compile.2.log
+</code></pre>
+</li>
+</ul>
+<p>The table below should convince you to always run <code>make</code> with the <code>-j</code> option whenever you can...</p>
+<table>
+<thead>
+<tr>
+<th>Context</th>
+<th>time (<code>make</code>)</th>
+<th>time (<code>make -j 16</code>)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Compilation in <code>/tmp</code>(HDD / chaos)</td>
+<td>4m6.656s</td>
+<td>0m22.981s</td>
+</tr>
+<tr>
+<td>Compilation in <code>/tmp</code>(SSD / gaia)</td>
+<td>3m52.895s</td>
+<td>0m17.508s</td>
+</tr>
+<tr>
+<td>Compilation in <code>/dev/shm</code> (RAM)</td>
+<td>3m11.649s</td>
+<td>0m17.990s</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>Use the <a href="https://hpc.uni.lu/status/monika.html">Ganglia</a> interface on the node you monitor the impact of the compilation process on the node</li>
+</ul>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../../sequential_jobs/README/" class="btn btn-neutral float-right" title="HPC workflow with sequential jobs"/>Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href="../../.." class="btn btn-neutral" title="Home"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+  </div>
+
+  Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+	  
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+<div class="rst-versions" role="note" style="cursor: pointer">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+      
+        <span><a href="../../.." style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+        <span style="margin-left: 15px"><a href="../../sequential_jobs/README/" style="color: #fcfcfc">Next &raquo;</a></span>
+      
+    </span>
+</div>
+
+</body>
+</html>

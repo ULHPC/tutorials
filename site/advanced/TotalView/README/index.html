@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>TotalView - UL HPC Tutorials</title>
+  
+
+  <link rel="shortcut icon" href="../../../img/favicon.ico">
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" href="../../../css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../css/theme_extra.css" type="text/css" />
+  <link rel="stylesheet" href="../../../css/highlight.css">
+
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "TotalView";
+  </script>
+  
+  <script src="../../../js/jquery-2.1.1.min.js"></script>
+  <script src="../../../js/modernizr-2.8.3.min.js"></script>
+  <script type="text/javascript" src="../../../js/highlight.pack.js"></script>
+  <script src="../../../js/theme.js"></script> 
+
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+      <div class="wy-side-nav-search">
+        <a href="../../.." class="icon icon-home"> UL HPC Tutorials</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        <ul class="current">
+          
+            <li>
+    <li class="toctree-l1 ">
+        <a class="" href="../../..">Home</a>
+        
+    </li>
+<li>
+          
+            <li>
+    <ul class="subnav">
+    <li><span>Basic Tutorials</span></li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../../basic/getting_started/README/">Getting Started</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../../basic/sequential_jobs/README/">HPC workflow with sequential jobs</a>
+        
+    </li>
+
+        
+    </ul>
+<li>
+          
+            <li>
+    <ul class="subnav">
+    <li><span>Advanced Software Management</span></li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../RESIF/README/">RESIF</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../EasyBuild/README/">Easybuild</a>
+        
+    </li>
+
+        
+    </ul>
+<li>
+          
+            <li>
+    <ul class="subnav">
+    <li><span>MPI</span></li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../OSU_MicroBenchmarks/README/">The OSU Micro-benchmarks</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../HPL/README/">High Performance Linpack (HPL)</a>
+        
+    </li>
+
+        
+    </ul>
+<li>
+          
+            <li>
+    <ul class="subnav">
+    <li><span>Mathematics</span></li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../MATLAB/README/">MATLAB</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../R/README/">R - statistical computing </a>
+        
+    </li>
+
+        
+    </ul>
+<li>
+          
+            <li>
+    <ul class="subnav">
+    <li><span>Bio-informatic</span></li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../Bioinformatics/README/">Running bioinformatics software</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../Galaxy/README/">Galaxy</a>
+        
+    </li>
+
+        
+    </ul>
+<li>
+          
+            <li>
+    <ul class="subnav">
+    <li><span>Parallel Debuggers</span></li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../Allinea/README/">Allinea</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 current">
+        <a class="current" href="./">TotalView</a>
+        
+            <ul>
+            
+                <li class="toctree-l3"><a href="#ul-hpc-tutorial-direct-reverse-and-parallel-memory-debugging-with-totalview">UL HPC Tutorial: Direct, Reverse and parallel Memory debugging with TotalView</a></li>
+                
+                    <li><a class="toctree-l4" href="#pre-requisites">Pre-Requisites</a></li>
+                
+                    <li><a class="toctree-l4" href="#tutorial">Tutorial</a></li>
+                
+            
+            </ul>
+        
+    </li>
+
+        
+    </ul>
+<li>
+          
+            <li>
+    <ul class="subnav">
+    <li><span>Virtualization</span></li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../Vagrant/README/">Vagrant</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../vm5k/README/">Grid5000: Automatic VM deployment with VM5K</a>
+        
+    </li>
+
+        
+    </ul>
+<li>
+          
+            <li>
+    <ul class="subnav">
+    <li><span>Documentation</span></li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../../contributing/">Contributing</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../../rtfd/">RTFD</a>
+        
+    </li>
+
+        
+    </ul>
+<li>
+          
+            <li>
+    <li class="toctree-l1 ">
+        <a class="" href="../../../contacts/">Contacts</a>
+        
+    </li>
+<li>
+          
+        </ul>
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../../..">UL HPC Tutorials</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../..">Docs</a> &raquo;</li>
+    
+      
+        
+          <li>Parallel Debuggers &raquo;</li>
+        
+      
+    
+    <li>TotalView</li>
+    <li class="wy-breadcrumbs-aside">
+      
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <p>-<em>- mode: markdown; mode: auto-fill; fill-column: 80 -</em>-</p>
+<p><code>README.md</code></p>
+<p>Copyright (c) 2014 Sebastien Varrette <a href="../&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#83;&#101;&#98;&#97;&#115;&#116;&#105;&#101;&#110;&#46;&#86;&#97;&#114;&#114;&#101;&#116;&#116;&#101;&#64;&#117;&#110;&#105;&#46;&#108;&#117;">&#83;&#101;&#98;&#97;&#115;&#116;&#105;&#101;&#110;&#46;&#86;&#97;&#114;&#114;&#101;&#116;&#116;&#101;&#64;&#117;&#110;&#105;&#46;&#108;&#117;</a></p>
+<pre><code>    Time-stamp: &lt;Mar 2014-05-06 13:15 svarrette&gt;
+</code></pre>
+<hr />
+<h1 id="ul-hpc-tutorial-direct-reverse-and-parallel-memory-debugging-with-totalview">UL HPC Tutorial: Direct, Reverse and parallel Memory debugging with TotalView</h1>
+<p>The objective of this tutorial is to get a brief overview of the <a href="http://www.roguewave.com/products/totalview.aspx">TotalView</a>, a GUI-based source code defect analysis tool that gives you unprecedented control over processes and thread execution and visibility into program state and variables.</p>
+<p>This practical session will be organized as follows:</p>
+<ul>
+<li>Startup and Overview</li>
+<li>IHM Navigation and process control</li>
+<li>Action points (TP)</li>
+<li>Examination and Data Analysis (TP)</li>
+<li>Debugging Parallel Applications (TP)</li>
+<li>Memory reports using MemoryScape (TP)</li>
+<li>Remote Debugging</li>
+<li>CUDA Debugging</li>
+<li>Xeon Phi Debugging</li>
+<li>Memory Debugging with MemoryScape</li>
+<li>Events and memory errors (TP)</li>
+<li>Delayed Scripted debugging (non-interactive) (TP)</li>
+<li>Reverse debugging using ReplayEngine (TP)</li>
+<li>Asynchronous control of Parallel Applications (TP)</li>
+<li>Type Transformation (TP)</li>
+</ul>
+<p>While TotalView is available on the <a href="http://hpc.uni.lu">UL HPC Platform</a>, the specific exercises proposed have been embedded into a Virtual Machine (VM) you will need to setup to run this practical session. </p>
+<h2 id="pre-requisites">Pre-Requisites</h2>
+<ul>
+<li>Install <a href="http://www.virtualbox.org/">Oracle's VirtualBox</a></li>
+<li>Download the bootable ISO <a href="https://hpc.uni.lu/download/tv_trainingcdU10_20140815.iso"><code>tv_trainingcdU10_20140815.iso</code></a> (md5sum: <em>30a844ddda80ddf505c28eb4f4b6f1bf</em>) which contains: </li>
+<li>a bootable Linux Ubuntu distribition</li>
+<li>a version of TotalView</li>
+<li>the PDF documents describing the practical session.</li>
+</ul>
+<p>If the participants did not have the time to download the ISO, they shall come with a USB stick having a capacity of at least 2GB.</p>
+<p>To create a new VM: </p>
+<ul>
+<li>Open VirtualBox</li>
+<li>Select the <code>New</code> icon</li>
+<li>Name: <code>TotalView</code></li>
+<li>Type: <code>Linux</code></li>
+<li>Version: <code>Ubuntu 64 bits</code></li>
+<li>Memory Size: <code>512MB</code></li>
+<li><code>Create a virtual hard drive now</code></li>
+</ul>
+<p>Click on "Create": select a VDI format, dynamically allocated. 
+* Now select the <code>Start</code> icon over the newly created VM
+  * open the folder icon to browse your disk and select the  <code>tv_trainingcdU10_20140815.iso</code> ISO on which you'll boot</p>
+<p>You're now ready for the tutorial.</p>
+<h2 id="tutorial">Tutorial</h2>
+<ul>
+<li><a href="https://github.com/ULHPC/tutorials/blob/devel/advanced/TotalView/TV_TrainingLab_Manual20130603_EN.pdf?raw=true">Content of the tutorial</a></li>
+<li><a href="https://github.com/ULHPC/tutorials/blob/devel/advanced/TotalView/TV_TrainingLab_Answers20130603_EN.pdf?raw=true">Answers of the tutorial</a></li>
+</ul>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../../Vagrant/README/" class="btn btn-neutral float-right" title="Vagrant"/>Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href="../../Allinea/README/" class="btn btn-neutral" title="Allinea"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+  </div>
+
+  Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+	  
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+<div class="rst-versions" role="note" style="cursor: pointer">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+      
+        <span><a href="../../Allinea/README/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+        <span style="margin-left: 15px"><a href="../../Vagrant/README/" style="color: #fcfcfc">Next &raquo;</a></span>
+      
+    </span>
+</div>
+
+</body>
+</html>

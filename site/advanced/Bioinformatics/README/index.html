@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Running bioinformatics software - UL HPC Tutorials</title>
+  
+
+  <link rel="shortcut icon" href="../../../img/favicon.ico">
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" href="../../../css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../css/theme_extra.css" type="text/css" />
+  <link rel="stylesheet" href="../../../css/highlight.css">
+
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "Running bioinformatics software";
+  </script>
+  
+  <script src="../../../js/jquery-2.1.1.min.js"></script>
+  <script src="../../../js/modernizr-2.8.3.min.js"></script>
+  <script type="text/javascript" src="../../../js/highlight.pack.js"></script>
+  <script src="../../../js/theme.js"></script> 
+
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+      <div class="wy-side-nav-search">
+        <a href="../../.." class="icon icon-home"> UL HPC Tutorials</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        <ul class="current">
+          
+            <li>
+    <li class="toctree-l1 ">
+        <a class="" href="../../..">Home</a>
+        
+    </li>
+<li>
+          
+            <li>
+    <ul class="subnav">
+    <li><span>Basic Tutorials</span></li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../../basic/getting_started/README/">Getting Started</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../../basic/sequential_jobs/README/">HPC workflow with sequential jobs</a>
+        
+    </li>
+
+        
+    </ul>
+<li>
+          
+            <li>
+    <ul class="subnav">
+    <li><span>Advanced Software Management</span></li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../RESIF/README/">RESIF</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../EasyBuild/README/">Easybuild</a>
+        
+    </li>
+
+        
+    </ul>
+<li>
+          
+            <li>
+    <ul class="subnav">
+    <li><span>MPI</span></li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../OSU_MicroBenchmarks/README/">The OSU Micro-benchmarks</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../HPL/README/">High Performance Linpack (HPL)</a>
+        
+    </li>
+
+        
+    </ul>
+<li>
+          
+            <li>
+    <ul class="subnav">
+    <li><span>Mathematics</span></li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../MATLAB/README/">MATLAB</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../R/README/">R - statistical computing </a>
+        
+    </li>
+
+        
+    </ul>
+<li>
+          
+            <li>
+    <ul class="subnav">
+    <li><span>Bio-informatic</span></li>
+
+        
+            
+    <li class="toctree-l1 current">
+        <a class="current" href="./">Running bioinformatics software</a>
+        
+            <ul>
+            
+                <li class="toctree-l3"><a href="#ul-hpc-tutorial-bioinformatics-software-on-the-ul-hpc-platform">UL HPC Tutorial: Bioinformatics software on the UL HPC platform</a></li>
+                
+                    <li><a class="toctree-l4" href="#prerequisites">Prerequisites</a></li>
+                
+                    <li><a class="toctree-l4" href="#abyss">ABySS</a></li>
+                
+                    <li><a class="toctree-l4" href="#gromacs">GROMACS</a></li>
+                
+                    <li><a class="toctree-l4" href="#bowtie2tophat">Bowtie2/TopHat</a></li>
+                
+                    <li><a class="toctree-l4" href="#mpiblast">mpiBLAST</a></li>
+                
+                    <li><a class="toctree-l4" href="#useful-references">Useful references</a></li>
+                
+            
+            </ul>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../Galaxy/README/">Galaxy</a>
+        
+    </li>
+
+        
+    </ul>
+<li>
+          
+            <li>
+    <ul class="subnav">
+    <li><span>Parallel Debuggers</span></li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../Allinea/README/">Allinea</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../TotalView/README/">TotalView</a>
+        
+    </li>
+
+        
+    </ul>
+<li>
+          
+            <li>
+    <ul class="subnav">
+    <li><span>Virtualization</span></li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../Vagrant/README/">Vagrant</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../vm5k/README/">Grid5000: Automatic VM deployment with VM5K</a>
+        
+    </li>
+
+        
+    </ul>
+<li>
+          
+            <li>
+    <ul class="subnav">
+    <li><span>Documentation</span></li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../../contributing/">Contributing</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../../rtfd/">RTFD</a>
+        
+    </li>
+
+        
+    </ul>
+<li>
+          
+            <li>
+    <li class="toctree-l1 ">
+        <a class="" href="../../../contacts/">Contacts</a>
+        
+    </li>
+<li>
+          
+        </ul>
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../../..">UL HPC Tutorials</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../..">Docs</a> &raquo;</li>
+    
+      
+        
+          <li>Bio-informatic &raquo;</li>
+        
+      
+    
+    <li>Running bioinformatics software</li>
+    <li class="wy-breadcrumbs-aside">
+      
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <p><code>README.md</code></p>
+<p>Copyright (c) 2014, 2015 Valentin Plugaru <a href="../&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#86;&#97;&#108;&#101;&#110;&#116;&#105;&#110;&#46;&#80;&#108;&#117;&#103;&#97;&#114;&#117;&#64;&#103;&#109;&#97;&#105;&#108;&#46;&#99;&#111;&#109;">&#86;&#97;&#108;&#101;&#110;&#116;&#105;&#110;&#46;&#80;&#108;&#117;&#103;&#97;&#114;&#117;&#64;&#103;&#109;&#97;&#105;&#108;&#46;&#99;&#111;&#109;</a> and Sarah Diehl <a href="../&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#83;&#97;&#114;&#97;&#104;&#46;&#68;&#105;&#101;&#104;&#108;&#64;&#117;&#110;&#105;&#46;&#108;&#117;">&#83;&#97;&#114;&#97;&#104;&#46;&#68;&#105;&#101;&#104;&#108;&#64;&#117;&#110;&#105;&#46;&#108;&#117;</a></p>
+<hr />
+<h1 id="ul-hpc-tutorial-bioinformatics-software-on-the-ul-hpc-platform">UL HPC Tutorial: Bioinformatics software on the UL HPC platform</h1>
+<p>The objective of this tutorial is to exemplify the execution of several
+Bioinformatics packages on top of the <a href="http://hpc.uni.lu">UL HPC</a> platform.</p>
+<p>The targeted applications are:</p>
+<ul>
+<li><a href="http://www.bcgsc.ca/platform/bioinfo/software/abyss">ABySS</a></li>
+<li><a href="http://www.gromacs.org/">Gromacs</a></li>
+<li><a href="http://bowtie-bio.sourceforge.net/bowtie2/index.shtml">Bowtie2</a> / <a href="http://tophat.cbcb.umd.edu/">TopHat</a></li>
+<li><a href="http://www.mpiblast.org/">mpiBLAST</a></li>
+</ul>
+<p>The tutorial will:</p>
+<ol>
+<li>show you how to load and run pre-configured versions of these applications on the clusters</li>
+<li>show you how to download and use updated versions of Bowtie2/TopHat</li>
+<li>discuss the parallelization capabilities of these applications</li>
+</ol>
+<h2 id="prerequisites">Prerequisites</h2>
+<p>When you look at the <a href="https://hpc.uni.lu/users/software/">software page</a> you will notice that some of the applications are part of the <em>lcsb</em> software set. The modules in this set are not visible be default. To use them within a job you have to do:</p>
+<pre><code>(node)$&gt; module use $RESIF_ROOTINSTALL/lcsb/modules/all
+</code></pre>
+<p>If you want them to always be available, you can add the following line to your <code>.bash_private</code>:</p>
+<pre><code>command -v module &gt;/dev/null 2&gt;&amp;1 &amp;&amp; module use $RESIF_ROOTINSTALL/lcsb/modules/all
+</code></pre>
+<p>This tutorial relies on several input files for the bioinformatics packages, thus you will need to download them
+before following the instructions in the next sections:</p>
+<pre><code>    (gaia-frontend)$&gt; mkdir -p ~/bioinfo-tutorial/gromacs ~/bioinfo-tutorial/tophat ~/bioinfo-tutorial/mpiblast
+    (gaia-frontend)$&gt; cd ~/bioinfo-tutorial
+    (gaia-frontend)$&gt; wget --no-check-certificate https://raw.github.com/ULHPC/tutorials/devel/advanced/Bioinformatics/gromacs/pr.tpr -O gromacs/pr.tpr
+    (gaia-frontend)$&gt; wget --no-check-certificate https://raw.github.com/ULHPC/tutorials/devel/advanced/Bioinformatics/tophat/test_data.tar.gz -O tophat/test_data.tar.gz
+    (gaia-frontend)$&gt; wget --no-check-certificate https://raw.github.com/ULHPC/tutorials/devel/advanced/Bioinformatics/tophat/test2_path -O tophat/test2_path
+    (gaia-frontend)$&gt; wget --no-check-certificate https://raw.github.com/ULHPC/tutorials/devel/advanced/Bioinformatics/mpiblast/test.fa -O mpiblast/test.fa
+</code></pre>
+<p>Or simply clone the full tutorials repository and make a link to the Bioinformatics tutorial:</p>
+<pre><code>    (gaia-frontend)$&gt; git clone https://github.com/ULHPC/tutorials.git
+    (gaia-frontend)$&gt; ln -s tutorials/advanced/Bioinformatics/ ~/bioinfo-tutorial
+</code></pre>
+<h2 id="abyss">ABySS</h2>
+<h3 id="description">Description</h3>
+<p><strong>ABySS</strong>: Assembly By Short Sequences</p>
+<p>ABySS is a de novo, parallel, paired-end sequence assembler that is designed for short reads. 
+The single-processor version is useful for assembling genomes up to 100 Mbases in size. 
+The parallel version is implemented using MPI and is capable of assembling larger genomes <a href="http://www.bcgsc.ca/platform/bioinfo/software/abyss">[*]</a>.</p>
+<h3 id="example">Example</h3>
+<p>This example will be ran in an <a href="https://hpc.uni.lu/users/docs/oar.html#concepts">interactive OAR session</a>, with batch-mode executions
+being proposed later on as exercises.</p>
+<pre><code>    # Connect to Gaia (Linux/OS X):
+    (yourmachine)$&gt; ssh access-gaia.uni.lu
+
+    # Request 1 full node in an interactive job:
+    (gaia-frontend)$&gt; oarsub -I -l nodes=1,walltime=00:30:00
+
+    # Check the ABySS versions installed on the clusters:
+    (node)$&gt; module avail 2&gt;&amp;1 | grep -i abyss
+
+    # Load a specific ABySS version:
+    (node)$&gt; module load bio/ABySS/1.5.2-goolf-1.4.10
+
+    # Check that it has been loaded, along with its dependencies:
+    (node)$&gt; module list
+
+    # All the ABySS binaries are now in your path (check with TAB autocompletion)
+    (node)$&gt; abyss-&lt;TAB&gt;
+</code></pre>
+<p>In the ABySS package only the <code>ABYSS-P</code> application is parallelized using MPI and can be run on several cores (and across several nodes) using
+the <code>abyss-pe</code> launcher.</p>
+<pre><code>    # Create a test directory and go to it
+    (node)$&gt; mkdir ~/bioinfo-tutorial/abyss
+    (node)$&gt; cd ~/bioinfo-tutorial/abyss
+
+    # Set the input files' directory in the environment
+    (node)$&gt; export ABYSSINPDIR=/scratch/users/vplugaru/bioinfo-inputs/abyss
+
+    # Give a name to the experiment
+    (node)$&gt; export ABYSSNAME='abysstest'
+
+    # Set the number of cores to use based on OAR's host file
+    (node)$&gt; export ABYSSNPROC=$(cat $OAR_NODEFILE | wc -l)
+
+    # Launch the paired end assembler:
+    (node)$&gt; abyss-pe mpirun="mpirun -x PATH -x LD_LIBRARY_PATH -hostfile $OAR_NODEFILE" name=${ABYSSNAME} np=${ABYSSNPROC} k=31 n=10 lib=pairedend pairedend="${ABYSSINPDIR}/SRR001666_1.fastq.bz2 ${ABYSSINPDIR}/SRR001666_2.fastq.bz2" &gt; ${ABYSSNAME}.out 2&gt; ${ABYSSNAME}.err
+</code></pre>
+<p><strong>Question: Why do we use the -x VARIABLE parameters for mpirun?</strong></p>
+<p>Several options seen on the <code>abyss-pe</code> command line are crucial:</p>
+<ul>
+<li>we explicitly set the mpirun command</li>
+<li>we export several environment variables to all the remote nodes, otherwise required paths (for the binaries, libraries) would not be known by the MPI processes running there</li>
+<li>we do not specify <code>-np $ABYSSNPROC</code> in the mpirun command, as it set with <code>abyss-pe</code>'s np parameter and internally passed on to mpirun</li>
+</ul>
+<p>The execution should take around 12 minutes, meanwhile we can check its progress by monitoring the .out/.err output files:</p>
+<pre><code>     (gaia-frontend)$&gt; tail -f ~/bioinfo-tutorial/abyss/abysstest.*
+     # We exit the tail program with CTRL-C
+</code></pre>
+<p>We can also connect to the job (recall oarsub -C $JOBID) from a different terminal or Screen window and see the different ABySS phases with <code>htop</code>.</p>
+<p>Because the <code>abyss-pe</code> workflow (pipeline) includes several processing steps with different applications of which only ABYSS-P is MPI-parallel,
+the speedup obtained by using more than one node will be limited to ABYSS-P's execution. Several of the other applications that are part of the 
+processing stages are however parallelized using OpenMP and pthreads and will thus take advantage of the cores available on the node where
+<code>abyss-pe</code> was started.</p>
+<p>The used input dataset is a well known <a href="https://trace.ddbj.nig.ac.jp/DRASearch/run?acc=SRR001666">Illumina run of E. coli</a>.</p>
+<h3 id="proposed-exercises">Proposed exercises</h3>
+<p>Several exercises are proposed for ABySS:</p>
+<ol>
+<li>create a launcher for ABySS using the commands shown in the previous section</li>
+<li>launch jobs using 1 node: 4, 8 and 12 cores, then 2 and 4 nodes and measure the speedup obtained</li>
+<li>unpack the two input files and place them on a node's /dev/shm, then rerun the experiment with 4, 8 and 12 cores and measure the speedup</li>
+</ol>
+<h2 id="gromacs">GROMACS</h2>
+<h3 id="description_1">Description</h3>
+<p><strong>GROMACS</strong>: GROningen MAchine for Chemical Simulations</p>
+<p>GROMACS is a versatile package to perform molecular dynamics, i.e. simulate the Newtonian equations of motion for systems with hundreds to millions of particles.
+It is primarily designed for biochemical molecules like proteins, lipids and nucleic acids that have a lot of complicated bonded interactions, but since GROMACS is extremely fast at calculating the nonbonded interactions (that usually dominate simulations) many groups are also using it for research on non-biological systems, e.g. polymers <a href="http://www.gromacs.org/About_Gromacs">[*]</a>.</p>
+<h3 id="example_1">Example</h3>
+<p>This example will be ran in an <a href="https://hpc.uni.lu/users/docs/oar.html#concepts">interactive OAR session</a>, with batch-mode executions
+being proposed later on as exercises.</p>
+<pre><code>    # Connect to Gaia (Linux/OS X):
+    (yourmachine)$&gt; ssh access-gaia.uni.lu
+
+    # Request 1 full node in an interactive job:
+    (gaia-frontend)$&gt; oarsub -I -l nodes=1,walltime=00:30:00
+
+    # Check the GROMACS versions installed on the clusters:
+    (node)$&gt; module avail 2&gt;&amp;1 | grep -i gromacs
+</code></pre>
+<p>Several GROMACS builds are available, we will focus only on the ones corresponding to the version 4.6.5:</p>
+<ul>
+<li>bio/GROMACS/4.6.5-goolf-1.4.10-hybrid</li>
+<li>bio/GROMACS/4.6.5-goolf-1.4.10-mt</li>
+</ul>
+<p>We notice that there is a <code>hybrid</code> and a <code>mt</code> version</p>
+<ul>
+<li>the hybrid version is OpenMP and MPI-enabled, all binaries have a '_mpi' suffix</li>
+<li>the mt version is only OpenMP-enabled, as such it can take advantage of only one node's cores (however it may be faster on
+single-node executions than the hybrid version)</li>
+</ul>
+<p>We will perform our tests with the hybrid version:</p>
+<pre><code>    # Load the MPI-enabled Gromacs, without CUDA support:
+    (node)$&gt; module load bio/GROMACS/4.6.5-goolf-1.4.10-hybrid
+
+    # Check that it has been loaded, along with its dependencies:
+    (node)$&gt; module list
+
+    # Check the capabilities of the mdrun binary, note its suffix:
+    (node)$&gt; mdrun_mpi -version 2&gt;/dev/null
+
+    # Go to the test directory
+    (node)$&gt; cd ~/bioinfo-tutorial/gromacs
+
+    # Set the number of OpenMP threads to 1
+    (node)$&gt; export OMP_NUM_THREADS=1
+
+    # Perform a position restrained Molecular Dynamics run
+    (node)$&gt; mpirun -np 12 -hostfile $OAR_NODEFILE -x OMP_NUM_THREADS -x PATH -x LD_LIBRARY_PATH mdrun_mpi -v -s pr -e pr -o pr -c after_pr -g prlog &gt; test.out 2&gt;&amp;1
+</code></pre>
+<p>We notice here that we are running <code>mdrun_mpi</code> in parallel with mpirun on 12 cores, and we explicitly export the OMP_NUM_THREADS
+variable to any remote node such that only one thread per MPI process will be created.</p>
+<p><strong>Question: What will happen if we do not set the number of OpenMP threads to 1?</strong> </p>
+<p>GROMACS has many parallelization options and several parameters can be tuned to give you better performance depending on your workflow, see the references in the last section of this tutorial.</p>
+<p>The used input corresponds to the <a href="http://manual.gromacs.org/online/speptide.html">Ribonuclease S-peptide</a> example,
+which has been changed to perform 50k steps in the Molecular Dynamics run with position restraints on the peptide.</p>
+<h3 id="proposed-exercises_1">Proposed exercises</h3>
+<p>Several exercises are proposed for GROMACS:</p>
+<ol>
+<li>create a launcher for GROMACS using the commands shown in the previous section</li>
+<li>launch jobs using 1 node: 1, 2, 4, 8, 10 and 12 cores and measure the speedup obtained</li>
+<li>check what happens when executing mdrun with 16 and 24 cores</li>
+<li>launch a job using one full node that has GPU cards and run the GPU-enabled GROMACS to see if a speedup is obtained</li>
+</ol>
+<h2 id="bowtie2tophat">Bowtie2/TopHat</h2>
+<h3 id="description_2">Description</h3>
+<p><strong>Bowtie2</strong>: Fast and sensitive read alignment</p>
+<p>Bowtie 2 is an ultrafast and memory-efficient tool for aligning sequencing reads to long reference sequences. It is particularly good at aligning reads of about 50 up to 100s or 1,000s of characters, and particularly good at aligning to relatively long (e.g. mammalian) genomes <a href="http://bowtie-bio.sourceforge.net/bowtie2/index.shtml">[*]</a>.</p>
+<p><strong>TopHat</strong> : A spliced read mapper for RNA-Seq</p>
+<p>TopHat is a program that aligns RNA-Seq reads to a genome in order to identify exon-exon splice junctions. It is built on the ultrafast short read mapping program Bowtie <a href="http://ccb.jhu.edu/software/tophat/index.shtml">[*]</a>.</p>
+<h3 id="example_2">Example</h3>
+<p>This example will show you how to use the latest version of TopHat in conjunction with the latest Bowtie2, by using the 
+versions prebuilt for Linux by the developers.</p>
+<pre><code>    # Connect to Gaia (Linux/OS X):
+    (yourmachine)$&gt; ssh access-gaia.uni.lu
+
+    # Request 1 full node in an interactive job:
+    (gaia-frontend)$&gt; oarsub -I -l nodes=1,walltime=00:30:00
+
+    # Create a folder for the new software and go to it
+    (node)$&gt; mkdir $WORK/newsoft
+    (node)$&gt; cd $WORK/newsoft
+
+    # Download latest Bowtie2 and Tophat, plus the SAM tools dependency:
+    (node)$&gt; wget http://downloads.sourceforge.net/project/bowtie-bio/bowtie2/2.2.5/bowtie2-2.2.5-linux-x86_64.zip
+    (node)$&gt; wget http://ccb.jhu.edu/software/tophat/downloads/tophat-2.0.14.Linux_x86_64.tar.gz
+    (node)$&gt; wget http://downloads.sourceforge.net/project/samtools/samtools/1.2/samtools-1.2.tar.bz2
+
+    # Unpack the three archives
+    (node)$&gt; unzip bowtie2-2.2.5-linux-x86_64.zip
+    (node)$&gt; tar xzvf tophat-2.0.14.Linux_x86_64.tar.gz
+    (node)$&gt; tar xjvf samtools-1.2.tar.bz2
+
+    # SAM tools requires compilation
+    (node)$&gt; cd samtools-1.2 &amp;&amp; make &amp;&amp; cd ..
+
+    # Create a file containing the paths to the binaries, to be sourced when needed
+    (node)$&gt; echo "export PATH=$WORK/newsoft/bowtie2-2.2.5:\$PATH" &gt; newsoft
+    (node)$&gt; echo "export PATH=$WORK/newsoft/tophat-2.0.14.Linux_x86_64:\$PATH" &gt;&gt; newsoft
+    (node)$&gt; echo "export PATH=$WORK/newsoft/samtools-1.2:\$PATH" &gt;&gt; newsoft
+    (node)$&gt; source newsoft
+
+    # You can now check that both main applications can be run:
+    (node)$&gt; bowtie2 --version
+    (node)$&gt; tophat2 --version
+</code></pre>
+<p>Now we will make a quick TopHat test, using the provided sample files:</p>
+<pre><code>    # Go to the test directory, unpack the sample dataset and go to it
+    (node)$&gt; cd ~/bioinfo-tutorial/tophat
+    (node)$&gt; tar xzvf test_data.tar.gz
+    (node)$&gt; cd test_data
+
+
+    # Launch TopHat, with Bowtie2 in serial mode
+    (node)$&gt; tophat -r 20 test_ref reads_1.fq reads_2.fq
+
+    # Launch TopHat, with Bowtie2 in parallel mode
+    (node)$&gt; tophat -p 12 -r 20 test_ref reads_1.fq reads_2.fq
+</code></pre>
+<p>We can see that for this fast execution, increasing the number of threads does not improve the calculation time due to the relatively high overhead of thread creation.
+Note that TopHat / Bowtie are not MPI applications and as such can take advantage of at most one compute node.</p>
+<p>Next, we will make a longer test, where it will be interesting to monitor the TopHat pipeline (with <code>htop</code> for example) to see the transitions between the serial
+and parallel stages (left as an exercise).</p>
+<pre><code>    # Load the file which will export $TOPHATTEST2 in the environment
+    (node)$&gt; source ~/bioinfo-tutorial/tophat/test2_path
+
+    # Launch TopHat, with Bowtie2 in parallel mode
+    (node)$&gt; tophat2 -p 12 -g 1 -r 200 --mate-std-dev 30 -o ./  $TOPHATTEST2/chr10.hs $TOPHATTEST2/SRR027888.SRR027890_chr10_1.fastq $TOPHATTEST2/SRR027888.SRR027890_chr10_2.fastq
+</code></pre>
+<p>The input data for the first test corresponds to the <a href="http://ccb.jhu.edu/software/tophat/tutorial.shtml">TopHat test set</a>,
+while the second test is an example of aligning reads to the chromosome 10 of the human genome <a href="http://www.bigre.ulb.ac.be/courses/statistics_bioinformatics/practicals/ASG1_2012/rnaseq_td/rnaseq_td.html">as given here</a>.</p>
+<h3 id="proposed-exercises_2">Proposed exercises</h3>
+<p>The following exercises are proposed for TopHat/Bowtie2:</p>
+<ol>
+<li>create a launcher for TopHat using the commands shown in the previous section</li>
+<li>launch jobs with 1, 2, 4, 8 and 10 cores on one node, using the second test files, and measure the speedup obtained</li>
+</ol>
+<h2 id="mpiblast">mpiBLAST</h2>
+<h3 id="description_3">Description</h3>
+<p><strong>mpiBLAST</strong>: Open-Source Parallel BLAST</p>
+<p>mpiBLAST is a freely available, open-source, parallel implementation of NCBI BLAST. By efficiently utilizing distributed computational resources through database fragmentation, query segmentation, intelligent scheduling, and parallel I/O, mpiBLAST improves NCBI BLAST performance by several orders of magnitude while scaling to hundreds of processors  <a href="http://www.mpiblast.org/">[*]</a>.</p>
+<h3 id="example_3">Example</h3>
+<p>This example will be ran in an <a href="https://hpc.uni.lu/users/docs/oar.html#concepts">interactive OAR session</a>, with batch-mode executions
+being proposed later on as exercises.</p>
+<pre><code>    # Connect to Gaia (Linux/OS X):
+    (yourmachine)$&gt; ssh access-gaia.uni.lu
+
+    # Request 1 full node in an interactive job:
+    (gaia-frontend)$&gt; oarsub -I -l nodes=1,walltime=00:30:00
+
+    # Load the lcsb software set
+    (node)$&gt; module use $RESIF_ROOTINSTALL/lcsb/modules/all
+
+    # Check the mpiBLAST versions installed on the clusters:
+    (node)$&gt; module avail 2&gt;&amp;1 | grep -i mpiblast
+
+    # Load a specific mpiBLAST version:
+    (node)$&gt; module load bio/mpiBLAST/1.6.0-goolf-1.4.10
+
+    # Check that it has been loaded, along with its dependencies:
+    (node)$&gt; module list
+
+    # The mpiBLAST binaries should now be in your path
+    (node)$&gt; mpiformatdb --version
+    (node)$&gt; mpiblast --version
+</code></pre>
+<p>mpiBLAST requires access to NCBI substitution matrices and pre-formatted BLAST databases. For the purposes of this tutorial, a FASTA (NR) 
+database has been formatted and split into 12 fragments, enabling the parallel alignment of a query against the database. 
+A <code>.ncbirc</code> file containing the paths to the necessary data files can be downloaded from <a href="https://raw.github.com/ULHPC/tutorials/devel/advanced/Bioinformatics/mpiblast/.ncbirc">here</a>
+and placed in your $HOME directory (make sure to backup an existing $HOME/.ncbirc before overwriting it with the one in this tutorial).</p>
+<p><strong>Question: Knowing that the databases can take tens of gigabytes, what is an appropriate storage location for them on the clusters?</strong> </p>
+<p>We will run a test using mpiBLAST. Note that mpiBLAST requires running with at least 3 processes, 2 dedicated for scheduling tasks and 
+coordinating file output, with the additional processes performing the search.</p>
+<pre><code>    # Go to the test directory and execute mpiBLAST with one core for search
+    (node)$&gt; cd ~/bioinfo-tutorial/mpiblast
+    (node)$&gt; mpirun -np 3 mpiblast -p blastp -d nr -i test.fa -o test.out
+
+    # Note the speedup when using a full node of 12 cores
+    (node)$&gt; mpirun -np 14 mpiblast -p blastp -d nr -i test.fa -o test.out
+</code></pre>
+<h3 id="proposed-exercises_3">Proposed exercises</h3>
+<p>The following exercises are proposed for mpiBLAST:</p>
+<ol>
+<li>create a launcher for mpiBLAST, making sure to export the required environment to the remote nodes</li>
+<li>launch jobs with 8, 14 and 24 cores across two nodes and measure the speedup obtained</li>
+</ol>
+<h2 id="useful-references">Useful references</h2>
+<ul>
+<li><a href="http://seqanswers.com/wiki/ABySS">ABySS at SEQanswers wiki</a></li>
+<li><a href="http://www.gromacs.org/Documentation/Acceleration_and_parallelization">Gromacs parallelization</a></li>
+<li><a href="http://www.gromacs.org/GPU_acceleration">Gromacs GPU acceleration</a></li>
+<li><a href="http://www.gromacs.org/Documentation/Tutorials/GROMACS_USA_Workshop_and_Conference_2013">Gromacs USA workshop</a></li>
+<li><a href="http://www.gromacs.org/Documentation/Tutorials/GROMACS_USA_Workshop_and_Conference_2013/Parallelization_schemes_and_GPU_acceleration%3a_Szilard_Pall%2c_Session_2B">Tutorial on GROMACS parallelization schemes</a></li>
+</ul>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../../Galaxy/README/" class="btn btn-neutral float-right" title="Galaxy"/>Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href="../../R/README/" class="btn btn-neutral" title="R - statistical computing "><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+  </div>
+
+  Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+	  
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+<div class="rst-versions" role="note" style="cursor: pointer">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+      
+        <span><a href="../../R/README/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+        <span style="margin-left: 15px"><a href="../../Galaxy/README/" style="color: #fcfcfc">Next &raquo;</a></span>
+      
+    </span>
+</div>
+
+</body>
+</html>

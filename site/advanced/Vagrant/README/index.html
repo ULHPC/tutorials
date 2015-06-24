@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Vagrant - UL HPC Tutorials</title>
+  
+
+  <link rel="shortcut icon" href="../../../img/favicon.ico">
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" href="../../../css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../css/theme_extra.css" type="text/css" />
+  <link rel="stylesheet" href="../../../css/highlight.css">
+
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "Vagrant";
+  </script>
+  
+  <script src="../../../js/jquery-2.1.1.min.js"></script>
+  <script src="../../../js/modernizr-2.8.3.min.js"></script>
+  <script type="text/javascript" src="../../../js/highlight.pack.js"></script>
+  <script src="../../../js/theme.js"></script> 
+
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+      <div class="wy-side-nav-search">
+        <a href="../../.." class="icon icon-home"> UL HPC Tutorials</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        <ul class="current">
+          
+            <li>
+    <li class="toctree-l1 ">
+        <a class="" href="../../..">Home</a>
+        
+    </li>
+<li>
+          
+            <li>
+    <ul class="subnav">
+    <li><span>Basic Tutorials</span></li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../../basic/getting_started/README/">Getting Started</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../../basic/sequential_jobs/README/">HPC workflow with sequential jobs</a>
+        
+    </li>
+
+        
+    </ul>
+<li>
+          
+            <li>
+    <ul class="subnav">
+    <li><span>Advanced Software Management</span></li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../RESIF/README/">RESIF</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../EasyBuild/README/">Easybuild</a>
+        
+    </li>
+
+        
+    </ul>
+<li>
+          
+            <li>
+    <ul class="subnav">
+    <li><span>MPI</span></li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../OSU_MicroBenchmarks/README/">The OSU Micro-benchmarks</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../HPL/README/">High Performance Linpack (HPL)</a>
+        
+    </li>
+
+        
+    </ul>
+<li>
+          
+            <li>
+    <ul class="subnav">
+    <li><span>Mathematics</span></li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../MATLAB/README/">MATLAB</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../R/README/">R - statistical computing </a>
+        
+    </li>
+
+        
+    </ul>
+<li>
+          
+            <li>
+    <ul class="subnav">
+    <li><span>Bio-informatic</span></li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../Bioinformatics/README/">Running bioinformatics software</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../Galaxy/README/">Galaxy</a>
+        
+    </li>
+
+        
+    </ul>
+<li>
+          
+            <li>
+    <ul class="subnav">
+    <li><span>Parallel Debuggers</span></li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../Allinea/README/">Allinea</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../TotalView/README/">TotalView</a>
+        
+    </li>
+
+        
+    </ul>
+<li>
+          
+            <li>
+    <ul class="subnav">
+    <li><span>Virtualization</span></li>
+
+        
+            
+    <li class="toctree-l1 current">
+        <a class="current" href="./">Vagrant</a>
+        
+            <ul>
+            
+                <li class="toctree-l3"><a href="#ul-hpc-tutorial-create-and-reproduce-work-environments-using-vagrant">UL HPC Tutorial: Create and reproduce work environments using Vagrant</a></li>
+                
+                    <li><a class="toctree-l4" href="#introduction">Introduction</a></li>
+                
+                    <li><a class="toctree-l4" href="#vagrant-installation">Vagrant installation</a></li>
+                
+                    <li><a class="toctree-l4" href="#using-vagrant-to-create-a-virtual-machine">Using Vagrant to create a Virtual Machine</a></li>
+                
+            
+            </ul>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../vm5k/README/">Grid5000: Automatic VM deployment with VM5K</a>
+        
+    </li>
+
+        
+    </ul>
+<li>
+          
+            <li>
+    <ul class="subnav">
+    <li><span>Documentation</span></li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../../contributing/">Contributing</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../../rtfd/">RTFD</a>
+        
+    </li>
+
+        
+    </ul>
+<li>
+          
+            <li>
+    <li class="toctree-l1 ">
+        <a class="" href="../../../contacts/">Contacts</a>
+        
+    </li>
+<li>
+          
+        </ul>
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../../..">UL HPC Tutorials</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../..">Docs</a> &raquo;</li>
+    
+      
+        
+          <li>Virtualization &raquo;</li>
+        
+      
+    
+    <li>Vagrant</li>
+    <li class="wy-breadcrumbs-aside">
+      
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <h1 id="ul-hpc-tutorial-create-and-reproduce-work-environments-using-vagrant">UL HPC Tutorial: Create and reproduce work environments using Vagrant</h1>
+<h2 id="introduction">Introduction</h2>
+<p>Vagrant is a tool that allows to easily and rapidly create and configure reproducible and portable work environments using Virtual Machines. This is especially useful if you want to test your work in a stable and controlled environment and minimize the various unintended or untrackable changes that may occur on a physical machine.</p>
+<p>In this tutorial, we are going to explain the steps to install Vagrant and create your first basic Linux Virtual Machine with it.</p>
+<h2 id="vagrant-installation">Vagrant installation</h2>
+<p><strong>Prerequisite:</strong></p>
+<p>Vagrant can use many Virtual Machine providers such as <a href="https://www.virtualbox.org/">VirtualBox</a>, <a href="http://www.vmware.com/">VMware</a> and <a href="https://www.docker.com/">Docker</a> with VirtualBox being the easiest to use, and the default option in Vagrant.</p>
+<p>Our first step is to install VirtualBox, you can download and install the correct version for your operating system from the <a href="https://www.virtualbox.org/wiki/Downloads">official website</a>. In many Linux distributions it is provided as a package from the standard repositories, thus you can use your usual package manager to install it.</p>
+<p>Once this prerequisite is met, we can install Vagrant. Download the correct version for your operating system on the <a href="http://www.vagrantup.com/downloads">official website</a> and install it.</p>
+<h2 id="using-vagrant-to-create-a-virtual-machine">Using Vagrant to create a Virtual Machine</h2>
+<p>The main advantage of Vagrant is that it lets you import and use pre-configured Virtual Machines (called <code>boxes</code> in this context) which can become bases for your own customizations (installed applications, libraries, etc). With Vagrant it becomes really fast and effortless to create and run a new Virtual Machine.</p>
+<p>The Vagrant boxes contain the disk image of a VM without the virtual hardware details of the VM, which are initialized by Vagrant and can be edited by the user.</p>
+<p>The first step is to choose a pre-configured box to use. It is possible to create your own from scratch yet this is not in the scope of the current tutorial.<br />
+Freely available boxes can be found at the following two main sources:</p>
+<ul>
+<li><a href="https://atlas.hashicorp.com/boxes/search">Atlas corps box catalog</a></li>
+<li><a href="http://www.vagrantbox.es/">vagrantbox.es catalaog</a></li>
+</ul>
+<p>The first catalog is the default box download location for Vagrant. This means that you can directly use the name of the boxes you find here with Vagrant (e.g. <code>ubuntu/trusty64</code>).<br />
+To use the second catalog you would additionaly need to provide the source box URL, yet this catalog provides a much richer variety of boxes.</p>
+<h3 id="adding-a-new-box">Adding a new box</h3>
+<p>To add a box and make it usable in Vagrant, we are going to use the <code>vagrant box add</code> command. In the example below we will add one box from each of the catalogs in order to present the different possibilities.<br />
+We are going to add the <code>ubuntu/trusty64</code> box from the Atlas catalog and the <code>Ubuntu 14.04</code> box (by its <a href="https://github.com/kraksoft/vagrant-box-ubuntu/releases/download/14.04/ubuntu-14.04-amd64.box">url</a>) from the vagrantbox.es catalog.</p>
+<p>To add the first box, we use the following command (which may take some time due to the time needed to download the box):</p>
+<pre><code>    $&gt; vagrant box add ubuntu/trusty64
+    ==&gt; box: Loading metadata for box 'ubuntu/trusty64'
+        box: URL: https://vagrantcloud.com/ubuntu/trusty64
+    ==&gt; box: Adding box 'ubuntu/trusty64' (v14.04) for provider: virtualbox
+        box: Downloading: https://vagrantcloud.com/ubuntu/boxes/trusty64/versions/14.04/providers/virtualbox.box
+    ==&gt; box: Successfully added box 'ubuntu/trusty64' (v14.04) for 'virtualbox'!
+</code></pre>
+<p>In this case, you just had to give the name of the box and Vagrant found the box by itself and added the box under the <code>ubuntu/trusty64</code> name.</p>
+<p>To list the local boxes available to Vagrant for initialization of new VMs, we use the <code>vagrant box list</code> command:</p>
+<pre><code>    $&gt; vagrant box list
+    ubuntu/trusty64    (virtualbox, 14.04)
+</code></pre>
+<p>To add the second box, you need to use a slightly different syntax since you need to precise the name you want to give to the box as well as its source URL:</p>
+<pre><code>    $&gt; vagrant box add ubuntu14.04 https://github.com/kraksoft/vagrant-box-ubuntu/releases/download/14.04/ubuntu-14.04-amd64.box
+    ==&gt; box: Adding box 'ubuntu14.04' (v0) for provider: 
+        box: Downloading: https://github.com/kraksoft/vagrant-box-ubuntu/releases/download/14.04/ubuntu-14.04-amd64.box
+    ==&gt; box: Successfully added box 'ubuntu14.04' (v0) for 'virtualbox'!
+</code></pre>
+<p>Now a second box will be available to Vagrant under the name <code>ubuntu14.04</code>:</p>
+<pre><code>    $&gt; vagrant box list
+    ubuntu/trusty64    (virtualbox, 14.04)
+    ubuntu14.04        (virtualbox, 0)
+</code></pre>
+<p>In the rest of the tutorial we are only going to use the first box. To remove a box we use the <code>vagrant box remove</code> command as follows:</p>
+<pre><code>    $&gt; vagrant box remove ubuntu14.04
+    Removing box 'ubuntu14.04' (v0) with provider 'virtualbox'...
+</code></pre>
+<p>Checking that it has been removed:</p>
+<pre><code>    $&gt; vagran box list
+    ubuntu/trusty64    (virtualbox, 14.04)
+</code></pre>
+<h3 id="creating-a-new-virtual-machine">Creating a new Virtual Machine</h3>
+<p>Now we are going to create a new Virtual Machine using the <code>ubuntu/trusty64</code> box. 
+We will initialize it in an empty directory (which is not absolutely mandatory):</p>
+<pre><code>    $&gt; mkdir vagrant &amp;&amp; cd vagrant
+</code></pre>
+<p>Next, we make Vagrant prepare the configuration file describing the VM:</p>
+<pre><code>    $&gt; vagrant init ubuntu/trusty64
+    A `Vagrantfile` has been placed in this directory. You are now
+    ready to `vagrant up` your first virtual environment! Please read
+    the comments in the Vagrantfile as well as documentation on
+    `vagrantup.com` for more information on using Vagrant.
+</code></pre>
+<p>You should now see a file named <code>Vagrantfile</code> in your directory. This file contains the minimal information for Vagrant to launch the VM. We could modify it to set up specific parameters of the VM (number of virtual cores, memory size, etc), but this constitutes advanced usage for which full documentation that can be found on the <a href="http://docs.vagrantup.com/v2/">official site</a>. However, it may be interesting to understand what is actually needed in this file, since it contains a lot of commented information.<br />
+The minimal content of a <code>Vagrantfile</code> is as follows:</p>
+<pre><code>    VAGRANTFILE_API_VERSION = "2"
+    Vagrant.configure("VAGRANTFILE_API_VERSION") do |config|
+        config.vm.box = "hashicorp/trusty64"
+    end
+</code></pre>
+<p>This basically defines which version of the Vagrant API will be used to build the VM using the box given as a base.</p>
+<p>Now, to launch the VM you only need to use the single <code>vagrant up</code> command in the same directory where the <code>Vagrantfile</code> exists (this may take some time since Vagrant is going to boot the VM and set its basic configuration):</p>
+<pre><code>    $&gt; vagrant up
+    Bringing machine 'default' up with 'virtualbox' provider...
+    ==&gt; default: Importing base box 'ubuntu/trusty64'...
+    ==&gt; default: Matching MAC address for NAT networking...
+    ==&gt; default: Checking if box 'ubuntu/trusty64' is up to date...
+    ==&gt; default: Setting the name of the VM: vagrant_default_1425476252413_67101
+    ==&gt; default: Clearing any previously set forwarded ports...
+    ==&gt; default: Clearing any previously set network interfaces...
+    ==&gt; default: Preparing network interfaces based on configuration...
+        default: Adapter 1: nat
+    ==&gt; default: Forwarding ports...
+        default: 22 =&gt; 2222 (adapter 1)
+    ==&gt; default: Booting VM...
+    ==&gt; default: Waiting for machine to boot. This may take a few minutes...
+        default: SSH address: 127.0.0.1:2222
+        default: SSH username: vagrant
+        default: SSH auth method: private key
+        default: Warning: Connection timeout. Retrying...
+        default: Warning: Remote connection disconnect. Retrying...
+    ==&gt; default: Machine booted and ready!
+    ==&gt; default: Checking for guest additions in VM...
+    ==&gt; default: Mounting shared folders...
+        default: /vagrant =&gt; /tmp/vagrant
+</code></pre>
+<p>Your VM is now up and running at this point. To access it, use the <code>vagrant ssh</code> command within the same directory :</p>
+<pre><code>    $&gt; vagrant ssh
+</code></pre>
+<p>You should now be connected to your VM and ready to work.</p>
+<p>An interesting feature of Vagrant is that your computer (the "host") shares the directory that contains the <code>Vagrantfile</code> with your VM (the "guest"), where it is seen as <code>/vagrant</code>.</p>
+<p>Assuming you have a script or data files you want to access from within the VM, you simply put them in the same directory as the <code>Vagrantfile</code> and then use them in the VM under <code>/vagrant</code>. The reverse is also true.</p>
+<p>To learn more than the basics covered in this tutorial, we encourage you to refer to the <a href="http://docs.vagrantup.com/v2/">official documentation</a>.</p>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../../vm5k/README/" class="btn btn-neutral float-right" title="Grid5000: Automatic VM deployment with VM5K"/>Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href="../../TotalView/README/" class="btn btn-neutral" title="TotalView"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+  </div>
+
+  Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+	  
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+<div class="rst-versions" role="note" style="cursor: pointer">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+      
+        <span><a href="../../TotalView/README/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+        <span style="margin-left: 15px"><a href="../../vm5k/README/" style="color: #fcfcfc">Next &raquo;</a></span>
+      
+    </span>
+</div>
+
+</body>
+</html>

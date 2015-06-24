@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Galaxy - UL HPC Tutorials</title>
+  
+
+  <link rel="shortcut icon" href="../../../img/favicon.ico">
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" href="../../../css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../css/theme_extra.css" type="text/css" />
+  <link rel="stylesheet" href="../../../css/highlight.css">
+
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "Galaxy";
+  </script>
+  
+  <script src="../../../js/jquery-2.1.1.min.js"></script>
+  <script src="../../../js/modernizr-2.8.3.min.js"></script>
+  <script type="text/javascript" src="../../../js/highlight.pack.js"></script>
+  <script src="../../../js/theme.js"></script> 
+
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+      <div class="wy-side-nav-search">
+        <a href="../../.." class="icon icon-home"> UL HPC Tutorials</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        <ul class="current">
+          
+            <li>
+    <li class="toctree-l1 ">
+        <a class="" href="../../..">Home</a>
+        
+    </li>
+<li>
+          
+            <li>
+    <ul class="subnav">
+    <li><span>Basic Tutorials</span></li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../../basic/getting_started/README/">Getting Started</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../../basic/sequential_jobs/README/">HPC workflow with sequential jobs</a>
+        
+    </li>
+
+        
+    </ul>
+<li>
+          
+            <li>
+    <ul class="subnav">
+    <li><span>Advanced Software Management</span></li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../RESIF/README/">RESIF</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../EasyBuild/README/">Easybuild</a>
+        
+    </li>
+
+        
+    </ul>
+<li>
+          
+            <li>
+    <ul class="subnav">
+    <li><span>MPI</span></li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../OSU_MicroBenchmarks/README/">The OSU Micro-benchmarks</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../HPL/README/">High Performance Linpack (HPL)</a>
+        
+    </li>
+
+        
+    </ul>
+<li>
+          
+            <li>
+    <ul class="subnav">
+    <li><span>Mathematics</span></li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../MATLAB/README/">MATLAB</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../R/README/">R - statistical computing </a>
+        
+    </li>
+
+        
+    </ul>
+<li>
+          
+            <li>
+    <ul class="subnav">
+    <li><span>Bio-informatic</span></li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../Bioinformatics/README/">Running bioinformatics software</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 current">
+        <a class="current" href="./">Galaxy</a>
+        
+            <ul>
+            
+                <li class="toctree-l3"><a href="#galaxy-introduction-exercise-from-peaks-to-genes">Galaxy Introduction Exercise: From Peaks to Genes</a></li>
+                
+                    <li><a class="toctree-l4" href="#introduction">Introduction</a></li>
+                
+                    <li><a class="toctree-l4" href="#scenario">Scenario</a></li>
+                
+                    <li><a class="toctree-l4" href="#step-1-upload-peaks">Step 1: Upload peaks</a></li>
+                
+                    <li><a class="toctree-l4" href="#step-2-get-genes-from-ucsc">Step 2: Get genes from UCSC</a></li>
+                
+                    <li><a class="toctree-l4" href="#step-3-adjust-chromosome-naming">Step 3: Adjust chromosome naming</a></li>
+                
+                    <li><a class="toctree-l4" href="#step-4-visualize-peaks">Step 4: Visualize peaks</a></li>
+                
+                    <li><a class="toctree-l4" href="#step-5-add-promoter-region-to-gene-records">Step 5: Add promoter region to gene records</a></li>
+                
+                    <li><a class="toctree-l4" href="#step-6-find-overlaps">Step 6: Find overlaps</a></li>
+                
+                    <li><a class="toctree-l4" href="#step-7-count-genes-on-different-chromosomes">Step 7: Count genes on different chromosomes</a></li>
+                
+                    <li><a class="toctree-l4" href="#step-8-draw-barchart">Step 8: Draw barchart</a></li>
+                
+                    <li><a class="toctree-l4" href="#step-9-name-your-history">Step 9: Name your history</a></li>
+                
+                    <li><a class="toctree-l4" href="#step-10-make-a-workflow-out-of-steps-6-to-8">Step 10: Make a workflow out of steps 6 to 8</a></li>
+                
+                    <li><a class="toctree-l4" href="#step-11-share-workflow">Step 11: Share workflow</a></li>
+                
+                    <li><a class="toctree-l4" href="#step-12-cleaning-up">Step 12: Cleaning up</a></li>
+                
+                    <li><a class="toctree-l4" href="#end">END</a></li>
+                
+            
+            </ul>
+        
+    </li>
+
+        
+    </ul>
+<li>
+          
+            <li>
+    <ul class="subnav">
+    <li><span>Parallel Debuggers</span></li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../Allinea/README/">Allinea</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../TotalView/README/">TotalView</a>
+        
+    </li>
+
+        
+    </ul>
+<li>
+          
+            <li>
+    <ul class="subnav">
+    <li><span>Virtualization</span></li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../Vagrant/README/">Vagrant</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../vm5k/README/">Grid5000: Automatic VM deployment with VM5K</a>
+        
+    </li>
+
+        
+    </ul>
+<li>
+          
+            <li>
+    <ul class="subnav">
+    <li><span>Documentation</span></li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../../contributing/">Contributing</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../../rtfd/">RTFD</a>
+        
+    </li>
+
+        
+    </ul>
+<li>
+          
+            <li>
+    <li class="toctree-l1 ">
+        <a class="" href="../../../contacts/">Contacts</a>
+        
+    </li>
+<li>
+          
+        </ul>
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../../..">UL HPC Tutorials</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../..">Docs</a> &raquo;</li>
+    
+      
+        
+          <li>Bio-informatic &raquo;</li>
+        
+      
+    
+    <li>Galaxy</li>
+    <li class="wy-breadcrumbs-aside">
+      
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <p>Copyright (c) 2015 Sarah Diehl <a href="../&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#115;&#97;&#114;&#97;&#104;&#46;&#100;&#105;&#101;&#104;&#108;&#64;&#117;&#110;&#105;&#46;&#108;&#117;">&#115;&#97;&#114;&#97;&#104;&#46;&#100;&#105;&#101;&#104;&#108;&#64;&#117;&#110;&#105;&#46;&#108;&#117;</a></p>
+<hr />
+<h1 id="galaxy-introduction-exercise-from-peaks-to-genes">Galaxy Introduction Exercise: From Peaks to Genes</h1>
+<h2 id="introduction">Introduction</h2>
+<p>Slides as PDF: <a href="https://github.com/ULHPC/tutorials/raw/devel/advanced/Galaxy/introduction_to_galaxy_unilu.pdf">Introduction to Galaxy</a></p>
+<p>For a version of this tutorial with the results of important steps embedded and direct links to workflows, go to the Galaxy server, select "Shared Data" and then "Published Pages" from the top menu.</p>
+<h2 id="scenario">Scenario</h2>
+<p>We stumbled upon a paper (<a href="http://www.sciencedirect.com/science/article/pii/S1934590912003347">Li et al., Cell Stem Cell 2012</a>) that contains the analysis of possible target genes of an interesting protein. The targets were obtained by ChIP-seq and the raw data is available through <a href="http://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE37268">GEO</a>. The list of genes however is neither in the supplement of the paper nor part of the GEO submission. The closest thing we can find is a list of the regions where the signal is significantly enriched (peaks). The goal of this exercise is to turn this list of genomic regions into a list of possible target genes.</p>
+<p>(Disclaimer: We are not affiliated with the authors of the paper and we don't make a statement about the relevance or quality of the paper. It is just a fitting example and nothing else.)</p>
+<h2 id="step-1-upload-peaks">Step 1: Upload peaks</h2>
+<p>Download the list of peaks (the file "GSE37268_mof3.out.hpeak.txt.gz") from GEO (<a href="http://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE37268">click here to get to the GEO entry</a>) to your computer. Use the upload button to upload the file to Galaxy and select "mm9" as the genome. Galaxy will automatically unpack the file.</p>
+<p>This file is not in any standard format and just by looking at it, we cannot find out what the numbers in the different columns mean. In the paper they mention that they used the peak caller <a href="http://www.sph.umich.edu/csg/qin/HPeak/Readme.html">HPeak</a>. By looking at the HPeak manual we can find out that the columns contain the following information:</p>
+<ol>
+<li>chromosome name*</li>
+<li>start coordinate</li>
+<li>end coordinate</li>
+<li>length</li>
+<li>location within the peak that has the highest hypothetical DNA fragment coverage (summit)</li>
+<li>not relevant</li>
+<li>not relevant</li>
+</ol>
+<p>(*Note that the first column only contains the chromosome number, and X and Y are replaced by 20 and 21 for easier numerical manipulations.)</p>
+<h2 id="step-2-get-genes-from-ucsc">Step 2: Get genes from UCSC</h2>
+<p>We also need a list of genes in mouse, which we can obtain from UCSC. Galaxy has the UCSC table browser integrated as a tool, so we don't need to download the data to our computers.</p>
+<ul>
+<li>Tool: Get Data -&gt; UCSC main table browser</li>
+<li>Select clade "Mammal", genome "Mouse", assembly "mm9"</li>
+<li>Select group "Genes and Gene Prediction Tracks", track "RefSeq Genes"</li>
+<li>Select table "refGene"</li>
+<li>Select region "genome"</li>
+<li>Select output format "BED"</li>
+<li>Click button "get output"</li>
+<li>Click button "Send query to Galaxy"</li>
+</ul>
+<h2 id="step-3-adjust-chromosome-naming">Step 3: Adjust chromosome naming</h2>
+<p>Have a look at both input files (either in the little preview window in the history or click on the eye icon to see one in the main frame) and find out what are the differences in the chromosome naming.</p>
+<p>Apply the following workflow to GSE37268_mof3.out.hpeak.txt: Workflow 'Add "chr" at beginning of each line'.</p>
+<p>After importing you can in the future use it by scrolling to the bottom of the tool panel, click on "All workflows" and then on the workflow name.</p>
+<p>From carefully reading the HPeak manual, we should remember that it puts "20" and "21" instead of "X" and "Y". So now the chromosome names all start properly with "chr", but we still have "chr20" and "chr21" instead of "chrX" and "chrY".</p>
+<ul>
+<li>Tool: Text Manipulation -&gt; Replace text in a specific column</li>
+<li>Input: result of workflow (Text reformatting on data X)</li>
+<li>In colum: Column 1</li>
+<li>Find pattern: chr20</li>
+<li>Replace with: chrX</li>
+<li>Do the same for "chr21" and "chrY", make sure you use the result of the first replacement as input (use rerun button and change input and search/replace)</li>
+</ul>
+<p>Make sure the format of the output file is "interval", otherwise change it by clicking the pencil icon (do not convert to new format, but change data type).</p>
+<h2 id="step-4-visualize-peaks">Step 4: Visualize peaks</h2>
+<p>To visualize the peaks it's best to convert them to BED format first, because most viewers cannot deal with interval (because interval format just exists in Galaxy).</p>
+<ul>
+<li>Click on the pencil icon of the latest dataset</li>
+<li>Under the header "Convert to new format" select "Convert Genomic Intervals to BED"</li>
+<li>Click "Convert"</li>
+<li>Look at the new dataset. Some columns with generic names have been added and others were removed to comply to BED format rules.</li>
+<li>This generated a new dataset in BED format which we'll use for visualization. We will however continue to work with the interval dataset.</li>
+</ul>
+<p>Display in IGB:</p>
+<ul>
+<li>Go to the <a href="http://bioviz.org/igb/index.html">IGB website</a></li>
+<li>Download and install the Integrated Genome Browser on your computer</li>
+<li>Start IGB and in the right panel select species "Mus musculus" and  genome version "M_musculus_Jul_2007"</li>
+<li>Go back to Galaxy</li>
+<li>Click on the link "View" after "display with IGB" (expanded history view of BED dataset)</li>
+<li>Type in your HPC credentials again, to allow IGB to access the data (you might also need to allow some connections and/or accept certificates)</li>
+<li>Back in IGB, click "Load Data" next to the scroll bar on top to get to see the new track</li>
+</ul>
+<h2 id="step-5-add-promoter-region-to-gene-records">Step 5: Add promoter region to gene records</h2>
+<ul>
+<li>Tool: Operate on Genomic Intervals -&gt; Get flanks</li>
+<li>Input dataset: RefSeq genes from UCSC (UCSC Main on Mouse: refGene (genome))</li>
+<li>Options: Region: "Around Start", Location: "Upstream",  Offset: 10000, Length: 12000</li>
+</ul>
+<p>Inspect the resulting BED file and through comparing with the input find out what this operation actually did. Just look at the contents and compare the rows in the input to the rows in the output to find out how the start and end positions changed. Rename the dataset (by clicking on the pencil icon) to reflect your findings.</p>
+<h2 id="step-6-find-overlaps">Step 6: Find overlaps</h2>
+<ul>
+<li>Tool: Operate on Genomic Intervals -&gt; Intersect</li>
+<li>Return: Overlapping Intervals</li>
+<li>of: result of step 5 (Get flanks on data X)</li>
+<li>that intersect: result of step 3 (second Replace text)</li>
+</ul>
+<p>The order of the inputs is important! We want to end up with a list of genes, so the corresponding dataset needs to be the first input.</p>
+<h2 id="step-7-count-genes-on-different-chromosomes">Step 7: Count genes on different chromosomes</h2>
+<p>To get a better overview of the genes we obtained, we want to look at their distribution across the different chromosomes.</p>
+<ul>
+<li>Tool: Statistics -&gt; Count occurrences of each record</li>
+<li>Input: result from step 6 (Intersect on data X and data X)</li>
+<li>Select column 1 (c1) with the chromosome names</li>
+</ul>
+<h2 id="step-8-draw-barchart">Step 8: Draw barchart</h2>
+<ul>
+<li>Tool: Bar chart (use tool search to find it)</li>
+<li>Input: result of step 7</li>
+<li>Use X Tick labels: Yes, column 2</li>
+<li>Numerical column: c1</li>
+<li>Plot title is up to you</li>
+<li>Label for Y axis: number of genes</li>
+</ul>
+<p>Galaxy has a second option to visualise tabular data, with built-in dynamic visualisations:</p>
+<ul>
+<li>Expand the dataset view and click on the visualization icon</li>
+<li>Choose "Charts"</li>
+<li>Enter a chart title, e.g. "Genes on different chromsomes"</li>
+<li>Select "Bar diagrams" -&gt; "Regular"</li>
+<li>On the top, click on "Add Data"</li>
+<li>Enter a label, e.g. "count"</li>
+<li>Values for x-axis: Column: 2 [str]</li>
+<li>Values for y-axis: Column: 1 [int]</li>
+<li>On the very top, click "Draw"</li>
+</ul>
+<h2 id="step-9-name-your-history">Step 9: Name your history</h2>
+<p>In the history column click on "Unnamed history" at the top to rename it.</p>
+<h2 id="step-10-make-a-workflow-out-of-steps-6-to-8">Step 10: Make a workflow out of steps 6 to 8</h2>
+<ul>
+<li>Click on the history options and select "Extract workflow"</li>
+<li>On the top click on "Uncheck all", then specifically check "Treat as input dataset" on GSE37268_mof3.out.hpeak.txt and UCSC Main on Mouse: refGene (genome), as well as "Include" on the Intersect, Count and Bar chart</li>
+<li>Click "Create Workflow"</li>
+</ul>
+<p>To make sure our workflow is correct we look at it in the editor and make some small adjustments.</p>
+<ul>
+<li>Top menu: Workflow</li>
+<li>Click on the name of your new workflow and select "Edit"</li>
+</ul>
+<p>The individual steps are displayed as boxes and their outputs and inputs are connected through lines. When you click on a box you see the tool options on the right. Besides the tools you should see two additional boxes titled "Input dataset". These represent the data we want to feed into our workflow. Although we have our two inputs in the workflow they are missing their connection to the first tool (Intersect), because we didn't carry over the intermediate steps. Connect each input dataset to the Intersect tool by dragging the arrow pointing outwards on the right of its box (which denotes an output) to an arrow on the left of the Intersect box pointing inwards (which denotes an input). Connect each input dataset with a different input of Intersect.</p>
+<p>You should also change the names of the input datasets to remember that the first one contains genes and the second one peaks. Don't forget to save it in the end by clicking on "Options" (top right) and selecting "Save".</p>
+<h2 id="step-11-share-workflow">Step 11: Share workflow</h2>
+<p>Share your new workflow with the person to your left.</p>
+<ul>
+<li>Top menu: Workflow</li>
+<li>Click on your workflow's name and select "Share or publish"</li>
+<li>Click "Share with a user"</li>
+<li>Enter the username of the person to your left</li>
+<li>Hit "Share"</li>
+<li>Wait for the person on your right to do the same</li>
+<li>Reload the workflows by clicking again on "Workflow" in the top menu</li>
+<li>Under the header "Workflows shared with you by others" you should now see your right neighbour's workflow</li>
+<li>Click on its name and select "View"</li>
+<li>Compare with your workflow</li>
+</ul>
+<h2 id="step-12-cleaning-up">Step 12: Cleaning up</h2>
+<p>Download your workflow:</p>
+<ul>
+<li>Top menu: Workflow</li>
+<li>Click on your workflow's name and select "Download or Export"</li>
+<li>Click on "Download workflow to file so that it can be saved or imported into another Galaxy server"</li>
+<li>Save the workflow file on your computer</li>
+</ul>
+<p>Clean up history:<br />
+Delete all datasets that are neither initial input nor final results. Everything that can be easily recreated or is just part of an intermediate step can go. What I would keep are the extended genes, the intersect result and the bar chart (for a real analysis I would recommend to also download all final results). Deleted datasets can be undeleted for some time (see history options) and will only be ultimately removed from the server if they aren't used somewhere else or by somebody else and stay deleted for several weeks.</p>
+<p>You can create new histories in the history options with "Create New".</p>
+<p>To delete old histories:</p>
+<ul>
+<li>History options: Saved histories</li>
+<li>Check the history you want to delete</li>
+<li>Click "Delete Permanently" on the bottom if you need to free up space or just "Delete"</li>
+</ul>
+<h2 id="end">END</h2>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../../Allinea/README/" class="btn btn-neutral float-right" title="Allinea"/>Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href="../../Bioinformatics/README/" class="btn btn-neutral" title="Running bioinformatics software"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+  </div>
+
+  Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+	  
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+<div class="rst-versions" role="note" style="cursor: pointer">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+      
+        <span><a href="../../Bioinformatics/README/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+        <span style="margin-left: 15px"><a href="../../Allinea/README/" style="color: #fcfcfc">Next &raquo;</a></span>
+      
+    </span>
+</div>
+
+</body>
+</html>

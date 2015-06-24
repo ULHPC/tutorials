@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>The OSU Micro-benchmarks - UL HPC Tutorials</title>
+  
+
+  <link rel="shortcut icon" href="../../../img/favicon.ico">
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" href="../../../css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../css/theme_extra.css" type="text/css" />
+  <link rel="stylesheet" href="../../../css/highlight.css">
+
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "The OSU Micro-benchmarks";
+  </script>
+  
+  <script src="../../../js/jquery-2.1.1.min.js"></script>
+  <script src="../../../js/modernizr-2.8.3.min.js"></script>
+  <script type="text/javascript" src="../../../js/highlight.pack.js"></script>
+  <script src="../../../js/theme.js"></script> 
+
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+      <div class="wy-side-nav-search">
+        <a href="../../.." class="icon icon-home"> UL HPC Tutorials</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        <ul class="current">
+          
+            <li>
+    <li class="toctree-l1 ">
+        <a class="" href="../../..">Home</a>
+        
+    </li>
+<li>
+          
+            <li>
+    <ul class="subnav">
+    <li><span>Basic Tutorials</span></li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../../basic/getting_started/README/">Getting Started</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../../basic/sequential_jobs/README/">HPC workflow with sequential jobs</a>
+        
+    </li>
+
+        
+    </ul>
+<li>
+          
+            <li>
+    <ul class="subnav">
+    <li><span>Advanced Software Management</span></li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../RESIF/README/">RESIF</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../EasyBuild/README/">Easybuild</a>
+        
+    </li>
+
+        
+    </ul>
+<li>
+          
+            <li>
+    <ul class="subnav">
+    <li><span>MPI</span></li>
+
+        
+            
+    <li class="toctree-l1 current">
+        <a class="current" href="./">The OSU Micro-benchmarks</a>
+        
+            <ul>
+            
+                <li class="toctree-l3"><a href="#ul-hpc-tutorial-osu-micro-benchmarks-on-ul-hpc-platform">UL HPC Tutorial: OSU Micro-Benchmarks on UL HPC platform</a></li>
+                
+                    <li><a class="toctree-l4" href="#objectives">Objectives</a></li>
+                
+                    <li><a class="toctree-l4" href="#pre-requisites">Pre-requisites</a></li>
+                
+                    <li><a class="toctree-l4" href="#osu-micro-benchmarks-with-intel-mpi">OSU Micro-benchmarks with Intel MPI</a></li>
+                
+                    <li><a class="toctree-l4" href="#osu-micro-benchmarks-with-openmpi">OSU Micro-benchmarks with OpenMPI</a></li>
+                
+                    <li><a class="toctree-l4" href="#osu-micro-benchmarks-with-mvapich2">OSU Micro-benchmarks with MVAPICH2</a></li>
+                
+                    <li><a class="toctree-l4" href="#benchmarking-on-two-nodes">Benchmarking on two nodes</a></li>
+                
+                    <li><a class="toctree-l4" href="#now-for-lazy-frustrated-persons">Now for Lazy / frustrated persons</a></li>
+                
+            
+            </ul>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../HPL/README/">High Performance Linpack (HPL)</a>
+        
+    </li>
+
+        
+    </ul>
+<li>
+          
+            <li>
+    <ul class="subnav">
+    <li><span>Mathematics</span></li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../MATLAB/README/">MATLAB</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../R/README/">R - statistical computing </a>
+        
+    </li>
+
+        
+    </ul>
+<li>
+          
+            <li>
+    <ul class="subnav">
+    <li><span>Bio-informatic</span></li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../Bioinformatics/README/">Running bioinformatics software</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../Galaxy/README/">Galaxy</a>
+        
+    </li>
+
+        
+    </ul>
+<li>
+          
+            <li>
+    <ul class="subnav">
+    <li><span>Parallel Debuggers</span></li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../Allinea/README/">Allinea</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../TotalView/README/">TotalView</a>
+        
+    </li>
+
+        
+    </ul>
+<li>
+          
+            <li>
+    <ul class="subnav">
+    <li><span>Virtualization</span></li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../Vagrant/README/">Vagrant</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../vm5k/README/">Grid5000: Automatic VM deployment with VM5K</a>
+        
+    </li>
+
+        
+    </ul>
+<li>
+          
+            <li>
+    <ul class="subnav">
+    <li><span>Documentation</span></li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../../contributing/">Contributing</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../../rtfd/">RTFD</a>
+        
+    </li>
+
+        
+    </ul>
+<li>
+          
+            <li>
+    <li class="toctree-l1 ">
+        <a class="" href="../../../contacts/">Contacts</a>
+        
+    </li>
+<li>
+          
+        </ul>
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../../..">UL HPC Tutorials</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../..">Docs</a> &raquo;</li>
+    
+      
+        
+          <li>MPI &raquo;</li>
+        
+      
+    
+    <li>The OSU Micro-benchmarks</li>
+    <li class="wy-breadcrumbs-aside">
+      
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <p>-<em>- mode: markdown; mode: auto-fill; fill-column: 80 -</em>-</p>
+<p><code>README.md</code></p>
+<p>Copyright (c) 2013 Sebastien Varrette <a href="../&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#83;&#101;&#98;&#97;&#115;&#116;&#105;&#101;&#110;&#46;&#86;&#97;&#114;&#114;&#101;&#116;&#116;&#101;&#64;&#117;&#110;&#105;&#46;&#108;&#117;">&#83;&#101;&#98;&#97;&#115;&#116;&#105;&#101;&#110;&#46;&#86;&#97;&#114;&#114;&#101;&#116;&#116;&#101;&#64;&#117;&#110;&#105;&#46;&#108;&#117;</a></p>
+<pre><code>    Time-stamp: &lt;Mer 2014-05-07 17:22 svarrette&gt;
+</code></pre>
+<hr />
+<h1 id="ul-hpc-tutorial-osu-micro-benchmarks-on-ul-hpc-platform">UL HPC Tutorial: OSU Micro-Benchmarks on UL HPC platform</h1>
+<p>The objective of this tutorial is to compile and run on of the <a href="http://mvapich.cse.ohio-state.edu/benchmarks/">OSU micro-benchmarks</a> which permit to measure the performance of an MPI implementation.  </p>
+<p>You can work in groups for this training, yet individual work is encouraged to
+ensure you understand and practice the usage of an HPC platform.  </p>
+<p>In all cases, ensure you are able to <a href="https://hpc.uni.lu/users/docs/access.html">connect to the chaos and gaia cluster</a>. </p>
+<pre><code>/!\ FOR ALL YOUR COMPILING BUSINESS, ENSURE YOU WORK ON A COMPUTING NODE
+
+(access)$&gt;  oarsub -I -l enclosure=1/nodes=2,walltime=4
+</code></pre>
+<p><strong>Advanced users only</strong>: rely on <code>screen</code> (see
+  <a href="http://support.suso.com/supki/Screen_tutorial">tutorial</a>) on the frontend
+  prior to running any <code>oarsub</code> command to be more resilient to disconnection.  </p>
+<p>The latest version of this tutorial is available on
+<a href="https://github.com/ULHPC/tutorials/tree/devel/advanced/OSU_MicroBenchmarks">Github</a></p>
+<h2 id="objectives">Objectives</h2>
+<p>The <a href="http://mvapich.cse.ohio-state.edu/benchmarks/">OSU micro-benchmarks</a> feature a series of MPI benchmarks that measure the performances of various MPI operations: </p>
+<ul>
+<li><strong>Point-to-Point MPI Benchmarks</strong>: Latency, multi-threaded latency, multi-pair latency, multiple bandwidth / message rate test bandwidth, bidirectional bandwidth</li>
+<li><strong>Collective MPI Benchmarks</strong>: Collective latency tests for various MPI collective operations such as MPI_Allgather, MPI_Alltoall, MPI_Allreduce, MPI_Barrier, MPI_Bcast, MPI_Gather, MPI_Reduce, MPI_Reduce_Scatter, MPI_Scatter and vector collectives.</li>
+<li><strong>One-sided MPI Benchmarks</strong>: one-sided put latency (active/passive), one-sided put bandwidth (active/passive), one-sided put bidirectional bandwidth, one-sided get latency (active/passive), one-sided get bandwidth (active/passive), one-sided accumulate latency (active/passive), compare and swap latency (passive), and fetch and operate (passive) for MVAPICH2 (MPI-2 and MPI-3).</li>
+</ul>
+<p>The 4.3 version also features OpenSHMEM benchmarks, a 1-sided communications library.</p>
+<p>In this tutorial, we will focus on two of the available tests:</p>
+<ul>
+<li><code>osu_get_latency</code> - Latency Test</li>
+</ul>
+<p>The latency tests are carried out in a ping-pong fashion. The sender sends a message with a certain data size to the receiver and waits for a reply from the receiver. The receiver receives the message from the sender and sends back a reply with the same data size. Many iterations of this ping-pong test are carried out and average one-way latency numbers are obtained. Blocking version of MPI functions (MPI_Send and MPI_Recv) are used in the tests.
+* <code>osu_get_bw</code> - Bandwidth Test</p>
+<p>The bandwidth tests were carried out by having the sender sending out a fixed number (equal to the window size) of back-to-back messages to the receiver and then waiting for a reply from the receiver. The receiver sends the reply only after receiving all these messages. This process is repeated for several iterations and the bandwidth is calculated based on the elapsed time (from the time sender sends the first message until the time it receives the reply back from the receiver) and the number of bytes sent by the sender. The objective of this bandwidth test is to determine the maximum sustained date rate that can be achieved at the network level. Thus, non-blocking version of MPI functions (MPI_Isend and MPI_Irecv) were used in the test.</p>
+<p>The idea is to compare the different MPI implementations available on the <a href="http://hpc.uni.lu">UL HPC platform</a>.: </p>
+<ul>
+<li><a href="http://software.intel.com/en-us/intel-mpi-library/">Intel MPI</a></li>
+<li><a href="http://www.open-mpi.org/">OpenMPI</a></li>
+<li><a href="http://mvapich.cse.ohio-state.edu/overview/mvapich2/">MVAPICH2</a></li>
+</ul>
+<p>The benchamrking campain will typically involves for each MPI suit: </p>
+<ul>
+<li>two nodes, belonging to the same enclosure</li>
+<li>two nodes, belonging to different enclosures</li>
+</ul>
+<h2 id="pre-requisites">Pre-requisites</h2>
+<p>Clone the <a href="https://github.com/ULHPC/launcher-scripts">launcher-script repository</a></p>
+<pre><code>$&gt; cd 
+$&gt; mkdir -p git/ULHPC &amp;&amp; cd  git/ULHPC
+$&gt; git clone https://github.com/ULHPC/launcher-scripts.git
+</code></pre>
+<p>Now you shall get the 4.3 release of the <a href="http://mvapich.cse.ohio-state.edu/benchmarks/">OSU micro-benchmarks</a></p>
+<pre><code>$&gt; mkdir ~/TP 
+$&gt; cd ~/TP
+$&gt; wget --no-check-certificate https://scm.mvapich.cse.ohio-state.edu/benchmarks/osu-micro-benchmarks-4.3.tar.gz
+$&gt; tar xvzf osu-micro-benchmarks-4.3.tar.gz
+$&gt; cd osu-micro-benchmarks-4.3
+</code></pre>
+<h2 id="osu-micro-benchmarks-with-intel-mpi">OSU Micro-benchmarks with Intel MPI</h2>
+<p>We are first going to use the
+<a href="http://software.intel.com/en-us/intel-cluster-toolkit-compiler/">Intel Cluster Toolkit Compiler Edition</a>,
+which provides Intel C/C++ and Fortran compilers, Intel MPI. </p>
+<p>We will compile the <a href="http://mvapich.cse.ohio-state.edu/benchmarks/">OSU micro-benchmarks</a> in a specific directory (that a good habbit)</p>
+<pre><code>$&gt; cd ~/TP/osu-micro-benchmarks-4.3
+$&gt; module avail 2&gt;&amp;1 | grep -i MPI
+$&gt; module load ictce/6.1.5
+$&gt; module list
+Currently Loaded Modulefiles:
+   1) icc/2013_sp1.1.106     2) ifort/2013_sp1.1.106   3) impi/4.1.3.045         4) imkl/11.1.1.106        5) ictce/6.1.5
+$&gt; mkdir build.impi &amp;&amp; cd build.impi
+$&gt; ../configure CC=mpiicc --prefix=`pwd`/install
+$&gt; make &amp;&amp; make install
+</code></pre>
+<p>If everything goes fine, you shall have the <a href="http://mvapich.cse.ohio-state.edu/benchmarks/">OSU micro-benchmarks</a> installed in the directory <code>install/libexec/osu-micro-benchmarks/mpi/</code>.</p>
+<p>Once compiled, ensure you are able to run it: </p>
+<pre><code>$&gt; cd install/libexec/osu-micro-benchmarks/mpi/one-sided/
+$&gt; mpirun -hostfile $OAR_NODEFILE -perhost 1 ./osu_get_latency
+$&gt; mpirun -hostfile $OAR_NODEFILE -perhost 1 ./osu_get_bw
+</code></pre>
+<p>Now you can use the <a href="https://github.com/ULHPC/launcher-scripts/blob/devel/bash/MPI/mpi_launcher.sh">MPI generic launcher</a> to run the code: </p>
+<pre><code>$&gt; cd ~/TP/osu-micro-benchmarks-4.3/
+$&gt; mkdir runs  &amp;&amp; cd runs
+$&gt; ln -s ~/git/ULHPC/launcher-scripts/bash/MPI/mpi_launcher.sh launcher_osu_impi
+$&gt; ./launcher_osu_impi --basedir $HOME/TP/osu-micro-benchmarks-4.3/build.impi/install/libexec/osu-micro-benchmarks/mpi/one-sided --npernode 1 --module ictce/6.1.5 --exe osu_get_latency,osu_get_bw
+</code></pre>
+<p>If you want to avoid this long list of arguments, just create a file <code>launcher_osu_impi.default.conf</code> to contain: </p>
+<pre><code>$&gt; cat launcher_osu_impi.default.conf # this command will fail if you have not already created the file !
+# Defaults settings for running the OSU Micro benchmarks compiled with Intel MPI
+NAME=impi
+
+MODULE_TO_LOADstr=ictce/6.1.5
+MPI_PROG_BASEDIR=$HOME/TP/osu-micro-benchmarks-4.3/build.impi/install/libexec/osu-micro-benchmarks/mpi/one-sided/
+
+MPI_PROGstr=osu_get_latency,osu_get_bw
+MPI_NPERNODE=1
+</code></pre>
+<p>Now you can run the launcher script interactively.</p>
+<pre><code>$&gt; ./launcher_osu_impi
+</code></pre>
+<p>You might want also to host the output files in the local directory (under the date)</p>
+<pre><code>$&gt; ./launcher_osu_impi --datadir data/`date +%Y-%m-%d`
+</code></pre>
+<h2 id="osu-micro-benchmarks-with-openmpi">OSU Micro-benchmarks with OpenMPI</h2>
+<p>We will repeat the procedure, this time using OpenMPI. </p>
+<pre><code>$&gt; cd ~/TP/osu-micro-benchmarks-4.3/
+$&gt; module purge
+$&gt; module load OpenMPI/1.7.3-GCC-4.8.2
+$&gt; mkdir build.openmpi &amp;&amp; cd build.openmpi
+$&gt; ../configure CC=mpicc --prefix=`pwd`/install
+$&gt; make &amp;&amp; make install
+</code></pre>
+<p>If everything goes fine, you shall have the <a href="http://mvapich.cse.ohio-state.edu/benchmarks/">OSU micro-benchmarks</a> installed in the directory <code>install/libexec/osu-micro-benchmarks/mpi/</code>.</p>
+<p>Once compiled, ensure you are able to run it: </p>
+<pre><code>$&gt; cd install/libexec/osu-micro-benchmarks/mpi/one-sided/
+$&gt; mpirun -x LD_LIBRARY_PATH -hostfile $OAR_NODEFILE -npernode 1 ./osu_get_latency
+$&gt; mpirun -x LD_LIBRARY_PATH -hostfile $OAR_NODEFILE -npernode 1 ./osu_get_bw
+</code></pre>
+<p>Again, we will rely on the <a href="https://github.com/ULHPC/launcher-scripts/blob/devel/bash/MPI/mpi_launcher.sh">MPI generic launcher</a> to run the code: </p>
+<pre><code>$&gt; cd ~/TP/osu-micro-benchmarks-4.3/runs
+$&gt; ln -s ~/git/ULHPC/launcher-scripts/bash/MPI/mpi_launcher.sh launcher_osu_openmpi
+$&gt; cat launcher_osu_openmpi.default.conf  # this command will fail if you have not already created the file !
+# Defaults settings for running the OSU Micro benchmarks wompiled with OpenMPI
+NAME=openmpi
+
+MODULE_TO_LOADstr=OpenMPI/1.7.3-GCC-4.8.2
+MPI_PROG_BASEDIR=$HOME/TP/osu-micro-benchmarks-4.3/build.openmpi/install/libexec/osu-micro-benchmarks/mpi/one-sided/
+
+MPI_PROGstr=osu_get_latency,osu_get_bw
+MPI_NPERNODE=1
+</code></pre>
+<p>Now you can run the launcher script interactively.</p>
+<pre><code>$&gt; ./launcher_osu_openmpi
+</code></pre>
+<p>You might want also to host the output files in the local directory (under the date)</p>
+<pre><code>$&gt; ./launcher_osu_openmpi --datadir data/`date +%Y-%m-%d`
+</code></pre>
+<h2 id="osu-micro-benchmarks-with-mvapich2">OSU Micro-benchmarks with MVAPICH2</h2>
+<p>Repeat the procedure, this time using MVAPICH2. </p>
+<pre><code>$&gt; cd ~/TP/osu-micro-benchmarks-4.3/
+$&gt; module purge
+$&gt; module load MVAPICH2/1.7-GCC-4.6.3
+$&gt; mkdir build.mvapich2 &amp;&amp; cd build.mvapich2
+$&gt; ../configure CC=mpicc --prefix=`pwd`/install
+$&gt; make &amp;&amp; make install
+</code></pre>
+<p>If everything goes fine, you shall have the <a href="http://mvapich.cse.ohio-state.edu/benchmarks/">OSU micro-benchmarks</a> installed in the directory <code>install/libexec/osu-micro-benchmarks/mpi/</code>.</p>
+<p>As before, rely on the <a href="https://github.com/ULHPC/launcher-scripts/blob/devel/bash/MPI/mpi_launcher.sh">MPI generic launcher</a> to run the code: </p>
+<pre><code>$&gt; cd ~/TP/osu-micro-benchmarks-4.3/runs
+$&gt; ln -s ~/git/ULHPC/launcher-scripts/bash/MPI/mpi_launcher.sh launcher_osu_mvapich2
+$&gt; cat launcher_osu_mvapich2.default.conf # this command will fail if you have not already created the file !
+# Defaults settings for running the OSU Micro benchmarks wompiled with MVAPICH2
+NAME=mvapich2
+
+MODULE_TO_LOADstr=MVAPICH2/1.7-GCC-4.6.3
+MPI_PROG_BASEDIR=$HOME/TP/osu-micro-benchmarks-4.3/build.mvapich2/install/libexec/osu-micro-benchmarks/mpi/one-sided/
+
+MPI_PROGstr=osu_get_latency,osu_get_bw
+MPI_NPERNODE=1
+</code></pre>
+<p>Now you can run the launcher script interactively.</p>
+<pre><code>$&gt; ./launcher_osu_mvapich2
+</code></pre>
+<p>You might want also to host the output files in the local directory (under the date)</p>
+<pre><code>$&gt; ./launcher_osu_mvapich2 --datadir data/`date +%Y-%m-%d`
+</code></pre>
+<h2 id="benchmarking-on-two-nodes">Benchmarking on two nodes</h2>
+<p>Operate the benchmarking campain (in the three cases) in the following context: </p>
+<ul>
+<li>
+<p>2 nodes belonging to the same enclosure. Use for that:</p>
+<pre><code>$&gt; oarsub -l enclosure=1/nodes=2,walltime=8 […]
+</code></pre>
+</li>
+<li>
+<p>2 nodes belonging to the different enclosures:</p>
+<pre><code>$&gt; oarsub -l enclosure=2/core=1,walltime=8 […]
+</code></pre>
+</li>
+</ul>
+<h2 id="now-for-lazy-frustrated-persons">Now for Lazy / frustrated persons</h2>
+<p>You will find in the <a href="https://github.com/ULHPC/tutorials">UL HPC tutorial</a>
+repository, under the <code>advanced/OSU_MicroBenchmarks</code> directory, a set of tools / script that
+facilitate the running and analysis of this tutorial that you can use/adapt to
+suit your needs. </p>
+<p>In particular, once in the <code>advanced/OSU_MicroBenchmarks</code> directory: </p>
+<ul>
+<li>running <code>make fetch</code> will automatically download the archives for the <a href="http://mvapich.cse.ohio-state.edu/benchmarks/">OSU micro-benchmarks</a> in the <code>src/</code> directory</li>
+<li>you will find the patch file to apply to the version 4.3 in <code>src/osu-micro-benchmarks-4.3/mpi/one-sided/Makefile.am.patch</code></li>
+<li>The different configuration files for the <a href="https://github.com/ULHPC/launcher-scripts/blob/devel/bash/MPI/mpi_launcher.sh">MPI generic launcher</a> in <code>runs/</code></li>
+<li>Some sample output data in <code>runs/data/</code></li>
+<li>run <code>make build</code> to build the different versions of the OSU Micro-benchmarks</li>
+<li>run <code>make run_interactive</code> to run the benchmarks, assuming you are in an interactive job</li>
+<li>run <code>make run</code> to run a passive job executing the benchmarks</li>
+<li>run <code>make plot</code> to invoke the <a href="http://www.gnuplot.info/">Gnuplot</a> script
+  <code>plots/benchmark_OSU.gnuplot</code> and generate various plots from the sample
+  runs. </li>
+</ul>
+<p>In particular, you'll probably want to see the comparison figure extracted from
+the sample run in <code>plots/benchmark_OSU_2H_latency.pdf</code> and <code>plots/benchmark_OSU_2H_bandwidth.pdf</code></p>
+<p>A PNG version of these plots is available on Github: 
+<a href="https://raw.github.com/ULHPC/tutorials/devel/advanced/OSU_MicroBenchmarks/plots/benchmark_OSU_2H_latency.png">OSU latency</a> -- <a href="https://raw.github.com/ULHPC/tutorials/devel/advanced/OSU_MicroBenchmarks/plots/benchmark_OSU_2H_bandwidth.png">OSU Bandwidth</a></p>
+<p><img alt="OSU latency" src="https://raw.github.com/ULHPC/tutorials/devel/advanced/OSU_MicroBenchmarks/plots/benchmark_OSU_2H_latency.png" />
+<img alt="OSU Bandwidth" src="https://raw.github.com/ULHPC/tutorials/devel/advanced/OSU_MicroBenchmarks/plots/benchmark_OSU_2H_bandwidth.png" /></p>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../../HPL/README/" class="btn btn-neutral float-right" title="High Performance Linpack (HPL)"/>Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href="../../EasyBuild/README/" class="btn btn-neutral" title="Easybuild"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+  </div>
+
+  Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+	  
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+<div class="rst-versions" role="note" style="cursor: pointer">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+      
+        <span><a href="../../EasyBuild/README/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+        <span style="margin-left: 15px"><a href="../../HPL/README/" style="color: #fcfcfc">Next &raquo;</a></span>
+      
+    </span>
+</div>
+
+</body>
+</html>
