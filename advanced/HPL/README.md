@@ -48,7 +48,6 @@ runs compiled under different combination:
 
 1. HPL + Intel MKL + Intel MPI
 2. HPL + GCC + GotoBLAS2 + Open MPI
-3. HPL + GCC + ATLAS + MPICH2
 
 The benchamrking campain will typically involves successively: 
 
@@ -74,15 +73,16 @@ Get the latest release:
     $> wget http://www.netlib.org/benchmark/hpl/hpl-2.1.tar.gz
     $> tar xvzf hpl-2.1.tar.gz
     $> cd hpl-2.1     
-    $> module avail 2>&1 | grep -i MPI
-    $> module load ictce
+    $> module avail MPI
+    $> module load toolchain/ictce/7.3.5
     $> module list
-	Currently Loaded Modulefiles:
-			1) icc/2013.5.192     2) ifort/2013.5.192   3) impi/4.1.1.036     4) imkl/11.0.5.192    5) ictce/5.5.0
-	$> module show impi
-	$> module show imkl
+    Currently Loaded Modules:
+      1) compiler/icc/2015.3.187     3) toolchain/iccifort/2015.3.187            5) toolchain/iimpi/7.3.5                7) toolchain/ictce/7.3.5
+      2) compiler/ifort/2015.3.187   4) mpi/impi/5.0.3.048-iccifort-2015.3.187   6) numlib/imkl/11.2.3.187-iimpi-7.3.50
+	$> module show mpi/impi/5.0.3.048-iccifort-2015.3.187
+	$> module show numlib/imkl/11.2.3.187-iimpi-7.3.5
 
-You notice that Intel MKL is now loaded. 
+You notice that Intel MKL is now loaded.
 
 Read the `INSTALL` file. 
 
@@ -101,8 +101,13 @@ Some hint to succeed:
 * Effective use of MKL (in particular): 
 
 		LAdir        = $(MKLROOT)
-		LAinc        = -I$(LAdir)/mkl/include
-		LAlib        = -L$(LAdir)/mkl/lib/intel64 -Wl,--start-group $(LAdir)/mkl/lib/intel64/libmkl_intel_lp64.a $(LAdir)/mkl/lib/intel64/libmkl_intel_thread.a $(LAdir)/mkl/lib/intel64/libmkl_core.a -Wl,--end-group -lpthread
+    HPLlibHybrid = $(LAdir)/benchmarks/mp_linpack/lib_hybrid/intel64/libhpl_hybrid.a
+    LAinc        = -I$(LAdir)/include
+    LAlib        = -L$(LAdir)/lib/intel64 -Wl,--start-group $(LAdir)/lib/intel64/libmkl_intel_lp64.a $(LAdir)/lib/intel64/libmkl_intel_thread.a $(LAdir)/lib/intel64/libmkl_core.a -Wl,--end-group -lpthread -ldl $(HPLlibHybrid)
+
+If you don't succeed by yourself, use the following makefile:
+
+    wget https://raw.githubusercontent.com/ULHPC/tutorials/devel/advanced/HPL/src/hpl-2.1/Make.intel64
 
 Once compiled, ensure you are able to run it: 
 
@@ -125,10 +130,10 @@ Get the sources and compile them:
      # A copy of `GotoBLAS2-1.13.tar.gz` is available in `/tmp` on the access nodes of the cluster
      $> cd ~/TP
      $> module purge
-     $> module load OpenMPI
+     $> module load mpi/OpenMPI/1.8.4-GCC-4.9.2
      $> tar xvzf /tmp/GotoBLAS2-1.13.tar.gz
      $> mv GotoBLAS2 GotoBLAS2-1.13
-     […]
+     $> cd GotoBLAS2-1.13
      $> make BINARY=64 TARGET=NEHALEM NUM_THREADS=1
      [...]
       GotoBLAS build complete.
@@ -154,43 +159,6 @@ Once compiled, ensure you are able to run it:
 	$> cd bin/gotoblas2
 	$> cat HPL.dat
 	$> mpirun -x LD_LIBRARY_PATH -hostfile $OAR_NODEFILE ./xhpl
-
-
-### HPL with GCC and ATLAS and MVAPICH2
-
-Here we will rely on the [Automatically Tuned Linear Algebra Software (ATLAS)](http://math-atlas.sourceforge.net/)
-
-Download the [latest version](http://sourceforge.net/projects/math-atlas/files/) 
-(3.11.32 at the time of writing) and compile it:  
-
-     $> cd ~/TP
-     $> tar xvf atlas3.11.32.tar.bz2
-     $> mv ATLAS ATLAS-3.11.32 && cd ATLAS-3.11.32
-     $> module purge
-	 $> module load MVAPICH2	
-	 $> less INSTALL.txt
-	 $> mkdir build.gcc_mvapich2 && cd build.gcc_mvapich2
-	 $> ../configure
-	 $> grep ! ../INSTALL.txt
-            make              ! tune and compile library
-            make check        ! perform sanity tests
-            make ptcheck      ! checks of threaded code for multiprocessor systems
-            make time         ! provide performance summary as % of clock rate
-            make install      ! Copy library and include files to other directories
-	 $> make
-
-Take a coffee there, it will compile for a Loooooooooooooong time
-
-Now you can restart HPL compilation by creating (and adapting) a `Make.atlas`
-and running the compilation by:  
-
-	$> make arch=atlas
-
-Once compiled, ensure you are able to run it: 
-
-	$> cd bin/atlas
-	$> cat HPL.dat
-	$> mpirun -launcher ssh -launcher-exec /usr/bin/oarsh -hostfile $OAR_NODEFILE ./xhpl
 
 
 ## Benchmarking on two nodes 
