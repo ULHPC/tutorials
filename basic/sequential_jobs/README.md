@@ -79,10 +79,11 @@ We will use the launcher `NAIVE_AKA_BAD_launcher_serial.sh` (full path: `$WORK/P
 Edit the following variables:
 
 * `TASK` must contain the path of the executable, 
-* `ARG_TASK_FILE` must contain the path of your parameter file.
+* `ARG_TASK_FILE` must contain the path of your parameter file, and the list of needed modules.
 
         (node)$> nano $WORK/PS2/launcher-scripts/bash/serial/NAIVE_AKA_BAD_launcher_serial.sh
 
+        MODULE_TO_LOAD=(bio/GROMACS)
         TASK="$WORK/PS2/tutorials/basic/sequential_jobs/scripts/run_gromacs_sim.sh"
         ARG_TASK_FILE=$WORK/PS2/param_file
 
