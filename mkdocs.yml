@@ -7,7 +7,7 @@ pages:
 - ['advanced/EasyBuild/README.md', 'Advanced Software Management', 'Easybuild']
 - ['advanced/OSU_MicroBenchmarks/README.md', 'MPI', 'The OSU Micro-benchmarks']
 - ['advanced/HPL/README.md',                 'MPI', 'High Performance Linpack (HPL)']
-- ['advanced/MATLAB/README.md', 'Mathematics', 'MATLAB']
+- ['advanced/MATLAB1/README.md', 'Mathematics', 'MATLAB1']
 - ['advanced/R/README.md',      'Mathematics', 'R - statistical computing ']
 - ['advanced/Bioinformatics/README.md',         'Bio-informatic', 'Running bioinformatics software']
 - ['advanced/Galaxy/README.md', 'Bio-informatic', 'Galaxy']
