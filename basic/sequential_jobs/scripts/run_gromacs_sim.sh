@@ -19,7 +19,7 @@ cd /tmp/rnase_cubic_fs_$VALUE
 
 # Load Gromacs
 
-module load GROMACS/4.6.1-goolf-1.4.10-mt
+module load bio/GROMACS/4.6.5-goolf-1.4.10-mt
 
 # Generate a parameter file based on the value of the first parameter of this script
 
