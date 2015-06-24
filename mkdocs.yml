@@ -15,6 +15,7 @@ pages:
 - ['advanced/Bioinformatics.md','Bio-informatic', 'Data intensive, RAM intensive: Bowtie2/TopHat']
 - ['advanced/Allinea.md',   'Parallel Debuggers', 'Allinea']
 - ['advanced/TotalView.md', 'Parallel Debuggers', 'TotalView']
+- ['advanced/vm5k.md', 'Grid5000', 'Automatic VM deployment with VM5K']
 - ['contributing.md', 'Documentation', 'Contributing']
 - ['rtfd.md', 'Documentation', 'RTFD']
 - ['contacts.md', 'Contacts']
