@@ -74,15 +74,16 @@ Get the latest release:
     $> wget http://www.netlib.org/benchmark/hpl/hpl-2.1.tar.gz
     $> tar xvzf hpl-2.1.tar.gz
     $> cd hpl-2.1     
-    $> module avail 2>&1 | grep -i MPI
-    $> module load ictce
+    $> module avail MPI
+    $> module load toolchain/ictce/7.3.5
     $> module list
-	Currently Loaded Modulefiles:
-			1) icc/2013.5.192     2) ifort/2013.5.192   3) impi/4.1.1.036     4) imkl/11.0.5.192    5) ictce/5.5.0
-	$> module show impi
-	$> module show imkl
+    Currently Loaded Modules:
+      1) compiler/icc/2015.3.187     3) toolchain/iccifort/2015.3.187            5) toolchain/iimpi/7.3.5                7) toolchain/ictce/7.3.5
+      2) compiler/ifort/2015.3.187   4) mpi/impi/5.0.3.048-iccifort-2015.3.187   6) numlib/imkl/11.2.3.187-iimpi-7.3.50
+	$> module show mpi/impi/5.0.3.048-iccifort-2015.3.187
+	$> module show numlib/imkl/11.2.3.187-iimpi-7.3.5
 
-You notice that Intel MKL is now loaded. 
+You notice that Intel MKL is now loaded.
 
 Read the `INSTALL` file. 
 

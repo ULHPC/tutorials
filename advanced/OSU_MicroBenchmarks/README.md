@@ -86,11 +86,13 @@ which provides Intel C/C++ and Fortran compilers, Intel MPI.
 We will compile the [OSU micro-benchmarks](http://mvapich.cse.ohio-state.edu/benchmarks/) in a specific directory (that a good habbit)
 
     $> cd ~/TP/osu-micro-benchmarks-4.3
-    $> module avail 2>&1 | grep -i MPI
-    $> module load ictce/6.1.5
+    $> module avail MPI
+    $> module load toolchain/ictce/7.3.5
     $> module list
-    Currently Loaded Modulefiles:
-       1) icc/2013_sp1.1.106     2) ifort/2013_sp1.1.106   3) impi/4.1.3.045         4) imkl/11.1.1.106        5) ictce/6.1.5
+    Currently Loaded Modules:
+      1) compiler/icc/2015.3.187     3) toolchain/iccifort/2015.3.187            5) toolchain/iimpi/7.3.5                7) toolchain/ictce/7.3.5
+      2) compiler/ifort/2015.3.187   4) mpi/impi/5.0.3.048-iccifort-2015.3.187   6) numlib/imkl/11.2.3.187-iimpi-7.3.5
+
     $> mkdir build.impi && cd build.impi
     $> ../configure CC=mpiicc --prefix=`pwd`/install
     $> make && make install 
@@ -109,7 +111,7 @@ Now you can use the [MPI generic launcher](https://github.com/ULHPC/launcher-scr
 	$> cd ~/TP/osu-micro-benchmarks-4.3/
 	$> mkdir runs  && cd runs
 	$> ln -s ~/git/ULHPC/launcher-scripts/bash/MPI/mpi_launcher.sh launcher_osu_impi
-	$> ./launcher_osu_impi --basedir $HOME/TP/osu-micro-benchmarks-4.3/build.impi/install/libexec/osu-micro-benchmarks/mpi/one-sided --npernode 1 --module ictce/6.1.5 --exe osu_get_latency,osu_get_bw
+	$> ./launcher_osu_impi --basedir $HOME/TP/osu-micro-benchmarks-4.3/build.impi/install/libexec/osu-micro-benchmarks/mpi/one-sided --npernode 1 --module toolchain/ictce/7.3.5 --exe osu_get_latency,osu_get_bw
 
 If you want to avoid this long list of arguments, just create a file `launcher_osu_impi.default.conf` to contain: 
 
@@ -117,7 +119,7 @@ If you want to avoid this long list of arguments, just create a file `launcher_o
 	# Defaults settings for running the OSU Micro benchmarks compiled with Intel MPI
 	NAME=impi
 	
-	MODULE_TO_LOADstr=ictce/6.1.5
+	MODULE_TO_LOADstr=toolchain/ictce/7.3.5
 	MPI_PROG_BASEDIR=$HOME/TP/osu-micro-benchmarks-4.3/build.impi/install/libexec/osu-micro-benchmarks/mpi/one-sided/
 	
 	MPI_PROGstr=osu_get_latency,osu_get_bw
@@ -137,10 +139,10 @@ We will repeat the procedure, this time using OpenMPI.
 
 	$> cd ~/TP/osu-micro-benchmarks-4.3/
 	$> module purge
-	$> module load OpenMPI/1.7.3-GCC-4.8.2
+	$> module load mpi/OpenMPI/1.8.4-GCC-4.9.2
 	$> mkdir build.openmpi && cd build.openmpi
 	$> ../configure CC=mpicc --prefix=`pwd`/install
-	$> make && make install 
+	$> make && make install
 	
 If everything goes fine, you shall have the [OSU micro-benchmarks](http://mvapich.cse.ohio-state.edu/benchmarks/) installed in the directory `install/libexec/osu-micro-benchmarks/mpi/`.
 
@@ -158,7 +160,7 @@ Again, we will rely on the [MPI generic launcher](https://github.com/ULHPC/launc
 	# Defaults settings for running the OSU Micro benchmarks wompiled with OpenMPI
 	NAME=openmpi
 	
-	MODULE_TO_LOADstr=OpenMPI/1.7.3-GCC-4.8.2
+	MODULE_TO_LOADstr=mpi/OpenMPI/1.8.4-GCC-4.9.2
 	MPI_PROG_BASEDIR=$HOME/TP/osu-micro-benchmarks-4.3/build.openmpi/install/libexec/osu-micro-benchmarks/mpi/one-sided/
 	
 	MPI_PROGstr=osu_get_latency,osu_get_bw
@@ -173,13 +175,14 @@ You might want also to host the output files in the local directory (under the d
 	$> ./launcher_osu_openmpi --datadir data/`date +%Y-%m-%d`
 
 
+
 ## OSU Micro-benchmarks with MVAPICH2
 
 Repeat the procedure, this time using MVAPICH2. 
 
 	$> cd ~/TP/osu-micro-benchmarks-4.3/
 	$> module purge
-	$> module load MVAPICH2/1.7-GCC-4.6.3
+	$> module load mpi/MVAPICH2/2.1-GCC-4.9.2
 	$> mkdir build.mvapich2 && cd build.mvapich2
 	$> ../configure CC=mpicc --prefix=`pwd`/install
 	$> make && make install 
@@ -194,7 +197,7 @@ As before, rely on the [MPI generic launcher](https://github.com/ULHPC/launcher-
 	# Defaults settings for running the OSU Micro benchmarks wompiled with MVAPICH2
 	NAME=mvapich2
 	
-	MODULE_TO_LOADstr=MVAPICH2/1.7-GCC-4.6.3
+	MODULE_TO_LOADstr=mpi/MVAPICH2/2.1-GCC-4.9.2
 	MPI_PROG_BASEDIR=$HOME/TP/osu-micro-benchmarks-4.3/build.mvapich2/install/libexec/osu-micro-benchmarks/mpi/one-sided/
 	
 	MPI_PROGstr=osu_get_latency,osu_get_bw
