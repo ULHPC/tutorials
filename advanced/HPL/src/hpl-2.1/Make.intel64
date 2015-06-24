@@ -93,9 +93,9 @@ MPlib        =
 # used. The variable LAdir is only used for defining LAinc and LAlib.
 #
 LAdir        = $(MKLROOT)
-HPLlibHybrid = $(LAdir)/mkl/benchmarks/mp_linpack/lib_hybrid/intel64/libhpl_hybrid.a
-LAinc        = -I$(LAdir)/mkl/include
-LAlib        = -L$(LAdir)/mkl/lib/intel64 -Wl,--start-group $(LAdir)/mkl/lib/intel64/libmkl_intel_lp64.a $(LAdir)/mkl/lib/intel64/libmkl_intel_thread.a $(LAdir)/mkl/lib/intel64/libmkl_core.a -Wl,--end-group -lpthread -ldl $(HPLlibHybrid)
+HPLlibHybrid = $(LAdir)/benchmarks/mp_linpack/lib_hybrid/intel64/libhpl_hybrid.a
+LAinc        = -I$(LAdir)/include
+LAlib        = -L$(LAdir)/lib/intel64 -Wl,--start-group $(LAdir)/lib/intel64/libmkl_intel_lp64.a $(LAdir)/lib/intel64/libmkl_intel_thread.a $(LAdir)/lib/intel64/libmkl_core.a -Wl,--end-group -lpthread -ldl $(HPLlibHybrid)
 #
 # ----------------------------------------------------------------------
 # - F77 / C interface --------------------------------------------------

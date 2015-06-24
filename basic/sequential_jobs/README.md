@@ -67,9 +67,9 @@ If you have never used any of them, `nano` is intuitive, but vim and emacs are m
 Gromacs is a popular molecular dynamics software.
 In this exercise, we will process some example input files, and make the parameter `fourier_spacing` varies from 0.1 to 0.2 in increments of 0.005.
 
-Create a file which contains the list of parameters
+Create a file which contains the list of parameters:
 
-  (access)$> seq 0.1 0.005 0.2 > $WORK/PS2/param_file
+    (access)$> seq 0.1 0.005 0.2 > $WORK/PS2/param_file
 
 
 #### Step 1: Naive workflow
@@ -78,11 +78,13 @@ We will use the launcher `NAIVE_AKA_BAD_launcher_serial.sh` (full path: `$WORK/P
 
 Edit the following variables:
 
+* `MODULE_TO_LOAD` must contain the list of modules to load before executing `$TASK`,
 * `TASK` must contain the path of the executable, 
 * `ARG_TASK_FILE` must contain the path of your parameter file.
 
         (node)$> nano $WORK/PS2/launcher-scripts/bash/serial/NAIVE_AKA_BAD_launcher_serial.sh
 
+        MODULE_TO_LOAD=(bio/GROMACS)
         TASK="$WORK/PS2/tutorials/basic/sequential_jobs/scripts/run_gromacs_sim.sh"
         ARG_TASK_FILE=$WORK/PS2/param_file
 
@@ -104,6 +106,7 @@ Edit the following variables:
 
     (access)$> nano $WORK/PS2/launcher-scripts/bash/serial/launcher_serial.sh
 
+    MODULE_TO_LOAD=(bio/GROMACS)
     TASK="$WORK/PS2/tutorials/basic/sequential_jobs/scripts/run_gromacs_sim.sh"
     ARG_TASK_FILE=$WORK/PS2/param_file
 
