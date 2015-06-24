@@ -48,7 +48,6 @@ runs compiled under different combination:
 
 1. HPL + Intel MKL + Intel MPI
 2. HPL + GCC + GotoBLAS2 + Open MPI
-3. HPL + GCC + ATLAS + MPICH2
 
 The benchamrking campain will typically involves successively: 
 
@@ -160,43 +159,6 @@ Once compiled, ensure you are able to run it:
 	$> cd bin/gotoblas2
 	$> cat HPL.dat
 	$> mpirun -x LD_LIBRARY_PATH -hostfile $OAR_NODEFILE ./xhpl
-
-
-### HPL with GCC and ATLAS and MVAPICH2
-
-Here we will rely on the [Automatically Tuned Linear Algebra Software (ATLAS)](http://math-atlas.sourceforge.net/)
-
-Download the [latest version](http://sourceforge.net/projects/math-atlas/files/) 
-(3.11.32 at the time of writing) and compile it:  
-
-     $> cd ~/TP
-     $> tar xvf atlas3.11.32.tar.bz2
-     $> mv ATLAS ATLAS-3.11.32 && cd ATLAS-3.11.32
-     $> module purge
-	 $> module load MVAPICH2	
-	 $> less INSTALL.txt
-	 $> mkdir build.gcc_mvapich2 && cd build.gcc_mvapich2
-	 $> ../configure
-	 $> grep ! ../INSTALL.txt
-            make              ! tune and compile library
-            make check        ! perform sanity tests
-            make ptcheck      ! checks of threaded code for multiprocessor systems
-            make time         ! provide performance summary as % of clock rate
-            make install      ! Copy library and include files to other directories
-	 $> make
-
-Take a coffee there, it will compile for a Loooooooooooooong time
-
-Now you can restart HPL compilation by creating (and adapting) a `Make.atlas`
-and running the compilation by:  
-
-	$> make arch=atlas
-
-Once compiled, ensure you are able to run it: 
-
-	$> cd bin/atlas
-	$> cat HPL.dat
-	$> mpirun -launcher ssh -launcher-exec /usr/bin/oarsh -hostfile $OAR_NODEFILE ./xhpl
 
 
 ## Benchmarking on two nodes 
