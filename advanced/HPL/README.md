@@ -102,8 +102,13 @@ Some hint to succeed:
 * Effective use of MKL (in particular): 
 
 		LAdir        = $(MKLROOT)
-		LAinc        = -I$(LAdir)/mkl/include
-		LAlib        = -L$(LAdir)/mkl/lib/intel64 -Wl,--start-group $(LAdir)/mkl/lib/intel64/libmkl_intel_lp64.a $(LAdir)/mkl/lib/intel64/libmkl_intel_thread.a $(LAdir)/mkl/lib/intel64/libmkl_core.a -Wl,--end-group -lpthread
+    HPLlibHybrid = $(LAdir)/benchmarks/mp_linpack/lib_hybrid/intel64/libhpl_hybrid.a
+    LAinc        = -I$(LAdir)/include
+    LAlib        = -L$(LAdir)/lib/intel64 -Wl,--start-group $(LAdir)/lib/intel64/libmkl_intel_lp64.a $(LAdir)/lib/intel64/libmkl_intel_thread.a $(LAdir)/lib/intel64/libmkl_core.a -Wl,--end-group -lpthread -ldl $(HPLlibHybrid)
+
+If you don't succeed by yourself, use the following makefile:
+
+    wget https://raw.githubusercontent.com/ULHPC/tutorials/devel/advanced/HPL/src/hpl-2.1/Make.intel64
 
 Once compiled, ensure you are able to run it: 
 
@@ -126,10 +131,10 @@ Get the sources and compile them:
      # A copy of `GotoBLAS2-1.13.tar.gz` is available in `/tmp` on the access nodes of the cluster
      $> cd ~/TP
      $> module purge
-     $> module load OpenMPI
+     $> module load mpi/OpenMPI/1.8.4-GCC-4.9.2
      $> tar xvzf /tmp/GotoBLAS2-1.13.tar.gz
      $> mv GotoBLAS2 GotoBLAS2-1.13
-     […]
+     $> cd GotoBLAS2-1.13
      $> make BINARY=64 TARGET=NEHALEM NUM_THREADS=1
      [...]
       GotoBLAS build complete.
