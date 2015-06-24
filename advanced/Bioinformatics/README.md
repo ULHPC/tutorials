@@ -49,6 +49,7 @@ Or simply clone the full tutorials repository and make a link to the Bioinformat
 
         
 ## ABySS
+Characterization: CPU intensive, data intensive, native parallelization
 
 ### Description
 
@@ -134,6 +135,7 @@ Several exercises are proposed for ABySS:
 
 
 ## GROMACS
+Characterization: CPU intensive, little I/O
 
 ### Description
 
@@ -210,6 +212,7 @@ Several exercises are proposed for GROMACS:
 
 
 ## Bowtie2/TopHat
+Characterization: data intensive, RAM intensive
 
 ### Description
 
@@ -300,6 +303,7 @@ The following exercises are proposed for TopHat/Bowtie2:
 
 
 ## mpiBLAST
+Characterization: data intensive, little RAM overhead, native parallelization
 
 ### Description
 
