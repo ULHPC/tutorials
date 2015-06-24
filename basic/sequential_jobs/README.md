@@ -67,9 +67,9 @@ If you have never used any of them, `nano` is intuitive, but vim and emacs are m
 Gromacs is a popular molecular dynamics software.
 In this exercise, we will process some example input files, and make the parameter `fourier_spacing` varies from 0.1 to 0.2 in increments of 0.005.
 
-Create a file which contains the list of parameters
+Create a file which contains the list of parameters:
 
-  (access)$> seq 0.1 0.005 0.2 > $WORK/PS2/param_file
+    (access)$> seq 0.1 0.005 0.2 > $WORK/PS2/param_file
 
 
 #### Step 1: Naive workflow
