@@ -16,7 +16,7 @@ The benefit of using EasyBuild for your builds is that it allows automated and r
 Before starting this tutorial, ensure you are able to [connect to the chaos and gaia cluster](https://hpc.uni.lu/users/docs/access.html). 
 **For all your compilation with Easybuild, you must work on a computing node:**
 	
-	(access)$> 	oarsub -I -l nodes=1,walltime=4
+	(access)$> 	oarsub -I -l core=1,walltime=4
 
 
 The latest version of this tutorial is available on our
