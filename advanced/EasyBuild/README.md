@@ -56,18 +56,23 @@ To use EasyBuild on a compute node, load the EasyBuild module:
 
     $> module avail EasyBuild
         
-    ----------------------- /opt/apps/HPCBIOS/modules/tools ------------------------
-    EasyBuild/1.10.0
+    ------------- /opt/apps/resif/devel/v1.1-20150414/core/modules/tools -------------
+        tools/EasyBuild/2.0.0
 
-    $> module load EasyBuild/1.10.0  # or any other version you prefer
+    ------------- /opt/apps/resif/devel/v1.1-20150414/core/modules/base -------------
+        base/EasyBuild/install-2.1.0
+
+    $> module load base/EasyBuild/install-2.1.0
     
 
 The EasyBuild command is `eb`. Check the version you have loaded:
 
     $> eb --version
     
-    This is EasyBuild 1.10.0 (framework: 1.10.0, easyblocks: 1.10.0) on host gaia-59.
+    This is EasyBuild 2.1.0dev-r6fee583a88e99d1384314790a419c83e85f18f3d (framework: 2.1.0dev-r2aa673bb5f61cb2d65e4a3037cc2337e6df2d3e6, easyblocks: 2.1.0dev-r6fee583a88e99d1384314790a419c83e85f18f3d) on host h-cluster1-11.
     
+
+Note that this version number is a bit peculiar because this is a custom installation on the cluster.
 
 To get help on the EasyBuild options, use the `-h` or `-H` option flags:
 
@@ -87,46 +92,63 @@ First, let's see which HPL are available on the cluster:
 
     $> module avail HPL
     
-    ----------------------- /opt/apps/HPCBIOS/modules/tools ------------------------
-    HPL/2.0-cgmpolf-1.1.6       HPL/2.0-goolf-1.4.10
-    HPL/2.0-cgmvolf-1.2.7       HPL/2.0-ictce-4.0.6
-    HPL/2.0-cgoolf-1.1.7        HPL/2.0-ictce-5.3.0
-    HPL/2.0-goalf-1.1.0-no-OFED
-    
+    ------------- /opt/apps/resif/devel/v1.1-20150414/core/modules/tools -------------
+        tools/HPL/2.0-goolf-1.4.10
+
 
 Then, search for available EasyConfig files with HPL in their name. The EasyConfig files are named with the `.eb` extension.
 
     $> eb -S HPL
     
-    == temporary log file in case of crash /tmp/easybuild-TJBo27/easybuild-0xj0cG.log
-    == Searching (case-insensitive) for 'HPL' in /opt/apps/HPCBIOS.20131224/software/EasyBuild/1.10.0/lib/python2.6/site-packages/easybuild_easyconfigs-1.10.0.0-py2.6.egg/easybuild/easyconfigs 
-    CFGS1=/opt/apps/HPCBIOS.20131224/software/EasyBuild/1.10.0/lib/python2.6/site-packages/easybuild_easyconfigs-1.10.0.0-py2.6.egg/easybuild/easyconfigs/h/HPL
+    == temporary log file in case of crash /tmp/eb-p2DT7H/easybuild-ligIot.log
+    == Searching (case-insensitive) for 'HPL' in /opt/apps/resif/devel/v1.1-20150414/.installRef/easybuild-easyconfigs/easybuild/easyconfigs 
+    CFGS1=/opt/apps/resif/devel/v1.1-20150414/.installRef/easybuild-easyconfigs/easybuild/easyconfigs/h/HPL
      * $CFGS1/HPL-2.0-cgmpolf-1.1.6.eb
      * $CFGS1/HPL-2.0-cgmvolf-1.1.12rc1.eb
      * $CFGS1/HPL-2.0-cgmvolf-1.2.7.eb
      * $CFGS1/HPL-2.0-cgoolf-1.1.7.eb
+     * $CFGS1/HPL-2.0-foss-2014b.eb
      * $CFGS1/HPL-2.0-goalf-1.1.0-no-OFED.eb
      * $CFGS1/HPL-2.0-goolf-1.4.10.eb
+     * $CFGS1/HPL-2.0-goolf-1.5.16.eb
      * $CFGS1/HPL-2.0-ictce-4.0.6.eb
      * $CFGS1/HPL-2.0-ictce-5.3.0.eb
      * $CFGS1/HPL-2.0-ictce-6.0.5.eb
      * $CFGS1/HPL-2.0-ictce-6.1.5.eb
      * $CFGS1/HPL-2.0-iomkl-4.6.13.eb
+     * $CFGS1/HPL-2.1-foss-2015a.eb
+     * $CFGS1/HPL-2.1-gimkl-1.5.9.eb
+     * $CFGS1/HPL-2.1-gmpolf-1.4.8.eb
+     * $CFGS1/HPL-2.1-gmvolf-1.7.20.eb
+     * $CFGS1/HPL-2.1-goolf-1.7.20.eb
+     * $CFGS1/HPL-2.1-goolfc-1.4.10.eb
+     * $CFGS1/HPL-2.1-goolfc-2.6.10.eb
+     * $CFGS1/HPL-2.1-gpsolf-2014.12.eb
+     * $CFGS1/HPL-2.1-ictce-6.3.5.eb
+     * $CFGS1/HPL-2.1-ictce-7.1.2.eb
+     * $CFGS1/HPL-2.1-intel-2014.10.eb
+     * $CFGS1/HPL-2.1-intel-2014.11.eb
+     * $CFGS1/HPL-2.1-intel-2014b.eb
+     * $CFGS1/HPL-2.1-intel-2015.02.eb
+     * $CFGS1/HPL-2.1-intel-2015a.eb
+     * $CFGS1/HPL-2.1-intel-para-2014.12.eb
+     * $CFGS1/HPL-2.1-iomkl-2015.01.eb
+     * $CFGS1/HPL-2.1-iomkl-2015.02.eb
      * $CFGS1/HPL_parallel-make.patch
-    == temporary log file /tmp/easybuild-TJBo27/easybuild-0xj0cG.log has been removed.
-    == temporary directory /tmp/easybuild-TJBo27 has been removed.
-    
+    == temporary log file(s) /tmp/eb-p2DT7H/easybuild-ligIot.log* have been removed.
+    == temporary directory /tmp/eb-p2DT7H has been removed.
+
 
 If we try to build `HPL-2.0-goolf-1.4.10`, nothing will be done as it is already installed on the cluster.
 
     $> eb HPL-2.0-goolf-1.4.10.eb
 
-    == temporary log file in case of crash /tmp/easybuild-4Cy8Qn/easybuild-yRhXIT.log
-    == HPL/2.0-goolf-1.4.10 is already installed (module found), skipping
+    == temporary log file in case of crash /tmp/eb-JKadCH/easybuild-SoXdix.log
+    == tools/HPL/2.0-goolf-1.4.10 is already installed (module found), skipping
     == No easyconfigs left to be built.
     == Build succeeded for 0 out of 0
-    == temporary log file /tmp/easybuild-4Cy8Qn/easybuild-yRhXIT.log has been removed.
-    == temporary directory /tmp/easybuild-4Cy8Qn has been removed.
+    == temporary log file(s) /tmp/eb-JKadCH/easybuild-SoXdix.log* have been removed.
+    == temporary directory /tmp/eb-JKadCH has been removed.
 
 
 However the build can be forced using the `-f` option flag. Then this software will be re-built.
@@ -134,10 +156,9 @@ However the build can be forced using the `-f` option flag. Then this software w
 
     $> time eb HPL-2.0-goolf-1.4.10.eb -f
     
-    == temporary log file in case of crash /tmp/easybuild-FWc7Dl/easybuild-MEhAw4.log
-    == resolving dependencies ...
-    == processing EasyBuild easyconfig /opt/apps/HPCBIOS.20131224/software/EasyBuild/1.10.0/lib/python2.6/site-packages/easybuild_easyconfigs-1.10.0.0-py2.6.egg/easybuild/easyconfigs/h/HPL/HPL-2.0-goolf-1.4.10.eb
-    == building and installing HPL/2.0-goolf-1.4.10...
+    == temporary log file in case of crash /tmp/eb-FAO8AO/easybuild-ea15Cq.log
+    == processing EasyBuild easyconfig /opt/apps/resif/devel/v1.1-20150414/.installRef/easybuild-easyconfigs/easybuild/easyconfigs/h/HPL/HPL-2.0-goolf-1.4.10.eb
+    == building and installing tools/HPL/2.0-goolf-1.4.10...
     == fetching files...
     == creating build dir, resetting environment...
     == unpacking...
@@ -154,47 +175,43 @@ However the build can be forced using the `-f` option flag. Then this software w
     == cleaning up...
     == creating module...
     == COMPLETED: Installation ended successfully
-    == 
-    WARNING: Build exited with exit code 0. 2 possible error(s) were detected in the build logs, please verify the build.
-    
-    == Results of the build can be found in the log file /home/users/xbesseron/.local/easybuild/software/HPL/2.0-goolf-1.4.10/easybuild/easybuild-HPL-2.0-20140505.195534.log
+    == Results of the build can be found in the log file /home/users/mschmitt/.local/easybuild/software/tools/HPL/2.0-goolf-1.4.10/easybuild/easybuild-HPL-2.0-20150624.113223.log
     == Build succeeded for 1 out of 1
-    == temporary log file /tmp/easybuild-FWc7Dl/easybuild-MEhAw4.log has been removed.
-    == temporary directory /tmp/easybuild-FWc7Dl has been removed.
+    == temporary log file(s) /tmp/eb-FAO8AO/easybuild-ea15Cq.log* have been removed.
+    == temporary directory /tmp/eb-FAO8AO has been removed.
     
-    real    0m18.573s
-    user    0m9.689s
-    sys     0m3.936s
-    
-    
+    real    1m10.619s
+    user    0m49.387s
+    sys     0m7.828s
 
-Let's have a look at `HPL-2.0-ictce-6.1.5` which is not installed yet. 
+
+Let's have a look at `HPL-2.0-ictce-5.3.0` which is not installed yet. 
 We can check if a software and its dependencies are installed using the `-Dr` option flag:
 
-    $> eb HPL-2.0-ictce-6.1.5.eb -Dr
+    $> eb HPL-2.0-ictce-5.3.0.eb -Dr
     
-    == temporary log file in case of crash /tmp/easybuild-SJb9CJ/easybuild-YJMJjy.log
+    == temporary log file in case of crash /tmp/eb-HlZDMR/easybuild-JbndYN.log
     Dry run: printing build status of easyconfigs and dependencies
-    CFGS=/opt/apps/HPCBIOS.20131224/software/EasyBuild/1.10.0/lib/python2.6/site-packages/easybuild_easyconfigs-1.10.0.0-py2.6.egg/easybuild/easyconfigs
-     * [x] $CFGS/i/icc/icc-2013_sp1.1.106.eb (module: icc/2013_sp1.1.106)
-     * [x] $CFGS/i/ifort/ifort-2013_sp1.1.106.eb (module: ifort/2013_sp1.1.106)
-     * [x] $CFGS/i/impi/impi-4.1.3.045.eb (module: impi/4.1.3.045)
-     * [x] $CFGS/i/imkl/imkl-11.1.1.106.eb (module: imkl/11.1.1.106)
-     * [x] $CFGS/i/ictce/ictce-6.1.5.eb (module: ictce/6.1.5)
-     * [ ] $CFGS/h/HPL/HPL-2.0-ictce-6.1.5.eb (module: HPL/2.0-ictce-6.1.5)
-    == temporary log file /tmp/easybuild-SJb9CJ/easybuild-YJMJjy.log has been removed.
-    == temporary directory /tmp/easybuild-SJb9CJ has been removed.
+    CFGS=/opt/apps/resif/devel/v1.1-20150414/.installRef/easybuild-easyconfigs/easybuild/easyconfigs
+     * [x] $CFGS/i/icc/icc-2013.3.163.eb (module: compiler/icc/2013.3.163)
+     * [x] $CFGS/i/ifort/ifort-2013.3.163.eb (module: compiler/ifort/2013.3.163)
+     * [x] $CFGS/i/iccifort/iccifort-2013.3.163.eb (module: toolchain/iccifort/2013.3.163)
+     * [x] $CFGS/i/impi/impi-4.1.0.030-iccifort-2013.3.163.eb (module: mpi/impi/4.1.0.030-iccifort-2013.3.163)
+     * [x] $CFGS/i/iimpi/iimpi-5.3.0.eb (module: toolchain/iimpi/5.3.0)
+     * [x] $CFGS/i/imkl/imkl-11.0.3.163-iimpi-5.3.0.eb (module: numlib/imkl/11.0.3.163-iimpi-5.3.0)
+     * [x] $CFGS/i/ictce/ictce-5.3.0.eb (module: toolchain/ictce/5.3.0)
+     * [ ] $CFGS/h/HPL/HPL-2.0-ictce-5.3.0.eb (module: tools/HPL/2.0-ictce-5.3.0)
+    == temporary log file(s) /tmp/eb-HlZDMR/easybuild-JbndYN.log* have been removed.
+    == temporary directory /tmp/eb-HlZDMR has been removed.
+
+
+`HPL-2.0-ictce-5.3.0` is not available but all it dependencies are. Let's build it:
+
+    $> time eb HPL-2.0-ictce-5.3.0.eb
     
-
-`HPL-2.0-ictce-6.1.5` is not available but all it dependencies are. Let's build it:
-
-
-    $> time eb HPL-2.0-ictce-6.1.5.eb
-    
-    == temporary log file in case of crash /tmp/easybuild-Vo8xZe/easybuild-IT7Abp.log
-    == resolving dependencies ...
-    == processing EasyBuild easyconfig /opt/apps/HPCBIOS.20131224/software/EasyBuild/1.10.0/lib/python2.6/site-packages/easybuild_easyconfigs-1.10.0.0-py2.6.egg/easybuild/easyconfigs/h/HPL/HPL-2.0-ictce-6.1.5.eb
-    == building and installing HPL/2.0-ictce-6.1.5...
+    == temporary log file in case of crash /tmp/eb-UFlEv7/easybuild-uVbm24.log
+    == processing EasyBuild easyconfig /opt/apps/resif/devel/v1.1-20150414/.installRef/easybuild-easyconfigs/easybuild/easyconfigs/h/HPL/HPL-2.0-ictce-5.3.0.eb
+    == building and installing tools/HPL/2.0-ictce-5.3.0...
     == fetching files...
     == creating build dir, resetting environment...
     == unpacking...
@@ -211,37 +228,31 @@ We can check if a software and its dependencies are installed using the `-Dr` op
     == cleaning up...
     == creating module...
     == COMPLETED: Installation ended successfully
-    == 
-    WARNING: Build exited with exit code 0. 2 possible error(s) were detected in the build logs, please verify the build.
-    
-    == Results of the build can be found in the log file /home/users/xbesseron/.local/  easybuild/software/HPL/2.0-ictce-6.1.5/easybuild/easybuild-HPL-2.0-20140430.151555.log
+    == Results of the build can be found in the log file /home/users/mschmitt/.local/easybuild/software/tools/HPL/2.0-ictce-5.3.0/easybuild/easybuild-HPL-2.0-20150624.113547.log
     == Build succeeded for 1 out of 1
-    == temporary log file /tmp/easybuild-Vo8xZe/easybuild-IT7Abp.log has been removed.
-    == temporary directory /tmp/easybuild-Vo8xZe has been removed.
+    == temporary log file(s) /tmp/eb-UFlEv7/easybuild-uVbm24.log* have been removed.
+    == temporary directory /tmp/eb-UFlEv7 has been removed.
     
-    real    1m3.592s
-    user    0m12.153s
-    sys     0m6.140s
+    real    1m25.849s
+    user    0m49.039s
+    sys     0m10.961s
 
 
+To see the newly installed modules, you need to add the path where they were installed to the MODULEPATH. On the cluster you have to use the `module use` command:
+
+    $> module use $HOME/.local/easybuild/modules/all/
 
 Check which HPL modules are available now:
 
     $> module avail HPL
     
-    -------------- /home/users/xbesseron/.local/easybuild/modules/all --------------
-    HPL/2.0-goolf-1.4.10 HPL/2.0-ictce-6.1.5
+    ------------- /mnt/nfs/users/homedirs/mschmitt/.local/easybuild/modules/all -------------
+        tools/HPL/2.0-goolf-1.4.10    tools/HPL/2.0-ictce-5.3.0 (D)
 
-    ----------------------- /opt/apps/HPCBIOS/modules/tools ------------------------
-    HPL/2.0-cgmpolf-1.1.6       HPL/2.0-goolf-1.4.10
-    HPL/2.0-cgmvolf-1.2.7       HPL/2.0-ictce-4.0.6
-    HPL/2.0-cgoolf-1.1.7        HPL/2.0-ictce-5.3.0
-    HPL/2.0-goalf-1.1.0-no-OFED
-    
+    ---------------- /opt/apps/resif/devel/v1.1-20150414/core/modules/tools ----------------
+        tools/HPL/2.0-goolf-1.4.10 
 
 The two newly-built versions of HPL are now available for your user. You can use them with the usually `module load` command.
-
-
     
 
 ## Amending an existing EasyConfig file
@@ -250,12 +261,11 @@ It is possible to amend existing EasyConfig file to build software with slightly
 
 As a example, we are going to build the lastest version of HPL (2.1) with ICTCE toolchain. We use the `--try-software-version` option flag to overide the HPL version.
 
-    $> time eb HPL-2.0-ictce-6.1.5.eb --try-software-version=2.1
+    $> time eb HPL-2.0-ictce-5.3.0.eb --try-software-version=2.1
     
-    == temporary log file in case of crash /tmp/easybuild-182xZg/easybuild-5dnc25.log
-    == resolving dependencies ...
-    == processing EasyBuild easyconfig /tmp/easybuild-182xZg/HPL-2.1-ictce-6.1.5.eb
-    == building and installing HPL/2.1-ictce-6.1.5...
+    == temporary log file in case of crash /tmp/eb-ocChbK/easybuild-liMmlk.log
+    == processing EasyBuild easyconfig /tmp/eb-ocChbK/tweaked_easyconfigs/HPL-2.1-ictce-5.3.0.eb
+    == building and installing tools/HPL/2.1-ictce-5.3.0...
     == fetching files...
     == creating build dir, resetting environment...
     == unpacking...
@@ -272,27 +282,22 @@ As a example, we are going to build the lastest version of HPL (2.1) with ICTCE 
     == cleaning up...
     == creating module...
     == COMPLETED: Installation ended successfully
-    == Results of the build can be found in the log file /home/users/xbesseron/.local/easybuild/   software/HPL/2.1-ictce-6.1.5/easybuild/easybuild-HPL-2.1-20140430.151656.log
+    == Results of the build can be found in the log file /home/users/mschmitt/.local/easybuild/software/tools/HPL/2.1-ictce-5.3.0/easybuild/easybuild-HPL-2.1-20150624.114243.log
     == Build succeeded for 1 out of 1
-    == temporary log file /tmp/easybuild-182xZg/easybuild-5dnc25.log has been removed.
-    == temporary directory /tmp/easybuild-182xZg has been removed.
-
-    real    0m59.229s
-    user    0m12.305s
-    sys     0m5.824s
+    == temporary log file(s) /tmp/eb-ocChbK/easybuild-liMmlk.log* have been removed.
+    == temporary directory /tmp/eb-ocChbK has been removed.
+    
+    real    1m24.933s
+    user    0m53.167s
+    sys     0m11.533s
 
     $> module avail HPL
     
-    -------------- /home/users/xbesseron/.local/easybuild/modules/all --------------
-    HPL/2.0-goolf-1.4.10 HPL/2.0-ictce-6.1.5
-    HPL/2.1-ictce-6.1.5
-    
-    ----------------------- /opt/apps/HPCBIOS/modules/tools ------------------------
-    HPL/2.0-cgmpolf-1.1.6       HPL/2.0-goolf-1.4.10
-    HPL/2.0-cgmvolf-1.2.7       HPL/2.0-ictce-4.0.6
-    HPL/2.0-cgoolf-1.1.7        HPL/2.0-ictce-5.3.0
-    HPL/2.0-goalf-1.1.0-no-OFED
+    ------------- /mnt/nfs/users/homedirs/mschmitt/.local/easybuild/modules/all -------------
+        tools/HPL/2.0-goolf-1.4.10    tools/HPL/2.0-ictce-5.3.0    tools/HPL/2.1-ictce-5.3.0 (D)
 
+    ---------------- /opt/apps/resif/devel/v1.1-20150414/core/modules/tools ----------------
+        tools/HPL/2.0-goolf-1.4.10
 
 We obtained HPL 2.1 without writing any EasyConfig file.
 
@@ -301,9 +306,10 @@ There are multiple ways to amend a EasyConfig file. Check the `--try-*` option f
 
 ## Build software using your own EasyConfig file
 
-
 For this example, we create an EasyConfig file to build GZip 1.4 with the GOOLF toolchain.
 Open your favorite editor and create a file named `gzip-1.4-goolf-1.4.10.eb` with the following content:
+
+    easyblock = 'ConfigureMake'
 
     name = 'gzip'
     version = '1.4'
@@ -340,10 +346,9 @@ Let's build GZip with this EasyConfig file:
 
     $> time eb gzip-1.4-goolf-1.4.10.eb
 
-    == temporary log file in case of crash /tmp/easybuild-XYUFBw/easybuild-QXd_vb.log
-    == resolving dependencies ...
-    == processing EasyBuild easyconfig /mnt/nfs/users/homedirs/xbesseron/gzip-1.4-goolf-1.4.10.eb
-    == building and installing gzip/1.4-goolf-1.4.10...
+    == temporary log file in case of crash /tmp/eb-hiyyN1/easybuild-ynLsHC.log
+    == processing EasyBuild easyconfig /mnt/nfs/users/homedirs/mschmitt/gzip-1.4-goolf-1.4.10.eb
+    == building and installing base/gzip/1.4-goolf-1.4.10...
     == fetching files...
     == creating build dir, resetting environment...
     == unpacking...
@@ -360,26 +365,22 @@ Let's build GZip with this EasyConfig file:
     == cleaning up...
     == creating module...
     == COMPLETED: Installation ended successfully
-    == Results of the build can be found in the log file /home/users/xbesseron/.local/easybuild/software/gzip/1.4-goolf-1.4.10/easybuild/easybuild-gzip-1.4-20140430.151818.log
+    == Results of the build can be found in the log file /home/users/mschmitt/.local/easybuild/software/base/gzip/1.4-goolf-1.4.10/easybuild/easybuild-gzip-1.4-20150624.114745.log
     == Build succeeded for 1 out of 1
-    == temporary log file /tmp/easybuild-XYUFBw/easybuild-QXd_vb.log has been removed.
-    == temporary directory /tmp/easybuild-XYUFBw has been removed.
+    == temporary log file(s) /tmp/eb-hiyyN1/easybuild-ynLsHC.log* have been removed.
+    == temporary directory /tmp/eb-hiyyN1 has been removed.
     
-    real    1m20.706s
-    user    0m12.293s
-    sys     0m5.912s
-
+    real    1m39.982s
+    user    0m52.743s
+    sys     0m11.297s
 
 
 We can now check that our version of GZip is available via the modules:
 
     $> module avail gzip
 
-    -------------- /home/users/xbesseron/.local/easybuild/modules/all --------------
-    gzip/1.4-goolf-1.4.10
-
-    ----------------------- /opt/apps/HPCBIOS/modules/tools ------------------------
-    gzip/1.5-cgoolf-1.1.7 gzip/1.5-ictce-5.3.0  gzip/1.6-ictce-5.3.0
+    --------- /mnt/nfs/users/homedirs/mschmitt/.local/easybuild/modules/all ---------
+        base/gzip/1.4-goolf-1.4.10
 
 
 
