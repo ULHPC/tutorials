@@ -78,8 +78,9 @@ We will use the launcher `NAIVE_AKA_BAD_launcher_serial.sh` (full path: `$WORK/P
 
 Edit the following variables:
 
+* `MODULE_TO_LOAD` must contain the list of modules to load before executing `$TASK`,
 * `TASK` must contain the path of the executable, 
-* `ARG_TASK_FILE` must contain the path of your parameter file, and the list of needed modules.
+* `ARG_TASK_FILE` must contain the path of your parameter file.
 
         (node)$> nano $WORK/PS2/launcher-scripts/bash/serial/NAIVE_AKA_BAD_launcher_serial.sh
 
