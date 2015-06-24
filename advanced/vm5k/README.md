@@ -12,6 +12,7 @@ to RENATER with a 10 GB/s link, except Reims and Nantes (1 GB/s).
 
 
 The goals of these tutorial is to:
+
 * connect to Grid'5000
 * discover the basic features of Grid'5000
 * use vm5k in order to deploy virtual machines on the grid
