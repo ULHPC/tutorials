@@ -6,11 +6,11 @@
 # Copyright (c) 2013 Sebastien Varrette <Sebastien.Varrette@uni.lu>
 #               http://varrette.gforge.uni.lu
 #
-# Available Commands  
+# Available Commands
 # ------------------
-# make           : Compile files, binaries are generated in the current directory  
-# make force     : Force the complete re-compilation, even if not needed 
-# make clean     : Remove backup files (*~) and other generated files        
+# make           : Compile files, binaries are generated in the current directory
+# make force     : Force the complete re-compilation, even if not needed
+# make clean     : Remove backup files (*~) and other generated files
 #
 ############################## Variables Declarations ############################
 SHELL = /bin/bash
@@ -21,11 +21,11 @@ RUN_DIR     = runs
 SCRIPT_DIR  = scripts
 PLOT_DIR    = plots
 
-SAMPLE_PLOT = $(PLOT_DIR)/benchmark_OSU_MicroBenchs_2H_latency.pdf $(PLOT_DIR)/benchmark_OSU_MicroBenchs_2H_bandwidth.pdf
+SAMPLE_PLOT = $(PLOT_DIR)/benchmark_OSU_2H_latency.pdf $(PLOT_DIR)/benchmark_OSU_2H_bandwidth.pdf
 
 ### Stuff to download
 OSU_MB_URL       = "https://scm.mvapich.cse.ohio-state.edu/benchmarks/osu-micro-benchmarks-4.3.tar.gz"
-OSU_MB_TARBALL   = $(shell basename $(OSU_MB_URL) )  
+OSU_MB_TARBALL   = $(shell basename $(OSU_MB_URL) )
 OSU_MB_SRCDIR    = $(SRC_DIR)/$(shell basename $(OSU_MB_TARBALL) .tar.gz)
 
 OSU_PATCH_FILE   = $(shell git ls-files *.patch)
@@ -39,11 +39,11 @@ LAUNCHER_CONF    = $(wildcard $(RUN_DIR)/*.default.conf)
 LAUNCHER_SCRIPTS = $(LAUNCHER_CONF:.default.conf=)
 
 ############################
-.PHONY: all fetch clean plot 
+.PHONY: all fetch clean plot
 
 all: fetch plot
 
-setup: 
+setup:
 	$(MAKE) -C $(TOP_SRCDIR) setup
 
 fetch:
@@ -72,7 +72,7 @@ patch : uncompress
 		echo "=> the patch has already been applied"; \
 	fi
 
-build: patch __build.impi __build.openmpi __build.mvapich2
+build: patch __build.impi __build.openmpi # __build.mvapich2
 
 __build.%:
 	@echo "=> building OSU Micro-benchmarks with $*"
@@ -84,22 +84,22 @@ __build.%:
 
 
 ifndef OAR_NODEFILE
-run_interactive _run_interactive.impi __run_interactive.openmpi __run_interactive.mvapich2: 
+run_interactive _run_interactive.impi __run_interactive.openmpi: # __run_interactive.mvapich2:
 	@echo "OAR_NODEFILE is not set - you have to be in an interactive job"
 
 run: __run.impi
 
 __run.%:
 	ln -sf $(shell basename $(DEFAULT_LAUNCHER_SCRIPT)) $(RUN_DIR)/launcher_osu_$*
-	@echo "FIXME: not working" 
+	@echo "FIXME: not working"
 	@echo oarsub -n "OSU $*" -O OSU_$*-%jobid%.log -E OSU_$*-%jobid%.log -l enclosure=1/nodes=2/core=1 -S "./$(RUN_DIR)/launcher_osu_$* --datadir $(RUN_DIR)/data/`date +%Y-%m-%d`"
 
 
 else
-run __run.impi __run.openmpi __run.mvapich2: 
+run __run.impi __run.openmpi: # __run.mvapich2:
 	@echo "OAR_NODEFILE is set - you have to be on the access to be able to submit a passive job"
 
-run_interactive: build __run_interactive.impi __run_interactive.openmpi __run_interactive.mvapich2
+run_interactive: build __run_interactive.impi __run_interactive.openmpi # __run_interactive.mvapich2
 
 __run_interactive.%:
 	ln -sf $(shell basename $(DEFAULT_LAUNCHER_SCRIPT)) $(RUN_DIR)/launcher_osu_$*
@@ -110,16 +110,16 @@ endif
 
 plot:
 	$(MAKE) -C $(PLOT_DIR)/
-	@echo "=> You probably want now to see the comparaison plot: \n\t\t$(SAMPLE_PLOT)"
+	@echo "=> You probably want now to see the comparaison plot: $(SAMPLE_PLOT)"
 
-clean: 
+clean:
 	@if [ -f ./$(SRC_DIR)/$(OSU_MB_TARBALL) ]; then \
 		echo "=> removing content of the archive file"; \
 		tar -tf $(SRC_DIR)/$(OSU_MB_TARBALL) | tail -n +2 | sed 's/^osu/\.\/src\/osu/' | xargs rm -f; \
 		git checkout $(OSU_MB_SRCDIR); \
 	else echo "no file ./$(SRC_DIR)/$(OSU_MB_TARBALL)"; \
 	fi
-	rm -rf $(OSU_MB_SRCDIR)/autom4te.cache/ $(OSU_MB_SRCDIR)/build.* 
+	rm -rf $(OSU_MB_SRCDIR)/autom4te.cache/ $(OSU_MB_SRCDIR)/build.*
 	@echo "=> removing $(OSU_MB_TARBALL)"
 	rm -f $(SRC_DIR)/$(OSU_MB_TARBALL)
 	@echo "=> removing launchers scripts"
