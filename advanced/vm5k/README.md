@@ -10,8 +10,10 @@ a highly reconfigurable, controllable and monitorable experimental platform to i
 The infrastructure has reached 1035 nodes and 7782 cores and all sites are connected
 to RENATER with a 10 GB/s link, except Reims and Nantes (1 GB/s).
 
+![G5K map](https://www.grid5000.fr/mediawiki/images/Renater5-g5k.jpg)
 
-The goals of these tutorial is to:
+The objectives of this tutorial are:
+
 * connect to Grid'5000
 * discover the basic features of Grid'5000
 * use vm5k in order to deploy virtual machines on the grid

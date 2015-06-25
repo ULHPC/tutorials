@@ -1,6 +1,6 @@
 `README.md`
 
-Copyright (c) 2014 Valentin Plugaru <Valentin.Plugaru@gmail.com>
+Copyright (c) 2015 Valentin Plugaru <Valentin.Plugaru@uni.lu>
 
 -------------------
 
@@ -14,26 +14,27 @@ visualization and programming, on top of the [UL HPC](http://hpc.uni.lu) platfor
 The tutorial will show you:
 
 1. how to run MATLAB in interactive mode, with either the full graphical interface or the text-mode interface
-2. how to run MATLAB in passive (batch) mode, enabling unattended execution on the clusters
-3. how to use MATLAB script (.m) files
-4. how to plot data, saving the plots to file
-5. how to take advantage of some of the paralelization capabilities of MATLAB to speed up your tasks
+2. how to check the available toolboxes and licenses used
+3. how to run MATLAB in passive (batch) mode, enabling unattended execution on the clusters
+4. how to use MATLAB script (.m) files
+5. how to plot data, saving the plots to file
+6. how to take advantage of some of the paralelization capabilities of MATLAB to speed up your tasks
 
 ## Prerequisites
 
 As part of this tutorial two Matlab example scripts have been developed and you will need to download them,
 along with their dependencies, before following the instructions in the next sections:
 
-        (gaia-frontend)$> mkdir ~/matlab-tutorial
-        (gaia-frontend)$> cd ~/matlab-tutorial
-        (gaia-frontend)$> wget --no-check-certificate https://raw.github.com/ULHPC/tutorials/devel/advanced/MATLAB/example1.m
-        (gaia-frontend)$> wget --no-check-certificate https://raw.github.com/ULHPC/tutorials/devel/advanced/MATLAB/example2.m
-        (gaia-frontend)$> wget --no-check-certificate https://raw.github.com/ULHPC/tutorials/devel/advanced/MATLAB/yahoo_finance_data.m
+        (gaia-frontend)$> mkdir -p ~/matlab-tutorial/code
+        (gaia-frontend)$> cd ~/matlab-tutorial/code
+        (gaia-frontend)$> wget --no-check-certificate https://raw.github.com/ULHPC/tutorials/devel/advanced/MATLAB1/code/example1.m
+        (gaia-frontend)$> wget --no-check-certificate https://raw.github.com/ULHPC/tutorials/devel/advanced/MATLAB1/code/example2.m
+        (gaia-frontend)$> wget --no-check-certificate https://raw.github.com/ULHPC/tutorials/devel/advanced/MATLAB1/code/yahoo_finance_data.m
 
 Or simply clone the full tutorials repository and make a link to the MATLAB tutorial:
 
         (gaia-frontend)$> git clone https://github.com/ULHPC/tutorials.git
-        (gaia-frontend)$> ln -s tutorials/advanced/MATLAB/ ~/matlab-tutorial
+        (gaia-frontend)$> ln -s tutorials/advanced/MATLAB1/ ~/matlab-tutorial
 
 ## Matlab execution in interactive mode
 
@@ -49,7 +50,7 @@ local machine:
   and thus will need to install [XQuartz](http://xquartz.macosforge.org/landing/) if
   the first command below returns an 'X11 forwarding request failed on channel 0' error
 
-- on Windows you will need to run [XMing](http://sourceforge.net/projects/xming/) first
+- on Windows you will need to run [VcXsrv](http://sourceforge.net/projects/vcxsrv/) first
   then to configure Putty (Connection -> SSH -> X11 -> Enable X11 forwarding) before
   logging in to the clusters.
 
@@ -60,10 +61,10 @@ local machine:
         (gaia-frontend)$> oarsub -I
 
         # Check the Matlab versions installed on the clusters:
-        (node)$> module available 2>&1 | grep -i matlab
+        (node)$> module spider matlab
         
         # Load a specific MATLAB version:
-        (node)$> module load MATLAB/2013a
+        (node)$> module load base/MATLAB/2013a
 
         # Check that it has been loaded, along with Java:
         (node)$> module list
@@ -85,7 +86,7 @@ quick executions:
         
         (yourmachine)$> ssh access-gaia.uni.lu
         (gaia-frontend)$> oarsub -I
-        (node)$> module load MATLAB/2013a
+        (node)$> module load base/MATLAB/2013a
      
         # Launch MATLAB with the graphical display mode disabled (critical parameters):
         (node)$> matlab -nodisplay -nosplash
@@ -113,7 +114,7 @@ interface. We will now test some Matlab commands by using the yahoo\_finance\_da
 This function downloads stock market data through the Yahoo! Finance API, and we will use it to get 1 month worth of stock data
 for IBM (whose stock symbol is 'IBM'):
 
-         >> cd('~/matlab-tutorial')
+         >> cd('~/matlab-tutorial/code/')
          >> [hist_date, hist_high, hist_low, hist_open, hist_close, hist_vol] = yahoo_finance_data('IBM', 2014, 2, 1, 2014, 3, 1);
          >> size(hist_date)                                                                                                       
          ans =
@@ -162,11 +163,122 @@ and process data from the Yahoo Finance API and generate the plots.
 Finally, we have closed our Matlab session and were returned to the cluster's command line prompt where we found the generated plots.
 
 A PNG version of the latter two plots is shown below:
-![2D Plot](https://raw.github.com/ULHPC/tutorials/devel/advanced/MATLAB/plots/example1-2dplot.png)
-![3D Scatter Plot](https://raw.github.com/ULHPC/tutorials/devel/advanced/MATLAB/plots/example1-scatter.png)
+![2D Plot](https://raw.github.com/ULHPC/tutorials/devel/advanced/MATLAB1/plots/example1-2dplot.png)
+![3D Scatter Plot](https://raw.github.com/ULHPC/tutorials/devel/advanced/MATLAB1/plots/example1-scatter.png)
 
 Further examples showing serial and parallel executions are given below in the 'Example usage of Matlab in passive mode' section.
-        
+
+## Checking available toolboxes and license status
+
+In order to be able to run MATLAB and specific features provided through the various MATLAB toolboxes, sufficient licenses need to 
+be available. The state of the licenses can be checked with the `lmstat` utility.
+
+First, we will check that the license server is running (an __UP__ status should be shown in the output of lmutil):
+
+         (node)$> module load base/MATLAB
+         (node)$> $EBROOTMATLAB/etc/glnxa64/lmutil lmstat -c $EBROOTMATLAB/licenses/network.lic
+
+Next, we can check the total number of MATLAB licenses available (issued) and how many are used:
+
+         (node)$> $EBROOTMATLAB/etc/glnxa64/lmutil lmstat -c $EBROOTMATLAB/licenses/network.lic -f MATLAB
+
+To check for a specific feature and its usage (e.g. the financial toolbox if we know its name):
+
+         (node)$> $EBROOTMATLAB/etc/glnxa64/lmutil lmstat -c $EBROOTMATLAB/licenses/network.lic -f Financial_toolbox
+
+To see all available toolboxes:
+
+         (node)$> $EBROOTMATLAB/etc/glnxa64/lmutil lmstat -c $EBROOTMATLAB/licenses/network.lic -a
+
+Checking the availability of statistics toolboxes (if we don't know the exact name, but that 'stat' is in the name): 
+
+         (node)$> $EBROOTMATLAB/etc/glnxa64/lmutil lmstat -c $EBROOTMATLAB/licenses/network.lic -a | grep -i stat
+
+Finally, checking the available toolboxes (but with no information on the specific # of available/used licenses), can be done directly from MATLAB, e.g.:
+
+        (node)$> module load base/MATLAB/2014a
+        (node)$> matlab -nodesktop -nodisplay
+            Opening log file:  /home/users/vplugaru/java.log.24914
+            
+                                                                               < M A T L A B (R) >
+                                                                     Copyright 1984-2014 The MathWorks, Inc.
+                                                                       R2014a (8.3.0.532) 64-bit (glnxa64)
+                                                                                February 11, 2014
+            
+             
+            To get started, type one of these: helpwin, helpdesk, or demo.
+            For product information, visit www.mathworks.com.
+             
+            >> ver
+            ----------------------------------------------------------------------------------------------------
+            MATLAB Version: 8.3.0.532 (R2014a)
+            MATLAB License Number: 886910
+            Operating System: Linux 3.2.0-4-amd64 #1 SMP Debian 3.2.65-1+deb7u2 x86_64
+            Java Version: Java 1.7.0_11-b21 with Oracle Corporation Java HotSpot(TM) 64-Bit Server VM mixed mode
+            ----------------------------------------------------------------------------------------------------
+            MATLAB                                                Version 8.3        (R2014a)
+            Simulink                                              Version 8.3        (R2014a)
+            Aerospace Blockset                                    Version 3.13       (R2014a)
+            Aerospace Toolbox                                     Version 2.13       (R2014a)
+            Bioinformatics Toolbox                                Version 4.4        (R2014a)
+            Communications System Toolbox                         Version 5.6        (R2014a)
+            Computer Vision System Toolbox                        Version 6.0        (R2014a)
+            Control System Toolbox                                Version 9.7        (R2014a)
+            Curve Fitting Toolbox                                 Version 3.4.1      (R2014a)
+            DSP System Toolbox                                    Version 8.6        (R2014a)
+            Database Toolbox                                      Version 5.1        (R2014a)
+            Datafeed Toolbox                                      Version 4.7        (R2014a)
+            Econometrics Toolbox                                  Version 3.0        (R2014a)
+            Embedded Coder                                        Version 6.6        (R2014a)
+            Filter Design HDL Coder                               Version 2.9.5      (R2014a)
+            Financial Instruments Toolbox                         Version 1.3        (R2014a)
+            Financial Toolbox                                     Version 5.3        (R2014a)
+            Fixed-Point Designer                                  Version 4.2        (R2014a)
+            Fuzzy Logic Toolbox                                   Version 2.2.19     (R2014a)
+            Global Optimization Toolbox                           Version 3.2.5      (R2014a)
+            HDL Coder                                             Version 3.4        (R2014a)
+            HDL Verifier                                          Version 4.4        (R2014a)
+            Image Acquisition Toolbox                             Version 4.7        (R2014a)
+            Image Processing Toolbox                              Version 9.0        (R2014a)
+            Instrument Control Toolbox                            Version 3.5        (R2014a)
+            MATLAB Builder JA                                     Version 2.3.1      (R2014a)
+            MATLAB Coder                                          Version 2.6        (R2014a)
+            MATLAB Compiler                                       Version 5.1        (R2014a)
+            MATLAB Report Generator                               Version 3.16       (R2014a)
+            Mapping Toolbox                                       Version 4.0.1      (R2014a)
+            Model Predictive Control Toolbox                      Version 4.2        (R2014a)
+            Neural Network Toolbox                                Version 8.2        (R2014a)
+            Optimization Toolbox                                  Version 7.0        (R2014a)
+            Parallel Computing Toolbox                            Version 6.4        (R2014a)
+            Partial Differential Equation Toolbox                 Version 1.4        (R2014a)
+            Phased Array System Toolbox                           Version 2.2        (R2014a)
+            RF Toolbox                                            Version 2.14       (R2014a)
+            Robust Control Toolbox                                Version 5.1        (R2014a)
+            Signal Processing Toolbox                             Version 6.21       (R2014a)
+            SimBiology                                            Version 5.0        (R2014a)
+            SimDriveline                                          Version 2.6        (R2014a)
+            SimElectronics                                        Version 2.5        (R2014a)
+            SimEvents                                             Version 4.3.2      (R2014a)
+            SimHydraulics                                         Version 1.14       (R2014a)
+            SimMechanics                                          Version 4.4        (R2014a)
+            SimPowerSystems                                       Version 6.1        (R2014a)
+            SimRF                                                 Version 4.2        (R2014a)
+            Simscape                                              Version 3.11       (R2014a)
+            Simulink 3D Animation                                 Version 7.1        (R2014a)
+            Simulink Code Inspector                               Version 2.1        (R2014a)
+            Simulink Coder                                        Version 8.6        (R2014a)
+            Simulink Control Design                               Version 4.0        (R2014a)
+            Simulink Design Optimization                          Version 2.5        (R2014a)
+            Simulink Design Verifier                              Version 2.6        (R2014a)
+            Simulink Report Generator                             Version 3.16       (R2014a)
+            Simulink Verification and Validation                  Version 3.7        (R2014a)
+            Stateflow                                             Version 8.3        (R2014a)
+            Statistics Toolbox                                    Version 9.0        (R2014a)
+            Symbolic Math Toolbox                                 Version 6.0        (R2014a)
+            System Identification Toolbox                         Version 9.0        (R2014a)
+            SystemTest                                            Version 2.6.7      (R2014a)
+            Wavelet Toolbox                                       Version 4.13       (R2014a)
+
 ## Matlab execution in passive mode
 
 For non-interactive or long executions, MATLAB can be ran in passive mode, reading all commands from
@@ -193,7 +305,7 @@ resources needlessly.
         
 The following minimal example shows how to run a serial (1 core) MATLAB script for 24 hours in passive mode:
 
-        (gaia-frontend)$> oarsub -l walltime=24:00:00 "source /etc/profile; module load MATLAB; matlab -nodisplay -nosplash < INPUTFILE.m > OUTPUTFILE.out"
+        (gaia-frontend)$> oarsub -l walltime=24:00:00 "source /etc/profile; module load base/MATLAB; matlab -nodisplay -nosplash < INPUTFILE.m > OUTPUTFILE.out"
 
 Ideally you __would not__ run MATLAB jobs like this but instead [create/adapt a launcher script](https://github.com/ULHPC/launcher-scripts) to contain those instructions. A minimal shell script (e.g. named 'your\_matlab\_launcher.sh') could be:
 
@@ -203,7 +315,7 @@ Ideally you __would not__ run MATLAB jobs like this but instead [create/adapt a 
         INPUTFILE=your_input_file_name_without_extension
         OUTPUTFILE=your_output_file_name_with_extension.out
         # Load a specific version of MATLAB and run the input script:
-        module load MATLAB/2013b
+        module load base/MATLAB/2013b
         matlab -nodisplay -nosplash -r $INPUTFILE -logfile $OUTPUTFILE
 
 then launch it in a job (e.g. requesting 6 cores on 1 node for 10 hours - assuming your input file takes advantage of the parallel cores):
@@ -224,17 +336,17 @@ In this section we will use the _example2.m_ script which shows:
 By default the parallel section of the script uses up to 4 threads, thus for a first test we will request 4 cores on 1
 compute node for 5 minutes:
   
-        (gaia-frontend)$> cd ~/matlab-tutorial
+        (gaia-frontend)$> cd ~/matlab-tutorial/code
         # Create a file called matlab-minlauncher.sh with launching commands
         (gaia-frontend)$> cat << EOF > matlab-minlauncher.sh
         #!/bin/bash
         source /etc/profile
-        module load MATLAB/2013a
+        module load base/MATLAB/2013a
         cd ~/matlab-tutorial
         matlab -nodisplay -nosplash -r example2 -logfile example2.out
         EOF
         (gaia-frontend)$> chmod +x matlab-minlauncher.sh
-        (gaia-frontend)$> oarsub -l nodes=1/core=4,walltime=00:05:00 ~/matlab-tutorial/matlab-minlauncher.sh
+        (gaia-frontend)$> oarsub -l nodes=1/core=4,walltime=00:05:00 ~/matlab-tutorial/code/matlab-minlauncher.sh
         # we now wait for the job to complete execution
         (gaia-frontend)$> cat example2.out
 				    < M A T L A B (R) >
@@ -283,7 +395,7 @@ compute node for 5 minutes:
 The script is also able to read an environment variable _MATLABMP_ and create as many parallel threads as specified in this variable.
 We will now generate another launcher which will set this variable to the number of cores we specified to OAR.
 
-        (gaia-frontend)$> cd ~/matlab-tutorial
+        (gaia-frontend)$> cd ~/matlab-tutorial/code
         (gaia-frontend)$> cat << EOF > matlab-minlauncher2.sh
         #!/bin/bash
         source /etc/profile
@@ -293,7 +405,7 @@ We will now generate another launcher which will set this variable to the number
         matlab -nodisplay -nosplash -r example2 -logfile example2b.out
         EOF
         (gaia-frontend)$> chmod +x matlab-minlauncher2.sh
-        (gaia-frontend)$> oarsub -l nodes=1/core=6,walltime=00:05:00 ~/matlab-tutorial/matlab-minlauncher2.sh
+        (gaia-frontend)$> oarsub -l nodes=1/core=6,walltime=00:05:00 ~/matlab-tutorial/code/matlab-minlauncher2.sh
         # we now wait for the job to complete execution
         (gaia-frontend)$> head -n 17 example2b.out 
 				      < M A T L A B (R) >
@@ -322,8 +434,8 @@ target GPU nodes and see that the last test of example2.m will also be executed.
 Before testing the following commands, edit the `matlab-minlauncher2.sh` script and make MATLAB store its output in a `example2c.out`
 file.
 
-      (gaia-frontend)$> cd ~/matlab-tutorial
-      (gaia-frontend)$> oarsub -l nodes=1/core=6,walltime=00:05:00 -p "gpu='YES'" ~/matlab-tutorial/matlab-minlauncher2.sh
+      (gaia-frontend)$> cd ~/matlab-tutorial/code
+      (gaia-frontend)$> oarsub -l nodes=1/core=6,walltime=00:05:00 -p "gpu='YES'" ~/matlab-tutorial/code/matlab-minlauncher2.sh
       # now wait for the job to complete execution, then check the output file
       (gaia-frontend)$> tail -n 5 example2c.out 
         -- GPU test 
@@ -333,7 +445,7 @@ file.
         -- GPU with overhead vs Serial speedup: 1.019151.
 
 The following plot shows a sample speedup obtained by using parfor on Gaia, with up to 12 parallel threads:
-![Parfor speedup](https://raw.github.com/ULHPC/tutorials/devel/advanced/MATLAB/plots/parfor-speedup.png)
+![Parfor speedup](https://raw.github.com/ULHPC/tutorials/devel/advanced/MATLAB1/plots/parfor-speedup.png)
 
 Relative to the fast execution of the inner instruction (which calculates the eigenvalues of a matrix) 
 the overhead given by the creation of the parallel pool and the task assignations is quite high in this example,
