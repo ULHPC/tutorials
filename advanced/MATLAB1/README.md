@@ -342,7 +342,7 @@ compute node for 5 minutes:
         #!/bin/bash
         source /etc/profile
         module load base/MATLAB/2013a
-        cd ~/matlab-tutorial
+        cd ~/matlab-tutorial/code
         matlab -nodisplay -nosplash -r example2 -logfile example2.out
         EOF
         (gaia-frontend)$> chmod +x matlab-minlauncher.sh
@@ -399,8 +399,8 @@ We will now generate another launcher which will set this variable to the number
         (gaia-frontend)$> cat << EOF > matlab-minlauncher2.sh
         #!/bin/bash
         source /etc/profile
-        module load MATLAB/2013a
-        cd ~/matlab-tutorial
+        module load base/MATLAB/2013a
+        cd ~/matlab-tutorial/code
         export MATLABMP=$(cat $OAR_NODEFILE | wc -l)
         matlab -nodisplay -nosplash -r example2 -logfile example2b.out
         EOF
