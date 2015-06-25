@@ -76,7 +76,8 @@ The upper layer of the architecture is what we call a *software set*. It is a co
 The main goal of these categories is to provide information on the degree of support for the various software.
 
 Inside these sets, software is named in regards to a *naming scheme* which classifies the software (e.g. compilers, physics) and allows for a better structuring of results with the `module avail` command.  
-The software named using this scheme has the following format: **software_class/software_name/software_complete_version** where  
+The software named using this scheme has the following format: **software_class/software_name/software_complete_version** where
+
 - **software_class** describes the category among the following classes: [base, bio, cae, chem, compiler, data, debugger, devel, lang, lib, math, mpi, numlib, phys, system, toolchain, tools, vis]
 - **software_name** is the name of the software (e.g. GROMACS, MATLAB, R or ABySS)
 - **software_complete_version** is the full version of the software: containing the version of the software itself followed by the type and version of the main dependencies it relies on (e.g. compiler) with the following format: software_version-dependencies_versions

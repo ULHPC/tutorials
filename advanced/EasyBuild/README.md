@@ -36,8 +36,11 @@ A **toolchain** corresponds to a compiler and a set of libraries which are commo
 An **EasyConfig file** is a simple text file that describes the build process of a software. For most software that uses standard procedure (like `configure`, `make` and `make install`), this file is very simple. Many EasyConfig files are already provided with EasyBuild.
 
 
-EasyConfig files and generated modules are named using the following convention:
-`<Software-Name>-<Software-Version>-<Toolchain-Name>-<Toolchain-Version>` 
+By default, EasyConfig files and generated modules are named using the following convention:
+`<Software-Name>-<Software-Version>-<Toolchain-Name>-<Toolchain-Version>`
+
+On the cluster however, for the module names we use a custom naming convention that is explained in the RESIF tutorial:  
+`<Software-Class>/<Software-Name>/<Software-Version>-<Toolchain-Name>-<Toolchain-Version>`
 
 Additional details are available on EasyBuild website:
 
