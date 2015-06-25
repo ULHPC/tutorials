@@ -8,10 +8,12 @@ for research in large-scale parallel and distributed systems. It aims at providi
 a highly reconfigurable, controllable and monitorable experimental platform to its users.
 
 The infrastructure has reached 1035 nodes and 7782 cores and all sites are connected
-to RENATER with a 10 GB/s link, except Reims and Nantes (1 GB/s).
+to RENATER with a 10 Gb/s link, except Reims and Nantes (1 Gb/s).
 
+![G5K map](https://www.grid5000.fr/mediawiki/images/Renater5-g5k.jpg)
 
-The goals of these tutorial is to:
+The objectives of this tutorial are:
+
 * connect to Grid'5000
 * discover the basic features of Grid'5000
 * use vm5k in order to deploy virtual machines on the grid
@@ -88,22 +90,22 @@ You will install VM5K in your home directory.
 
 * Specify the proxy configuration
 
-    (frontend) export http_proxy="http://proxy:3128"
-    (frontend) export https_proxy="https://proxy:3128"
+        (frontend) export http_proxy="http://proxy:3128"
+        (frontend) export https_proxy="https://proxy:3128"
 
 * Install execo, which is a dependency of vm5k
 
-    (frontend) easy_install --user execo
+        (frontend) easy_install --user execo
 
 * Clone the git repository of vm5k and install it
 
-    (frontend) git clone https://github.com/lpouillo/vm5k.git
-    (frontend) cd vm5k
-    (frontend) python setup.py  install --user
+        (frontend) git clone https://github.com/lpouillo/vm5k.git
+        (frontend) cd vm5k
+        (frontend) python setup.py  install --user
 
 * In your bashrc file, add the ~/.local/bin directory to the PATH environment variable
 
-    (frontend) echo 'export PATH=$PATH:~/.local/bin' >> ~/.bashrc
+        (frontend) echo 'export PATH=$PATH:~/.local/bin' >> ~/.bashrc
 
 ## Usage
 
@@ -113,7 +115,7 @@ Each deployment takes around 20 minutes, so you don't have to execute all the fo
 
 * spawn 20 VMs on the granduc cluster, with a walltime of 30 minutes, and write the output files in the directory `vm5k_test`:
 
-    (frontend) vm5k --n_vm 10 -r granduc -w 0:30:00 -o vm5k_test
+        (frontend) vm5k --n_vm 10 -r granduc -w 0:30:00 -o vm5k_test
 
 You'll find the list of VMs with their ips in the file vm5k_test/vms.list
 
@@ -129,21 +131,21 @@ You'll find the list of VMs with their ips in the file vm5k_test/vms.list
 
 * Let's spawn 100 VMs on 2 hosts in Nancy and Luxembourg
 
-    (frontend) vm5k --n_vm 10 -r nancy:1,luxembourg:1 -w 0:30:00 -o vm5k_test
+        (frontend) vm5k --n_vm 10 -r nancy:1,luxembourg:1 -w 0:30:00 -o vm5k_test
 
 * We can also specify the VM template (resources) with the parameter `--vm_template`
 
-    (frontend) vm5k --n_vm 10 -r nancy:2,luxembourg:2 -w 0:30:00 -o vm5k_test --vm_template '<vm mem="4096" hdd="10" n_cpu="4" cpuset="auto"/>'
+        (frontend) vm5k --n_vm 10 -r nancy:2,luxembourg:2 -w 0:30:00 -o vm5k_test --vm_template '<vm mem="4096" hdd="10" n_cpu="4" cpuset="auto"/>'
 
 ### Distribution
 
 * Balance the nodes on all the reserved hosts
 
-    (frontend) vm5k --n_vm 100 -r granduc:4 -o vm5k_test -d n_by_hosts
+        (frontend) vm5k --n_vm 100 -r granduc:4 -o vm5k_test -d n_by_hosts
 
 * Concentrate the VMs on a minimal number of hosts
 
-    (frontend) vm5k -r grid5000:20 -n 100 -o vm5k_test -d concentrated
+        (frontend) vm5k -r grid5000:20 -n 100 -o vm5k_test -d concentrated
 
 ### Advanced feature: define the deployment topology
 
@@ -193,50 +195,52 @@ This is an example, munin will allow you to monitor the activity on all the VMs.
 
 * Spawn 100 VMs
 
-    (frontend) vm5k --n_vm 100 -r luxembourg -o hpcschool2015 -o vm5k_xp
+        (frontend) vm5k --n_vm 50 -w 2:00:00 -r luxembourg -o hpcschool2015 -o vm5k_xp
 
 * Launch a script on all the VMs after their deployment, we will use `taktuk` (you could also clush, pdsh, etc)
 
-    (frontend) taktuk -l root -f vm5k_xp/vms.list broadcast exec [ apt-get update ]
-    (frontend) taktuk -l root -f vm5k_xp/vms.list broadcast exec [ apt-get install -y munin-node stress ]
-    (frontend) taktuk -l root -f vm5k_xp/vms.list broadcast exec [ 'echo cidr_allow 10.0.0.0/8 >> /etc/munin/munin-node.conf' ]
-    (frontend) taktuk -l root -f vm5k_xp/vms.list broadcast exec [ '/etc/init.d/munin-node restart' ]
+        (frontend) taktuk -l root -f vm5k_xp/vms.list broadcast exec [ apt-get update ]
+        (frontend) taktuk -l root -f vm5k_xp/vms.list broadcast exec [ apt-get install -y munin-node stress ]
+        (frontend) taktuk -l root -f vm5k_xp/vms.list broadcast exec [ 'echo cidr_allow 10.0.0.0/8 >> /etc/munin/munin-node.conf' ]
+        (frontend) taktuk -l root -f vm5k_xp/vms.list broadcast exec [ '/etc/init.d/munin-node restart' ]
 
 ### Install munin server on the first physical host
 
-Choose the first virtual machines
+* Choose the first virtual machines
 
-    (frontend) head -n 1 vm5k-xp/vms.list
-    10.172.1.45     vm-1
+        (frontend) head -n 1 vm5k_xp/vms.list
+        10.172.1.45     vm-1
 
-Transfer the list of virtual machines to the VM
+* Transfer the list of virtual machines to the VM
 
-    (frontend) scp vm5k-xp/vms.list root@10.172.1.45:/tmp/
+        (frontend) scp vm5k_xp/vms.list root@10.172.1.45:/tmp/
 
-Connect to the VM in order to install and configure munin
+* Connect to the VM in order to install and configure munin
 
-    (frontend) ssh root@10.172.1.45
+        (frontend) ssh root@10.172.1.45
 
-    (vm-1) apt-get install munin apache2
+        (vm-1) apt-get install munin apache2
 
-    (vm-1)  sed -i '/[aA]llow/d' /etc/apache2/conf.d/munin
-    (vm-1) apache2ctl restart
+* Configure the Apache http server
 
-Generate the munin configuration
+        (vm-1) sed -i '/[aA]llow/d' /etc/apache2/conf.d/munin
+        (vm-1) apache2ctl restart
 
-    (vm-1) cat /tmp/vms.list  | awk '{print "["$2".g5k]\n    address "$1}' >> /etc/munin/munin.conf
-    (vm-1) /etc/init.d/munin restart
+* Generate the munin configuration
+
+        (vm-1) cat /tmp/vms.list  | awk '{print "["$2".g5k]\n    address "$1"\n    use_node_name yes\n"}' >> /etc/munin/munin.conf
+        (vm-1) /etc/init.d/munin restart
 
 
 ### Connect to munin
 
-Let's generate a fake activity, stress the VM during 60 seconds
+* Let's generate a fake activity, stress the VM during 60 seconds
 
-    (frontend) taktuk -l root -f hpcschool2015/vms.list broadcast exec [ 'stress -c 1 -t 60' ]
+        (frontend) taktuk -l root -f hpcschool2015/vms.list broadcast exec [ 'stress -c 1 -t 60' ]
 
-Open a ssh tunnel
+* Open a ssh tunnel on port 80
 
-    (user) ssh -L1080:10.172.1.45:80 <login>@grid5000.uni.lu
+        (user) ssh -L1080:10.172.1.45:80 <login>@grid5000.uni.lu
 
 Open a browser and navigates to <http://localhost:1080>
 

@@ -2,7 +2,7 @@
 ################################################################################
 # build.osu - Build OSU Micro-benchmarks
 ################################################################################
-set -e
+# set -e
 
 # Load Modules
 if [ -f  /etc/profile ]; then
@@ -19,7 +19,7 @@ STARTDIR="$(pwd)"
 SCRIPTFILENAME=$(basename $0)
 SCRIPTDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-TOP_DIR=`realpath "${SCRIPTDIR}/.."`
+TOP_DIR="${SCRIPTDIR}/.."
 TOP_SRCDIR="${TOP_DIR}/src/osu-micro-benchmarks-4.3"
 TOP_RUNDIR="${TOP_DIR}/runs"
 
@@ -53,14 +53,14 @@ execute() {
 # Check for command-line options
 while [ $# -ge 1 ]; do
     case $1 in
-        -h | --help)    
+        -h | --help)
             echo "Usage: $0 [--srcdir DIR] {openmpi | ictce | mvapich2}"
             exit 0;;
         --debug)  DEBUG="$1";;
         -v)       VERBOSE="$1";;
         -n | --dry-run) SIMULATION="$1";;
-        --srcdir) SRC_DIR=$1; shift;; 
-        openmpi | mvapich2 | ictce | impi) 
+        --srcdir) SRC_DIR=$1; shift;;
+        openmpi | mvapich2 | ictce | impi)
             SUITE=$1;;
     esac
     shift
@@ -75,15 +75,15 @@ build_dir=${TOP_SRCDIR}/build.${SUITE}
 
 mkdir -p ${build_dir}
 
-case ${SUITE} in 
-    openmpi)      MPICC=mpicc;  MODULE=OpenMPI;;
-    mvapich*)     MPICC=mpicc;  MODULE=MVAPICH2;;
-    ictce | impi) MPICC=mpiicc; MODULE=ictce;;
+case ${SUITE} in
+    openmpi)      MPICC=mpicc;  MODULE=mpi/OpenMPI;;
+    mvapich*)     MPICC=mpicc;  MODULE=mpi/MVAPICH2;;
+    ictce | impi) MPICC=mpiicc; MODULE=toolchain/ictce;;
 esac
 
 echo "=> installing OSU Micro-benchmarks with ${MODULE}"
 
-if [ -d "${build_dir}" ]; then 
+if [ -d "${build_dir}" ]; then
     execute "module purge"
     execute "module load ${MODULE}"
     execute "module list"

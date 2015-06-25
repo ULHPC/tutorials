@@ -11,7 +11,7 @@ The [third chapter](#replicating-the-architecture-of-the-platform-on-a-local-env
 ## Using the software environment available on the UL HPC platform
 
 Before starting this tutorial, please make sure you are on a compute node of Gaia/Chaos and not on the access node. To get resources on a compute node, use the following command:  
-`(access)$> oarsub -I -l nodes=1,walltime=1:00:00`  
+`(access)$> oarsub -I -l core=1,walltime=1:00:00`  
 (for more details about this command and the node reservation process on the clusters, please referer to the [ULHPC documentation](https://hpc.uni.lu/users/docs/oar.html).)
 
 Using the software available on the UL HPC platform is done through [Lmod](https://www.tacc.utexas.edu/research-development/tacc-projects/lmod) which provide a `module` command that we review in the following section.
