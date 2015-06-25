@@ -110,7 +110,7 @@ endif
 
 plot:
 	$(MAKE) -C $(PLOT_DIR)/
-	@echo "=> You probably want now to see the comparaison plot: \n\t\t$(SAMPLE_PLOT)"
+	@echo "=> You probably want now to see the comparaison plot: $(SAMPLE_PLOT)"
 
 clean:
 	@if [ -f ./$(SRC_DIR)/$(OSU_MB_TARBALL) ]; then \
