@@ -24,7 +24,7 @@ The latest version of this tutorial is available on
 
 ## Short introduction to EasyBuild
 
-EasyBuild is a tool that allows to perform automated and reproducible compilation and installation of software. A large number of scientific software are supported (118 software packages in the last release).
+EasyBuild is a tool that allows to perform automated and reproducible compilation and installation of software. A large number of scientific software are supported (649 software packages in the last release).
 
 All builds and installations are performed at user level, so you don't need the admin rights. 
 The software are installed in your home directory (by default in `$HOME/.local/easybuild/software/`) and a module file is generated (by default in `$HOME/.local/easybuild/modules/`) to use the software.
