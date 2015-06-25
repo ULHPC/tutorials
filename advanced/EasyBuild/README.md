@@ -19,12 +19,12 @@ Before starting this tutorial, ensure you are able to [connect to the chaos and 
 	(access)$> 	oarsub -I -l nodes=1,walltime=4
 
 
-The latest version of this tutorial is available on our
-[readthedocs](http://ulhpc-tutorials.readthedocs.org/en/latest/advanced/easybuild/) documentation.
+The latest version of this tutorial is available on
+[Github](https://github.com/ULHPC/tutorials/tree/devel/advanced/EasyBuild).
 
 ## Short introduction to EasyBuild
 
-EasyBuild is a tool that allows to perform automated and reproducible compilation and installation of software. A large number of scientific software are supported (479 software packages in the last release).
+EasyBuild is a tool that allows to perform automated and reproducible compilation and installation of software. A large number of scientific software are supported (118 software packages in the last release).
 
 All builds and installations are performed at user level, so you don't need the admin rights. 
 The software are installed in your home directory (by default in `$HOME/.local/easybuild/software/`) and a module file is generated (by default in `$HOME/.local/easybuild/modules/`) to use the software.
