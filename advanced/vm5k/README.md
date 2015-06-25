@@ -8,7 +8,7 @@ for research in large-scale parallel and distributed systems. It aims at providi
 a highly reconfigurable, controllable and monitorable experimental platform to its users.
 
 The infrastructure has reached 1035 nodes and 7782 cores and all sites are connected
-to RENATER with a 10 GB/s link, except Reims and Nantes (1 GB/s).
+to RENATER with a 10 Gb/s link, except Reims and Nantes (1 Gb/s).
 
 ![G5K map](https://www.grid5000.fr/mediawiki/images/Renater5-g5k.jpg)
 
