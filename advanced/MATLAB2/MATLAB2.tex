@@ -44,7 +44,8 @@
 \subtitle{Checkpointing \& parallel execution}
 
 \author{Valentin Plugaru}
-\institute[PCOG Research unit]{
+\institute[UL HPC, PCOG Research unit]{
+  \href{http://hpc.uni.lu}{UL HPC} Management Team,\\
   Parallel Computing and Optimization Group (\href{http://pcog.uni.lu}{PCOG}),
   University of Luxembourg (\href{http://www.uni.lu}{UL}), Luxembourg
 }
@@ -274,6 +275,76 @@
    \end{itemize}
 \vspace{-2ex}
 \end{block}
+}
+
+\section{Parallelization}
+
+\begin{frame}
+  \frametitle{Reference documentation}
+  \begin{itemize}
+   \item \emph{Parallel Computing Toolbox} \hfill\myurl{http://www.mathworks.nl/help/distcomp/index.html}
+   \item Parallel for-Loops (parfor) \hfill\myurl{http://www.mathworks.nl/help/distcomp/getting-started-with-parfor.html}
+   \item GPU Computing \hfill\myurl{http://www.mathworks.nl/discovery/matlab-gpu.html}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Accelerate the time to result}
+  \begin{itemize}
+   \setlength\itemsep{3ex}
+   \item[Option 1:] Split input over several parallel, independent, MATLAB jobs
+   \begin{itemize}
+    \item great \emph{if} it's possible (embarrassingly parallel problem)
+   \end{itemize}
+   \pause
+   \item[Option 2:] Use \emph{parfor} to execute loop iterations in parallel
+   \begin{itemize}
+    \item single node \emph{only}
+    \item we have 120 \& 160 core nodes on which big problems can be tackled
+   \end{itemize}
+   \pause
+   \item[Option 3:] Use GPU-enabled functions that work on the \emph{gpuArray} data type
+   \begin{itemize}
+    \item \emph{require} the code to be run on GPU nodes (subset of Gaia)
+    \item \emph{great speedup} for some workloads
+    \item \emph{295} in-built MATLAB functions work on gpuArray \\ { \tiny including discrete Fourier transform, matrix multiplication, left matrix division}
+   \end{itemize}
+   \pause
+   \item[Option 4:] MATLAB Distributed Computing Server (MDCS)
+   \begin{itemize}
+    \item allows multi-node parallel execution
+    \item \emph{not yet} part of the UL MATLAB license
+   \end{itemize}
+   \end{itemize}
+\end{frame}
+
+
+\subsection{Example 2 revisited}
+
+% .......
+\frame{
+  \frametitle{Speed up your seq. code}
+ 
+  \textbf{example2.m}: non-interactive script that shows:
+  \begin{itemize}
+   \item the serial execution of time consuming operations
+   \begin{itemize}
+    \item the parallel execution and relative speedup vs serial execution
+    \item setting the \# of parallel threads through environment variables
+    \item GPU-based parallel execution
+    \end{itemize}
+  \end{itemize}
+  \only<1>{\centering\includegraphics[width=0.45\linewidth,keepaspectratio]{plots/parfor-speedup.eps}}
+  \only<2>{\begin{block}{Tasks to tackle}
+   \begin{itemize}
+    \item execute the script on regular vs GPU nodes (with different GPUs)
+    \item increase \# of iterations, matrix size
+    \item increase \# of workers with/without changing the \# of requested cores
+    \item modify the script with other GPU-enabled functions
+   \end{itemize}
+   \vspace{-2ex}
+   \end{block}
+  }
 }
 
 \section{Conclusion}
