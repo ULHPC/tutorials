@@ -188,13 +188,14 @@ Q: What do you observe ?
 in order to re-use it later for restarting the execution.
 Checkpointing your jobs brings the following features:
 
-* the job can overcome the default queue limit, especially the maximum walltime
+* the job can overcome the limits of the default queue, especially the maximum walltime
 * fault tolerance, your job can survive even if the node crash
 
 You can implement a checkpointing mechanism yourself in your applications, or you can try with BLCR.
-In all cases, your checkpointing mechanism must be chosen on a case by case basis.
+In all cases, your checkpointing mechanism must be chosen on a case by case basis, BLCR is not the only solution. 
+Note that BLCR has some limitations, especially with sockets and network communication.
 
-Here, we will use BLCR, which works in some cases, but has some limitations, especially with sockets and network communication.
+In this exercise, we will use BLCR with MATLAB.
 
 BLCR can be used with 3 commands:
 
@@ -263,6 +264,11 @@ In the "Job settings" section, load the Matlab module by adding this line:
 Submit your job with this command
 
     oarsub --checkpoint 30 --signal 12 -l walltime=00:02:00 -t besteffort -t idempotent $WORK/PS6/launcher-scripts/bash/besteffort/launcher_checkpoint_restart.sh
+
+Look at the OAR output in the stdout file and monitor the running jobs with oarstat.
+
+Note that BLCR restore the full context of the job, including the file descriptors.
+Therefore, the output of MATLAB is always sent to the stdout file of the initial job.
 
 # Please, clean your files
 
