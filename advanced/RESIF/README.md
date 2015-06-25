@@ -8,6 +8,8 @@ The [first chapter](#understanding-and-using-the-software-available-on-the-ul-hp
 The [second chapter](#adding-a-software-to-the-existing-stack) defines the process of adding new software to the existing stack as a user using RESIF, the tool developed internally to manage the software stack on the UL HPC platform.  
 The [third chapter](#replicating-the-architecture-of-the-platform-on-a-local-environment) explains the process of reproducing the software stack present on the platform, or part of it, in a local environment.
 
+The latest version of this document can be found on [Github](https://github.com/ULHPC/tutorials/tree/devel/advanced/RESIF).
+
 ## Using the software environment available on the UL HPC platform
 
 Before starting this tutorial, please make sure you are on a compute node of Gaia/Chaos and not on the access node. To get resources on a compute node, use the following command:  
