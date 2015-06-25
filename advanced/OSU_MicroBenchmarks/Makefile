@@ -21,7 +21,7 @@ RUN_DIR     = runs
 SCRIPT_DIR  = scripts
 PLOT_DIR    = plots
 
-SAMPLE_PLOT = $(PLOT_DIR)/benchmark_OSU_MicroBenchs_2H_latency.pdf $(PLOT_DIR)/benchmark_OSU_MicroBenchs_2H_bandwidth.pdf
+SAMPLE_PLOT = $(PLOT_DIR)/benchmark_OSU_2H_latency.pdf $(PLOT_DIR)/benchmark_OSU_2H_bandwidth.pdf
 
 ### Stuff to download
 OSU_MB_URL       = "https://scm.mvapich.cse.ohio-state.edu/benchmarks/osu-micro-benchmarks-4.3.tar.gz"
