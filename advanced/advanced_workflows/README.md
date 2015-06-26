@@ -1,5 +1,5 @@
-Advanced HPC workflow with sequential jobs
-==========================================
+Advanced workflows on sequential jobs management
+================================================
 
 # Prerequisites
 
@@ -79,7 +79,7 @@ Note that an inner job can not be a reservation (ie. it cannot overlap the conta
 Let's create an array of 5 jobs. 
 With an array, in one oarsub command, you can submit N sub jobs.
 
-    oarsub --array 5 -n array_job_test -l /core=1 $WORK/PS6/tutorials/advanced/advanced_parametric_jobs/scripts/array_job.sh
+    oarsub --array 5 -n array_job_test -l /core=1 $WORK/PS6/tutorials/advanced/advanced_workflows/scripts/array_job.sh
 
     OAR_JOB_ID=1430652
     OAR_JOB_ID=1430653
@@ -167,7 +167,7 @@ Change the `$TASK` variable:
     TASK="Rscript $WORK/PS6/tutorials/advanced/advanced_parametric_jobs/scripts/test.R"
 
 
-Now, submit the script.
+Now, submit the script on a specific node (choose a random free node)
     
     oarsub -t besteffort -t idempotent -l nodes=1 -p "network_address='h-cluster1-6'" $WORK/PS6/launcher-scripts/bash/besteffort/launcher_besteffort.sh
 
