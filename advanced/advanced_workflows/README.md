@@ -1,5 +1,5 @@
-Advanced HPC workflow with sequential jobs
-==========================================
+Advanced workflows on sequential jobs management
+================================================
 
 # Prerequisites
 
