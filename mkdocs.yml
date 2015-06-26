@@ -16,6 +16,7 @@ pages:
 - ['advanced/Vagrant/README.md', 'Virtualization', 'Vagrant']
 - ['advanced/vm5k/README.md', 'Virtualization', 'Grid5000: Automatic VM deployment with VM5K']
 - ['advanced/ParallelExec/README.md', 'Parallel execution', 'Running parallel software']
+- ['advanced/advanced_workflows/README.md', 'Advanced workflows', 'Advanced workflows on sequential jobs management']
 - ['contributing.md', 'Documentation', 'Contributing']
 - ['rtfd.md', 'Documentation', 'RTFD']
 - ['contacts.md', 'Contacts']
