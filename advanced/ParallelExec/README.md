@@ -282,7 +282,7 @@ For reference, many examples are given in the installation directory of OpenFOAM
 
 Before the main execution, some pre-processing steps:
 
-       (node)$> cd ~/parallelexec-tutorial/openfoam
+       (node)$> cd ~/parallelexec-tutorial/inputs/openfoam
        (node)$> cp -rf 0.org 0
        (node)$> blockMesh
        (node)$> topoSet
@@ -323,3 +323,63 @@ Finally, we clean the environment:
 
   - [OpenFOAM: user's guide](http://cfd.direct/openfoam/user-guide/)
   - [OpenFOAM: running applications in parallel](http://cfd.direct/openfoam/user-guide/running-applications-parallel/)
+
+
+## ABINIT
+
+Check for the available versions of ABINIT:
+
+       (node)$> module spider abinit
+   
+As of June 2015 there is only one version, we load it with:
+
+       (node)$> module load chem/ABINIT
+
+There is no dependency on a MPI suite in the build of ABINIT, we can use the latest Intel toolchain:
+
+       (node)$> module load toolchain/ictce/7.3.5
+
+We will use one of ABINIT's parallel test cases to exemplify parallel execution.  
+For reference, many examples are given in the installation directory of ABINIT, see `$EBROOTABINIT/share/abinit-test`.
+
+       (node)$> cd ~/parallelexec-tutorial/inputs/abinit
+       (node)$> mpirun -hostfile $OAR_NODEFILE abinit < si_kpt_band_fft.files
+
+After some initial processing and messages, we will see:
+
+        finddistrproc.F90:394:WARNING
+        Your input dataset does not let Abinit find an appropriate process distribution with nproc=    4
+        Try to comment all the np* vars and set paral_kgb=    -4 to have advices on process distribution.
+       
+        abinit : WARNING -
+         The product of npkpt, npfft, npband and npspinor is bigger than the number of processors.
+         The user-defined values of npkpt, npfft, npband or npspinor will be modified,
+         in order to bring this product below nproc .
+         At present, only a very simple algorithm is used ...
+       
+        abinit : WARNING -
+         Set npfft to 1
+       
+        initmpi_grid.F90:108:WARNING
+          The number of band*FFT*kpt*spinor processors, npband*npfft*npkpt*npspinor should be
+         equal to the total number of processors, nproc.
+         However, npband   =    2           npfft    =    1           npkpt    =    1           npspinor =    1       and nproc    =    4
+
+As shown above, ABINIT itself can give details into how to tune input parameters for the dataset used.
+
+Edit the input file `si_kpt_band_fft` as per ABINIT's instructions, then re-run ABINIT.
+The following message will be shown, with a list of parameters that you will need to edit in `si_kpt_band_fft`.
+
+       "Computing all possible proc distrib for this input with nproc less than      4"
+
+Next, ensure you can now run ABINIT on this example to completion. 
+
+Finally, we clean the environment: 
+
+       (node)$> module purge
+       (node)$> module list
+
+### References
+
+  - [ABINIT: user's guide](http://www.abinit.org/doc/helpfiles/for-v7.2/users/new_user_guide.html)
+  - [ABINIT: tutorials](http://www.abinit.org/doc/helpfiles/for-v7.2/tutorial/welcome.html)
