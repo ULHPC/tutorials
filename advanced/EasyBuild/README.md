@@ -304,6 +304,10 @@ As a example, we are going to build the lastest version of HPL (2.1) with ICTCE 
 
 We obtained HPL 2.1 without writing any EasyConfig file.
 
+**IMPORTANT**: LMod cache the modules available such that it may append that the `module avail HPL` command _does not_ report the newly created 2.1 version. In that case, you can use the following option: 
+
+    $> module --ignore-cache avail HPL
+
 There are multiple ways to amend a EasyConfig file. Check the `--try-*` option flags for all the possibilities.
 
 
