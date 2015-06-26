@@ -164,7 +164,7 @@ In the "Job settings" section, load R by adding this line:
 
 Change the `$TASK` variable:
 
-    TASK="Rscript $WORK/PS6/tutorials/advanced/advanced_parametric_jobs/scripts/test.R"
+    TASK="Rscript $WORK/PS6/tutorials/advanced/advanced_workflows/scripts/test.R"
 
 
 Now, submit the script on a specific node (choose a random free node)
@@ -213,7 +213,7 @@ Create an interactive job, start a matlab program `cr_run`
 
     (node) module load base/MATLAB
     (node) export LIBCR_DISABLE_NSCD=YES
-    (node) cr_run matlab -nojvm -nodisplay -nosplash <  $WORK/PS6/tutorials/advanced/advanced_parametric_jobs/scripts/test.m &
+    (node) cr_run matlab -nojvm -nodisplay -nosplash <  $WORK/PS6/tutorials/advanced/advanced_workflows/scripts/test.m &
 
 Get the process id of matlab
 
@@ -255,7 +255,7 @@ Let's start a long Matlab program with the launcher `launcher_checkpoint_restart
 
 First in `$WORK/PS6/launcher-scripts/bash/besteffort/launcher_checkpoint_restart.sh`, modify the variable `TASK` with your program:
 
-    TASK="matlab -nojvm -nodisplay -nosplash -r run('$WORK/PS6/tutorials/advanced/advanced_parametric_jobs/scripts/test.m');exit;"
+    TASK="matlab -nojvm -nodisplay -nosplash -r run('$WORK/PS6/tutorials/advanced/advanced_workflows/scripts/test.m');exit;"
 
 In the "Job settings" section, load the Matlab module by adding this line:
 
