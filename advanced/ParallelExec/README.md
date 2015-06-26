@@ -250,9 +250,76 @@ Things to test:
 - explicitly setting the number of OpenMP threads
 - increasing the number of OpenMP threads
 
+Finally, we clean the environment by running `module purge`:
+
+       (node)$> module purge
+       (node)$> module list
+
 ### References
 
   - [QE: user's guide](www.quantum-espresso.org/wp-content/uploads/Doc/user_guide.pdf)
   - [QE: understanding parallelism](http://www.quantum-espresso.org/wp-content/uploads/Doc/user_guide/node16.html)
   - [QE: running on parallel machines](http://www.quantum-espresso.org/wp-content/uploads/Doc/user_guide/node17.html) 
   - [QE: parallelization levels](http://www.quantum-espresso.org/wp-content/uploads/Doc/user_guide/node18.html)
+
+
+## OpenFOAM
+
+Check for the available versions of OpenFOAM:
+
+       (node)$> module spider openfoam
+
+We will use the `cae/OpenFOAM/2.3.0-goolf-1.4.10` version:
+
+        (node)$> module load cae/OpenFOAM/2.3.0-goolf-1.4.10
+
+We load OpenFOAM's startup file:
+
+       (node)$> source $FOAM_BASH 
+
+Now we will run the `reactingParcelFilmFoam` solver of OpenFOAM on an example showing the spray-film cooling of hot boxes (lagrangian/reactingParcelFilmFoam/hotBoxes).  
+For reference, many examples are given in the installation directory of OpenFOAM, see `$FOAM_TUTORIALS`.
+
+Before the main execution, some pre-processing steps:
+
+       (node)$> cd ~/parallelexec-tutorial/openfoam
+       (node)$> cp -rf 0.org 0
+       (node)$> blockMesh
+       (node)$> topoSet
+       (node)$> subsetMesh c0 -patch wallFilm -overwrite
+       (node)$> ./patchifyObstacles > log.patchifyObstacles 2>&1
+       (node)$> extrudeToRegionMesh -overwrite
+       (node)$> changeDictionary
+       (node)$> rm -rf system/wallFilmRegion
+       (node)$> cp -r system/wallFilmRegion.org system/wallFilmRegion
+       (node)$> find ./0 -maxdepth 1 -type f -exec sed -i "s/wallFilm/\"(region0_to.*)\"/g" {} \;
+       (node)$> paraFoam -touch
+       (node)$> paraFoam -touch -region wallFilmRegion
+       (node)$> decomposePar -region wallFilmRegion
+
+Solver execution, note the environment variables we need to export:
+
+       (node)$> mpirun -x MPI_BUFFER_SIZE -x WM_PROJECT_DIR -x PATH -x LD_LIBRARY_PATH -hostfile $OAR_NODEFILE reactingParcelFilmFoam -parallel
+
+After the main execution, post-processing steps:
+  
+       (node)$> reconstructPar -region wallFilmRegion
+       (node)$> reconstructPar
+
+You can now try to copy and run additional examples from OpenFOAM, note:
+
+- the ones which include an `Allrun-parallel` file can be run in parallel
+- you can run the `Allrun.pre` script to prepare the execution
+- you have to run yourself further pre-execution instructions from the `Allrun-parallel` script
+- instead of `runParallel $application 4` you will have to run mpirun with the correct parameters and the particular application name yourself
+- last post-processing steps from `Allrun-parallel` have to be run manually 
+
+Finally, we clean the environment: 
+
+       (node)$> module purge
+       (node)$> module list
+
+### References
+
+  - [OpenFOAM: user's guide](http://cfd.direct/openfoam/user-guide/)
+  - [OpenFOAM: running applications in parallel](http://cfd.direct/openfoam/user-guide/running-applications-parallel/)
