@@ -19,12 +19,12 @@ Before starting this tutorial, ensure you are able to [connect to the chaos and 
 	(access)$> 	oarsub -I -l core=1,walltime=4
 
 
-The latest version of this tutorial is available on our
-[readthedocs](http://ulhpc-tutorials.readthedocs.org/en/latest/advanced/easybuild/) documentation.
+The latest version of this tutorial is available on
+[Github](https://github.com/ULHPC/tutorials/tree/devel/advanced/EasyBuild).
 
 ## Short introduction to EasyBuild
 
-EasyBuild is a tool that allows to perform automated and reproducible compilation and installation of software. A large number of scientific software are supported (479 software packages in the last release).
+EasyBuild is a tool that allows to perform automated and reproducible compilation and installation of software. A large number of scientific software are supported (649 software packages in the last release).
 
 All builds and installations are performed at user level, so you don't need the admin rights. 
 The software are installed in your home directory (by default in `$HOME/.local/easybuild/software/`) and a module file is generated (by default in `$HOME/.local/easybuild/modules/`) to use the software.
@@ -36,8 +36,11 @@ A **toolchain** corresponds to a compiler and a set of libraries which are commo
 An **EasyConfig file** is a simple text file that describes the build process of a software. For most software that uses standard procedure (like `configure`, `make` and `make install`), this file is very simple. Many EasyConfig files are already provided with EasyBuild.
 
 
-EasyConfig files and generated modules are named using the following convention:
-`<Software-Name>-<Software-Version>-<Toolchain-Name>-<Toolchain-Version>` 
+By default, EasyConfig files and generated modules are named using the following convention:
+`<Software-Name>-<Software-Version>-<Toolchain-Name>-<Toolchain-Version>`
+
+On the cluster however, for the module names we use a custom naming convention that is explained in the RESIF tutorial:  
+`<Software-Class>/<Software-Name>/<Software-Version>-<Toolchain-Name>-<Toolchain-Version>`
 
 Additional details are available on EasyBuild website:
 

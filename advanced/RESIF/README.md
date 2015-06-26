@@ -8,6 +8,8 @@ The [first chapter](#understanding-and-using-the-software-available-on-the-ul-hp
 The [second chapter](#adding-a-software-to-the-existing-stack) defines the process of adding new software to the existing stack as a user using RESIF, the tool developed internally to manage the software stack on the UL HPC platform.  
 The [third chapter](#replicating-the-architecture-of-the-platform-on-a-local-environment) explains the process of reproducing the software stack present on the platform, or part of it, in a local environment.
 
+The latest version of this document can be found on [Github](https://github.com/ULHPC/tutorials/tree/devel/advanced/RESIF).
+
 ## Using the software environment available on the UL HPC platform
 
 Before starting this tutorial, please make sure you are on a compute node of Gaia/Chaos and not on the access node. To get resources on a compute node, use the following command:  
@@ -74,7 +76,8 @@ The upper layer of the architecture is what we call a *software set*. It is a co
 The main goal of these categories is to provide information on the degree of support for the various software.
 
 Inside these sets, software is named in regards to a *naming scheme* which classifies the software (e.g. compilers, physics) and allows for a better structuring of results with the `module avail` command.  
-The software named using this scheme has the following format: **software_class/software_name/software_complete_version** where  
+The software named using this scheme has the following format: **software_class/software_name/software_complete_version** where
+
 - **software_class** describes the category among the following classes: [base, bio, cae, chem, compiler, data, debugger, devel, lang, lib, math, mpi, numlib, phys, system, toolchain, tools, vis]
 - **software_name** is the name of the software (e.g. GROMACS, MATLAB, R or ABySS)
 - **software_complete_version** is the full version of the software: containing the version of the software itself followed by the type and version of the main dependencies it relies on (e.g. compiler) with the following format: software_version-dependencies_versions
