@@ -23,9 +23,9 @@ The tutorial will cover:
 1. OAR basics for parallel execution
 2. different MPI suites available on UL HPC
 3. running simple test cases in parallel
-4. running OpenFOAM in parallel over a single node and over multiple nodes
-5. running ABINIT in parallel over a single node and over multiple nodes
-6. running QuantumEspresso in parallel over a single node and over multiple nodes
+4. running QuantumEspresso in parallel over a single node and over multiple nodes
+5. running OpenFOAM in parallel over a single node and over multiple nodes
+6. running ABINIT in parallel over a single node and over multiple nodes
 7. the interesting case of the ASE toolkit
 
 ## Prerequisites
@@ -167,3 +167,92 @@ Now it (should have) worked and we can try different executions:
        (node)$> mpirun -x PATH -x LD_LIBRARY_PATH -hostfile $OAR_NODEFILE -n 3 ./hellompi
        (node)$> mpirun -x PATH -x LD_LIBRARY_PATH -hostfile $OAR_NODEFILE -npernode 1 ./hellompi
 
+At the end of these tests, we clean the environment by running `module purge`:
+
+       (node)$> module purge
+       (node)$> module list
+
+## QuantumESPRESSO
+
+Check for the available versions of QuantumESPRESSO (QE in short), as of June 2015 this shows:
+
+       (node)$> module spider quantum
+       
+       ----------------------------------------------------------------------------------------------------------------------------------------------------------
+         chem/QuantumESPRESSO:
+       ----------------------------------------------------------------------------------------------------------------------------------------------------------
+           Description:
+             Quantum ESPRESSO is an integrated suite of computer codes for electronic-structure calculations and materials modeling at the nanoscale. It is
+             based on density-functional theory, plane waves, and pseudopotentials (both norm-conserving and ultrasoft). - Homepage: http://www.pwscf.org/ 
+       
+            Versions:
+               chem/QuantumESPRESSO/5.0.2-goolf-1.4.10-hybrid
+               chem/QuantumESPRESSO/5.0.2-goolf-1.4.10
+               chem/QuantumESPRESSO/5.0.2-ictce-5.3.0-hybrid
+               chem/QuantumESPRESSO/5.0.2-ictce-5.3.0
+               chem/QuantumESPRESSO/5.1.2-ictce-7.3.5
+
+One thing we note is that some versions have a _-hybrid_ suffix. These versions are hybrid MPI+OpenMP builds of QE.  
+MPI+OpenMP QE can give better performance than the pure MPI versions, by running only one MPI process per node (instead of one MPI process for each core in the job) that creates (OpenMP) threads which run in parallel locally.
+
+Load the latest QE version:
+
+       (node)$> module load chem/QuantumESPRESSO/5.1.2-ictce-7.3.5
+
+We will use the PWscf (Plane-Wave Self-Consistent Field) package of QE for our tests.
+Run it in sequential mode, it will wait for your input. You should see a "Parallel version (MPI), running on     1 processors" message, and can stop it with CTRL-C:
+
+       (node)$> pw.x
+       (node)$> mpirun -n 1 pw.x 
+
+Now try the parallel run over all the nodes/cores in the job:
+
+       (node)$> mpirun -hostfile $OAR_NODEFILE pw.x
+
+Before stopping it, check that pw.x processes are created on the remote node. You will need to:
+
+1. open a second connection to the cluster, or a second window if you're using `screen` or `tmux`
+2. connect to the job with `oarsub -C $JOBID`
+3. connect from the head node of the job to the remote job with `oarsh $hostname`
+4. use `htop` to show the processes, filter the shown list to see only your user with `u` and then selecting your username
+
+Note that this check procedure can be invaluable when you are running an application for the first time, or with new options.  
+Generally, some things to look for are:
+
+* that processes _are_ created on the remote node, instead of all of them on the head node (which leads to huge slowdowns)
+* the percentage of CPU usage those processes have, for CPU-intensive work, the values in the CPU% column should be close to 100%
+  - if the values are constantly close to 50%, or 25% (or even less) it may mean that more parallel processes were started than should have on that node (e.g. if all processes are running on the head node) and that they are constantly competing for the same cores, which makes execution very slow
+* the number of threads created by each process
+  - here the number of OpenMP threads, controlled through the OMP\_NUM\_THREADS environment variable or Intel MKL threads (MKL\_NUM\_THREADS) may need to be tuned
+
+Now we will run `pw.x` to perform electronic structure calculations in the presence of a finite homogeneous electric field, and we will use sample input (PW example10) to calculate high-frequency dielectric constant of bulk Silicon.
+For reference, many examples are given in the installation directory of QE, see `$EBROOTQUANTUMESPRESSO/espresso-$EBVERSIONQUANTUMESPRESSO/PW/examples`.
+
+       (node)$> cd ~/parallelexec-tutorial 
+       (node)$> cd inputs/qe 
+       (node)$> pw.x < si.scf.efield2.in
+
+We will see the calculation progress, this serial execution should take around 2 minutes.
+
+Next, we will clean up the directory holding output files, and re-run the example in parallel:
+
+       (node)$> rm -rf out
+       (node)$> mpirun -hostfile $OAR_NODEFILE pw.x < si.scf.efield2.in > si.scf.efield2.out
+
+When the execution ends, we can take a look at the last 10 lines of output and check the execution time:
+
+       (node)$> tail si.scf.efield2.out
+
+You can now try to run the same examples but with the `chem/QuantumESPRESSO/5.0.2-goolf-1.4.10-hybrid` module.
+Things to test:
+
+- basic execution vs usage of the `npernode` parameter of OpenMPI's mpirun
+- explicitly setting the number of OpenMP threads
+- increasing the number of OpenMP threads
+
+### References
+
+  - [QE: user's guide](www.quantum-espresso.org/wp-content/uploads/Doc/user_guide.pdf)
+  - [QE: understanding parallelism](http://www.quantum-espresso.org/wp-content/uploads/Doc/user_guide/node16.html)
+  - [QE: running on parallel machines](http://www.quantum-espresso.org/wp-content/uploads/Doc/user_guide/node17.html) 
+  - [QE: parallelization levels](http://www.quantum-espresso.org/wp-content/uploads/Doc/user_guide/node18.html)
