@@ -89,6 +89,7 @@ Read the `INSTALL` file.
 
 In particular, you'll have to edit a new makefile `Make.intel64`
 (inspired from `setup/Make.MPI_ICPC` typically), adapting:
+
 1. the CXX variable specifying the C++ compiler (use `mpiicpc` for the MPI Intel C++ wrapper)
 2. the CXXFLAGS variable
 with architecture-specific compilation flags (see [this Intel article](https://software.intel.com/en-us/articles/performance-tools-for-software-developers-intel-compiler-options-for-sse-generation-and-processor-specific-optimizations))
