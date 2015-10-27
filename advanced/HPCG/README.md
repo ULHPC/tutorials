@@ -47,11 +47,11 @@ The objective of this practical session is to compare the performance obtained b
 compiled with different compilers and options:
 
 1. HPCG + Intel C++ + Intel MPI
-  - architecture native build, using the most recent supported instruction set (AVX2/FMA3)
-  - SSE4.1 instruction set build
+    - architecture native build, using the most recent supported instruction set (AVX2/FMA3)
+    - SSE4.1 instruction set build
 2. HPCG + GNU C++ + Open MPI
-  - architecture native build, using the most recent supported instruction set (AVX2/FMA3)
-  - SSE4.1 instruction set build
+    - architecture native build, using the most recent supported instruction set (AVX2/FMA3)
+    - SSE4.1 instruction set build
 
 The benchmarking tests should be performed on:
 
@@ -101,6 +101,10 @@ Once compiled, ensure that you are able to run it:
 
     $> cd bin
     $> cat hpcg.
+    $> mkdir intel64-optimized
+    $> mv xhpcg intel64-optimized
+    $> cd intel64-optimized
+    $> ln -s ../hpcg.dat .
     $> mpirun -hostfile $OAR_NODEFILE ./xhpcg
 
 As configured in the default `hpcg.dat`, HPCG generates a synthetic discretized three-dimensional partial differential equation model problem with Nx=Ny=Nz=104 local subgrid dimensions. NPx, NPy, NPz are a factoring of the MPI process space, giving a global domain dimension of (Nx * NPx ) * (Ny * NPy ) * (Nz * NPz).
@@ -109,9 +113,9 @@ You can tune Nx, Ny, Nz to increase/decrease the problem size, yet take care not
 
 The result of your experiments will be stored in the directory HPCG was started in, in a `HPCG-Benchmark-2.4_$(date).yaml` file. Check out the benchmark result (GFLOP/s) in the final summary section:
 
-    $ grep "HPCG result is" $file.yaml
+    $> grep "HPCG result is" $file.yaml
 
-In addition to the architecture optimized build, re-generate xhpcg to support only the SSE4.1 instruction set (common across all UL HPC computing nodes) and perform the same experiment.
+In addition to the architecture optimized build, re-generate xhpcg to with the compiler options to support only the SSE4.1 instruction set (common across all UL HPC computing nodes) and perform the same experiment, in a new `intel64-generic` directory.
 
 ### HPCG with GNU C++ and Open MPI
 
@@ -126,13 +130,17 @@ Re-compile HPCG with GNU C++, adapting the setup file  `Make.gcc` from `Make.Lin
 Once compiled, ensure you are able to run it:
 
     $> cd bin
-    $> cat hpcg
+    $> cat hpcg.dat
+    $> mkdir gnu-optimized
+    $> mv xhpcg gnu-optimized
+    $> cd gnu-optimized
+    $> ln -s ../hpcg.dat .
     $> mpirun -x PATH -x LD_LIBRARY_PATH -hostfile $OAR_NODEFILE ./xhpcg
 
 
 ## Benchmarking on two nodes
 
-Restart the benchmarking campain (in the three cases) in the following context:
+Restart the benchmarking campaign (for both the Intel and GCC) in the following context:
 
 * 2 nodes belonging to the same enclosure. Use for that:
 
@@ -141,3 +149,10 @@ Restart the benchmarking campain (in the three cases) in the following context:
 * 2 nodes belonging to the different enclosures:
 
     $> oarsub -l enclosure=2/core=1,walltime=1 […]
+
+## Benchmarking with OpenMP active
+
+Finally, activate OpenMP support when building HPCG, adapting for the Intel and GCC suites `Make.MPI_ICPC_OMP` and `Make.MPI_GCC_OMP` respectively.  
+As before, perform single and multiple node benchmarks.
+
+How is the performance result for the OpenMP+MPI vs MPI-only executions?
