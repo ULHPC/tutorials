@@ -3,6 +3,7 @@ pages:
 - ['index.md', 'Home']
 - ['basic/getting_started/README.md', 'Basic Tutorials', 'Getting Started']
 - ['basic/sequential_jobs/README.md', 'Basic Tutorials', 'HPC workflow with sequential jobs']
+- ['advanced/Debug/README.md', 'Basic Tutorials', 'Efficient Debugging']
 - ['advanced/RESIF/README.md',     'Advanced Software Management', 'RESIF']
 - ['advanced/EasyBuild/README.md', 'Advanced Software Management', 'Easybuild']
 - ['advanced/OSU_MicroBenchmarks/README.md', 'MPI', 'The OSU Micro-benchmarks']
