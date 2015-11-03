@@ -4,7 +4,7 @@
 
 Copyright (c) 2013 Sebastien Varrette <Sebastien.Varrette@uni.lu>
 
-        Time-stamp: <Tue 2015-11-03 14:32 svarrette>
+        Time-stamp: <Tue 2015-11-03 14:42 svarrette>
 
 -------------------
 
@@ -28,15 +28,24 @@ Reserve 1 core (for 3h) over the UL HPC platform
 
 ### 1 - GDB Tutorial
 
-
 Tutorial from [A GDB Tutorial with Examples](http://www.cprogramming.com/gdb.html)
+
+You'll need to load the latest GDB module:
+
+      $> module spider gdb
+      $> module load  debugger/GDB
 
 
 ### 2 - Valgrind Tutorial
 
 Tutorial from [Using Valgrind to Find Memory Leaks and Invalid Memory Use](http://www.cprogramming.com/debugging/valgrind.html)
 
- 
+You'll also need to load the appropriate module
+
+      $> module spider valgrind
+      $> module load debugger/Valgrind
+
+
 ## 3 - Bug Hunting
 
 A list of programs demonstrating the different kind of bus are available in the `exercises` directory.
@@ -46,7 +55,7 @@ Run the following command to download all the exercises:
 
 ```
 $> git clone https://github.com/ULHPC/tutorials.git ulhpc-tutorials
-$> cd ulhpc-tutorials/exercises
+$> cd ulhpc-tutorials/advanced/Debug/exercises/
 ```
 
 *Notes*:
