@@ -43,7 +43,7 @@ __Basic tutorials__:
 
 __MPI__
 
-* PS3A-1: [running the OSU Micro-Banchmarks](/advanced/OSU_MicroBenchmarks)
+* PS3A-1: [running the OSU Micro-Benchmarks](/advanced/OSU_MicroBenchmarks)
 * PS3A-2: [running HPL](/advanced/HPL)
 
 __Mathematics__:
