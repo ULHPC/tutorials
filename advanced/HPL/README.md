@@ -100,10 +100,10 @@ Some hint to succeed:
 * similarly, use `$(MKLROOT)` for the `LAdir` entry (see `module show imkl`)
 * Effective use of MKL (in particular): 
 
-	LAdir        = $(MKLROOT)
-	HPLlibHybrid = $(LAdir)/benchmarks/mp_linpack/lib_hybrid/intel64/libhpl_hybrid.a
-	LAinc        = -I$(LAdir)/include
-	LAlib        = -L$(LAdir)/lib/intel64 -Wl,--start-group $(LAdir)/lib/intel64/libmkl_intel_lp64.a $(LAdir)/lib/intel64/libmkl_intel_thread.a $(LAdir)/lib/intel64/libmkl_core.a -Wl,--end-group -lpthread -ldl $(HPLlibHybrid)
+		LAdir        = $(MKLROOT)
+		HPLlibHybrid = $(LAdir)/benchmarks/mp_linpack/lib_hybrid/intel64/libhpl_hybrid.a
+		LAinc        = -I$(LAdir)/include
+		LAlib        = -L$(LAdir)/lib/intel64 -Wl,--start-group $(LAdir)/lib/intel64/libmkl_intel_lp64.a $(LAdir)/lib/intel64/libmkl_intel_thread.a $(LAdir)/lib/intel64/libmkl_core.a -Wl,--end-group -lpthread -ldl $(HPLlibHybrid)
 
 If you don't succeed by yourself, use the following makefile:
 
