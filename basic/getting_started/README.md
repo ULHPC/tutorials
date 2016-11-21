@@ -379,15 +379,15 @@ We will now see the basic commands of OAR.
 
 		(access)$> oarsub -I 
 
-  Notice that with no parameters, oarsub gave you one resource (one core) for two hour. You were also directly connected to the node you reserved with an interactive shell.
-  No exit the reservation: 
+  Notice that with no parameters, oarsub gave you one resource (one core) for two hours. You were also directly connected to the node you reserved with an interactive shell.
+  Now exit the reservation: 
   
         (node)$> exit      # or CTRL-D
   
   When you run exit, you are disconnected and your reservation is terminated. 
   
-To avoid anticipated termination of your jobs in case or errors (terminal closed by mistake), 
-you can reserve and connect in 2 steps using the job id associated to your reservation. 
+To avoid anticipated termination of your jobs in case of errors (terminal closed by mistake), 
+you can reserve and connect in two steps using the job id associated to your reservation. 
 
 * First run a passive job _i.e._ run a predefined command -- here `sleep 10d` to delay the execution for 10 days -- on the first reserved node:
 
@@ -494,11 +494,12 @@ OAR features a very powerful resource filtering/matching engine able to specify 
 **Question: in the following statements, explain the advantage and drawback (in terms of latency/bandwidth etc.) of each of the proposed approaches**
 
 a. `oarsub -I -l /nodes=2/cpu=1` vs `oarsub -I -l cpu=2` vs `oarsub -I -l /nodes=1/cpu=2`
+
 b. `oarsub -I -l /enclosure=1/nodes=2` vs `oarsub -I -l nodes=2` vs `oarsub -I -l /enclosure=2/nodes=1`
 
 ### Using OAR properties
 
-You might have notice on [Monika](https://hpc.uni.lu/status/monika.html) for each site a list of properties assigned to each resources. 
+You might have notice on [Monika](https://hpc.uni.lu/status/monika.html) for each site a list of properties assigned to each resource. 
 
 The `-p` switch allows you to specialize (as an SQL syntax) the property you wish to use when selecting the resources. The syntax is as follows: `oarsub -p "< property >='< value >'"`
 
@@ -545,7 +546,7 @@ You can combine filters using the `+` sign.
 ### Reserving specific resources `bigsmp`and `bigmem`
 
 Some nodes are very specific (for instance the nodes with 1TB of memory or the BCS subsystem of Gaia composed of 4 motherboards of 4 processors with a total of 160 cores aggregated in a ccNUMA architecture). 
-**Due to this specificity, they are NOT scheduled by default**  and can only be reserved with an explicit oarsub parameter: `-t bigmem` for `-t bigsmp`
+**Due to this specificity, they are NOT scheduled by default**  and can only be reserved with an explicit oarsub parameter: `-t bigmem` or `-t bigsmp`
 
 * reserve interactively 2 cpu on the bigsmp node belonging to the same board for 3 hours: (**total: 32 cores**)
 
@@ -593,6 +594,7 @@ These jobs will be scheduled as follows
 **Question: Check the way your jobs have been scheduled**
 
 a. using `oarstat -u -f -j <subjob_id>` (take a look at the `assigned_resources`)
+
 b. using the [OAR drawgantt](https://hpc.uni.lu/status/drawgantt.html) interface  
 
 **Question: explain the interest of container jobs for the platform managers**
