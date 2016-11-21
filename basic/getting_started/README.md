@@ -347,7 +347,7 @@ Your homedir is under a regular backup policy. Therefore you are asked to pay at
 		
 * You can get an overview of the quotas and your current disk usage with the following command:
 
-       (access)$> df-ulhpc
+		(access)$> df-ulhpc
 
 
 ## Step 2: web monitoring interfaces 
