@@ -337,13 +337,18 @@ Otherwise, you have to be aware of at least two directories:
 
 Your homedir is under a regular backup policy. Therefore you are asked to pay attention to your disk usage __and__ the number of files you store there. 
 
-* estimate file space usage and summarize disk usage of each FILE, recursively for directories using the `ncdu` command:
+* Estimate file space usage and summarize disk usage of each FILE, recursively for directories using the `ncdu` command:
 
 		(access)$> ncdu
 		
-* you shall also pay attention to the number of files in your homedirectory. You can count them as follows: 
+* You shall also pay attention to the number of files in your homedirectory. You can count them as follows: 
 
 		(access)$> find . -type f | wc -l
+		
+* You can get an overview of the quotas and your current disk usage with the following command:
+
+       (access)$> df-ulhpc
+
 
 ## Step 2: web monitoring interfaces 
 
