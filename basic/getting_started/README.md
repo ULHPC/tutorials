@@ -186,7 +186,7 @@ You'll have to setup the same key package on the gaia cluster such that you can 
 		[...]
 		(access-gaia)$> exit     # or CRTL-D
 		
-You have a different home directory on each UL HPC site, so you will usually use Rsync or scp to move data around (see [transfering files tutorials](https://hpc.uni.lu/users/docs/filetransfer.html)).
+You have a different home directory on each UL HPC site, so you will usually use Rsync or scp to move data around (see [transferring files tutorials](https://hpc.uni.lu/users/docs/filetransfer.html)).
 
 Now that we are able to connect __from__ chaos __to__ gaia, we will transfer the SSH keys and configuration in place from chaos and check that we can connnect back: 
 
@@ -622,7 +622,7 @@ We will have multiple occasion to use modules in the other tutorials so there is
 
 ## Step 6 (advanced): Job management and Persistent Terminal Sessions using GNU Screen
 
-[GNU Screen](http://www.gnu.org/software/screen/‎) is a tool to manage persistent terminal sessions. 
+[GNU Screen](http://www.gnu.org/software/screen/) is a tool to manage persistent terminal sessions. 
 It becomes interesting since you will probably end at some moment with the following  scenario:
 
 > you frequently program and run computations on the UL HPC platforma _i.e_ on a remote Linux/Unix computer, typically working in six different terminal logins to the access server from your office workstation, cranking up long-running computations that are still not finished and are outputting important information (calculation status or results), when you have not 2 interactive jobs running... But it's time to catch the bus and/or the train to go back home. 
@@ -635,11 +635,11 @@ b. once at home when the kids are in bed, you're logging in again... And have to
 
 c. repeat the following morning when you come back to the office. 
 
-Enter the long-existing and very simple, but totally indispensable [GNU screen](www.gnu.org/software/screen/) command. It has the ability to completely detach running processes from one terminal and reattach it intact (later) from a different terminal login. 
+Enter the long-existing and very simple, but totally indispensable [GNU screen](http://www.gnu.org/software/screen/) command. It has the ability to completely detach running processes from one terminal and reattach it intact (later) from a different terminal login. 
 
 ### Pre-requisite: screen configuration file `~/.screenrc`
 
-While not mandatory, we advise you to rely on our customized configuration file for screen `.screenrc` available on [Github](https://github.com/ULHPC/dotfiles/blob/master/screen/screenrc).   
+While not mandatory, we advise you to rely on our customized configuration file for screen `.screenrc` available on [Github](https://github.com/ULHPC/dotfiles/blob/master/screen/.screenrc).   
 Normally, you have nothing to do since we already setup this file for you in your homedir.
 Otherwise, simply clone the [ULHPC dotfile repository](https://github.com/ULHPC/dotfiles/) and make a symbolic link `~/.screenrc` targeting the file `screen/screenrc` of the repository.
 
