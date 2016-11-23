@@ -1,9 +1,7 @@
 -*- mode: markdown; mode: auto-fill; fill-column: 80 -*-
 `README.md`
 
-Copyright (c) 2014 [Sebastien Varrette](mailto:<Sebastien.Varrette@uni.lu>) [www](http://varrette.gforge.uni.lu)
-
-        Time-stamp: <Mar 2014-05-06 12:06 svarrette>
+Copyright (c) 2016 [ULHPC management team](mailto:<hpc-sysadmins@uni.lu>) [www](http://varrette.gforge.uni.lu)
 
 -------------------
 
@@ -413,17 +411,22 @@ you can reserve and connect in two steps using the job id associated to your res
 **Question: At which moment the job `919309` will end?** 
 
 a. after 10 days
+
 b. after 2 hours
+
 c. never, only when I'll delete the job  
 
 **Question: manipulate the `$OAR_NODEFILE` variable over the command-line to extract the following information, once connected to your job**
 
 a. the list of hostnames where a core is reserved (one per line) 
    * _hint_: `man cat`
+
 b. number of reserved cores (one per line)
    * _hint_: `man wc` --  use `wc -l` over the pipe `|` command
+
 c. number of reserved nodes (one per line)
    * _hint_: `man uniq` -- use `uniq` over the pipe `|` command
+
 d. number of cores reserved per node together with the node name (one per line)
    * Example of output: 
     	
@@ -431,6 +434,7 @@ d. number of cores reserved per node together with the node name (one per line)
     	    12 gaia-15
     
    * _hint_: `man uniq` -- use `uniq -c` over the pipe `|` command
+
 e. **(for geeks)** output the number of reserved nodes times number of cores per node
    * Example of output:
    
@@ -455,7 +459,7 @@ Normally, the previously run job is still running.
 		
 * you can see your consumption (in an historical computational measure named _CPU hour_ i.e. the work done by a CPU in one hour of wall clock time) over a given time period using `oarstat --accounting "YYYY-MM-DD, YYYY-MM-DD" -u <youlogin>`:
 
-		(access)$> oarstat --accounting "2013-01-01, 2013-12-31" -u <login>
+		(access)$> oarstat --accounting "2016-01-01, 2016-12-31" -u <login>
 
   In particular, take a look at the difference between the **asked** resources and the **used** ones
 
@@ -514,7 +518,7 @@ You can find the available OAR properties on the [UL HPC documentation](https://
 
 * reserve interactively 4 cores on a GPU node for 8 hours (_this holds only on the `gaia` cluster_) (**total: 4 cores**)
 
-		(access-gaia)$> oarsub -I -l nodes=1/core=4,walltime=8 -p "gpu=’YES’"
+		(access-gaia)$> oarsub -I -l nodes=1/core=4,walltime=8 -p "gpu='YES'"
 
 * reserve interactively 4 cores on the GPU node `gaia-65` for 8 hours (_this holds only on the `gaia` cluster_) (**total: 4 cores**)
 
@@ -626,7 +630,9 @@ It becomes interesting since you will probably end at some moment with the follo
 Probably what you do in the above scenario is to 
 
 a. clear and shutdown all running terminal sessions
+
 b. once at home when the kids are in bed, you're logging in again... And have to set up the whole environment again (six logins, 2 interactive jobs etc. )
+
 c. repeat the following morning when you come back to the office. 
 
 Enter the long-existing and very simple, but totally indispensable [GNU screen](www.gnu.org/software/screen/) command. It has the ability to completely detach running processes from one terminal and reattach it intact (later) from a different terminal login. 
@@ -695,7 +701,7 @@ We will illustrate the usage of GNU screen by performing a compilation of a rece
 * in the "Compile" windows, go to the working directory and download the Linux kernel sources
 
 		(node)$> cd $WORK/PS1/src
-		(node)$> wget -q -c http://www.kernel.org/pub/linux/kernel/v3.x/linux-3.13.6.tar.gz
+		(node)$> curl -O https://www.kernel.org/pub/linux/kernel/v3.x/linux-3.13.6.tar.gz
 
    **IMPORTANT** to ovoid overloading the **shared** file system with the many small files involves in the kernel compilation (_i.e._ NFS and/or Lustre), we will perform the compilation in the **local** file system, _i.e._ either in `/tmp` or (probably more efficient) in `/dev/shm` (_i.e_ in the RAM):
 
