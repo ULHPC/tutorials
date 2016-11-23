@@ -25,7 +25,7 @@ We will use the following github repositories:
 
 # Practical session 2
 
-## Connect the the cluster access node, and set-up the environment for this tutorial
+## Connect to the cluster access node, and set-up the environment for this tutorial
 
     (yourmachine)$> ssh chaos-cluster
 
@@ -34,10 +34,19 @@ If your network connection is unstable, use [screen](http://www.mechanicalkeys.c
     (access)$> screen
 
 
-We will use 2 directory:
+We will use [2 directories](https://hpc.uni.lu/users/docs/env.html#working-directories):
 
-* `$HOME`: default home directory, **backed up**, maximum 50GB, for important files
-* `$WORK`: work directory, **non backed up**, maximum 500GB
+* `$HOME`: default home directory, **backed up**, maximum 100GB, for important files
+* `$WORK`: work directory, **non backed up**, maximum 3000GB
+
+
+You can check the usage of your directories using the command `df-ulhpc`
+
+    (access)$> df-ulhpc
+    Directory                         Used  Soft quota  Hard quota  Grace period
+    ---------                         ----  ----------  ----------  ------------
+    /home/users/hcartiaux             3.2G  100G        -           none
+    /work/users/hcartiaux             39M   3.0T        -           none
 
 
 Create a sub directory $WORK/PS2, and work inside it
@@ -82,7 +91,7 @@ Edit the following variables:
 * `TASK` must contain the path of the executable, 
 * `ARG_TASK_FILE` must contain the path of your parameter file.
 
-        (node)$> nano $WORK/PS2/launcher-scripts/bash/serial/NAIVE_AKA_BAD_launcher_serial.sh
+    (node)$> nano $WORK/PS2/launcher-scripts/bash/serial/NAIVE_AKA_BAD_launcher_serial.sh
 
         MODULE_TO_LOAD=(bio/GROMACS)
         TASK="$WORK/PS2/tutorials/basic/sequential_jobs/scripts/run_gromacs_sim.sh"
@@ -91,11 +100,70 @@ Edit the following variables:
 Launch the job, in interactive mode and execute the launcher:
 
     (access)$> oarsub -I -l core=1
+
+        [ADMISSION RULE] Set default walltime to 7200.
+        [ADMISSION RULE] Modify resource description with type constraints
+        OAR_JOB_ID=1542591
+        Interactive mode : waiting...
+        Starting...
+        
+        Connect to OAR job 1542591 via the node d-cluster1-1
+        Linux d-cluster1-1 3.2.0-4-amd64 unknown
+         14:27:19 up 29 days, 10 min,  1 user,  load average: 0.00, 0.00, 0.06
+        [OAR] OAR_JOB_ID=1542591
+        [OAR] Your nodes are:
+              d-cluster1-1*1
+
+
     (node)$ $WORK/PS2/launcher-scripts/bash/serial/NAIVE_AKA_BAD_launcher_serial.sh
 
 **Or** in passive mode (the output will be written in a file named `OAR.<JOBID>.stdout`)
 
     (access)$> oarsub -l core=1 $WORK/PS2/launcher-scripts/bash/serial/NAIVE_AKA_BAD_launcher_serial.sh
+
+        [ADMISSION RULE] Set default walltime to 7200.
+        [ADMISSION RULE] Modify resource description with type constraints
+        OAR_JOB_ID=1542592
+
+You can use the command `oarstat -f -j <JOBID>` to read all the details about your job:
+
+    (access)$> oarstat -f -j 1542592
+        Job_Id: 1542592
+            project = default
+            owner = hcartiaux
+            state = Running
+            wanted_resources = -l "{type = 'default'}/core=1,walltime=2:0:0" 
+            assigned_resources = 434
+            assigned_hostnames = d-cluster1-1
+            queue = default
+            command = /work/users/hcartiaux//PS2/launcher-scripts/bash/serial/NAIVE_AKA_BAD_launcher_serial.sh
+            ...
+
+In all cases, you can connect to a reserved node using the command `oarsub -C <JOBID>`
+and check the status of the system using standard linux command (`free`, `top`, `htop`, etc)
+
+    $ (access)$> oarsub -C 1542592
+        Connect to OAR job 1542592 via the node d-cluster1-1
+        Linux d-cluster1-1 3.2.0-4-amd64 unknown
+         14:51:56 up 29 days, 35 min,  2 users,  load average: 1.57, 0.98, 0.70
+        [OAR] OAR_JOB_ID=1542592
+        [OAR] Your nodes are:
+              d-cluster1-1*1
+    
+    0 14:51:57 hcartiaux@d-cluster1-1(chaos-cluster)[OAR1542592->119] ~ $ free -m
+                 total       used       free     shared    buffers     cached
+    Mem:         48393      41830       6563          0        204      25120
+    -/+ buffers/cache:      16505      31888
+    Swap:         4095         47       4048
+    0 14:51:59 hcartiaux@d-cluster1-1(chaos-cluster)[OAR1542592->119] ~ $ htop
+
+![Monika screenshot](src/images/chaos_htop.png)
+
+During the execution, you can try to locate your job on the [monika web interface](https://hpc.uni.lu/chaos/monika).
+
+![Monika screenshot](src/images/chaos_monika.png)
+
+Using the [system monitoring tool ganglia](https://hpc.uni.lu/gaia/ganglia), check the activity on your node.
 
 
 #### Step 2: Optimal method using GNU parallel (GNU Parallel)
@@ -117,8 +185,12 @@ Submit the (passive) job with `oarsub`
 
 **Question**: compare and explain the execution time with both launchers:
 
-* Naive workflow: time = 16m 32s
-* Parallel workflow: time = 2m 11s
+
+* Naive workflow: time = **16m 32s**  
+  ![CPU usage for the sequential workflow](src/images/chaos_ganglia_seq.png)
+
+* Parallel workflow: time = **2m 11s**  
+  ![CPU usage for the parallel workflow](src/images/chaos_ganglia_parallel.png)
 
 **/!\ In order to compare execution times, you must always use the same type of nodes (CPU/Memory), 
 using [properties](https://hpc.uni.lu/users/docs/oar.html#select-nodes-precisely-with-properties)
