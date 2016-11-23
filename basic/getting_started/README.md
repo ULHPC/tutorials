@@ -615,7 +615,7 @@ You can use the `-r "YYYY-MM-DD HH:MM:SS"` option of `oarsub` to specify the dat
 
 We will have multiple occasion to use modules in the other tutorials so there is nothing special we foresee here. You are just encouraged to read the following resources: 
 
-* [Introduction to Environment Modules by Wolfgang Baumann](https://www.hlrn.de/home/view/System/ModulesUsage)
+* [Introduction to Environment Modules by Wolfgang Baumann](https://www.hlrn.de/home/view/System3/ModulesUsage)
 * [Modules tutorial @ NERSC](https://www.nersc.gov/users/software/nersc-user-environment/modules/)
 * [UL HPC documentation on modules](https://hpc.uni.lu/users/docs/modules.html)
 
