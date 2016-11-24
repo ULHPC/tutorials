@@ -91,11 +91,11 @@ Edit the following variables:
 * `TASK` must contain the path of the executable, 
 * `ARG_TASK_FILE` must contain the path of your parameter file.
 
-    (node)$> nano $WORK/PS2/launcher-scripts/bash/serial/NAIVE_AKA_BAD_launcher_serial.sh
+        (node)$> nano $WORK/PS2/launcher-scripts/bash/serial/NAIVE_AKA_BAD_launcher_serial.sh
 
-        MODULE_TO_LOAD=(bio/GROMACS)
-        TASK="$WORK/PS2/tutorials/basic/sequential_jobs/scripts/run_gromacs_sim.sh"
-        ARG_TASK_FILE=$WORK/PS2/param_file
+            MODULE_TO_LOAD=(bio/GROMACS)
+            TASK="$WORK/PS2/tutorials/basic/sequential_jobs/scripts/run_gromacs_sim.sh"
+            ARG_TASK_FILE=$WORK/PS2/param_file
 
 Launch the job, in interactive mode and execute the launcher:
 
@@ -310,15 +310,14 @@ This script will generate the following files in `$WORK/PS2/jcell`:
 
 #### Step 2: Edit the launcher configuration, in the file `$WORK/PS2/launcher-scripts/bash/generic/parallel_launcher.sh`.
 
-This application is cpu-bound and not memory-bound, so we can set the value of `NB_CORE_PER_TASK` to 1.
-Using these parameters, the launcher will spaw one java process per core on all the reserved nodes.
+Using these parameters, the launcher will spawn one java process for every group of 2 cores on all the reserved nodes.
 
         (access)$> nano $WORK/PS2/launcher-scripts/bash/generic/parallel_launcher.sh
 
         TASK="$WORK/PS2/tutorials/basic/sequential_jobs/scripts/jcell_wrapper.sh"
         ARG_TASK_FILE="$WORK/PS2/jcell/jcell_param"
         # number of cores needed for 1 task
-        NB_CORE_PER_TASK=1
+        NB_CORE_PER_TASK=2
 
 #### Step 3: Submit the job
 
