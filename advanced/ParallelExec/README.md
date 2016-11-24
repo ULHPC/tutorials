@@ -296,10 +296,24 @@ Before the main execution, some pre-processing steps:
        (node)$> paraFoam -touch
        (node)$> paraFoam -touch -region wallFilmRegion
        (node)$> decomposePar -region wallFilmRegion
+       (node)$> decomposePar
 
 Solver execution, note the environment variables we need to export:
 
        (node)$> mpirun -x MPI_BUFFER_SIZE -x WM_PROJECT_DIR -x PATH -x LD_LIBRARY_PATH -hostfile $OAR_NODEFILE reactingParcelFilmFoam -parallel
+
+Note that the solver execution will take a long time - you can interrupt and/or test in a larger job, which would require:
+
+- editing the `decomposeParDict` file to change the `numberOfSubdomains` directive in order to match the new number of processes
+- then rerun the `decomposePar` commands as above
+
+Parenthesis: how can you achieve the best (fastest) execution time? Some questions to think about:
+
+- is just increasing the number of cores (oarsub -l core=XYZ) optimal? (no, but why not?)
+- is it better if you check the network hierarchy on the Gaia cluster and target nodes 'closer together'? (yes)
+- would it be fastest if you run on the fastest (most XYZ GHz) nodes? (not exactly, why?)
+- will using OAR properties to target the most recent nodes be the best? (yes but not yet optimal, why not?)
+- can you get an additional speedup if you recompile OpenFOAM on the most recent nodes to take advantage of the newer instruction set available in their CPUs? (yes!)
 
 After the main execution, post-processing steps:
   
@@ -374,6 +388,13 @@ The following message will be shown, with a list of parameters that you will nee
 
 Next, ensure you can now run ABINIT on this example to completion. 
 
+Parenthesis: will a parallel application always allow execution on any number of cores? Some questions to think about:
+
+- are there cases where an input problem cannot be split in some particular ways? (yes!)
+- are all ways to split a problem optimal for solving it as fast as possible? (no!)
+- is it possible to split a problem such that the solver has unbalanced cases and works much slower? (yes)
+- is there a generic way to tune the problem in order to be solved as fast as possible? (no, it's domain & application specific!)
+
 Finally, we clean the environment: 
 
        (node)$> module purge
@@ -383,3 +404,15 @@ Finally, we clean the environment:
 
   - [ABINIT: user's guide](http://www.abinit.org/doc/helpfiles/for-v7.2/users/new_user_guide.html)
   - [ABINIT: tutorials](http://www.abinit.org/doc/helpfiles/for-v7.2/tutorial/welcome.html)
+
+
+## ASE
+
+ASE is a Python library for working with atoms [*](https://wiki.fysik.dtu.dk/ase/_downloads/ase-talk.pdf).
+
+ASE can interface with many external codes as `calculators`: Asap, GPAW, Hotbit, ABINIT, CP2K, CASTEP, DFTB+, ELK, EXCITING, FHI-aims, FLEUR, GAUSSIAN, Gromacs, Jacapo, LAMMPS, MOPAC, NWChem, SIESTA, TURBOMOLE and VASP.
+
+### References
+
+  - [ASE: tutorials](https://wiki.fysik.dtu.dk/ase/tutorials/tutorials.html)
+  - [ASE: calculators](https://wiki.fysik.dtu.dk/ase/ase/calculators/calculators.html)
