@@ -48,7 +48,7 @@ __MPI__
 
 __Mathematics__:
 
-* PS3B: [running MATLAB](/advanced/MATLAB)
+* PS3B: [running MATLAB](/advanced/MATLAB1)
 * PS3C: [running R](/advanced/R)
 
 __Advanced Software Management__
