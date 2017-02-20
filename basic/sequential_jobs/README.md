@@ -163,7 +163,7 @@ During the execution, you can try to locate your job on the [monika web interfac
 
 ![Monika screenshot](src/images/chaos_monika.png)
 
-Using the [system monitoring tool ganglia](https://hpc.uni.lu/gaia/ganglia), check the activity on your node.
+Using the [system monitoring tool ganglia](https://hpc.uni.lu/chaos/ganglia), check the activity on your node.
 
 
 #### Step 2: Optimal method using GNU parallel (GNU Parallel)
