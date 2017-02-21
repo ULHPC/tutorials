@@ -7,7 +7,7 @@ Copyright (c) 2015 Sarah Diehl <sarah.diehl@uni.lu>
 
 Slides as PDF: [Introduction to Galaxy](https://github.com/ULHPC/tutorials/raw/devel/advanced/Galaxy/introduction_to_galaxy_unilu.pdf)
 
-For a version of this tutorial with the results of important steps embedded and direct links to workflows, go to the Galaxy server, select "Shared Data" and then "Published Pages" from the top menu.
+For a version of this tutorial with the results of important steps embedded and direct links to workflows, go to the Galaxy server, select "Shared Data" and then "Pages" from the top menu and have a look at [Galaxy Introduction](https://galaxy-server.uni.lu/u/sdiehl/p/galaxy-introduction).
 
 ## Scenario
 
