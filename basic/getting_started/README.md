@@ -294,7 +294,120 @@ Each cluster offers a set of web services to monitor the platform usage:
 * [Ganglia](https://hpc.uni.lu/status/ganglia.html), a scalable distributed monitoring system for high-performance computing systems such as clusters and Grids.
 * [CDash](http://cdash.uni.lux/) (internal UL network use)
 
-## Step 3: Reserving resources with OAR: the basics
+## Step 3a: Reserving resources with Slurm: the basics
+
+* [reference documentation](https://hpc.uni.lu/users/docs/slurm.html)
+
+[Slurm](https://slurm.schedmd.com/) Slurm is an open source, fault-tolerant, and highly scalable cluster management and job scheduling system for large and small Linux clusters. It is used on Iris UL HPC cluster.
+
+* It allocates exclusive or non-exclusive access to the resources (compute nodes) to users during a limited amount of time so that they can perform they work
+* It provides a framework for starting, executing and monitoring work
+* It arbitrates contention for resources by managing a queue of pending work.
+* it permits to schedule jobs for users on the cluster resource
+
+There are two types of jobs:
+  * _interactive_: you get a shell on the first reserve node
+  * _passive_: classical batch job where the script passed as argument to `sbatch` is executed
+
+We will now see the basic commands of Slurm.
+
+* Connect to **iris-cluster**. You can request resources in interactive mode:
+
+		(access)$> srun -p interactive --qos qos-interactive --pty bash
+
+  Notice that with no other parameters, srun gave you one resource for 1 hour. You were also directly connected to the node you reserved with an interactive shell.
+  Now exit the reservation:
+
+        (node)$> exit      # or CTRL-D
+
+  When you run exit, you are disconnected and your reservation is terminated.
+
+To avoid anticipated termination of your jobs in case of errors (terminal closed by mistake),
+you can reserve and connect in two steps using the job id associated to your reservation.
+
+* First run a passive job _i.e._ run a predefined command -- here `sleep 10d` to delay the execution for 10 days -- on the first reserved node:
+
+		(access)$> sbatch --qos qos-batch --wrap "sleep 10d"
+		Submitted batch job 390
+
+  You noticed that you received a job ID (in the above example: `390`), which you can later use to connect to the reserved resource(s):
+
+        (access)$> srun -p interactive --qos qos-interactive --jobid 390 --pty bash # adapt the job ID accordingly ;)
+		(node)$> ps aux | grep sleep
+		cparisot 186342  0.0  0.0 107896   604 ?        S    17:58   0:00 sleep 1h
+		cparisot 187197  0.0  0.0 112656   968 pts/0    S+   18:04   0:00 grep --color=auto sleep
+		(node)$> exit             # or CTRL-D
+
+**Question: At which moment the job `390` will end?**
+
+a. after 10 days
+
+b. after 1 hour
+
+c. never, only when I'll delete the job  
+
+**Question: manipulate the `$SLURM_*` variables over the command-line to extract the following information, once connected to your job**
+
+a. the list of hostnames where a core is reserved (one per line)
+   * _hint_: `man echo`
+
+b. number of reserved cores
+   * _hint_: `search for the NPROCS variable`
+
+c. number of reserved nodes
+   * _hint_: `search for the NNODES variable`
+
+d. number of cores reserved per node together with the node name (one per line)
+   * Example of output:
+
+    	    12 gaia-11
+    	    12 gaia-15
+
+   * _hint_: `NPROCS variable or NODELIST`
+
+
+## Step 4: Job management
+
+Normally, the previously run job is still running.
+
+* You can check the status of your running jobs using `squeue` command:
+
+		(access)$> squeue      # access all jobs
+		(access)$> squeue -u cparisot  # access all your jobs
+
+  Then you can delete your job by running `scancel` command:
+
+		(access)$> scancel -j 390
+
+
+* you can see your system-level utilization (memory, I/O, energy) of a running job using `sstat $jobid`:
+
+		(access)$> sstat 390
+
+In all remaining examples of reservation in this section, remember to delete the reserved jobs afterwards (using `scancel` or `CTRL-D`)
+
+You probably want to use more than one core, and you might want them for a different duration than one hour.
+
+* Reserve interactively 4 tasks with 2 nodes for 30 minutes (delete the job afterwards)
+
+		(access)$> srun -p interactive --qos qos-interactive --time=0:30:0 -N 2 --ntasks-per-node=4 --pty bash
+
+
+### Pausing, resuming jobs
+
+
+To stop a waiting job from being scheduled and later to allow it to be scheduled:
+
+		(access)$> scontrol hold $SLURM_JOB_ID
+		(access)$> scontrol release $SLURM_JOB_ID
+
+To pause a running job and then resume it:
+
+		(access)$> scontrol suspend $SLURM_JOB_ID
+		(access)$> scontrol resume $SLURM_JOB_ID
+
+
+## Step 3b: Reserving resources with OAR: the basics
 
 * [reference documentation](https://hpc.uni.lu/users/docs/oar.html)
 
@@ -561,7 +674,7 @@ We will have multiple occasion to use modules in the other tutorials so there is
 [GNU Screen](http://www.gnu.org/software/screen/) is a tool to manage persistent terminal sessions.
 It becomes interesting since you will probably end at some moment with the following  scenario:
 
-> you frequently program and run computations on the UL HPC platforma _i.e_ on a remote Linux/Unix computer, typically working in six different terminal logins to the access server from your office workstation, cranking up long-running computations that are still not finished and are outputting important information (calculation status or results), when you have not 2 interactive jobs running... But it's time to catch the bus and/or the train to go back home.
+> you frequently program and run computations on the UL HPC platform _i.e_ on a remote Linux/Unix computer, typically working in six different terminal logins to the access server from your office workstation, cranking up long-running computations that are still not finished and are outputting important information (calculation status or results), when you have not 2 interactive jobs running... But it's time to catch the bus and/or the train to go back home.
 
 Probably what you do in the above scenario is to
 
@@ -612,13 +725,13 @@ We will illustrate the usage of GNU screen by performing a compilation of a rece
 * rename the screen window "Frontend" (using `CTRL+a A`)
 * create the directory to host the files
 
-		(access)$> mkdir -p $WORK/PS1/src
-		(access)$> cd $WORK/PS1/src
+		(access)$> mkdir -p PS1/src
+		(access)$> cd PS1/src
 
 * create a new window and rename it "Compile"
 * within this new window, start a new interactive job over 1 nodes for 6 hours
 
-		(access)$> oarsub -I -l nodes=1,walltime=6
+		(access)$> srun -p interactive --qos qos-interactive --time 6:00:0 -N 1 --pty bash
 
 * detach from this screen (using `CTRL+a d`)
 * kill your current SSH connection and your terminal
@@ -636,14 +749,14 @@ We will illustrate the usage of GNU screen by performing a compilation of a rece
 
 * in the "Compile" windows, go to the working directory and download the Linux kernel sources
 
-		(node)$> cd $WORK/PS1/src
+		(node)$> cd PS1/src
 		(node)$> curl -O https://www.kernel.org/pub/linux/kernel/v3.x/linux-3.13.6.tar.gz
 
    **IMPORTANT** to ovoid overloading the **shared** file system with the many small files involves in the kernel compilation (_i.e._ NFS and/or Lustre), we will perform the compilation in the **local** file system, _i.e._ either in `/tmp` or (probably more efficient) in `/dev/shm` (_i.e_ in the RAM):
 
 		(node)$> mkdir /dev/shm/PS1
 		(node)$> cd /dev/shm/PS1
-		(node)$> tar xzf $WORK/PS1/src/linux-3.13.6.tar.gz
+		(node)$> tar xzf PS1/src/linux-3.13.6.tar.gz
 		(node)$> cd linux-3.13.6
 		(node)$> make mrproper
 		(node)$> make alldefconfig
@@ -667,7 +780,7 @@ The last compilation command make use of `tee`, a nice tool which read from stan
 * Restart the compilation, this time using parallel jobs within the Makefile invocation (`-j` option of make)
 
 		(node)$> make clean
-		(node)$> time make -j `cat $OAR_NODEFILE|wc -l` 2>&1 | tee /dev/shm/PS1/kernel_compile.2.log
+		(node)$> time make -j `echo $SLURM_NPROCS` 2>&1 | tee /dev/shm/PS1/kernel_compile.2.log
 
 The table below should convince you to always run `make` with the `-j` option whenever you can...
 
