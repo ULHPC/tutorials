@@ -294,7 +294,9 @@ Each cluster offers a set of web services to monitor the platform usage:
 * [Ganglia](https://hpc.uni.lu/status/ganglia.html), a scalable distributed monitoring system for high-performance computing systems such as clusters and Grids.
 * [CDash](http://cdash.uni.lux/) (internal UL network use)
 
-## Step 3a: Reserving resources with Slurm: the basics
+## Step 3a: Reserving resources with Slurm
+
+### The basics
 
 * [reference documentation](https://hpc.uni.lu/users/docs/slurm.html)
 
@@ -366,7 +368,7 @@ d. number of cores reserved per node together with the node name (one per line)
    * _hint_: `NPROCS variable or NODELIST`
 
 
-## Step 4: Job management
+### Job management
 
 Normally, the previously run job is still running.
 
@@ -393,7 +395,7 @@ You probably want to use more than one core, and you might want them for a diffe
 		(access)$> srun -p interactive --qos qos-interactive --time=0:30:0 -N 2 --ntasks-per-node=4 --pty bash
 
 
-### Pausing, resuming jobs
+#### Pausing, resuming jobs
 
 
 To stop a waiting job from being scheduled and later to allow it to be scheduled:
@@ -407,7 +409,9 @@ To pause a running job and then resume it:
 		(access)$> scontrol resume $SLURM_JOB_ID
 
 
-## Step 3b: Reserving resources with OAR: the basics
+## Step 3b: Reserving resources with OAR
+
+### The basics
 
 * [reference documentation](https://hpc.uni.lu/users/docs/oar.html)
 
@@ -492,7 +496,7 @@ e. **(for geeks)** output the number of reserved nodes times number of cores per
 
    * _hint_: `man awk` -- use `printf` command of `awk` over the pipe command, for instance `awk '{ printf "%s*%d\n",$2,$1 }'`. You might prefer `sed` or any other advanced geek command.
 
-## Step 4: Job management
+### Job management
 
 Normally, the previously run job is still running.
 
@@ -526,7 +530,7 @@ The `-l` switch allows you to pass a comma-separated list of parameters specifyi
 
 		(access)$> oarsub -I -l nodes=3,walltime=3:15
 
-### Hierarchical filtering of resources
+#### Hierarchical filtering of resources
 
 OAR features a very powerful resource filtering/matching engine able to specify resources in a **hierarchical**  way using the `/` delimiter. The resource property hierarchy is as follows:
 
@@ -550,7 +554,7 @@ a. `oarsub -I -l /nodes=2/cpu=1` vs `oarsub -I -l cpu=2` vs `oarsub -I -l /nodes
 
 b. `oarsub -I -l /enclosure=1/nodes=2` vs `oarsub -I -l nodes=2` vs `oarsub -I -l /enclosure=2/nodes=1`
 
-### Using OAR properties
+#### Using OAR properties
 
 You might have notice on [Monika](https://hpc.uni.lu/status/monika.html) for each site a list of properties assigned to each resource.
 
@@ -596,7 +600,7 @@ You can combine filters using the `+` sign.
             gaia-63*4
             gaia-65*4
 
-### Reserving specific resources `bigsmp`and `bigmem`
+#### Reserving specific resources `bigsmp`and `bigmem`
 
 Some nodes are very specific (for instance the nodes with 1TB of memory or the BCS subsystem of Gaia composed of 4 motherboards of 4 processors with a total of 160 cores aggregated in a ccNUMA architecture).
 **Due to this specificity, they are NOT scheduled by default**  and can only be reserved with an explicit oarsub parameter: `-t bigmem` or `-t bigsmp`
@@ -609,7 +613,7 @@ Some nodes are very specific (for instance the nodes with 1TB of memory or the B
 **Question: why are these resources not scheduled by default?**  
 
 
-### OAR Containers
+#### OAR Containers
 
 With OAR, it is possible to execute jobs within another one. This functionality is called [container jobs](https://hpc.uni.lu/users/docs/oar.html#container) and is invoked using the `-t container` switch.
 
@@ -653,12 +657,12 @@ b. using the [OAR drawgantt](https://hpc.uni.lu/status/drawgantt.html) interface
 **Question: explain the interest of container jobs for the platform managers**
 
 
-### Reservation at a given period of time
+#### Reservation at a given period of time
 
 You can use the `-r "YYYY-MM-DD HH:MM:SS"` option of `oarsub` to specify the date you wish the reservation to be issued. This is of particular interest for you to book in advance resources out of the working hours (at night and/or over week ends)
 
 
-## Step 5: Using modules
+## Step 4: Using modules
 
 [Environment Modules](http://modules.sourceforge.net/) is a software package that allows us to provide a [multitude of applications and libraries in multiple versions](http://hpc.uni.lu/users/software/) on the UL HPC platform. The tool itself is used to manage environment variables such as `PATH`, `LD_LIBRARY_PATH` and `MANPATH`, enabling the easy loading and unloading of application/library profiles and their dependencies.
 
@@ -669,7 +673,7 @@ We will have multiple occasion to use modules in the other tutorials so there is
 * [UL HPC documentation on modules](https://hpc.uni.lu/users/docs/modules.html)
 
 
-## Step 6 (advanced): Job management and Persistent Terminal Sessions using GNU Screen
+## Step 5 (advanced): Job management and Persistent Terminal Sessions using GNU Screen
 
 [GNU Screen](http://www.gnu.org/software/screen/) is a tool to manage persistent terminal sessions.
 It becomes interesting since you will probably end at some moment with the following  scenario:
