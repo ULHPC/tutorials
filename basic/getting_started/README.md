@@ -246,7 +246,7 @@ When you click the fifth icon on the top with the two green arrows to toggle the
 
 If you are on Windows, you can directly use MobaXterm to transfer files. Connect to your session (see below on how to configure it). On the right panel you should see an **SFTP** panel opened.
 
-![SFTP on MobaXterm](src/images/moba-sftp.png)
+![SFTP on MobaXterm](src/images/moba_sftp.jpg)
 
 You have just to drag and drop your files to this panel to transfer files to the cluster. You can try to upload this file [ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM409nnn/GSM409307/suppl/GSM409307_UCSD.H1.H3K4me1.LL228.bed.gz](ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM409nnn/GSM409307/suppl/GSM409307_UCSD.H1.H3K4me1.LL228.bed.gz) (next-gen sequencing data from the NIH Roadmap Epigenomics Project)
 
@@ -308,6 +308,7 @@ Each cluster offers a set of web services to monitor the platform usage:
 * it permits to schedule jobs for users on the cluster resource
 
 There are two types of jobs:
+
   * _interactive_: you get a shell on the first reserve node
   * _passive_: classical batch job where the script passed as argument to `sbatch` is executed
 
