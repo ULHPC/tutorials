@@ -24,6 +24,8 @@ type mdrun > /dev/null 2>&1
 # Generate a parameter file based on the value of the first parameter of this script
 
 sed -i "s/^fourier_spacing.*$/fourier_spacing=${VALUE}/" pme_verlet.mdp
-grompp -f pme_verlet.mdp -c conf.gro -p topol.top -o bench_rnase_cubic.tpr
-mdrun -nt 1 -s bench_rnase_cubic.tpr -nsteps 1000
+
+which gmx > /dev/null 2>&1 && GMX=gmx
+$GMX grompp -f pme_verlet.mdp -c conf.gro -p topol.top -o bench_rnase_cubic.tpr
+$GMX mdrun -nt 1 -s bench_rnase_cubic.tpr -nsteps 1000
 
