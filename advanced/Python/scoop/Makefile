@@ -3,6 +3,7 @@ DATA=./data/time_per_core.dat
 SORTED_DATA=./data/time_per_core_sorted.dat
 
 run: $(DATA)
+	make graph
 
 graph: $(GRAPH)
 
@@ -23,7 +24,8 @@ clean:
 	rm -f $(DATA)
 
 
-$(GRAPH): scoop.gpi sort
+$(GRAPH): scoop.gpi
+	make sort
 	gnuplot scoop.gpi
 
 $(SORTED_DATA): $(DATA)
@@ -31,5 +33,5 @@ $(SORTED_DATA): $(DATA)
 
 $(DATA): ./scoop.sh ./pi_calc.py
 	make clean
-	sbatch scoop.sh
+	sbatch -W scoop.sh
 
