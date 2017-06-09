@@ -6,4 +6,4 @@ set xlabel "#tries"
 set ylabel "fitness(%)"
 set nologscale
 set logscale x
-plot 'data/fitness_per_tries.dat' with linespoints title "Monte Carlo pi calculation"
+plot 'data/fitness_per_tries_sorted.dat' with linespoints title "Monte Carlo pi calculation"

@@ -5,4 +5,4 @@ set title "Time per tries"
 set xlabel "#tries"
 set ylabel "time (s)"
 set logscale
-plot 'data/time_per_tries.dat' with linespoints title "Monte Carlo pi calculation"
+plot 'data/time_per_tries_sorted.dat' with linespoints title "Monte Carlo pi calculation"

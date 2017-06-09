@@ -26,7 +26,7 @@ def calcPi(workers, tries):
     return (piValue, totalTime)
 
 if __name__ == "__main__":
-    tries = int(sys.argv[1])
+    tries = 10**int(sys.argv[1])
     dataPi, totalTime = calcPi(tries, 1)
     with filelock.FileLock("pi_calc.lock") as lock:
         with open("data/fitness_per_tries.dat", "a") as f:

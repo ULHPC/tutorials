@@ -18,11 +18,11 @@ graph: $(GRAPH_FITNESS) $(GRAPH_TIME)
 sort: $(SORTED_DATA_FITNESS) $(SORTED_DATA_TIME)
 
 getdata: ./pi_calc.sh ./pi_calc.py
-	sbatch pi_calc.sh
+	sbatch -W pi_calc.sh
 
 test:
 	make clean
-	for i in 100 1000 10000 100000 1000000 10000000 100000000; do SLURM_ARRAY_TASK_ID=$$i bash pi_calc.sh; done;
+	for i in {2..7}; do SLURM_ARRAY_TASK_ID=$$i bash pi_calc.sh; done;
 	make graph
 
 clean:
