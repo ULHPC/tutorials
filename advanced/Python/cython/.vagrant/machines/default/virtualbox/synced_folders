@@ -1,1 +1,0 @@
-{"rsync":{"/vagrant":{"type":"rsync","guestpath":"/vagrant","hostpath":"/home/cparisot/ULHPC/repos/github/ULHPC/tutorials/advanced/Python/cython","disabled":false,"__vagrantfile":true,"owner":"vagrant","group":"vagrant"}}}
