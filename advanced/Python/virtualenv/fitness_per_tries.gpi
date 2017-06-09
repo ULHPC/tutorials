@@ -1,0 +1,9 @@
+set terminal jpeg
+set output "output/fitness_per_tries.jpeg"
+show output
+set title "Fitness per tries"
+set xlabel "#tries"
+set ylabel "fitness(%)"
+set nologscale
+set logscale x
+plot 'data/fitness_per_tries.dat' with linespoints title "Monte Carlo pi calculation"
