@@ -247,7 +247,6 @@ We will perform our tests with the hybrid version:
 
 		# Load the MPI-enabled Gromacs, without CUDA support:
 		(node)$> module load bio/GROMACS
-		(node)$> export I_MPI_PMI_LIBRARY=/usr/lib64/libpmi.so
 
 		# Check that it has been loaded, along with its dependencies:
 		(node)$> module list
@@ -477,7 +476,6 @@ coordinating file output, with the additional processes performing the search.
 
 		# Go to the test directory and execute mpiBLAST with one core for search
 		(node)$> cd ~/bioinfo-tutorial/mpiblast
-		(node)$> export I_MPI_PMI_LIBRARY=/usr/lib64/libpmi.so
 		(node)$> srun -np 3 mpiblast -p blastp -d nr -i test.fa -o test.out
 
 		# Note the speedup when using 14 cores
