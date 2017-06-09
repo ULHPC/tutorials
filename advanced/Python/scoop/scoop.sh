@@ -9,5 +9,6 @@
 #SBATCH --qos=qos-batch
 #
 #SBATCH --array=1-50
+#SBATCH -d singleton
 
 python -m scoop -n $SLURM_ARRAY_TASK_ID pi_calc.py $SLURM_ARRAY_TASK_ID

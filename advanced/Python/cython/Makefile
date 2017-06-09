@@ -11,9 +11,9 @@ sort: $(SORTED_DATA)
 
 test:
 	make clean
-	SLURM_ARRAY_TASK_ID=2 bash scoop.sh
-	SLURM_ARRAY_TASK_ID=1 bash scoop.sh
-	make graph
+	bash scoop.sh
+	#SLURM_ARRAY_TASK_ID=1 bash scoop.sh
+	#make graph
 
 clean:
 	rm -f scoop.log
