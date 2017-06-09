@@ -262,7 +262,7 @@ We will perform our tests with the hybrid version:
 		(node)$> export OMP_NUM_THREADS=1
 
 		# Perform a position restrained Molecular Dynamics run
-		(node)$> srun -n 3 gmx_mpi mdrun -v -s pr -e pr -o pr -c after_pr -g prlog > test.out 2>&1
+		(node)$> srun -n 12 gmx_mpi mdrun -v -s pr -e pr -o pr -c after_pr -g prlog > test.out 2>&1
 
 We notice here that we are running `mdrun_mpi`/`gmx_mpi` in parallel with mpirun on 12/14 cores, and we explicitly export the OMP_NUM_THREADS
 variable to any remote node such that only one thread per MPI process will be created.
