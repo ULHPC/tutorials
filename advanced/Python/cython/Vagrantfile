@@ -3,6 +3,7 @@
 
 Vagrant.configure("2") do |config|
   config.vm.box = "centos/7"
+  config.vm.synced_folder "output/", "/vagrant/output"
 
   config.vm.provider "virtualbox" do |v|
     v.memory = 1024
