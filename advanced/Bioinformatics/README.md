@@ -198,7 +198,7 @@ being proposed later on as exercises.
       (yourmachine)$> ssh access-iris.uni.lu
 
       # Request half a node in an interactive job:
-      (access-iris)$> srun -p interactive --qos qos-interactive -t 0-0:30:0 -N 1 -c 14 --ntasks-per-node=1 --pty bash
+      (access-iris)$> srun -p interactive --qos qos-interactive -t 0-0:30:0 -N 1 -c 1 --ntasks-per-node=14 --pty bash
 
 
 ```
@@ -247,6 +247,7 @@ We will perform our tests with the hybrid version:
 
 		# Load the MPI-enabled Gromacs, without CUDA support:
 		(node)$> module load bio/GROMACS
+		(node)$> export I_MPI_PMI_LIBRARY=/usr/lib64/libpmi.so
 
 		# Check that it has been loaded, along with its dependencies:
 		(node)$> module list
@@ -260,11 +261,8 @@ We will perform our tests with the hybrid version:
 		# Set the number of OpenMP threads to 1
 		(node)$> export OMP_NUM_THREADS=1
 
-		# Create a hostfile
-		(node)$> srun hostname | sort -n > hostfile
-
 		# Perform a position restrained Molecular Dynamics run
-		(node)$> mpirun -np 3 -hostfile hostfile -genvall gmx_mpi mdrun -v -s pr -e pr -o pr -c after_pr -g prlog > test.out 2>&1
+		(node)$> srun -n 3 gmx_mpi mdrun -v -s pr -e pr -o pr -c after_pr -g prlog > test.out 2>&1
 
 We notice here that we are running `mdrun_mpi`/`gmx_mpi` in parallel with mpirun on 12/14 cores, and we explicitly export the OMP_NUM_THREADS
 variable to any remote node such that only one thread per MPI process will be created.
@@ -458,7 +456,7 @@ being proposed later on as exercises.
 mpiBLAST requires access to NCBI substitution matrices and pre-formatted BLAST databases. For the purposes of this tutorial, a FASTA (NR)
 database has been formatted and split into 12 fragments, enabling the parallel alignment of a query against the database.
 
-A `.ncbirc` file for **Gaia** containing the paths to the necessary data files can be downloaded from [here](https://raw.github.com/ULHPC/tutorials/devel/advanced/Bioinformatics/mpiblast/.ncbirc)
+A `.ncbirc` file containing the paths to the necessary data files can be downloaded from [here](https://raw.github.com/ULHPC/tutorials/devel/advanced/Bioinformatics/mpiblast/.ncbirc)
 and placed in your $HOME directory (make sure to backup an existing $HOME/.ncbirc before overwriting it with the one in this tutorial).
 
 **Question: Knowing that the databases can take tens of gigabytes, what is an appropriate storage location for them on the clusters?**
@@ -466,12 +464,24 @@ and placed in your $HOME directory (make sure to backup an existing $HOME/.ncbir
 We will run a test using mpiBLAST. Note that mpiBLAST requires running with at least 3 processes, 2 dedicated for scheduling tasks and
 coordinating file output, with the additional processes performing the search.
 
-    # Go to the test directory and execute mpiBLAST with one core for search
-    (node)$> cd ~/bioinfo-tutorial/mpiblast
-    (node)$> mpirun -np 3 mpiblast -p blastp -d nr -i test.fa -o test.out
+* Gaia
 
-    # Note the speedup when using a full node of 12 cores
-    (node)$> mpirun -np 14 mpiblast -p blastp -d nr -i test.fa -o test.out
+		# Go to the test directory and execute mpiBLAST with one core for search
+		(node)$> cd ~/bioinfo-tutorial/mpiblast
+		(node)$> mpirun -np 3 mpiblast -p blastp -d nr -i test.fa -o test.out
+
+		# Note the speedup when using 12 cores
+		(node)$> mpirun -np 12 mpiblast -p blastp -d nr -i test.fa -o test.out
+
+* Iris
+
+		# Go to the test directory and execute mpiBLAST with one core for search
+		(node)$> cd ~/bioinfo-tutorial/mpiblast
+		(node)$> export I_MPI_PMI_LIBRARY=/usr/lib64/libpmi.so
+		(node)$> srun -np 3 mpiblast -p blastp -d nr -i test.fa -o test.out
+
+		# Note the speedup when using 14 cores
+		(node)$> srun -np 14 mpiblast -p blastp -d nr -i test.fa -o test.out
 
 ### Proposed exercises
 
