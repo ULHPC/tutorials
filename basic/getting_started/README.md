@@ -614,50 +614,6 @@ Some nodes are very specific (for instance the nodes with 1TB of memory or the B
 **Question: why are these resources not scheduled by default?**  
 
 
-#### OAR Containers
-
-With OAR, it is possible to execute jobs within another one. This functionality is called [container jobs](https://hpc.uni.lu/users/docs/oar.html#container) and is invoked using the `-t container` switch.
-
-* create a container job of 2 nodes for 4h30:
-
-		(access)$> oarsub -t container -l nodes=2,walltime=4:30:00 "sleep 1d"
-		[ADMISSION RULE] Modify resource description with type and ibpool constraints
-		OAR_JOB_ID=2828112
-		(access)$> oarstat -u
-
-This creates a kind of "tunnel" inside witch you can push subjobs using the `-t inner=<container_job_id>`.
-
-* reserve 3 sleep jobs (of different delay) over 10 cores within the previously created container job
-
-		(access)$> oarsub -t inner=2828112 -l core=10 "sleep 3m"   # Job 1
-		(access)$> oarsub -t inner=2828112 -l core=10 "sleep 2m"   # Job 2
-		(access)$> oarsub -t inner=2828112 -l core=10 "sleep 1m"   # Job 3
-
-These jobs will be scheduled as follows
-
-              ^
-              |                        
-              +======================== ... ========================+
-              |                      ^       Container Job (4h30)   |
-           ^  |  +--------+----+     |                              |
-        20c|  |  |    J2  | J3 |     |24c                           |
-           |  |  +--------+----+     |                              |
-           v  |  |      J1     |     v                              |
-              +==+=============+========= ... ======================+
-              |   <------><--->
-              |     2min    1min
-              +--------------------------------------------------------------> time
-
-
-**Question: Check the way your jobs have been scheduled**
-
-a. using `oarstat -u -f -j <subjob_id>` (take a look at the `assigned_resources`)
-
-b. using the [OAR drawgantt](https://hpc.uni.lu/status/drawgantt.html) interface  
-
-**Question: explain the interest of container jobs for the platform managers**
-
-
 #### Reservation at a given period of time
 
 You can use the `-r "YYYY-MM-DD HH:MM:SS"` option of `oarsub` to specify the date you wish the reservation to be issued. This is of particular interest for you to book in advance resources out of the working hours (at night and/or over week ends)
