@@ -5,9 +5,14 @@
 
 import sys
 import socket
-import Image
-import ImageEnhance
 import random
+
+try:
+    from PIL import Image
+    from PIL import ImageEnhance
+except ImportError:
+    import Image
+    import ImageEnhance
 
 def _percent(var):
     """
