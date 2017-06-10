@@ -34,13 +34,9 @@ If your network connection is unstable, use [screen](http://www.mechanicalkeys.c
     (access)$> screen
 
 
-We will use [2 directories](https://hpc.uni.lu/users/docs/env.html#working-directories):
+We will work in [the home directory](https://hpc.uni.lu/users/docs/env.html#working-directories).
 
-* `$HOME`: default home directory, **backed up**, maximum 100GB, for important files
-* `$WORK`: work directory, **non backed up**, maximum 3000GB
-
-
-You can check the usage of your directories using the command `df-ulhpc`
+You can check the usage of your directories using the command `df-ulhpc` on Gaia
 
     (access)$> df-ulhpc
     Directory                         Used  Soft quota  Hard quota  Grace period
@@ -49,10 +45,12 @@ You can check the usage of your directories using the command `df-ulhpc`
     /work/users/hcartiaux             39M   3.0T        -           none
 
 
-Create a sub directory $WORK/PS2, and work inside it
+Note that the user directories are not yet all available on Iris, and that the quota are not yet enabled.
 
-    (access)$> mkdir $WORK/PS2
-    (access)$> cd $WORK/PS2
+Create a sub directory $HOME/PS2, and work inside it
+
+    (access)$> mkdir $HOME/PS2
+    (access)$> cd $HOME/PS2
 
 In the following parts, we will assume that you are working in this directory.
 
@@ -71,6 +69,7 @@ In order to edit files in your terminal, you are expected to use your preferred 
 If you have never used any of them, `nano` is intuitive, but vim and emacs are more powerful.
 
 
+
 ## Exercise 1: Parametric experiment with Gromacs
 
 Gromacs is a popular molecular dynamics software.
@@ -78,12 +77,12 @@ In this exercise, we will process some example input files, and make the paramet
 
 Create a file which contains the list of parameters:
 
-    (access)$> seq 0.1 0.005 0.2 > $WORK/PS2/param_file
+    (access)$> seq 0.1 0.005 0.2 > $HOME/PS2/param_file
 
 
 #### Step 1: Naive workflow
 
-We will use the launcher `NAIVE_AKA_BAD_launcher_serial.sh` (full path: `$WORK/PS2/launcher-scripts/bash/serial/NAIVE_AKA_BAD_launcher_serial.sh`).
+We will use the launcher `NAIVE_AKA_BAD_launcher_serial.sh` (full path: `$HOME/PS2/launcher-scripts/bash/serial/NAIVE_AKA_BAD_launcher_serial.sh`).
 
 Edit the following variables:
 
@@ -91,11 +90,11 @@ Edit the following variables:
 * `TASK` must contain the path of the executable, 
 * `ARG_TASK_FILE` must contain the path of your parameter file.
 
-        (node)$> nano $WORK/PS2/launcher-scripts/bash/serial/NAIVE_AKA_BAD_launcher_serial.sh
+        (node)$> nano $HOME/PS2/launcher-scripts/bash/serial/NAIVE_AKA_BAD_launcher_serial.sh
 
             MODULE_TO_LOAD=(bio/GROMACS)
-            TASK="$WORK/PS2/tutorials/basic/sequential_jobs/scripts/run_gromacs_sim.sh"
-            ARG_TASK_FILE=$WORK/PS2/param_file
+            TASK="$HOME/PS2/tutorials/basic/sequential_jobs/scripts/run_gromacs_sim.sh"
+            ARG_TASK_FILE=$HOME/PS2/param_file
 
 Launch the job, in interactive mode and execute the launcher:
 
@@ -115,11 +114,11 @@ Launch the job, in interactive mode and execute the launcher:
               d-cluster1-1*1
 
 
-    (node)$ $WORK/PS2/launcher-scripts/bash/serial/NAIVE_AKA_BAD_launcher_serial.sh
+    (node)$ $HOME/PS2/launcher-scripts/bash/serial/NAIVE_AKA_BAD_launcher_serial.sh
 
 **Or** in passive mode (the output will be written in a file named `OAR.<JOBID>.stdout`)
 
-    (access)$> oarsub -l core=1 $WORK/PS2/launcher-scripts/bash/serial/NAIVE_AKA_BAD_launcher_serial.sh
+    (access)$> oarsub -l core=1 $HOME/PS2/launcher-scripts/bash/serial/NAIVE_AKA_BAD_launcher_serial.sh
 
         [ADMISSION RULE] Set default walltime to 7200.
         [ADMISSION RULE] Modify resource description with type constraints
@@ -168,19 +167,19 @@ Using the [system monitoring tool ganglia](https://hpc.uni.lu/chaos/ganglia), ch
 
 #### Step 2: Optimal method using GNU parallel (GNU Parallel)
 
-We will use the launcher `launcher_serial.sh` (full path: `$WORK/PS2/launcher-scripts/bash/serial/launcher_serial.sh`).
+We will use the launcher `launcher_serial.sh` (full path: `$HOME/PS2/launcher-scripts/bash/serial/launcher_serial.sh`).
 
 Edit the following variables:
 
-    (access)$> nano $WORK/PS2/launcher-scripts/bash/serial/launcher_serial.sh
+    (access)$> nano $HOME/PS2/launcher-scripts/bash/serial/launcher_serial.sh
 
     MODULE_TO_LOAD=(bio/GROMACS)
-    TASK="$WORK/PS2/tutorials/basic/sequential_jobs/scripts/run_gromacs_sim.sh"
-    ARG_TASK_FILE=$WORK/PS2/param_file
+    TASK="$HOME/PS2/tutorials/basic/sequential_jobs/scripts/run_gromacs_sim.sh"
+    ARG_TASK_FILE=$HOME/PS2/param_file
 
 Submit the (passive) job with `oarsub`
 
-    (access)$> oarsub -l nodes=1 $WORK/PS2/launcher-scripts/bash/serial/launcher_serial.sh
+    (access)$> oarsub -l nodes=1 $HOME/PS2/launcher-scripts/bash/serial/launcher_serial.sh
 
 
 **Question**: compare and explain the execution time with both launchers:
@@ -201,9 +200,9 @@ in your `oarsub` command.**
 ## Exercise 2: Watermarking images in Python
 
 
-We will use another program, `watermark.py` (full path: `$WORK/PS2/tutorials/basic/sequential_jobs/scripts/watermark.py`),
+We will use another program, `watermark.py` (full path: `$HOME/PS2/tutorials/basic/sequential_jobs/scripts/watermark.py`),
 and we will distribute the computation on 2 nodes with the launcher `parallel_launcher.sh`
-(full path: `$WORK/PS2/launcher-scripts/bash/generic/parallel_launcher.sh`).
+(full path: `$HOME/PS2/launcher-scripts/bash/generic/parallel_launcher.sh`).
 
 This python script will apply a watermark to the images (using the Python Imaging library).
 
@@ -217,39 +216,45 @@ We will work with 2 files:
 * `copyright.png`: a transparent images, which can be applied as a watermark
 * `images.tgz`: a compressed file, containing 30 JPG pictures (of the Gaia Cluster :) ).
 
+#### Step 0: python image manipulation module installation
+
+Install `pillow` in your home directory using this command:
+
+    pip install --user pillow
+
 #### Step 1: Prepare the input files
 
-Copy the source files in your $WORK directory.
+Copy the source files in your $HOME directory.
 
-    (access)>$ tar xvf /tmp/images.tgz -C $WORK/PS2/
-    (access)>$ cp /tmp/copyright.png $WORK/PS2
+    (access)>$ tar xvf /tmp/images.tgz -C $HOME/PS2/
+    (access)>$ cp /tmp/copyright.png $HOME/PS2
 
-    (access)>$ cd $WORK/PS2
+    (access)>$ cd $HOME/PS2
 
 #### Step 2: Create a list of parameters
 
 We must create a file containing a list of parameters, each line will be passed to `watermark.py`.
 
-    ls -d -1 $WORK/PS2/images/*.JPG | awk -v watermark=$WORK/PS2/copyright.png '{print watermark " " $1}' > $WORK/PS2/generic_launcher_param
+    ls -d -1 $HOME/PS2/images/*.JPG | awk -v watermark=$HOME/PS2/copyright.png '{print watermark " " $1}' > $HOME/PS2/generic_launcher_param
     \_____________________________/   \_________________________________________________________________/ \_________________________________/
                    1                                                    2                                                3
 
 1. `ls -d -1`: list the images
 2. `awk ...`: prefix each line with the first parameter (watermark file)
-3. `>`: redirect the output to the file $WORK/generic_launcher_param
+3. `>`: redirect the output to the file $HOME/generic_launcher_param
 
 
 #### Step 3: Configure the launcher
 
-We will use the launcher `parallel_launcher.sh` (full path: `$WORK/PS2/launcher-scripts/bash/generic/parallel_launcher.sh`).
+We will use the launcher `parallel_launcher.sh` (full path: `$HOME/PS2/launcher-scripts/bash/generic/parallel_launcher.sh`).
 
 Edit the following variables:
     
 
-    (access)$> nano $WORK/PS2/launcher-scripts/bash/generic/parallel_launcher.sh
+    (access)$> nano $HOME/PS2/launcher-scripts/bash/generic/parallel_launcher.sh
 
-    TASK="$WORK/PS2/tutorials/basic/sequential_jobs/scripts/watermark.py"
-    ARG_TASK_FILE="$WORK/PS2/generic_launcher_param"
+    TASK="$HOME/PS2/tutorials/basic/sequential_jobs/scripts/watermark.py"
+    ARG_TASK_FILE="$HOME/PS2/generic_launcher_param"
     # number of cores needed for 1 task
     NB_CORE_PER_TASK=2
 
@@ -257,7 +262,7 @@ Edit the following variables:
 
 We will spawn 1 process / 2 cores
 
-    (access)$> oarsub -l nodes=2 $WORK/PS2/launcher-scripts/bash/generic/parallel_launcher.sh
+    (access)$> oarsub -l nodes=2 $HOME/PS2/launcher-scripts/bash/generic/parallel_launcher.sh
 
 
 #### Step 5: Download the files
@@ -277,20 +282,20 @@ Let's use [JCell](https://jcell.gforge.uni.lu/), a framework for working with ge
 
 We will use 3 scripts:
 
-* `jcell_config_gen.sh` (full path: `$WORK/PS2/tutorials/basic/sequential_jobs/scripts/jcell_config_gen.sh`)
+* `jcell_config_gen.sh` (full path: `$HOME/PS2/tutorials/basic/sequential_jobs/scripts/jcell_config_gen.sh`)
 
 We want to execute Jcell, and change the parameters MutationProb and CrossoverProb.
 This script will install JCell, generate a tarball containing all the configuration files,
 and the list of parameters to be given to the launcher.
 
-* `jcell_wrapper.sh` (full path: `$WORK/PS2/tutorials/basic/sequential_jobs/scripts/jcell_wrapper.sh`)
+* `jcell_wrapper.sh` (full path: `$HOME/PS2/tutorials/basic/sequential_jobs/scripts/jcell_wrapper.sh`)
 
 This script is a wrapper, and will start one execution of jcell with the configuration file given in parameter.
 If a result already exists, then the execution will be skipped.
 Thanks to this simple test, our workflow is fault tolerant, 
 if the job is interrupted and restarted, only the missing results will be computed.
 
-* `parallel_launcher.sh` (full path: `$WORK/PS2/launcher-scripts/bash/generic/parallel_launcher.sh`)
+* `parallel_launcher.sh` (full path: `$HOME/PS2/launcher-scripts/bash/generic/parallel_launcher.sh`)
 
 This script will drive the experiment, start and balance the java processes on all the reserved resources.
 
@@ -299,31 +304,31 @@ This script will drive the experiment, start and balance the java processes on a
 
 Execute this script:
 
-        (access)$> $WORK/PS2/tutorials/basic/sequential_jobs/scripts/jcell_config_gen.sh
+        (access)$> $HOME/PS2/tutorials/basic/sequential_jobs/scripts/jcell_config_gen.sh
 
 
-This script will generate the following files in `$WORK/PS2/jcell`:
+This script will generate the following files in `$HOME/PS2/jcell`:
   
   * `config.tgz`
   * `jcell_param`
 
 
-#### Step 2: Edit the launcher configuration, in the file `$WORK/PS2/launcher-scripts/bash/generic/parallel_launcher.sh`.
+#### Step 2: Edit the launcher configuration, in the file `$HOME/PS2/launcher-scripts/bash/generic/parallel_launcher.sh`.
 
 This application is cpu-bound and not memory-bound, so we can set the value of `NB_CORE_PER_TASK` to 1.
 Using these parameters, the launcher will spaw one java process per core on all the reserved nodes.
 
-        (access)$> nano $WORK/PS2/launcher-scripts/bash/generic/parallel_launcher.sh
+        (access)$> nano $HOME/PS2/launcher-scripts/bash/generic/parallel_launcher.sh
 
-        TASK="$WORK/PS2/tutorials/basic/sequential_jobs/scripts/jcell_wrapper.sh"
-        ARG_TASK_FILE="$WORK/PS2/jcell/jcell_param"
+        TASK="$HOME/PS2/tutorials/basic/sequential_jobs/scripts/jcell_wrapper.sh"
+        ARG_TASK_FILE="$HOME/PS2/jcell/jcell_param"
         # number of cores needed for 1 task
         NB_CORE_PER_TASK=1
 
 #### Step 3: Submit the job
 
 
-        (access)$> oarsub -l nodes=2 $WORK/PS2/launcher-scripts/bash/generic/parallel_launcher.sh
+        (access)$> oarsub -l nodes=2 $HOME/PS2/launcher-scripts/bash/generic/parallel_launcher.sh
 
 
 #### Step 4. Retrieve the results on your laptop:
@@ -340,7 +345,7 @@ Using these parameters, the launcher will spaw one java process per core on all 
 
 Please, don't store unnecessary files on the cluster's storage servers:
 
-    (access)$> rm -rf $WORK/PS2
+    (access)$> rm -rf $HOME/PS2
 
 
 # Going further:
