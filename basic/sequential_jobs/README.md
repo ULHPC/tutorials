@@ -27,7 +27,13 @@ We will use the following github repositories:
 
 ## Connect to the cluster access node, and set-up the environment for this tutorial
 
+You can chose one of the 3 production cluster hosted by the University of Luxembourg.
+
+For the next sections, note that you will use `Slurm` on Iris, and `OAR` on Chaos & Gaia.
+
+    (yourmachine)$> ssh iris-cluster
     (yourmachine)$> ssh chaos-cluster
+    (yourmachine)$> ssh gaia-cluster
 
 If your network connection is unstable, use [screen](http://www.mechanicalkeys.com/files/os/notes/tm.html):
 
