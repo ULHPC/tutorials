@@ -102,6 +102,9 @@ Edit the following variables:
             TASK="$HOME/PS2/tutorials/basic/sequential_jobs/scripts/run_gromacs_sim.sh"
             ARG_TASK_FILE=$HOME/PS2/param_file
 
+
+##### Step 1a: using OAR on Chaos & Gaia
+
 Launch the job, in interactive mode and execute the launcher:
 
     (access)$> oarsub -I -l core=1
@@ -162,13 +165,60 @@ and check the status of the system using standard linux command (`free`, `top`, 
     Swap:         4095         47       4048
     0 14:51:59 hcartiaux@d-cluster1-1(chaos-cluster)[OAR1542592->119] ~ $ htop
 
-![Monika screenshot](src/images/chaos_htop.png)
+![Htop screenshot](src/images/chaos_htop.png)
 
 During the execution, you can try to locate your job on the [monika web interface](https://hpc.uni.lu/chaos/monika).
 
 ![Monika screenshot](src/images/chaos_monika.png)
 
 Using the [system monitoring tool ganglia](https://hpc.uni.lu/chaos/ganglia), check the activity on your node.
+
+##### Step 1b: using Slurm on Iris
+
+Launch the job, in interactive mode and execute the launcher:
+
+    (access)$> srun -p interactive -N 1 --qos qos-interactive --pty bash -i
+
+    (node)$ $HOME/PS2/launcher-scripts/bash/serial/NAIVE_AKA_BAD_launcher_serial.sh
+
+**Or** in passive mode (the output will be written in a file named `BADSerial-<JOBID>.out`)
+
+    (access)$> sbatch $HOME/PS2/launcher-scripts/bash/serial/NAIVE_AKA_BAD_launcher_serial.sh 
+
+
+You can use the command `scontrol show job <JOBID>` to read all the details about your job:
+
+    (access)$> scontrol show job 2124
+    JobId=2124 JobName=BADSerial
+       UserId=hcartiaux(5079) GroupId=clusterusers(666) MCS_label=N/A
+       Priority=100 Nice=0 Account=ulhpc QOS=qos-batch
+       JobState=RUNNING Reason=None Dependency=(null)
+       Requeue=1 Restarts=0 BatchFlag=1 Reboot=0 ExitCode=0:0
+       RunTime=00:04:58 TimeLimit=01:00:00 TimeMin=N/
+       SubmitTime=2017-06-11T16:12:27 EligibleTime=2017-06-11T16:12:27
+       StartTime=2017-06-11T16:12:28 EndTime=2017-06-11T17:12:28 Deadline=N/A
+
+And the command `sacct` to see the start and end date
+
+    (access)$> sacct --format=start,end --j 2125
+                  Start                 End 
+    ------------------- ------------------- 
+    2017-06-11T16:23:23 2017-06-11T16:23:51 
+    2017-06-11T16:23:23 2017-06-11T16:23:51
+
+In all cases, you can connect to a reserved node using the command `srun`
+and check the status of the system using standard linux command (`free`, `top`, `htop`, etc)
+
+    (access)$> srun -p interactive --qos qos-interactive --jobid <JOBID> --pty bash
+
+During the execution, you can see the job in the queue with the command `squeue`:
+
+    (access)$> squeue 
+             JOBID PARTITION     NAME     USER ST       TIME  NODES NODELIST(REASON)
+              2124     batch BADSeria hcartiau  R       2:16      1 iris-053
+              2122 interacti     bash svarrett  R       5:12      1 iris-081
+
+Using the [system monitoring tool ganglia](https://hpc.uni.lu/iris/ganglia/), check the activity on your node.
 
 
 #### Step 2: Optimal method using GNU parallel (GNU Parallel)
@@ -183,9 +233,13 @@ Edit the following variables:
     TASK="$HOME/PS2/tutorials/basic/sequential_jobs/scripts/run_gromacs_sim.sh"
     ARG_TASK_FILE=$HOME/PS2/param_file
 
-Submit the (passive) job with `oarsub`
+Submit the (passive) job with `oarsub` if you are using Chaos or Gaia
 
     (access)$> oarsub -l nodes=1 $HOME/PS2/launcher-scripts/bash/serial/launcher_serial.sh
+
+Or with `sbatch` if you are using Iris
+
+    (access)$> sbatch $HOME/PS2/launcher-scripts/bash/serial/launcher_serial.sh
 
 
 **Question**: compare and explain the execution time with both launchers:
@@ -197,8 +251,9 @@ Submit the (passive) job with `oarsub`
 * Parallel workflow: time = **2m 11s**  
   ![CPU usage for the parallel workflow](src/images/chaos_ganglia_parallel.png)
 
-**/!\ In order to compare execution times, you must always use the same type of nodes (CPU/Memory), 
-using [properties](https://hpc.uni.lu/users/docs/oar.html#select-nodes-precisely-with-properties)
+
+**/!\ Gaia and Chaos nodes are heterogeneous. In order to compare execution times, 
+you must always use the same type of nodes (CPU/Memory), using [properties](https://hpc.uni.lu/users/docs/oar.html#select-nodes-precisely-with-properties)
 in your `oarsub` command.**
 
 
@@ -224,16 +279,22 @@ We will work with 2 files:
 
 #### Step 0: python image manipulation module installation
 
-Install `pillow` in your home directory using this command:
+In an interactive job, install `pillow` in your home directory using this command:
+    
 
-    pip install --user pillow
+    (access IRIS)>$ srun -p interactive -N 1 --qos qos-interactive --pty bash -i
+    (access Chaos/Gaia)>$ oarsub -I 
+
+
+
+    (node)>$ pip install --user pillow
 
 #### Step 1: Prepare the input files
 
 Copy the source files in your $HOME directory.
 
-    (access)>$ tar xvf /tmp/images.tgz -C $HOME/PS2/
-    (access)>$ cp /tmp/copyright.png $HOME/PS2
+    (access)>$ tar xvf /mnt/isilon/projects/ulhpc-tutorials/sequential/images.tgz -C $HOME/PS2/
+    (access)>$ cp /mnt/isilon/projects/ulhpc-tutorials/sequential/copyright.png $HOME/PS2
 
     (access)>$ cd $HOME/PS2
 
@@ -266,16 +327,25 @@ Edit the following variables:
 
 #### Step 4: Submit the job
 
-We will spawn 1 process / 2 cores
+We will spawn 1 process per 2 cores on 2 nodes
 
-    (access)$> oarsub -l nodes=2 $HOME/PS2/launcher-scripts/bash/generic/parallel_launcher.sh
+On Iris, the Slurm job submission command is `sbatch`
+
+    (access IRIS)>$ sbatch $HOME/PS2/launcher-scripts/bash/generic/parallel_launcher.sh
+
+On Chaos and Gaia, the OAR job submission command is `oarsub`
+
+    (access Chaos/Gaia)>$ oarsub $HOME/PS2/launcher-scripts/bash/generic/parallel_launcher.sh
 
 
 #### Step 5: Download the files
 
-On your laptop, transfer the files in the current directory and look at them with your favorite viewer:
+On your laptop, transfer the files in the current directory and look at them with your favorite viewer.
+Use one of these commands according to the cluster you have used:
 
-    (yourmachine)$> rsync -avz chaos-cluster:/work/users/<LOGIN>/PS2/images .
+    (yourmachine)$> rsync -avz chaos-cluster:/home/users/<LOGIN>/PS2/images .
+    (yourmachine)$> rsync -avz gaia-cluster:/home/users/<LOGIN>/PS2/images .
+    (yourmachine)$> rsync -avz iris-cluster:/home/users/<LOGIN>/PS2/images .
 
 
 **Question**: which nodes are you using, identify your nodes with the command `oarstat -f -j <JOBID>` or Monika
@@ -334,22 +404,31 @@ Using these parameters, the launcher will spaw one java process per core on all 
 #### Step 3: Submit the job
 
 
-        (access)$> oarsub -l nodes=2 $HOME/PS2/launcher-scripts/bash/generic/parallel_launcher.sh
+On Iris, the Slurm job submission command is `sbatch`
+
+    (access IRIS)>$ sbatch $HOME/PS2/launcher-scripts/bash/generic/parallel_launcher.sh
+
+On Chaos and Gaia, the OAR job submission command is `oarsub`
+
+    (access Chaos/Gaia)>$ oarsub $HOME/PS2/launcher-scripts/bash/generic/parallel_launcher.sh 
 
 
 #### Step 4. Retrieve the results on your laptop:
 
+Use one of these commands according to the cluster you have used:
 
-        (yourmachine)$> rsync -avz chaos-cluster:/work/users/<LOGIN>/PS2/jcell/results .
+        (yourmachine)$> rsync -avz chaos-cluster:/home/users/<LOGIN>/PS2/jcell/results .
+        (yourmachine)$> rsync -avz gaia-cluster:/home/users/<LOGIN>/PS2/jcell/results .
+        (yourmachine)$> rsync -avz iris-cluster:/home/users/<LOGIN>/PS2/jcell/results .
 
 
 **Question**: check the system load and memory usage with Ganglia
 ([Chaos](https://hpc.uni.lu/chaos/ganglia), [Gaia](https://hpc.uni.lu/gaia/ganglia))
 
 
-## At the end, please, clean up your home and work directories :)
+## At the end, please clean up your home and work directories :)
 
-Please, don't store unnecessary files on the cluster's storage servers:
+**Please** do not store unnecessary files on the cluster's storage servers:
 
     (access)$> rm -rf $HOME/PS2
 
