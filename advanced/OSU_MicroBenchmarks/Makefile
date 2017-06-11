@@ -1,7 +1,7 @@
 ##################################################################################
 # Makefile - Configuration file for GNU make (http://www.gnu.org/software/make/)
 # Creation : 07 Nov 2013
-# Time-stamp: <Sun 2017-06-11 19:15 svarrette>
+# Time-stamp: <Sun 2017-06-11 19:19 svarrette>
 #
 # Copyright (c) 2013 Sebastien Varrette <Sebastien.Varrette@uni.lu>
 #               http://varrette.gforge.uni.lu
@@ -15,6 +15,11 @@
 ############################## Variables Declarations ############################
 SHELL = /bin/bash
 
+TOP_SRCDIR  = ../..
+SRC_DIR     = src
+RUN_DIR     = runs
+SCRIPT_DIR  = scripts
+PLOT_DIR    = plots
 
 ### Benchmark info
 BENCH_SHORTNAME = "OSU"
