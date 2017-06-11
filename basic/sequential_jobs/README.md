@@ -1,11 +1,19 @@
-HPC workflow with sequential jobs
-=================================
+-*- mode: markdown; mode: auto-fill; fill-column: 80 -*-
 
-# Prerequisites
+Copyright (c) 2016-2017 [ULHPC management team](mailto:<hpc-sysadmins@uni.lu>) --  [www](http://hpc.uni.lu)
 
-Make sure you have followed the tutorial "Getting started".
+---------------------------------------------------------
+# UL HPC Tutorial: HPC workflow with sequential jobs
 
-# Intro
+[![By ULHPC](https://img.shields.io/badge/by-ULHPC-blue.svg)](https://hpc.uni.lu) [![Licence](https://img.shields.io/badge/license-GPL--3.0-blue.svg)](http://www.gnu.org/licenses/gpl-3.0.html) [![GitHub issues](https://img.shields.io/github/issues/ULHPC/tutorials.svg)](https://github.com/ULHPC/tutorials/issues/) [![](https://img.shields.io/badge/slides-PDF-red.svg)](slides.pdf) [![Github](https://img.shields.io/badge/sources-github-green.svg)](https://github.com/ULHPC/tutorials/tree/devel/basic/sequential_jobs/) [![Documentation Status](http://readthedocs.org/projects/ulhpc-tutorials/badge/?version=latest)](http://ulhpc-tutorials.readthedocs.io/en/latest/basic/sequential_jobs/) [![GitHub forks](https://img.shields.io/github/stars/ULHPC/tutorials.svg?style=social&label=Star)](https://github.com/ULHPC/tutorials)
+
+[![](cover_slides.png)](slides.pdf)
+
+**Prerequisites**
+
+Make sure you have followed the tutorial ["Getting started"](../getting_started/).
+
+## Introduction
 
 For many users, the typical usage of the HPC facilities is to execute 1 program with many parameters.
 On your local machine, you can just start your program 100 times sequentially.
@@ -13,50 +21,55 @@ However, you will obtain better results if you parallelize the executions on a H
 
 During this session, we will see 3 use cases:
 
-* Exercise 1: Use the serial launcher (1 node, in sequential and parallel mode);
-* Exercise 2: Use the generic launcher, distribute your executions on several nodes (python script);
-* Exercise 3: Advanced use case, using a Java program: "JCell".
+* _Exercise 1_: Use the serial launcher (1 node, in sequential and parallel mode);
+* _Exercise 2_: Use the generic launcher, distribute your executions on several nodes (python script);
+* _Exercise 3_: Advanced use case, using a Java program: "JCell".
 
 We will use the following github repositories:
 
 * [ULHPC/launcher-scripts](https://github.com/ULHPC/launcher-scripts)
 * [ULHPC/tutorials](https://github.com/ULHPC/tutorials)
 
+## Pre-requisites
 
-# Practical session 2
-
-## Connect to the cluster access node, and set-up the environment for this tutorial
+### Connect to the cluster access node, and set-up the environment for this tutorial
 
 You can chose one of the 3 production cluster hosted by the University of Luxembourg.
 
 For the next sections, note that you will use `Slurm` on Iris, and `OAR` on Chaos & Gaia.
 
-    (yourmachine)$> ssh iris-cluster
-    (yourmachine)$> ssh chaos-cluster
-    (yourmachine)$> ssh gaia-cluster
+```bash
+(yourmachine)$> ssh iris-cluster
+(yourmachine)$> ssh chaos-cluster
+(yourmachine)$> ssh gaia-cluster
+```
 
 If your network connection is unstable, use [screen](http://www.mechanicalkeys.com/files/os/notes/tm.html):
 
-    (access)$> screen
-
+```bash
+(access)$> screen
+```
 
 We will work in [the home directory](https://hpc.uni.lu/users/docs/env.html#working-directories).
 
 You can check the usage of your directories using the command `df-ulhpc` on Gaia
 
-    (access)$> df-ulhpc
-    Directory                         Used  Soft quota  Hard quota  Grace period
-    ---------                         ----  ----------  ----------  ------------
-    /home/users/hcartiaux             3.2G  100G        -           none
-    /work/users/hcartiaux             39M   3.0T        -           none
-
+```bash
+(access)$> df-ulhpc
+Directory                         Used  Soft quota  Hard quota  Grace period
+---------                         ----  ----------  ----------  ------------
+/home/users/hcartiaux             3.2G  100G        -           none
+/work/users/hcartiaux             39M   3.0T        -           none
+```
 
 Note that the user directories are not yet all available on Iris, and that the quota are not yet enabled.
 
 Create a sub directory $HOME/PS2, and work inside it
 
-    (access)$> mkdir $HOME/PS2
-    (access)$> cd $HOME/PS2
+```bash
+(access)$> mkdir $HOME/PS2
+(access)$> cd $HOME/PS2
+```
 
 In the following parts, we will assume that you are working in this directory.
 
@@ -93,7 +106,7 @@ We will use the launcher `NAIVE_AKA_BAD_launcher_serial.sh` (full path: `$HOME/P
 Edit the following variables:
 
 * `MODULE_TO_LOAD` must contain the list of modules to load before executing `$TASK`,
-* `TASK` must contain the path of the executable, 
+* `TASK` must contain the path of the executable,
 * `ARG_TASK_FILE` must contain the path of your parameter file.
 
         (node)$> nano $HOME/PS2/launcher-scripts/bash/serial/NAIVE_AKA_BAD_launcher_serial.sh
@@ -114,7 +127,7 @@ Launch the job, in interactive mode and execute the launcher:
         OAR_JOB_ID=1542591
         Interactive mode : waiting...
         Starting...
-        
+
         Connect to OAR job 1542591 via the node d-cluster1-1
         Linux d-cluster1-1 3.2.0-4-amd64 unknown
          14:27:19 up 29 days, 10 min,  1 user,  load average: 0.00, 0.00, 0.06
@@ -140,7 +153,7 @@ You can use the command `oarstat -f -j <JOBID>` to read all the details about yo
             project = default
             owner = hcartiaux
             state = Running
-            wanted_resources = -l "{type = 'default'}/core=1,walltime=2:0:0" 
+            wanted_resources = -l "{type = 'default'}/core=1,walltime=2:0:0"
             assigned_resources = 434
             assigned_hostnames = d-cluster1-1
             queue = default
@@ -157,7 +170,7 @@ and check the status of the system using standard linux command (`free`, `top`, 
         [OAR] OAR_JOB_ID=1542592
         [OAR] Your nodes are:
               d-cluster1-1*1
-    
+
     0 14:51:57 hcartiaux@d-cluster1-1(chaos-cluster)[OAR1542592->119] ~ $ free -m
                  total       used       free     shared    buffers     cached
     Mem:         48393      41830       6563          0        204      25120
@@ -183,7 +196,7 @@ Launch the job, in interactive mode and execute the launcher:
 
 **Or** in passive mode (the output will be written in a file named `BADSerial-<JOBID>.out`)
 
-    (access)$> sbatch $HOME/PS2/launcher-scripts/bash/serial/NAIVE_AKA_BAD_launcher_serial.sh 
+    (access)$> sbatch $HOME/PS2/launcher-scripts/bash/serial/NAIVE_AKA_BAD_launcher_serial.sh
 
 
 You can use the command `scontrol show job <JOBID>` to read all the details about your job:
@@ -201,9 +214,9 @@ You can use the command `scontrol show job <JOBID>` to read all the details abou
 And the command `sacct` to see the start and end date
 
     (access)$> sacct --format=start,end --j 2125
-                  Start                 End 
-    ------------------- ------------------- 
-    2017-06-11T16:23:23 2017-06-11T16:23:51 
+                  Start                 End
+    ------------------- -------------------
+    2017-06-11T16:23:23 2017-06-11T16:23:51
     2017-06-11T16:23:23 2017-06-11T16:23:51
 
 In all cases, you can connect to a reserved node using the command `srun`
@@ -213,7 +226,7 @@ and check the status of the system using standard linux command (`free`, `top`, 
 
 During the execution, you can see the job in the queue with the command `squeue`:
 
-    (access)$> squeue 
+    (access)$> squeue
              JOBID PARTITION     NAME     USER ST       TIME  NODES NODELIST(REASON)
               2124     batch BADSeria hcartiau  R       2:16      1 iris-053
               2122 interacti     bash svarrett  R       5:12      1 iris-081
@@ -245,14 +258,14 @@ Or with `sbatch` if you are using Iris
 **Question**: compare and explain the execution time with both launchers:
 
 
-* Naive workflow: time = **16m 32s**  
+* Naive workflow: time = **16m 32s**
   ![CPU usage for the sequential workflow](src/images/chaos_ganglia_seq.png)
 
-* Parallel workflow: time = **2m 11s**  
+* Parallel workflow: time = **2m 11s**
   ![CPU usage for the parallel workflow](src/images/chaos_ganglia_parallel.png)
 
 
-**/!\ Gaia and Chaos nodes are heterogeneous. In order to compare execution times, 
+**/!\ Gaia and Chaos nodes are heterogeneous. In order to compare execution times,
 you must always use the same type of nodes (CPU/Memory), using [properties](https://hpc.uni.lu/users/docs/oar.html#select-nodes-precisely-with-properties)
 in your `oarsub` command.**
 
@@ -280,10 +293,10 @@ We will work with 2 files:
 #### Step 0: python image manipulation module installation
 
 In an interactive job, install `pillow` in your home directory using this command:
-    
+
 
     (access IRIS)>$ srun -p interactive -N 1 --qos qos-interactive --pty bash -i
-    (access Chaos/Gaia)>$ oarsub -I 
+    (access Chaos/Gaia)>$ oarsub -I
 
 
 
@@ -316,7 +329,7 @@ We must create a file containing a list of parameters, each line will be passed 
 We will use the launcher `parallel_launcher.sh` (full path: `$HOME/PS2/launcher-scripts/bash/generic/parallel_launcher.sh`).
 
 Edit the following variables:
-    
+
 
     (access)$> nano $HOME/PS2/launcher-scripts/bash/generic/parallel_launcher.sh
 
@@ -368,7 +381,7 @@ and the list of parameters to be given to the launcher.
 
 This script is a wrapper, and will start one execution of jcell with the configuration file given in parameter.
 If a result already exists, then the execution will be skipped.
-Thanks to this simple test, our workflow is fault tolerant, 
+Thanks to this simple test, our workflow is fault tolerant,
 if the job is interrupted and restarted, only the missing results will be computed.
 
 * `parallel_launcher.sh` (full path: `$HOME/PS2/launcher-scripts/bash/generic/parallel_launcher.sh`)
@@ -384,7 +397,7 @@ Execute this script:
 
 
 This script will generate the following files in `$HOME/PS2/jcell`:
-  
+
   * `config.tgz`
   * `jcell_param`
 
@@ -410,7 +423,7 @@ On Iris, the Slurm job submission command is `sbatch`
 
 On Chaos and Gaia, the OAR job submission command is `oarsub`
 
-    (access Chaos/Gaia)>$ oarsub $HOME/PS2/launcher-scripts/bash/generic/parallel_launcher.sh 
+    (access Chaos/Gaia)>$ oarsub $HOME/PS2/launcher-scripts/bash/generic/parallel_launcher.sh
 
 
 #### Step 4. Retrieve the results on your laptop:
@@ -426,15 +439,16 @@ Use one of these commands according to the cluster you have used:
 ([Chaos](https://hpc.uni.lu/chaos/ganglia), [Gaia](https://hpc.uni.lu/gaia/ganglia))
 
 
-## At the end, please clean up your home and work directories :)
+## Conclusion
+
+__At the end, please clean up your home and work directories :)__
 
 **Please** do not store unnecessary files on the cluster's storage servers:
 
     (access)$> rm -rf $HOME/PS2
 
 
-# Going further:
+For going further:
 
 * [Checkpoint / restart with BLCR](http://hpc.uni.lu/users/docs/oar.html#checkpointing)
 * [OAR array jobs (fr)](http://crimson.oca.eu/spip.php?article157)
-
