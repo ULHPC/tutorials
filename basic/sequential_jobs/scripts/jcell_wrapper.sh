@@ -1,7 +1,7 @@
 #!/bin/bash -l
 
 # Root work directory
-ROOT=$WORK/PS2
+ROOT=$HOME/PS2
 
 # Temporary directory in /tmp
 TEMP=`mktemp -d`
