@@ -1,14 +1,22 @@
 -*- mode: markdown; mode: auto-fill; fill-column: 80 -*-
-`README.md`
 
-Copyright (c) 2016 [ULHPC management team](mailto:<hpc-sysadmins@uni.lu>) [www](http://varrette.gforge.uni.lu)
+Copyright (c) 2016-2017 [ULHPC management team](mailto:<hpc-sysadmins@uni.lu>) [www](http://varrette.gforge.uni.lu)
 
 -------------------
 
-# UL HPC Tutorial: Getting Started
+# UL HPC Tutorial: Getting Started on the UL HPC platform
+
+[![By ULHPC](https://img.shields.io/badge/by-ULHPC-blue.svg)](https://hpc.uni.lu)
+[![Licence](https://img.shields.io/badge/license-GPL--3.0-blue.svg)](http://www.gnu.org/licenses/gpl-3.0.html)
+[![GitHub issues](https://img.shields.io/github/issues/ULHPC/tutorials.svg)](https://github.com/ULHPC/tutorials/issues/)
+[![](https://img.shields.io/badge/slides-PDF-red.svg)](slides.pdf)
+
+
+[![](cover_slides.png)](slides.pdf)
+
 
 This tutorial will guide you through your first steps on the
-[UL HPC platform](http://hpc.uni.lu).  
+[UL HPC platform](http://hpc.uni.lu).
 
 Before proceeding:
 
@@ -18,7 +26,7 @@ Before proceeding:
 
 From a general perspective, the [Support page](https://hpc.uni.lu/users/docs/report_pbs.html) describes how to get help during your UL HPC usage.
 
-## Convention
+**Convention**
 
 In the below tutorial, you'll proposed terminal commands where the prompt is denoted by `$>`.
 
@@ -42,8 +50,8 @@ The general organization of each cluster is depicted below:
 
 Details on this organization can be found [here](https://hpc.uni.lu/systems/clusters.html#clusters-organization)
 
+## Hands-On/SSH & UL HPC access
 
-# Connecting for the first time and preparing your SSH environment
 
 * [Access / SSH Tutorial](https://hpc.uni.lu/users/docs/access.html)
 
@@ -108,7 +116,7 @@ In the sequel, we assume these aliases to be defined.
 	* Do the same thing for the other clusters (chaos, gaia) by changing the **Remote host** field.
 
 
-## Step 2: Connect from one cluster to the other
+### Step 2: Connect from one cluster to the other
 
 The SSH key you provided us secure your connection __from__ your laptop (or personal workstation) __to__ the cluster frontends. It is thus important to protect them by a passphrase.
 
@@ -123,7 +131,7 @@ or
 If that's the case, you can ignore the rest of this section.
 **Otherwise**, you will now have to configure a passphrase-free SSH key pair to permit a transparent connection from one cluster to another. Have a look at this [FAQ](https://hpc.uni.lu/blog/2017/faq-how-to-permit-bi-directional-connection/)
 
-## Step 2bis: Using SSH proxycommand setup to access the clusters despite port filtering
+### Step 2bis: Using SSH proxycommand setup to access the clusters despite port filtering
 
 It might happen that the port 8022 is filtered from your working place. You can easily bypass this firewall rule using an SSH proxycommand to setup transparently multi-hop connexions *through* one host (a gateway) to get to the access frontend of the cluster, as depited below:
 
@@ -153,7 +161,8 @@ The gateway can be any SSH server which have access to the access frontend of th
 
 		(laptop)$> ssh gaia.ulhpc
 
-## Step 3: transferring files
+## Hands-on/ Transferring files
+
 Directories such as `$HOME`, `$WORK` or `$SCRATCH` are shared among the nodes of the cluster that you are using (including the front-end) via shared filesystems (NFS, Lustre) meaning that:
 
 * every file/directory pushed or created on the front-end is available on the computing nodes
@@ -202,7 +211,7 @@ You can get more information about these transfer methods in the [file transfer 
 
 
 
-## Step 3b: Windows / Linux / OS X / Unix GUI tools
+### Step 3b: Windows / Linux / OS X / Unix GUI tools
 
 * Download the FileZilla client application from [filezilla-project.org](https://filezilla-project.org/download.php?type=client) and install it.
 * First we need to tell FileZilla about our ssh key:
@@ -212,7 +221,7 @@ You can get more information about these transfer methods in the [file transfer 
 	* Click on the button `Add keyfile...` and select your private keyfile (you may need to convert it).
 	* Finally click `OK` to save and close the settings.
 
-![Add ssh key](src/images/filezilla_key.jpg)
+![Add ssh key](images/filezilla_key.jpg)
 
 * Back in the main window click on the `Site Manager` button on the top left or select `Site Manager` from the `File` menu.
 * Click on the `New Site` button and enter/select the following:
@@ -222,14 +231,14 @@ You can get more information about these transfer methods in the [file transfer 
   * Logon Type: `Interactive`
   * User: your login
 
-![Connection settings](src/images/site_manager.jpg)
+![Connection settings](images/site_manager.jpg)
 
 * Click on the `Connect` button.
 * Accept the certificate.
 
 You should now see something similar to the following window:
 
-![Connection settings](src/images/filezilla.jpg)
+![Connection settings](images/filezilla.jpg)
 
 On the very top, beneath the quick connect, you see the message log. Below you have the directory tree and the contents of the current directory for you local computer on the left and the remote location on the right.
 
@@ -240,23 +249,23 @@ If you skipped step 3a, you may download the following file (50 MB) for testing:
 
 When you click the fifth icon on the top with the two green arrows to toggle the transfer queue, you can see the status of ongoing transfers on the very bottom of the window.
 
-![Connection settings](src/images/transfer.jpg)
+![Connection settings](images/transfer.jpg)
 
-# Step 3c: Windows MobaXterm file transfert
+### Step 3c: Windows MobaXterm file transfert
 
 If you are on Windows, you can directly use MobaXterm to transfer files. Connect to your session (see below on how to configure it). On the right panel you should see an **SFTP** panel opened.
 
-![SFTP on MobaXterm](src/images/moba_sftp.jpg)
+![SFTP on MobaXterm](images/moba_sftp.jpg)
 
 You have just to drag and drop your files to this panel to transfer files to the cluster. You can try to upload this file [ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM409nnn/GSM409307/suppl/GSM409307_UCSD.H1.H3K4me1.LL228.bed.gz](ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM409nnn/GSM409307/suppl/GSM409307_UCSD.H1.H3K4me1.LL228.bed.gz) (next-gen sequencing data from the NIH Roadmap Epigenomics Project)
 
 To retrieve a file from the cluster, you can right click on it and choose the **Download** option. Please refers to MobaXterm documentation for more informations on the available features.
 
-# Discovering, visualizing and reserving UL HPC resources
+## Discovering, visualizing and reserving UL HPC resources
 
-In the sequel, replace `<login>` in the proposed commands with you login on the platform (ex: `svarrette`).   
+In the sequel, replace `<login>` in the proposed commands with you login on the platform (ex: `svarrette`).
 
-## Step 1: the working environment
+### Step 1: the working environment
 
 * [reference documentation](http://hpc.uni.lu/users/docs/env.html)
 
@@ -284,7 +293,7 @@ Your homedir is under a regular backup policy. Therefore you are asked to pay at
 		(access)$> df-ulhpc
 
 
-## Step 2: web monitoring interfaces
+### Step 2: web monitoring interfaces
 
 Each cluster offers a set of web services to monitor the platform usage:
 
@@ -294,9 +303,9 @@ Each cluster offers a set of web services to monitor the platform usage:
 * [Ganglia](https://hpc.uni.lu/status/ganglia.html), a scalable distributed monitoring system for high-performance computing systems such as clusters and Grids.
 * [CDash](http://cdash.uni.lux/) (internal UL network use)
 
-## Step 3a: Reserving resources with Slurm
+### Step 3a: Reserving resources with Slurm
 
-### The basics
+#### The basics
 
 * [reference documentation](https://hpc.uni.lu/users/docs/slurm.html)
 
@@ -347,7 +356,7 @@ a. after 10 days
 
 b. after 1 hour
 
-c. never, only when I'll delete the job  
+c. never, only when I'll delete the job
 
 **Question: manipulate the `$SLURM_*` variables over the command-line to extract the following information, once connected to your job**
 
@@ -369,7 +378,7 @@ d. number of cores reserved per node together with the node name (one per line)
    * _hint_: `NPROCS variable or NODELIST`
 
 
-### Job management
+#### Job management
 
 Normally, the previously run job is still running.
 
@@ -396,7 +405,7 @@ You probably want to use more than one core, and you might want them for a diffe
 		(access)$> srun -p interactive --qos qos-interactive --time=0:30:0 -N 2 --ntasks-per-node=4 --pty bash
 
 
-#### Pausing, resuming jobs
+##### Pausing, resuming jobs
 
 
 To stop a waiting job from being scheduled and later to allow it to be scheduled:
@@ -410,9 +419,9 @@ To pause a running job and then resume it:
 		(access)$> scontrol resume $SLURM_JOB_ID
 
 
-## Step 3b: Reserving resources with OAR
+### Step 3b: Reserving resources with OAR
 
-### The basics
+#### The basics
 
 * [reference documentation](https://hpc.uni.lu/users/docs/oar.html)
 
@@ -454,7 +463,7 @@ you can reserve and connect in two steps using the job id associated to your res
         Connect to OAR job 919309 via the node e-cluster1-13
 		[OAR] OAR_JOB_ID=919309
 		[OAR] Your nodes are:
-      		e-cluster1-13*1		
+      		e-cluster1-13*1
 
 		(e-cluster1-13)$> java -version
 		(e-cluster1-13)$> hostname -f
@@ -468,7 +477,7 @@ a. after 10 days
 
 b. after 2 hours
 
-c. never, only when I'll delete the job  
+c. never, only when I'll delete the job
 
 **Question: manipulate the `$OAR_NODEFILE` variable over the command-line to extract the following information, once connected to your job**
 
@@ -497,7 +506,7 @@ e. **(for geeks)** output the number of reserved nodes times number of cores per
 
    * _hint_: `man awk` -- use `printf` command of `awk` over the pipe command, for instance `awk '{ printf "%s*%d\n",$2,$1 }'`. You might prefer `sed` or any other advanced geek command.
 
-### Job management
+#### Job management
 
 Normally, the previously run job is still running.
 
@@ -547,7 +556,7 @@ OAR features a very powerful resource filtering/matching engine able to specify 
 
 		(access)$> oarsub -I -l /enclosure=2/nodes=1,walltime=6
 
-**Question: reserve interactively 2 cpus on 2 nodes belonging to the same enclosure for 4 hours**  
+**Question: reserve interactively 2 cpus on 2 nodes belonging to the same enclosure for 4 hours**
 
 **Question: in the following statements, explain the advantage and drawback (in terms of latency/bandwidth etc.) of each of the proposed approaches**
 
@@ -579,7 +588,7 @@ You can find the available OAR properties on the [UL HPC documentation](https://
 		(access-gaia)$> oarsub -I -l nodes=1/core=4,walltime=8 -p "gpu='yes'" -p "network_address='gaia-65'"
 
 
-**Question: reserve interactively 2 nodes among the `h-cluster1-*` nodes (_this holds only on the `chaos` cluster_) using the `nodeclass` property**  
+**Question: reserve interactively 2 nodes among the `h-cluster1-*` nodes (_this holds only on the `chaos` cluster_) using the `nodeclass` property**
 
 You can combine filters using the `+` sign.
 
@@ -611,7 +620,7 @@ Some nodes are very specific (for instance the nodes with 1TB of memory or the B
 		(access-gaia)$> oarsub -t bigsmp -I -l /board=1/cpu=2,walltime=3
 
 
-**Question: why are these resources not scheduled by default?**  
+**Question: why are these resources not scheduled by default?**
 
 
 #### Reservation at a given period of time
@@ -619,7 +628,7 @@ Some nodes are very specific (for instance the nodes with 1TB of memory or the B
 You can use the `-r "YYYY-MM-DD HH:MM:SS"` option of `oarsub` to specify the date you wish the reservation to be issued. This is of particular interest for you to book in advance resources out of the working hours (at night and/or over week ends)
 
 
-## Step 4: Using modules
+## Hands-on/Using modules
 
 [Environment Modules](http://modules.sourceforge.net/) is a software package that allows us to provide a [multitude of applications and libraries in multiple versions](http://hpc.uni.lu/users/software/) on the UL HPC platform. The tool itself is used to manage environment variables such as `PATH`, `LD_LIBRARY_PATH` and `MANPATH`, enabling the easy loading and unloading of application/library profiles and their dependencies.
 
@@ -630,7 +639,7 @@ We will have multiple occasion to use modules in the other tutorials so there is
 * [UL HPC documentation on modules](https://hpc.uni.lu/users/docs/modules.html)
 
 
-## Step 5 (advanced): Job management and Persistent Terminal Sessions using GNU Screen
+## Hands-on/Persistent Terminal Sessions using GNU Screen
 
 [GNU Screen](http://www.gnu.org/software/screen/) is a tool to manage persistent terminal sessions.
 It becomes interesting since you will probably end at some moment with the following  scenario:
@@ -649,7 +658,7 @@ Enter the long-existing and very simple, but totally indispensable [GNU screen](
 
 ### Pre-requisite: screen configuration file `~/.screenrc`
 
-While not mandatory, we advise you to rely on our customized configuration file for screen `.screenrc` available on [Github](https://github.com/ULHPC/dotfiles/blob/master/screen/.screenrc).   
+While not mandatory, we advise you to rely on our customized configuration file for screen `.screenrc` available on [Github](https://github.com/ULHPC/dotfiles/blob/master/screen/.screenrc).
 Normally, you have nothing to do since we already setup this file for you in your homedir.
 Otherwise, simply clone the [ULHPC dotfile repository](https://github.com/ULHPC/dotfiles/) and make a symbolic link `~/.screenrc` targeting the file `screen/screenrc` of the repository.
 

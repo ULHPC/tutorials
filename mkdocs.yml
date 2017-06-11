@@ -1,25 +1,35 @@
 site_name: UL HPC Tutorials
 pages:
-- ['index.md', 'Home']
-- ['basic/getting_started/README.md', 'Basic Tutorials', 'Getting Started']
-- ['basic/sequential_jobs/README.md', 'Basic Tutorials', 'HPC workflow with sequential jobs']
-- ['advanced/Debug/README.md', 'Basic Tutorials', 'Efficient Debugging']
-- ['advanced/RESIF/README.md',     'Advanced Software Management', 'RESIF']
-- ['advanced/EasyBuild/README.md', 'Advanced Software Management', 'Easybuild']
-- ['advanced/OSU_MicroBenchmarks/README.md', 'MPI', 'The OSU Micro-benchmarks']
-- ['advanced/HPL/README.md',                 'MPI', 'High Performance Linpack (HPL)']
-- ['advanced/HPCG/README.md',                 'MPI', 'High Performance Conjugate Gradient (HPCG)']
-- ['advanced/MATLAB1/README.md', 'Mathematics', 'MATLAB1']
-- ['advanced/R/README.md',      'Mathematics', 'R - statistical computing ']
-- ['advanced/Bioinformatics/README.md',         'Bio-informatic', 'Running bioinformatics software']
-- ['advanced/Galaxy/README.md', 'Bio-informatic', 'Galaxy']
-- ['advanced/Allinea/README.md',   'Parallel Debuggers', 'Allinea']
-- ['advanced/TotalView/README.md', 'Parallel Debuggers', 'TotalView']
-- ['advanced/Vagrant/README.md', 'Virtualization', 'Vagrant']
-- ['advanced/vm5k/README.md', 'Virtualization', 'Grid5000: Automatic VM deployment with VM5K']
-- ['advanced/ParallelExec/README.md', 'Parallel execution', 'Running parallel software']
-- ['advanced/advanced_workflows/README.md', 'Advanced workflows', 'Advanced workflows on sequential jobs management']
-- ['contributing.md', 'Documentation', 'Contributing']
-- ['rtfd.md', 'Documentation', 'RTFD']
-- ['contacts.md', 'Contacts']
+- Home: 'index.md'
+- Basic Tutorials:
+  - Getting Started: 'basic/getting_started/index.md'
+  - HPC workflow with sequential jobs: 'basic/sequential_jobs/index.md'
+  - Efficient Debugging: 'advanced/Debug/README.md'
+- Advanced Software Management:
+  - Easybuild: 'advanced/EasyBuild/README.md'
+  - RESIF: 'advanced/RESIF/README.md'
+- MPI:
+  - OSU Micro-benchmarks: 'advanced/OSU_MicroBenchmarks/index.md'
+  - High Performance Linpack (HPL): 'advanced/HPL/index.md'
+  - High Performance Conjugate Gradient (HPCG): 'advanced/HPCG/README.md'
+- Mathematics:
+  - MATLAB: 'advanced/MATLAB1/README.md'
+  - R - statistical computing: 'advanced/R/README.md'
+- Bioinformatics:
+  - Running bioinformatics software: 'advanced/Bioinformatics/README.md'
+  - Galaxy: 'advanced/Galaxy/README.md'
+- Parallel Debuggers:
+  - Allinea: 'advanced/Allinea/README.md'
+  - TotalView: 'advanced/TotalView/README.md'
+- Virtualization:
+  - Vagrant: 'advanced/Vagrant/README.md'
+  - Grid5000 - Automatic VM deployment with VM5K: 'advanced/vm5k/README.md'
+- CFD/MD/Chemistry:
+  - Advanced Parallel execution: 'advanced/ParallelExec/README.md'
+- Advanced topics:
+  - Advanced workflows on sequential jobs management: 'advanced/advanced_workflows/README.md'
+  - Advanced scheduling with SLURM: 'advanced/advanced_scheduling/index.md'
+- Documentation (RTFD): 'rtfd.md'
+- Contributing: 'contributing.md'
+- Contacts: 'contacts.md'
 theme: readthedocs
