@@ -2,8 +2,9 @@
 
 Copyright (c) 2016-2017 [ULHPC management team](mailto:<hpc-sysadmins@uni.lu>) [www](http://varrette.gforge.uni.lu)
 
--------------------
+        Time-stamp: <Sun 2017-06-11 18:28 svarrette>
 
+---------------------------------------------------------
 # UL HPC Tutorial: Getting Started on the UL HPC platform
 
 [![By ULHPC](https://img.shields.io/badge/by-ULHPC-blue.svg)](https://hpc.uni.lu)
