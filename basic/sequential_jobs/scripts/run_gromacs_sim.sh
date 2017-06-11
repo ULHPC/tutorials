@@ -1,9 +1,12 @@
 #!/bin/bash
 
 VALUE=$1
+TMPDIR="/tmp/gromacs_${USER}/"
+
 SRC=ftp://ftp.gromacs.org/pub/benchmarks/rnase_bench_systems.tar.gz
 
-cd /tmp
+mkdir -p $TMPDIR
+cd $TMPDIR
 
 # extract the example input files
 
@@ -14,8 +17,8 @@ fi
 
 # Create a new workdir
 
-cp -R rnase_cubic /tmp/rnase_cubic_fs_$VALUE
-cd /tmp/rnase_cubic_fs_$VALUE
+cp -R rnase_cubic $TMPDIR/rnase_cubic_fs_$VALUE
+cd $TMPDIR/rnase_cubic_fs_$VALUE
 
 # Load Gromacs if the commands are not available
 type mdrun > /dev/null 2>&1

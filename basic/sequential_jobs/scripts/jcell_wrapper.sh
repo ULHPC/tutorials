@@ -31,3 +31,6 @@ if [[ $? -eq 0 ]] ; then
   mv $TEMP/$1.result $RESULT_DIR/$1.result
 fi
 
+cd
+rm -rf $TEMP
+

@@ -38,3 +38,6 @@ done
 cd $TEMP
 tar czvf $CONFIG_TARBALL * > $PARAM_FILE
 
+cd
+rm -rf $TEMP
+
