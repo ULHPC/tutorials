@@ -15,7 +15,7 @@ pages:
 - Mathematics:
   - MATLAB: 'advanced/MATLAB1/README.md'
   - R - statistical computing: 'advanced/R/README.md'
-- Bio-informatic:
+- Bioinformatics:
   - Running bioinformatics software: 'advanced/Bioinformatics/README.md'
   - Galaxy: 'advanced/Galaxy/README.md'
 - Parallel Debuggers:
@@ -26,8 +26,9 @@ pages:
   - Grid5000 - Automatic VM deployment with VM5K: 'advanced/vm5k/README.md'
 - CFD/MD/Chemistry:
   - Advanced Parallel execution: 'advanced/ParallelExec/README.md'
-- Advanced workflows:
+- Advanced topics:
   - Advanced workflows on sequential jobs management: 'advanced/advanced_workflows/README.md'
+  - Advanced scheduling with SLURM: 'advanced/advanced_scheduling/index.md'
 - Documentation (RTFD): 'rtfd.md'
 - Contributing: 'contributing.md'
 - Contacts: 'contacts.md'
