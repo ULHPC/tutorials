@@ -3,7 +3,7 @@
 
 Copyright (c) 2013-2017 UL HPC Team  <hpc-sysadmins@uni.lu>
 
-        Time-stamp: <Mon 2017-06-12 00:29 svarrette>
+        Time-stamp: <Mon 2017-06-12 00:37 svarrette>
 
 ---------------------------------------------------------------
 # UL HPC MPI Tutorial: OSU Micro-Benchmarks
@@ -331,6 +331,12 @@ $> cd ~/tutorials/OSU-MicroBenchmarks/runs
 $> sbatch ./launcher-OSU.openmpi-eth.sh osu_get_bw
 $> sbatch ./launcher-OSU.openmpi-eth.sh osu_get_latency
 ```
+
+You can find the obtained results on the `iris` cluster:
+
+![](plots/benchmark_OSU_iris_latency.png)
+![](plots/benchmark_OSU_iris_bandwidth.png)
+
 
 ### OAR launcher (Intel MPI)
 
