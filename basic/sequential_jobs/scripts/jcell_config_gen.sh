@@ -22,7 +22,7 @@ CFG=cfg/genGAforECC.cfg
 # Install Jcell
 mkdir -p $ROOT
 cd $ROOT
-[[ ! -d jcell ]] && svn checkout svn://svn.gforge.uni.lu/svn/jcell
+[[ ! -d jcell ]] && tar xzvf /mnt/isilon/projects/ulhpc-tutorials/sequential/jcell.tgz
 cd jcell/JCell/bin
 
 
