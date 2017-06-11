@@ -221,7 +221,7 @@ You can get more information about these transfer methods in the [file transfer 
 	* Click on the button `Add keyfile...` and select your private keyfile (you may need to convert it).
 	* Finally click `OK` to save and close the settings.
 
-![Add ssh key](src/images/filezilla_key.jpg)
+![Add ssh key](images/filezilla_key.jpg)
 
 * Back in the main window click on the `Site Manager` button on the top left or select `Site Manager` from the `File` menu.
 * Click on the `New Site` button and enter/select the following:
@@ -231,14 +231,14 @@ You can get more information about these transfer methods in the [file transfer 
   * Logon Type: `Interactive`
   * User: your login
 
-![Connection settings](src/images/site_manager.jpg)
+![Connection settings](images/site_manager.jpg)
 
 * Click on the `Connect` button.
 * Accept the certificate.
 
 You should now see something similar to the following window:
 
-![Connection settings](src/images/filezilla.jpg)
+![Connection settings](images/filezilla.jpg)
 
 On the very top, beneath the quick connect, you see the message log. Below you have the directory tree and the contents of the current directory for you local computer on the left and the remote location on the right.
 
@@ -249,13 +249,13 @@ If you skipped step 3a, you may download the following file (50 MB) for testing:
 
 When you click the fifth icon on the top with the two green arrows to toggle the transfer queue, you can see the status of ongoing transfers on the very bottom of the window.
 
-![Connection settings](src/images/transfer.jpg)
+![Connection settings](images/transfer.jpg)
 
 ### Step 3c: Windows MobaXterm file transfert
 
 If you are on Windows, you can directly use MobaXterm to transfer files. Connect to your session (see below on how to configure it). On the right panel you should see an **SFTP** panel opened.
 
-![SFTP on MobaXterm](src/images/moba_sftp.jpg)
+![SFTP on MobaXterm](images/moba_sftp.jpg)
 
 You have just to drag and drop your files to this panel to transfer files to the cluster. You can try to upload this file [ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM409nnn/GSM409307/suppl/GSM409307_UCSD.H1.H3K4me1.LL228.bed.gz](ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM409nnn/GSM409307/suppl/GSM409307_UCSD.H1.H3K4me1.LL228.bed.gz) (next-gen sequencing data from the NIH Roadmap Epigenomics Project)
 
