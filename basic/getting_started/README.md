@@ -1,8 +1,8 @@
--*- mode: markdown; mode: auto-fill; fill-column: 80 -*-
+-*- mode: markdown;mode:visual-line;  fill-column: 80 -*-
 
 Copyright (c) 2016-2017 [ULHPC management team](mailto:<hpc-sysadmins@uni.lu>) [www](http://hpc.uni.lu)
 
-        Time-stamp: <Mon 2017-06-12 00:57 svarrette>
+        Time-stamp: <Mon 2017-06-12 01:11 svarrette>
 
 ---------------------------------------------------------
 # Getting Started on the UL HPC platform
