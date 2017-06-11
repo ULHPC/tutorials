@@ -1,12 +1,14 @@
-`README.md`
+-*- mode: markdown;mode:visual-line;  fill-column: 80 -*-
 
-Copyright (c) 2017 Valentin Plugaru <Valentin.Plugaru@uni.lu>
+Copyright (c) 2017 [ULHPC management team](mailto:<hpc-sysadmins@uni.lu>) [www](http://hpc.uni.lu)
 
--------------------
-
+--------------------------------------------------
 # UL HPC Tutorial: Advanced scheduling with SLURM
 
-The objective of this tutorial is to practice using the SLURM cluster 
+[![By ULHPC](https://img.shields.io/badge/by-ULHPC-blue.svg)](https://hpc.uni.lu) [![Licence](https://img.shields.io/badge/license-GPL--3.0-blue.svg)](http://www.gnu.org/licenses/gpl-3.0.html) [![GitHub issues](https://img.shields.io/github/issues/ULHPC/tutorials.svg)](https://github.com/ULHPC/tutorials/issues/) [![](https://img.shields.io/badge/slides-PDF-red.svg)](slides.pdf) [![Github](https://img.shields.io/badge/sources-github-green.svg)](https://github.com/ULHPC/tutorials/tree/devel/advanced/advanced_scheduling/) [![Documentation Status](http://readthedocs.org/projects/ulhpc-tutorials/badge/?version=latest)](http://ulhpc-tutorials.readthedocs.io/en/latest/advanced/advanced_scheduling/) [![GitHub forks](https://img.shields.io/github/stars/ULHPC/tutorials.svg?style=social&label=Star)](https://github.com/ULHPC/tutorials)
+
+
+The objective of this tutorial is to practice using the SLURM cluster
 workload manager in use on the UL HPC [iris cluster](https://hpc.uni.lu/systems/iris/).
 
 It's important that you read the [slides](https://github.com/ULHPC/tutorials/blob/devel/advanced/advanced_scheduling/advanced_scheduling.pdf?raw=true) first.
@@ -79,7 +81,7 @@ sinfo -s
 sinfo -N
 ```
 
-__Questions__: What does the 'mix' state in the output of `sinfo` signify?  What will happen to your jobs if the nodes are 'down' or 'drain'? What will you see when looking at a job with `squeue` or `scontrol show job` ? 
+__Questions__: What does the 'mix' state in the output of `sinfo` signify?  What will happen to your jobs if the nodes are 'down' or 'drain'? What will you see when looking at a job with `squeue` or `scontrol show job` ?
 
 * Show node reservations that have been created by the administrators for specific users or accounts:
 
@@ -169,7 +171,7 @@ sprio -l
 squeue --start -u $USER
 ```
 
-* Show running job (and steps) system-level utilization (memory, I/O, energy): 
+* Show running job (and steps) system-level utilization (memory, I/O, energy):
     - note that `sstat` information is limited to your own jobs
 
 ```
@@ -210,7 +212,7 @@ sacct -X -j $jobid -l
     1. elapsed time in both human readable and total # of seconds
     2. maximum resident set size of all tasks in job (you may want to add also `maxrssnode` and `maxrsstask` for a better understanding of which process consumed memory)
     3. maximum virtual memory size (idem for `maxvmsizenode` and `maxvmsizetask`)
-    4. consumed energy (in Joules), be aware there are many caveats! 
+    4. consumed energy (in Joules), be aware there are many caveats!
         - your job needs to be the only one running on the corresponding compute nodes
         - the [RAPL mechanism](http://web.eece.maine.edu/~vweaver/projects/rapl/rapl_support.html) will not take into account all possible hardware elements which consume power (CPUs, GPUs and DRAM are included)
 
@@ -317,5 +319,5 @@ You should now:
     - using `sstat` once it starts, to get running metrics
     - by connecting to the job (`--jobid` parameter of `srun`) and using `htop`
 * finally, once the job finished or you have stopped it:
-    - check the information visible with `sacct` 
-    - how did your fair-share and usage values change? 
+    - check the information visible with `sacct`
+    - how did your fair-share and usage values change?
