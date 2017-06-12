@@ -72,11 +72,11 @@ being proposed later on as exercises.
 
 * Gaia
 
-      # Connect to Gaia (Linux/OS X):
-      (yourmachine)$> ssh access-gaia.uni.lu
+		# Connect to Gaia (Linux/OS X):
+		(yourmachine)$> ssh access-gaia.uni.lu
 
-      # Request 1 full node in an interactive job:
-      (access-gaia)$> oarsub -I -l nodes=1,walltime=00:30:00
+		# Request 1 full node in an interactive job:
+		(access-gaia)$> oarsub -I -l nodes=1,walltime=00:30:00
 
 * Iris
 
