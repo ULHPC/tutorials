@@ -1,7 +1,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% google_finance_data.m :
 %%%		Google Finance stock data retrieval for Matlab
-%%%		Valentin Plugaru <Valentin.Plugaru@gmail.com> 2014-03-18
+%%%		Valentin Plugaru <Valentin.Plugaru@gmail.com> 2017-06-12
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 function [hist_date, hist_high, hist_low, hist_open, hist_close, hist_vol] = yahoo_finance_data(stock_symbol, s_date, e_date, verbose)
