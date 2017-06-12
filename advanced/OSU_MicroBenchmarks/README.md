@@ -3,7 +3,7 @@
 
 Copyright (c) 2013-2017 UL HPC Team  <hpc-sysadmins@uni.lu>
 
-        Time-stamp: <Mon 2017-06-12 00:37 svarrette>
+        Time-stamp: <Mon 2017-06-12 14:58 svarrette>
 
 ---------------------------------------------------------------
 # UL HPC MPI Tutorial: OSU Micro-Benchmarks
@@ -209,7 +209,7 @@ Take your favorite editor (`vim`, `nano`, etc.) to modify it according to your n
 Here is for instance a suggested difference for intel MPI:
 
 ```diff
---- /home/users/svarrette/git/ULHPC/launcher-scripts/slurm/launcher.default.sh  2017-06-11 23:40:34.007152000 +0200
+--- ~/git/ULHPC/launcher-scripts/slurm/launcher.default.sh  2017-06-11 23:40:34.007152000 +0200
 +++ launcher-OSU.intel.sh       2017-06-11 23:41:57.597055000 +0200
 @@ -10,8 +10,8 @@
  #

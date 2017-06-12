@@ -2,7 +2,7 @@
 
 Copyright (c) 2013-2017 UL HPC Team  <hpc-sysadmins@uni.lu>
 
-        Time-stamp: <Mon 2017-06-12 14:00 svarrette>
+        Time-stamp: <Mon 2017-06-12 15:00 svarrette>
 
 ------------------------------------------------------
 # UL HPC Tutorial: High-Performance Linpack (HPL) benchmarking on UL HPC platform
@@ -170,20 +170,93 @@ Here is for instance a suggested difference for intel MPI:
  # the Fortran internals used in the BLAS library.
 ```
 
-If you don't succeed by yourself, use the following makefile:
+If you don't succeed by yourself, use the following [makefile](https://raw.githubusercontent.com/ULHPC/tutorials/devel/advanced/HPL/src/hpl-2.2/Make.intel64):
 
-    wget https://raw.githubusercontent.com/ULHPC/tutorials/devel/advanced/HPL/src/hpl-2.2/Make.intel64
+```
+$> cd ~/tutorials/HPL
+$> cp ref.ulhpc.d/src/hpl-2.2/Make.intel64 src/hpl-2.2/Make.intel64
+```
 
 Once compiled, ensure you are able to run it:
 
-	$> cd bin/intel64
-	$> cat HPL.dat
-	$> mpirun -hostfile $OAR_NODEFILE ./xhpl
+```bash
+$> cd ~/tutorials/HPL/src/hpl-2.2/bin/intel64
+$> cat HPL.dat      # Default (dummy) HPL.dat  input file
+
+# On Slurm cluster (iris)
+$> srun -n $SLURM_NTASKS ./xhpl
+
+# On OAR clusters (gaia, chaos)
+$> mpirun -hostfile $OAR_NODEFILE ./xhpl
+```
+
+### Preparing batch runs
+
+We are now going to prepare launcher scripts to permit passive runs (typically in the `{default | batch}` queue).
+We will place them in a separate directory (`runs/`) as it will host the outcomes of the executions on the UL HPC platform .
+
+```bash
+$> cd ~/tutorials/HPL
+$> mkdir runs    # Prepare the specific run directory
+```
 
 Now you'll have to find the optimal set of parameters for using a single
 node. You can use the following site:
 [HPL Calculator](http://hpl-calculator.sourceforge.net/) to find good parameters
 and expected performances and adapt `bin/intel64/HPL.dat` accordingly.
+Here we are going to use reasonable choices as outline from [this website](http://www.advancedclustering.com/act_kb/tune-hpl-dat-file/)
+
+
+### Slurm launcher (Intel MPI)
+
+Copy and adapt the [default SLURM launcher](https://github.com/ULHPC/launcher-scripts/blob/devel/slurm/launcher.default.sh) you should have a copy in `~/git/ULHPC/launcher-scripts/slurm/launcher.default.sh`
+
+```bash
+$> cd ~/tutorials/HPL/runs
+# Prepare a laucnher for intel suit
+$> cp ~/git/ULHPC/launcher-scripts/slurm/launcher.default.sh launcher-HPL.intel.sh
+```
+
+Take your favorite editor (`vim`, `nano`, etc.) to modify it according to your needs.
+
+Here is for instance a suggested difference for intel MPI:
+
+```diff
+--- ~/git/ULHPC/launcher-scripts/slurm/launcher.default.sh  2017-06-11 23:40:34.007152000 +0200
++++ launcher-HPL.intel.sh       2017-06-11 23:41:57.597055000 +0200
+@@ -10,8 +10,8 @@
+ #
+ #          Set number of resources
+ #
+-#SBATCH -N 1
++#SBATCH -N 2
+ #SBATCH --ntasks-per-node=28
+ ### -c, --cpus-per-task=<ncpus>
+ ###     (multithreading) Request that ncpus be allocated per process
+ #SBATCH -c 1
+@@ -64,15 +64,15 @@
+ module load toolchain/intel
+
+ # Directory holding your built applications
+-APPDIR="$HOME"
++APPDIR="$HOME/tutorials/HPL/src/hpl-2.2/bin/intel64"
+ # The task to be executed i.E. your favorite Java/C/C++/Ruby/Perl/Python/R/whatever program
+ # to be invoked in parallel
+-TASK="${APPDIR}/app.exe"
++TASK="${APPDIR}/xhpl"
+
+ # The command to run
+-CMD="${TASK}"
++# CMD="${TASK}"
+ ### General MPI Case:
+-# CMD="srun -n $SLURM_NTASKS ${TASK}"
++CMD="srun -n $SLURM_NTASKS ${TASK}"
+ ### OpenMPI case if you wish to specialize the MCA parameters
+ #CMD="mpirun -np $SLURM_NTASKS --mca btl openib,self,sm ${TASK}"
+```
+
+
+
 
 
 ### HPL with GCC and GotoBLAS2 and Open MPI
