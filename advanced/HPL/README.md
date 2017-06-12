@@ -2,7 +2,7 @@
 
 Copyright (c) 2013-2017 UL HPC Team  <hpc-sysadmins@uni.lu>
 
-        Time-stamp: <Mon 2017-06-12 13:11 svarrette>
+        Time-stamp: <Mon 2017-06-12 13:51 svarrette>
 
 ------------------------------------------------------
 # UL HPC Tutorial: High-Performance Linpack (HPL) benchmarking on UL HPC platform
@@ -79,11 +79,104 @@ $> cd ~/tutorials/HPL
 $> mkdir src
 $> cd src
 # Download the latest version
-$> export OSU_VERSION=5.3.2     # Just to abstract from the version to download
-$> wget --no-check-certificate http://mvapich.cse.ohio-state.edu/download/mvapich/osu-micro-benchmarks-$(OSU_VERSION).tar.gz
-$> tar xvzf osu-micro-benchmarks-$(OSU_VERSION).tar.gz
-$> cd osu-micro-benchmarks-$(OSU_VERSION)
+$> export HPL_VERSION=2.2
+$> wget --no-check-certificate http://www.netlib.org/benchmark/hpl/hpl-$(HPL_VERSION).tar.gz
+$> tar xvzf hpl-$(HPL_VERSION).tar.gz
+$> cd  hpl-$(HPL_VERSION)
 ```
+
+## Building the HPL benchmark
+
+We are first going to use the [Intel Cluster Toolkit Compiler Edition](http://software.intel.com/en-us/intel-cluster-toolkit-compiler/), which provides Intel C/C++ and Fortran compilers, Intel MPI.
+
+```bash
+$> cd ~/tutorials/HPL
+# Load the appropriate module
+$> module spider MPI     # Search for available modules featuring MPI
+$> module load toolchain/intel   # On iris -- use 'module load toolchain/ictce' otherwise
+$> module list
+Currently Loaded Modules:
+  1) compiler/GCCcore/6.3.0                   4) compiler/ifort/2017.1.132-GCC-6.3.0-2.27                 7) toolchain/iimpi/2017a
+  2) tools/binutils/2.27-GCCcore-6.3.0        5) toolchain/iccifort/2017.1.132-GCC-6.3.0-2.27             8) numlib/imkl/2017.1.132-iimpi-2017a
+  3) compiler/icc/2017.1.132-GCC-6.3.0-2.27   6) mpi/impi/2017.1.132-iccifort-2017.1.132-GCC-6.3.0-2.27   9) toolchain/intel/2017a
+```
+
+You notice that Intel MKL is now loaded.
+
+Read the `INSTALL` file. In particular, you'll have to edit and adapt a new makefile `Make.intel64`
+(inspired from `setup/Make.Linux_PII_CBLAS` typically)
+
+```bash
+$> cd ~/tutorials/HPL/src/hpl-2.2
+$> cp setup/Make.Linux_Intel64 Make.intel64
+```
+
+Once tweaked, run the compilation by:
+
+```bash
+$> make arch=intel64 clean_arch_all
+$> make arch=intel64
+```
+
+But **first**, you will need to configure correctly the file `Make.intel64`.
+Take your favorite editor (`vim`, `nano`, etc.) to modify it. In particular, you should adapt:
+
+* `TOPdir` to point to the directory holding the HPL sources (_i.e._ where you uncompress them: ` $(HOME)/tutorials/HPL/src/hpl-2.2`)
+* Adapt the `MP*` variables to point to the appropriate MPI libraries path.
+* (eventually) adapt the `CCFLAGS`
+
+Here is for instance a suggested difference for intel MPI:
+
+```diff
+--- setup/Make.Linux_Intel64    2016-02-24 02:10:50.000000000 +0100
++++ Make.intel64        2017-06-12 13:48:31.016524323 +0200
+@@ -61,13 +61,13 @@
+ # - Platform identifier ------------------------------------------------
+ # ----------------------------------------------------------------------
+ #
+-ARCH         = Linux_Intel64
++ARCH         = $(arch)
+ #
+ # ----------------------------------------------------------------------
+ # - HPL Directory Structure / HPL library ------------------------------
+ # ----------------------------------------------------------------------
+ #
+-TOPdir       = $(HOME)/hpl
++TOPdir       = $(HOME)/tutorials/HPL/src/hpl-2.2
+ INCdir       = $(TOPdir)/include
+ BINdir       = $(TOPdir)/bin/$(ARCH)
+ LIBdir       = $(TOPdir)/lib/$(ARCH)
+@@ -81,9 +81,9 @@
+ # header files,  MPlib  is defined  to be the name of  the library to be
+ # used. The variable MPdir is only used for defining MPinc and MPlib.
+ #
+-# MPdir        = /opt/intel/mpi/4.1.0
+-# MPinc        = -I$(MPdir)/include64
+-# MPlib        = $(MPdir)/lib64/libmpi.a
++MPdir        = $(I_MPI_ROOT)/intel64
++MPinc        = -I$(MPdir)/include
++MPlib        = $(MPdir)/lib/libmpi.a
+ #
+ # ----------------------------------------------------------------------
+ # - Linear Algebra library (BLAS or VSIPL) -----------------------------
+@@ -178,7 +178,7 @@
+ CC       = mpiicc
+ CCNOOPT  = $(HPL_DEFS)
+ OMP_DEFS = -openmp
+-CCFLAGS  = $(HPL_DEFS) -O3 -w -ansi-alias -i-static -z noexecstack -z relro -z now -nocompchk -Wall
++CCFLAGS  = $(HPL_DEFS) -O3 -w -ansi-alias -i-static -z noexecstack -z relro -z now -nocompchk -Wall -xHost
+ #
+ # On some platforms,  it is necessary  to use the Fortran linker to find
+ # the Fortran internals used in the BLAS library.
+```
+
+
+
+
+
+
+-----------
+# OLD notes
 
 
 
