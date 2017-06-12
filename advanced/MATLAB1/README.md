@@ -29,7 +29,7 @@ along with their dependencies, before following the instructions in the next sec
         (gaia-frontend)$> cd ~/matlab-tutorial/code
         (gaia-frontend)$> wget --no-check-certificate https://raw.github.com/ULHPC/tutorials/devel/advanced/MATLAB1/code/example1.m
         (gaia-frontend)$> wget --no-check-certificate https://raw.github.com/ULHPC/tutorials/devel/advanced/MATLAB1/code/example2.m
-        (gaia-frontend)$> wget --no-check-certificate https://raw.github.com/ULHPC/tutorials/devel/advanced/MATLAB1/code/yahoo_finance_data.m
+        (gaia-frontend)$> wget --no-check-certificate https://raw.github.com/ULHPC/tutorials/devel/advanced/MATLAB1/code/google_finance_data.m
 
 Or simply clone the full tutorials repository and make a link to the MATLAB tutorial:
 
@@ -110,61 +110,61 @@ a command then press TAB twice to see possible completions) and can run the inte
 ### Example usage of Matlab in interactive mode
 
 At this point you should have downloaded the example scripts and started Matlab either with the graphical or the text-mode
-interface. We will now test some Matlab commands by using the yahoo\_finance\_data function defined in _yahoo\_finance\_data.m_.
-This function downloads stock market data through the Yahoo! Finance API, and we will use it to get 1 month worth of stock data
+interface. We will now test some Matlab commands by using the google\_finance\_data function defined in _google\_finance\_data.m_.
+This function downloads stock market data through the Google Finance API, and we will use it to get 1 month worth of stock data
 for IBM (whose stock symbol is 'IBM'):
 
          >> cd('~/matlab-tutorial/code/')
-         >> [hist_date, hist_high, hist_low, hist_open, hist_close, hist_vol] = yahoo_finance_data('IBM', 2014, 2, 1, 2014, 3, 1);
-         >> size(hist_date)                                                                                                       
+         >> [hist_date, hist_high, hist_low, hist_open, hist_close, hist_vol] = google_finance_data('IBM', '2017-05-01', '2017-06-02');
+         >> size(hist_date)
          ans =
-             19     1
-         >> [hist_date{1} ' ' hist_date{end}]     
+             24     1
+         >> [hist_date{1} ' ' hist_date{end}]
          ans =
-         2014-02-03 2014-02-28
-         >> min(hist_low)                                                                                                         
+             '1-May-17 2-Jun-17'
+         >> min(hist_low)
          ans =
-           171.2512
+           149.7900
          >> max(hist_high)
          ans =
-           186.1200
+           160.4200
          >> mean(hist_close)
          ans =
-           180.3184
-         >> std(hist_close) 
+           153.2879
+         >> std(hist_close)
          ans =
-             4.5508
+             2.7618
 
-Through these commands we have seen that the function returns column vectors, we were able to get 19 days' worth of information and 
+Through these commands we have seen that the function returns column vectors, we were able to get 24 days' worth of information and
 we used simple statistic functions to get an idea of how the stock varied in the given period. 
 
 Now we will use the example1.m script that shows: 
-  - how to use different plotting methods on the data retrieved with the yahoo\_finance\_data function
+  - how to use different plotting methods on the data retrieved with the google\_finance\_data function
   - how to export the plots in different graphic formats instead of displaying them (which is only available when running the 
   full graphical environment and also allows the user to visually interact with the plot)
   
          >> example1
-         Elapsed time is 2.421686 seconds.
+         Elapsed time is 1.709865 seconds.
          >> quit
          (node)$>
          (node)$> ls *pdf *eps
          example1-2dplot.eps  example1-2dplot.pdf  example1-scatter.eps
 
-We have run the example1.m script which has downloaded Apple ('AAPL' ticker) stock data for the year 2013 and generated three plots:
+We have run the example1.m script which has downloaded Apple ('AAPL' ticker) stock data for the year 2016 and generated three plots:
 
   - example1-2dplot.pdf : color PDF generated with the saveas function, plotting dates (x-axis) vs closing stock price (y-axis)
   - example1-2dplot.eps : high quality black and white Enhanced PostScript (EPS) generated with the print function, same data as above
   - example1-scatter.eps : high quality color EPS generated with the print function, showing also the trading volume (z-axis) and 
-using different color datapoints (red) where the closing share price was above 500
+using different color datapoints (red) where the closing share price was above 100
 
-The script has also used the tic/toc Matlab commands to time it's execution and we can see it took less than 3 seconds to download
-and process data from the Yahoo Finance API and generate the plots. 
+The script has also used the tic/toc Matlab commands to time it's execution and we can see it took less than 2 seconds to download
+and process data from the Google Finance API and generate the plots.
 
 Finally, we have closed our Matlab session and were returned to the cluster's command line prompt where we found the generated plots.
 
 A PNG version of the latter two plots is shown below:
-![2D Plot](https://raw.github.com/ULHPC/tutorials/devel/advanced/MATLAB1/plots/example1-2dplot.png)
-![3D Scatter Plot](https://raw.github.com/ULHPC/tutorials/devel/advanced/MATLAB1/plots/example1-scatter.png)
+![2D Plot](https://raw.github.com/ULHPC/tutorials/devel/advanced/MATLAB1/src/images/plots/example1-2dplot.png)
+![3D Scatter Plot](https://raw.github.com/ULHPC/tutorials/devel/advanced/MATLAB1/src/images/plots/example1-scatter.png)
 
 Further examples showing serial and parallel executions are given below in the 'Example usage of Matlab in passive mode' section.
 
