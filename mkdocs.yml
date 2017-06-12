@@ -29,6 +29,7 @@ pages:
 - Advanced topics:
   - Advanced workflows on sequential jobs management: 'advanced/advanced_workflows/README.md'
   - Advanced scheduling with SLURM: 'advanced/advanced_scheduling/index.md'
+  - Big Data Application Over Apache Spark: 'advanced/Spark/index.md'
 - Documentation (RTFD): 'rtfd.md'
 - Contributing: 'contributing.md'
 - Contacts: 'contacts.md'
