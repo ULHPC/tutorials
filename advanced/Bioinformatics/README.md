@@ -119,11 +119,11 @@ the `abyss-pe` launcher.
 
 * Gaia
 
-      # Set the number of cores to use based on OAR's host file
-      (node)$> export ABYSSNPROC=$(cat $OAR_NODEFILE | wc -l)
+		# Set the number of cores to use based on OAR's host file
+		(node)$> export ABYSSNPROC=$(cat $OAR_NODEFILE | wc -l)
 
-      # Launch the paired end assembler:
-      (node)$> abyss-pe mpirun="mpirun -x PATH -x LD_LIBRARY_PATH -hostfile $OAR_NODEFILE" name=${ABYSSNAME} np=${ABYSSNPROC} k=31 n=10 lib=pairedend pairedend="${ABYSSINPDIR}/SRR001666_1.fastq.bz2 ${ABYSSINPDIR}/SRR001666_2.fastq.bz2" > ${ABYSSNAME}.out 2> ${ABYSSNAME}.err
+		# Launch the paired end assembler:
+		(node)$> abyss-pe mpirun="mpirun -x PATH -x LD_LIBRARY_PATH -hostfile $OAR_NODEFILE" name=${ABYSSNAME} np=${ABYSSNPROC} k=31 n=10 lib=pairedend pairedend="${ABYSSINPDIR}/SRR001666_1.fastq.bz2 ${ABYSSINPDIR}/SRR001666_2.fastq.bz2" > ${ABYSSNAME}.out 2> ${ABYSSNAME}.err
 
 * Iris
 
@@ -186,19 +186,19 @@ being proposed later on as exercises.
 
 * Gaia
 
-      # Connect to Gaia (Linux/OS X):
-      (yourmachine)$> ssh access-gaia.uni.lu
+		# Connect to Gaia (Linux/OS X):
+		(yourmachine)$> ssh access-gaia.uni.lu
 
-      # Request 1 full node in an interactive job:
-      (access-gaia)$> oarsub -I -l nodes=1,walltime=00:30:00
+		# Request 1 full node in an interactive job:
+		(access-gaia)$> oarsub -I -l nodes=1,walltime=00:30:00
 
 * Iris
 
-      # Connect to Iris (Linux/OS X):
-      (yourmachine)$> ssh access-iris.uni.lu
+		# Connect to Iris (Linux/OS X):
+		(yourmachine)$> ssh access-iris.uni.lu
 
-      # Request half a node in an interactive job:
-      (access-iris)$> srun -p interactive --qos qos-interactive -t 0-0:30:0 -N 1 -c 1 --ntasks-per-node=14 --pty bash
+		# Request half a node in an interactive job:
+		(access-iris)$> srun -p interactive --qos qos-interactive -t 0-0:30:0 -N 1 -c 1 --ntasks-per-node=14 --pty bash
 
 
 ```
@@ -225,23 +225,23 @@ We will perform our tests with the hybrid version:
 
 * Gaia
 
-      # Load the MPI-enabled Gromacs, without CUDA support:
-      (node)$> module load bio/GROMACS/4.6.5-goolf-1.4.10-hybrid
+		# Load the MPI-enabled Gromacs, without CUDA support:
+		(node)$> module load bio/GROMACS/4.6.5-goolf-1.4.10-hybrid
 
-      # Check that it has been loaded, along with its dependencies:
-      (node)$> module list
+		# Check that it has been loaded, along with its dependencies:
+		(node)$> module list
 
-      # Check the capabilities of the mdrun binary, note its suffix:
-      (node)$> mdrun_mpi -version 2>/dev/null
+		# Check the capabilities of the mdrun binary, note its suffix:
+		(node)$> mdrun_mpi -version 2>/dev/null
 
-      # Go to the test directory
-      (node)$> cd ~/bioinfo-tutorial/gromacs
+		# Go to the test directory
+		(node)$> cd ~/bioinfo-tutorial/gromacs
 
-      # Set the number of OpenMP threads to 1
-      (node)$> export OMP_NUM_THREADS=1
+		# Set the number of OpenMP threads to 1
+		(node)$> export OMP_NUM_THREADS=1
 
-      # Perform a position restrained Molecular Dynamics run
-      (node)$> mpirun -np 12 -hostfile $OAR_NODEFILE -x OMP_NUM_THREADS -x PATH -x LD_LIBRARY_PATH mdrun_mpi -v -s pr -e pr -o pr -c after_pr -g prlog > test.out 2>&1
+		# Perform a position restrained Molecular Dynamics run
+		(node)$> mpirun -np 12 -hostfile $OAR_NODEFILE -x OMP_NUM_THREADS -x PATH -x LD_LIBRARY_PATH mdrun_mpi -v -s pr -e pr -o pr -c after_pr -g prlog > test.out 2>&1
 
 * Iris
 
@@ -305,11 +305,11 @@ versions prebuilt for Linux by the developers.
 
 * Gaia
 
-      # Connect to Gaia (Linux/OS X):
-      (yourmachine)$> ssh access-gaia.uni.lu
+		# Connect to Gaia (Linux/OS X):
+		(yourmachine)$> ssh access-gaia.uni.lu
 
-      # Request 1 full node in an interactive job:
-      (gaia-frontend)$> oarsub -I -l nodes=1,walltime=00:30:00
+		# Request 1 full node in an interactive job:
+		(gaia-frontend)$> oarsub -I -l nodes=1,walltime=00:30:00
 
 * Iris
 
@@ -416,14 +416,14 @@ being proposed later on as exercises.
 
 * Gaia
 
-      # Connect to Gaia (Linux/OS X):
-      (yourmachine)$> ssh access-gaia.uni.lu
+		# Connect to Gaia (Linux/OS X):
+		(yourmachine)$> ssh access-gaia.uni.lu
 
-      # Request 1 full node in an interactive job:
-      (access-gaia)$> oarsub -I -l nodes=1,walltime=00:30:00
+		# Request 1 full node in an interactive job:
+		(access-gaia)$> oarsub -I -l nodes=1,walltime=00:30:00
 
-      # Load the lcsb software set
-      (node)$> module use $RESIF_ROOTINSTALL/lcsb/modules/all
+		# Load the lcsb software set
+		(node)$> module use $RESIF_ROOTINSTALL/lcsb/modules/all
 
 * Iris
 
