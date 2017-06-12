@@ -2,7 +2,7 @@
 
 Copyright (c) 2013-2017 UL HPC Team  <hpc-sysadmins@uni.lu>
 
-        Time-stamp: <Tue 2017-06-13 01:45 svarrette>
+        Time-stamp: <Tue 2017-06-13 01:53 svarrette>
 
 ------------------------------------------------------
 # UL HPC Tutorial: Running Apache Spark on UL HPC platform
@@ -350,7 +350,7 @@ Now we can submit an example python Pi estimation script to the Spark cluster wi
 _Note_: partitions in this context refers of course to Spark's Resilient Distributed Dataset (RDD) and how the dataset is distributed across the nodes in the Spark cluster.
 
 ```bash
-spark-submit --master $MASTER  $SPARK_HOME/examples/src/main/python/pi.py 50
+spark-submit --master $MASTER  $SPARK_HOME/examples/src/main/python/pi.py 100
 ```
 
 Finally, at the end, clean your environment and
