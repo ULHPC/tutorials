@@ -7,7 +7,7 @@
 %%%       displaying them
 %%%
 %%%		Valentin Plugaru <Valentin.Plugaru@gmail.com> 2014-03-18
-%%%
+%%%     - 2017-06-12: Use Google Finance in place of Yahoo, which dissapeared
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Start a stopwatch timer we'll use to see how much time this script takes
@@ -18,7 +18,7 @@ tic
 company_ticker = 'AAPL';
 
 % Use the external function to download Yahoo finance data for the selected period
-[hist_date, hist_high, hist_low, hist_open, hist_close, hist_vol] = yahoo_finance_data(company_ticker, 2013, 1, 1, 2014, 1, 1);
+[hist_date, hist_high, hist_low, hist_open, hist_close, hist_vol] = google_finance_data(company_ticker, '2016-01-01', '2017-01-01');
 
 % Convert string dates for plotting
 dates = datenum(hist_date);
@@ -42,9 +42,9 @@ print(f, '-deps', '-r300', 'example1-2dplot.eps');
 
 % 3D Scatter plot: dates on X axis, closing prices on Y axis, volume of shares on Z axis
 % Furthermore, print in a different color datapoints where the closing
-% share price was above 500
+% share price was above 100 (hm, in 2014 I did the split at 500..)
 f = figure('visible','off');
-scatter3(dates, hist_close, hist_vol, [] , hist_close > 500);
+scatter3(dates, hist_close, hist_vol, [] , hist_close > 100);
 
 % Set format for X axis tickers and labels/titles
 dateaxis('x', 17);
