@@ -8,10 +8,12 @@ The [first chapter](#understanding-and-using-the-software-available-on-the-ul-hp
 The [second chapter](#adding-a-software-to-the-existing-stack) defines the process of adding new software to the existing stack as a user using RESIF, the tool developed internally to manage the software stack on the UL HPC platform.  
 The [third chapter](#replicating-the-architecture-of-the-platform-on-a-local-environment) explains the process of reproducing the software stack present on the platform, or part of it, in a local environment.
 
+The latest version of this document can be found on [Github](https://github.com/ULHPC/tutorials/tree/devel/advanced/RESIF).
+
 ## Using the software environment available on the UL HPC platform
 
 Before starting this tutorial, please make sure you are on a compute node of Gaia/Chaos and not on the access node. To get resources on a compute node, use the following command:  
-`(access)$> oarsub -I -l nodes=1,walltime=1:00:00`  
+`(access)$> oarsub -I -l core=1,walltime=1:00:00`  
 (for more details about this command and the node reservation process on the clusters, please referer to the [ULHPC documentation](https://hpc.uni.lu/users/docs/oar.html).)
 
 Using the software available on the UL HPC platform is done through [Lmod](https://www.tacc.utexas.edu/research-development/tacc-projects/lmod) which provide a `module` command that we review in the following section.
@@ -74,7 +76,8 @@ The upper layer of the architecture is what we call a *software set*. It is a co
 The main goal of these categories is to provide information on the degree of support for the various software.
 
 Inside these sets, software is named in regards to a *naming scheme* which classifies the software (e.g. compilers, physics) and allows for a better structuring of results with the `module avail` command.  
-The software named using this scheme has the following format: **software_class/software_name/software_complete_version** where  
+The software named using this scheme has the following format: **software_class/software_name/software_complete_version** where
+
 - **software_class** describes the category among the following classes: [base, bio, cae, chem, compiler, data, debugger, devel, lang, lib, math, mpi, numlib, phys, system, toolchain, tools, vis]
 - **software_name** is the name of the software (e.g. GROMACS, MATLAB, R or ABySS)
 - **software_complete_version** is the full version of the software: containing the version of the software itself followed by the type and version of the main dependencies it relies on (e.g. compiler) with the following format: software_version-dependencies_versions
@@ -127,8 +130,8 @@ RESIF installation:
 
 Initially, we need to add the following paths to the environment:
 
-        (node)$> export PATH=$PATH:~/local/bin
-        (node)$> export PYTHONPATH=$PYTHONPATH:~/local/lib/python2.6/site-packages
+        (node)$> export PATH=$PATH:~/.local/bin
+        (node)$> export PYTHONPATH=$PYTHONPATH:~/.local/lib/python2.7/site-packages
 
 Also, 
 
@@ -176,7 +179,7 @@ Now, we can see `bzip2` at the very beginning of the output of the list of the s
 
 The software is installed, and we can load its profile with `module load tools/bzip2/1.0.6`.
 
-RESIF offers many more possibilities than this basic functionality, for more details check the [documentation](http://resif-pypi.readthedocs.org/en/latest/).
+RESIF offers many more possibilities than this basic functionality, for more details check the [documentation](http://resif.readthedocs.org/en/latest/).
 
 ## Replicating the software sets in a local environment
 
@@ -184,6 +187,11 @@ In this part, we are going to create a software stack from scratch. This is espe
 
 We assume that RESIF is already installed as per the instructions described [above](#installation-of-resif).  
 Note: RESIF internally depends on [EasyBuild](http://easybuild.readthedocs.org/en/latest/) which is compatible with Linux/OSX but not Windows. On Windows, you can configure a Linux Virtual Machine to use RESIF and the software built using it.
+
+**At this point, please make sure to unset the RESIF_ROOTINSTALL environment variable.** This is a necessary step since this variable would interfere with the creation of a new software stack (which defines a new rootinstall).  
+To do so, execute the following command:
+
+        unset RESIF_ROOTINSTALL
 
 ### Direct method
 
@@ -237,7 +245,7 @@ We now only need to build the given software:
 This will install the software listed in the `swsets.yaml` file. The software stack is now ready to be used.
 
 
-To learn more about RESIF and how to control more parameters of its usage, please refer to the [documentation](http://resif-pypi.readthedocs.org/en/latest/).
+To learn more about RESIF and how to control more parameters of its usage, please refer to the [documentation](http://resif.readthedocs.org/en/latest/).
 
 To conclude this tutorial, here is a schema that summarizes the previous parts:
 

@@ -126,6 +126,12 @@ Thus, when loading `ggplot2` library, this dataset is available under the name: 
     movies = read.table(dest_file, sep="\t", header=TRUE, quote="", comment="")				# `read.table()` function reads a file and stores it in a data.frame object
 
 
+(OPTIONAL 2) An third way to get the dataset is by using the `readr` library that can uncompress by itself:
+
+	library(readr)
+	system("wget http://had.co.nz/data/movies/movies.tab.gz")
+	movies = read_tsv("movies.tab.gz", col_names = TRUE)
+
 Now let's take a (reproducible) sample of 1000 movies and plot their distribution regarding their rating.
 
     library(ggplot2)																		# load ggplot2 library to use packages functions
@@ -252,6 +258,12 @@ Plotting the benchmark result gives us a boxplot graph:
 	plot(m)																# then we plot it
 	## flush the output device to save the graph
 	dev.off()															# finally we close the output device, this will save the graphic in the output file
+
+
+Note: the `dplyr` library is a new package which provides a set of tools for efficiently manipulating datasets in R. `dplyr` is the next iteration of `plyr`, focussing on only data frames. `dplyr` is faster, has a more consistent API and should be easier to use.
+By using `dplyr` instead of `ddply()` from the `plyr` package in this example you can obtain a significant speedup, however its syntax may first seem a bit confusing.
+
+	diamonds %>% group_by(cut) %>% summarize(avg_price = mean(price))
 
 
 ### Using `data.table` Package
@@ -457,6 +469,86 @@ Finalize and cleanup things.
 
 
 **Exercise: Plot a speedup graph with different number of cores and/or machines used.**
+
+#### MPI Communications
+In this section we will use the same example as previously but with MPI connections. 
+For that purpose we need to install two libraries: `rmpi` and `snow`.
+
+As we are using R compiled with Intel compiler we will have to specify manually some paths and which version of MPI we are using when installing `rmpi`.
+
+	> install.packages("Rmpi",
+	                   configure.args =
+	                   c(paste("--with-Rmpi-include=",Sys.getenv("EBROOTIMPI"),"/include64",sep=""),
+	                     paste("--with-Rmpi-libpath=",Sys.getenv("EBROOTIMPI"),"/lib64",sep=""),
+	                     paste("--with-mpi=",Sys.getenv("EBROOTIMPI"),sep=""),
+	                     "--with-Rmpi-type=OPENMPI"))
+
+**NOTE**: if the installation fails you can try using the module with `Rmpi` already installed:
+
+	module purge
+	module load lang/R/3.2.0-ictce-7.3.5-Rmpi
+
+
+Then, outside of R shell write a file named `parallelAirDests.R` with the following code.
+
+**Warning**: when using parallelization in R, please keep in mind that communication is much slower than computation. Thus if your problem is involving a long computation then you are right to use it, otherwise, if your problem is a large quantity of data you must use `data.table` or `dplyr`.
+
+
+	library(Rmpi)
+	library(snow)
+	
+	# Initiate the cluster
+	cluster <- makeMPIcluster(length(readLines(Sys.getenv("OAR_NODE_FILE"))))
+	
+	# Function that prints the hostname of the caller, just for fun
+	sayhello <- function()
+	{
+	    info <- Sys.info()[c("nodename", "machine")]
+	    paste("Hello from", info[1])
+	}
+	
+	# Call the 'sayhello' function on each node of the cluster
+	names <- clusterCall(cluster, sayhello)
+	print(unlist(names))
+	
+		
+	# Compute the number of flights for a given destination. 
+	# Same as previous examples but with MPI communications.
+	load("~jemeras/data/air.rda")
+	dests = as.character(unique(air$DEST))
+	count_flights = function(x){length(which(air$DEST == x))}
+	#as.data.frame(cbind(dest=dests, nb=lapply(dests, count_flights)))
+	clusterExport(cluster, "air")
+	
+	print(as.data.frame(cbind(dest=dests, nb=parLapply(cluster, dests, count_flights))))
+	
+	# Terminate the cluster
+	stopCluster(cluster)
+
+
+Then, still outside of R and on your job head node run: 
+
+	mpirun -np 1 -machinefile $OAR_NODE_FILE Rscript parallelAirDests.R
+You may find strange the `-np 1`, in fact this is because it is `snow` that manages the processes spawning.
+
+
+<!--
+# With dplyr
+DPLYR = air %>% dplyr::group_by(DEST) %>% dplyr::summarize(length(FL_NUM))
+
+# With data.table
+DT = data.table(air)[, .N, by=DEST]
+
+microbenchmark(DPLYR, DT, times=1000)
+Unit: nanoseconds
+  expr min lq   mean median uq   max neval
+ DPLYR  33 43 61.213     46 48  8844  1000
+    DT  31 42 94.902     44 46 50623  1000
+
+## DPLYR can be more efficient than data.table...
+-->
+
+
 
 <!--
 #### MPI Communications

@@ -1,6 +1,6 @@
 [NCBI]
-data=/scratch/users/vplugaru/bioinfo-inputs/mpiblast/blast-data/
+data=/mnt/isilon/projects/ulhpc-tutorials/bioinformatics/mpiblast/blast-data/
 
 [mpiBLAST]
-Shared=/scratch/users/vplugaru/bioinfo-inputs/mpiblast/
+Shared=/mnt/isilon/projects/ulhpc-tutorials/bioinformatics/mpiblast/
 Local=/tmp 

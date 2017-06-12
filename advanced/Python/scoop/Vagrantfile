@@ -1,0 +1,23 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant.configure("2") do |config|
+  config.vm.box = "centos/7"
+  config.vm.synced_folder "output/", "/vagrant/output"
+
+  config.vm.provider "virtualbox" do |v|
+    v.memory = 1024
+    v.cpus = 2
+  end
+
+  config.vm.provision "shell", inline: <<-SHELL
+    yum update
+    yum install -y python-scoop gnuplot
+    curl "https://bootstrap.pypa.io/get-pip.py" -o "get-pip.py"
+    python get-pip.py
+    pip install scoop filelock colorlog
+    #python -m scoop /vagrant/pi_calc.py 1
+    cd /vagrant
+    make test
+  SHELL
+end

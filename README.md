@@ -43,12 +43,12 @@ __Basic tutorials__:
 
 __MPI__
 
-* PS3A-1: [running the OSU Micro-Banchmarks](/advanced/OSU_MicroBenchmarks)
+* PS3A-1: [running the OSU Micro-Benchmarks](/advanced/OSU_MicroBenchmarks)
 * PS3A-2: [running HPL](/advanced/HPL)
 
 __Mathematics__:
 
-* PS3B: [running MATLAB](/advanced/MATLAB)
+* PS3B: [running MATLAB](/advanced/MATLAB1)
 * PS3C: [running R](/advanced/R)
 
 __Advanced Software Management__

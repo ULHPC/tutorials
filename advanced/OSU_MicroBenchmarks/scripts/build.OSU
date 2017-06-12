@@ -1,0 +1,91 @@
+#!/bin/bash -l
+# Time-stamp: <Thu 2017-05-11 21:15 svarrette>
+################################################################################
+# build.OSU - Build OSU Micro-benchmarks
+################################################################################
+# set -e
+#SBATCH --partition=batch
+#SBATCH --qos qos-batch
+#SBATCH --time=00:20:00
+#SBATCH --nodes 1
+#SBATCH --ntasks-per-node=1
+
+# Load Modules
+if [ -f  /etc/profile ]; then
+    .  /etc/profile
+fi
+
+### Default mode
+MODE='openmpi'
+
+STARTDIR="$(pwd)"
+SCRIPTFILENAME=$(basename $0)
+SCRIPTDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+if [ -n "${SLURM_SUBMIT_DIR}" ]; then
+    # We assume we submit from the super directory holding the build script
+    # as sbatch ./scripts/build.OSU
+    TOP_SRCDIR=${SLURM_SUBMIT_DIR}
+else
+    TOP_SRCDIR="$( cd ${SCRIPTDIR}/.. && pwd )"
+fi
+
+
+OSU_VERSION="5.3.2"
+OSU_SRCDIR=
+#TOP_SRCDIR="${TOP_SRCDIR}/src/osu-micro-benchmarks-${OSU_VERSION}"
+
+######################
+print_error_and_exit() {
+    echo "*** ERROR *** $*"
+    exit 1
+}
+
+############################################
+################# Let's go #################
+############################################
+
+##################################
+# Check for command-line options
+while [ $# -ge 1 ]; do
+    case $1 in
+        -v | --version | --osu-version)
+            shift;
+            OSU_VERSION="$1";;
+        -d | --srcdir)
+            shift;
+            OSU_SRCDIR=$1;;
+        openmpi | mvapich2 | intel | ictce)
+            MODE=$1;;
+    esac
+    shift
+done
+
+[ -z "${OSU_SRCDIR}" ]   && OSU_SRCDIR="${TOP_SRCDIR}/src/osu-micro-benchmarks-${OSU_VERSION}"
+[ ! -d "${OSU_SRCDIR}" ] && print_error_and_exit "unable to find the OSU source directory" && exit 1
+
+build_dir=${TOP_SRCDIR}/build.${MODE}
+if [ ! -d "${build_dir}" ]; then
+    echo "=> creating ${build_dir}"
+    mkdir -p ${build_dir}
+fi
+
+case ${MODE} in
+    openmpi)  CCopt="CC=mpicc";  MODULE=mpi/OpenMPI;;
+    mvapich*) CCopt="CC=mpicc";  MODULE=mpi/MVAPICH2;;
+    ictce)    CCopt="CC=mpiicc"; MODULE=toolchain/ictce;;
+    intel)    CCopt="CC=mpiicc CXX=mpiicpc"; MODULE=toolchain/intel;;
+esac
+
+echo "=> loading module ${MODULE}"
+module purge
+module load ${MODULE}
+module list
+
+if [ -d "${build_dir}" ]; then
+    echo "=> installing OSU Micro-benchmarks with ${MODULE} in ${build_dir}"
+    cd ${build_dir}
+    ${OSU_SRCDIR}/configure ${CCopt} --prefix=$(pwd)
+    make && make install
+    cd -
+fi

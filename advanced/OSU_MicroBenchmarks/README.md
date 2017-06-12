@@ -1,222 +1,411 @@
--*- mode: markdown; mode: auto-fill; fill-column: 80 -*-
 
-`README.md`
+-*- mode: markdown; mode: visual-line; fill-column: 80 -*-
 
-Copyright (c) 2013 Sebastien Varrette <Sebastien.Varrette@uni.lu>
+Copyright (c) 2013-2017 UL HPC Team  <hpc-sysadmins@uni.lu>
 
-        Time-stamp: <Mer 2014-05-07 17:22 svarrette>
+        Time-stamp: <Mon 2017-06-12 00:37 svarrette>
 
--------------------
+---------------------------------------------------------------
+# UL HPC MPI Tutorial: OSU Micro-Benchmarks
 
+[![By ULHPC](https://img.shields.io/badge/by-ULHPC-blue.svg)](https://hpc.uni.lu) [![Licence](https://img.shields.io/badge/license-GPL--3.0-blue.svg)](http://www.gnu.org/licenses/gpl-3.0.html) [![GitHub issues](https://img.shields.io/github/issues/ULHPC/tutorials.svg)](https://github.com/ULHPC/tutorials/issues/) [![](https://img.shields.io/badge/slides-PDF-red.svg)](slides.pdf) [![Github](https://img.shields.io/badge/sources-github-green.svg)](https://github.com/ULHPC/tutorials/tree/devel/advanced/OSU_MicroBenchmarks) [![Documentation Status](http://readthedocs.org/projects/ulhpc-tutorials/badge/?version=latest)](http://ulhpc-tutorials.readthedocs.io/en/latest/advanced/OSU_MicroBenchmarks/) [![GitHub forks](https://img.shields.io/github/stars/ULHPC/tutorials.svg?style=social&label=Star)](https://github.com/ULHPC/tutorials)
 
-# UL HPC Tutorial: OSU Micro-Benchmarks on UL HPC platform
+<!-- [![](cover_slides.png)](slides.pdf) -->
 
-The objective of this tutorial is to compile and run on of the [OSU micro-benchmarks](http://mvapich.cse.ohio-state.edu/benchmarks/) which permit to measure the performance of an MPI implementation.  
+The objective of this tutorial is to compile and run on of the [OSU micro-benchmarks](http://mvapich.cse.ohio-state.edu/benchmarks/) which permit to measure the performance of an MPI implementation.
 
 You can work in groups for this training, yet individual work is encouraged to
-ensure you understand and practice the usage of an HPC platform.  
+ensure you understand and practice the usage of MPI programs on an HPC platform.
 
-In all cases, ensure you are able to [connect to the chaos and gaia cluster](https://hpc.uni.lu/users/docs/access.html). 
-
-	/!\ FOR ALL YOUR COMPILING BUSINESS, ENSURE YOU WORK ON A COMPUTING NODE
-	
-	(access)$> 	oarsub -I -l enclosure=1/nodes=2,walltime=4
+In all cases, ensure you are able to [connect to the UL HPC  clusters](https://hpc.uni.lu/users/docs/access.html).
 
 
-**Advanced users only**: rely on `screen` (see
-  [tutorial](http://support.suso.com/supki/Screen_tutorial)) on the frontend
-  prior to running any `oarsub` command to be more resilient to disconnection.  
+```bash
+# /!\ FOR ALL YOUR COMPILING BUSINESS, ENSURE YOU WORK ON A COMPUTING NODE
+# Have an interactive job
+(access)$> si -N 2 --ntasks-per-node=1                    # iris
+(access)$> srun -p interactive --qos qos-iteractive -N 2 --ntasks-per-node=1 --pty bash  # iris (long version)
+(access)$> oarsub -I -l enclosure=1/nodes=2,walltime=4   # chaos / gaia
+```
 
-The latest version of this tutorial is available on
-[Github](https://github.com/ULHPC/tutorials/tree/devel/advanced/OSU_MicroBenchmarks)
+**Advanced users only**: rely on `screen` (see  [tutorial](http://support.suso.com/supki/Screen_tutorial) or the [UL HPC tutorial](https://hpc.uni.lu/users/docs/ScreenSessions.html) on the  frontend prior to running any `oarsub` or `srun/sbatch` command to be more resilient to disconnection.
+
+The latest version of this tutorial is available on [Github](https://github.com/ULHPC/tutorials/tree/devel/advanced/OSU_MicroBenchmarks)
 
 ## Objectives
 
-The [OSU micro-benchmarks](http://mvapich.cse.ohio-state.edu/benchmarks/) feature a series of MPI benchmarks that measure the performances of various MPI operations: 
+The [OSU micro-benchmarks](http://mvapich.cse.ohio-state.edu/benchmarks/) feature a series of MPI benchmarks that measure the performances of various MPI operations:
 
 * __Point-to-Point MPI Benchmarks__: Latency, multi-threaded latency, multi-pair latency, multiple bandwidth / message rate test bandwidth, bidirectional bandwidth
 * __Collective MPI Benchmarks__: Collective latency tests for various MPI collective operations such as MPI_Allgather, MPI_Alltoall, MPI_Allreduce, MPI_Barrier, MPI_Bcast, MPI_Gather, MPI_Reduce, MPI_Reduce_Scatter, MPI_Scatter and vector collectives.
 * __One-sided MPI Benchmarks__: one-sided put latency (active/passive), one-sided put bandwidth (active/passive), one-sided put bidirectional bandwidth, one-sided get latency (active/passive), one-sided get bandwidth (active/passive), one-sided accumulate latency (active/passive), compare and swap latency (passive), and fetch and operate (passive) for MVAPICH2 (MPI-2 and MPI-3).
+* Since the 4.3 version, the [OSU micro-benchmarks](http://mvapich.cse.ohio-state.edu/benchmarks/) also features OpenSHMEM benchmarks, a 1-sided communications library.
 
-The 4.3 version also features OpenSHMEM benchmarks, a 1-sided communications library.
-
-In this tutorial, we will focus on two of the available tests:
+In this tutorial, we will build **version 5.3.2 of the [OSU micro-benchmarks](http://mvapich.cse.ohio-state.edu/benchmarks/)** (the latest at the time of writing), and focus on two of the available tests:
 
 * `osu_get_latency` - Latency Test
-
-  The latency tests are carried out in a ping-pong fashion. The sender sends a message with a certain data size to the receiver and waits for a reply from the receiver. The receiver receives the message from the sender and sends back a reply with the same data size. Many iterations of this ping-pong test are carried out and average one-way latency numbers are obtained. Blocking version of MPI functions (MPI_Send and MPI_Recv) are used in the tests.
 * `osu_get_bw` - Bandwidth Test
 
-  The bandwidth tests were carried out by having the sender sending out a fixed number (equal to the window size) of back-to-back messages to the receiver and then waiting for a reply from the receiver. The receiver sends the reply only after receiving all these messages. This process is repeated for several iterations and the bandwidth is calculated based on the elapsed time (from the time sender sends the first message until the time it receives the reply back from the receiver) and the number of bytes sent by the sender. The objective of this bandwidth test is to determine the maximum sustained date rate that can be achieved at the network level. Thus, non-blocking version of MPI functions (MPI_Isend and MPI_Irecv) were used in the test.
+> The latency tests are carried out in a ping-pong fashion. The sender sends a message with a certain data size to the receiver and waits for a reply from the receiver. The receiver receives the message from the sender and sends back a reply with the same data size. Many iterations of this ping-pong test are carried out and average one-way latency numbers are obtained. Blocking version of MPI functions (MPI_Send and MPI_Recv) are used in the tests.
 
-The idea is to compare the different MPI implementations available on the [UL HPC platform](http://hpc.uni.lu).: 
+> The bandwidth tests were carried out by having the sender sending out a fixed number (equal to the window size) of back-to-back messages to the receiver and then waiting for a reply from the receiver. The receiver sends the reply only after receiving all these messages. This process is repeated for several iterations and the bandwidth is calculated based on the elapsed time (from the time sender sends the first message until the time it receives the reply back from the receiver) and the number of bytes sent by the sender. The objective of this bandwidth test is to determine the maximum sustained date rate that can be achieved at the network level. Thus, non-blocking version of MPI functions (MPI_Isend and MPI_Irecv) were used in the test.
+
+The idea is to compare the different MPI implementations available on the [UL HPC platform](http://hpc.uni.lu).:
 
 * [Intel MPI](http://software.intel.com/en-us/intel-mpi-library/)
 * [OpenMPI](http://www.open-mpi.org/)
-* [MVAPICH2](http://mvapich.cse.ohio-state.edu/overview/mvapich2/)
+* [MVAPICH2](http://mvapich.cse.ohio-state.edu/overview/) (MPI-3 over OpenFabrics-IB, Omni-Path, OpenFabrics-iWARP, PSM, and TCP/IP)
 
-The benchamrking campain will typically involves for each MPI suit: 
+For the sake of time and simplicity, we will focus on the first two suits. Eventually, the benchmarking campain will typically involves for each MPI suit:
 
-* two nodes, belonging to the same enclosure
-* two nodes, belonging to different enclosures
+* two nodes, belonging to the _same_ enclosure
+* two nodes, belonging to _different_ enclosures
 
 ## Pre-requisites
 
-Clone the [launcher-script repository](https://github.com/ULHPC/launcher-scripts)
+On the **access** and a **computing** node of the cluster you're working on, clone the [ULHPC/tutorials](https://github.com/ULHPC/tutorials)  and [ULHPC/launcher-scripts](https://github.com/ULHPC/launcher-scripts) repositories
 
-	$> cd 
-	$> mkdir -p git/ULHPC && cd  git/ULHPC
-	$> git clone https://github.com/ULHPC/launcher-scripts.git
-	
-Now you shall get the 4.3 release of the [OSU micro-benchmarks](http://mvapich.cse.ohio-state.edu/benchmarks/)
+```bash
+$> cd
+$> mkdir -p git/ULHPC && cd  git/ULHPC
+$> git clone https://github.com/ULHPC/launcher-scripts.git
+$> git clone https://github.com/ULHPC/tutorials.git         # If not yet done
+```
 
-    $> mkdir ~/TP 
-    $> cd ~/TP
-    $> wget --no-check-certificate https://scm.mvapich.cse.ohio-state.edu/benchmarks/osu-micro-benchmarks-4.3.tar.gz
-    $> tar xvzf osu-micro-benchmarks-4.3.tar.gz
-    $> cd osu-micro-benchmarks-4.3
+Prepare your working directory
 
+```bash
+$> mkdir -p ~/tutorials/OSU-MicroBenchmarks
+$> cd ~/tutorials/OSU-MicroBenchmarks
+$> ln -s ~/git/ULHPC/tutorials/advanced/OSU_MicroBenchmarks ref.ulhpc.d   # Keep a symlink to the reference tutorial
+$> ln -s ref.ulhpc.d/Makefile .     # symlink to the root Makefile
+```
 
-## OSU Micro-benchmarks with Intel MPI
+Fetch and uncompress the latest version of the [OSU micro-benchmarks](http://mvapich.cse.ohio-state.edu/benchmarks/)
 
-We are first going to use the
-[Intel Cluster Toolkit Compiler Edition](http://software.intel.com/en-us/intel-cluster-toolkit-compiler/),
-which provides Intel C/C++ and Fortran compilers, Intel MPI. 
+```bash
+$> cd ~/tutorials/OSU-MicroBenchmarks
+$> mkdir src
+$> cd src
+# Download the latest version
+$> export OSU_VERSION=5.3.2     # Just to abstract from the version to download
+$> wget --no-check-certificate http://mvapich.cse.ohio-state.edu/download/mvapich/osu-micro-benchmarks-$(OSU_VERSION).tar.gz
+$> tar xvzf osu-micro-benchmarks-$(OSU_VERSION).tar.gz
+$> cd osu-micro-benchmarks-$(OSU_VERSION)
+```
 
+## Building the OSU Micro-benchmarks
+
+We will build the [OSU micro-benchmarks](http://mvapich.cse.ohio-state.edu/benchmarks/) for each considered MPI suit, thus in a separate directory `build.<suit>` -- that's a good habbit you're encouraged (as with [CMake](https://cmake.org/) based projects)
+In all cases, you **should** now operate the compilation within an interactive job to be able to use the `module` command.
+
+```bash
+# If not yet done
+(access)$> si -N 2 --ntasks-per-node=1                   # on iris (1 core on 2 nodes)
+(access)$> oarsub -I -l enclosure=1/nodes=2,walltime=4   # chaos / gaia
+```
+
+### Compilation based on the Intel MPI suit
+
+We are first going to use the [Intel Cluster Toolkit Compiler Edition](http://software.intel.com/en-us/intel-cluster-toolkit-compiler/),
+which provides Intel C/C++ and Fortran compilers, Intel MPI.
 We will compile the [OSU micro-benchmarks](http://mvapich.cse.ohio-state.edu/benchmarks/) in a specific directory (that a good habbit)
 
-    $> cd ~/TP/osu-micro-benchmarks-4.3
-    $> module avail 2>&1 | grep -i MPI
-    $> module load ictce/6.1.5
-    $> module list
-    Currently Loaded Modulefiles:
-       1) icc/2013_sp1.1.106     2) ifort/2013_sp1.1.106   3) impi/4.1.3.045         4) imkl/11.1.1.106        5) ictce/6.1.5
-    $> mkdir build.impi && cd build.impi
-    $> ../configure CC=mpiicc --prefix=`pwd`/install
-    $> make && make install 
+```bash
+$> cd ~/tutorials/OSU-MicroBenchmarks/
+$> mkdir build.intel    # Prepare the specific building directory
+$> cd  build.intel
+# Load the appropriate module
+$> module spider MPI     # Search for available modules featuring MPI
+$> module load toolchain/intel   # On iris -- use 'module load toolchain/ictce' otherwise
+$> module list
+Currently Loaded Modules:
+  1) compiler/GCCcore/6.3.0                   4) compiler/ifort/2017.1.132-GCC-6.3.0-2.27                 7) toolchain/iimpi/2017a
+  2) tools/binutils/2.27-GCCcore-6.3.0        5) toolchain/iccifort/2017.1.132-GCC-6.3.0-2.27             8) numlib/imkl/2017.1.132-iimpi-2017a
+  3) compiler/icc/2017.1.132-GCC-6.3.0-2.27   6) mpi/impi/2017.1.132-iccifort-2017.1.132-GCC-6.3.0-2.27   9) toolchain/intel/2017a
 
-If everything goes fine, you shall have the [OSU micro-benchmarks](http://mvapich.cse.ohio-state.edu/benchmarks/) installed in the directory `install/libexec/osu-micro-benchmarks/mpi/`.
+# Configure the Intel MPI-based build for installation in the current directory
+$> ../src/osu-micro-benchmarks-5.3.2/configure CC=mpiicc CXX=mpiicpc --prefix=$(pwd)
+$> make && make install
+```
 
+If everything goes fine, you shall have the [OSU micro-benchmarks](http://mvapich.cse.ohio-state.edu/benchmarks/) installed in the directory `libexec/osu-micro-benchmarks/mpi/`.
 
-Once compiled, ensure you are able to run it: 
-
-	$> cd install/libexec/osu-micro-benchmarks/mpi/one-sided/
-	$> mpirun -hostfile $OAR_NODEFILE -perhost 1 ./osu_get_latency
-	$> mpirun -hostfile $OAR_NODEFILE -perhost 1 ./osu_get_bw
-
-Now you can use the [MPI generic launcher](https://github.com/ULHPC/launcher-scripts/blob/devel/bash/MPI/mpi_launcher.sh) to run the code: 
-
-	$> cd ~/TP/osu-micro-benchmarks-4.3/
-	$> mkdir runs  && cd runs
-	$> ln -s ~/git/ULHPC/launcher-scripts/bash/MPI/mpi_launcher.sh launcher_osu_impi
-	$> ./launcher_osu_impi --basedir $HOME/TP/osu-micro-benchmarks-4.3/build.impi/install/libexec/osu-micro-benchmarks/mpi/one-sided --npernode 1 --module ictce/6.1.5 --exe osu_get_latency,osu_get_bw
-
-If you want to avoid this long list of arguments, just create a file `launcher_osu_impi.default.conf` to contain: 
-
-	$> cat launcher_osu_impi.default.conf # this command will fail if you have not already created the file !
-	# Defaults settings for running the OSU Micro benchmarks compiled with Intel MPI
-	NAME=impi
-	
-	MODULE_TO_LOADstr=ictce/6.1.5
-	MPI_PROG_BASEDIR=$HOME/TP/osu-micro-benchmarks-4.3/build.impi/install/libexec/osu-micro-benchmarks/mpi/one-sided/
-	
-	MPI_PROGstr=osu_get_latency,osu_get_bw
-	MPI_NPERNODE=1
-
-Now you can run the launcher script interactively.
-
-	$> ./launcher_osu_impi
-
-You might want also to host the output files in the local directory (under the date)
-
-	$> ./launcher_osu_impi --datadir data/`date +%Y-%m-%d`
-
-## OSU Micro-benchmarks with OpenMPI
-
-We will repeat the procedure, this time using OpenMPI. 
-
-	$> cd ~/TP/osu-micro-benchmarks-4.3/
-	$> module purge
-	$> module load OpenMPI/1.7.3-GCC-4.8.2
-	$> mkdir build.openmpi && cd build.openmpi
-	$> ../configure CC=mpicc --prefix=`pwd`/install
-	$> make && make install 
-	
-If everything goes fine, you shall have the [OSU micro-benchmarks](http://mvapich.cse.ohio-state.edu/benchmarks/) installed in the directory `install/libexec/osu-micro-benchmarks/mpi/`.
-
-Once compiled, ensure you are able to run it: 
-
-	$> cd install/libexec/osu-micro-benchmarks/mpi/one-sided/
-	$> mpirun -x LD_LIBRARY_PATH -hostfile $OAR_NODEFILE -npernode 1 ./osu_get_latency
-	$> mpirun -x LD_LIBRARY_PATH -hostfile $OAR_NODEFILE -npernode 1 ./osu_get_bw
-
-Again, we will rely on the [MPI generic launcher](https://github.com/ULHPC/launcher-scripts/blob/devel/bash/MPI/mpi_launcher.sh) to run the code: 
-
-	$> cd ~/TP/osu-micro-benchmarks-4.3/runs
-	$> ln -s ~/git/ULHPC/launcher-scripts/bash/MPI/mpi_launcher.sh launcher_osu_openmpi
-	$> cat launcher_osu_openmpi.default.conf  # this command will fail if you have not already created the file !
-	# Defaults settings for running the OSU Micro benchmarks wompiled with OpenMPI
-	NAME=openmpi
-	
-	MODULE_TO_LOADstr=OpenMPI/1.7.3-GCC-4.8.2
-	MPI_PROG_BASEDIR=$HOME/TP/osu-micro-benchmarks-4.3/build.openmpi/install/libexec/osu-micro-benchmarks/mpi/one-sided/
-	
-	MPI_PROGstr=osu_get_latency,osu_get_bw
-	MPI_NPERNODE=1
-
-Now you can run the launcher script interactively.
-
-	$> ./launcher_osu_openmpi
-
-You might want also to host the output files in the local directory (under the date)
-
-	$> ./launcher_osu_openmpi --datadir data/`date +%Y-%m-%d`
+Once compiled, ensure you are able to run it:
 
 
-## OSU Micro-benchmarks with MVAPICH2
+```bash
+$> cd libexec/osu-micro-benchmarks/mpi/one-sided/
 
-Repeat the procedure, this time using MVAPICH2. 
+#### On iris
+$> srun -n $SLURM_NTASKS ./osu_get_latency
+$> srun -n $SLURM_NTASKS ./osu_get_bw
 
-	$> cd ~/TP/osu-micro-benchmarks-4.3/
-	$> module purge
-	$> module load MVAPICH2/1.7-GCC-4.6.3
-	$> mkdir build.mvapich2 && cd build.mvapich2
-	$> ../configure CC=mpicc --prefix=`pwd`/install
-	$> make && make install 
-	
-If everything goes fine, you shall have the [OSU micro-benchmarks](http://mvapich.cse.ohio-state.edu/benchmarks/) installed in the directory `install/libexec/osu-micro-benchmarks/mpi/`.
+#### On gaia, chaos
+$> mpirun -hostfile $OAR_NODEFILE -perhost 1 ./osu_get_latency
+$> mpirun -hostfile $OAR_NODEFILE -perhost 1 ./osu_get_bw
+```
 
-As before, rely on the [MPI generic launcher](https://github.com/ULHPC/launcher-scripts/blob/devel/bash/MPI/mpi_launcher.sh) to run the code: 
+### Compilation based on the OpenMPI suit
 
-	$> cd ~/TP/osu-micro-benchmarks-4.3/runs
-	$> ln -s ~/git/ULHPC/launcher-scripts/bash/MPI/mpi_launcher.sh launcher_osu_mvapich2
-	$> cat launcher_osu_mvapich2.default.conf # this command will fail if you have not already created the file !
-	# Defaults settings for running the OSU Micro benchmarks wompiled with MVAPICH2
-	NAME=mvapich2
-	
-	MODULE_TO_LOADstr=MVAPICH2/1.7-GCC-4.6.3
-	MPI_PROG_BASEDIR=$HOME/TP/osu-micro-benchmarks-4.3/build.mvapich2/install/libexec/osu-micro-benchmarks/mpi/one-sided/
-	
-	MPI_PROGstr=osu_get_latency,osu_get_bw
-	MPI_NPERNODE=1
+Repeat the procedure for the OpenMPI suit:
 
-Now you can run the launcher script interactively.
+```bash
+$> cd ~/tutorials/OSU-MicroBenchmarks/
+$> mkdir build.openmpi    # Prepare the specific building directory
+$> cd  build.openmpi
+# Clean the previously loaded module and load the appropriate OpenMPI one
+$> module purge
+$> module spider OpenMPI
+$> module load mpi/OpenMPI
+$> module list
 
-	$> ./launcher_osu_mvapich2
+Currently Loaded Modules:
+  1) compiler/GCCcore/6.3.0              3) compiler/GCC/6.3.0-2.28              5) system/hwloc/1.11.7-GCC-6.3.0-2.28
+  2) tools/binutils/2.28-GCCcore-6.3.0   4) tools/numactl/2.0.11-GCCcore-6.3.0   6) mpi/OpenMPI/2.1.1-GCC-6.3.0-2.28
 
-You might want also to host the output files in the local directory (under the date)
+# Configure the OpenMPI-based build for installation in the current directory
+$> ../src/osu-micro-benchmarks-5.3.2/configure CC=mpicc --prefix=$(pwd)
+$> make && make install
+```
 
-	$> ./launcher_osu_mvapich2 --datadir data/`date +%Y-%m-%d`
+Once compiled, ensure you are able to run it:
+
+```bash
+$> cd libexec/osu-micro-benchmarks/mpi/one-sided/
+
+#### On iris
+$> mpirun -perhost 1 --mca btl openib,self,sm
+
+$> srun -n $SLURM_NTASKS ./osu_get_latency   # OR mpirun -npernode 1 --mca btl openib,self,sm  ./osu_get_latency
+$> srun -n $SLURM_NTASKS ./osu_get_bw        # OR mpirun -npernode 1 --mca btl openib,self,sm  ./osu_get_bw
+
+#### On gaia, chaos
+$> mpirun -x LD_LIBRARY_PATH -hostfile $OAR_NODEFILE -npernode 1 ./osu_get_latency
+$> mpirun -x LD_LIBRARY_PATH -hostfile $OAR_NODEFILE -npernode 1 ./osu_get_bw
+```
+
+## Preparing batch runs
+
+We are now going to prepare launcher scripts to permit passive runs (typically in the `{default | batch}` queue).
+We will place them in a separate directory (`runs/`) as it will host the outcomes of the executions on the UL HPC platform .
+
+```bash
+$> cd ~/tutorials/OSU-MicroBenchmarks/
+$> mkdir runs    # Prepare the specific run directory
+```
+
+### Slurm launcher (Intel MPI)
+
+Copy and adapt the [default SLURM launcher](https://github.com/ULHPC/launcher-scripts/blob/devel/slurm/launcher.default.sh) you should have a copy in `~/git/ULHPC/launcher-scripts/slurm/launcher.default.sh`
+
+```bash
+$> cd ~/tutorials/OSU-MicroBenchmarks/runs
+# Prepare a laucnher for intel suit
+$> cp ~/git/ULHPC/launcher-scripts/slurm/launcher.default.sh launcher-OSU.intel.sh
+```
+
+Take your favorite editor (`vim`, `nano`, etc.) to modify it according to your needs.
+Here is for instance a suggested difference for intel MPI:
+
+```diff
+--- /home/users/svarrette/git/ULHPC/launcher-scripts/slurm/launcher.default.sh  2017-06-11 23:40:34.007152000 +0200
++++ launcher-OSU.intel.sh       2017-06-11 23:41:57.597055000 +0200
+@@ -10,8 +10,8 @@
+ #
+ #          Set number of resources
+ #
+-#SBATCH -N 1
+-#SBATCH --ntasks-per-node=28
++#SBATCH -N 2
++#SBATCH --ntasks-per-node=1
+ ### -c, --cpus-per-task=<ncpus>
+ ###     (multithreading) Request that ncpus be allocated per process
+ #SBATCH -c 1
+@@ -64,15 +64,15 @@
+ module load toolchain/intel
+
+ # Directory holding your built applications
+-APPDIR="$HOME"
++APPDIR="$HOME/tutorials/OSU-MicroBenchmarks/build.intel/libexec/osu-micro-benchmarks/mpi/one-sided"
+ # The task to be executed i.E. your favorite Java/C/C++/Ruby/Perl/Python/R/whatever program
+ # to be invoked in parallel
+-TASK="${APPDIR}/app.exe"
++TASK="${APPDIR}/$1"
+
+ # The command to run
+-CMD="${TASK}"
++# CMD="${TASK}"
+ ### General MPI Case:
+-# CMD="srun -n $SLURM_NTASKS ${TASK}"
++CMD="srun -n $SLURM_NTASKS ${TASK}"
+ ### OpenMPI case if you wish to specialize the MCA parameters
+ #CMD="mpirun -np $SLURM_NTASKS --mca btl openib,self,sm ${TASK}"
+```
+
+If you apply the above changes, you can test the script in an interctive job as follows:
+
+```bash
+$> cd ~/tutorials/OSU-MicroBenchmarks/runs
+$> si -N 2 --ntasks-per-node=1     # create an interactive job, 1 core on 2 nodes
+$> ./launcher-OSU.intel.sh osu_get_bw
+$> ./launcher-OSU.intel.sh osu_get_latency
+```
+
+And then test it in batch mode:
+
+```bash
+$> cd ~/tutorials/OSU-MicroBenchmarks/runs
+$> sbatch ./launcher-OSU.intel.sh osu_get_bw
+$> sbatch ./launcher-OSU.intel.sh osu_get_latency
+```
+
+### Slurm launcher (OpenMPI)
+
+```bash
+$> cd ~/tutorials/OSU-MicroBenchmarks/runs
+$> cp launcher-OSU.intel.sh launcher-OSU.openmpi.sh
+```
+
+Take again your favorite editor (`vim`, `nano`, etc.) to modify `launcher-OSU.openmpi.sh` as follows:
+
+```diff
+--- launcher-OSU.intel.sh       2017-06-11 23:41:57.597055000 +0200
++++ launcher-OSU.openmpi.sh     2017-06-11 23:46:04.589924000 +0200
+@@ -61,10 +61,10 @@
+
+ # Load the {intel | foss} toolchain and whatever module(s) you need
+ module purge
+-module load toolchain/intel
++module load mpi/OpenMPI
+
+ # Directory holding your built applications
+-APPDIR="$HOME/tutorials/OSU-MicroBenchmarks/build.intel/libexec/osu-micro-benchmarks/mpi/one-sided"
++APPDIR="$HOME/tutorials/OSU-MicroBenchmarks/build.openmpi/libexec/osu-micro-benchmarks/mpi/one-sided"
+ # The task to be executed i.E. your favorite Java/C/C++/Ruby/Perl/Python/R/whatever program
+ # to be invoked in parallel
+ TASK="${APPDIR}/$1"
+```
+
+And then test it in (passive) batch mode:
+
+```bash
+$> cd ~/tutorials/OSU-MicroBenchmarks/runs
+$> sbatch ./launcher-OSU.openmpi.sh osu_get_bw
+$> sbatch ./launcher-OSU.openmpi.sh osu_get_latency
+```
+
+### Slurm launcher (OpenMPI over Ethernet interface)
+
+By default, the MPI communications are operated over the fast Infiniband interconnect.
+With OpenMPI, we can _force_ them over the Ethernet network to highlight the performance impact of using such a slower network.
+
+```bash
+$> cd ~/tutorials/OSU-MicroBenchmarks/runs
+$> cp launcher-OSU.openmpi.sh launcher-OSU.openmpi-eth.sh
+```
+
+Take again your favorite editor (`vim`, `nano`, etc.) to modify `launcher-OSU.openmpi-eth.sh` as follows:
+
+```diff
+--- launcher-OSU.openmpi.sh     2017-06-11 23:46:04.589924000 +0200
++++ launcher-OSU.openmpi-eth.sh 2017-06-11 23:55:02.239258000 +0200
+@@ -72,9 +72,9 @@
+ # The command to run
+ # CMD="${TASK}"
+ ### General MPI Case:
+-CMD="srun -n $SLURM_NTASKS ${TASK}"
++# CMD="srun -n $SLURM_NTASKS ${TASK}"
+ ### OpenMPI case if you wish to specialize the MCA parameters
+-#CMD="mpirun -np $SLURM_NTASKS --mca btl openib,self,sm ${TASK}"
++CMD="mpirun -np $SLURM_NTASKS -npernode 1 --mca btl tcp,self ${TASK}"
+
+ ### Prepare logfile
+ LOGFILE="${RUNDIR}/$(date +%Y-%m-%d)_$(basename ${TASK})_${SLURM_JOBID}.log"
+```
+
+And then test it in (passive) batch mode:
+
+```bash
+$> cd ~/tutorials/OSU-MicroBenchmarks/runs
+$> sbatch ./launcher-OSU.openmpi-eth.sh osu_get_bw
+$> sbatch ./launcher-OSU.openmpi-eth.sh osu_get_latency
+```
+
+You can find the obtained results on the `iris` cluster:
+
+![](plots/benchmark_OSU_iris_latency.png)
+![](plots/benchmark_OSU_iris_bandwidth.png)
 
 
-## Benchmarking on two nodes 
+### OAR launcher (Intel MPI)
 
-Operate the benchmarking campain (in the three cases) in the following context: 
+In the case of OAR (_i.e._ on the `gaia` and `chaos` cluster), you can use the [MPI generic launcher](https://github.com/ULHPC/launcher-scripts/blob/devel/bash/MPI/mpi_launcher.sh) to run the code:
+
+```bash
+$> ~/tutorials/OSU-MicroBenchmarks/runs
+$> ln -s ~/git/ULHPC/launcher-scripts/bash/MPI/mpi_launcher.sh launcher-OSU.intel.sh
+$> ./launcher-OSU.intel.sh \
+     --basedir $HOME/tutorials/OSU-MicroBenchmarks/src/osu-micro-benchmarks-5.3.2/build.intel/libexec/osu-micro-benchmarks/mpi/one-sided \
+     --npernode 1 --module toolchain/intel --exe osu_get_latency,osu_get_bw
+```
+
+If you want to avoid this long list of arguments, just create a file `launcher-OSU.intel.default.conf` to contain:
+
+```bash
+# Defaults settings for running the OSU Micro benchmarks compiled with Intel MPI
+NAME=OSU.intel
+
+MODULE_TO_LOADstr=toolchain/intel
+MPI_PROG_BASEDIR=$HOME/tutorials/OSU-MicroBenchmarks/src/osu-micro-benchmarks-5.3.2/build.intel/libexec/osu-micro-benchmarks/mpi/one-sided/
+
+MPI_PROGstr=osu_get_latency,osu_get_bw
+MPI_NPERNODE=1
+```
+
+Now you can run the launcher script (interactively, or not):
+
+```bash
+# IF within an interactive job
+$> ./launcher-OSU.intel.sh
+# You might want also to host the output files in the local directory (under the date)
+$> ./launcher-OSU.intel.sh --datadir data/$(date +%Y-%m-%d)
+
+# Submitting a passive job
+$> oarsub -S ./launcher-OSU.intel.sh
+```
+
+### OAR launcher (OpenMPI)
+
+Again, we will rely on the [MPI generic launcher](https://github.com/ULHPC/launcher-scripts/blob/devel/bash/MPI/mpi_launcher.sh) to run the code:
+
+```bash
+$> ~/tutorials/OSU-MicroBenchmarks/runs
+$> ln -s ~/git/ULHPC/launcher-scripts/bash/MPI/mpi_launcher.sh launcher-OSU.openmpi.sh
+$> vim launcher-OSU.openmpi.default.conf
+[...] # See below for content
+$> cat launcher-OSU.openmpi.default.conf
+# Defaults settings for running the OSU Micro benchmarks wompiled with OpenMPI
+NAME=OSU.openmpi
+
+MODULE_TO_LOADstr=mpi/OpenMPI
+	MPI_PROG_BASEDIR=$HOME/tutorials/OSU-MicroBenchmarks/src/osu-micro-benchmarks-5.3.2/build.openmpi/libexec/osu-micro-benchmarks/mpi/one-sided/
+
+MPI_PROGstr=osu_get_latency,osu_get_bw
+MPI_NPERNODE=1
+
+# Submit a passive job
+$> oarsub -S ./launcher-OSU.openmpi.sh
+```
+
+### Benchmarking on two nodes
+
+Operate the benchmarking campain (in the two cases) in the following context:
 
 * 2 nodes belonging to the same enclosure. Use for that:
 
 		$> oarsub -l enclosure=1/nodes=2,walltime=8 […]
-		
+
 * 2 nodes belonging to the different enclosures:
 
 		$> oarsub -l enclosure=2/core=1,walltime=8 […]
@@ -226,25 +415,22 @@ Operate the benchmarking campain (in the three cases) in the following context:
 You will find in the [UL HPC tutorial](https://github.com/ULHPC/tutorials)
 repository, under the `advanced/OSU_MicroBenchmarks` directory, a set of tools / script that
 facilitate the running and analysis of this tutorial that you can use/adapt to
-suit your needs. 
+suit your needs.
 
-In particular, once in the `advanced/OSU_MicroBenchmarks` directory: 
+In particular, once in the `advanced/OSU_MicroBenchmarks` directory:
 
 * running `make fetch` will automatically download the archives for the [OSU micro-benchmarks](http://mvapich.cse.ohio-state.edu/benchmarks/) in the `src/` directory
-* you will find the patch file to apply to the version 4.3 in `src/osu-micro-benchmarks-4.3/mpi/one-sided/Makefile.am.patch`
-* The different configuration files for the [MPI generic launcher](https://github.com/ULHPC/launcher-scripts/blob/devel/bash/MPI/mpi_launcher.sh) in `runs/`
+* The  different launcher files in `runs/`
 * Some sample output data in `runs/data/`
 * run `make build` to build the different versions of the OSU Micro-benchmarks
-* run `make run_interactive` to run the benchmarks, assuming you are in an interactive job
-* run `make run` to run a passive job executing the benchmarks
 * run `make plot` to invoke the [Gnuplot](http://www.gnuplot.info/) script
   `plots/benchmark_OSU.gnuplot` and generate various plots from the sample
-  runs. 
+  runs.
 
 In particular, you'll probably want to see the comparison figure extracted from
 the sample run in `plots/benchmark_OSU_2H_latency.pdf` and `plots/benchmark_OSU_2H_bandwidth.pdf`
 
-A PNG version of these plots is available on Github: 
+A PNG version of these plots is available on Github:
 [OSU latency](https://raw.github.com/ULHPC/tutorials/devel/advanced/OSU_MicroBenchmarks/plots/benchmark_OSU_2H_latency.png) -- [OSU Bandwidth](https://raw.github.com/ULHPC/tutorials/devel/advanced/OSU_MicroBenchmarks/plots/benchmark_OSU_2H_bandwidth.png)
 
 ![OSU latency](https://raw.github.com/ULHPC/tutorials/devel/advanced/OSU_MicroBenchmarks/plots/benchmark_OSU_2H_latency.png)
