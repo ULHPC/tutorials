@@ -163,8 +163,8 @@ and process data from the Google Finance API and generate the plots.
 Finally, we have closed our Matlab session and were returned to the cluster's command line prompt where we found the generated plots.
 
 A PNG version of the latter two plots is shown below:
-![2D Plot](https://raw.github.com/ULHPC/tutorials/devel/advanced/MATLAB1/src/images/plots/example1-2dplot.png)
-![3D Scatter Plot](https://raw.github.com/ULHPC/tutorials/devel/advanced/MATLAB1/src/images/plots/example1-scatter.png)
+![2D Plot](https://raw.githubusercontent.com/ULHPC/tutorials/devel/advanced/MATLAB1/src/plots/example1-2dplot.png)
+![3D Scatter Plot](https://raw.githubusercontent.com/ULHPC/tutorials/devel/advanced/MATLAB1/src/plots/example1-scatter.png)
 
 Further examples showing serial and parallel executions are given below in the 'Example usage of Matlab in passive mode' section.
 
