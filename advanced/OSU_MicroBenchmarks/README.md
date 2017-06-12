@@ -3,7 +3,7 @@
 
 Copyright (c) 2013-2017 UL HPC Team  <hpc-sysadmins@uni.lu>
 
-        Time-stamp: <Mon 2017-06-12 14:58 svarrette>
+        Time-stamp: <Mon 2017-06-12 15:47 svarrette>
 
 ---------------------------------------------------------------
 # UL HPC MPI Tutorial: OSU Micro-Benchmarks
@@ -243,7 +243,7 @@ Here is for instance a suggested difference for intel MPI:
  #CMD="mpirun -np $SLURM_NTASKS --mca btl openib,self,sm ${TASK}"
 ```
 
-If you apply the above changes, you can test the script in an interctive job as follows:
+If you apply the above changes, you can test the script in an interactive job as follows:
 
 ```bash
 $> cd ~/tutorials/OSU-MicroBenchmarks/runs
