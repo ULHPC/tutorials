@@ -2,7 +2,7 @@
 
 Copyright (c) 2013-2017 UL HPC Team  <hpc-sysadmins@uni.lu>
 
-        Time-stamp: <Mon 2017-06-12 15:00 svarrette>
+        Time-stamp: <Mon 2017-06-12 15:59 svarrette>
 
 ------------------------------------------------------
 # UL HPC Tutorial: High-Performance Linpack (HPL) benchmarking on UL HPC platform
@@ -255,99 +255,38 @@ Here is for instance a suggested difference for intel MPI:
  #CMD="mpirun -np $SLURM_NTASKS --mca btl openib,self,sm ${TASK}"
 ```
 
+Now you should create an input `HPL.dat` file within the `runs/`.
+
+```bash
+$> cd ~/tutorials/HPL/runs
+$> cp ../ref.ulhpc.d/HPL.dat .
+$> ll
+total 0
+-rw-r--r--. 1 svarrette clusterusers 1.5K Jun 12 15:38 HPL.dat
+-rwxr-xr-x. 1 svarrette clusterusers 2.7K Jun 12 15:25 launcher-HPL.intel.sh
+```
+
+You are ready for testing a batch job:
 
 
+```bash
+$> cd ~/tutorials/HPL/runs
+$> sbatch ./launcher-HPL.intel.sh
+$> sq     # OR (long version) squeue -u $USER
+```
 
+**(bonus)** Connect to one of the allocated nodes and run `htop` (followed by `u` to select process run under your username, and `F5` to enable the tree-view.
 
-### HPL with GCC and GotoBLAS2 and Open MPI
+Now you can check the output of the HPL runs:
 
-Another alternative is to rely on [GotoBlas](https://www.tacc.utexas.edu/research-development/tacc-software/gotoblas2/).
+```bash
+$> grep WR slurm-<jobid>.out    # /!\ ADAPT <jobid> appropriately.
+```
 
-Get the sources and compile them:
+Of course, we made here a small test and optimizing the HPL parameters to get the best performances and efficiency out of a given HPC platform is not easy.
+Below are some plots obtained when benchmarking the `iris` cluster and seeking the best set of parameters across increasing number of nodes (see [this blog post](https://hpc.uni.lu/blog/2017/preliminary-performance-results-of-the-iris-cluster/))
 
-     # A copy of `GotoBLAS2-1.13.tar.gz` is available in `/tmp` on the access nodes of the cluster
-     $> cd ~/TP
-     $> module purge
-     $> module load mpi/OpenMPI/1.8.4-GCC-4.9.2
-     $> tar xvzf /tmp/GotoBLAS2-1.13.tar.gz
-     $> mv GotoBLAS2 GotoBLAS2-1.13
-     $> cd GotoBLAS2-1.13
-     $> make BINARY=64 TARGET=NEHALEM NUM_THREADS=1
-     [...]
-      GotoBLAS build complete.
-
-        OS               ... Linux
-        Architecture     ... x86_64
-        BINARY           ... 64bit
-        C compiler       ... GCC  (command line : gcc)
-        Fortran compiler ... GFORTRAN  (command line : gfortran)
-        Library Name     ... libgoto2_nehalemp-r1.13.a (Multi threaded; Max num-threads is 12)
-
-
-If you don't use `TARGET=NEHALEM`, you'll encounter the error mentionned
-[here](http://saintaardvarkthecarpeted.com/blog/archive/2011/05/Trouble_compiling_GotoBLAS2_on_newer_CPU.html))
-
-Now you can restart HPL compilation by creating (and adapting) a
-`Make.gotoblas2` and running the compilation by:
-
-	$> make arch=gotoblas2
-
-Once compiled, ensure you are able to run it:
-
-	$> cd bin/gotoblas2
-	$> cat HPL.dat
-	$> mpirun -x LD_LIBRARY_PATH -hostfile $OAR_NODEFILE ./xhpl
-
-
-## Benchmarking on two nodes
-
-Restart the benchmarking campain (in the three cases) in the following context:
-
-* 2 nodes belonging to the same enclosure. Use for that:
-
-		$> oarsub -l enclosure=1/nodes=2,walltime=8 […]
-
-* 2 nodes belonging to the different enclosures:
-
-		$> oarsub -l enclosure=2/core=1,walltime=8 […]
-
-## Now for Lazy / frustrated persons
-
-You will find in the [UL HPC tutorial](https://github.com/ULHPC/tutorials)
-repository, under the `advanced/HPL` directory, a set of tools / script that
-facilitate the running and analysis of this tutorial that you can use/adapt to
-suit your needs.
-
-In particular, once in the `advanced/HPL` directory:
-
-* running `make fetch` will automatically download the archives for HPL,
-  GotoBLAS2 and ATLAS (press enter at the end of the last download)
-* some examples of working `Makefile` for HPL used in sample experiments are
-  proposed in `src/hpl-2.1`
-* a launcher script is proposed in `runs/launch_hpl_bench`. This script was used
-  to collect some sample runs for the three experiments mentionned in this
-  tutorial as follows:
-
-        # Run for HPL with iMKL (icc + iMPI)
-		(access-chaos)$> oarsub -S "./launch_hpl_bench --module ictce --arch intel64 --serious"
-
-		# Run for HPL with GotoBLAS2 (gcc + OpenMPI)
-        (access-chaos)$> oarsub -S "./launch_hpl_bench --module OpenMPI --arch gotoblas2 --serious"
-
-		# Run for HPL with ATLAS (gcc + MVAPICH2)
-        (access-chaos)$> oarsub -S "./launch_hpl_bench --module MVAPICH2 --arch atlas --serious"
-
-  In particular, the `runs/data/` directory host the results of these runs on 2
-  nodes belonging to the same enclosure
-
-* run `make plot` to invoke the [Gnuplot](http://www.gnuplot.info/) script
-  `plots/benchmark_HPL.gnuplot` and generate various plots from the sample
-  runs.
-
-In particular, you'll probably want to see the comparison figure extracted from
-the sample run `plots/benchmark_HPL_2H.pdf`
-
-A PNG version of this plot is available on
-[Github](https://raw.github.com/ULHPC/tutorials/devel/advanced/HPL/plots/benchmark_HPL_2H.png)
-
-![HPL run on 2 hosts](https://raw.github.com/ULHPC/tutorials/devel/advanced/HPL/plots/benchmark_HPL_2H.png)
+![](https://hpc.uni.lu/images/benchs/benchmark_HPL-iris_25N.png)
+![](https://hpc.uni.lu/images/benchs/benchmark_HPL-iris_50N.png)
+![](https://hpc.uni.lu/images/benchs/benchmark_HPL-iris_75N.png)
+![](https://hpc.uni.lu/images/benchs/benchmark_HPL-iris_100N.png)
