@@ -2,7 +2,7 @@
 
 Copyright (c) 2013-2017 UL HPC Team  <hpc-sysadmins@uni.lu>
 
-        Time-stamp: <Mon 2017-06-12 13:51 svarrette>
+        Time-stamp: <Mon 2017-06-12 14:00 svarrette>
 
 ------------------------------------------------------
 # UL HPC Tutorial: High-Performance Linpack (HPL) benchmarking on UL HPC platform
@@ -170,80 +170,9 @@ Here is for instance a suggested difference for intel MPI:
  # the Fortran internals used in the BLAS library.
 ```
 
-
-
-
-
-
------------
-# OLD notes
-
-
-
-The objective of this practical session is to compare the performances of HPL runs compiled under different combination:
-
-1. HPL + Intel MKL + Intel MPI
-2. HPL + GCC + GotoBLAS2 + Open MPI
-
-The benchamrking campain will typically involves successively:
-
-* a single node
-* two nodes, ideally belonging to the same enclosure
-* two nodes, belonging to different enclosures
-
-## Runs on a single node
-
-### High-Performance Linpack (HPL) with Intel Suite
-
-We are first going to use the
-[Intel Cluster Toolkit Compiler Edition](http://software.intel.com/en-us/intel-cluster-toolkit-compiler/),
-which provides Intel C/C++ and Fortran compilers, Intel MPI & Intel MKL.
-
-Resources:
-
-* [HPL](http://www.netlib.org/benchmark/hpl/)
-
-Get the latest release:
-
-    $> mkdir ~/TP && cd ~/TP
-    $> wget http://www.netlib.org/benchmark/hpl/hpl-2.1.tar.gz
-    $> tar xvzf hpl-2.1.tar.gz
-    $> cd hpl-2.1
-    $> module avail MPI
-    $> module load toolchain/ictce/7.3.5
-    $> module list
-    Currently Loaded Modules:
-      1) compiler/icc/2015.3.187     3) toolchain/iccifort/2015.3.187            5) toolchain/iimpi/7.3.5                7) toolchain/ictce/7.3.5
-      2) compiler/ifort/2015.3.187   4) mpi/impi/5.0.3.048-iccifort-2015.3.187   6) numlib/imkl/11.2.3.187-iimpi-7.3.50
-	$> module show mpi/impi/5.0.3.048-iccifort-2015.3.187
-	$> module show numlib/imkl/11.2.3.187-iimpi-7.3.5
-
-You notice that Intel MKL is now loaded.
-
-Read the `INSTALL` file.
-
-In particular, you'll have to edit and adapt a new makefile `Make.intel64`
-(inspired from `setup/Make.Linux_PII_CBLAS` typically) and run the compilation
-by
-
-	$> make arch=intel64 clean_arch_all
-	$> make arch=intel64
-
-Some hint to succeed:
-
-* rely on `mpiicc` as compiler and linker
-* rely on `$(I_MPI_ROOT)` (see `module show impi`) for the `MPdir` entry
-* similarly, use `$(MKLROOT)` for the `LAdir` entry (see `module show imkl`)
-* Effective use of MKL (in particular):
-
-		LAdir        = $(MKLROOT)
-		HPLlibHybrid = $(LAdir)/benchmarks/mp_linpack/lib_hybrid/intel64/libhpl_hybrid.a
-		LAinc        = -I$(LAdir)/include
-		LAlib        = -L$(LAdir)/lib/intel64 -Wl,--start-group $(LAdir)/lib/intel64/libmkl_intel_lp64.a $(LAdir)/lib/intel64/libmkl_intel_thread.a $(LAdir)/lib/intel64/libmkl_core.a -Wl,--end-group -lpthread -ldl $(HPLlibHybrid)
-
 If you don't succeed by yourself, use the following makefile:
 
-    wget https://raw.githubusercontent.com/ULHPC/tutorials/devel/advanced/HPL/src/hpl-2.1/Make.intel64
+    wget https://raw.githubusercontent.com/ULHPC/tutorials/devel/advanced/HPL/src/hpl-2.2/Make.intel64
 
 Once compiled, ensure you are able to run it:
 
