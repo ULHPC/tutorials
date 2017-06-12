@@ -17,7 +17,7 @@ tic
 % Set company ticker, e.g. 'AAPL' for Apple
 company_ticker = 'AAPL';
 
-% Use the external function to download Yahoo finance data for the selected period
+% Use the external function to download Google finance data for the selected period
 [hist_date, hist_high, hist_low, hist_open, hist_close, hist_vol] = google_finance_data(company_ticker, '2016-01-01', '2017-01-01');
 
 % Convert string dates for plotting
