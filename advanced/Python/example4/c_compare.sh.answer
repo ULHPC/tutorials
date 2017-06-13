@@ -9,5 +9,6 @@
 
 python example1.py
 python example3.py
+pythran example4.py -o std.so
 python c_compare.py
 gnuplot gnuplot/time_vs_array_size.gpi
