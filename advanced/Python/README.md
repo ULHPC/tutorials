@@ -209,7 +209,7 @@ So now you should be able to active this environment with this `source` command.
 * What are the module available after ?
 * What version of python is used inside the virtual environment ? Where is it located ? (You can use `which` command)
 
-To exit a virtual environment, just exits with `Ctrl-D` or run the `desactivate` command.
+To exit a virtual environment, just exits with `Ctrl-D` or run the `deactivate` command.
 
 So now, we can install a different numpy version inside our virtual environment. Check that the version installed correspond to numpy 1.12.
 
@@ -229,7 +229,7 @@ Now you can adapt your script to load the right virtualenv and compare the perfo
 
 ## Compile your code in C language
 
-C langage is known to be very powerful and to execute faster. It has to be compiled (typically using GCC compiler) to be executed. There exists many tools that can convert your Python code to C code to benefits from his performances (**Cython**, **Pythran**, ...).
+C language is known to be very powerful and to execute faster. It has to be compiled (typically using GCC compiler) to be executed. There exists many tools that can convert your Python code to C code to benefits from his performances (**Cython**, **Pythran**, ...).
 
 The goal of this part is to adapt our naïve and use **Pythran** tool to convert it to C code. This code will be then imported as a standard Python module and executed.
 
@@ -285,6 +285,7 @@ You can specify the number of core to use with the `-n` option in scoop.
 We will write a batch script to execute our python script. We want to compare time of execution to the number of workers used in scoop. We want to go from 1 worker (single core) to 50 workers, increasing the worker number 1 by 1. As you can see, our script take 1 parameter `x` in input which corresponds to the number of worker.
 
 The batch script should contain:
+
 * 50 tasks reserved
 * maximum execution time of 35m
 * name of the job should be `scoop`
