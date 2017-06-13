@@ -2,6 +2,7 @@ Introduction to R
 ================
 
 Copyright (c) 2014 Joseph Emeras <joseph.emeras@uni.lu>
+
 Copyright (c) 2017 Aurélien Ginolhac <aurelien.ginolhac@uni.lu>
 
 ------------------------------------------------------------------------
@@ -20,6 +21,14 @@ If you're also looking for a good tutorial on R's data structures you can take a
 -   commands that have to be typed on your local machine start with a prompt like this: `jdoe@localhost:~$`
 -   code blocks containing one or several `>` should not be pasted "as it", they are meant for you to observe the output of each function; others can be pasted in R terminal "as it".
 
+lecture: introduction to R
+--------------------------
+
+see slides:
+
+-   [here as html](https://cdn.rawgit.com/ULHPC/tutorials/devel/advanced/R/Intro_PS.html)
+-   [here as pdf](https://github.com/ULHPC/tutorials/raw/devel/advanced/R/Intro_PS.pdf)
+
 Pre-requisites
 --------------
 
@@ -33,21 +42,23 @@ You will also find handy to use the [R-Studio](https://www.rstudio.com/) graphic
 
 ### On the cluster
 
-R is already available in `chaos`, `gaia` and `iris` clusters as a module. Only `iris` has the latest version `3.4.0`. The first step is the reservation of a resource. Connect to your favorite cluster frontend (here: `iris`). We assume you have already configured you `.ssh/config`.
+R is already available in `chaos`, `gaia` and `iris` clusters as a module. Only `iris` has the latest version `3.4.0`. The first step is the reservation of a resource. Connect to your favorite cluster frontend (here: `iris`). We assume you have already configured your `.ssh/config`.
+
+#### iris
 
     jdoe@localhost:~$ ssh iris-cluster
 
 Once connected to the user frontend, book 1 core for half an hour (as we will use R in single-threaded mode, we will need only one core).
 
-    jdoe@access:~$ srun -p interactive --qos qos-interactive --time=1:00:0 --pty bash
+    [jdoe@access2 ~]$ srun -p interactive --qos qos-interactive --time=0:30:0 --pty bash
 
-When the job is running and you are connected load R module (version compiled with Intel Compiler). For a complete list of availbale modules see: [Software page](https://hpc.uni.lu/users/software/).
+When the job is running and you are connected load *R* module. For a complete list of availbale modules see: [Software page](https://hpc.uni.lu/users/software/).
 
-    jdoe@access:~$ module load lang/R
+    [jdoe@access2 ~]$ module load lang/R
 
 Now you should be able to invoke R and see something like this:
 
-    jdoe@cluster-node-1:~$ R
+    [jdoe@iris-081 ~]$  R
 
     R version 3.4.0 (2017-04-21) -- "You Stupid Darkness"
     Copyright (C) 2017 The R Foundation for Statistical Computing
@@ -68,8 +79,6 @@ Now you should be able to invoke R and see something like this:
     Type 'q()' to quit R.
 
     >
-
-### Installing R Packages
 
 `sessionInfo()` function gives information about R version, loaded libraries etc.
 
@@ -97,7 +106,64 @@ Now you should be able to invoke R and see something like this:
     [1] compiler_3.4.0
     >
 
-To install libraries you can use the `install.packages()` function. e.g
+### gaia
+
+    jdoe@localhost:~$ ssh gaia-cluster
+
+Once connected to the user frontend, book 1 core for half an hour (as we will use R in single-threaded mode, we will need only one core).
+
+    jdoe@access(gaia-cluster) ~ $ oarsub -I -l core=1,walltime=0:30
+
+When the job is running and you are connected load *R* module. For a complete list of availbale modules see: [Software page](https://hpc.uni.lu/users/software/).
+
+    jdoe@access2:~$ module load lang/R
+
+Now you should be able to invoke R and see something like this:
+
+    jdoe@gaia-59(gaia-cluster)[OAR4159732->29] ~ $ R
+
+    R version 3.3.0 (2016-05-03) -- "Supposedly Educational"
+    Copyright (C) 2016 The R Foundation for Statistical Computing
+    Platform: x86_64-pc-linux-gnu (64-bit)
+
+    R is free software and comes with ABSOLUTELY NO WARRANTY.
+    You are welcome to redistribute it under certain conditions.
+    Type 'license()' or 'licence()' for distribution details.
+
+      Natural language support but running in an English locale
+
+    R is a collaborative project with many contributors.
+    Type 'contributors()' for more information and
+    'citation()' on how to cite R or R packages in publications.
+
+    Type 'demo()' for some demos, 'help()' for on-line help, or
+    'help.start()' for an HTML browser interface to help.
+    Type 'q()' to quit R.
+
+    >
+
+`sessionInfo()` function gives information about R version, loaded libraries etc.
+
+    > sessionInfo()
+    R version 3.3.0 (2016-05-03)
+    Platform: x86_64-pc-linux-gnu (64-bit)
+    Running under: Debian GNU/Linux 7 (wheezy)
+
+    locale:
+     [1] LC_CTYPE=en_US.ISO-8859-15       LC_NUMERIC=C                    
+     [3] LC_TIME=en_US.ISO-8859-15        LC_COLLATE=en_US.ISO-8859-15    
+     [5] LC_MONETARY=en_US.ISO-8859-15    LC_MESSAGES=en_US.ISO-8859-15   
+     [7] LC_PAPER=en_US.ISO-8859-15       LC_NAME=C                       
+     [9] LC_ADDRESS=C                     LC_TELEPHONE=C                  
+    [11] LC_MEASUREMENT=en_US.ISO-8859-15 LC_IDENTIFICATION=C             
+
+    attached base packages:
+    [1] stats     graphics  grDevices utils     datasets  methods   base
+    >
+
+### Installing R Packages
+
+To install libraries you can use the `install.packages()` function. *e.g*
 
 `install.packages("ggplot2")`
 
@@ -173,9 +239,11 @@ Now, let's say we have two different datasets: `diamonds_fair` and `diamonds_goo
 
 ``` r
 set.seed(2109)  
-diamonds_fair <- data.frame(carat=diamonds$carat[which(diamonds$cut == 'Fair')], price=diamonds$price[which(diamonds$cut == 'Fair')])
+diamonds_fair <- data.frame(carat = diamonds$carat[which(diamonds$cut == 'Fair')],
+                            price = diamonds$price[which(diamonds$cut == 'Fair')])
 diamonds_fair <- diamonds_fair[sample(nrow(diamonds_fair), 20), ]
-diamonds_good <- data.frame(carat=diamonds$carat[which(diamonds$cut == 'Good')], price=diamonds$price[which(diamonds$cut == 'Good')])
+diamonds_good <- data.frame(carat = diamonds$carat[which(diamonds$cut == 'Good')],
+                            price = diamonds$price[which(diamonds$cut == 'Good')])
 diamonds_good <- diamonds_good[sample(nrow(diamonds_good), 20), ]
 ```
 
@@ -191,15 +259,10 @@ So we have these two datasets, being of class dataframe. In R, a `data.frame` is
 
 ``` r
 names(diamonds_fair)
-```
-
-    ## [1] "carat" "price"
-
-``` r
+## [1] "carat" "price"
 names(diamonds_good)
+## [1] "carat" "price"
 ```
-
-    ## [1] "carat" "price"
 
 Thus for each dataset row we have the price and the carat value for a given diamond. We want to add a column to datasets that will describe from which one it comes from, then we will merge these into one single dataset.
 
@@ -254,7 +317,7 @@ this time we use ggplot's function `geom_point()` to plot data points. colour=cu
 ``` r
 graph <- ggplot(data = diamonds_merge) + 
   geom_point(aes(x = carat, y = price, colour = cut_class))
-ggsave(graph, file="diamonds_plot.pdf", width=8, height=4)
+ggsave(graph, file = "diamonds_plot.pdf", width=8, height=4)
 ```
 
 Remember, to get help about a particular function you can type `?function_name`. e.g.
@@ -283,7 +346,7 @@ names(diamonds)
 
 We could do a for loop to aggregate the data per cuts and manually compute the average price, but in R loops are generally a bad idea. For large datasets it is very long to compute. Thus instead of looping around the dataset, we will use a function from the `dplyr` package part of the [tidyverse](http://tidyverse.org) idiom
 
-### dplyr from the tidyverse
+### `dplyr` from the tidyverse
 
 You will first need to install and load `dplyr`.
 
@@ -319,7 +382,7 @@ diamonds %>%
 
 Note: `summarise()` from the `dplyr` package is similar to `aggregate()` from base package, you can use indifferently one or the other, `dplyr` functions simply provide a more consistent naming convention together with better performance
 
-### aggregate from base
+### `aggregate` from base
 
 ``` r
 aggregate(price ~ cut,
@@ -334,7 +397,7 @@ aggregate(price ~ cut,
     ## 4   Premium 4584.258
     ## 5     Ideal 3457.542
 
-### lapply from base
+### `lapply` from base
 
 In the previous example we used `aggregate` for the **aggregation**, we could also have used `lapply` (but in a slightlier more complicated way):
 
@@ -351,7 +414,7 @@ as.data.frame(cbind(cut = as.character(unique(diamonds$cut)), avg_price = lapply
 
 ### `data.table`
 
-[**data.table**](https://github.com/Rdatatable/data.table/wiki/Getting-started) is a package without dependencies that is super fast. Although the syntax is harder to learn compare to \`dplyr. See long thread [at stackoverflow](https://stackoverflow.com/questions/21435339/data-table-vs-dplyr-can-one-do-something-well-the-other-cant-or-does-poorly)
+[**data.table**](https://github.com/Rdatatable/data.table/wiki/Getting-started) is a package without dependencies that is super fast. Although the syntax is harder to learn compare to `dplyr`. See this long thread [at stackoverflow](https://stackoverflow.com/questions/21435339/data-table-vs-dplyr-can-one-do-something-well-the-other-cant-or-does-poorly) for more details.
 
 ``` r
 # install.package("data.table")
@@ -381,7 +444,7 @@ DT[, mean(price), by = cut]
     ## 4: Very Good 3981.760
     ## 5:      Fair 4358.758
 
-### plyr
+### `plyr`
 
 For completeness, we could add `ddply` from `plyr` the first attempt of Hadley Wickham to make data manipulation easier.
 
@@ -445,11 +508,11 @@ m
 
     ## Unit: microseconds
     ##       expr       min        lq      mean    median        uq       max
-    ##     LAPPLY 10170.879 12535.530 16656.267 15498.907 16642.738 120176.48
-    ##  AGGREGATE 36789.419 42468.418 47002.924 43946.638 45877.311 182775.95
-    ##      DDPLY 10126.358 12547.002 15945.536 15465.287 16504.569 102718.35
-    ##      DPLYR  2773.952  3133.453  3496.469  3312.567  3584.065  28668.96
-    ##  DATATABLE   955.558  1270.498  1661.666  1389.073  1549.162  18988.34
+    ##     LAPPLY  9728.227 11430.066 14327.419 14451.795 15378.028  94718.08
+    ##  AGGREGATE 34857.006 39880.578 43258.622 41155.558 42766.251 127360.33
+    ##      DDPLY  9868.561 11775.282 15316.425 14737.079 15663.672  93199.60
+    ##      DPLYR  2724.228  2964.753  3223.255  3064.992  3199.719  29266.28
+    ##  DATATABLE   946.433  1204.498  1460.516  1303.794  1398.279   6723.17
     ##  neval
     ##   1000
     ##   1000
@@ -459,7 +522,7 @@ m
 
 ### Plotting the benchmark
 
-result gives us a boxplot graph if you use the base function `base`
+result gives us a boxplot graph if you use the base function `plot`
 
 ``` r
 plot(m)
@@ -467,7 +530,7 @@ plot(m)
 
 ![](README_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-22-1.png)
 
-if you want to save as a png file
+if you want to save as a **png** file
 
 ``` r
 png("benchmark_boxplot.png")
@@ -477,7 +540,7 @@ plot(m)
 dev.off()                   
 ```
 
-Of note, you can use `ggplot` via the `autoplot` function
+Of note, you can use `ggplot2` via the `autoplot` function
 
 ``` r
 autoplot(m)
@@ -485,8 +548,8 @@ autoplot(m)
 
 ![](README_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-24-1.png)
 
-Using `data.table` Package
---------------------------
+Using the `data.table` package
+------------------------------
 
 According to the [data.table documentation](http://cran.r-project.org/web/packages/data.table/index.html) `data.table` inherits from `data.frame` to offer fast subset, fast grouping, fast update, fast ordered joins and list columns in a short and flexible syntax, for faster development.
 
@@ -512,7 +575,7 @@ system.time(DF <- data.frame(x = rep(LETTERS, each = 26 * grpsize),
 ```
 
     ##    user  system elapsed 
-    ##   0.973   0.089   1.121
+    ##   0.910   0.067   0.982
 
 This generated a data.frame named DF with 3 columns.
 
@@ -531,7 +594,7 @@ system.time(ans1 <- DF[DF$x=="R" & DF$y=="h",])
 ```
 
     ##    user  system elapsed 
-    ##   0.337   0.084   0.447
+    ##   0.316   0.074   0.411
 
 #### binary search
 
@@ -544,7 +607,7 @@ system.time(ans2 <- DT[J("R", "h")])
 ```
 
     ##    user  system elapsed 
-    ##   0.002   0.000   0.002
+    ##   0.002   0.001   0.003
 
 In the first case, we scan the full table twice (once for selecting x's that are equal to "R", then y's that are equal to "h"), then do the selection. In the second case, we are joining DT to the 1 row, 2 column table returned by data.table("R","h"). We use the alias for joining data.tables called J(), short for join. As we defined x and y as keys, this works like a database join. You can see that vector scan is very long compared to binary search.
 
@@ -561,7 +624,7 @@ system.time(tapply(DT$v, DT$x, sum))
 ```
 
     ##    user  system elapsed 
-    ##   0.566   0.225   0.842
+    ##   0.500   0.164   0.686
 
 `data.table` style, using `by`:
 
@@ -570,7 +633,7 @@ system.time(DT[, sum(v), by = x])
 ```
 
     ##    user  system elapsed 
-    ##   0.119   0.012   0.133
+    ##   0.150   0.014   0.177
 
 **Question: use `dplyr` instead of `tapply()` in the first example.**
 
@@ -582,7 +645,7 @@ Parallel R
 The first part of the tutorial is now over, you can connect to `gaia` cluster and submit an other job requesting several machines.
 
       jdoe@localhost:~$ ssh gaia-cluster
-    jdoe@access:~$ oarsub -I -l nodes=2,walltime=1
+    jdoe@access(gaia-cluster) ~$ oarsub -I -l nodes=1,walltime=1
 
 <!--
 When the job is running and you are connected load R module (version compiled with GCC).
@@ -591,12 +654,12 @@ When the job is running and you are connected load R module (version compiled wi
 -->
 When the job is running and you are connected load R module (version compiled with Intel Compiler), then run R.
 
-    jdoe@access:~$ module load lang/R/3.2.0-ictce-7.3.5-bare
-    jdoe@access:~$ R
+    jdoe@access:~$ module load lang/R
+      jdoe@access:~$ R
 
 We will use a large dataset (400K+ rows) to illustrate the effect of parallelization in R (as dataset is large, the following line may take time to complete depending on your network speed).
 
-    > air = read.csv(url("http://packages.revolutionanalytics.com/datasets/AirOnTimeCSV2012/airOT201201.csv"))
+    > air <- read.csv(url("http://packages.revolutionanalytics.com/datasets/AirOnTimeCSV2012/airOT201201.csv"))
 
 **NOTE**: If downloading the air dataset (above line) takes too much time you can load it from a file on the cluster:
 
@@ -606,13 +669,13 @@ We will use a large dataset (400K+ rows) to illustrate the effect of paralleliza
 
 If we want to have the number of flights for each destination `DEST` we can do the following:
 
-    dests = as.character(unique(air$DEST))
-    count_flights = function(x){length(which(air$DEST == x))}
-    as.data.frame(cbind(dest=dests, nb=lapply(dests, count_flights)))
+    dests <- as.character(unique(air$DEST))
+      count_flights <- function(x) length(which(air$DEST == x))
+      as.data.frame(cbind(dest = dests, nb = lapply(dests, count_flights)))
 
 As the dataframe is large it takes some time to compute
 
-    > microbenchmark(LAPPLY=lapply(dests, count_flights), times=10)
+    > microbenchmark(LAPPLY = lapply(dests, count_flights), times = 10)
     Unit: seconds
        expr      min       lq   median       uq      max neval
      LAPPLY 1.607961 1.609036 1.609638 1.610269 2.023961    10
@@ -621,33 +684,52 @@ As the dataframe is large it takes some time to compute
 
 To parallelize the lapply function we can use `mclapply()` from `parallel` package and give it the number of cores to use. `mclapply()` uses the underlying operating system fork() functionality to achieve parallelization. Using several cores makes the process shorter.
 
-    > library(parallel)
-    > as.data.frame(cbind(dest=dests, nb=mclapply(dests, count_flights, mc.cores=12)))
+``` r
+library(parallel)
+as.data.frame(cbind(dest = dests, nb = mclapply(dests, count_flights, mc.cores = 12)))
+    
+library(microbenchmark)
+microbenchmark(MCLAPPLY = mclapply(dests, count_flights, mc.cores = 12), times = 20)  # or use `detectCores()` from `parallel` package instead of giving cores value.
+```
 
-
-    > microbenchmark(MCLAPPLY=mclapply(dests, count_flights, mc.cores=12), times=10)  # or use `detectCores()` from `parallel` package instead of giving cores value. 
-    Unit: milliseconds
-         expr      min       lq   median       uq     max neval
-     MCLAPPLY 233.8035 235.1089 235.9138 236.6393 263.934    10
+      Unit: milliseconds
+           expr      min       lq   median       uq     max neval
+       MCLAPPLY 233.8035 235.1089 235.9138 236.6393 263.934    10
 
 It is nice to visualize all your cores working on your node with `htop` for example. You can connect to the same node from another terminal by typing:
 
-    jdoe@access:~$ oarstat -u
-    Job id     Name           User           Submission Date     S Queue
-    ---------- -------------- -------------- ------------------- - ----------
-    6664321                   jdoe           2015-06-03 14:24:23 R default
+      jdoe@access:~$ oarstat -u
+      Job id     Name           User           Submission Date     S Queue
+      ---------- -------------- -------------- ------------------- - ----------
+      6664321                   jdoe           2015-06-03 14:24:23 R default
 
 Note the `Job id` field. Put this job id in the next command:
 
-    jdoe@access:~$ oarsub -C 6664321
+      jdoe@access:~$ oarsub -C 6664321
 
 Then `htop` will show you your cores working if you call again the `mclapply()` function.
 
+![](figures/parallel_htop.png)
+
 Finally you can save the `air` R object to reuse it in an other R session.
 
-    > save(air, file="./air.rda")
+    > save(air, file = "./air.rda")
 
-Then quit your current R session but **do not** end your current oar job.
+Then quit your current R session but **do not** end your current `oar` job.
+
+### `dplyr` version
+
+``` r
+library(dplyr)
+count(air, DEST)
+microbenchmark(DPLYR = count(air, DEST), times = 20)
+```
+
+    Unit: milliseconds
+      expr      min       lq     mean   median       uq     max neval
+     DPLYR 25.66517 25.86669 26.40936 26.11667 26.83215 28.1973    20
+
+Optimised code may be better than parallelisation. Of note, parallel `dplyr` exists: [`multidplyr`](https://github.com/hadley/multidplyr).
 
 ### Cluster Parallelization
 
@@ -655,9 +737,9 @@ The `parLapply()` function will create a cluster of processes, which could even 
 
 First, add the module loading at bash login too for enabling it on the nodes. To do so, within a shell type:
 
-    echo 'module load lang/R/3.2.0-ictce-7.3.5-bare' >> ~/.bash_login       # /!\ TO REMOVE AT THE END OF PS /!\
-    module purge
-    module load lang/R/3.2.0-ictce-7.3.5-bare
+    echo "module load lang/R" >> ~/.bash_login      # /!\ TO REMOVE AT THE END OF PS /!\
+      module purge
+      module load lang/R
 
 **Warning: do not forget to clean your ~/.bash\_login file after the PS (remove the 'module load lang/R/3.2.0-ictce-7.3.5-bare' line).**
 
@@ -667,37 +749,37 @@ First, let's load data and initialize variables.
 
     library(parallel)
 
-    # air = read.csv(url("http://packages.revolutionanalytics.com/datasets/AirOnTimeCSV2012/airOT201201.csv"))  # load again the air data.table from http
+      # air = read.csv(url("http://packages.revolutionanalytics.com/datasets/AirOnTimeCSV2012/airOT201201.csv"))  # load again the air data.table from http
     load("./air.rda")   # read saved R object from file "air.rda"
-    dests = as.character(unique(air$DEST))
-    count_flights = function(x){length(which(air$DEST == x))}
+      dests = as.character(unique(air$DEST))
+      count_flights = function(x){length(which(air$DEST == x))}
 
-    ## set cluster characteristics -- get OAR nodes to use, type of communication
-    nodes = scan(Sys.getenv("OAR_NODE_FILE"), what=character(0))
-    oar_job_id = as.numeric(Sys.getenv("OAR_JOB_ID"))
-    connector = paste0("OAR_JOB_ID=", oar_job_id)
-    connector = paste0(connector, " ~jemeras/bin/roarsh")
-    comm_type = "PSOCK"
+      ## set cluster characteristics -- get OAR nodes to use, type of communication
+      nodes = scan(Sys.getenv("OAR_NODE_FILE"), what=character(0))
+      oar_job_id = as.numeric(Sys.getenv("OAR_JOB_ID"))
+      connector = paste0("OAR_JOB_ID=", oar_job_id)
+      connector = paste0(connector, " ~jemeras/bin/roarsh")
+      comm_type = "PSOCK"
 
 Then, setup the cluster.
 
-    ## set up the cluster
-    cl = makeCluster(nodes, type = comm_type, rshcmd = connector)   
-    ## If a particular library <LIB> is needed, load it on the nodes with
-    # clusterEvalQ(cl, { library(<LIB>) })
-    ## or give the full environment with
-    # clusterEvalQ(cl, sessionInfo())
-    ## export air dataset on all the nodes
-    clusterExport(cl, varlist=c("air"))
+      ## set up the cluster
+      cl = makeCluster(nodes, type = comm_type, rshcmd = connector) 
+      ## If a particular library <LIB> is needed, load it on the nodes with
+      # clusterEvalQ(cl, { library(<LIB>) })
+      ## or give the full environment with
+      # clusterEvalQ(cl, sessionInfo())
+      ## export air dataset on all the nodes
+      clusterExport(cl, varlist=c("air"))
 
 Do the parallel computation.
 
-    ## compute in parallel through sockets
-    as.data.frame(cbind(dest=dests, nb=parLapply(cl, dests, count_flights)))
+      ## compute in parallel through sockets
+      as.data.frame(cbind(dest=dests, nb=parLapply(cl, dests, count_flights)))
 
 Finalize and cleanup things.
 
-    stopCluster(cl)
+      stopCluster(cl)
 
 **Exercise: Plot a speedup graph with different number of cores and/or machines used.**
 
@@ -716,47 +798,47 @@ As we are using R compiled with Intel compiler we will have to specify manually 
 
 **NOTE**: if the installation fails you can try using the module with `Rmpi` already installed:
 
-    module purge
-    module load lang/R/3.2.0-ictce-7.3.5-Rmpi
+      module purge
+      module load lang/R/3.2.0-ictce-7.3.5-Rmpi
 
 Then, outside of R shell write a file named `parallelAirDests.R` with the following code.
 
 **Warning**: when using parallelization in R, please keep in mind that communication is much slower than computation. Thus if your problem is involving a long computation then you are right to use it, otherwise, if your problem is a large quantity of data you must use `data.table` or `dplyr`.
 
-    library(Rmpi)
-    library(snow)
-
-    # Initiate the cluster
-    cluster <- makeMPIcluster(length(readLines(Sys.getenv("OAR_NODE_FILE"))))
-
-    # Function that prints the hostname of the caller, just for fun
-    sayhello <- function()
-    {
-        info <- Sys.info()[c("nodename", "machine")]
-        paste("Hello from", info[1])
-    }
-
-    # Call the 'sayhello' function on each node of the cluster
-    names <- clusterCall(cluster, sayhello)
-    print(unlist(names))
-
+      library(Rmpi)
+      library(snow)
+      
+      # Initiate the cluster
+      cluster <- makeMPIcluster(length(readLines(Sys.getenv("OAR_NODE_FILE"))))
+      
+      # Function that prints the hostname of the caller, just for fun
+      sayhello <- function()
+      {
+          info <- Sys.info()[c("nodename", "machine")]
+          paste("Hello from", info[1])
+      }
+      
+      # Call the 'sayhello' function on each node of the cluster
+      names <- clusterCall(cluster, sayhello)
+      print(unlist(names))
+      
         
-    # Compute the number of flights for a given destination. 
-    # Same as previous examples but with MPI communications.
-    load("~jemeras/data/air.rda")
-    dests = as.character(unique(air$DEST))
-    count_flights = function(x){length(which(air$DEST == x))}
-    #as.data.frame(cbind(dest=dests, nb=lapply(dests, count_flights)))
-    clusterExport(cluster, "air")
-
-    print(as.data.frame(cbind(dest=dests, nb=parLapply(cluster, dests, count_flights))))
-
-    # Terminate the cluster
-    stopCluster(cluster)
+      # Compute the number of flights for a given destination. 
+      # Same as previous examples but with MPI communications.
+      load("~jemeras/data/air.rda")
+      dests = as.character(unique(air$DEST))
+      count_flights = function(x){length(which(air$DEST == x))}
+      #as.data.frame(cbind(dest=dests, nb=lapply(dests, count_flights)))
+      clusterExport(cluster, "air")
+      
+      print(as.data.frame(cbind(dest=dests, nb=parLapply(cluster, dests, count_flights))))
+      
+      # Terminate the cluster
+      stopCluster(cluster)
 
 Then, still outside of R and on your job head node run:
 
-    mpirun -np 1 -machinefile $OAR_NODE_FILE Rscript parallelAirDests.R
+      mpirun -np 1 -machinefile $OAR_NODE_FILE Rscript parallelAirDests.R
 
 You may find strange the `-np 1`, in fact this is because it is `snow` that manages the processes spawning.
 
