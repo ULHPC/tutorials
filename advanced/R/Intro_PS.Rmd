@@ -642,6 +642,6 @@ knitr::include_graphics("https://raw.githubusercontent.com/LSRU/tv_course/master
 
 - Practical here: https://github.com/ULHPC/tutorials/tree/devel/advanced/R
 
-- Slides (html): https://raw.githubusercontent.com/ULHPC/tutorials/tree/devel/advanced/R/Intro_PS.html
+- Slides (html): https://cdn.rawgit.com/ULHPC/tutorials/devel/advanced/R/Intro_PS.html
 
-- Slides (pdf): https://github.com/ULHPC/tutorials/tree/devel/advanced/R/Intro_PS.pdf
+- Slides (pdf): https://github.com/ULHPC/tutorials/raw/devel/advanced/R/Intro_PS.pdf
