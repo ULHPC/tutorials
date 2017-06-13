@@ -234,8 +234,8 @@ get an interactive job and let's compile it:
 Now we will run it in different ways and see what happens:
 
        (node)$> srun -n 1 hellompi
-       (node)$> srun -n 2 hellompi.c
-       (node)$> srun -n 3 hellompi.c
+       (node)$> srun -n 2 hellompi
+       (node)$> srun -n 3 hellompi
        (node)$> srun -n 4 hellompi
        (node)$> srun hellompi
 
