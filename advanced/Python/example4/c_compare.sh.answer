@@ -1,0 +1,14 @@
+#!/bin/bash -l
+#SBATCH --job-name=c_compare
+#SBATCH --output=c_compare.out
+#
+#SBATCH --ntasks=1
+#SBATCH --time=0-00:10:00
+#SBATCH -p batch
+#SBATCH --qos=qos-batch
+
+python example1.py
+module load math/numpy
+python example3.py
+python c_compare.py
+gnuplot gnuplot/time_vs_array.gpi
