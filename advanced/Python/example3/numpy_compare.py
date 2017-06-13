@@ -2,10 +2,11 @@ import numpy as np
 import random
 import timeit
 import math
+import sys
 
 if __name__ == '__main__':
 
-    python_version = sys.argv[1]
+    numpy_version = sys.argv[1]
     lens = range(10, 300, 10)
     np_time = []
 
