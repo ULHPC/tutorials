@@ -13,7 +13,7 @@ if __name__ == '__main__':
         numpy_rands = np.array(rands)
         execution_time = timeit.timeit(lambda: np.std(numpy_rands), number=10000)
         np_time.append(execution_time)
-        print()"%d %f" % (l, execution_time))
+        print("%d %f" % (l, execution_time))
 
     with open("data/time_per_array_size_numpy.dat", "w") as f:
         for i in range(len(np_time)):
