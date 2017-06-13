@@ -68,7 +68,7 @@ $> echo $MODULEPATH
 $> module use $LOCAL_MODULES
 $> echo $MODULEPATH
 $> module spider Easybuild
-$> module load tools/Easybuild
+$> module load tools/EasyBuild
 ```
 
 ### Search for an Easybuild Recipe for Spark
