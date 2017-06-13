@@ -5,5 +5,5 @@ set title "Time vs array size"
 set xlabel "array size"
 set ylabel "time (s)"
 plot 'data/time_per_array_size.dat' with linespoints title "Python", \
-     'data/time_per_array_size_numpy.dat' with linespoints title "Numpy" \
-     'data/time_per_array_size_c.dat' with linespoints title "C"
+     'data/time_per_array_size_numpy.dat' with linespoints title "Numpy", \
+     'data/time_per_array_size_c.dat' with linespoints title "C";

@@ -8,7 +8,6 @@
 #SBATCH --qos=qos-batch
 
 python example1.py
-module load math/numpy
 python example3.py
 python c_compare.py
-gnuplot gnuplot/time_vs_array.gpi
+gnuplot gnuplot/time_vs_array_size.gpi
