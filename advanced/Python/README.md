@@ -74,10 +74,10 @@ To run your script in **passive** way, you should create a batch script to run y
 * Edit it by using your favorite editor (`vim`, `nano`, `emacs`...)
 * Add a shebang at the beginning (`#!/bin/bash`)
 * Add **#SBATCH** parameters
-** `1` core
-** `example1` name
-** maximum `10m` walltime
-** logfile under `example1.out`
+ * `1` core
+ * `example1` name
+ * maximum `10m` walltime
+ * logfile under `example1.out`
 
 Now run the script using
 
