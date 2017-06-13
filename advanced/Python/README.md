@@ -74,10 +74,10 @@ To run your script in **passive** way, you should create a batch script to run y
 * Edit it by using your favorite editor (`vim`, `nano`, `emacs`...)
 * Add a shebang at the beginning (`#!/bin/bash`)
 * Add **#SBATCH** parameters
-** `1` core
-** `example1` name
-** maximum `10m` walltime
-** logfile under `example1.out`
+ * `1` core
+ * `example1` name
+ * maximum `10m` walltime
+ * logfile under `example1.out`
 
 Now run the script using
 
@@ -172,7 +172,7 @@ As you can see, there is only one version of numpy available with module. If we 
 
 **QUESTIONS**
 
-* Which execution is faster between `numpy` code (example3.py) and `naïve` code (example2.py) ?
+* Which execution is faster between `numpy` code (example3.py) and `naïve` code (example1.py) ?
 * Why do you think that numpy is not powerful as attended ? Which parameter can we change to compare the performances ?
 
 ## Create virtual environment to switch between several versions of a package
