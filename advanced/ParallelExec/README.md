@@ -1,6 +1,6 @@
 `README.md`
 
-Copyright (c) 2015 Valentin Plugaru <Valentin.Plugaru@uni.lu>
+Copyright (c) 2015-2017 Valentin Plugaru <Valentin.Plugaru@uni.lu>
 
 -------------------
 
@@ -20,7 +20,7 @@ Targeted applications include:
 
 The tutorial will cover:
 
-1. OAR basics for parallel execution
+1. Basics for parallel execution with OAR and SLURM
 2. different MPI suites available on UL HPC
 3. running simple test cases in parallel
 4. running QuantumEspresso in parallel over a single node and over multiple nodes
@@ -39,6 +39,8 @@ Or simply clone the full tutorials repository and make a link to this tutorial
         (gaia-frontend)$> ln -s tutorials/advanced/ParallelExec/ ~/parallelexec-tutorial
 
 ## Basics
+
+Note: you can check out either the instructions for the OAR scheduler (gaia and chaos clusters) or SLURM (for iris). 
 
 ### OAR basics for parallel execution
 
@@ -62,7 +64,36 @@ To get the number of cores available in the job, we can use the wordcount `wc` u
 
        (node)$> cat $OAR_NODEFILE | wc -l
 
+-----------------
+### SLURM basics for parallel execution
+
+First of all, we will submit on the iris cluster an interactive job with 2 tasks on each of 2 compute nodes for 1 hour.  
+
+       (iris-frontend)$> srun -p interactive --qos qos-interactive -N 2 --ntasks-per-node 2 --pty bash -i 
+       (node)$> 
+
+The SLURM scheduler provides several environment variables once we are inside a job, check them out with
+
+       (node)$> env | grep SLURM_
+
+We are interested especially in the environment variable which lists the compute nodes reserved for the job -- SLURM\_NODELIST.  
+Let's check its content:
+
+       (node)$> cat $SLURM_NODELIST
+
+To get the total number of cores available in the job, we can use the wordcount `wc` utility, in line counting mode:
+
+       (node)$> srun hostname | wc -l
+
+To get the number of cores available on the current compute node:
+
+       (node)$> echo $SLURM_CPUS_ON_NODE
+
+
+-----------------
 ### MPI suites available on the platform
+
+#### On Gaia:
 
 Now, let's check for the environment modules (available through Lmod) which match MPI (Message Passing Interface) the libraries that provide inter-process communication over a network:
 
@@ -95,7 +126,26 @@ For our initial tests we will use the __goolf__ toolchain which includes GCC, Op
 
 The main alternative to this toolchain (as of June 2015) is __ictce__ (toolchain/ictce/7.3.5) that includes the Intel tools icc, ifort, impi and imkl.
 
-### Simple test cases
+#### On Iris:
+
+       (node)$> module avail mpi/
+       
+       ----------------------------- /opt/apps/resif/data/stable/default/modules/all ----------------------------------------------------
+          mpi/MVAPICH2/2.2b-GCC-4.9.3-2.25    mpi/OpenMPI/2.1.1-GCC-6.3.0-2.28                       (D)    toolchain/gompi/2017a
+          mpi/OpenMPI/2.1.1-GCC-6.3.0-2.27    mpi/impi/2017.1.132-iccifort-2017.1.132-GCC-6.3.0-2.27        toolchain/iimpi/2017a
+       
+         Where:
+          D:  Default Module
+       
+       Use "module spider" to find all possible modules.
+       Use "module keyword key1 key2 ..." to search for all possible modules matching any of the "keys".
+
+
+      (node)$> module avail toolchain/
+      
+On iris the main two toolchains are __foss__ (GCC, OpenMPI, OpenBLAS, ScaLAPACK and FFTW) and __intel__ (Intel C/C++/Fortran, MKL).
+
+### Simple test cases on Gaia
 
 We will now try to run the `hostname` application, which simply shows a system's host name.   
 Check out the differences (if any) between the following executions:
@@ -112,9 +162,8 @@ Check out the differences (if any) between the following executions:
 
 Note that the `hostname` application is _not_ a parallel application, with MPI we are simply launching it on the different nodes available in the job.  
 
-Now, we will compile and run a simple MPI application. Save the following source code in /tmp/hellompi.c :
+Now, we will compile and run a simple `hellompi` MPI application. Save the following source code in /tmp/hellompi.c :
 
-       ### hellompi.c
        #include <mpi.h>
        #include <stdio.h>
        #include <stdlib.h>
@@ -172,9 +221,29 @@ At the end of these tests, we clean the environment by running `module purge`:
        (node)$> module purge
        (node)$> module list
 
+
+### Simple test cases on iris
+
+We will use the same `hellompi.c` code from above, so transfer it to the Iris cluster, 
+get an interactive job and let's compile it:
+
+       (iris-frontend)$> srun -p interactive --qos qos-interactive -N 2 --ntasks-per-node 2 --pty bash -i
+       (node)$> module load toolchain/intel
+       (node)$> mpiicc -o hellompi hellompi.c
+
+Now we will run it in different ways and see what happens:
+
+       (node)$> srun -n 1 hellompi
+       (node)$> srun -n 2 hellompi.c
+       (node)$> srun -n 3 hellompi.c
+       (node)$> srun -n 4 hellompi
+       (node)$> srun hellompi
+
+Note that SLURM's `srun` knows the environment of your job and this will drive parallel execution, if you do not override it explicitly!
+
 ## QuantumESPRESSO
 
-Check for the available versions of QuantumESPRESSO (QE in short), as of June 2015 this shows:
+Check for the available versions of QuantumESPRESSO (QE in short), as of June 2015 this shows on the Gaia cluster:
 
        (node)$> module spider quantum
        
@@ -255,6 +324,20 @@ Finally, we clean the environment by running `module purge`:
        (node)$> module purge
        (node)$> module list
 
+#### On Iris
+
+As of June 2017, the Iris cluster has a newer QuantumESPRESSO available, let us find it:
+
+       (node)$> module avail Quantum
+       
+       --------------------- /opt/apps/resif/data/stable/default/modules/all --------------------------
+          chem/QuantumESPRESSO/6.1-intel-2017a
+
+Using the same input data as above (transfer the input file to Iris) let's run QE in parallel:
+
+       (node)$> module load chem/QuantumESPRESSO
+       (node)$> srun pw.x < si.scf.efield2.in > si.scf.efield2.out
+
 ### References
 
   - [QE: user's guide](www.quantum-espresso.org/wp-content/uploads/Doc/user_guide.pdf)
@@ -265,7 +348,7 @@ Finally, we clean the environment by running `module purge`:
 
 ## OpenFOAM
 
-Check for the available versions of OpenFOAM:
+Check for the available versions of OpenFOAM on Gaia:
 
        (node)$> module spider openfoam
 
@@ -341,7 +424,7 @@ Finally, we clean the environment:
 
 ## ABINIT
 
-Check for the available versions of ABINIT:
+Check for the available versions of ABINIT on Gaia:
 
        (node)$> module spider abinit
    
