@@ -1,6 +1,7 @@
 `README.md`
 
-Copyright (c) 2014-2017 Valentin Plugaru <Valentin.Plugaru@gmail.com> and Sarah Peter <Sarah.Peter@uni.lu>
+Copyright (c) 2014-2017 Valentin Plugaru <Valentin.Plugaru@uni.lu> and Sarah Peter <Sarah.Peter@uni.lu>
+[ULHPC management team](mailto:<hpc-sysadmins@uni.lu>) [www](http://hpc.uni.lu)
 
 -------------------
 

@@ -2,7 +2,7 @@
 
 `README.md`
 
-Copyright (c) 2015 Valentin Plugaru <Valentin.Plugaru@uni.lu>
+Copyright (c) 2015-2017 <Valentin.Plugaru@uni.lu> [ULHPC management team](mailto:<hpc-sysadmins@uni.lu>) [www](http://hpc.uni.lu)
 
 -------------------
 
