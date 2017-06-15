@@ -25,7 +25,7 @@ pages:
   - Vagrant: 'advanced/Vagrant/README.md'
   - Grid5000 - Automatic VM deployment with VM5K: 'advanced/vm5k/README.md'
 - CFD/MD/Chemistry:
-  - Advanced Parallel execution: 'advanced/ParallelExec/README.md'
+  - Advanced Parallel execution: 'advanced/MultiPhysics/index.md'
 - Advanced topics:
   - Advanced workflows on sequential jobs management: 'advanced/advanced_workflows/README.md'
   - Advanced scheduling with SLURM: 'advanced/advanced_scheduling/index.md'
