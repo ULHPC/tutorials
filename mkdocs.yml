@@ -16,7 +16,7 @@ pages:
   - MATLAB: 'advanced/MATLAB1/README.md'
   - R - statistical computing: 'advanced/R/README.md'
 - Bioinformatics:
-  - Running bioinformatics software: 'advanced/Bioinformatics/README.md'
+  - Running bioinformatics software: 'advanced/Bioinformatics/index.md'
   - Galaxy: 'advanced/Galaxy/README.md'
 - Parallel Debuggers:
   - Allinea: 'advanced/Allinea/README.md'
