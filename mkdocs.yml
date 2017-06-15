@@ -14,7 +14,7 @@ pages:
   - High Performance Conjugate Gradient (HPCG): 'advanced/HPCG/README.md'
 - Mathematics:
   - MATLAB: 'advanced/MATLAB1/README.md'
-  - R - statistical computing: 'advanced/R/README.md'
+  - R - statistical computing: 'advanced/R/index.md'
 - Bioinformatics:
   - Running bioinformatics software: 'advanced/Bioinformatics/index.md'
   - Galaxy: 'advanced/Galaxy/README.md'
