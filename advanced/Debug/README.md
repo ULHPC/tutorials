@@ -1,24 +1,20 @@
 -*- mode: markdown; mode: auto-fill; fill-column: 80 -*-
 
-`README.md`
+Copyright (c) 2013-2017 X. Besseron and  S. Varrette / UL HPC Team  -- see <http://hpc.uni.lu>
 
-Copyright (c) 2013 Sebastien Varrette <Sebastien.Varrette@uni.lu>
-
-        Time-stamp: <Tue 2015-11-03 14:42 svarrette>
-
--------------------
-
-
+--------------------------------------------------------------------
 # UL HPC Tutorial:  Know Your Bugs: Weapons for Efficient Debugging
 
+[![By ULHPC](https://img.shields.io/badge/by-ULHPC-blue.svg)](https://hpc.uni.lu) [![Licence](https://img.shields.io/badge/license-GPL--3.0-blue.svg)](http://www.gnu.org/licenses/gpl-3.0.html) [![GitHub issues](https://img.shields.io/github/issues/ULHPC/tutorials.svg)](https://github.com/ULHPC/tutorials/issues/) [![](https://img.shields.io/badge/slides-PDF-red.svg)](https://github.com/ULHPC/tutorials/raw/devel/advanced/Debug/slides-debug.pdf) [![Github](https://img.shields.io/badge/sources-github-green.svg)](https://github.com/ULHPC/tutorials/tree/devel/advanced/Debug/) [![Documentation Status](http://readthedocs.org/projects/ulhpc-tutorials/badge/?version=latest)](http://ulhpc-tutorials.readthedocs.io/en/latest/advanced/Debug/) [![GitHub forks](https://img.shields.io/github/stars/ULHPC/tutorials.svg?style=social&label=Star)](https://github.com/ULHPC/tutorials)
+
+
+
+[![](https://github.com/ULHPC/tutorials/raw/devel/advanced/Debug/cover_slides.png)](https://github.com/ULHPC/tutorials/raw/devel/advanced/Debug/slides-debug.pdf)
+
 The objective of this tutorial is to review the main tools that can be used to
-debug your [parallel] programs. 
+debug your [parallel] programs.
 
-* [Slides](slides-debug.pdf)
-
-## Practical session
-
-### 0 - Pre-requisites
+## Hands/On 0 - Pre-requisites
 
 Reserve 1 core (for 3h) over the UL HPC platform
 
@@ -26,7 +22,7 @@ Reserve 1 core (for 3h) over the UL HPC platform
 	  $> oarsub -I -l core=1,walltime="03:00:00"
 
 
-### 1 - GDB Tutorial
+## Hands/On 1 - GDB Tutorial
 
 Tutorial from [A GDB Tutorial with Examples](http://www.cprogramming.com/gdb.html)
 
@@ -36,7 +32,7 @@ You'll need to load the latest GDB module:
       $> module load  debugger/GDB
 
 
-### 2 - Valgrind Tutorial
+## Hands/On 2 - Valgrind Tutorial
 
 Tutorial from [Using Valgrind to Find Memory Leaks and Invalid Memory Use](http://www.cprogramming.com/debugging/valgrind.html)
 
@@ -46,7 +42,7 @@ You'll also need to load the appropriate module
       $> module load debugger/Valgrind
 
 
-## 3 - Bug Hunting
+## Hands/On 3 - Bug Hunting
 
 A list of programs demonstrating the different kind of bus are available in the `exercises` directory.
 Try the different debugging tools on every example to see how they behave and find the bugs.
@@ -62,4 +58,3 @@ $> cd ulhpc-tutorials/advanced/Debug/exercises/
 
 * You can compile each program manually using `gcc` or `icc` (the latest coming from the `toolchains/ictce` module). You are encouraged to try both to see how differently they behave. Example: `gcc program.c -o program`. Add any additional parameter you might need.
 * Some program required additional options to be compiled. They are indicated in comment at the beginning of each source file.
-  
