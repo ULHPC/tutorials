@@ -1,6 +1,6 @@
 -*- mode: markdown;mode:visual-line;  fill-column: 80 -*-
 
-Copyright (c) 2016-2017 UL HPC Team <hpc-sysadmins@uni.lu> -- [www](http://hpc.uni.lu)
+Copyright (c) 2016-2017 UL HPC Team  -- see <http://hpc.uni.lu>
 
 ---------------------------------------------------------
 # Getting Started on the UL HPC platform
@@ -8,7 +8,7 @@ Copyright (c) 2016-2017 UL HPC Team <hpc-sysadmins@uni.lu> -- [www](http://hpc.u
 [![By ULHPC](https://img.shields.io/badge/by-ULHPC-blue.svg)](https://hpc.uni.lu) [![Licence](https://img.shields.io/badge/license-GPL--3.0-blue.svg)](http://www.gnu.org/licenses/gpl-3.0.html) [![GitHub issues](https://img.shields.io/github/issues/ULHPC/tutorials.svg)](https://github.com/ULHPC/tutorials/issues/) [![](https://img.shields.io/badge/slides-PDF-red.svg)](slides.pdf) [![Github](https://img.shields.io/badge/sources-github-green.svg)](https://github.com/ULHPC/tutorials/tree/devel/basic/getting_started/) [![Documentation Status](http://readthedocs.org/projects/ulhpc-tutorials/badge/?version=latest)](http://ulhpc-tutorials.readthedocs.io/en/latest/basic/getting_started/) [![GitHub forks](https://img.shields.io/github/stars/ULHPC/tutorials.svg?style=social&label=Star)](https://github.com/ULHPC/tutorials)
 
 
-[![](https://github.com/ULHPC/tutorials/blob/devel/basic/getting_started/cover_slides.png)](https://github.com/ULHPC/tutorials/blob/devel/basic/getting_started/slides.pdf)
+[![](https://github.com/ULHPC/tutorials/raw/devel/basic/getting_started/cover_slides.png)](https://github.com/ULHPC/tutorials/raw/devel/basic/getting_started/slides.pdf)
 
 
 This tutorial will guide you through your first steps on the
