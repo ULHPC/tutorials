@@ -5,9 +5,9 @@ Copyright (c) 2016-2017 [ULHPC management team](mailto:<hpc-sysadmins@uni.lu>) -
 ---------------------------------------------------------
 # UL HPC Tutorial: HPC workflow with sequential jobs
 
-[![By ULHPC](https://img.shields.io/badge/by-ULHPC-blue.svg)](https://hpc.uni.lu) [![Licence](https://img.shields.io/badge/license-GPL--3.0-blue.svg)](http://www.gnu.org/licenses/gpl-3.0.html) [![GitHub issues](https://img.shields.io/github/issues/ULHPC/tutorials.svg)](https://github.com/ULHPC/tutorials/issues/) [![](https://img.shields.io/badge/slides-PDF-red.svg)](slides.pdf) [![Github](https://img.shields.io/badge/sources-github-green.svg)](https://github.com/ULHPC/tutorials/tree/devel/basic/sequential_jobs/) [![Documentation Status](http://readthedocs.org/projects/ulhpc-tutorials/badge/?version=latest)](http://ulhpc-tutorials.readthedocs.io/en/latest/basic/sequential_jobs/) [![GitHub forks](https://img.shields.io/github/stars/ULHPC/tutorials.svg?style=social&label=Star)](https://github.com/ULHPC/tutorials)
+[![By ULHPC](https://img.shields.io/badge/by-ULHPC-blue.svg)](https://hpc.uni.lu) [![Licence](https://img.shields.io/badge/license-GPL--3.0-blue.svg)](http://www.gnu.org/licenses/gpl-3.0.html) [![GitHub issues](https://img.shields.io/github/issues/ULHPC/tutorials.svg)](https://github.com/ULHPC/tutorials/issues/) [![](https://img.shields.io/badge/slides-PDF-red.svg)](https://github.com/ULHPC/tutorials/raw/devel/basic/sequential_jobs/slides.pdf) [![Github](https://img.shields.io/badge/sources-github-green.svg)](https://github.com/ULHPC/tutorials/tree/devel/basic/sequential_jobs/) [![Documentation Status](http://readthedocs.org/projects/ulhpc-tutorials/badge/?version=latest)](http://ulhpc-tutorials.readthedocs.io/en/latest/basic/sequential_jobs/) [![GitHub forks](https://img.shields.io/github/stars/ULHPC/tutorials.svg?style=social&label=Star)](https://github.com/ULHPC/tutorials)
 
-[![](cover_slides.png)](slides.pdf)
+[![](https://github.com/ULHPC/tutorials/raw/devel/basic/sequential_jobs/cover_slides.png)](https://github.com/ULHPC/tutorials/raw/devel/basic/sequential_jobs/slides.pdf)
 
 **Prerequisites**
 
@@ -178,11 +178,11 @@ and check the status of the system using standard linux command (`free`, `top`, 
     Swap:         4095         47       4048
     0 14:51:59 hcartiaux@d-cluster1-1(chaos-cluster)[OAR1542592->119] ~ $ htop
 
-![Htop screenshot](src/images/chaos_htop.png)
+![Htop screenshot](https://github.com/ULHPC/tutorials/raw/devel/basic/sequential_jobs/images/chaos_htop.png)
 
 During the execution, you can try to locate your job on the [monika web interface](https://hpc.uni.lu/chaos/monika).
 
-![Monika screenshot](src/images/chaos_monika.png)
+![Monika screenshot](https://github.com/ULHPC/tutorials/raw/devel/basic/sequential_jobs/images/chaos_monika.png)
 
 Using the [system monitoring tool ganglia](https://hpc.uni.lu/chaos/ganglia), check the activity on your node.
 
@@ -259,10 +259,10 @@ Or with `sbatch` if you are using Iris
 
 
 * Naive workflow: time = **16m 32s**
-  ![CPU usage for the sequential workflow](src/images/chaos_ganglia_seq.png)
+  ![CPU usage for the sequential workflow](https://github.com/ULHPC/tutorials/raw/devel/basic/sequential_jobs/images/chaos_ganglia_seq.png)
 
 * Parallel workflow: time = **2m 11s**
-  ![CPU usage for the parallel workflow](src/images/chaos_ganglia_parallel.png)
+  ![CPU usage for the parallel workflow](https://github.com/ULHPC/tutorials/raw/devel/basic/sequential_jobs/images/chaos_ganglia_parallel.png)
 
 
 **/!\ Gaia and Chaos nodes are heterogeneous. In order to compare execution times,
