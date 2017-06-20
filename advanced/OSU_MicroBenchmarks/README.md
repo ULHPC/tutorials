@@ -3,21 +3,17 @@
 
 Copyright (c) 2013-2017 UL HPC Team  <hpc-sysadmins@uni.lu>
 
-        Time-stamp: <Tue 2017-06-20 12:34 svarrette>
-
 ---------------------------------------------------------------
-# UL HPC MPI Tutorial: OSU Micro-Benchmarks
+# UL HPC MPI Tutorial: Building and Runnning OSU Micro-Benchmarks
 
-[![By ULHPC](https://img.shields.io/badge/by-ULHPC-blue.svg)](https://hpc.uni.lu) [![Licence](https://img.shields.io/badge/license-GPL--3.0-blue.svg)](http://www.gnu.org/licenses/gpl-3.0.html) [![GitHub issues](https://img.shields.io/github/issues/ULHPC/tutorials.svg)](https://github.com/ULHPC/tutorials/issues/) [![](https://img.shields.io/badge/slides-PDF-red.svg)](slides.pdf) [![Github](https://img.shields.io/badge/sources-github-green.svg)](https://github.com/ULHPC/tutorials/tree/devel/advanced/OSU_MicroBenchmarks) [![Documentation Status](http://readthedocs.org/projects/ulhpc-tutorials/badge/?version=latest)](http://ulhpc-tutorials.readthedocs.io/en/latest/advanced/OSU_MicroBenchmarks/) [![GitHub forks](https://img.shields.io/github/stars/ULHPC/tutorials.svg?style=social&label=Star)](https://github.com/ULHPC/tutorials)
+[![By ULHPC](https://img.shields.io/badge/by-ULHPC-blue.svg)](https://hpc.uni.lu) [![Licence](https://img.shields.io/badge/license-GPL--3.0-blue.svg)](http://www.gnu.org/licenses/gpl-3.0.html) [![GitHub issues](https://img.shields.io/github/issues/ULHPC/tutorials.svg)](https://github.com/ULHPC/tutorials/issues/) [![](https://img.shields.io/badge/slides-PDF-red.svg)](https://github.com/ULHPC/tutorials/raw/devel/advanced/OSU_MicroBenchmarks/slides.pdf) [![Github](https://img.shields.io/badge/sources-github-green.svg)](https://github.com/ULHPC/tutorials/tree/devel/advanced/OSU_MicroBenchmarks) [![Documentation Status](http://readthedocs.org/projects/ulhpc-tutorials/badge/?version=latest)](http://ulhpc-tutorials.readthedocs.io/en/latest/advanced/OSU_MicroBenchmarks/) [![GitHub forks](https://img.shields.io/github/stars/ULHPC/tutorials.svg?style=social&label=Star)](https://github.com/ULHPC/tutorials)
 
 [![](https://github.com/ULHPC/tutorials/raw/devel/advanced/OSU_MicroBenchmarks/cover_slides.png)](https://github.com/ULHPC/tutorials/raw/devel/advanced/OSU_MicroBenchmarks/slides.pdf)
 
-<!-- [![](cover_slides.png)](slides.pdf) -->
-
 The objective of this tutorial is to compile and run on of the [OSU micro-benchmarks](http://mvapich.cse.ohio-state.edu/benchmarks/) which permit to measure the performance of an MPI implementation.
+**On purpose**, we won't check here if an Easybuild recipe is available for this software to conduct a full build _by hand_ and check the difference in build options between the different MPI suits.
 
-You can work in groups for this training, yet individual work is encouraged to
-ensure you understand and practice the usage of MPI programs on an HPC platform.
+You can work in groups for this training, yet individual work is encouraged to ensure you understand and practice the usage of MPI programs on an HPC platform.
 
 In all cases, ensure you are able to [connect to the UL HPC  clusters](https://hpc.uni.lu/users/docs/access.html).
 
@@ -32,7 +28,8 @@ In all cases, ensure you are able to [connect to the UL HPC  clusters](https://h
 
 **Advanced users only**: rely on `screen` (see  [tutorial](http://support.suso.com/supki/Screen_tutorial) or the [UL HPC tutorial](https://hpc.uni.lu/users/docs/ScreenSessions.html) on the  frontend prior to running any `oarsub` or `srun/sbatch` command to be more resilient to disconnection.
 
-The latest version of this tutorial is available on [Github](https://github.com/ULHPC/tutorials/tree/devel/advanced/OSU_MicroBenchmarks)
+The latest version of this tutorial is available on [Github](https://github.com/ULHPC/tutorials/tree/devel/advanced/OSU_MicroBenchmarks).
+Finally, advanced MPI users might be interested to take a look at the [Intel Math Kernel Library Link Line Advisor](https://software.intel.com/en-us/articles/intel-mkl-link-line-advisor).
 
 ## Objectives
 

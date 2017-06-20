@@ -2,13 +2,14 @@
 
 Copyright (c) 2013-2017 UL HPC Team  <hpc-sysadmins@uni.lu>
 
-        Time-stamp: <Mon 2017-06-12 15:59 svarrette>
+        Time-stamp: <Tue 2017-06-20 14:08 svarrette>
 
 ------------------------------------------------------
 # UL HPC Tutorial: High-Performance Linpack (HPL) benchmarking on UL HPC platform
 
 [![By ULHPC](https://img.shields.io/badge/by-ULHPC-blue.svg)](https://hpc.uni.lu) [![Licence](https://img.shields.io/badge/license-GPL--3.0-blue.svg)](http://www.gnu.org/licenses/gpl-3.0.html) [![GitHub issues](https://img.shields.io/github/issues/ULHPC/tutorials.svg)](https://github.com/ULHPC/tutorials/issues/) [![](https://img.shields.io/badge/slides-PDF-red.svg)](slides.pdf) [![Github](https://img.shields.io/badge/sources-github-green.svg)](https://github.com/ULHPC/tutorials/tree/devel/advanced/HPL/) [![Documentation Status](http://readthedocs.org/projects/ulhpc-tutorials/badge/?version=latest)](http://ulhpc-tutorials.readthedocs.io/en/latest/advanced/HPL/) [![GitHub forks](https://img.shields.io/github/stars/ULHPC/tutorials.svg?style=social&label=Star)](https://github.com/ULHPC/tutorials)
 
+[![](https://github.com/ULHPC/tutorials/raw/devel/advanced/OSU_MicroBenchmarks/cover_slides.png)](https://github.com/ULHPC/tutorials/raw/devel/advanced/OSU_MicroBenchmarks/slides.pdf)
 
 The objective of this tutorial is to compile and run on of the reference HPC benchmarks, [HPL](http://www.netlib.org/benchmark/hpl/), on top of the [UL HPC](http://hpc.uni.lu) platform.
 
@@ -29,8 +30,8 @@ In all cases, ensure you are able to [connect to the UL HPC  clusters](https://h
 
 **Advanced users only**: rely on `screen` (see  [tutorial](http://support.suso.com/supki/Screen_tutorial) or the [UL HPC tutorial](https://hpc.uni.lu/users/docs/ScreenSessions.html) on the  frontend prior to running any `oarsub` or `srun/sbatch` command to be more resilient to disconnection.
 
-The latest version of this tutorial is available on
-[Github](https://github.com/ULHPC/tutorials/tree/devel/advanced/HPL)
+The latest version of this tutorial is available on [Github](https://github.com/ULHPC/tutorials/tree/devel/advanced/HPL)
+Finally, advanced MPI users might be interested to take a look at the [Intel Math Kernel Library Link Line Advisor](https://software.intel.com/en-us/articles/intel-mkl-link-line-advisor).
 
 ## Objectives
 
