@@ -24,7 +24,7 @@ Files:
 - [Makefile](https://github.com/ULHPC/tutorials/blob/devel/advanced/Allinea/exercise1/Makefile?raw=true)
 
 
-## Hands-on 2
+## Hands-on 2: Allinea MAP
 
 Files:
 
