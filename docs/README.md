@@ -18,7 +18,7 @@ So far, the following tutorials are proposed:
 |                       | [HPC workflow with sequential jobs](basic/sequential_jobs/)                  | ssh, gromacs, python, java                  | beginners      |
 |                       | [Know Your Bugs: Weapons for Efficient Debugging](advanced/Debug/)           | debug                                       | intermediate   |
 | _Software Management_ | [Building [custom] software with EasyBuild](advanced/EasyBuild/)             | easybuild                                   | beginners      |
-| _MPI_                 | UL HPC MPI Tutorial: OSU Micro-Benchmarks                                    | mpi, perfs                                  | intermediate   |
+| _MPI_                 | [UL HPC MPI Tutorial: OSU Micro-Benchmarks](advanced/OSU_MicroBenchmarks/)   | mpi, perfs                                  | intermediate   |
 |                       | High-Performance Linpack (HPL) benchmarking on UL HPC platform               | mpi, perfs                                  | intermediate   |
 |                       | HPCG benchmarking on UL HPC platform                                         | mpi, perfs                                  | intermediate   |
 | _Mathematics_         | MATLAB execution on the UL HPC platform                                      | maths                                       | intermediate   |
