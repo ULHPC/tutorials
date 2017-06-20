@@ -23,7 +23,7 @@ So far, the following tutorials are proposed:
 |                       | [HPCG benchmarking on UL HPC platform](advanced/HPCG/)                          | mpi, perfs                                  | intermediate   |
 | _Mathematics_         | [MATLAB execution on the UL HPC platform](advanced/MATLAB1/)                    | maths                                       | intermediate   |
 |                       | [R / Statictical Computing](advanced/R/)                                        | maths, R                                    | intermediate   |
-| _Bioinformatics_      | Bioinformatics software on the UL HPC platform                                  | bio                                         | intermediate   |
+| _Bioinformatics_      | [Bioinformatics software on the UL HPC platform](advanced/Bioinformatics/)      | bio, abyss, gromacs, bowtie2, mpiblast      | intermediate   |
 |                       | Galaxy Introduction Exercise: From Peaks to Genes                               | bio                                         | intermediate   |
 | _Parallel Debuging_   | Unified profiling and debugging with Allinea                                    | debug                                       | intermediate   |
 |                       | Direct,  Reverse and parallel Memory debugging with TotalView                   | debug                                       | intermediate   |
