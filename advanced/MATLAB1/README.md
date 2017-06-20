@@ -1,14 +1,18 @@
-`README.md`
+-*- mode: markdown; mode: visual-line; fill-column: 80 -*-
 
-Copyright (c) 2014-2017 <Valentin.Plugaru@uni.lu> [ULHPC management team](mailto:<hpc-sysadmins@uni.lu>) [www](http://hpc.uni.lu)
+Copyright (c) 2013-2017 UL HPC Team  <hpc-sysadmins@uni.lu>
 
--------------------
+----------------------------------------------------------
+# MATLAB (interactive, passive and sequential jobs, checkpointing and parallel jobs) execution on the UL HPC platform
+
+[![By ULHPC](https://img.shields.io/badge/by-ULHPC-blue.svg)](https://hpc.uni.lu) [![Licence](https://img.shields.io/badge/license-GPL--3.0-blue.svg)](http://www.gnu.org/licenses/gpl-3.0.html) [![GitHub issues](https://img.shields.io/github/issues/ULHPC/tutorials.svg)](https://github.com/ULHPC/tutorials/issues/) [![](https://img.shields.io/badge/slides-PDF-red.svg)](https://github.com/ULHPC/tutorials/raw/devel/advanced/MATLAB1/MATLAB1.pdf) [![Github](https://img.shields.io/badge/sources-github-green.svg)](https://github.com/ULHPC/tutorials/tree/devel/advanced/MATLAB1/) [![Documentation Status](http://readthedocs.org/projects/ulhpc-tutorials/badge/?version=latest)](http://ulhpc-tutorials.readthedocs.io/en/latest/advanced/MATLAB1/) [![GitHub forks](https://img.shields.io/github/stars/ULHPC/tutorials.svg?style=social&label=Star)](https://github.com/ULHPC/tutorials)
+
+[![](https://github.com/ULHPC/tutorials/raw/devel/advanced/MATLAB1/cover_MATLAB1.png)](https://github.com/ULHPC/tutorials/raw/devel/advanced/MATLAB1/MATLAB1.pdf)
+[![](https://github.com/ULHPC/tutorials/raw/devel/advanced/MATLAB1/cover_MATLAB2.png)](https://github.com/ULHPC/tutorials/raw/devel/advanced/MATLAB1/MATLAB2.pdf)
 
 
-# UL HPC Tutorial: MATLAB execution on the UL HPC platform
-
-The objective of this tutorial is to exemplify the execution of [MATLAB](http://www.matlab.com) - 
-a high-level language and interactive environment for numerical computation, 
+The objective of this tutorial is to exemplify the execution of [MATLAB](http://www.matlab.com) -
+a high-level language and interactive environment for numerical computation,
 visualization and programming, on top of the [UL HPC](http://hpc.uni.lu) platform.
 
 The tutorial will show you:
@@ -41,12 +45,12 @@ Or simply clone the full tutorials repository and make a link to the MATLAB tuto
 ### Launching the full graphical environment
 
 Running the full MATLAB environment (e.g. on the Gaia cluster) requires an [interactive OAR session](https://hpc.uni.lu/users/docs/oar.html#concepts). When connecting to the clusters you will
-need to enable X11 forwarding in order for the graphical environment to be shown on your 
+need to enable X11 forwarding in order for the graphical environment to be shown on your
 local machine:
 
 - on Linux simply follow the commands below
 
-- on OS X (depending on version) you may not have the X Window System installed, 
+- on OS X (depending on version) you may not have the X Window System installed,
   and thus will need to install [XQuartz](http://xquartz.macosforge.org/landing/) if
   the first command below returns an 'X11 forwarding request failed on channel 0' error
 
@@ -56,22 +60,22 @@ local machine:
 
         # Connect to Gaia with X11 forwarding enabled (Linux/OS X):
         (yourmachine)$> ssh access-gaia.uni.lu -X
-     
+
         # Request an interactive job (the default parameters get you 1 core for 2 hours):
         (gaia-frontend)$> oarsub -I
 
         # Check the Matlab versions installed on the clusters:
         (node)$> module spider matlab
-        
+
         # Load a specific MATLAB version:
         (node)$> module load base/MATLAB/2013a
 
         # Check that it has been loaded, along with Java:
         (node)$> module list
-        
+
         # Launch MATLAB
         (node)$> matlab
-        
+
 After a delay, the full Matlab interface will be displayed on your machine and you will be able to run commands, load and edit
 scripts and generate plots. An alternative to the graphical interface is the command-line (text-mode) interface, which is
 enabled through specific parameters, described in the following section.
@@ -79,15 +83,15 @@ enabled through specific parameters, described in the following section.
 ### Launching the command-line environment
 
 Running the text-mode MATLAB interface in an interactive session, is much faster than
-using the full graphical environment through the network and is useful for commands/scripts testing and 
+using the full graphical environment through the network and is useful for commands/scripts testing and
 quick executions:
 
         # First, connect to an UL cluster (e.g. Gaia):
-        
+
         (yourmachine)$> ssh access-gaia.uni.lu
         (gaia-frontend)$> oarsub -I
         (node)$> module load base/MATLAB/2013a
-     
+
         # Launch MATLAB with the graphical display mode disabled (critical parameters):
         (node)$> matlab -nodisplay -nosplash
         Opening log file:  /home/users/vplugaru/java.log.3258
@@ -104,9 +108,9 @@ quick executions:
 In this command line you are now able to run Matlab commands, load and edit scripts, but cannot display plots - they can
 however be generated and exported to file, which you will need to transfer to your own machine for visualisation.
 While the text mode interface is spartan, you still benefit from tab-completion (type the first few letters of
-a command then press TAB twice to see possible completions) and can run the integrated help with `help command_name` 
+a command then press TAB twice to see possible completions) and can run the integrated help with `help command_name`
 (e.g. help plot3).
- 
+
 ### Example usage of Matlab in interactive mode
 
 At this point you should have downloaded the example scripts and started Matlab either with the graphical or the text-mode
@@ -136,13 +140,13 @@ for IBM (whose stock symbol is 'IBM'):
              2.7618
 
 Through these commands we have seen that the function returns column vectors, we were able to get 24 days' worth of information and
-we used simple statistic functions to get an idea of how the stock varied in the given period. 
+we used simple statistic functions to get an idea of how the stock varied in the given period.
 
-Now we will use the example1.m script that shows: 
+Now we will use the example1.m script that shows:
   - how to use different plotting methods on the data retrieved with the google\_finance\_data function
-  - how to export the plots in different graphic formats instead of displaying them (which is only available when running the 
+  - how to export the plots in different graphic formats instead of displaying them (which is only available when running the
   full graphical environment and also allows the user to visually interact with the plot)
-  
+
          >> example1
          Elapsed time is 1.709865 seconds.
          >> quit
@@ -154,7 +158,7 @@ We have run the example1.m script which has downloaded Apple ('AAPL' ticker) sto
 
   - example1-2dplot.pdf : color PDF generated with the saveas function, plotting dates (x-axis) vs closing stock price (y-axis)
   - example1-2dplot.eps : high quality black and white Enhanced PostScript (EPS) generated with the print function, same data as above
-  - example1-scatter.eps : high quality color EPS generated with the print function, showing also the trading volume (z-axis) and 
+  - example1-scatter.eps : high quality color EPS generated with the print function, showing also the trading volume (z-axis) and
 using different color datapoints (red) where the closing share price was above 100
 
 The script has also used the tic/toc Matlab commands to time it's execution and we can see it took less than 2 seconds to download
@@ -170,7 +174,7 @@ Further examples showing serial and parallel executions are given below in the '
 
 ## Checking available toolboxes and license status
 
-In order to be able to run MATLAB and specific features provided through the various MATLAB toolboxes, sufficient licenses need to 
+In order to be able to run MATLAB and specific features provided through the various MATLAB toolboxes, sufficient licenses need to
 be available. The state of the licenses can be checked with the `lmstat` utility.
 
 First, we will check that the license server is running (an __UP__ status should be shown in the output of lmutil):
@@ -190,7 +194,7 @@ To see all available toolboxes:
 
          (node)$> $EBROOTMATLAB/etc/glnxa64/lmutil lmstat -c $EBROOTMATLAB/licenses/network.lic -a
 
-Checking the availability of statistics toolboxes (if we don't know the exact name, but that 'stat' is in the name): 
+Checking the availability of statistics toolboxes (if we don't know the exact name, but that 'stat' is in the name):
 
          (node)$> $EBROOTMATLAB/etc/glnxa64/lmutil lmstat -c $EBROOTMATLAB/licenses/network.lic -a | grep -i stat
 
@@ -199,16 +203,16 @@ Finally, checking the available toolboxes (but with no information on the specif
         (node)$> module load base/MATLAB/2014a
         (node)$> matlab -nodesktop -nodisplay
             Opening log file:  /home/users/vplugaru/java.log.24914
-            
+
                                                                                < M A T L A B (R) >
                                                                      Copyright 1984-2014 The MathWorks, Inc.
                                                                        R2014a (8.3.0.532) 64-bit (glnxa64)
                                                                                 February 11, 2014
-            
-             
+
+
             To get started, type one of these: helpwin, helpdesk, or demo.
             For product information, visit www.mathworks.com.
-             
+
             >> ver
             ----------------------------------------------------------------------------------------------------
             MATLAB Version: 8.3.0.532 (R2014a)
@@ -289,12 +293,12 @@ by either:
 
         $> matlab -nodisplay -nosplash < INPUTFILE.m > OUTPUTFILE.out
 
-2. running the input file as a command (notice the missing '.m' extension) and copying output 
+2. running the input file as a command (notice the missing '.m' extension) and copying output
 (as a log) to the output file:
 
         $> matlab -nodisplay -nosplash -r INPUTFILE -logfile OUTPUTFILE.out
 
-The second usage mode is recommended as it corresponds to the batch-mode execution. In the first case your 
+The second usage mode is recommended as it corresponds to the batch-mode execution. In the first case your
 output file will contain the '>>' characters generated by Matlab as if ran interactively, along with the
 results of your own commands.
 
@@ -302,7 +306,7 @@ However as the second usage mode runs your script as a command, it __must__ cont
 the end in order to close Matlab, otherwise after the script has executed Matlab will stay open,
 waiting for further input until the end of the walltime you set for the passive job, tying up compute
 resources needlessly.
-        
+
 The following minimal example shows how to run a serial (1 core) MATLAB script for 24 hours in passive mode:
 
         (gaia-frontend)$> oarsub -l walltime=24:00:00 "source /etc/profile; module load base/MATLAB; matlab -nodisplay -nosplash < INPUTFILE.m > OUTPUTFILE.out"
@@ -321,7 +325,7 @@ Ideally you __would not__ run MATLAB jobs like this but instead [create/adapt a 
 then launch it in a job (e.g. requesting 6 cores on 1 node for 10 hours - assuming your input file takes advantage of the parallel cores):
 
         (gaia-frontend)$> oarsub -l nodes=1/core=6,walltime=10:00:00 your_matlab_launcher.sh
-        
+
 Remember! that the Matlab script you run with the '-r' parameter must contain the `quit` command at the end
 in order to close Matlab properly when the script finishes.
 
@@ -335,7 +339,7 @@ In this section we will use the _example2.m_ script which shows:
 
 By default the parallel section of the script uses up to 4 threads, thus for a first test we will request 4 cores on 1
 compute node for 5 minutes:
-  
+
         (gaia-frontend)$> cd ~/matlab-tutorial/code
         # Create a file called matlab-minlauncher.sh with launching commands
         (gaia-frontend)$> cat << EOF > matlab-minlauncher.sh
@@ -355,7 +359,7 @@ compute node for 5 minutes:
 				    February 15, 2013
 
 
-	To get started, type one of these: helpwin, helpdesk, or demo. 
+	To get started, type one of these: helpwin, helpdesk, or demo.
 	For product information, visit www.mathworks.com.
 
 	-- Will perform 24 iterations on a 1000x1000 matrix
@@ -407,16 +411,16 @@ We will now generate another launcher which will set this variable to the number
         (gaia-frontend)$> chmod +x matlab-minlauncher2.sh
         (gaia-frontend)$> oarsub -l nodes=1/core=6,walltime=00:05:00 ~/matlab-tutorial/code/matlab-minlauncher2.sh
         # we now wait for the job to complete execution
-        (gaia-frontend)$> head -n 17 example2b.out 
+        (gaia-frontend)$> head -n 17 example2b.out
 				      < M A T L A B (R) >
 			    Copyright 1984-2013 The MathWorks, Inc.
 			      R2013a (8.1.0.604) 64-bit (glnxa64)
 				      February 15, 2013
 
-	  
+
 	  To get started, type one of these: helpwin, helpdesk, or demo.
 	  For product information, visit www.mathworks.com.
-	  
+
 	  -- Will perform 24 iterations on a 1000x1000 matrix
 
 	  -- Serial test
@@ -424,9 +428,9 @@ We will now generate another launcher which will set this variable to the number
 
 	  -- Found environment variable MATLABMP=6.
 	  -- Parallel tests with up to 6 cores
-        (gaia-frontend)$>  
-        
-We have submitted an OAR job requesting 6 cores for 5 minutes and used the second launcher. It can be seen that the example2.m script 
+        (gaia-frontend)$>
+
+We have submitted an OAR job requesting 6 cores for 5 minutes and used the second launcher. It can be seen that the example2.m script
 has read the MATLABMP environment variable and has used in its execution.
 
 As shown previously, the jobs we have submitted did not run on GPU-enabled nodes, thus in this last example we will specifically
@@ -437,8 +441,8 @@ file.
       (gaia-frontend)$> cd ~/matlab-tutorial/code
       (gaia-frontend)$> oarsub -l nodes=1/core=6,walltime=00:05:00 -p "gpu='YES'" ~/matlab-tutorial/code/matlab-minlauncher2.sh
       # now wait for the job to complete execution, then check the output file
-      (gaia-frontend)$> tail -n 5 example2c.out 
-        -- GPU test 
+      (gaia-frontend)$> tail -n 5 example2c.out
+        -- GPU test
         -- GPU Execution time: 28.192080s.
         -- GPU Execution time with overhead: 30.499892s.
         -- GPU vs Serial speedup: 1.102579.
@@ -447,7 +451,7 @@ file.
 The following plot shows a sample speedup obtained by using parfor on Gaia, with up to 12 parallel threads:
 ![Parfor speedup](https://raw.github.com/ULHPC/tutorials/devel/advanced/MATLAB1/plots/parfor-speedup.png)
 
-Relative to the fast execution of the inner instruction (which calculates the eigenvalues of a matrix) 
+Relative to the fast execution of the inner instruction (which calculates the eigenvalues of a matrix)
 the overhead given by the creation of the parallel pool and the task assignations is quite high in this example,
 where for 12 cores the speedup is 5.26x but taking the overhead into account it is only 4x.
 
