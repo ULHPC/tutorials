@@ -1,8 +1,13 @@
+-*- mode: markdown; mode: visual-line; fill-column: 80 -*-
+
 Copyright (c) 2015 Sarah Diehl <sarah.diehl@uni.lu>
 
--------------------
-
+----------------------------------------------------
 # Galaxy Introduction Exercise: From Peaks to Genes
+
+
+
+
 ## Introduction
 
 Slides as PDF: [Introduction to Galaxy](https://github.com/ULHPC/tutorials/raw/devel/advanced/Galaxy/introduction_to_galaxy_unilu.pdf)
@@ -184,4 +189,3 @@ To delete old histories:
 *    Click "Delete Permanently" on the bottom if you need to free up space or just "Delete"
 
 ## END
-
