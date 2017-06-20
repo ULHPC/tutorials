@@ -17,7 +17,7 @@ pages:
   - R - statistical computing: 'advanced/R/index.md'
 - Bioinformatics:
   - Running bioinformatics software: 'advanced/Bioinformatics/index.md'
-  - Galaxy: 'advanced/Galaxy/README.md'
+  - Galaxy: 'advanced/Galaxy/index.md'
 - Parallel Debuggers:
   - Allinea: 'advanced/Allinea/README.md'
   - TotalView: 'advanced/TotalView/README.md'
