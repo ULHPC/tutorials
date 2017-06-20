@@ -1,7 +1,7 @@
 #!/bin/bash -l
 
 # Root work directory
-ROOT=$WORK/PS2
+ROOT=$HOME/PS2
 
 # Temporary directory in /tmp
 TEMP=`mktemp -d`
@@ -22,7 +22,7 @@ CFG=cfg/genGAforECC.cfg
 # Install Jcell
 mkdir -p $ROOT
 cd $ROOT
-[[ ! -d jcell ]] && svn checkout svn://svn.gforge.uni.lu/svn/jcell
+[[ ! -d jcell ]] && tar xzvf /mnt/isilon/projects/ulhpc-tutorials/sequential/jcell.tgz
 cd jcell/JCell/bin
 
 
@@ -37,4 +37,7 @@ done
 # Create a tar.gz archives containing all the configuration files
 cd $TEMP
 tar czvf $CONFIG_TARBALL * > $PARAM_FILE
+
+cd
+rm -rf $TEMP
 

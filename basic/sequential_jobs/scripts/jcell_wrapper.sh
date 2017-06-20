@@ -1,7 +1,7 @@
 #!/bin/bash -l
 
 # Root work directory
-ROOT=$WORK/PS2
+ROOT=$HOME/PS2
 
 # Temporary directory in /tmp
 TEMP=`mktemp -d`
@@ -30,4 +30,7 @@ java JCell $TEMP/$1 2>&1 > $TEMP/$1.result
 if [[ $? -eq 0 ]] ; then
   mv $TEMP/$1.result $RESULT_DIR/$1.result
 fi
+
+cd
+rm -rf $TEMP
 

@@ -2,13 +2,13 @@
 
 You're using a specific software on the UL HPC platform not listed in the above list? Then most probably you
 
-1. developed a set of script to effectively run that software 
+1. developed a set of script to effectively run that software
 2. used to face issues such that you're aware (eventually unconsciously) of tricks and tips for that specific usage.
 
 Then your inputs are valuable for the other users and we would appreciate your help to complete this repository with new topics/entries.
 
 To do that, the general approach is similar to the one proposed by [Github via the Forking procedure](https://help.github.com/articles/fork-a-repo/).
-Since we use [git-flow](https://github.com/nvie/gitflow), your workflow for contributing to this repository should typically involve the following steps: 
+Since we use [git-flow](https://github.com/nvie/gitflow), your workflow for contributing to this repository should typically involve the following steps:
 
 1. [Fork it](https://help.github.com/articles/fork-a-repo/)
 2. Initialize your local copy of the repository (including git submodules etc.): `make setup`
@@ -25,7 +25,7 @@ The Git branching model for this repository follows the guidelines of [gitflow](
 In particular, the central repo (on `github.com`) holds two main branches with an infinite lifetime:
 
 * `production`: the *production-ready* tutorials
-* `devel`: the main branch where the latest developments interviene. This is the *default* branch you get when you clone the repo. 
+* `devel`: the main branch where the latest developments interviene. This is the *default* branch you get when you clone the repo.
 
 ## New tutorial layout
 
@@ -35,38 +35,29 @@ So assuming you have [forked this repository](https://help.github.com/articles/f
 
 ```
 {advanced | basic}/<name>  # Select the appropriate root directory
-├── .root -> ../../        # Symlink to the root directory
 ├── README.md              # Main tutorial file, in Markdown
-├── tutorial_<name>.pdf    # Slides proposing an overview of the tutorial
-├── Makefile               # GNU Makefile offering the targets 'fetch', 'compile', 'run' and 'run_interactive' 
+├── index.md -> README.md  # Symlink (for mkdocs)
+├── slides.pdf             # Slides proposing an overview of the tutorial
+├── cover_slides.png       # Picture of the cover of the slide
+├── Makefile               # GNU Makefile offering the targets 'fetch', 'compile', 'run' and 'run_interactive'
 ├── plots                  # Directory hosting the Gnuplots / R plots data
-│   ├── Makefile -> .root/.submodules/Makefiles/gnuplot/Makefile # in case of Gnuplot...
 ├── runs/                  # Directory hosting the logs of the runs
 ├── scripts/               # Eventually, a directory hosting some specific scripts
-└── src/                   
-    └── slides/            # bearmer sources of the slides
-        ├── Makefile -> .root/.submodules/Makefiles/latex/Makefile
-        ├── tutorial_<name>.tex        # Main LaTeX sources
-        ├── VERSION -> .root/VERSION   # Version file
-        ├── __config.sty               # Specifid configs for the slides
-        ├── _style.sty -> .root/.templates/slides/_style.sty
-        ├── beamerthemeFalkor.sty -> .root/.submodules/beamerthemeFalkor/beamerthemeFalkor.sty
-        ├── figures/                   # Local figures
-        └── images -> .root/.templates/slides/images
+└── launcher-<name>.{slurm|oar}.sh # launcher script to be used in the tutorial
+
 # Prepare the appropriate link for ReadtheDocs
-docs/{advanced | basic}/<name>.md -> ../../../{advanced | basic}/<name>/README.md
+docs/{advanced | basic}/<name>/ -> ../../../{advanced | basic}/<name>
 ```
 
-You shall stick to a single `README.md` file, (using the [markdown](http://github.github.com/github-flavored-markdown/) format).
-Remember that they shall be understandable for users having no or very few
-knowledge on your topic!
+You shall stick to a single `README.md` file, (using the [markdown](http://github.github.com/github-flavored-markdown/) format) if possible.
+Remember that they shall be understandable for users having no or very few knowledge on your topic!
 
-One _proposal_ to organize the workflow of your tutorial: 
+One _proposal_ to organize the workflow of your tutorial:
 
 * Select a typical sample example that will be used throughout all the tutorial, that is easy to fetch from the official page of the software. Adapt the `make fetch` directive in your root `Makefile` to perform the corresponding actions.
-* (eventually) detail how to build the sources (using [RESIF](http://resif.readthedocs.org/en/latest/)). Adapt the `make build` accordingly.
-* dedicate a section to the running of this example in an _interactive_ job such that the reader has a better understanding of: 
-   - the involved modules to load 
+* (eventually) detail how to build the sources (using [EasyBuild](advanced/Easybuild). Adapt the `make build` accordingly.
+* dedicate a section to the running of this example in an _interactive_ job such that the reader has a better understanding of:
+   - the involved modules to load
    - the classical way to execute the software
    - etc.
    Adapt also the `make run_interactive` accordingly
@@ -75,7 +66,7 @@ One _proposal_ to organize the workflow of your tutorial:
 
 ### Semantic Versionning
 
-The operation consisting of releasing a new version of this repository is automated by a set of tasks within the `Makefile` at the root of this repository. 
+The operation consisting of releasing a new version of this repository is automated by a set of tasks within the `Makefile` at the root of this repository.
 
 In this context, a version number have the following format:
 
@@ -89,7 +80,7 @@ where:
 
 Example: `1.2.0`
 
-The current version number is stored in the file `VERSION`. **DO NOT EDIT THIS FILE**, use the below primitives to affect the number it contains.  
+The current version number is stored in the file `VERSION`. **DO NOT EDIT THIS FILE**, use the below primitives to affect the number it contains.
 For more information on the version, run:
 
      $> make versioninfo
@@ -103,4 +94,4 @@ Then, to make the release effective, just run:
 
      $> make release
 
-This will finalize the release using `git-flow`, create the appropriate tag and merge all things the way they should be. 
+This will finalize the release using `git-flow`, create the appropriate tag and merge all things the way they should be.
