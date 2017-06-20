@@ -8,10 +8,10 @@ pages:
 - Advanced Software Management:
   - Easybuild: 'advanced/EasyBuild/index.md'
   - RESIF: 'advanced/RESIF/README.md'
-- MPI:
+- MPI / Performance Evaluation :
   - OSU Micro-benchmarks: 'advanced/OSU_MicroBenchmarks/index.md'
   - High Performance Linpack (HPL): 'advanced/HPL/index.md'
-  - High Performance Conjugate Gradient (HPCG): 'advanced/HPCG/README.md'
+  - High Performance Conjugate Gradient (HPCG): 'advanced/HPCG/index.md'
 - Mathematics:
   - MATLAB: 'advanced/MATLAB1/README.md'
   - R - statistical computing: 'advanced/R/index.md'
