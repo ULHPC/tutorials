@@ -9,7 +9,7 @@
 
 This repository holds a set of tutorials to help the users of the [UL HPC](https://hpc.uni.lu) platform to better understand or simply use our platform.
 
-For list of proposed tutorials is evolving, they are listed [on this page](docs/index.md)
+For list of proposed tutorials is evolving, they are listed [on this page](docs/README.md)
 
 ## Issues / Feature request
 
