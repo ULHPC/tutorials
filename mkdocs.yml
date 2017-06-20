@@ -19,7 +19,7 @@ pages:
   - Running bioinformatics software: 'advanced/Bioinformatics/index.md'
   - Galaxy: 'advanced/Galaxy/index.md'
 - Parallel Debuggers:
-  - Allinea: 'advanced/Allinea/README.md'
+  - Allinea: 'advanced/Allinea/index.md'
   - TotalView: 'advanced/TotalView/README.md'
 - Virtualization:
   - Vagrant: 'advanced/Vagrant/README.md'

@@ -24,8 +24,8 @@ So far, the following tutorials are proposed:
 | _Mathematics_         | [MATLAB execution on the UL HPC platform](advanced/MATLAB1/)                    | maths                                       | intermediate   |
 |                       | [R / Statictical Computing](advanced/R/)                                        | maths, R                                    | intermediate   |
 | _Bioinformatics_      | [Bioinformatics software on the UL HPC platform](advanced/Bioinformatics/)      | bio, abyss, gromacs, bowtie2, mpiblast      | intermediate   |
-|                       | [Galaxy Introduction Exercise: From Peaks to Genes](advanced/Galaxy/)           | bio                                         | intermediate   |
-| _Parallel Debuging_   | Unified profiling and debugging with Allinea                                    | debug                                       | intermediate   |
+|                       | [Galaxy Introduction Exercise: From Peaks to Genes](advanced/Galaxy/)           | bio, galaxy                                 | intermediate   |
+| _Parallel Debuging_   | [Unified profiling and debugging with Allinea](advanced/Allinea/)               | debug                                       | intermediate   |
 |                       | Direct,  Reverse and parallel Memory debugging with TotalView                   | debug                                       | intermediate   |
 | _Virtualization_      | Create and reproduce work environments using Vagrant                            | vm, vagrant                                 | intermediate   |
 |                       | Deploying virtual machines with Vm5k on Grid'5000                               | vm, g5k                                     | intermediate   |
