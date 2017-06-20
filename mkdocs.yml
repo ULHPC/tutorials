@@ -4,7 +4,7 @@ pages:
 - Basic Tutorials:
   - Getting Started: 'basic/getting_started/index.md'
   - HPC workflow with sequential jobs: 'basic/sequential_jobs/index.md'
-  - Efficient Debugging: 'advanced/Debug/README.md'
+  - Efficient Debugging: 'advanced/Debug/index.md'
 - Advanced Software Management:
   - Easybuild: 'advanced/EasyBuild/index.md'
   - RESIF: 'advanced/RESIF/README.md'
@@ -26,10 +26,11 @@ pages:
   - Grid5000 - Automatic VM deployment with VM5K: 'advanced/vm5k/README.md'
 - CFD/MD/Chemistry:
   - Advanced Parallel execution: 'advanced/MultiPhysics/index.md'
+- Big Data:
+  - Big Data Application Over Apache Spark: 'advanced/Spark/index.md'
 - Advanced topics:
   - Advanced workflows on sequential jobs management: 'advanced/advanced_workflows/README.md'
   - Advanced scheduling with SLURM: 'advanced/advanced_scheduling/index.md'
-  - Big Data Application Over Apache Spark: 'advanced/Spark/index.md'
   - Prototyping with Python: 'advanced/Python/index.md'
 - Documentation (RTFD): 'rtfd.md'
 - Contributing: 'contributing.md'

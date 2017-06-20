@@ -1,13 +1,16 @@
-`README.md`
+-*- mode: markdown;mode:visual-line;  fill-column: 80 -*-
 
-Copyright (c) 2014-2017 Xavier Besseron <xavier.besseron@uni.lu> and Sarah Peter <sarah.peter@uni.lu>
+Copyright (c) 2014-2017 UL HPC Team  -- see <http://hpc.uni.lu>
+
+---------------------------------------------------------
+# Building [custom] software with EasyBuild on UL HPC platform
+
+[![By ULHPC](https://img.shields.io/badge/by-ULHPC-blue.svg)](https://hpc.uni.lu) [![Licence](https://img.shields.io/badge/license-GPL--3.0-blue.svg)](http://www.gnu.org/licenses/gpl-3.0.html) [![GitHub issues](https://img.shields.io/github/issues/ULHPC/tutorials.svg)](https://github.com/ULHPC/tutorials/issues/) [![](https://img.shields.io/badge/slides-PDF-red.svg)](https://github.com/ULHPC/tutorials/raw/devel/advanced/Easybuild/slides.pdf) [![Github](https://img.shields.io/badge/sources-github-green.svg)](https://github.com/ULHPC/tutorials/tree/devel/advanced/Easybuild/) [![Documentation Status](http://readthedocs.org/projects/ulhpc-tutorials/badge/?version=latest)](http://ulhpc-tutorials.readthedocs.io/en/latest/advanced/Easybuild/) [![GitHub forks](https://img.shields.io/github/stars/ULHPC/tutorials.svg?style=social&label=Star)](https://github.com/ULHPC/tutorials)
+
+[![](https://github.com/ULHPC/tutorials/raw/devel/advanced/Easybuild/cover_slides.png)](https://github.com/ULHPC/tutorials/raw/devel/advanced/Easybuild/slides.pdf)
 
 
--------------------
-
-# UL HPC Tutorial: Build software with EasyBuild on UL HPC platform
-
-The objective of this tutorial is to show how EasyBuild can be used to ease, automate and script the build of software on the UL HPC platforms.
+The objective of this tutorial is to show how [EasyBuild](https://github.com/hpcugent/easybuild) can be used to ease, automate and script the build of software on the UL HPC platforms.
 
 Two use-cases are considered. First, we are going to build software that are supported by EasyBuild. In a second time, we will see through a simple example how to add support for a new software in EasyBuild.
 
@@ -44,7 +47,7 @@ An **EasyConfig file** is a simple text file that describes the build process of
 By default, EasyConfig files and generated modules are named using the following convention:
 `<Software-Name>-<Software-Version>-<Toolchain-Name>-<Toolchain-Version>`
 
-On the cluster however, for the module names we use a custom naming convention that is explained in the RESIF tutorial:  
+On the cluster however, for the module names we use a custom naming convention that is explained in the RESIF tutorial:
 `<Software-Class>/<Software-Name>/<Software-Version>-<Toolchain-Name>-<Toolchain-Version>`
 
 Additional details are available on EasyBuild website:
@@ -55,6 +58,51 @@ Additional details are available on EasyBuild website:
 - [Toolchains](https://github.com/hpcugent/easybuild/wiki/Compiler-toolchains)
 - [EasyConfig files](https://github.com/hpcugent/easybuild/wiki/Easyconfig-files)
 - [List of supported software packages](https://github.com/hpcugent/easybuild/wiki/List-of-supported-software-packages)
+
+## Installing Easybuild
+
+You probably want the latest version of Easybuild so we are going here to install it following [the official instructions](http://easybuild.readthedocs.io/en/latest/Installation.html).
+
+Add the following entries to your `~/.bashrc`:
+
+```bash
+export EASYBUILD_PREFIX=$HOME/.local/easybuild
+export EASYBUILD_MODULES_TOOL=Lmod
+export EASYBUILD_MODULE_NAMING_SCHEME=CategorizedModuleNamingScheme
+# Use the below variable to run:
+#    module use $LOCAL_MODULES
+#    module load tools/EasyBuild
+export LOCAL_MODULES=${EASYBUILD_PREFIX}/modules/all
+```
+
+Then source this file to expose the environment variables:
+
+```bash
+$> source ~/.bashrc
+$> echo $EASYBUILD_PREFIX
+/home/users/svarrette/.local/easybuild
+```
+
+Now let's install Easybuild following the [boostrapping procedure](http://easybuild.readthedocs.io/en/latest/Installation.html#bootstrapping-easybuild)
+
+```bash
+$> cd /tmp/
+# download script
+curl -o /tmp/bootstrap_eb.py  https://raw.githubusercontent.com/hpcugent/easybuild-framework/develop/easybuild/scripts/bootstrap_eb.py
+
+# install Easybuild
+$> python /tmp/bootstrap_eb.py $EASYBUILD_PREFIX
+
+# Load it
+$> echo $MODULEPATH
+$> module use $LOCAL_MODULES
+$> echo $MODULEPATH
+$> module spider Easybuild
+$> module load tools/EasyBuild
+```
+
+
+
 
 
 ## EasyBuild on UL HPC platform
