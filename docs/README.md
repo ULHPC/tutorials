@@ -28,7 +28,7 @@ So far, the following tutorials are proposed:
 | _Parallel Debuging_   | [Unified profiling and debugging with Allinea](advanced/Allinea/)                    | debug                                       | intermediate   |
 |                       | [Direct,  Reverse and parallel Memory debugging with TotalView](advanced/TotalView/) | debug                                       | intermediate   |
 | _Virtualization_      | [Create and reproduce work environments using Vagrant](advanced/Vagrant/)            | vm, vagrant                                 | intermediate   |
-|                       | Deploying virtual machines with Vm5k on Grid'5000                                    | vm, g5k                                     | intermediate   |
+|                       | [Deploying virtual machines with Vm5k on Grid'5000](advanced/vm5k/)                  | vm, g5k                                     | intermediate   |
 | _CFD/MD/Chemistry_    | Running parallel software: test cases on CFD / MD / Chemistry applications           | mpi, OpenFoam, NAMD, ASE, Abinit, QExpresso | advanced       |
 | _Big Data_            | Running Big Data Application using Apache Spark on UL HPC platform                   | bigdata, spark                              | intermediate   |
 | _Misc_                | Advanced workflows on sequential jobs management                                     | oar, fault-tolerance                        | advanced       |
