@@ -1,7 +1,11 @@
-Deploying virtual machines with Vm5k on Grid'5000
-=================================================
+-*- mode: markdown; mode: visual-line; fill-column: 80 -*-
 
-# The Grid'5000 platform
+Copyright (c) 2015 Hyacinthe Cartiaux <Hyacinthe.Cartiaux@uni.lu><hpc-sysadmins@uni.lu>
+
+---------------------------------------------------------------
+# Deploying virtual machines with Vm5k on Grid'5000
+
+[![Licence](https://img.shields.io/badge/license-GPL--3.0-blue.svg)](http://www.gnu.org/licenses/gpl-3.0.html) [![GitHub issues](https://img.shields.io/github/issues/ULHPC/tutorials.svg)](https://github.com/ULHPC/tutorials/issues/) [![Github](https://img.shields.io/badge/sources-github-green.svg)](https://github.com/ULHPC/tutorials/tree/devel/advanced/vm5k/) [![Documentation Status](http://readthedocs.org/projects/ulhpc-tutorials/badge/?version=latest)](http://ulhpc-tutorials.readthedocs.io/en/latest/advanced/vm5k/) [![GitHub forks](https://img.shields.io/github/stars/ULHPC/tutorials.svg?style=social&label=Star)](https://github.com/ULHPC/tutorials)
 
 Grid’5000 is a scientific instrument distributed in 10 sites (mainly in France)
 for research in large-scale parallel and distributed systems. It aims at providing
@@ -243,4 +247,3 @@ This is an example, munin will allow you to monitor the activity on all the VMs.
         (user) ssh -L1080:10.172.1.45:80 <login>@grid5000.uni.lu
 
 Open a browser and navigates to <http://localhost:1080>
-
