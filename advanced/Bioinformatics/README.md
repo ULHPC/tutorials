@@ -1,15 +1,15 @@
-`README.md`
+-*- mode: markdown; mode: visual-line; fill-column: 80 -*-
 
-Copyright (c) 2014-2017 Valentin Plugaru <Valentin.Plugaru@uni.lu> and Sarah Peter <Sarah.Peter@uni.lu>
-[ULHPC management team](mailto:<hpc-sysadmins@uni.lu>) [www](http://hpc.uni.lu)
+Copyright (c) 2014-2017 UL HPC Team  <hpc-sysadmins@uni.lu>
 
--------------------
-
-
+-----------------------------------------------------------------
 # UL HPC Tutorial: Bioinformatics software on the UL HPC platform
 
-The objective of this tutorial is to exemplify the execution of several
-Bioinformatics packages on top of the [UL HPC](http://hpc.uni.lu) platform.
+[![By ULHPC](https://img.shields.io/badge/by-ULHPC-blue.svg)](https://hpc.uni.lu) [![Licence](https://img.shields.io/badge/license-GPL--3.0-blue.svg)](http://www.gnu.org/licenses/gpl-3.0.html) [![GitHub issues](https://img.shields.io/github/issues/ULHPC/tutorials.svg)](https://github.com/ULHPC/tutorials/issues/) [![](https://img.shields.io/badge/slides-PDF-red.svg)](https://github.com/ULHPC/tutorials/raw/devel/advanced/Bioinformatics/slides.pdf) [![Github](https://img.shields.io/badge/sources-github-green.svg)](https://github.com/ULHPC/tutorials/tree/devel/advanced/Bioinformatics/) [![Documentation Status](http://readthedocs.org/projects/ulhpc-tutorials/badge/?version=latest)](http://ulhpc-tutorials.readthedocs.io/en/latest/advanced/Bioinformatics/) [![GitHub forks](https://img.shields.io/github/stars/ULHPC/tutorials.svg?style=social&label=Star)](https://github.com/ULHPC/tutorials)
+
+[![](https://github.com/ULHPC/tutorials/raw/devel/advanced/Bioinformatics/cover_slides.png)](https://github.com/ULHPC/tutorials/raw/devel/advanced/Bioinformatics/slides.pdf)
+
+The objective of this tutorial is to exemplify the execution of several Bioinformatics packages on top of the [UL HPC](http://hpc.uni.lu) platform.
 
 The targeted applications are:
 
@@ -25,6 +25,7 @@ The tutorial will:
 3. discuss the parallelization capabilities of these applications
 
 ## Prerequisites
+
 When you look at the [software page](https://hpc.uni.lu/users/software/) you will notice that some of the applications are part of the *lcsb* (gaia) or *bioinfo* (iris) software set. The modules in this set are not visible be default. To use them within a job you have to do:
 
 * Gaia

@@ -21,8 +21,8 @@ So far, the following tutorials are proposed:
 | _MPI_                 | [UL HPC MPI Tutorial: OSU Micro-Benchmarks](advanced/OSU_MicroBenchmarks/)      | mpi, perfs                                  | intermediate   |
 |                       | [High-Performance Linpack (HPL) benchmarking on UL HPC platform](advanced/HPL/) | mpi, perfs                                  | intermediate   |
 |                       | [HPCG benchmarking on UL HPC platform](advanced/HPCG/)                          | mpi, perfs                                  | intermediate   |
-| _Mathematics_         | MATLAB execution on the UL HPC platform                                         | maths                                       | intermediate   |
-|                       | R / Statictical Computing                                                       | maths, R                                    | intermediate   |
+| _Mathematics_         | [MATLAB execution on the UL HPC platform](advanced/MATLAB1/)                    | maths                                       | intermediate   |
+|                       | [R / Statictical Computing](advanced/R/)                                        | maths, R                                    | intermediate   |
 | _Bioinformatics_      | Bioinformatics software on the UL HPC platform                                  | bio                                         | intermediate   |
 |                       | Galaxy Introduction Exercise: From Peaks to Genes                               | bio                                         | intermediate   |
 | _Parallel Debuging_   | Unified profiling and debugging with Allinea                                    | debug                                       | intermediate   |
