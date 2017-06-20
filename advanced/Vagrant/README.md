@@ -1,6 +1,16 @@
+-*- mode: markdown; mode: visual-line; fill-column: 80 -*-
+
+Copyright (c) 2014-2017 UL HPC Team  <hpc-sysadmins@uni.lu>
+
+---------------------------------------------------------------
 # UL HPC Tutorial: Create and reproduce work environments using Vagrant
 
-## Introduction
+[![By ULHPC](https://img.shields.io/badge/by-ULHPC-blue.svg)](https://hpc.uni.lu) [![Licence](https://img.shields.io/badge/license-GPL--3.0-blue.svg)](http://www.gnu.org/licenses/gpl-3.0.html) [![GitHub issues](https://img.shields.io/github/issues/ULHPC/tutorials.svg)](https://github.com/ULHPC/tutorials/issues/) [![Github](https://img.shields.io/badge/sources-github-green.svg)](https://github.com/ULHPC/tutorials/tree/devel/advanced/Vagrant) [![Documentation Status](http://readthedocs.org/projects/ulhpc-tutorials/badge/?version=latest)](http://ulhpc-tutorials.readthedocs.io/en/latest/advanced/Vagrant/) [![GitHub forks](https://img.shields.io/github/stars/ULHPC/tutorials.svg?style=social&label=Star)](https://github.com/ULHPC/tutorials)
+
+
+`/!\ IMPORTANT` Up-to-date instructions for Vagrant can be found in the ["Reproducible Research at the Cloud Era"](http://rr-tutorials.readthedocs.io/) Tutorial. Below instructions are probably outdated but kept for archive purposes.
+
+---------------
 
 Vagrant is a tool that allows to easily and rapidly create and configure reproducible and portable work environments using Virtual Machines. This is especially useful if you want to test your work in a stable and controlled environment and minimize the various unintended or untrackable changes that may occur on a physical machine.
 
@@ -22,18 +32,18 @@ The main advantage of Vagrant is that it lets you import and use pre-configured 
 
 The Vagrant boxes contain the disk image of a VM without the virtual hardware details of the VM, which are initialized by Vagrant and can be edited by the user.
 
-The first step is to choose a pre-configured box to use. It is possible to create your own from scratch yet this is not in the scope of the current tutorial.  
+The first step is to choose a pre-configured box to use. It is possible to create your own from scratch yet this is not in the scope of the current tutorial.
 Freely available boxes can be found at the following two main sources:
 
 - [Atlas corps box catalog](https://atlas.hashicorp.com/boxes/search)
 - [vagrantbox.es catalaog](http://www.vagrantbox.es/)
 
-The first catalog is the default box download location for Vagrant. This means that you can directly use the name of the boxes you find here with Vagrant (e.g. `ubuntu/trusty64`).  
+The first catalog is the default box download location for Vagrant. This means that you can directly use the name of the boxes you find here with Vagrant (e.g. `ubuntu/trusty64`).
 To use the second catalog you would additionaly need to provide the source box URL, yet this catalog provides a much richer variety of boxes.
 
 ### Adding a new box
 
-To add a box and make it usable in Vagrant, we are going to use the `vagrant box add` command. In the example below we will add one box from each of the catalogs in order to present the different possibilities.  
+To add a box and make it usable in Vagrant, we are going to use the `vagrant box add` command. In the example below we will add one box from each of the catalogs in order to present the different possibilities.
 We are going to add the `ubuntu/trusty64` box from the Atlas catalog and the `Ubuntu 14.04` box (by its [url](https://github.com/kraksoft/vagrant-box-ubuntu/releases/download/14.04/ubuntu-14.04-amd64.box)) from the vagrantbox.es catalog.
 
 To add the first box, we use the following command (which may take some time due to the time needed to download the box):
@@ -54,7 +64,7 @@ To list the local boxes available to Vagrant for initialization of new VMs, we u
 To add the second box, you need to use a slightly different syntax since you need to precise the name you want to give to the box as well as its source URL:
 
         $> vagrant box add ubuntu14.04 https://github.com/kraksoft/vagrant-box-ubuntu/releases/download/14.04/ubuntu-14.04-amd64.box
-        ==> box: Adding box 'ubuntu14.04' (v0) for provider: 
+        ==> box: Adding box 'ubuntu14.04' (v0) for provider:
             box: Downloading: https://github.com/kraksoft/vagrant-box-ubuntu/releases/download/14.04/ubuntu-14.04-amd64.box
         ==> box: Successfully added box 'ubuntu14.04' (v0) for 'virtualbox'!
 Now a second box will be available to Vagrant under the name `ubuntu14.04`:
@@ -74,7 +84,7 @@ Checking that it has been removed:
 
 ### Creating a new Virtual Machine
 
-Now we are going to create a new Virtual Machine using the `ubuntu/trusty64` box. 
+Now we are going to create a new Virtual Machine using the `ubuntu/trusty64` box.
 We will initialize it in an empty directory (which is not absolutely mandatory):
 
         $> mkdir vagrant && cd vagrant
@@ -86,7 +96,7 @@ Next, we make Vagrant prepare the configuration file describing the VM:
         ready to `vagrant up` your first virtual environment! Please read
         the comments in the Vagrantfile as well as documentation on
         `vagrantup.com` for more information on using Vagrant.
-You should now see a file named `Vagrantfile` in your directory. This file contains the minimal information for Vagrant to launch the VM. We could modify it to set up specific parameters of the VM (number of virtual cores, memory size, etc), but this constitutes advanced usage for which full documentation that can be found on the [official site](http://docs.vagrantup.com/v2/). However, it may be interesting to understand what is actually needed in this file, since it contains a lot of commented information.  
+You should now see a file named `Vagrantfile` in your directory. This file contains the minimal information for Vagrant to launch the VM. We could modify it to set up specific parameters of the VM (number of virtual cores, memory size, etc), but this constitutes advanced usage for which full documentation that can be found on the [official site](http://docs.vagrantup.com/v2/). However, it may be interesting to understand what is actually needed in this file, since it contains a lot of commented information.
 The minimal content of a `Vagrantfile` is as follows:
 
         VAGRANTFILE_API_VERSION = "2"

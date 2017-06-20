@@ -1,4 +1,3 @@
-
 -*- mode: markdown; mode: visual-line; fill-column: 80 -*-
 
 Copyright (c) 2013-2017 UL HPC Team  <hpc-sysadmins@uni.lu>

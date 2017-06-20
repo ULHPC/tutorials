@@ -22,7 +22,7 @@ pages:
   - Allinea: 'advanced/Allinea/index.md'
   - TotalView: 'advanced/TotalView/index.md'
 - Virtualization:
-  - Vagrant: 'advanced/Vagrant/README.md'
+  - Vagrant: 'advanced/Vagrant/index.md'
   - Grid5000 - Automatic VM deployment with VM5K: 'advanced/vm5k/README.md'
 - CFD/MD/Chemistry:
   - Advanced Parallel execution: 'advanced/MultiPhysics/index.md'
@@ -32,6 +32,7 @@ pages:
   - Advanced workflows on sequential jobs management: 'advanced/advanced_workflows/README.md'
   - Advanced scheduling with SLURM: 'advanced/advanced_scheduling/index.md'
   - Prototyping with Python: 'advanced/Python/index.md'
+  - Reproducible Research: 'advanced/ReproducibleResearch/index.md'
 - Documentation (RTFD): 'rtfd.md'
 - Contributing: 'contributing.md'
 - Contacts: 'contacts.md'
