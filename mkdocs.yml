@@ -7,7 +7,7 @@ pages:
   - Efficient Debugging: 'advanced/Debug/index.md'
 - Advanced Software Management:
   - Easybuild: 'advanced/EasyBuild/index.md'
-  - RESIF: 'advanced/RESIF/README.md'
+  - RESIF: 'advanced/RESIF/index.md'
 - MPI / Performance Evaluation :
   - OSU Micro-benchmarks: 'advanced/OSU_MicroBenchmarks/index.md'
   - High Performance Linpack (HPL): 'advanced/HPL/index.md'
@@ -20,7 +20,7 @@ pages:
   - Galaxy: 'advanced/Galaxy/index.md'
 - Parallel Debuggers:
   - Allinea: 'advanced/Allinea/index.md'
-  - TotalView: 'advanced/TotalView/README.md'
+  - TotalView: 'advanced/TotalView/index.md'
 - Virtualization:
   - Vagrant: 'advanced/Vagrant/README.md'
   - Grid5000 - Automatic VM deployment with VM5K: 'advanced/vm5k/README.md'
