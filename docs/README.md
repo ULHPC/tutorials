@@ -12,30 +12,30 @@ The list of proposed tutorials are evolving and are used on a regular basis duri
 
 So far, the following tutorials are proposed:
 
-| **Category**          | **Description**                                                                      | **Tags**                                    | **Level**      |
-| :----------:          | ----------------------------------------------------------------------------         | :--------------:                            | -------------- |
-| _Basic_               | [Getting Started on the UL HPC platform](basic/getting_started/)                     | ssh, oar, slurm, screen                     | beginners      |
-|                       | [HPC workflow with sequential jobs](basic/sequential_jobs/)                          | ssh, gromacs, python, java                  | beginners      |
-|                       | [Know Your Bugs: Weapons for Efficient Debugging](advanced/Debug/)                   | debug                                       | intermediate   |
-| _Software Management_ | [Building [custom] software with EasyBuild](advanced/EasyBuild/)                     | easybuild                                   | beginners      |
-| _MPI_                 | [UL HPC MPI Tutorial: OSU Micro-Benchmarks](advanced/OSU_MicroBenchmarks/)           | mpi, perfs                                  | intermediate   |
-|                       | [High-Performance Linpack (HPL) benchmarking on UL HPC platform](advanced/HPL/)      | mpi, perfs                                  | intermediate   |
-|                       | [HPCG benchmarking on UL HPC platform](advanced/HPCG/)                               | mpi, perfs                                  | intermediate   |
-| _Mathematics_         | [MATLAB execution on the UL HPC platform](advanced/MATLAB1/)                         | maths                                       | intermediate   |
-|                       | [R / Statictical Computing](advanced/R/)                                             | maths, R                                    | intermediate   |
-| _Bioinformatics_      | [Bioinformatics software on the UL HPC platform](advanced/Bioinformatics/)           | bio, abyss, gromacs, bowtie2, mpiblast      | intermediate   |
-|                       | [Galaxy Introduction Exercise: From Peaks to Genes](advanced/Galaxy/)                | bio, galaxy                                 | intermediate   |
-| _Parallel Debuging_   | [Unified profiling and debugging with Allinea](advanced/Allinea/)                    | debug                                       | intermediate   |
-|                       | [Direct,  Reverse and parallel Memory debugging with TotalView](advanced/TotalView/) | debug                                       | intermediate   |
-| _Virtualization_      | [Create and reproduce work environments using Vagrant](advanced/Vagrant/)            | vm, vagrant                                 | intermediate   |
-|                       | [Deploying virtual machines with Vm5k on Grid'5000](advanced/vm5k/)                  | vm, g5k                                     | intermediate   |
-| _CFD/MD/Chemistry_    | Running parallel software: test cases on CFD / MD / Chemistry applications           | mpi, OpenFoam, NAMD, ASE, Abinit, QExpresso | advanced       |
-| _Big Data_            | Running Big Data Application using Apache Spark on UL HPC platform                   | bigdata, spark                              | intermediate   |
-| _Misc_                | Advanced workflows on sequential jobs management                                     | oar, fault-tolerance                        | advanced       |
-|                       | Advanced scheduling with SLURM                                                       | slurm                                       | intermediate   |
-|                       | [Advanced] Prototyping with Python                                                   | python,scoop,pythran                        | advanced       |
-|                       | [Reproducible Research at the Cloud Era](advanced/ReproducibleResearch/)             | markdown,git,vagrant,docker                 | intermediate   |
-|                       |                                                                                      |                                             |                |
+| **Category**          | **Description**                                                                                      | **Tags**                                    | **Level**      |
+| :----------:          | ----------------------------------------------------------------------------                         | :--------------:                            | -------------- |
+| _Basic_               | [Getting Started on the UL HPC platform](basic/getting_started/)                                     | ssh, oar, slurm, screen                     | beginners      |
+|                       | [HPC workflow with sequential jobs](basic/sequential_jobs/)                                          | ssh, gromacs, python, java                  | beginners      |
+|                       | [Know Your Bugs: Weapons for Efficient Debugging](advanced/Debug/)                                   | debug                                       | intermediate   |
+| _Software Management_ | [Building [custom] software with EasyBuild](advanced/EasyBuild/)                                     | easybuild                                   | beginners      |
+| _MPI_                 | [UL HPC MPI Tutorial: OSU Micro-Benchmarks](advanced/OSU_MicroBenchmarks/)                           | mpi, perfs                                  | intermediate   |
+|                       | [High-Performance Linpack (HPL) benchmarking on UL HPC platform](advanced/HPL/)                      | mpi, perfs                                  | intermediate   |
+|                       | [HPCG benchmarking on UL HPC platform](advanced/HPCG/)                                               | mpi, perfs                                  | intermediate   |
+| _Mathematics_         | [MATLAB execution on the UL HPC platform](advanced/MATLAB1/)                                         | maths                                       | intermediate   |
+|                       | [R / Statictical Computing](advanced/R/)                                                             | maths, R                                    | intermediate   |
+| _Bioinformatics_      | [Bioinformatics software on the UL HPC platform](advanced/Bioinformatics/)                           | bio, abyss, gromacs, bowtie2, mpiblast      | intermediate   |
+|                       | [Galaxy Introduction Exercise: From Peaks to Genes](advanced/Galaxy/)                                | bio, galaxy                                 | intermediate   |
+| _Parallel Debuging_   | [Unified profiling and debugging with Allinea](advanced/Allinea/)                                    | debug                                       | intermediate   |
+|                       | [Direct,  Reverse and parallel Memory debugging with TotalView](advanced/TotalView/)                 | debug                                       | intermediate   |
+| _Virtualization_      | [Create and reproduce work environments using Vagrant](advanced/Vagrant/)                            | vm, vagrant                                 | intermediate   |
+|                       | [Deploying virtual machines with Vm5k on Grid'5000](advanced/vm5k/)                                  | vm, g5k                                     | intermediate   |
+| _CFD/MD/Chemistry_    | [Running parallel software: test cases on CFD / MD / Chemistry applications](advanced/MultiPhysics/) | mpi, OpenFoam, NAMD, ASE, Abinit, QExpresso | advanced       |
+| _Big Data_            | [Running Big Data Application using Apache Spark on UL HPC platform](advanced/Spark/)                | bigdata, spark                              | intermediate   |
+| _Misc_                | Advanced workflows on sequential jobs management                                                     | oar, fault-tolerance                        | advanced       |
+|                       | [Advanced scheduling with SLURM](advanced/advanced_scheduling/)                                      | slurm                                       | intermediate   |
+|                       | [[Advanced] Prototyping with Python](advanced/Python/)                                               | python,scoop,pythran                        | advanced       |
+|                       | [Reproducible Research at the Cloud Era](advanced/ReproducibleResearch/)                             | markdown,git,vagrant,docker                 | intermediate   |
+|                       |                                                                                                      |                                             |                |
 
 
 ## Issues / Feature request
