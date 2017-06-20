@@ -1,31 +1,34 @@
--*- mode: markdown; mode: auto-fill; fill-column: 80 -*-
+-*- mode: markdown; mode: visual-line; fill-column: 80 -*-
 
-`README.md`
+Copyright (c) 2013-2017 UL HPC Team  <hpc-sysadmins@uni.lu>
 
-Copyright (c) 2015-2017 <Valentin.Plugaru@uni.lu> [ULHPC management team](mailto:<hpc-sysadmins@uni.lu>) [www](http://hpc.uni.lu)
+------------------------------------------------------
+# UL HPC MPI Tutorial: High Performance Conjugate Gradients (HPCG) benchmarking on UL HPC platform
 
--------------------
+[![By ULHPC](https://img.shields.io/badge/by-ULHPC-blue.svg)](https://hpc.uni.lu) [![Licence](https://img.shields.io/badge/license-GPL--3.0-blue.svg)](http://www.gnu.org/licenses/gpl-3.0.html) [![GitHub issues](https://img.shields.io/github/issues/ULHPC/tutorials.svg)](https://github.com/ULHPC/tutorials/issues/) [![Github](https://img.shields.io/badge/sources-github-green.svg)](https://github.com/ULHPC/tutorials/tree/devel/advanced/HPCG/) [![Documentation Status](http://readthedocs.org/projects/ulhpc-tutorials/badge/?version=latest)](http://ulhpc-tutorials.readthedocs.io/en/latest/advanced/HPCG/) [![GitHub forks](https://img.shields.io/github/stars/ULHPC/tutorials.svg?style=social&label=Star)](https://github.com/ULHPC/tutorials)
 
-# UL HPC Tutorial: HPCG benchmarking on UL HPC platform
 
-The objective of this tutorial is to compile and run one of the newest HPC benchmarks, [HPCG](http://www.hpcg-benchmark.org/), on top of the
-[UL HPC](http://hpc.uni.lu) platform.  
+The objective of this tutorial is to compile and run one of the newest HPC benchmarks, [High Performance Conjugate Gradients (HPCG)](http://www.hpcg-benchmark.org/), on top of the
+[UL HPC](http://hpc.uni.lu) platform.
 
-You can work in groups for this training, yet individual work is encouraged to
-ensure you understand and practice the usage of an HPC platform.  
+You can work in groups for this training, yet individual work is encouraged to ensure you understand and practice the usage of MPI programs on an HPC platform.
+If not yet done, you should consider completing the [OSU Micro-benchmark](../OSU_MicroBenchmarks/) and [HPL](../HPL/) tutorials.
 
-In all cases, ensure you are able to [connect to the chaos and gaia cluster](https://hpc.uni.lu/users/docs/access.html).
+In all cases, ensure you are able to [connect to the UL HPC  clusters](https://hpc.uni.lu/users/docs/access.html).
 
-	/!\ FOR ALL YOUR COMPILING BUSINESS, ENSURE YOU WORK ON A COMPUTING NODE
 
-	(access)$> 	oarsub -I -l nodes=1,walltime=2
+```bash
+# /!\ FOR ALL YOUR COMPILING BUSINESS, ENSURE YOU WORK ON A (at least half) COMPUTING NODE
+# Have an interactive job
+(access)$> si -n 14                                      # iris
+(access)$> srun -p interactive --qos qos-iteractive -n 14 --pty bash  # iris (long version)
+(access)$> oarsub -I -l enclosure=1/nodes=1,walltime=4   # chaos / gaia
+```
 
-**Advanced users only**: rely on `screen` (see
-  [tutorial](http://support.suso.com/supki/Screen_tutorial)) on the frontend
-  prior to running any `oarsub` command to be more resilient to disconnection.  
+**Advanced users only**: rely on `screen` (see  [tutorial](http://support.suso.com/supki/Screen_tutorial) or the [UL HPC tutorial](https://hpc.uni.lu/users/docs/ScreenSessions.html) on the  frontend prior to running any `oarsub` or `srun/sbatch` command to be more resilient to disconnection.
 
-The latest version of this tutorial is available on
-[Github](https://github.com/ULHPC/tutorials/tree/devel/advanced/HPCG)
+The latest version of this tutorial is available on [Github](https://github.com/ULHPC/tutorials/tree/devel/advanced/HPCG).
+Finally, advanced MPI users might be interested to take a look at the [Intel Math Kernel Library Link Line Advisor](https://software.intel.com/en-us/articles/intel-mkl-link-line-advisor).
 
 ## Objectives
 
@@ -76,7 +79,7 @@ Get the latest release:
     $> mkdir ~/TP && cd ~/TP
     $> wget https://software.sandia.gov/hpcg/downloads/hpcg-2.4.tar.gz
     $> tar xvzf hpcg-2.4.tar.gz
-    $> cd hpcg-2.4     
+    $> cd hpcg-2.4
     $> module avail MPI
     $> module load toolchain/ictce/7.3.5
     $> module list
@@ -152,7 +155,7 @@ Restart the benchmarking campaign (for both the Intel and GCC) in the following 
 
 ## Benchmarking with OpenMP active
 
-Finally, activate OpenMP support when building HPCG, adapting for the Intel and GCC suites `Make.MPI_ICPC_OMP` and `Make.MPI_GCC_OMP` respectively.  
+Finally, activate OpenMP support when building HPCG, adapting for the Intel and GCC suites `Make.MPI_ICPC_OMP` and `Make.MPI_GCC_OMP` respectively.
 As before, perform single and multiple node benchmarks.
 
 How is the performance result for the OpenMP+MPI vs MPI-only executions?
