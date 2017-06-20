@@ -23,7 +23,7 @@ pages:
   - TotalView: 'advanced/TotalView/index.md'
 - Virtualization:
   - Vagrant: 'advanced/Vagrant/index.md'
-  - Grid5000 - Automatic VM deployment with VM5K: 'advanced/vm5k/README.md'
+  - Grid5000 - Automatic VM deployment with VM5K: 'advanced/vm5k/index.md'
 - CFD/MD/Chemistry:
   - Advanced Parallel execution: 'advanced/MultiPhysics/index.md'
 - Big Data:
