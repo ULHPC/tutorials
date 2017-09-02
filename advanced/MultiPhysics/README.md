@@ -490,6 +490,43 @@ Finally, we clean the environment:
   - [ABINIT: tutorials](http://www.abinit.org/doc/helpfiles/for-v7.2/tutorial/welcome.html)
 
 
+
+## NAMD
+
+[NAMD](http://www.ks.uiuc.edu/Research/namd/), recipient of a 2002 Gordon Bell Award and a 2012 Sidney Fernbach Award, is a parallel molecular dynamics code designed for high-performance simulation of large biomolecular systems. Based on Charm++ parallel objects, NAMD scales to hundreds of cores for typical simulations and beyond 500,000 cores for the largest simulations.
+
+The latest NAMD 2.12 is available on the `iris` cluster as of June 2017, and on Debian 8 nodes of `gaia` as of August 2017, let's check for it:
+
+        (node)$> module avail NAMD
+
+        --------------------- /opt/apps/resif/data/production/v0.3/default/modules/all -----------------
+           chem/NAMD/2.12-intel-2017a-mpi
+
+We will use one of the benchmark inputs of NAMD to test it, specifically the [reference](http://www.ks.uiuc.edu/Research/namd/utilities/)
+_STMV (virus) benchmark (1,066,628 atoms, periodic, PME)_.
+
+
+        (node)$> mkdir namd-test
+        (node)$> cd namd-test
+        (node)$> wget http://www.ks.uiuc.edu/Research/namd/utilities/stmv.tar.gz
+        (node)$> tar xf stmv.tar.gz
+        (node)$> cd stmv
+        (node)$> module load chem/NAMD
+
+Now, we will need to set the `outputName` parameter within the input file to the path that we want:
+
+        (node)$> sed -i 's/^outputName.*$/outputName    generated-data/g' stmv.namd
+
+Next we will perform the parallel execution of NAMD, showing its runtime output both on console and storing it to file using `tee`:
+
+#### On Gaia
+
+        (node)$> mpirun -hostfile $OAR_NODEFILE namd2 stmv.namd | tee out
+
+#### On Iris
+
+        (node)$> srun namd2 stmv.namd | tee out
+
 ## ASE
 
 ASE is a Python library for working with atoms [*](https://wiki.fysik.dtu.dk/ase/_downloads/ase-talk.pdf).
