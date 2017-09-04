@@ -37,7 +37,7 @@ before following the instructions in the next sections:
 Or simply clone the full tutorials repository and make a link to this tutorial
 
         (gaia-frontend)$> git clone https://github.com/ULHPC/tutorials.git
-        (gaia-frontend)$> ln -s tutorials/advanced/ParallelExec/ ~/parallelexec-tutorial
+        (gaia-frontend)$> ln -s tutorials/advanced/MultiPhysics/ ~/multiphysics-tutorial
 
 ## Basics
 
@@ -195,8 +195,8 @@ Thus the application couldn't be found (more on this later) on the remote nodes.
 
 Let's move it to the `$HOME` directory which is common across the cluster, and try again:
 
-       (node)$> mv /tmp/hellompi ~/parallelexec-tutorial
-       (node)$> cd ~/parallelexec-tutorial
+       (node)$> mv /tmp/hellompi ~/multiphysics-tutorial
+       (node)$> cd ~/multiphysics-tutorial
        (node)$> mpirun -hostfile $OAR_NODEFILE ./hellompi
 
 Now some different error messages are shown, about loading shared libraries, and the execution hangs (stop it with Ctrl-C). Why?
@@ -298,7 +298,7 @@ Generally, some things to look for are:
 Now we will run `pw.x` to perform electronic structure calculations in the presence of a finite homogeneous electric field, and we will use sample input (PW example10) to calculate high-frequency dielectric constant of bulk Silicon.
 For reference, many examples are given in the installation directory of QE, see `$EBROOTQUANTUMESPRESSO/espresso-$EBVERSIONQUANTUMESPRESSO/PW/examples`.
 
-       (node)$> cd ~/parallelexec-tutorial
+       (node)$> cd ~/multiphysics-tutorial
        (node)$> cd inputs/qe
        (node)$> pw.x < si.scf.efield2.in
 
@@ -366,7 +366,7 @@ For reference, many examples are given in the installation directory of OpenFOAM
 
 Before the main execution, some pre-processing steps:
 
-       (node)$> cd ~/parallelexec-tutorial/inputs/openfoam
+       (node)$> cd ~/multiphysics-tutorial/inputs/openfoam
        (node)$> cp -rf 0.org 0
        (node)$> blockMesh
        (node)$> topoSet
@@ -440,7 +440,7 @@ There is no dependency on a MPI suite in the build of ABINIT, we can use the lat
 We will use one of ABINIT's parallel test cases to exemplify parallel execution.
 For reference, many examples are given in the installation directory of ABINIT, see `$EBROOTABINIT/share/abinit-test`.
 
-       (node)$> cd ~/parallelexec-tutorial/inputs/abinit
+       (node)$> cd ~/multiphysics-tutorial/inputs/abinit
        (node)$> mpirun -hostfile $OAR_NODEFILE abinit < si_kpt_band_fft.files
 
 After some initial processing and messages, we will see:
