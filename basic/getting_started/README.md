@@ -166,6 +166,7 @@ Directories such as `$HOME`, `$WORK` or `$SCRATCH` are shared among the nodes of
 
 
 ### Step 3a: Linux / OS X / Unix command line tools
+
 The two most common tools you can use for data transfers over SSH:
 
 * `scp`: for the full transfer of files and directories (only works fine for single files or directories of small/trivial size)
@@ -247,7 +248,7 @@ When you click the fifth icon on the top with the two green arrows to toggle the
 
 ![Connection settings](https://github.com/ULHPC/tutorials/raw/devel/basic/getting_started/images/transfer.jpg)
 
-### Step 3c: Windows MobaXterm file transfert
+### Step 3c: Windows MobaXterm file transfer
 
 If you are on Windows, you can directly use MobaXterm to transfer files. Connect to your session (see below on how to configure it). On the right panel you should see an **SFTP** panel opened.
 
