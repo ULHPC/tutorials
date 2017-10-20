@@ -266,13 +266,13 @@ In the sequel, replace `<login>` in the proposed commands with you login on the 
 
 * [reference documentation](http://hpc.uni.lu/users/docs/env.html)
 
-After a successful login onto one of the access node (see [Cluster Access](https://hpc.uni.lu/users/docs/access.html)), you end into your personal homedir `$HOME` which is shared over NFS between the access node and the computing nodes.
+After a successful login onto one of the access node (see [Cluster Access](https://hpc.uni.lu/users/docs/access.html)), you end into your personal homedir `$HOME` which is shared over a common network filesystem between the access node and the computing nodes.
 
-Again, remember that your homedir is placed on __separate__ NFS servers on each site, which __ARE NOT SYNCHRONIZED__: data synchronization between each of them remain at your own responsibility. We will see below that the UL HPC team prepared for you a script to facilitate the transfer of data between each site.
+Again, remember that your homedir is placed on __separate__ storage servers on each site, which __ARE NOT SYNCHRONIZED__: data synchronization between each of them remain at your own responsibility. We will see below that the UL HPC team prepared for you a script to facilitate the transfer of data between each site.
 
 Otherwise, you have to be aware of at least two directories:
 
-* `$HOME`: your home directory under NFS.
+* `$HOME`: your home directory (under NFS or GPFS).
 * `$SCRATCH`: a non-backed up area put if possible under Lustre for fast I/O operations
 
 Your homedir is under a regular backup policy. Therefore you are asked to pay attention to your disk usage __and__ the number of files you store there.
