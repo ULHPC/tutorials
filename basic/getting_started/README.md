@@ -386,7 +386,7 @@ Normally, the previously run job is still running.
 
   Then you can delete your job by running `scancel` command:
 
-		(access)$> scancel -j 390
+		(access)$> scancel 390
 
 
 * you can see your system-level utilization (memory, I/O, energy) of a running job using `sstat $jobid`:
