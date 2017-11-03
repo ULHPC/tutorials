@@ -1,6 +1,6 @@
 -*- mode: markdown; mode: visual-line; fill-column: 80 -*-
 
-Author: Valentin Plugaru <Valentin.Plugaru@uni.lu>
+Author: Valentin Plugaru <Valentin.Plugaru@uni.lu>  
 Copyright (c) 2013-2017 UL HPC Team  <hpc-sysadmins@uni.lu>
 
 ----------------------------------------------------------
@@ -348,7 +348,8 @@ In this section we will use the _example2.m_ script which shows:
 
 By default the parallel section of the script uses up to 4 threads, thus for a first test we will:
 
-* create a _launcher script_ called matlab-minlauncher.sh (paste in your terminal from `cat` to `EOF`, [see here how this is done](http://tldp.org/LDP/abs/html/here-docs.html))
+* create a _launcher script_ called matlab-minlauncher.sh (paste in your terminal from `cat` to `EOF` - [see here how this is done](http://tldp.org/LDP/abs/html/here-docs.html), 
+or create the file yourself with the respective content)
 * make it executable by setting the corresponding filesystem permission ([see here for more details](https://en.wikipedia.org/wiki/Modes_(Unix)))
 * request from the OAR scheduler 4 cores on 1 compute node for 5 minutes
 * wait until the job completes its execution (see its status with `oarstat -j $JOBID` and full details with `oarstat -f -j $JOBID`):
