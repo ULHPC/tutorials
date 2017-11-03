@@ -14,7 +14,7 @@ def standard_deviation(lst):
 
 if __name__ == '__main__':
 
-    python_version = sys.argv[1]
+    python_version = sys.version_info[0]
     lens = range(10, 300, 10)
     py_time = []
 
