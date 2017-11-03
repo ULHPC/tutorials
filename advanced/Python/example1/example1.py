@@ -21,7 +21,7 @@ if __name__ == '__main__':
         rands = [random.random() for _ in range(0, l)]
         execution_time = timeit.timeit(lambda: standard_deviation(rands), number=10000)
         py_time.append(execution_time)
-        print "%d %f" % (l, execution_time)
+        print("%d %f" % (l, execution_time))
 
     with open("data/time_per_array_size.dat", "w") as f:
         for i in range(len(py_time)):
