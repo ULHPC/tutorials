@@ -9,9 +9,7 @@
 
 python example1.py
 source numpy12/bin/activate
-python numpy_compare.py 12
+python numpy_compare.py
 deactivate
-source numpy13/bin/activate
-python numpy_compare.py 13
-deactivate
+python numpy_compare.py
 gnuplot gnuplot/numpy_compare.gpi
