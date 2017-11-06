@@ -25,7 +25,7 @@ From a general perspective, the [Support page](https://hpc.uni.lu/users/docs/rep
 **Convention**
 
 In the below tutorial, you'll proposed terminal commands where the prompt is denoted by `$>`.
-
+M
 In general, we will prefix to precise the execution context (_i.e._ your laptop, a cluster frontend or a node). Remember that `#` character is a comment. Example:
 
 		# This is a comment
@@ -127,37 +127,9 @@ or
 If that's the case, you can ignore the rest of this section.
 **Otherwise**, you will now have to configure a passphrase-free SSH key pair to permit a transparent connection from one cluster to another. Have a look at this [FAQ](https://hpc.uni.lu/blog/2017/faq-how-to-permit-bi-directional-connection/)
 
-### Step 2bis: Using SSH proxycommand setup to access the clusters despite port filtering
+**If you have some issue to connect to the clusters (for example `Connection closed by remote host` error maessage), you should check the section on how to [use SSH proxycommand setup to access the clusters despite port filtering](#using-ssh-proxycommand-setup-to-access-the-clusters-despite-port-filtering)**
 
-It might happen that the port 8022 is filtered from your working place. You can easily bypass this firewall rule using an SSH proxycommand to setup transparently multi-hop connexions *through* one host (a gateway) to get to the access frontend of the cluster, as depited below:
-
-     [laptop] -----||--------> 22 [SSH gateway] ---------> 8022 [access-{chaos,gaia}]
-                firewall
-
-The gateway can be any SSH server which have access to the access frontend of the cluster. The [Gforge @ UL](http://gforge.uni.lu) is typically used in this context but you can prefer any other alternative (your personal NAS @ home etc.). Then alter the SSH config on your laptop (in `~/.ssh/config` typically) as follows:
-
-* create an entry to be able to connect to the gateway:
-
-		# Alias for the gateway (not really needed, but convenient), below instantiated
-		Host gw
-		    User anotherlogin
-		    Hostname host.domain.org
-		    ForwardAgent no
-
-		# Automatic connection to UL HPC from the outside via the gateway
-		Host *.ulhpc
-			ProxyCommand ssh gw "nc -q 0 `basename %h .ulhpc` %p"
-
-* ensure you can connect to the gateway:
-
-		(laptop)$> ssh gw
-		(gateway)$> exit # or CTRL-D
-
-* the `.ulhpc` suffix we mentioned in the previous configuration is an arbitrary suffix you will now specify in your command lines in order to access the UL HPC platform via the gateway as follows:
-
-		(laptop)$> ssh gaia.ulhpc
-
-## Hands-on/ Transferring files
+### Hands-on/ Transferring files
 
 Directories such as `$HOME`, `$WORK` or `$SCRATCH` are shared among the nodes of the cluster that you are using (including the front-end) via shared filesystems (NFS, Lustre) meaning that:
 
@@ -759,3 +731,37 @@ The table below should convince you to always run `make` with the `-j` option wh
 
 
 * Use the [Ganglia](https://hpc.uni.lu/status/ganglia.html) interface to monitor the impact of the compilation process on the node your job is running on.
+
+## Advanced section
+
+### Using SSH proxycommand setup to access the clusters despite port filtering
+
+It might happen that the port 8022 is filtered from your working place. You can easily bypass this firewall rule using an SSH proxycommand to setup transparently multi-hop connexions *through* one host (a gateway) to get to the access frontend of the cluster, as depited below:
+
+[laptop] -----||--------> 22 [SSH gateway] ---------> 8022 [access-{chaos,gaia}]
+firewall
+
+The gateway can be any SSH server which have access to the access frontend of the cluster. The [Gforge @ UL](http://gforge.uni.lu) is typically used in this context but you can prefer any other alternative (your personal NAS @ home etc.). Then alter the SSH config on your laptop (in `~/.ssh/config` typically) as follows:
+
+* create an entry to be able to connect to the gateway:
+
+#### Alias for the gateway (not really needed, but convenient), below instantiated
+
+    Host gw
+    User anotherlogin
+    Hostname host.domain.org
+    ForwardAgent no
+
+#### Automatic connection to UL HPC from the outside via the gateway
+
+    Host *.ulhpc
+    ProxyCommand ssh gw "nc -q 0 `basename %h .ulhpc` %p"
+
+Ensure you can connect to the gateway:
+
+    (laptop)$> ssh gw
+    (gateway)$> exit # or CTRL-D
+
+The `.ulhpc` suffix we mentioned in the previous configuration is an arbitrary suffix you will now specify in your command lines in order to access the UL HPC platform via the gateway as follows:
+
+    (laptop)$> ssh gaia.ulhpc
