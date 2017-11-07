@@ -6,7 +6,7 @@ import sys
 
 if __name__ == '__main__':
 
-    numpy_version = sys.argv[1]
+    numpy_version = np.__version__.split('.')[1]
     lens = range(10, 300, 10)
     np_time = []
 

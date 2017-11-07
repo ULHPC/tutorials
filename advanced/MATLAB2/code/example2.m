@@ -50,13 +50,13 @@ for nproc = 2:maxWorkers
     cluster = parcluster();
     cluster.NumWorkers = nproc;
     fprintf('\n-- Parallel test using %i cores\n', cluster.NumWorkers)
-    matlabpool(cluster);
+    myparpool = parpool(cluster);
     exectime = tic;
     parfor i=1:maxiter
         c(:,i) = eig(data2);
     end
     timings = [timings toc(exectime)];
-    matlabpool close;
+    delete(myparpool);
     timings_full = [timings_full toc(looptime)];
     nprocs = [nprocs nproc];
     fprintf('-- Execution time: %fs.\n', timings(end))

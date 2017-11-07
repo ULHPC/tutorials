@@ -25,7 +25,7 @@ From a general perspective, the [Support page](https://hpc.uni.lu/users/docs/rep
 **Convention**
 
 In the below tutorial, you'll proposed terminal commands where the prompt is denoted by `$>`.
-
+M
 In general, we will prefix to precise the execution context (_i.e._ your laptop, a cluster frontend or a node). Remember that `#` character is a comment. Example:
 
 		# This is a comment
@@ -127,37 +127,9 @@ or
 If that's the case, you can ignore the rest of this section.
 **Otherwise**, you will now have to configure a passphrase-free SSH key pair to permit a transparent connection from one cluster to another. Have a look at this [FAQ](https://hpc.uni.lu/blog/2017/faq-how-to-permit-bi-directional-connection/)
 
-### Step 2bis: Using SSH proxycommand setup to access the clusters despite port filtering
+**If you have some issue to connect to the clusters (for example `Connection closed by remote host` error maessage), you should check the section on how to [use SSH proxycommand setup to access the clusters despite port filtering](#using-ssh-proxycommand-setup-to-access-the-clusters-despite-port-filtering)**
 
-It might happen that the port 8022 is filtered from your working place. You can easily bypass this firewall rule using an SSH proxycommand to setup transparently multi-hop connexions *through* one host (a gateway) to get to the access frontend of the cluster, as depited below:
-
-     [laptop] -----||--------> 22 [SSH gateway] ---------> 8022 [access-{chaos,gaia}]
-                firewall
-
-The gateway can be any SSH server which have access to the access frontend of the cluster. The [Gforge @ UL](http://gforge.uni.lu) is typically used in this context but you can prefer any other alternative (your personal NAS @ home etc.). Then alter the SSH config on your laptop (in `~/.ssh/config` typically) as follows:
-
-* create an entry to be able to connect to the gateway:
-
-		# Alias for the gateway (not really needed, but convenient), below instantiated
-		Host gw
-		    User anotherlogin
-		    Hostname host.domain.org
-		    ForwardAgent no
-
-		# Automatic connection to UL HPC from the outside via the gateway
-		Host *.ulhpc
-			ProxyCommand ssh gw "nc -q 0 `basename %h .ulhpc` %p"
-
-* ensure you can connect to the gateway:
-
-		(laptop)$> ssh gw
-		(gateway)$> exit # or CTRL-D
-
-* the `.ulhpc` suffix we mentioned in the previous configuration is an arbitrary suffix you will now specify in your command lines in order to access the UL HPC platform via the gateway as follows:
-
-		(laptop)$> ssh gaia.ulhpc
-
-## Hands-on/ Transferring files
+### Hands-on/ Transferring files
 
 Directories such as `$HOME`, `$WORK` or `$SCRATCH` are shared among the nodes of the cluster that you are using (including the front-end) via shared filesystems (NFS, Lustre) meaning that:
 
@@ -166,6 +138,7 @@ Directories such as `$HOME`, `$WORK` or `$SCRATCH` are shared among the nodes of
 
 
 ### Step 3a: Linux / OS X / Unix command line tools
+
 The two most common tools you can use for data transfers over SSH:
 
 * `scp`: for the full transfer of files and directories (only works fine for single files or directories of small/trivial size)
@@ -247,7 +220,7 @@ When you click the fifth icon on the top with the two green arrows to toggle the
 
 ![Connection settings](https://github.com/ULHPC/tutorials/raw/devel/basic/getting_started/images/transfer.jpg)
 
-### Step 3c: Windows MobaXterm file transfert
+### Step 3c: Windows MobaXterm file transfer
 
 If you are on Windows, you can directly use MobaXterm to transfer files. Connect to your session (see below on how to configure it). On the right panel you should see an **SFTP** panel opened.
 
@@ -265,13 +238,13 @@ In the sequel, replace `<login>` in the proposed commands with you login on the 
 
 * [reference documentation](http://hpc.uni.lu/users/docs/env.html)
 
-After a successful login onto one of the access node (see [Cluster Access](https://hpc.uni.lu/users/docs/access.html)), you end into your personal homedir `$HOME` which is shared over NFS between the access node and the computing nodes.
+After a successful login onto one of the access node (see [Cluster Access](https://hpc.uni.lu/users/docs/access.html)), you end into your personal homedir `$HOME` which is shared over a common network filesystem between the access node and the computing nodes.
 
-Again, remember that your homedir is placed on __separate__ NFS servers on each site, which __ARE NOT SYNCHRONIZED__: data synchronization between each of them remain at your own responsibility. We will see below that the UL HPC team prepared for you a script to facilitate the transfer of data between each site.
+Again, remember that your homedir is placed on __separate__ storage servers on each site, which __ARE NOT SYNCHRONIZED__: data synchronization between each of them remain at your own responsibility. We will see below that the UL HPC team prepared for you a script to facilitate the transfer of data between each site.
 
 Otherwise, you have to be aware of at least two directories:
 
-* `$HOME`: your home directory under NFS.
+* `$HOME`: your home directory (under NFS or GPFS).
 * `$SCRATCH`: a non-backed up area put if possible under Lustre for fast I/O operations
 
 Your homedir is under a regular backup policy. Therefore you are asked to pay attention to your disk usage __and__ the number of files you store there.
@@ -385,7 +358,7 @@ Normally, the previously run job is still running.
 
   Then you can delete your job by running `scancel` command:
 
-		(access)$> scancel -j 390
+		(access)$> scancel 390
 
 
 * you can see your system-level utilization (memory, I/O, energy) of a running job using `sstat $jobid`:
@@ -695,9 +668,9 @@ We will illustrate the usage of GNU screen by performing a compilation of a rece
 		(access)$> cd PS1/src
 
 * create a new window and rename it "Compile"
-* within this new window, start a new interactive job over 1 nodes for 6 hours
+* within this new window, start a new interactive job over 1 nodes for 4 hours
 
-		(access)$> srun -p interactive --qos qos-interactive --time 6:00:0 -N 1 --pty bash
+		(access)$> srun -p interactive --qos qos-interactive --time 4:00:0 -N 1 --pty bash
 
 * detach from this screen (using `CTRL+a d`)
 * kill your current SSH connection and your terminal
@@ -758,3 +731,37 @@ The table below should convince you to always run `make` with the `-j` option wh
 
 
 * Use the [Ganglia](https://hpc.uni.lu/status/ganglia.html) interface to monitor the impact of the compilation process on the node your job is running on.
+
+## Advanced section
+
+### Using SSH proxycommand setup to access the clusters despite port filtering
+
+It might happen that the port 8022 is filtered from your working place. You can easily bypass this firewall rule using an SSH proxycommand to setup transparently multi-hop connexions *through* one host (a gateway) to get to the access frontend of the cluster, as depited below:
+
+[laptop] -----||--------> 22 [SSH gateway] ---------> 8022 [access-{chaos,gaia}]
+firewall
+
+The gateway can be any SSH server which have access to the access frontend of the cluster. The [Gforge @ UL](http://gforge.uni.lu) is typically used in this context but you can prefer any other alternative (your personal NAS @ home etc.). Then alter the SSH config on your laptop (in `~/.ssh/config` typically) as follows:
+
+* create an entry to be able to connect to the gateway:
+
+#### Alias for the gateway (not really needed, but convenient), below instantiated
+
+    Host gw
+    User anotherlogin
+    Hostname host.domain.org
+    ForwardAgent no
+
+#### Automatic connection to UL HPC from the outside via the gateway
+
+    Host *.ulhpc
+    ProxyCommand ssh gw "nc -q 0 `basename %h .ulhpc` %p"
+
+Ensure you can connect to the gateway:
+
+    (laptop)$> ssh gw
+    (gateway)$> exit # or CTRL-D
+
+The `.ulhpc` suffix we mentioned in the previous configuration is an arbitrary suffix you will now specify in your command lines in order to access the UL HPC platform via the gateway as follows:
+
+    (laptop)$> ssh gaia.ulhpc

@@ -4,15 +4,15 @@
 %%%		Valentin Plugaru <Valentin.Plugaru@gmail.com> 2017-06-12
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-function [hist_date, hist_high, hist_low, hist_open, hist_close, hist_vol] = yahoo_finance_data(stock_symbol, s_date, e_date, verbose)
+function [hist_date, hist_high, hist_low, hist_open, hist_close, hist_vol] = google_finance_data(stock_symbol, s_date, e_date, verbose)
 
 % Make 'verbose' parameter optional (default to false)
 if (~exist('verbose', 'var'))
 	verbose = false;
 end
-% http://www.google.com/finance/historical?q=AAPL&startdate=2017-01-01&output=csv
+% http://finance.google.com/finance/historical?q=AAPL&startdate=2017-09-01&enddate=2017-11-01&output=csv
 % Build URL string, month indexing starts from 0
-url_string = 'http://www.google.com/finance/historical?';
+url_string = 'http://finance.google.com/finance/historical?';
 url_string = strcat(url_string, '&q=', upper(stock_symbol));
 url_string = strcat(url_string, '&startdate=', s_date );
 url_string = strcat(url_string, '&enddate=', e_date );

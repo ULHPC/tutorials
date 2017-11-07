@@ -37,7 +37,7 @@ before following the instructions in the next sections:
 Or simply clone the full tutorials repository and make a link to this tutorial
 
         (gaia-frontend)$> git clone https://github.com/ULHPC/tutorials.git
-        (gaia-frontend)$> ln -s tutorials/advanced/ParallelExec/ ~/parallelexec-tutorial
+        (gaia-frontend)$> ln -s tutorials/advanced/MultiPhysics/ ~/multiphysics-tutorial
 
 ## Basics
 
@@ -195,8 +195,8 @@ Thus the application couldn't be found (more on this later) on the remote nodes.
 
 Let's move it to the `$HOME` directory which is common across the cluster, and try again:
 
-       (node)$> mv /tmp/hellompi ~/parallelexec-tutorial
-       (node)$> cd ~/parallelexec-tutorial
+       (node)$> mv /tmp/hellompi ~/multiphysics-tutorial
+       (node)$> cd ~/multiphysics-tutorial
        (node)$> mpirun -hostfile $OAR_NODEFILE ./hellompi
 
 Now some different error messages are shown, about loading shared libraries, and the execution hangs (stop it with Ctrl-C). Why?
@@ -298,7 +298,7 @@ Generally, some things to look for are:
 Now we will run `pw.x` to perform electronic structure calculations in the presence of a finite homogeneous electric field, and we will use sample input (PW example10) to calculate high-frequency dielectric constant of bulk Silicon.
 For reference, many examples are given in the installation directory of QE, see `$EBROOTQUANTUMESPRESSO/espresso-$EBVERSIONQUANTUMESPRESSO/PW/examples`.
 
-       (node)$> cd ~/parallelexec-tutorial
+       (node)$> cd ~/multiphysics-tutorial
        (node)$> cd inputs/qe
        (node)$> pw.x < si.scf.efield2.in
 
@@ -366,7 +366,7 @@ For reference, many examples are given in the installation directory of OpenFOAM
 
 Before the main execution, some pre-processing steps:
 
-       (node)$> cd ~/parallelexec-tutorial/inputs/openfoam
+       (node)$> cd ~/multiphysics-tutorial/inputs/openfoam
        (node)$> cp -rf 0.org 0
        (node)$> blockMesh
        (node)$> topoSet
@@ -440,7 +440,7 @@ There is no dependency on a MPI suite in the build of ABINIT, we can use the lat
 We will use one of ABINIT's parallel test cases to exemplify parallel execution.
 For reference, many examples are given in the installation directory of ABINIT, see `$EBROOTABINIT/share/abinit-test`.
 
-       (node)$> cd ~/parallelexec-tutorial/inputs/abinit
+       (node)$> cd ~/multiphysics-tutorial/inputs/abinit
        (node)$> mpirun -hostfile $OAR_NODEFILE abinit < si_kpt_band_fft.files
 
 After some initial processing and messages, we will see:
@@ -489,6 +489,43 @@ Finally, we clean the environment:
   - [ABINIT: user's guide](http://www.abinit.org/doc/helpfiles/for-v7.2/users/new_user_guide.html)
   - [ABINIT: tutorials](http://www.abinit.org/doc/helpfiles/for-v7.2/tutorial/welcome.html)
 
+
+
+## NAMD
+
+[NAMD](http://www.ks.uiuc.edu/Research/namd/), recipient of a 2002 Gordon Bell Award and a 2012 Sidney Fernbach Award, is a parallel molecular dynamics code designed for high-performance simulation of large biomolecular systems. Based on Charm++ parallel objects, NAMD scales to hundreds of cores for typical simulations and beyond 500,000 cores for the largest simulations.
+
+The latest NAMD 2.12 is available on the `iris` cluster as of June 2017, and on Debian 8 nodes of `gaia` as of August 2017, let's check for it:
+
+        (node)$> module avail NAMD
+
+        --------------------- /opt/apps/resif/data/production/v0.3/default/modules/all -----------------
+           chem/NAMD/2.12-intel-2017a-mpi
+
+We will use one of the benchmark inputs of NAMD to test it, specifically the [reference](http://www.ks.uiuc.edu/Research/namd/utilities/)
+_STMV (virus) benchmark (1,066,628 atoms, periodic, PME)_.
+
+
+        (node)$> mkdir namd-test
+        (node)$> cd namd-test
+        (node)$> wget http://www.ks.uiuc.edu/Research/namd/utilities/stmv.tar.gz
+        (node)$> tar xf stmv.tar.gz
+        (node)$> cd stmv
+        (node)$> module load chem/NAMD
+
+Now, we will need to set the `outputName` parameter within the input file to the path that we want:
+
+        (node)$> sed -i 's/^outputName.*$/outputName    generated-data/g' stmv.namd
+
+Next we will perform the parallel execution of NAMD, showing its runtime output both on console and storing it to file using `tee`:
+
+#### On Gaia
+
+        (node)$> mpirun -hostfile $OAR_NODEFILE namd2 stmv.namd | tee out
+
+#### On Iris
+
+        (node)$> srun namd2 stmv.namd | tee out
 
 ## ASE
 
