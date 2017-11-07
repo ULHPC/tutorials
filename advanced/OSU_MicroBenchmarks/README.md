@@ -87,9 +87,9 @@ $> mkdir src
 $> cd src
 # Download the latest version
 $> export OSU_VERSION=5.3.2     # Just to abstract from the version to download
-$> wget --no-check-certificate http://mvapich.cse.ohio-state.edu/download/mvapich/osu-micro-benchmarks-$(OSU_VERSION).tar.gz
-$> tar xvzf osu-micro-benchmarks-$(OSU_VERSION).tar.gz
-$> cd osu-micro-benchmarks-$(OSU_VERSION)
+$> wget --no-check-certificate http://mvapich.cse.ohio-state.edu/download/mvapich/osu-micro-benchmarks-${OSU_VERSION}.tar.gz
+$> tar xvzf osu-micro-benchmarks-${OSU_VERSION}.tar.gz
+$> cd osu-micro-benchmarks-${OSU_VERSION}
 ```
 
 ## Building the OSU Micro-benchmarks
@@ -123,7 +123,7 @@ Currently Loaded Modules:
   3) compiler/icc/2017.1.132-GCC-6.3.0-2.27   6) mpi/impi/2017.1.132-iccifort-2017.1.132-GCC-6.3.0-2.27   9) toolchain/intel/2017a
 
 # Configure the Intel MPI-based build for installation in the current directory
-$> ../src/osu-micro-benchmarks-5.3.2/configure CC=mpiicc CXX=mpiicpc --prefix=$(pwd)
+$> ../src/osu-micro-benchmarks-5.4/configure CC=mpiicc CXX=mpiicpc CFLAGS=$(pwd)/../src/osu-micro-benchmarks-5.4/util --prefix=$(pwd)
 $> make && make install
 ```
 
@@ -163,7 +163,7 @@ Currently Loaded Modules:
   2) tools/binutils/2.28-GCCcore-6.3.0   4) tools/numactl/2.0.11-GCCcore-6.3.0   6) mpi/OpenMPI/2.1.1-GCC-6.3.0-2.28
 
 # Configure the OpenMPI-based build for installation in the current directory
-$> ../src/osu-micro-benchmarks-5.3.2/configure CC=mpicc --prefix=$(pwd)
+$> ../src/osu-micro-benchmarks-5.4/configure CC=mpicc --prefix=$(pwd)
 $> make && make install
 ```
 
@@ -344,7 +344,7 @@ In the case of OAR (_i.e._ on the `gaia` and `chaos` cluster), you can use the [
 $> ~/tutorials/OSU-MicroBenchmarks/runs
 $> ln -s ~/git/ULHPC/launcher-scripts/bash/MPI/mpi_launcher.sh launcher-OSU.intel.sh
 $> ./launcher-OSU.intel.sh \
-     --basedir $HOME/tutorials/OSU-MicroBenchmarks/src/osu-micro-benchmarks-5.3.2/build.intel/libexec/osu-micro-benchmarks/mpi/one-sided \
+     --basedir $HOME/tutorials/OSU-MicroBenchmarks/src/osu-micro-benchmarks-5.4/build.intel/libexec/osu-micro-benchmarks/mpi/one-sided \
      --npernode 1 --module toolchain/intel --exe osu_get_latency,osu_get_bw
 ```
 
@@ -355,7 +355,7 @@ If you want to avoid this long list of arguments, just create a file `launcher-O
 NAME=OSU.intel
 
 MODULE_TO_LOADstr=toolchain/intel
-MPI_PROG_BASEDIR=$HOME/tutorials/OSU-MicroBenchmarks/src/osu-micro-benchmarks-5.3.2/build.intel/libexec/osu-micro-benchmarks/mpi/one-sided/
+MPI_PROG_BASEDIR=$HOME/tutorials/OSU-MicroBenchmarks/src/osu-micro-benchmarks-5.4/build.intel/libexec/osu-micro-benchmarks/mpi/one-sided/
 
 MPI_PROGstr=osu_get_latency,osu_get_bw
 MPI_NPERNODE=1
@@ -387,7 +387,7 @@ $> cat launcher-OSU.openmpi.default.conf
 NAME=OSU.openmpi
 
 MODULE_TO_LOADstr=mpi/OpenMPI
-	MPI_PROG_BASEDIR=$HOME/tutorials/OSU-MicroBenchmarks/src/osu-micro-benchmarks-5.3.2/build.openmpi/libexec/osu-micro-benchmarks/mpi/one-sided/
+	MPI_PROG_BASEDIR=$HOME/tutorials/OSU-MicroBenchmarks/src/osu-micro-benchmarks-5.4/build.openmpi/libexec/osu-micro-benchmarks/mpi/one-sided/
 
 MPI_PROGstr=osu_get_latency,osu_get_bw
 MPI_NPERNODE=1

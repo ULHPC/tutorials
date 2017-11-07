@@ -79,9 +79,9 @@ $> mkdir src
 $> cd src
 # Download the latest version
 $> export HPL_VERSION=2.2
-$> wget --no-check-certificate http://www.netlib.org/benchmark/hpl/hpl-$(HPL_VERSION).tar.gz
-$> tar xvzf hpl-$(HPL_VERSION).tar.gz
-$> cd  hpl-$(HPL_VERSION)
+$> wget --no-check-certificate http://www.netlib.org/benchmark/hpl/hpl-${HPL_VERSION}.tar.gz
+$> tar xvzf hpl-${HPL_VERSION}.tar.gz
+$> cd  hpl-${HPL_VERSION}
 ```
 
 ## Building the HPL benchmark
