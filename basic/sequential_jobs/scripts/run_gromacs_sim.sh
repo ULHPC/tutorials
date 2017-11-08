@@ -30,5 +30,5 @@ sed -i "s/^fourier_spacing.*$/fourier_spacing=${VALUE}/" pme_verlet.mdp
 
 which gmx > /dev/null 2>&1 && GMX=gmx
 $GMX grompp -f pme_verlet.mdp -c conf.gro -p topol.top -o bench_rnase_cubic.tpr
-$GMX mdrun -nt 1 -s bench_rnase_cubic.tpr -nsteps 1000
+$GMX mdrun -nt 1 -s bench_rnase_cubic.tpr -nsteps 500
 

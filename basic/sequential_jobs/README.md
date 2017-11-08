@@ -96,7 +96,7 @@ In this exercise, we will process some example input files, and make the paramet
 
 Create a file which contains the list of parameters:
 
-    (access)$> seq 0.1 0.005 0.2 > $HOME/PS2/param_file
+    (access)$> seq 0.1 0.002 0.2 > $HOME/PS2/param_file
 
 
 #### Step 1: Naive workflow
