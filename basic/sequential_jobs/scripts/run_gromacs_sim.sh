@@ -9,11 +9,7 @@ mkdir -p $TMPDIR
 cd $TMPDIR
 
 # extract the example input files
-
-if [[ ! -d rnase_cubic ]] ; then
-  wget $SRC
-  tar xzvf rnase_bench_systems.tar.gz rnase_cubic
-fi
+flock $TMPDIR -c "test ! -d rnase_cubic && wget $SRC && tar xzvf rnase_bench_systems.tar.gz rnase_cubic"
 
 # Create a new workdir
 
