@@ -238,13 +238,13 @@ In the sequel, replace `<login>` in the proposed commands with you login on the 
 
 * [reference documentation](http://hpc.uni.lu/users/docs/env.html)
 
-After a successful login onto one of the access node (see [Cluster Access](https://hpc.uni.lu/users/docs/access.html)), you end into your personal homedir `$HOME` which is shared over a common network filesystem between the access node and the computing nodes.
+After a successful login onto one of the access node (see [Cluster Access](https://hpc.uni.lu/users/docs/access.html)), you end into your personal homedir `$HOME` which is shared over NFS between the access node and the computing nodes.
 
-Again, remember that your homedir is placed on __separate__ storage servers on each site, which __ARE NOT SYNCHRONIZED__: data synchronization between each of them remain at your own responsibility. We will see below that the UL HPC team prepared for you a script to facilitate the transfer of data between each site.
+Again, remember that your homedir is placed on __separate__ NFS servers on each site, which __ARE NOT SYNCHRONIZED__: data synchronization between each of them remain at your own responsibility. We will see below that the UL HPC team prepared for you a script to facilitate the transfer of data between each site.
 
 Otherwise, you have to be aware of at least two directories:
 
-* `$HOME`: your home directory (under NFS or GPFS).
+* `$HOME`: your home directory under NFS.
 * `$SCRATCH`: a non-backed up area put if possible under Lustre for fast I/O operations
 
 Your homedir is under a regular backup policy. Therefore you are asked to pay attention to your disk usage __and__ the number of files you store there.
@@ -340,8 +340,8 @@ c. number of reserved nodes
 d. number of cores reserved per node together with the node name (one per line)
    * Example of output:
 
-    	    12 gaia-11
-    	    12 gaia-15
+            12 iris-11
+            12 iris-15
 
    * _hint_: `NPROCS variable or NODELIST`
 
@@ -545,7 +545,6 @@ You can find the available OAR properties on the [UL HPC documentation](https://
 |host            | Full hostname of the resource          | -p "host='h-cluster1-14.chaos-cluster.uni.lux'" |
 |network_address | Short hostname of the resource         | -p "network_address='h-cluster1-14'"            |
 |gpu             | GPU availability (gaia only)           | -p "gpu='YES'"                                  |
-|nodeclass       | Node class (chaos only) 'h','d','e','s'| -p "nodeclass='h'"                              |
 
 * reserve interactively 4 cores on a GPU node for 8 hours (_this holds only on the `gaia` cluster_) (**total: 4 cores**)
 
@@ -555,28 +554,6 @@ You can find the available OAR properties on the [UL HPC documentation](https://
 
 		(access-gaia)$> oarsub -I -l nodes=1/core=4,walltime=8 -p "gpu='yes'" -p "network_address='gaia-65'"
 
-
-**Question: reserve interactively 2 nodes among the `h-cluster1-*` nodes (_this holds only on the `chaos` cluster_) using the `nodeclass` property**
-
-You can combine filters using the `+` sign.
-
-* reserve interactively 4 cores, each on 2 GPU nodes and 20 cores on any other nodes (**total: 28 cores**)
-
-		(access-gaia)$> oarsub -I -l "{gpu='YES'}/nodes=2/core=4+{gpu='NO'}/core=20"
-		[ADMISSION RULE] Set default walltime to 7200.
-		[ADMISSION RULE] Modify resource description with type and ibpool constraints
-		OAR_JOB_ID=2828104
-		Interactive mode : waiting...
-		Starting...
-
-		Connect to OAR job 2828104 via the node gaia-11
-		[OAR] OAR_JOB_ID=2828104
-		[OAR] Your nodes are:
-            gaia-11*12
-            gaia-12*4
-            gaia-59*4
-            gaia-63*4
-            gaia-65*4
 
 #### Reserving specific resources `bigsmp`and `bigmem`
 
@@ -730,8 +707,256 @@ The table below should convince you to always run `make` with the `-j` option wh
 
 
 * Use the [Ganglia](https://hpc.uni.lu/status/ganglia.html) interface to monitor the impact of the compilation process on the node your job is running on.
+* Use the following system commands on the node during the compilation:
+
+  * `htop`
+  * `top`
+  * `free -m`
+  * `uptime`
+  * `ps aux`
+
+## Using a command line text editor
+
+Before the next section, you must learn to use a text editor in command line.
+We can recommend `nano` or `vim`: `nano` is very simple, `vim` is complex but very powerful.
+
+
+### Nano
+
+`$ nano <path/filename>`
+
+* quit and save: `CTRL+x`
+* save: `CTRL+o`
+* highlight text: `Alt-a`
+* Cut the highlighted text: `CTRL+k`
+* Paste: `CTRL+u`
+
+
+### Vim
+
+[`vim <path/filename>`](https://vim.rtorr.com/)
+
+There are 2 main modes:
+
+* Edition mode: press `i` or `insert` once
+* Command mode: press `ESC` once
+
+Here is a short list of useful commands:
+
+* save: `:w`
+* save and quit: `:wq`
+* quit and discard changes: `:q!`
+* search: `/<pattern>`
+* search & replace: `:%s/<pattern>/<replacement>/g`
+* jump to line 100: `:100`
+* highlight text: `CTRL+V`
+* cut the highlighted text: `d`
+* cut one line: `dd`
+* paste: `p`
+* undo: `u`
 
 ## Advanced section
+### Using software modules
+
+The UL HPC provides [environment modules](https://hpc.uni.lu/users/docs/modules.html) with the module command
+to manage the user environment, e.g. changing the environment variables.
+
+By loading appropriate environment modules, the user can select:
+
+* compilers,
+* libraries, e.g. the MPI library, or
+* other third party software packages.
+
+An exhaustive list of the available software is proposed [in this page](https://hpc.uni.lu/users/software/).
+
+On a node, using an interactive jobs, you can:
+
+* list all available softwares: `module avail`
+* search for one software: `module spider <search terms>`
+* "load" a software in your environment: `module load <module name>`
+* list the currently loaded modules: `module list`
+* clean your environment, unload everything: `module purge`
+
+
+#### Matlab
+
+1. Create a file named `fibonacci.m` in your home directory, copy-paste the following code in this file.
+   This code will calculate the first N numbers of the Fibonacci sequence
+
+
+        N=1000;
+        fib=zeros(1,N);
+        fib(1)=1;
+        fib(2)=1;
+        k=3;
+        while k <= N
+          fib(k)=fib(k-2)+fib(k-1);
+          fprintf('%d\n',fib(k));
+          pause(1);
+          k=k+1;
+        end
+
+
+2. Create a new interactive job
+
+3. Look for the `matlab` module using the command `module spider`
+
+4. Load the module `base/MATLAB` using the command `module load`
+
+5. Execute the code using matlab
+
+        (node)$> matlab -nojvm -nodisplay -nosplash < path/to/fibonacci.m
+
+
+#### R
+
+1. Create a file named `fibonacci.R` in your home directory, copy-paste the following code in this file.
+   This code will calculate the first N numbers of the Fibonacci sequence
+
+
+        N <- 130
+        fibvals <- numeric(N)
+        fibvals[1] <- 1
+        fibvals[2] <- 1
+        for (i in 3:N) {
+             fibvals[i] <- fibvals[i-1]+fibvals[i-2]
+             print( fibvals[i], digits=22)
+             Sys.sleep(1)
+        }
+
+2. Create a new interactive job
+
+3. Look for the `R` module using the command `module spider`
+
+3. Load the module `lang/R` using the command `module load`
+
+4. Execute the code using R
+
+        (node)$> Rscript path/to/fibonacci.R
+
+
+
+### Compiling your code
+
+In this section, we will learn to compile small "hello world" programs in different languages, using different compilers and toolchains.
+
+#### C
+
+Create a new file called `helloworld.c`, containing the source code of a simple "Hello World" program written in C.
+
+
+        #include<stdio.h>
+    
+        int main()
+        {
+            printf("Hello, world!");
+            return 0;
+        }
+
+
+First, compile the program using the "FOSS" toochain, containing the GNU C compiler
+
+        (node)$> module load toolchain/foss
+        (node)$> gcc helloworld.c -o helloworld
+
+Then, compile the program using the Intel toolchain, containing the ICC compiler
+
+        (node)$> module purge
+        (node)$> module load toolchain/intel
+        (node)$> icc helloworld.c -o helloworld
+
+If you use Intel CPUs and ICC is available on the platform, it is advised to use ICC in order to produce optimized binaries and achieve better performance.
+
+
+#### C++
+
+**Question:** create a new file `helloworld.cpp` containing the following C++ source code,
+compile the following program, using GNU C++ compiler (`g++` command), and the Intel compiler (`icpc` command).
+
+
+        #include <iostream>
+    
+        int main() {
+            std::cout << "Hello, world!" << std::endl;
+        }
+
+
+
+#### Fortran
+
+**Question:** create a new file `helloworld.f` containing the following source code,
+compile the following program, using the GNU Fortran compiler (`gfortran` command), and ICC (`ifortran` command).
+
+
+        program hello
+           print *, "Hello, World!"
+        end program hello
+
+
+Be careful, the 6 spaces at the beginning of each line are required
+
+
+
+#### MPI
+
+MPI is a programming interface that enables the communication between processes of a distributed memory system.
+
+We will create a simple MPI program where the MPI process of rank 0 broadcasts an integer (42) to all the other processes.
+Then, each process prints its rank, the total number of processes and the value he received from the process 0.
+
+In your home directory, create a file `mpi_broadcast.c` and copy the following source code:
+
+
+        #include <stdio.h>
+        #include <mpi.h>
+        #include <unistd.h>
+        #include <time.h> /* for the work function only */
+        
+        int main (int argc, char *argv []) {
+               char hostname[257];
+               int size, rank;
+               int i, pid;
+               int bcast_value = 1;
+        
+               gethostname(hostname, sizeof hostname);
+               MPI_Init(&argc, &argv);
+               MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+               MPI_Comm_size(MPI_COMM_WORLD, &size);
+               if (!rank) {
+                    bcast_value = 42;
+               }
+               MPI_Bcast(&bcast_value,1 ,MPI_INT, 0, MPI_COMM_WORLD );
+               printf("%s\t- %d - %d - %d\n", hostname, rank, size, bcast_value);
+               fflush(stdout);
+        
+               MPI_Barrier(MPI_COMM_WORLD);
+               MPI_Finalize();
+               return 0;
+        }
+
+Reserve 2 cores on two distinct node with OAR
+
+        (access-gaia)$> oarsub -I -l nodes=2/core=1
+
+or with Slurm
+
+        (access-iris)$> srun -p interactive --qos qos-interactive --time 1:00:0 -N 2 -n 2 --pty bash
+
+
+Load a toolchain and compile the code using `mpicc`
+
+        (node)$> mpicc mpi_broadcast.c -o mpi_broadcast -lpthread
+
+If you use OAR, execute your mpi program using `mpirun`.
+Note that the `-n` parameter of mpirun is the number of processes, which should be equal to the number of reserved cpu cores most of the time.
+
+        (node)$> OAR_NTASKS=$(cat $OAR_NODEFILE | wc)
+        (node)$> mpirun -n $OAR_NTASKS -hostfile $OAR_NODEFILE ~/mpi_broadcast
+
+If you use Slurm, you can use the `srun` command. Create an interactive job, with 2 nodes (`-N 2`), and at least 2 tasks (`-n 2`).
+
+        (node)$> srun -n $SLURM_NTASKS ~/mpi_broadcast
+
 
 ### Using SSH proxycommand setup to access the clusters despite port filtering
 
