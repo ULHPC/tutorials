@@ -737,8 +737,8 @@ The table below should convince you to always run `make` with the `-j` option wh
 
 It might happen that the port 8022 is filtered from your working place. You can easily bypass this firewall rule using an SSH proxycommand to setup transparently multi-hop connexions *through* one host (a gateway) to get to the access frontend of the cluster, as depited below:
 
-[laptop] -----||--------> 22 [SSH gateway] ---------> 8022 [access-{chaos,gaia}]
-firewall
+    [laptop] -----||--------> 22 [SSH gateway] ---------> 8022 [access-{chaos,gaia}]
+               firewall
 
 The gateway can be any SSH server which have access to the access frontend of the cluster. The [Gforge @ UL](http://gforge.uni.lu) is typically used in this context but you can prefer any other alternative (your personal NAS @ home etc.). Then alter the SSH config on your laptop (in `~/.ssh/config` typically) as follows:
 
