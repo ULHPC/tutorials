@@ -127,7 +127,7 @@ or
 If that's the case, you can ignore the rest of this section.
 **Otherwise**, you will now have to configure a passphrase-free SSH key pair to permit a transparent connection from one cluster to another. Have a look at this [FAQ](https://hpc.uni.lu/blog/2017/faq-how-to-permit-bi-directional-connection/)
 
-**If you have some issue to connect to the clusters (for example `Connection closed by remote host` error maessage), you should check the section on how to [use SSH proxycommand setup to access the clusters despite port filtering](#using-ssh-proxycommand-setup-to-access-the-clusters-despite-port-filtering)**
+> If you have some issue to connect to the clusters (for example `Connection closed by remote host` error message), you should check the section on how to [use SSH proxycommand setup to access the clusters despite port filtering](#using-ssh-proxycommand-setup-to-access-the-clusters-despite-port-filtering)
 
 ### Hands-on/ Transferring files
 
@@ -142,7 +142,7 @@ Directories such as `$HOME`, `$WORK` or `$SCRATCH` are shared among the nodes of
 The two most common tools you can use for data transfers over SSH:
 
 * `scp`: for the full transfer of files and directories (only works fine for single files or directories of small/trivial size)
-* `rsync`: a software application which synchronizes files and directories from one location to another while minimizing data transfer as only the outdated or inexistent elements are transfered (practically required for lengthy complex transfers, which are more likely to be interrupted in the middle).
+* `rsync`: a software application which synchronizes files and directories from one location to another while minimizing data transfer as only the outdated or inexistent elements are transferred (practically required for lengthy complex transfers, which are more likely to be interrupted in the middle).
 
 Of both, normally the second approach should be preferred, as more generic; note that, both ensure a secure transfer of the data, within an encrypted tunnel.
 
@@ -270,7 +270,6 @@ Each cluster offers a set of web services to monitor the platform usage:
 * [Monika](https://hpc.uni.lu/status/monika.html), the visualization interface of the OAR scheduler, which  display the status of the clusters as regards the jobs running on the platform.
 * [DrawGantt](https://hpc.uni.lu/status/drawgantt.html), the Gantt visualization of jobs scheduled on OAR
 * [Ganglia](https://hpc.uni.lu/status/ganglia.html), a scalable distributed monitoring system for high-performance computing systems such as clusters and Grids.
-* [CDash](http://cdash.uni.lux/) (internal UL network use)
 
 ### Step 3a: Reserving resources with Slurm
 
