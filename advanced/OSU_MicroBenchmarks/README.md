@@ -86,7 +86,7 @@ $> cd ~/tutorials/OSU-MicroBenchmarks
 $> mkdir src
 $> cd src
 # Download the latest version
-$> export OSU_VERSION=5.3.2     # Just to abstract from the version to download
+$> export OSU_VERSION=5.4     # Just to abstract from the version to download
 $> wget --no-check-certificate http://mvapich.cse.ohio-state.edu/download/mvapich/osu-micro-benchmarks-${OSU_VERSION}.tar.gz
 $> tar xvzf osu-micro-benchmarks-${OSU_VERSION}.tar.gz
 $> cd osu-micro-benchmarks-${OSU_VERSION}
