@@ -85,8 +85,16 @@ In order to edit files in your terminal, you are expected to use your preferred 
 * [emacs](http://www.jesshamrick.com/2012/09/10/absolute-beginners-guide-to-emacs/)
 * ...
 
-If you have never used any of them, `nano` is intuitive, but vim and emacs are more powerful.
+If you have never used any of them, `nano` is intuitive, but `vim` and `emacs` are more powerful.
+  
+With nano, you will only have to learn a few shortcuts to get started:
 
+* `$ nano <path/filename>`
+* quit and save: `CTRL+x`
+* save: `CTRL+o`
+* highlight text: `Alt-a`
+* Cut the highlighted text: `CTRL+k`
+* Paste: `CTRL+u`
 
 
 ## Exercise 1: Parametric experiment with Gromacs
@@ -306,8 +314,8 @@ In an interactive job, install `pillow` in your home directory using this comman
 
 Copy the source files in your $HOME directory.
 
-    (access)>$ tar xvf /mnt/isilon/projects/ulhpc-tutorials/sequential/images.tgz -C $HOME/PS2/
-    (access)>$ cp /mnt/isilon/projects/ulhpc-tutorials/sequential/copyright.png $HOME/PS2
+    (access)>$ tar xvf /mnt/isilon/projects/ulhpc-tutorials/sequential/images2.tgz -C $HOME/PS2/
+    (access)>$ cp /mnt/isilon/projects/ulhpc-tutorials/sequential/ulhpc_logo.png $HOME/PS2
 
     (access)>$ cd $HOME/PS2
 
@@ -315,7 +323,7 @@ Copy the source files in your $HOME directory.
 
 We must create a file containing a list of parameters, each line will be passed to `watermark.py`.
 
-    ls -d -1 $HOME/PS2/images/*.JPG | awk -v watermark=$HOME/PS2/copyright.png '{print watermark " " $1}' > $HOME/PS2/generic_launcher_param
+    ls -d -1 $HOME/PS2/images/*.JPG | awk -v watermark=$HOME/PS2/ulhpc_logo.png '{print watermark " " $1}' > $HOME/PS2/generic_launcher_param
     \_____________________________/   \_________________________________________________________________/ \_________________________________/
                    1                                                    2                                                3
 
@@ -348,7 +356,7 @@ On Iris, the Slurm job submission command is `sbatch`
 
 On Chaos and Gaia, the OAR job submission command is `oarsub`
 
-    (access Chaos/Gaia)>$ oarsub $HOME/PS2/launcher-scripts/bash/generic/parallel_launcher.sh
+    (access Chaos/Gaia)>$ oarsub -l nodes=2 $HOME/PS2/launcher-scripts/bash/generic/parallel_launcher.sh
 
 
 #### Step 5: Download the files

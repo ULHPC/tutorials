@@ -248,10 +248,10 @@ def main(argv):
     im = Image.open(argv[1])
     mark = Image.open(argv[0])
     watermark(im, mark,
-              position='C',
-              opacity=0.8,
+              position='BR',
+              opacity=0.3,
               scale='f',
-              rotation=45).save(argv[1] + '.watermarked_' + socket.gethostname() + '.jpg', 'JPEG')
+              rotation=0).convert("RGB").save(argv[1] + '.watermarked_' + socket.gethostname() + '.jpg', 'JPEG')
 
 
 if __name__ == '__main__':
