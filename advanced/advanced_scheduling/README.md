@@ -133,9 +133,18 @@ __Question__: can you ssh between the nodes part of this job? what happens if yo
 * Start an interactive job with _X11 forwarding_ such that GUI applications (running in the cluster) will be shown on your workstation:
     - note that your initial connection to the iris cluster needs to have X11 Forwarding enabled, e.g. `ssh -X iris-cluster`
 
+Note: as of 2017-11-09, direct X11 (--x11) support with srun (`srun -p interactive --qos qos-interactive --pty --x11 bash -i`) is being patched, and the below workaround is needed.
+
+1. create a file `~/bin/slurm-x11` with the below content and make it executable (`chmod +x ~/bin/slurm-x11`):
+
 ```
-srun -p interactive --qos qos-interactive --pty -x11 bash -i
+#!/bin/bash
+headNode=$(scontrol show hostname $SLURM_NODELIST | head -n1)
+slurmEnv=$(printenv | grep SLURM_ | sed -rn "s/=(.*)/='\1'/p" | paste -d ' ' -s)
+exec ssh -X $headnode -t "$slurmEnv bash"
 ```
+
+2. launch a job with X11: `salloc -p interactive --qos qos-interactive slurm-x11`
 
 __Question__: what happens if you launch a graphical application (e.g. `xterm`)? did it appear on your own machine? if not, what went wrong?
 
