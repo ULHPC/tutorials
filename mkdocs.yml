@@ -31,6 +31,7 @@ pages:
 - Advanced topics:
   - Advanced workflows on sequential jobs management: 'advanced/advanced_workflows/README.md'
   - Advanced scheduling with SLURM: 'advanced/advanced_scheduling/index.md'
+  - Debugging, profiling and performance analysis: 'advanced/debugging_profiling/index.md'
   - Prototyping with Python: 'advanced/Python/index.md'
   - Reproducible Research: 'advanced/ReproducibleResearch/index.md'
 - Documentation (RTFD): 'rtfd.md'

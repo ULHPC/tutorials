@@ -40,8 +40,8 @@ The material provided in this reporitory is benefiting from the contributions of
 
 * The UL HPC Team of course, _i.e._:
     - Dr. [Sebastien Varrette](https://varrette.gforge.uni.lu),  Research Scientist, [UL HPC](http://hpc.uni.lu) Manager
-    - Valentin Plugaru, MSc, Research Collaborator
-    - Sarah Peter (formally Sarah Diehl), MSc, Research Associate
+    - Valentin Plugaru, MSc, Research Associate
+    - Sarah Peter (nee Diehl), MSc, Research Associate
     - Hyacinthe Cartiaux,
     - Clément Parisot
 * Dr. Joseph Emeras, Research Associate
