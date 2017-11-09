@@ -277,6 +277,10 @@ def standard_dev(lst):
 
 **HINT:** If you run `pythran example4.py -e -o std.c` it will generate the C code. Have a look at the `*.c` files in your directory.
 
+### Overview graph of runtimes
+
+![alt-text](https://github.com/ULHPC/tutorials/raw/devel/advanced/Python/time_vs_array_size.jpg)
+
 ## Use Scoop to parallelize execution of your Python code with Slurm
 
 In this part, we will use Scoop library to parallelize our Python code and execute it on iris cluster. This example uses the Monte-Carlo algorithm to compute the value of pi. Please have a look at the top of this page to check how it works.
