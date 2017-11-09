@@ -355,7 +355,7 @@ In the case of OAR (_i.e._ on the `gaia` and `chaos` cluster), you can use the [
 $> ~/tutorials/OSU-MicroBenchmarks/runs
 $> ln -s ~/git/ULHPC/launcher-scripts/bash/MPI/mpi_launcher.sh launcher-OSU.intel.sh
 $> ./launcher-OSU.intel.sh \
-     --basedir $HOME/tutorials/OSU-MicroBenchmarks/src/osu-micro-benchmarks-5.4/build.intel/libexec/osu-micro-benchmarks/mpi/one-sided \
+     --basedir $HOME/tutorials/OSU-MicroBenchmarks/build.intel/libexec/osu-micro-benchmarks/mpi/one-sided \
      --npernode 1 --module toolchain/intel --exe osu_get_latency,osu_get_bw
 ```
 
@@ -364,9 +364,10 @@ If you want to avoid this long list of arguments, just create a file `launcher-O
 ```bash
 # Defaults settings for running the OSU Micro benchmarks compiled with Intel MPI
 NAME=OSU.intel
+DATADIR=$HOME/tutorials/OSU-MicroBenchmarks/runs/data
 
 MODULE_TO_LOADstr=toolchain/intel
-MPI_PROG_BASEDIR=$HOME/tutorials/OSU-MicroBenchmarks/src/osu-micro-benchmarks-5.4/build.intel/libexec/osu-micro-benchmarks/mpi/one-sided/
+MPI_PROG_BASEDIR=$HOME/tutorials/OSU-MicroBenchmarks/build.intel/libexec/osu-micro-benchmarks/mpi/one-sided/
 
 MPI_PROGstr=osu_get_latency,osu_get_bw
 MPI_NPERNODE=1
@@ -398,7 +399,8 @@ $> cat launcher-OSU.openmpi.default.conf
 NAME=OSU.openmpi
 
 MODULE_TO_LOADstr=mpi/OpenMPI
-	MPI_PROG_BASEDIR=$HOME/tutorials/OSU-MicroBenchmarks/src/osu-micro-benchmarks-5.4/build.openmpi/libexec/osu-micro-benchmarks/mpi/one-sided/
+	MPI_PROG_BASEDIR=$HOME/tutorials/OSU-MicroBenchmarks/build.openmpi/libexec/osu-micro-benchmarks/mpi/one-sided/
+DATADIR=$HOME/tutorials/OSU-MicroBenchmarks/runs/data
 
 MPI_PROGstr=osu_get_latency,osu_get_bw
 MPI_NPERNODE=1
