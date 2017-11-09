@@ -100,7 +100,7 @@ In all cases, you **should** now operate the compilation within an interactive j
 ```bash
 # If not yet done
 (access)$> si -N 2 --ntasks-per-node=1                   # on iris (1 core on 2 nodes)
-(access)$> oarsub -I -l enclosure=1/nodes=2,walltime=4   # chaos / gaia
+(access)$> oarsub -I -l nodes=2/core=1,walltime=4   # chaos / gaia
 ```
 
 ### Compilation based on the Intel MPI suit
@@ -172,6 +172,11 @@ Currently Loaded Modules:
 $> ../src/osu-micro-benchmarks-5.4/configure CC=mpicc CFLAGS=-I$(pwd)/../src/osu-micro-benchmarks-5.4/util --prefix=$(pwd)
 $> make && make install
 ```
+
+**Questions**:
+
+* **Q4: Why do we need to precise the `CC` variable at the configure step?**
+* **Q5: How to get rid of `CFLAGS` at the configure step ?**
 
 Once compiled, ensure you are able to run it:
 
