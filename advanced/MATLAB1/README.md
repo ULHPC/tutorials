@@ -9,7 +9,6 @@ Copyright (c) 2013-2017 UL HPC Team  <hpc-sysadmins@uni.lu>
 [![By ULHPC](https://img.shields.io/badge/by-ULHPC-blue.svg)](https://hpc.uni.lu) [![Licence](https://img.shields.io/badge/license-GPL--3.0-blue.svg)](http://www.gnu.org/licenses/gpl-3.0.html) [![GitHub issues](https://img.shields.io/github/issues/ULHPC/tutorials.svg)](https://github.com/ULHPC/tutorials/issues/) [![](https://img.shields.io/badge/slides-PDF-red.svg)](https://github.com/ULHPC/tutorials/raw/devel/advanced/MATLAB1/MATLAB1.pdf) [![Github](https://img.shields.io/badge/sources-github-green.svg)](https://github.com/ULHPC/tutorials/tree/devel/advanced/MATLAB1/) [![Documentation Status](http://readthedocs.org/projects/ulhpc-tutorials/badge/?version=latest)](http://ulhpc-tutorials.readthedocs.io/en/latest/advanced/MATLAB1/) [![GitHub forks](https://img.shields.io/github/stars/ULHPC/tutorials.svg?style=social&label=Star)](https://github.com/ULHPC/tutorials)
 
 [![](https://github.com/ULHPC/tutorials/raw/devel/advanced/MATLAB1/cover_MATLAB1.png)](https://github.com/ULHPC/tutorials/raw/devel/advanced/MATLAB1/MATLAB1.pdf)
-[![](https://github.com/ULHPC/tutorials/raw/devel/advanced/MATLAB1/cover_MATLAB2.png)](https://github.com/ULHPC/tutorials/raw/devel/advanced/MATLAB1/MATLAB2.pdf)
 
 
 The objective of this tutorial is to exemplify the execution of [MATLAB](http://www.matlab.com) -
@@ -171,8 +170,8 @@ and process data from the Google Finance API and generate the plots.
 Finally, we have closed our Matlab session and were returned to the cluster's command line prompt where we found the generated plots.
 
 A PNG version of the latter two plots is shown below:
-![2D Plot](https://raw.githubusercontent.com/ULHPC/tutorials/devel/advanced/MATLAB1/src/plots/example1-2dplot.png)
-![3D Scatter Plot](https://raw.githubusercontent.com/ULHPC/tutorials/devel/advanced/MATLAB1/src/plots/example1-scatter.png)
+![2D Plot](https://raw.githubusercontent.com/ULHPC/tutorials/devel/advanced/MATLAB1/plots/example1-2dplot.png)
+![3D Scatter Plot](https://raw.githubusercontent.com/ULHPC/tutorials/devel/advanced/MATLAB1/plots/example1-scatter.png)
 
 Further examples showing serial and parallel executions are given below in the 'Example usage of Matlab in passive mode' section.
 
