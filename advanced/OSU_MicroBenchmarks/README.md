@@ -127,6 +127,12 @@ $> ../src/osu-micro-benchmarks-5.4/configure CC=mpiicc CXX=mpiicpc CFLAGS=-I$(pw
 $> make && make install
 ```
 
+**Questions**:
+
+* **Q1: Why did we request the use of the `--prefix` at the configure step ?**
+* **Q2: Why did we enforce the environment variables `CC` and `CXX`?**
+* **Q3: Why did we enforce the environment variables `CFLAGS`?**
+
 If everything goes fine, you shall have the [OSU micro-benchmarks](http://mvapich.cse.ohio-state.edu/benchmarks/) installed in the directory `libexec/osu-micro-benchmarks/mpi/`.
 
 Once compiled, ensure you are able to run it:
@@ -163,7 +169,7 @@ Currently Loaded Modules:
   2) tools/binutils/2.28-GCCcore-6.3.0   4) tools/numactl/2.0.11-GCCcore-6.3.0   6) mpi/OpenMPI/2.1.1-GCC-6.3.0-2.28
 
 # Configure the OpenMPI-based build for installation in the current directory
-$> ../src/osu-micro-benchmarks-5.4/configure CC=mpicc --prefix=$(pwd)
+$> ../src/osu-micro-benchmarks-5.4/configure CC=mpicc CFLAGS=-I$(pwd)/../src/osu-micro-benchmarks-5.4/util --prefix=$(pwd)
 $> make && make install
 ```
 
