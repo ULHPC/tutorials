@@ -1,6 +1,6 @@
 -*- mode: markdown;mode:visual-line;  fill-column: 80 -*-
 
-Author: Valentin Plugaru <Valentin.Plugaru@uni.lu>
+Author: Valentin Plugaru <Valentin.Plugaru@uni.lu>  
 Copyright (c) 2017 [ULHPC management team](mailto:<hpc-sysadmins@uni.lu>) [www](http://hpc.uni.lu)
 
 --------------------------------------------------
@@ -326,6 +326,7 @@ You should now:
 * adapt the most appropriate one (sequential, parallel, etc.) for your most commonly used HPC application
 * launch your own (short execution time) test case, on a single core for sequential code or two distributed cores for parallel code
     - take note of your fair-share and usage values (e.g. with `sshare -A $(sacctmgr -n show user $USER format=defaultaccount%30s)`)
+    - alternative: compile and use HPCG from the [ULHPC HPCG tutorial](https://github.com/ULHPC/tutorials/tree/devel/advanced/HPCG)
 * monitor job progression:
     - with `sprio` / `sprio -l` to see its priority in the queue
     - using `sstat` once it starts, to get running metrics
