@@ -123,7 +123,7 @@ Currently Loaded Modules:
   3) compiler/icc/2017.1.132-GCC-6.3.0-2.27   6) mpi/impi/2017.1.132-iccifort-2017.1.132-GCC-6.3.0-2.27   9) toolchain/intel/2017a
 
 # Configure the Intel MPI-based build for installation in the current directory
-$> ../src/osu-micro-benchmarks-5.4/configure CC=mpiicc CXX=mpiicpc CFLAGS=$(pwd)/../src/osu-micro-benchmarks-5.4/util --prefix=$(pwd)
+$> ../src/osu-micro-benchmarks-5.4/configure CC=mpiicc CXX=mpiicpc CFLAGS=-I$(pwd)/../src/osu-micro-benchmarks-5.4/util --prefix=$(pwd)
 $> make && make install
 ```
 
