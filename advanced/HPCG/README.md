@@ -1,6 +1,7 @@
 -*- mode: markdown; mode: visual-line; fill-column: 80 -*-
 
-Copyright (c) 2013-2017 UL HPC Team  <hpc-sysadmins@uni.lu>
+Author: Valentin Plugaru <Valentin.Plugaru@uni.lu>  
+Copyright (c) 2015-2017 UL HPC Team  <hpc-sysadmins@uni.lu>
 
 ------------------------------------------------------
 # UL HPC MPI Tutorial: High Performance Conjugate Gradients (HPCG) benchmarking on UL HPC platform
@@ -77,16 +78,17 @@ Resources:
 Get the latest release:
 
     $> mkdir ~/TP && cd ~/TP
-    $> wget https://software.sandia.gov/hpcg/downloads/hpcg-2.4.tar.gz
-    $> tar xvzf hpcg-2.4.tar.gz
-    $> cd hpcg-2.4
+    $> wget http://www.hpcg-benchmark.org/downloads/hpcg-3.0.tar.gz
+    $> tar xvzf hpcg-3.0.tar.gz
+    $> cd hpcg-3.0
     $> module avail MPI
-    $> module load toolchain/ictce/7.3.5
+    $> module load toolchain/intel
     $> module list
     Currently Loaded Modules:
-      1) compiler/icc/2015.3.187     3) toolchain/iccifort/2015.3.187            5) toolchain/iimpi/7.3.5                7) toolchain/ictce/7.3.5
-      2) compiler/ifort/2015.3.187   4) mpi/impi/5.0.3.048-iccifort-2015.3.187   6) numlib/imkl/11.2.3.187-iimpi-7.3.50
-	$> module show mpi/impi/5.0.3.048-iccifort-2015.3.187
+      1) compiler/GCCcore/6.3.0                   4) compiler/ifort/2017.1.132-GCC-6.3.0-2.27                 7) toolchain/iimpi/2017a
+      2) tools/binutils/2.27-GCCcore-6.3.0        5) toolchain/iccifort/2017.1.132-GCC-6.3.0-2.27             8) numlib/imkl/2017.1.132-iimpi-2017a
+      3) compiler/icc/2017.1.132-GCC-6.3.0-2.27   6) mpi/impi/2017.1.132-iccifort-2017.1.132-GCC-6.3.0-2.27   9) toolchain/intel/2017a
+    $> module show mpi/impi/2017.1.132-iccifort-2017.1.132-GCC-6.3.0-2.27
 
 Read the `INSTALL` file.
 
@@ -103,7 +105,7 @@ Once the configuration file is prepared, run the compilation with:
 Once compiled, ensure that you are able to run it:
 
     $> cd bin
-    $> cat hpcg.
+    $> cat hpcg.dat
     $> mkdir intel64-optimized
     $> mv xhpcg intel64-optimized
     $> cd intel64-optimized
@@ -122,12 +124,12 @@ In addition to the architecture optimized build, re-generate xhpcg to with the c
 
 ### HPCG with GNU C++ and Open MPI
 
-Re-compile HPCG with GNU C++, adapting the setup file  `Make.gcc` from `Make.Linux_MPI` to use the `mpicxx` wrapper and the GCC specific [architecture options](https://gcc.gnu.org/onlinedocs/gcc-4.9.2/gcc/i386-and-x86-64-Options.html).
+Re-compile HPCG with GNU C++, adapting the setup file  `Make.gcc` from `Make.Linux_MPI` to use the `mpicxx` wrapper and the GCC specific [architecture options](https://gcc.gnu.org/onlinedocs/gcc/x86-Options.html).
 
     $> cd ~/TP
     $> make clean
     $> module purge
-    $> module load mpi/OpenMPI/1.8.4-GCC-4.9.2
+    $> module load mpi/OpenMPI
     $> make arch=gcc
 
 Once compiled, ensure you are able to run it:
