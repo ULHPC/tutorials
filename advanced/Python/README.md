@@ -285,6 +285,8 @@ def standard_dev(lst):
 
 In this part, we will use Scoop library to parallelize our Python code and execute it on iris cluster. This example uses the Monte-Carlo algorithm to compute the value of pi. Please have a look at the top of this page to check how it works.
 
+**Attention:** Scoop only works with the system python and neither with modules nor virtual environments. Make sure you start with a clean environment by starting a new job.
+
 We will first have to install the scoop library using `pip`:
 
 ```
