@@ -39,7 +39,7 @@ The [OSU micro-benchmarks](http://mvapich.cse.ohio-state.edu/benchmarks/) featur
 * __One-sided MPI Benchmarks__: one-sided put latency (active/passive), one-sided put bandwidth (active/passive), one-sided put bidirectional bandwidth, one-sided get latency (active/passive), one-sided get bandwidth (active/passive), one-sided accumulate latency (active/passive), compare and swap latency (passive), and fetch and operate (passive) for MVAPICH2 (MPI-2 and MPI-3).
 * Since the 4.3 version, the [OSU micro-benchmarks](http://mvapich.cse.ohio-state.edu/benchmarks/) also features OpenSHMEM benchmarks, a 1-sided communications library.
 
-In this tutorial, we will build **version 5.3.2 of the [OSU micro-benchmarks](http://mvapich.cse.ohio-state.edu/benchmarks/)** (the latest at the time of writing), and focus on two of the available tests:
+In this tutorial, we will build **version 5.4 of the [OSU micro-benchmarks](http://mvapich.cse.ohio-state.edu/benchmarks/)** (the latest at the time of writing), and focus on two of the available tests:
 
 * `osu_get_latency` - Latency Test
 * `osu_get_bw` - Bandwidth Test
