@@ -1,5 +1,6 @@
 -*- mode: markdown;mode:visual-line;  fill-column: 80 -*-
 
+Author: Valentin Plugaru <Valentin.Plugaru@uni.lu>
 Copyright (c) 2017 [ULHPC management team](mailto:<hpc-sysadmins@uni.lu>) [www](http://hpc.uni.lu)
 
 --------------------------------------------------
@@ -141,7 +142,7 @@ Note: as of 2017-11-09, direct X11 (--x11) support with srun (`srun -p interacti
 #!/bin/bash
 headNode=$(scontrol show hostname $SLURM_NODELIST | head -n1)
 slurmEnv=$(printenv | grep SLURM_ | sed -rn "s/=(.*)/='\1'/p" | paste -d ' ' -s)
-exec ssh -X $headnode -t "$slurmEnv bash"
+exec ssh -X $headNode -t "$slurmEnv bash"
 ```
 
 2. launch a job with X11: `salloc -p interactive --qos qos-interactive slurm-x11`
