@@ -10,7 +10,7 @@ Copyright (c) 2014-2017 UL HPC Team  -- see <http://hpc.uni.lu>
 [![](https://github.com/ULHPC/tutorials/raw/devel/advanced/EasyBuild/cover_slides.png)](https://github.com/ULHPC/tutorials/raw/devel/advanced/EasyBuild/slides.pdf)
 
 
-The objective of this tutorial is to show how [EasyBuild](https://github.com/hpcugent/easybuild) can be used to ease, automate and script the build of software on the UL HPC platforms.
+The objective of this tutorial is to show how [EasyBuild](https://github.com/easybuilders/easybuild) can be used to ease, automate and script the build of software on the UL HPC platforms.
 
 Two use-cases are considered. First, we are going to build software that are supported by EasyBuild. In a second time, we will see through a simple example how to add support for a new software in EasyBuild.
 
@@ -32,7 +32,7 @@ The latest version of this tutorial is available on
 
 ## Short introduction to EasyBuild
 
-EasyBuild is a tool that allows to perform automated and reproducible compilation and installation of software. A large number of scientific software are supported (649 software packages in the last release).
+EasyBuild is a tool that allows to perform automated and reproducible compilation and installation of software. A large number of scientific software are supported (1411 software packages in the last release 3.5.1) -- see also [What is EasyBuild?](http://easybuild.readthedocs.io/en/latest/Introduction.html).
 
 All builds and installations are performed at user level, so you don't need the admin rights.
 The software are installed in your home directory (by default in `$HOME/.local/easybuild/software/`) and a module file is generated (by default in `$HOME/.local/easybuild/modules/`) to use the software.
@@ -52,12 +52,12 @@ On the cluster however, for the module names we use a custom naming convention t
 
 Additional details are available on EasyBuild website:
 
-- [EasyBuild homepage](http://hpcugent.github.io/easybuild)
-- [EasyBuild documentation](http://hpcugent.github.io/easybuild/)
-- [What is EasyBuild?](https://github.com/hpcugent/easybuild/wiki/EasyBuild)
-- [Toolchains](https://github.com/hpcugent/easybuild/wiki/Compiler-toolchains)
-- [EasyConfig files](https://github.com/hpcugent/easybuild/wiki/Easyconfig-files)
-- [List of supported software packages](https://github.com/hpcugent/easybuild/wiki/List-of-supported-software-packages)
+- [EasyBuild homepage](https://easybuilders.github.io/easybuild/)
+- [EasyBuild documentation](http://easybuild.readthedocs.io/)
+- [What is EasyBuild?](http://easybuild.readthedocs.io/en/latest/Introduction.html)
+- [Toolchains](https://github.com/easybuilders/easybuild/wiki/Compiler-toolchains)
+- [EasyConfig files](http://easybuild.readthedocs.io/en/latest/Writing_easyconfig_files.html)
+- [List of supported software packages](http://easybuild.readthedocs.io/en/latest/version-specific/Supported_software.html)
 
 ## Installing Easybuild
 
@@ -69,10 +69,17 @@ Add the following entries to your `~/.bashrc`:
 export EASYBUILD_PREFIX=$HOME/.local/easybuild
 export EASYBUILD_MODULES_TOOL=Lmod
 export EASYBUILD_MODULE_NAMING_SCHEME=CategorizedModuleNamingScheme
-# Use the below variable to run:
+# Use the below variable to run (as done in 'mu' below):
 #    module use $LOCAL_MODULES
 #    module load tools/EasyBuild
 export LOCAL_MODULES=${EASYBUILD_PREFIX}/modules/all
+
+alias ma="module avail"
+alias ml="module list"
+function mu(){
+   module use $LOCAL_MODULES
+   module load tools/EasyBuild
+}
 ```
 
 Then source this file to expose the environment variables:
@@ -88,7 +95,7 @@ Now let's install Easybuild following the [boostrapping procedure](http://easybu
 ```bash
 $> cd /tmp/
 # download script
-curl -o /tmp/bootstrap_eb.py  https://raw.githubusercontent.com/hpcugent/easybuild-framework/develop/easybuild/scripts/bootstrap_eb.py
+curl -o /tmp/bootstrap_eb.py  https://raw.githubusercontent.com/easybuilders/easybuild-framework/develop/easybuild/scripts/bootstrap_eb.py
 
 # install Easybuild
 $> python /tmp/bootstrap_eb.py $EASYBUILD_PREFIX
@@ -122,7 +129,7 @@ To use EasyBuild on a compute node, load the EasyBuild module (if available):
 
 You can also install EasyBuild yourself with the `bootstrap_eb.py` script provided by EasyBuild:
 
-	$> wget https://raw.githubusercontent.com/hpcugent/easybuild-framework/develop/easybuild/scripts/bootstrap_eb.py
+	$> wget https://raw.githubusercontent.com/easybuilders/easybuild-framework/develop/easybuild/scripts/bootstrap_eb.py
 	$> EASYBUILD_MODULES_TOOL=Lmod EASYBUILD_MODULE_NAMING_SCHEME=CategorizedModuleNamingScheme python bootstrap_eb.py $HOME/.local/easybuild
 	$> module use $HOME/.local/easybuild/modules/all
 	$> module load tools/EasyBuild
@@ -615,8 +622,8 @@ We can now check that our version of GZip is available via the modules:
 ## To go further
 
 
-- [EasyBuild homepage](http://hpcugent.github.io/easybuild)
-- [EasyBuild documentation](http://hpcugent.github.io/easybuild/)
-- [Getting started](https://github.com/hpcugent/easybuild/wiki/Getting-started)
-- [Using EasyBuild](https://github.com/hpcugent/easybuild/wiki/Using-EasyBuild)
-- [Step-by-step guide](https://github.com/hpcugent/easybuild/wiki/Step-by-step-guide)
+- [EasyBuild homepage](http://easybuilders.github.io/easybuild)
+- [EasyBuild documentation](http://easybuilders.github.io/easybuild/)
+- [Getting started](https://github.com/easybuilders/easybuild/wiki/Getting-started)
+- [Using EasyBuild](https://github.com/easybuilders/easybuild/wiki/Using-EasyBuild)
+- [Step-by-step guide](https://github.com/easybuilders/easybuild/wiki/Step-by-step-guide)
