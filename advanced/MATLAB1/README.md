@@ -61,7 +61,7 @@ local machine:
   logging in to the clusters.
 
         # Connect to Gaia with X11 forwarding enabled (Linux/OS X):
-        (yourmachine)$> ssh access-gaia.uni.lu -X
+        (yourmachine)$> ssh yourlogin@access-gaia.uni.lu -p 8022 -X
 
         # Request an interactive job (the default parameters get you 1 core for 2 hours):
         (gaia-frontend)$> oarsub -I
@@ -90,7 +90,7 @@ quick executions:
 
         # First, connect to an UL cluster (e.g. Gaia):
 
-        (yourmachine)$> ssh access-gaia.uni.lu
+        (yourmachine)$> ssh yourlogin@access-gaia.uni.lu -p 8022
         (gaia-frontend)$> oarsub -I
         (node)$> module load base/MATLAB/2017a
 
