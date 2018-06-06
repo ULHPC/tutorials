@@ -1,12 +1,11 @@
--*- mode: markdown; mode: visual-line;  -*-
-
-# UL HPC Tutorials
+# High Performance Computing (HPC) Tutorials
 
 [![By ULHPC](https://img.shields.io/badge/by-ULHPC-blue.svg)](https://hpc.uni.lu) [![Licence](https://img.shields.io/badge/license-GPL--3.0-blue.svg)](http://www.gnu.org/licenses/gpl-3.0.html) [![GitHub issues](https://img.shields.io/github/issues/ULHPC/tutorials.svg)](https://github.com/ULHPC/tutorials/issues/) [![Github](https://img.shields.io/badge/sources-github-green.svg)](https://github.com/ULHPC/tutorials/) [![Documentation Status](http://readthedocs.org/projects/ulhpc-tutorials/badge/?version=latest)](http://ulhpc-tutorials.readthedocs.io) [![GitHub forks](https://img.shields.io/github/stars/ULHPC/tutorials.svg?style=social&label=Star)](https://github.com/ULHPC/tutorials)
 
-> Copyright (c) 2015-2017 UL HPC Team <hpc-sysadmins@uni.lu>
+     Copyright (c) 2013-2018 UL HPC Team <hpc-sysadmins@uni.lu>
 
 This repository holds a set of tutorials to help the users of the [UL HPC](https://hpc.uni.lu) platform to better understand or simply use our platform.
+
 The list of proposed tutorials are evolving and are used on a regular basis during the [UL HPC School](http://hpc.uni.lu/hpc-school/) we organise.
 So far, the following tutorials are proposed:
 
@@ -34,42 +33,28 @@ So far, the following tutorials are proposed:
 |                       | [[Advanced] Prototyping with Python](advanced/Python/)                                               | advanced       |
 |                       | [Reproducible Research at the Cloud Era](advanced/ReproducibleResearch/)                             | intermediate   |
 
-## List of contributors
+__List of contributors__
 
-The material provided in this reporitory is benefiting from the contributions of the following persons:
+* See [`docs/contacts.md`](contacts.md).
+* In the advent where you want to contribute yourself to these tutorials, do not hesitate! See below for instructions.
 
-* The UL HPC Team of course, _i.e._:
-    - Dr. [Sebastien Varrette](https://varrette.gforge.uni.lu),  Research Scientist, [UL HPC](http://hpc.uni.lu) Manager
-    - Valentin Plugaru, MSc, Research Associate
-    - Sarah Peter (nee Diehl), MSc, Research Associate
-    - Hyacinthe Cartiaux,
-    - Clément Parisot
-* Dr. Joseph Emeras, Research Associate
-* Dr. Xavier Besseron, Research Scientist
-* Dr. Aurelien Ginolhac, Research Scientist
-* Maxime Schmitt
+__Issues / Feature request__
 
-In the advent where you want to contribute yourself to these tutorials, do not hesitate! See below for instructions.
+* You can submit bug / issues / feature request using the [`ULHPC/tutorials` Tracker](https://github.com/ULHPC/tutorials/issues).
+    - See also [`docs/contributing/`](docs/contributing/) for further information.
 
-## Issues / Feature request
+__ Contributing__
 
-You can submit bug / issues / feature request using the [ULHPC/tutorials Tracker](https://github.com/ULHPC/tutorials/issues).
-See also [`docs/contributing/`](docs/contributing/) for further information.
+* If you want to contribute to the code, you shall be aware of the way this module is organized.
+* These elements are detailed on [`docs/contributing.md`](contributing.md).
+    - You are more than welcome to contribute to its development by [sending a pull request](https://help.github.com/articles/using-pull-requests).
 
-## Developments / Contributing to the code
+__Online Documentation__
 
-If you want to contribute to the code, you shall be aware of the way this module is organized.
-These elements are detailed on [`docs/contributing.md`](contributing.md).
+* [Read the Docs](https://readthedocs.org/) aka RTFD hosts documentation for the open source community and the [ULHPC/sysadmins](https://github.com/ULHPC/tutorials) has its documentation (see the `docs/` directly) hosted on [readthedocs](http://ulhpc-tutorials.rtfd.org).
+* See [`docs/rtfd.md`](rtfd.md) for more details.
 
-You are more than welcome to contribute to its development by [sending a pull request](https://help.github.com/articles/using-pull-requests).
-
-### Online Documentation
-
-[Read the Docs](https://readthedocs.org/) aka RTFD hosts documentation for the open source community and the [ULHPC/sysadmins](https://github.com/ULHPC/tutorials) has its documentation (see the `docs/` directly) hosted on [readthedocs](http://ulhpc-tutorials.rtfd.org).
-
-See [`docs/rtfd.md`](rtfd.md) for more details.
-
-### Licence
+__Licence__
 
 This project and the sources proposed within this repository are released under the terms of the [GPL-3.0](LICENCE) licence.
 

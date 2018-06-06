@@ -1,12 +1,8 @@
--*- mode: markdown;mode:visual-line;  fill-column: 80 -*-
-
-Copyright (c) 2016-2017 UL HPC Team  -- see <http://hpc.uni.lu>
-
----------------------------------------------------------
-# Getting Started on the UL HPC platform
-
 [![By ULHPC](https://img.shields.io/badge/by-ULHPC-blue.svg)](https://hpc.uni.lu) [![Licence](https://img.shields.io/badge/license-GPL--3.0-blue.svg)](http://www.gnu.org/licenses/gpl-3.0.html) [![GitHub issues](https://img.shields.io/github/issues/ULHPC/tutorials.svg)](https://github.com/ULHPC/tutorials/issues/) [![](https://img.shields.io/badge/slides-PDF-red.svg)](https://github.com/ULHPC/tutorials/raw/devel/basic/getting_started/slides.pdf) [![Github](https://img.shields.io/badge/sources-github-green.svg)](https://github.com/ULHPC/tutorials/tree/devel/basic/getting_started/) [![Documentation Status](http://readthedocs.org/projects/ulhpc-tutorials/badge/?version=latest)](http://ulhpc-tutorials.readthedocs.io/en/latest/basic/getting_started/) [![GitHub forks](https://img.shields.io/github/stars/ULHPC/tutorials.svg?style=social&label=Star)](https://github.com/ULHPC/tutorials)
 
+# Getting Started on the UL HPC platform
+
+     Copyright (c) 2013-2018 UL HPC Team <hpc-sysadmins@uni.lu>
 
 [![](https://github.com/ULHPC/tutorials/raw/devel/basic/getting_started/cover_slides.png)](https://github.com/ULHPC/tutorials/raw/devel/basic/getting_started/slides.pdf)
 
@@ -846,7 +842,7 @@ Create a new file called `helloworld.c`, containing the source code of a simple 
 
 
         #include<stdio.h>
-    
+
         int main()
         {
             printf("Hello, world!");
@@ -875,7 +871,7 @@ compile the following program, using GNU C++ compiler (`g++` command), and the I
 
 
         #include <iostream>
-    
+
         int main() {
             std::cout << "Hello, world!" << std::endl;
         }
@@ -911,13 +907,13 @@ In your home directory, create a file `mpi_broadcast.c` and copy the following s
         #include <mpi.h>
         #include <unistd.h>
         #include <time.h> /* for the work function only */
-        
+
         int main (int argc, char *argv []) {
                char hostname[257];
                int size, rank;
                int i, pid;
                int bcast_value = 1;
-        
+
                gethostname(hostname, sizeof hostname);
                MPI_Init(&argc, &argv);
                MPI_Comm_rank(MPI_COMM_WORLD, &rank);
@@ -928,7 +924,7 @@ In your home directory, create a file `mpi_broadcast.c` and copy the following s
                MPI_Bcast(&bcast_value,1 ,MPI_INT, 0, MPI_COMM_WORLD );
                printf("%s\t- %d - %d - %d\n", hostname, rank, size, bcast_value);
                fflush(stdout);
-        
+
                MPI_Barrier(MPI_COMM_WORLD);
                MPI_Finalize();
                return 0;

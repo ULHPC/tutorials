@@ -1,11 +1,8 @@
--*- mode: markdown; mode: auto-fill; fill-column: 80 -*-
-
-Copyright (c) 2016-2017 [ULHPC management team](mailto:<hpc-sysadmins@uni.lu>) --  [www](http://hpc.uni.lu)
-
----------------------------------------------------------
-# UL HPC Tutorial: HPC workflow with sequential jobs
-
 [![By ULHPC](https://img.shields.io/badge/by-ULHPC-blue.svg)](https://hpc.uni.lu) [![Licence](https://img.shields.io/badge/license-GPL--3.0-blue.svg)](http://www.gnu.org/licenses/gpl-3.0.html) [![GitHub issues](https://img.shields.io/github/issues/ULHPC/tutorials.svg)](https://github.com/ULHPC/tutorials/issues/) [![](https://img.shields.io/badge/slides-PDF-red.svg)](https://github.com/ULHPC/tutorials/raw/devel/basic/sequential_jobs/slides.pdf) [![Github](https://img.shields.io/badge/sources-github-green.svg)](https://github.com/ULHPC/tutorials/tree/devel/basic/sequential_jobs/) [![Documentation Status](http://readthedocs.org/projects/ulhpc-tutorials/badge/?version=latest)](http://ulhpc-tutorials.readthedocs.io/en/latest/basic/sequential_jobs/) [![GitHub forks](https://img.shields.io/github/stars/ULHPC/tutorials.svg?style=social&label=Star)](https://github.com/ULHPC/tutorials)
+
+# HPC workflow with sequential jobs
+
+     Copyright (c) 2013-2018 UL HPC Team <hpc-sysadmins@uni.lu>
 
 [![](https://github.com/ULHPC/tutorials/raw/devel/basic/sequential_jobs/cover_slides.png)](https://github.com/ULHPC/tutorials/raw/devel/basic/sequential_jobs/slides.pdf)
 
@@ -86,7 +83,7 @@ In order to edit files in your terminal, you are expected to use your preferred 
 * ...
 
 If you have never used any of them, `nano` is intuitive, but `vim` and `emacs` are more powerful.
-  
+
 With nano, you will only have to learn a few shortcuts to get started:
 
 * `$ nano <path/filename>`
