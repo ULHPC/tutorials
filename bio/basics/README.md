@@ -4,6 +4,8 @@
 
 Copyright (c) 2014-2018 UL HPC Team  <hpc-sysadmins@uni.lu>
 
+Authors: Valentin Plugaru and Sarah Peter
+
 [![](https://github.com/ULHPC/tutorials/raw/devel/bio/basics/cover_slides.png)](https://github.com/ULHPC/tutorials/raw/devel/bio/basics/slides.pdf)
 
 The objective of this tutorial is to exemplify the execution of several Bioinformatics packages on top of the [UL HPC](http://hpc.uni.lu) platform.
@@ -74,7 +76,7 @@ being proposed later on as exercises.
 
 		# Connect to Iris (Linux/OS X):
 		(yourmachine)$> ssh access-iris.uni.lu
-	
+		
 		# Request half a node in an interactive job:
 		(access-iris)$> srun -p interactive --qos qos-interactive -t 0-0:30:0 -N 1 -c 1 --ntasks-per-node=14 --pty bash
 
@@ -230,7 +232,7 @@ We will perform our tests with the hybrid version:
 * Gaia
 	
 		# Perform a position restrained Molecular Dynamics run
-		(node)$> mpirun -np 12 -hostfile $OAR_NODEFILE -x OMP_NUM_THREADS -x PATH -x LD_LIBRARY_PATH gmx_mpi mdrun -v -s pr -e pr -o pr -c after_pr -g prlog > test.out 2>&1
+		(node)$> mpirun -np 12 -hostfile $OAR_NODEFILE -envlist OMP_NUM_THREADS,PATH,LD_LIBRARY_PATH gmx_mpi mdrun -v -s pr -e pr -o pr -c after_pr -g prlog > test.out 2>&1
 
 * Iris
 
@@ -316,10 +318,8 @@ SAM tools requires compilation:
 
 * Iris
 
-		(node)$> module load devel/ncurses/6.0-intel-2017a
 		(node)$> module load tools/bzip2/1.0.6-intel-2017a
 		(node)$> cd samtools-1.8 && ./configure && make && cd ..
-		(node)$> module load lib/tbb
 
 ```
 # Create a file containing the paths to the binaries, to be sourced when needed
@@ -396,8 +396,8 @@ being proposed later on as exercises.
 		# Request 1 full node in an interactive job:
 		(access-gaia)$> oarsub -I -l nodes=1,walltime=00:30:00
 		
-		# Load the lcsb software set
-		(node)$> module use $RESIF_ROOTINSTALL/lcsb/modules/all
+		# Load the bioinfo software set
+		(node)$> module use $RESIF_ROOTINSTALL/bioinfo/modules/all
 
 * Iris
 
@@ -450,10 +450,10 @@ coordinating file output, with the additional processes performing the search.
 
 		# Go to the test directory and execute mpiBLAST with one core for search
 		(node)$> cd ~/bioinfo-tutorial/mpiblast
-		(node)$> srun -np 3 mpiblast -p blastp -d nr -i test.fa -o test.out
+		(node)$> srun -n 3 mpiblast -p blastp -d nr -i test.fa -o test.out
 		
 		# Note the speedup when using 14 cores
-		(node)$> srun -np 14 mpiblast -p blastp -d nr -i test.fa -o test.out
+		(node)$> srun -n 14 mpiblast -p blastp -d nr -i test.fa -o test.out
 
 ### Proposed exercises
 
