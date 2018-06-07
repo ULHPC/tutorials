@@ -6,45 +6,35 @@ pages:
   - Getting Started: 'beginners/index.md'
   - HPC workflow with sequential jobs: 'basic/sequential_jobs/index.md'
   - Job scheduling with SLURM: 'basic/scheduling/index.md'
-- Tools:
+  - Prototyping with Python: 'python/basics/index.md'
+- Tools / Software management:
   - Easybuild: 'tools/easybuild/index.md'
 #  - RESIF:     'tools/resif/index.md'
 - Debugging and Profiling:
   - Efficient Debugging:     'debugging/basics/index.md'
   - Performance engineering: 'debugging/advanced/index.md'
+- Parallel MPI and/or OpenMP:
+  - MVAPICH OSU Micro-benchmarks: 'parallel/mpi/OSU_MicroBenchmarks/index.md'
+  - High Performance Linpack (HPL): 'parallel/mpi/HPL/index.md'
+  - High Performance Conjugate Gradient (HPCG): 'parallel/hybrid/HPCG/index.md'
 - Mathematics:
   - MATLAB: 'maths/matlab/basics/index.md'
   - MATLAB (advanced): 'maths/matlab/advanced/index.md'
   - R - statistical computing: 'maths/R/index.md'
-# - Benchmarks & Performance Evaluation:
-#   - MVAPICH OSU Micro-benchmarks: 'benchmarks/OSU_MicroBenchmarks/index.md'
-#   - High Performance Linpack (HPL): 'benchmarks/HPL/index.md'
-#   - High Performance Conjugate Gradient (HPCG): 'benchmarks/HPCG/index.md'
-#
-#
-# - MPI / Performance Evaluation :
-#   - OSU Micro-benchmarks: 'advanced/OSU_MicroBenchmarks/index.md'
-#   - High Performance Linpack (HPL): 'advanced/HPL/index.md'
-#   - High Performance Conjugate Gradient (HPCG): 'advanced/HPCG/index.md'
-# - Bioinformatics:
-#   - Running bioinformatics software: 'advanced/Bioinformatics/index.md'
-#   - Galaxy: 'advanced/Galaxy/index.md'
-# - Parallel Debuggers:
-#   - Allinea: 'advanced/Allinea/index.md'
-#   - TotalView: 'advanced/TotalView/index.md'
+- Bioinformatics:
+  - Running bioinformatics software: 'bio/basics/index.md'
+  - Galaxy: 'bio/galaxy/index.md'
 # - Virtualization:
 #   - Vagrant: 'virtualization/vagrant/index.md'
 #   - Grid5000 - Automatic VM deployment with VM5K: 'virtualization/vm5k/index.md'
-# - CFD/MD/Chemistry:
-#   - Advanced Parallel execution: 'advanced/MultiPhysics/index.md'
-# - Big Data:
-#   - Big Data Application Over Apache Spark: 'advanced/Spark/index.md'
+- CFD/MD/Chemistry:
+   - Advanced Parallel execution: 'multiphysics/index.md'
+- Big Data:
+  - Big Data Application Over Apache Spark: 'bigdata/spark/index.md'
+- Misc:
+  - Reproducible Research: 'misc/reproducible-research/index.md'
 # - Advanced topics:
 #   - Advanced workflows on sequential jobs management: 'advanced/advanced_workflows/README.md'
-#   - Advanced scheduling with SLURM: 'advanced/advanced_scheduling/index.md'
-#   - Debugging, profiling and performance analysis: 'advanced/debugging_profiling/index.md'
-#   - Prototyping with Python: 'advanced/Python/index.md'
-#   - Reproducible Research: 'advanced/ReproducibleResearch/index.md'
 - Documentation (RTFD): 'rtfd.md'
 - Contributing: 'contributing.md'
 - Contacts: 'contacts.md'
