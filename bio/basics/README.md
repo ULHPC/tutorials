@@ -72,14 +72,11 @@ being proposed later on as exercises.
 
 * Iris
 
-   # Connect to Iris (Linux/OS X):
-   	(yourmachine)$> ssh access-iris.uni.lu
-   	
-   	# Request half a node in an interactive job:
-   	(access-iris)$> srun -p interactive --qos qos-interactive -t 0-0:30:0 -N 1 -c 1 --ntasks-per-node=14 --pty bash
-
-
-   ​	
+		# Connect to Iris (Linux/OS X):
+		(yourmachine)$> ssh access-iris.uni.lu
+	
+		# Request half a node in an interactive job:
+		(access-iris)$> srun -p interactive --qos qos-interactive -t 0-0:30:0 -N 1 -c 1 --ntasks-per-node=14 --pty bash
 
 
 ```
@@ -433,7 +430,7 @@ mpiBLAST requires access to NCBI substitution matrices and pre-formatted BLAST d
 database has been formatted and split into 12 fragments, enabling the parallel alignment of a query against the database.
 
 A `.ncbirc` file containing the paths to the necessary data files can be downloaded from [here](https://raw.github.com/ULHPC/tutorials/devel/bio/basics/mpiblast/.ncbirc)
-and placed in your $HOME directory (make sure to backup an existing $HOME/.ncbirc before overwriting it with the one in this tutorial).
+and placed in your `$HOME` directory (make sure to backup an existing `$HOME/.ncbirc` before overwriting it with the one in this tutorial).
 
 **Question: Knowing that the databases can take tens of gigabytes, what is an appropriate storage location for them on the clusters?**
 
@@ -468,7 +465,6 @@ The following exercises are proposed for mpiBLAST:
 
 ## Useful references
 
-  - [ABySS at SEQanswers wiki](http://seqanswers.com/wiki/ABySS)
   - [Gromacs parallelization](http://www.gromacs.org/Documentation/Acceleration_and_parallelization)
   - [Gromacs GPU acceleration](http://www.gromacs.org/GPU_acceleration)
   - [Gromacs USA workshop](http://www.gromacs.org/Documentation/Tutorials/GROMACS_USA_Workshop_and_Conference_2013)
