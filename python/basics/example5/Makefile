@@ -1,6 +1,7 @@
 GRAPH=./output/output.jpeg
 DATA=./data/time_per_core.dat
 SORTED_DATA=./data/time_per_core_sorted.dat
+SPEEDUP_DATA=./data/time_per_core_speedup.dat
 
 run: $(DATA)
 	make graph
@@ -8,6 +9,8 @@ run: $(DATA)
 graph: $(GRAPH)
 
 sort: $(SORTED_DATA)
+
+compute_speedup: $(SPEEDUP_DATA)
 
 test:
 	make clean
@@ -26,10 +29,14 @@ clean:
 
 $(GRAPH): scoop.gpi
 	make sort
-	gnuplot scoop.gpi
+	make compute_speedup
+	gnuplot gnuplot/scoop.gpi
 
 $(SORTED_DATA): $(DATA)
 	sort -V $(DATA) > $(SORTED_DATA)
+
+$(SPEEDUP_DATA): $(SORTED_DATA)
+	awk -f compute_speedup.awk $(SORTED_DATA)
 
 $(DATA): ./scoop.sh ./pi_calc.py
 	make clean

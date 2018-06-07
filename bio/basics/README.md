@@ -1,10 +1,12 @@
-[![By ULHPC](https://img.shields.io/badge/by-ULHPC-blue.svg)](https://hpc.uni.lu) [![Licence](https://img.shields.io/badge/license-GPL--3.0-blue.svg)](http://www.gnu.org/licenses/gpl-3.0.html) [![GitHub issues](https://img.shields.io/github/issues/ULHPC/tutorials.svg)](https://github.com/ULHPC/tutorials/issues/) [![](https://img.shields.io/badge/slides-PDF-red.svg)](https://github.com/ULHPC/tutorials/raw/devel/advanced/Bioinformatics/slides.pdf) [![Github](https://img.shields.io/badge/sources-github-green.svg)](https://github.com/ULHPC/tutorials/tree/devel/advanced/Bioinformatics/) [![Documentation Status](http://readthedocs.org/projects/ulhpc-tutorials/badge/?version=latest)](http://ulhpc-tutorials.readthedocs.io/en/latest/advanced/Bioinformatics/) [![GitHub forks](https://img.shields.io/github/stars/ULHPC/tutorials.svg?style=social&label=Star)](https://github.com/ULHPC/tutorials)
+[![By ULHPC](https://img.shields.io/badge/by-ULHPC-blue.svg)](https://hpc.uni.lu) [![Licence](https://img.shields.io/badge/license-GPL--3.0-blue.svg)](http://www.gnu.org/licenses/gpl-3.0.html) [![GitHub issues](https://img.shields.io/github/issues/ULHPC/tutorials.svg)](https://github.com/ULHPC/tutorials/issues/) [![](https://img.shields.io/badge/slides-PDF-red.svg)](https://github.com/ULHPC/tutorials/raw/devel/bio/basics/slides.pdf) [![Github](https://img.shields.io/badge/sources-github-green.svg)](https://github.com/ULHPC/tutorials/tree/devel/bio/basics/) [![Documentation Status](http://readthedocs.org/projects/ulhpc-tutorials/badge/?version=latest)](http://ulhpc-tutorials.readthedocs.io/en/latest/bio/basics/) [![GitHub forks](https://img.shields.io/github/stars/ULHPC/tutorials.svg?style=social&label=Star)](https://github.com/ULHPC/tutorials)
 
 # Bioinformatics software on the UL HPC platform
 
-     Copyright (c) 2014-2017 UL HPC Team  <hpc-sysadmins@uni.lu>
+Copyright (c) 2014-2018 UL HPC Team  <hpc-sysadmins@uni.lu>
 
-[![](https://github.com/ULHPC/tutorials/raw/devel/advanced/Bioinformatics/cover_slides.png)](https://github.com/ULHPC/tutorials/raw/devel/advanced/Bioinformatics/slides.pdf)
+Authors: Valentin Plugaru and Sarah Peter
+
+[![](https://github.com/ULHPC/tutorials/raw/devel/bio/basics/cover_slides.png)](https://github.com/ULHPC/tutorials/raw/devel/bio/basics/slides.pdf)
 
 The objective of this tutorial is to exemplify the execution of several Bioinformatics packages on top of the [UL HPC](http://hpc.uni.lu) platform.
 
@@ -23,29 +25,22 @@ The tutorial will:
 
 ## Prerequisites
 
-When you look at the [software page](https://hpc.uni.lu/users/software/) you will notice that some of the applications are part of the *lcsb* (gaia) or *bioinfo* (iris) software set. The modules in this set are not visible be default. To use them within a job you have to do:
+When you look at the [software page](https://hpc.uni.lu/users/software/) you will notice that some of the applications are part of the *bioinfo* software set. The modules in this set are not visible by default. To use them within a job you have to do:
 
-* Gaia
+	(node)$> module use /opt/apps/resif/data/stable/bioinfo/modules/all
 
-		(access-gaia)$> module use $RESIF_ROOTINSTALL/lcsb/modules/all
+If you want them to always be available, you can add the following line to your `.bash_private`:
 
-* Iris
+	command -v module >/dev/null 2>&1 && module use /opt/apps/resif/data/stable/bioinfo/modules/all
 
-		(access-iris)$> module use /opt/apps/resif/data/stable/bioinfo/modules/all
-
-If you want them to always be available, you can add the following line to your `.bash_private` (adapt with the above command for iris):
-
-	command -v module >/dev/null 2>&1 && module use $RESIF_ROOTINSTALL/lcsb/modules/all
-
-This tutorial relies on several input files for the bioinformatics packages, thus you will need to download them
-before following the instructions in the next sections:
+This tutorial relies on several input files for the bioinformatics packages, thus you will need to download them before following the instructions in the next sections:
 
     (access)$> mkdir -p ~/bioinfo-tutorial/gromacs ~/bioinfo-tutorial/tophat ~/bioinfo-tutorial/mpiblast
     (access)$> cd ~/bioinfo-tutorial
-    (access)$> wget --no-check-certificate https://raw.github.com/ULHPC/tutorials/devel/advanced/Bioinformatics/gromacs/pr.tpr -O gromacs/pr.tpr
-    (access)$> wget --no-check-certificate https://raw.github.com/ULHPC/tutorials/devel/advanced/Bioinformatics/tophat/test_data.tar.gz -O tophat/test_data.tar.gz
-    (access)$> wget --no-check-certificate https://raw.github.com/ULHPC/tutorials/devel/advanced/Bioinformatics/tophat/test2_path -O tophat/test2_path
-    (access)$> wget --no-check-certificate https://raw.github.com/ULHPC/tutorials/devel/advanced/Bioinformatics/mpiblast/test.fa -O mpiblast/test.fa
+    (access)$> wget --no-check-certificate https://raw.github.com/ULHPC/tutorials/devel/bio/basics/gromacs/pr.tpr -O gromacs/pr.tpr
+    (access)$> wget --no-check-certificate https://raw.github.com/ULHPC/tutorials/devel/bio/basics/tophat/test_data.tar.gz -O tophat/test_data.tar.gz
+    (access)$> wget --no-check-certificate https://raw.github.com/ULHPC/tutorials/devel/bio/basics/tophat/test2_path -O tophat/test2_path
+    (access)$> wget --no-check-certificate https://raw.github.com/ULHPC/tutorials/devel/bio/basics/mpiblast/test.fa -O mpiblast/test.fa
 
 Or simply clone the full tutorials repository and make a link to the Bioinformatics tutorial:
 
@@ -73,7 +68,7 @@ being proposed later on as exercises.
 
 		# Connect to Gaia (Linux/OS X):
 		(yourmachine)$> ssh access-gaia.uni.lu
-
+		
 		# Request 1 full node in an interactive job:
 		(access-gaia)$> oarsub -I -l nodes=1,walltime=00:30:00
 
@@ -81,15 +76,15 @@ being proposed later on as exercises.
 
 		# Connect to Iris (Linux/OS X):
 		(yourmachine)$> ssh access-iris.uni.lu
-
+		
 		# Request half a node in an interactive job:
 		(access-iris)$> srun -p interactive --qos qos-interactive -t 0-0:30:0 -N 1 -c 1 --ntasks-per-node=14 --pty bash
 
-		# Load bioinfo software set
-		(node)$> module use /opt/apps/resif/data/stable/bioinfo/modules/all
-
 
 ```
+# Load bioinfo software set
+(node)$> module use /opt/apps/resif/data/stable/bioinfo/modules/all
+
 # Check the ABySS versions installed on the clusters:
 (node)$> module avail 2>&1 | grep -i abyss
 
@@ -109,10 +104,10 @@ the `abyss-pe` launcher.
     # Create a test directory and go to it
     (node)$> mkdir ~/bioinfo-tutorial/abyss
     (node)$> cd ~/bioinfo-tutorial/abyss
-
+    
     # Set the input files' directory in the environment
     (node)$> export ABYSSINPDIR=/mnt/isilon/projects/ulhpc-tutorials/bioinformatics/abyss
-
+    
     # Give a name to the experiment
     (node)$> export ABYSSNAME='abysstest'
 
@@ -120,7 +115,7 @@ the `abyss-pe` launcher.
 
 		# Set the number of cores to use based on OAR's host file
 		(node)$> export ABYSSNPROC=$(cat $OAR_NODEFILE | wc -l)
-
+		
 		# Launch the paired end assembler:
 		(node)$> abyss-pe mpirun="mpirun -x PATH -x LD_LIBRARY_PATH -hostfile $OAR_NODEFILE" name=${ABYSSNAME} np=${ABYSSNPROC} k=31 n=10 lib=pairedend pairedend="${ABYSSINPDIR}/SRR001666_1.fastq.bz2 ${ABYSSINPDIR}/SRR001666_2.fastq.bz2" > ${ABYSSNAME}.out 2> ${ABYSSNAME}.err
 
@@ -128,10 +123,10 @@ the `abyss-pe` launcher.
 
 		# Set the number of cores to use based on SLURM environment variables
 		(node)$> export ABYSSNPROC=$(expr $SLURM_NNODES \* $SLURM_NTASKS_PER_NODE \* $SLURM_CPUS_PER_TASK)
-
+		
 		# Create a hostfile
 		(node)$> srun hostname | sort -n > hostfile
-
+		
 		# Launch the paired end assembler:
 		(node)$> abyss-pe mpirun="mpirun -x PATH -x LD_LIBRARY_PATH -hostfile hostfile" name=${ABYSSNAME} np=${ABYSSNPROC} k=31 n=10 lib=pairedend pairedend="${ABYSSINPDIR}/SRR001666_1.fastq.bz2 ${ABYSSINPDIR}/SRR001666_2.fastq.bz2" > ${ABYSSNAME}.out 2> ${ABYSSNAME}.err
 
@@ -187,7 +182,7 @@ being proposed later on as exercises.
 
 		# Connect to Gaia (Linux/OS X):
 		(yourmachine)$> ssh access-gaia.uni.lu
-
+		
 		# Request 1 full node in an interactive job:
 		(access-gaia)$> oarsub -I -l nodes=1,walltime=00:30:00
 
@@ -195,7 +190,7 @@ being proposed later on as exercises.
 
 		# Connect to Iris (Linux/OS X):
 		(yourmachine)$> ssh access-iris.uni.lu
-
+		
 		# Request half a node in an interactive job:
 		(access-iris)$> srun -p interactive --qos qos-interactive -t 0-0:30:0 -N 1 -c 1 --ntasks-per-node=14 --pty bash
 
@@ -205,64 +200,46 @@ being proposed later on as exercises.
 (node)$> module avail 2>&1 | grep -i gromacs
 ```
 
-On **Gaia**, several GROMACS builds are available, we will focus only on the ones corresponding to the version 4.6.5:
-
-* bio/GROMACS/4.6.5-goolf-1.4.10-hybrid
-* bio/GROMACS/4.6.5-goolf-1.4.10-mt
-
-We notice that there is a `hybrid` and a `mt` version
+There used to be two versions of GROMACS available on Gaia, a `hybrid` and a `mt` version
 
   - the hybrid version is OpenMP and MPI-enabled, all binaries have a '\_mpi' suffix
   - the mt version is only OpenMP-enabled, as such it can take advantage of only one node's cores (however it may be faster on
 single-node executions than the hybrid version)
 
-On **Iris** currently only the following version of GROMACS is available:
+Currently only the following version of GROMACS is available:
 
 * bio/GROMACS/2016.3-intel-2017a-hybrid
 
 We will perform our tests with the hybrid version:
 
+```
+# Load the MPI-enabled Gromacs, without CUDA support:
+(node)$> module load bio/GROMACS
+
+# Check that it has been loaded, along with its dependencies:
+(node)$> module list
+
+# Check the capabilities of the mdrun binary, note its suffix:
+(node)$> gmx_mpi -version 2>/dev/null
+
+# Go to the test directory
+(node)$> cd ~/bioinfo-tutorial/gromacs
+
+# Set the number of OpenMP threads to 1
+(node)$> export OMP_NUM_THREADS=1
+```
+
 * Gaia
-
-		# Load the MPI-enabled Gromacs, without CUDA support:
-		(node)$> module load bio/GROMACS/4.6.5-goolf-1.4.10-hybrid
-
-		# Check that it has been loaded, along with its dependencies:
-		(node)$> module list
-
-		# Check the capabilities of the mdrun binary, note its suffix:
-		(node)$> mdrun_mpi -version 2>/dev/null
-
-		# Go to the test directory
-		(node)$> cd ~/bioinfo-tutorial/gromacs
-
-		# Set the number of OpenMP threads to 1
-		(node)$> export OMP_NUM_THREADS=1
-
+	
 		# Perform a position restrained Molecular Dynamics run
-		(node)$> mpirun -np 12 -hostfile $OAR_NODEFILE -x OMP_NUM_THREADS -x PATH -x LD_LIBRARY_PATH mdrun_mpi -v -s pr -e pr -o pr -c after_pr -g prlog > test.out 2>&1
+		(node)$> mpirun -np 12 -hostfile $OAR_NODEFILE -envlist OMP_NUM_THREADS,PATH,LD_LIBRARY_PATH gmx_mpi mdrun -v -s pr -e pr -o pr -c after_pr -g prlog > test.out 2>&1
 
 * Iris
-
-		# Load the MPI-enabled Gromacs, without CUDA support:
-		(node)$> module load bio/GROMACS
-
-		# Check that it has been loaded, along with its dependencies:
-		(node)$> module list
-
-		# Check the capabilities of the mdrun binary, note its suffix:
-		(node)$> gmx_mpi -version 2>/dev/null
-
-		# Go to the test directory
-		(node)$> cd ~/bioinfo-tutorial/gromacs
-
-		# Set the number of OpenMP threads to 1
-		(node)$> export OMP_NUM_THREADS=1
 
 		# Perform a position restrained Molecular Dynamics run
 		(node)$> srun -n 12 gmx_mpi mdrun -v -s pr -e pr -o pr -c after_pr -g prlog > test.out 2>&1
 
-We notice here that we are running `mdrun_mpi`/`gmx_mpi` in parallel with mpirun on 12/14 cores, and we explicitly export the OMP_NUM_THREADS
+We notice here that we are running `gmx_mpi` in parallel with mpirun/srun on 12/14 cores, and we explicitly export the OMP_NUM_THREADS
 variable to any remote node such that only one thread per MPI process will be created.
 
 **Question: What will happen if we do not set the number of OpenMP threads to 1?**
@@ -306,7 +283,7 @@ versions prebuilt for Linux by the developers.
 
 		# Connect to Gaia (Linux/OS X):
 		(yourmachine)$> ssh access-gaia.uni.lu
-
+		
 		# Request 1 full node in an interactive job:
 		(gaia-frontend)$> oarsub -I -l nodes=1,walltime=00:30:00
 
@@ -314,7 +291,7 @@ versions prebuilt for Linux by the developers.
 
 		# Connect to Iris (Linux/OS X):
 		(yourmachine)$> ssh access-iris.uni.lu
-
+		
 		# Request half a node in an interactive job:
 		(access-iris)$> srun -p interactive --qos qos-interactive -t 0-0:30:0 -N 1 -c 14 --ntasks-per-node=1 --pty bash
 
@@ -324,33 +301,31 @@ versions prebuilt for Linux by the developers.
 (node)$> cd ~/bioinfo-tutorial/newsoft
 
 # Download latest Bowtie2 and Tophat, plus the SAM tools dependency:
-(node)$> wget https://downloads.sourceforge.net/project/bowtie-bio/bowtie2/2.3.2/bowtie2-2.3.2-linux-x86_64.zip
-(node)$> wget --no-check-certificate https://ccb.jhu.edu/software/tophat/downloads/tophat-2.1.1.Linux_x86_64.tar.gz
-(node)$> wget https://github.com/samtools/samtools/releases/download/1.4.1/samtools-1.4.1.tar.bz2
+(node)$> wget https://downloads.sourceforge.net/project/bowtie-bio/bowtie2/2.3.4.1/bowtie2-2.3.4.1-linux-x86_64.zip
+(node)$> wget http://ccb.jhu.edu/software/tophat/downloads/tophat-2.1.1.Linux_x86_64.tar.gz
+(node)$> wget https://github.com/samtools/samtools/releases/download/1.8/samtools-1.8.tar.bz2
 
 # Unpack the three archives
-(node)$> unzip bowtie2-2.3.2-linux-x86_64.zip
+(node)$> unzip bowtie2-2.3.4.1-linux-x86_64.zip
 (node)$> tar xzvf tophat-2.1.1.Linux_x86_64.tar.gz
-(node)$> tar xjvf samtools-1.4.1.tar.bz2
+(node)$> tar xjvf samtools-1.8.tar.bz2
 ```
 SAM tools requires compilation:
 
 * Gaia
 
-		(node)$> cd samtools-1.4.1 && make && cd ..
+		(node)$> cd samtools-1.8 && ./configure && make && cd ..
 
 * Iris
 
-		(node)$> module load devel/ncurses/6.0-intel-2017a
 		(node)$> module load tools/bzip2/1.0.6-intel-2017a
-		(node)$> cd samtools-1.4.1 && make && cd ..
-		(node)$> module load lib/tbb
+		(node)$> cd samtools-1.8 && ./configure && make && cd ..
 
 ```
 # Create a file containing the paths to the binaries, to be sourced when needed
-(node)$> echo "export PATH=$HOME/bioinfo-tutorial/newsoft/bowtie2-2.3.2:\$PATH" > newsoft
+(node)$> echo "export PATH=$HOME/bioinfo-tutorial/newsoft/bowtie2-2.3.4.1-linux-x86_64:\$PATH" > newsoft
 (node)$> echo "export PATH=$HOME/bioinfo-tutorial/newsoft/tophat-2.1.1.Linux_x86_64:\$PATH" >> newsoft
-(node)$> echo "export PATH=$HOME/bioinfo-tutorial/newsoft/samtools-1.4.1:\$PATH" >> newsoft
+(node)$> echo "export PATH=$HOME/bioinfo-tutorial/newsoft/samtools-1.8:\$PATH" >> newsoft
 (node)$> source newsoft
 
 # You can now check that both main applications can be run:
@@ -368,7 +343,7 @@ Now we will make a quick TopHat test, using the provided sample files:
 
     # Launch TopHat, with Bowtie2 in serial mode
     (node)$> tophat -r 20 test_ref reads_1.fq reads_2.fq
-
+    
     # Launch TopHat, with Bowtie2 in parallel mode
     (node)$> tophat -p 12 -r 20 test_ref reads_1.fq reads_2.fq
 
@@ -417,21 +392,21 @@ being proposed later on as exercises.
 
 		# Connect to Gaia (Linux/OS X):
 		(yourmachine)$> ssh access-gaia.uni.lu
-
+		
 		# Request 1 full node in an interactive job:
 		(access-gaia)$> oarsub -I -l nodes=1,walltime=00:30:00
-
-		# Load the lcsb software set
-		(node)$> module use $RESIF_ROOTINSTALL/lcsb/modules/all
+		
+		# Load the bioinfo software set
+		(node)$> module use $RESIF_ROOTINSTALL/bioinfo/modules/all
 
 * Iris
 
 		# Connect to Iris (Linux/OS X):
 		(yourmachine)$> ssh access-iris.uni.lu
-
+		
 		# Request half a node in an interactive job:
 		(access-iris)$> srun -p interactive --qos qos-interactive -t 0-0:30:0 -N 1 -c 1 --ntasks-per-node=14 --pty bash
-
+		
 		# Load the bioinfo software set
 		(node)$> module use /opt/apps/resif/data/stable/bioinfo/modules/all
 
@@ -454,8 +429,8 @@ being proposed later on as exercises.
 mpiBLAST requires access to NCBI substitution matrices and pre-formatted BLAST databases. For the purposes of this tutorial, a FASTA (NR)
 database has been formatted and split into 12 fragments, enabling the parallel alignment of a query against the database.
 
-A `.ncbirc` file containing the paths to the necessary data files can be downloaded from [here](https://raw.github.com/ULHPC/tutorials/devel/advanced/Bioinformatics/mpiblast/.ncbirc)
-and placed in your $HOME directory (make sure to backup an existing $HOME/.ncbirc before overwriting it with the one in this tutorial).
+A `.ncbirc` file containing the paths to the necessary data files can be downloaded from [here](https://raw.github.com/ULHPC/tutorials/devel/bio/basics/mpiblast/.ncbirc)
+and placed in your `$HOME` directory (make sure to backup an existing `$HOME/.ncbirc` before overwriting it with the one in this tutorial).
 
 **Question: Knowing that the databases can take tens of gigabytes, what is an appropriate storage location for them on the clusters?**
 
@@ -467,7 +442,7 @@ coordinating file output, with the additional processes performing the search.
 		# Go to the test directory and execute mpiBLAST with one core for search
 		(node)$> cd ~/bioinfo-tutorial/mpiblast
 		(node)$> mpirun -np 3 mpiblast -p blastp -d nr -i test.fa -o test.out
-
+		
 		# Note the speedup when using 12 cores
 		(node)$> mpirun -np 12 mpiblast -p blastp -d nr -i test.fa -o test.out
 
@@ -475,10 +450,10 @@ coordinating file output, with the additional processes performing the search.
 
 		# Go to the test directory and execute mpiBLAST with one core for search
 		(node)$> cd ~/bioinfo-tutorial/mpiblast
-		(node)$> srun -np 3 mpiblast -p blastp -d nr -i test.fa -o test.out
-
+		(node)$> srun -n 3 mpiblast -p blastp -d nr -i test.fa -o test.out
+		
 		# Note the speedup when using 14 cores
-		(node)$> srun -np 14 mpiblast -p blastp -d nr -i test.fa -o test.out
+		(node)$> srun -n 14 mpiblast -p blastp -d nr -i test.fa -o test.out
 
 ### Proposed exercises
 
@@ -490,7 +465,6 @@ The following exercises are proposed for mpiBLAST:
 
 ## Useful references
 
-  - [ABySS at SEQanswers wiki](http://seqanswers.com/wiki/ABySS)
   - [Gromacs parallelization](http://www.gromacs.org/Documentation/Acceleration_and_parallelization)
   - [Gromacs GPU acceleration](http://www.gromacs.org/GPU_acceleration)
   - [Gromacs USA workshop](http://www.gromacs.org/Documentation/Tutorials/GROMACS_USA_Workshop_and_Conference_2013)
