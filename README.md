@@ -14,7 +14,30 @@ This repository holds a set of tutorials to help the users of the [UL HPC](https
 * The list of the proposed tutorials is continuously evolving and are used on a regular basis during the [UL HPC School](http://hpc.uni.lu/hpc-school/) we organise twice a year at the University of Luxembourg.
     - You can find the up-to-date list of tutorials [on this page](docs/README.md)
 
+## Installation / Repository Setup
 
+First of all, ensure you have installed the [Pre-requisites / Preliminary software](docs/setup/preliminaries.md) and followed the corresponding configuration [instructions](docs/setup/preliminaries.md).
+
+Then reference instructions for setting up your working copy of this repository can be found in [`docs/setup/install.md`](docs/setup/install.md).
+
+In short:
+
+```bash
+$> mkdir -p ~/git/github.com/ULHPC
+$> cd ~/git/github.com/ULHPC
+$> git clone https://github.com/ULHPC/tutorials.git
+$> cd tutorials
+$> make setup
+```
+## Tutorial Slides and Instructions
+
+The latest version of all the proposed tutorials is available online:
+
+<http://ulhpc-tutorials.rtfd.io>
+
+For each tutorial, a PDF copy of the slides are provided (as `slides.pdf` in the corresponding sub-directories).
+
+A [List of the proposed tutorials](docs/README.md) is summarized in [`docs/README.md`](docs/README.md).
 
 ## List of contributors
 
@@ -25,8 +48,6 @@ In the advent where you want to contribute yourself to these tutorials, do not h
 ## Issues / Feature request
 
 You can submit bug / issues / feature request using the [`ULHPC/tutorials` Tracker](https://github.com/ULHPC/tutorials/issues).
-
-
 
 ## Developments / Contributing to the code
 

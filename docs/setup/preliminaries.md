@@ -155,7 +155,7 @@ Containers: 9
  Paused: 0
  Stopped: 9
 Images: 12
-Server Version: 17.09.1-ce
+Server Version: 18.03.1-ce
 [...]
 ~~~
 

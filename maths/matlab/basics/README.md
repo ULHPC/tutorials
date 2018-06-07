@@ -1,15 +1,10 @@
--*- mode: markdown; mode: visual-line; fill-column: 80 -*-
-
-Author: Valentin Plugaru <Valentin.Plugaru@uni.lu>  
-Copyright (c) 2013-2017 UL HPC Team  <hpc-sysadmins@uni.lu>
-
-----------------------------------------------------------
-# MATLAB (interactive, passive and sequential jobs, checkpointing and parallel jobs) execution on the UL HPC platform
-
 [![By ULHPC](https://img.shields.io/badge/by-ULHPC-blue.svg)](https://hpc.uni.lu) [![Licence](https://img.shields.io/badge/license-GPL--3.0-blue.svg)](http://www.gnu.org/licenses/gpl-3.0.html) [![GitHub issues](https://img.shields.io/github/issues/ULHPC/tutorials.svg)](https://github.com/ULHPC/tutorials/issues/) [![](https://img.shields.io/badge/slides-PDF-red.svg)](https://github.com/ULHPC/tutorials/raw/devel/advanced/MATLAB1/MATLAB1.pdf) [![Github](https://img.shields.io/badge/sources-github-green.svg)](https://github.com/ULHPC/tutorials/tree/devel/advanced/MATLAB1/) [![Documentation Status](http://readthedocs.org/projects/ulhpc-tutorials/badge/?version=latest)](http://ulhpc-tutorials.readthedocs.io/en/latest/advanced/MATLAB1/) [![GitHub forks](https://img.shields.io/github/stars/ULHPC/tutorials.svg?style=social&label=Star)](https://github.com/ULHPC/tutorials)
 
-[![](https://github.com/ULHPC/tutorials/raw/devel/advanced/MATLAB1/cover_MATLAB1.png)](https://github.com/ULHPC/tutorials/raw/devel/advanced/MATLAB1/MATLAB1.pdf)
+# MATLAB (interactive, passive and sequential jobs) execution on the UL HPC platform
 
+      Copyright (c) 2013-2018 UL HPC Team  <hpc-sysadmins@uni.lu>
+
+[![](https://github.com/ULHPC/tutorials/raw/devel/advanced/MATLAB1/cover_MATLAB1.png)](https://github.com/ULHPC/tutorials/raw/devel/advanced/MATLAB1/MATLAB1.pdf)
 
 The objective of this tutorial is to exemplify the execution of [MATLAB](http://www.matlab.com) -
 a high-level language and interactive environment for numerical computation,
@@ -347,7 +342,7 @@ In this section we will use the _example2.m_ script which shows:
 
 By default the parallel section of the script uses up to 4 threads, thus for a first test we will:
 
-* create a _launcher script_ called matlab-minlauncher.sh (paste in your terminal from `cat` to `EOF` - [see here how this is done](http://tldp.org/LDP/abs/html/here-docs.html), 
+* create a _launcher script_ called matlab-minlauncher.sh (paste in your terminal from `cat` to `EOF` - [see here how this is done](http://tldp.org/LDP/abs/html/here-docs.html),
 or create the file yourself with the respective content)
 * make it executable by setting the corresponding filesystem permission ([see here for more details](https://en.wikipedia.org/wiki/Modes_(Unix)))
 * request from the OAR scheduler 4 cores on 1 compute node for 5 minutes
