@@ -1,53 +1,202 @@
--*- mode: markdown;mode:visual-line;  fill-column: 80 -*-
+[![By ULHPC](https://img.shields.io/badge/by-ULHPC-blue.svg)](https://hpc.uni.lu) [![Licence](https://img.shields.io/badge/license-GPL--3.0-blue.svg)](http://www.gnu.org/licenses/gpl-3.0.html) [![GitHub issues](https://img.shields.io/github/issues/ULHPC/tutorials.svg)](https://github.com/ULHPC/tutorials/issues/) [![](https://img.shields.io/badge/slides-PDF-red.svg)](https://github.com/ULHPC/tutorials/raw/devel/tools/easybuild/slides.pdf) [![Github](https://img.shields.io/badge/sources-github-green.svg)](https://github.com/ULHPC/tutorials/tree/devel/tools/easybuild/) [![Documentation Status](http://readthedocs.org/projects/ulhpc-tutorials/badge/?version=latest)](http://ulhpc-tutorials.readthedocs.io/en/latest/tools/easybuild/) [![GitHub forks](https://img.shields.io/github/stars/ULHPC/tutorials.svg?style=social&label=Star)](https://github.com/ULHPC/tutorials)
 
-Copyright (c) 2014-2017 UL HPC Team  -- see <http://hpc.uni.lu>
-
----------------------------------------------------------
 # Building [custom] software with EasyBuild on UL HPC platform
 
-[![By ULHPC](https://img.shields.io/badge/by-ULHPC-blue.svg)](https://hpc.uni.lu) [![Licence](https://img.shields.io/badge/license-GPL--3.0-blue.svg)](http://www.gnu.org/licenses/gpl-3.0.html) [![GitHub issues](https://img.shields.io/github/issues/ULHPC/tutorials.svg)](https://github.com/ULHPC/tutorials/issues/) [![](https://img.shields.io/badge/slides-PDF-red.svg)](https://github.com/ULHPC/tutorials/raw/devel/advanced/EasyBuild/slides.pdf) [![Github](https://img.shields.io/badge/sources-github-green.svg)](https://github.com/ULHPC/tutorials/tree/devel/advanced/EasyBuild/) [![Documentation Status](http://readthedocs.org/projects/ulhpc-tutorials/badge/?version=latest)](http://ulhpc-tutorials.readthedocs.io/en/latest/advanced/EasyBuild/) [![GitHub forks](https://img.shields.io/github/stars/ULHPC/tutorials.svg?style=social&label=Star)](https://github.com/ULHPC/tutorials)
+      Copyright (c) 2014-2018 S. Peter & UL HPC Team  <hpc-sysadmins@uni.lu>
 
-[![](https://github.com/ULHPC/tutorials/raw/devel/advanced/EasyBuild/cover_slides.png)](https://github.com/ULHPC/tutorials/raw/devel/advanced/EasyBuild/slides.pdf)
+[![](https://github.com/ULHPC/tutorials/raw/devel/tools/easybuild/cover_slides.png)](https://github.com/ULHPC/tutorials/raw/devel/tools/easybuild/slides.pdf)
+
+The objective of this tutorial is to show how [EasyBuild](http://easybuild.readthedocs.io) can be used to ease, automate and script the build of software on the [UL HPC](https://hpc.uni.lu) platforms.
+
+Indeed, as researchers involved in many cutting-edge and hot topics, you probably have access to many theoretical resources to understand the surrounding concepts. Yet it should _normally_ give you a wish to test the corresponding software.
+Traditionally, this part is rather time-consuming and frustrating, especially when the developers did not rely on a "regular" building framework such as [CMake](https://cmake.org/) or the [autotools](https://www.gnu.org/software/automake/manual/html_node/Autotools-Introduction.html) (_i.e._ with build instructions as `configure --prefix <path> && make && make install`).
+
+And when it comes to have a build adapted to an HPC system, you are somehow _forced_ to make a custom build performed on the target machine to ensure you will get the best possible performances.
+[EasyBuild](https://github.com/easybuilders/easybuild) is one approach to facilitate this step.
+
+Moreover, later on, you probably want to recover a system configuration matching the detailed installation paths through a set of environmental variable  (Ex: `JAVA_HOME`, `HADOOP_HOME` etc...). At least you would like to see the traditional `PATH`, `CPATH` or `LD_LIBRARY_PATH` updated.
+
+**Question**: what is the purpose of the above mentioned environmental variable?
+
+For this second aspect, the solution came long time ago (in 1991) with the [Environment Modules](http://modules.sourceforge.net/).
+We will cover it in the first part of this tutorial.
+
+Then, another advantage of [EasyBuild](http://easybuild.readthedocs.io) comes into account that justifies its wide-spread deployment across many HPC centers (incl. [UL HPC](http://hpc.uni.lu)): it has been designed to not only build any piece of software, but also to generate the corresponding module files to facilitate further interactions with it.
+Thus we will cover [EasyBuild](http://easybuild.readthedocs.io) in the second part of this hands-on.
+It allows for  automated and reproducable build of software. Once a build has been made, the build script (via the *EasyConfig file*) or the installed software (via the *module file*) can be shared with other users.
+
+You might be interested to know that we rely on [EasyBuild](http://easybuild.readthedocs.io) to provide the [software environment](https://hpc.uni.lu/users/software/) to the users of the platform.
+
+In this tutorial, we are going to first build software that are supported by EasyBuild. Then we will see through a simple example how to add support for a new software in EasyBuild, and eventually contribute back to the main repository
+
+**Note**: The latest version of this tutorial is available on [Github](https://github.com/ULHPC/tutorials/tree/devel/tools/easybuild/).
+
+--------------------
+## Pre-requisites ##
+
+Ensure you are able to [connect to the UL HPC clusters](https://hpc.uni.lu/users/docs/access.html)
+**For all tests and compilation with Easybuild, you MUST work on a computing node**
+
+In particular, the `module` command **is not** available on the access frontends.
+
+```bash
+# /!\ FOR ALL YOUR COMPILING BUSINESS, ENSURE YOU WORK ON A COMPUTING NODE
+# Have an interactive job
+############### iris cluster (slurm) ###############
+(access-iris)$> si -n 2 -t 2:00:00        # 2h interactive reservation
+# OR (long version)
+(access-iris)$> srun -p interactive -n 2 -t 2:00:00 --pty bash
+
+############### gaia/chaos clusters (OAR) ###############
+(access-{gaia|chaos})$> oarsub -I -l core=2,walltime=2
+```
 
 
-The objective of this tutorial is to show how [EasyBuild](https://github.com/easybuilders/easybuild) can be used to ease, automate and script the build of software on the UL HPC platforms.
+------------------------------------------
+## Part 1: Environment modules and LMod ##
 
-Two use-cases are considered. First, we are going to build software that are supported by EasyBuild. In a second time, we will see through a simple example how to add support for a new software in EasyBuild.
+[Environment Modules](http://modules.sourceforge.net/) are a standard and well-established technology across HPC sites, to permit developing and using complex software and libraries builds with dependencies, allowing multiple versions of software stacks and combinations thereof to co-exist.
 
-The benefit of using EasyBuild for your builds is that it allows automated and reproducable build of software. Once a build has been made, the build script (via the *EasyConfig file*) or the installed software (via the *module file*) can be shared with other users.
+The tool in itself is used to manage environment variables such as `PATH`, `LD_LIBRARY_PATH` and `MANPATH`, enabling the easy loading and unloading of application/library profiles and their dependencies.
 
-Before starting this tutorial, ensure you are able to [connect to the chaos and gaia cluster](https://hpc.uni.lu/users/docs/access.html).
-**For all your compilation with Easybuild, you must work on a computing node:**
+| Command                        | Description                                                   |
+|--------------------------------|---------------------------------------------------------------|
+| `module avail`                 | Lists all the modules which are available to be loaded        |
+| `module spider <pattern>`      | Search for <pattern> among available modules **(Lmod only)**  |
+| `module load <mod1> [mod2...]` | Load a module                                                 |
+| `module unload <module>`       | Unload a module                                               |
+| `module list`                  | List loaded modules                                           |
+| `module purge`                 | Unload all modules (purge)                                    |
+| `module display <module>`      | Display what a module does                                    |
+| `module use <path>`            | Prepend the directory to the MODULEPATH environment variable  |
+| `module unuse <path>`          | Remove the directory from the MODULEPATH environment variable |
 
-* Gaia
 
-		(access-gaia)$> oarsub -I -l core=1,walltime=4
+*Note:* for more information, see the reference man pages for [modules](http://modules.sourceforge.net/man/module.html) and [modulefile](http://modules.sourceforge.net/man/modulefile.html), or the [official FAQ](http://sourceforge.net/p/modules/wiki/FAQ/).
 
-* Iris
+You can also see our [modules page](https://hpc.uni.lu/users/docs/modules.html) on the [UL HPC website](http://hpc.uni.lu/users/).
 
-		(access-iris)$> srun -p interactive --qos qos-interactive -t 0-4:0:0 --pty bash
+At the heart of environment modules interaction resides the following components:
 
-The latest version of this tutorial is available on
-[Github](https://github.com/ULHPC/tutorials/tree/devel/advanced/EasyBuild).
+* the `MODULEPATH` environment variable, which defined the list of searched directories for modulefiles
+* `modulefile` (see [an example](http://www.nersc.gov/assets/modulefile-example.txt)) associated to each available software.
 
-## Short introduction to EasyBuild
+Then, [Lmod](https://www.tacc.utexas.edu/research-development/tacc-projects/lmod)  is a [Lua](http://www.lua.org/)-based module system that easily handles the `MODULEPATH` Hierarchical problem.
 
-EasyBuild is a tool that allows to perform automated and reproducible compilation and installation of software. A large number of scientific software are supported (1411 software packages in the last release 3.5.1) -- see also [What is EasyBuild?](http://easybuild.readthedocs.io/en/latest/Introduction.html).
+Lmod is a new implementation of Environment Modules that easily handles the MODULEPATH Hierarchical problem. It is drop-in replacement for TCL/C modules and reads TCL modulefiles directly.
+In particular, Lmod add many interesting features on top of the traditional implementation focusing on an easier interaction (search, load etc.) for the users. Thus that's the tool I would advise to deploy.
 
-All builds and installations are performed at user level, so you don't need the admin rights.
+* [User guide](https://www.tacc.utexas.edu/research-development/tacc-projects/lmod/user-guide)
+* [Advanced user guide](https://www.tacc.utexas.edu/research-development/tacc-projects/lmod/advanced-user-guide)
+* [Sysadmins Guide](https://www.tacc.utexas.edu/research-development/tacc-projects/lmod/system-administrators-guide)
+
+**`/!\ IMPORTANT:` (reminder): the `module` command is ONLY available on the nodes, NOT on the access front-ends.**
+
+
+```bash
+$> module -h
+$> echo $MODULEPATH
+/opt/apps/resif/data/stable/default/modules/all
+```
+
+You have already access to a huge list of software:
+
+```bash
+$> module avail       # OR 'module av'
+```
+
+Now you can search for a given software using `module spider <pattern>`:
+
+```
+$> module spider python
+
+-----------------------------------------------------------------------------------------
+devel/protobuf-python:
+-----------------------------------------------------------------------------------------
+    Description:
+      Python Protocol Buffers runtime library.
+
+     Versions:
+        devel/protobuf-python/3.3.0-intel-2017a-Python-2.7.13
+        devel/protobuf-python/3.4.0-intel-2017a-Python-2.7.13
+
+-----------------------------------------------------------------------------------------
+  For detailed information about a specific "devel/protobuf-python" module (including how
+  to load the modules) use the module's full name.
+  For example:
+
+     $ module spider devel/protobuf-python/3.4.0-intel-2017a-Python-2.7.13
+-----------------------------------------------------------------------------------------
+
+-----------------------------------------------------------------------------------------
+  lang/Python:
+-----------------------------------------------------------------------------------------
+    Description:
+      Python is a programming language that lets you work more quickly and integrate
+      your systems more effectively.
+
+     Versions:
+        lang/Python/2.7.13-foss-2017a-bare
+        lang/Python/2.7.13-foss-2017a
+        lang/Python/2.7.13-intel-2017a
+        lang/Python/3.5.3-intel-2017a
+        lang/Python/3.6.0-foss-2017a-bare
+        lang/Python/3.6.0-foss-2017a
+
+-----------------------------------------------------------------------------------------
+  For detailed information about a specific "lang/Python" module (including how to load
+  the modules) use the module's full name.
+  For example:
+
+     $ module spider lang/Python/3.6.0-foss-2017a
+-----------------------------------------------------------------------------------------
+```
+
+Let's see the effect of loading/unloading a module
+
+```bash
+$> module list
+No modules loaded
+$> which python
+/usr/bin/python
+$> python --version       # System level python
+Python 2.7.5
+
+$> module load lang/Python/3.6.0-foss-2017a      # use TAB to auto-complete
+$> which python
+/opt/apps/resif/data/production/v0.1-20170602/default/software/lang/Python/3.6.0-foss-2017a/bin/python
+$> python --version
+Python 3.6.0
+
+$> module purge
+```
+
+Now let's assume that a given software your looking at does not exists, or not in the version you want.
+That's where [EasyBuild](http://easybuild.readthedocs.io) comes into play.
+
+-----------------------
+## Part 2: Easybuild ##
+
+[<img width='150px' src='http://easybuild.readthedocs.io/en/latest/_static/easybuild_logo_alpha.png'/>](https://easybuilders.github.io/easybuild/)
+
+EasyBuild is a tool that allows to perform automated and reproducible compilation and installation of software. A large number of scientific software are supported (**[1504 supported software packages](http://easybuild.readthedocs.io/en/latest/version-specific/Supported_software.html)** in the last release 3.6.1) -- see also [What is EasyBuild?](http://easybuild.readthedocs.io/en/latest/Introduction.html)
+
+All builds and installations are performed at user level, so you don't need the admin (i.e. `root`) rights.
 The software are installed in your home directory (by default in `$HOME/.local/easybuild/software/`) and a module file is generated (by default in `$HOME/.local/easybuild/modules/`) to use the software.
 
 EasyBuild relies on two main concepts: *Toolchains* and *EasyConfig file*.
 
-A **toolchain** corresponds to a compiler and a set of libraries which are commonly used to build a software. The two main toolchains frequently used on the UL HPC platform are the GOOLF and the ICTCE toolchains. GOOLF is based on the GCC compiler and on open-source libraries (OpenMPI, OpenBLAS, etc.). ICTCE is based on the Intel compiler and on Intel libraries (Intel MPI, Intel Math Kernel Library, etc.).
+A **toolchain** corresponds to a compiler and a set of libraries which are commonly used to build a software.
+The two main toolchains frequently used on the UL HPC platform are the `foss` ("_Free and Open Source Software_") and the `intel` one.
 
-An **EasyConfig file** is a simple text file that describes the build process of a software. For most software that uses standard procedure (like `configure`, `make` and `make install`), this file is very simple. Many EasyConfig files are already provided with EasyBuild.
+1. `foss`  is based on the GCC compiler and on open-source libraries (OpenMPI, OpenBLAS, etc.).
+2. `intel` is based on the Intel compiler and on Intel libraries (Intel MPI, Intel Math Kernel Library, etc.).
 
-
+An **EasyConfig file** is a simple text file that describes the build process of a software. For most software that uses standard procedure (like `configure`, `make` and `make install`), this file is very simple.
+Many [EasyConfig files](https://github.com/easybuilders/easybuild-easyconfigs/tree/master/easybuild/easyconfigs) are already provided with EasyBuild.
 By default, EasyConfig files and generated modules are named using the following convention:
-`<Software-Name>-<Software-Version>-<Toolchain-Name>-<Toolchain-Version>`
-
-On the cluster however, for the module names we use a custom naming convention that is explained in the RESIF tutorial:
+`<Software-Name>-<Software-Version>-<Toolchain-Name>-<Toolchain-Version>`.
+However, we use a **hierarchical** approach where the software are classified under a category (or class) -- see  the `CategorizedModuleNamingScheme` option for the `EASYBUILD_MODULE_NAMING_SCHEME` environmental variable), meaning that the layout will respect the following hierarchy:
 `<Software-Class>/<Software-Name>/<Software-Version>-<Toolchain-Name>-<Toolchain-Version>`
 
 Additional details are available on EasyBuild website:
@@ -59,17 +208,24 @@ Additional details are available on EasyBuild website:
 - [EasyConfig files](http://easybuild.readthedocs.io/en/latest/Writing_easyconfig_files.html)
 - [List of supported software packages](http://easybuild.readthedocs.io/en/latest/version-specific/Supported_software.html)
 
-## Installing Easybuild
+### a. Installation.
 
-You probably want the latest version of Easybuild so we are going here to install it following [the official instructions](http://easybuild.readthedocs.io/en/latest/Installation.html).
+* [the official instructions](http://easybuild.readthedocs.io/en/latest/Installation.html).
 
-Add the following entries to your `~/.bashrc`:
+What is important for the installation of Easybuild are the following variables:
+
+* `EASYBUILD_PREFIX`: where to install **local** modules and software, _i.e._ `$HOME/.local/easybuild`
+* `EASYBUILD_MODULES_TOOL`, the type of [modules](http://modules.sourceforge.net/) tool you are using, _i.e._ `LMod` in this case
+* `EASYBUILD_MODULE_NAMING_SCHEME`, the way the software and modules should be organized (flat view or hierarchical) -- we're advising on `CategorizedModuleNamingScheme`.
+
+Add the following entries to your `~/.bashrc` (use your favorite CLI editor like `nano` or `vim`):
 
 ```bash
+# Easybuild
 export EASYBUILD_PREFIX=$HOME/.local/easybuild
 export EASYBUILD_MODULES_TOOL=Lmod
 export EASYBUILD_MODULE_NAMING_SCHEME=CategorizedModuleNamingScheme
-# Use the below variable to run (as done in 'mu' below):
+# Use the below variable to run:
 #    module use $LOCAL_MODULES
 #    module load tools/EasyBuild
 export LOCAL_MODULES=${EASYBUILD_PREFIX}/modules/all
@@ -87,7 +243,7 @@ Then source this file to expose the environment variables:
 ```bash
 $> source ~/.bashrc
 $> echo $EASYBUILD_PREFIX
-/home/users/svarrette/.local/easybuild
+/home/users/<login>/.local/easybuild
 ```
 
 Now let's install Easybuild following the [boostrapping procedure](http://easybuild.readthedocs.io/en/latest/Installation.html#bootstrapping-easybuild)
@@ -99,115 +255,89 @@ curl -o /tmp/bootstrap_eb.py  https://raw.githubusercontent.com/easybuilders/eas
 
 # install Easybuild
 $> python /tmp/bootstrap_eb.py $EASYBUILD_PREFIX
-
-# Load it
-$> echo $MODULEPATH
-$> module use $LOCAL_MODULES
-$> echo $MODULEPATH
-$> module spider Easybuild
-$> module load tools/EasyBuild
 ```
 
-
-
-
-
-## EasyBuild on UL HPC platform
-
-To use EasyBuild on a compute node, load the EasyBuild module (if available):
-
-
-    $> module avail EasyBuild
-
-    ------------- /opt/apps/resif/devel/v1.1-20150414/core/modules/tools -------------
-        tools/EasyBuild/2.0.0
-
-    ------------- /opt/apps/resif/devel/v1.1-20150414/core/modules/base -------------
-        base/EasyBuild/install-2.1.0
-
-    $> module load base/EasyBuild/install-2.1.0
-
-You can also install EasyBuild yourself with the `bootstrap_eb.py` script provided by EasyBuild:
-
-	$> wget https://raw.githubusercontent.com/easybuilders/easybuild-framework/develop/easybuild/scripts/bootstrap_eb.py
-	$> EASYBUILD_MODULES_TOOL=Lmod EASYBUILD_MODULE_NAMING_SCHEME=CategorizedModuleNamingScheme python bootstrap_eb.py $HOME/.local/easybuild
-	$> module use $HOME/.local/easybuild/modules/all
-	$> module load tools/EasyBuild
-	$> echo "export EASYBUILD_MODULE_NAMING_SCHEME=CategorizedModuleNamingScheme" >> ~/.bashrc
-	$> source ~/.bashrc
-
-The EasyBuild command is `eb`. Check the version you have loaded:
-
-    $> eb --version
-
-    This is EasyBuild 2.1.0dev-r6fee583a88e99d1384314790a419c83e85f18f3d (framework: 2.1.0dev-r2aa673bb5f61cb2d65e4a3037cc2337e6df2d3e6, easyblocks: 2.1.0dev-r6fee583a88e99d1384314790a419c83e85f18f3d) on host h-cluster1-11.
-
-
-Note that this version number from the modules on Gaia and Chaos are a bit peculiar because this is a custom installation on the cluster.
-
-To get help on the EasyBuild options, use the `-h` or `-H` option flags:
+Now you can use your freshly built software:
+The main EasyBuild command is `eb` (To get help on the EasyBuild options, use the `-h` or `-H` option flags:
 
     $> eb -h
     $> eb -H
+:
 
+```bash
+$> eb --version             # expected ;)
+-bash: eb: command not found
 
+# Load the newly installed Easybuild
+$> echo $MODULEPATH
+/opt/apps/resif/data/stable/default/modules/all/
 
+$> module use $LOCAL_MODULES
+$> echo $MODULEPATH
+/home/users/<login>/.local/easybuild/modules/all:/opt/apps/resif/data/stable/default/modules/all
 
-## Build software using provided EasyConfig file
+$> module spider Easybuild
+$> module load tools/EasyBuild       # TAB is your friend...
+$> eb --version
+This is EasyBuild 3.6.1 (framework: 3.6.1, easyblocks: 3.6.1) on host iris-001.
+```
 
-In this part, we propose to build High Performance Linpack (HPL) using EasyBuild.
+Since you are going to use quite often the above command to use locally built modules and load easybuild, an alias `mu` is provided and can be used from now on. Use it **now**
+
+```
+$> mu
+$> module avail     # OR 'ma'
+```
+
+### b. Local vs. Global Usage
+
+As you probably guessed, we are going to use two places for the installed software:
+
+* local builds `~/.local/easybuild`          (see `$LOCAL_MODULES`)
+* global builds (provided to you by the UL HPC team) in `/opt/apps/resif/data/stable/default/modules/all` (see default `$MODULEPATH`).
+
+Default usage (with the `eb` command) would install your software and modules in `~/.local/easybuild`.
+
+Before that, let's explore the basic usage of [EasyBuild](http://easybuild.readthedocs.io/) and the `eb` command.
+
+```bash
+# Search for an Easybuild recipY with 'eb -S <pattern>'
+$> eb -S Spark
+CFGS1=/opt/apps/resif/data/easyconfigs/ulhpc/default/easybuild/easyconfigs/s/Spark
+CFGS2=/home/users/<login>/.local/easybuild/software/tools/EasyBuild/3.6.1/lib/python2.7/site-packages/easybuild_easyconfigs-3.6.1-py2.7.egg/easybuild/easyconfigs/s/Spark
+ * $CFGS1/Spark-2.1.1.eb
+ * $CFGS1/Spark-2.3.0-intel-2018a-Hadoop-2.7-Java-1.8.0_162-Python-3.6.4.eb
+ * $CFGS2/Spark-1.3.0.eb
+ * $CFGS2/Spark-1.4.1.eb
+ * $CFGS2/Spark-1.5.0.eb
+ * $CFGS2/Spark-1.6.0.eb
+ * $CFGS2/Spark-1.6.1.eb
+ * $CFGS2/Spark-2.0.0.eb
+ * $CFGS2/Spark-2.0.2.eb
+ * $CFGS2/Spark-2.2.0-Hadoop-2.6-Java-1.8.0_144.eb
+ * $CFGS2/Spark-2.2.0-Hadoop-2.6-Java-1.8.0_152.eb
+ * $CFGS2/Spark-2.2.0-intel-2017b-Hadoop-2.6-Java-1.8.0_152-Python-3.6.3.eb
+```
+
+### c. Build software using provided EasyConfig file
+
+In this part, we propose to build [High Performance Linpack (HPL)](http://www.netlib.org/benchmark/hpl/) using EasyBuild.
 HPL is supported by EasyBuild, this means that an EasyConfig file allowing to build HPL is already provided with EasyBuild.
 
-### Gaia
-First, let's see which HPL are available on the cluster:
+First of all, let's check if that software is not available by default:
 
-    $> module avail HPL
+```
+$> module spider HPL
 
-    ------------- /opt/apps/resif/devel/v1.1-20150414/core/modules/tools -------------
-        tools/HPL/2.0-goolf-1.4.10
-
+Lmod has detected the following error: Unable to find: "HPL"
+```
 
 Then, search for available EasyConfig files with HPL in their name. The EasyConfig files are named with the `.eb` extension.
 
-    $> eb -S HPL
-
-    == temporary log file in case of crash /tmp/eb-p2DT7H/easybuild-ligIot.log
-    == Searching (case-insensitive) for 'HPL' in /opt/apps/resif/devel/v1.1-20150414/.installRef/easybuild-easyconfigs/easybuild/easyconfigs
-    CFGS1=/opt/apps/resif/devel/v1.1-20150414/.installRef/easybuild-easyconfigs/easybuild/easyconfigs/h/HPL
-     * $CFGS1/HPL-2.0-cgmpolf-1.1.6.eb
-     * $CFGS1/HPL-2.0-cgmvolf-1.1.12rc1.eb
-     * $CFGS1/HPL-2.0-cgmvolf-1.2.7.eb
-     * $CFGS1/HPL-2.0-cgoolf-1.1.7.eb
-     * $CFGS1/HPL-2.0-foss-2014b.eb
-     * $CFGS1/HPL-2.0-goalf-1.1.0-no-OFED.eb
-     * $CFGS1/HPL-2.0-goolf-1.4.10.eb
-     * $CFGS1/HPL-2.0-goolf-1.5.16.eb
-     * $CFGS1/HPL-2.0-ictce-4.0.6.eb
-     * $CFGS1/HPL-2.0-ictce-5.3.0.eb
-     * $CFGS1/HPL-2.0-ictce-6.0.5.eb
-     * $CFGS1/HPL-2.0-ictce-6.1.5.eb
-     * $CFGS1/HPL-2.0-iomkl-4.6.13.eb
-     * $CFGS1/HPL-2.1-foss-2015a.eb
-     * $CFGS1/HPL-2.1-gimkl-1.5.9.eb
-     * $CFGS1/HPL-2.1-gmpolf-1.4.8.eb
-     * $CFGS1/HPL-2.1-gmvolf-1.7.20.eb
-     * $CFGS1/HPL-2.1-goolf-1.7.20.eb
-     * $CFGS1/HPL-2.1-goolfc-1.4.10.eb
-     * $CFGS1/HPL-2.1-goolfc-2.6.10.eb
-     * $CFGS1/HPL-2.1-gpsolf-2014.12.eb
-     * $CFGS1/HPL-2.1-ictce-6.3.5.eb
-     * $CFGS1/HPL-2.1-ictce-7.1.2.eb
-     * $CFGS1/HPL-2.1-intel-2014.10.eb
-     * $CFGS1/HPL-2.1-intel-2014.11.eb
-     * $CFGS1/HPL-2.1-intel-2014b.eb
-     * $CFGS1/HPL-2.1-intel-2015.02.eb
-     * $CFGS1/HPL-2.1-intel-2015a.eb
-     * $CFGS1/HPL-2.1-intel-para-2014.12.eb
-     * $CFGS1/HPL-2.1-iomkl-2015.01.eb
-     * $CFGS1/HPL-2.1-iomkl-2015.02.eb
-     * $CFGS1/HPL_parallel-make.patch
-    == temporary log file(s) /tmp/eb-p2DT7H/easybuild-ligIot.log* have been removed.
-    == temporary directory /tmp/eb-p2DT7H has been removed.
+```bash
+# Search for an Easybuild recipY with 'eb -S <pattern>'
+$> eb -S HPL
+```
 
 
 If we try to build `HPL-2.0-goolf-1.4.10`, nothing will be done as it is already installed on the cluster.
