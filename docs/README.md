@@ -35,10 +35,10 @@ So far, the following tutorials are proposed:
 |                        | [R / Statictical Computing](maths/R/)                                                       | intermediate   |
 | _Bioinformatics_       | [Bioinformatics software on the UL HPC platform](bio/basics/)                               | intermediate   |
 |                        | [Galaxy Introduction Exercise: From Peaks to Genes](bio/galaxy/)                            | intermediate   |
-| _Virtualization_       | (OLD) [Create and reproduce work environments using Vagrant](advanced/Vagrant/)             | intermediate   |
-|                        | [Deploying virtual machines with Vm5k on Grid'5000](advanced/vm5k/)                         | intermediate   |
 | _CFD/MD/Chemistry_     | [Running parallel software: test cases on CFD / MD / Chemistry applications](multiphysics/) | advanced       |
 | _Big Data_             | [Running Big Data Application using Apache Spark on UL HPC platform](bigdata/spark/)        | intermediate   |
+| _Virtualization_       | (OLD) [Create and reproduce work environments using Vagrant](advanced/Vagrant/)             | intermediate   |
+|                        | [Deploying virtual machines with Vm5k on Grid'5000](advanced/vm5k/)                         | intermediate   |
 | _Misc_                 | [Reproducible Research at the Cloud Era](misc/reproducible-research/)                       | intermediate   |
 
 __List of contributors__

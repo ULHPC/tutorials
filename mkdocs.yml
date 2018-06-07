@@ -24,13 +24,13 @@ pages:
 - Bioinformatics:
   - Running bioinformatics software: 'bio/basics/index.md'
   - Galaxy: 'bio/galaxy/index.md'
-# - Virtualization:
-#   - Vagrant: 'virtualization/vagrant/index.md'
-#   - Grid5000 - Automatic VM deployment with VM5K: 'virtualization/vm5k/index.md'
 - CFD/MD/Chemistry:
    - Advanced Parallel execution: 'multiphysics/index.md'
 - Big Data:
   - Big Data Application Over Apache Spark: 'bigdata/spark/index.md'
+- Virtualization:
+   - Vagrant: 'virtualization/vagrant/index.md'
+   - Grid5000 - Automatic VM deployment with VM5K: 'virtualization/vm5k/index.md'
 - Misc:
   - Reproducible Research: 'misc/reproducible-research/index.md'
 # - Advanced topics:
