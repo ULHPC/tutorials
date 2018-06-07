@@ -1,10 +1,10 @@
-[![By ULHPC](https://img.shields.io/badge/by-ULHPC-blue.svg)](https://hpc.uni.lu) [![Licence](https://img.shields.io/badge/license-GPL--3.0-blue.svg)](http://www.gnu.org/licenses/gpl-3.0.html) [![GitHub issues](https://img.shields.io/github/issues/ULHPC/tutorials.svg)](https://github.com/ULHPC/tutorials/issues/) [![](https://img.shields.io/badge/slides-PDF-red.svg)](https://github.com/ULHPC/tutorials/raw/devel/advanced/Bioinformatics/slides.pdf) [![Github](https://img.shields.io/badge/sources-github-green.svg)](https://github.com/ULHPC/tutorials/tree/devel/advanced/Bioinformatics/) [![Documentation Status](http://readthedocs.org/projects/ulhpc-tutorials/badge/?version=latest)](http://ulhpc-tutorials.readthedocs.io/en/latest/advanced/Bioinformatics/) [![GitHub forks](https://img.shields.io/github/stars/ULHPC/tutorials.svg?style=social&label=Star)](https://github.com/ULHPC/tutorials)
+[![By ULHPC](https://img.shields.io/badge/by-ULHPC-blue.svg)](https://hpc.uni.lu) [![Licence](https://img.shields.io/badge/license-GPL--3.0-blue.svg)](http://www.gnu.org/licenses/gpl-3.0.html) [![GitHub issues](https://img.shields.io/github/issues/ULHPC/tutorials.svg)](https://github.com/ULHPC/tutorials/issues/) [![](https://img.shields.io/badge/slides-PDF-red.svg)](https://github.com/ULHPC/tutorials/raw/devel/bio/basics/slides.pdf) [![Github](https://img.shields.io/badge/sources-github-green.svg)](https://github.com/ULHPC/tutorials/tree/devel/bio/basics/) [![Documentation Status](http://readthedocs.org/projects/ulhpc-tutorials/badge/?version=latest)](http://ulhpc-tutorials.readthedocs.io/en/latest/bio/basics/) [![GitHub forks](https://img.shields.io/github/stars/ULHPC/tutorials.svg?style=social&label=Star)](https://github.com/ULHPC/tutorials)
 
 # Bioinformatics software on the UL HPC platform
 
 Copyright (c) 2014-2018 UL HPC Team  <hpc-sysadmins@uni.lu>
 
-[![](https://github.com/ULHPC/tutorials/raw/devel/advanced/Bioinformatics/cover_slides.png)](https://github.com/ULHPC/tutorials/raw/devel/advanced/Bioinformatics/slides.pdf)
+[![](https://github.com/ULHPC/tutorials/raw/devel/bio/basics/cover_slides.png)](https://github.com/ULHPC/tutorials/raw/devel/bio/basics/slides.pdf)
 
 The objective of this tutorial is to exemplify the execution of several Bioinformatics packages on top of the [UL HPC](http://hpc.uni.lu) platform.
 
@@ -35,10 +35,10 @@ This tutorial relies on several input files for the bioinformatics packages, thu
 
     (access)$> mkdir -p ~/bioinfo-tutorial/gromacs ~/bioinfo-tutorial/tophat ~/bioinfo-tutorial/mpiblast
     (access)$> cd ~/bioinfo-tutorial
-    (access)$> wget --no-check-certificate https://raw.github.com/ULHPC/tutorials/devel/advanced/Bioinformatics/gromacs/pr.tpr -O gromacs/pr.tpr
-    (access)$> wget --no-check-certificate https://raw.github.com/ULHPC/tutorials/devel/advanced/Bioinformatics/tophat/test_data.tar.gz -O tophat/test_data.tar.gz
-    (access)$> wget --no-check-certificate https://raw.github.com/ULHPC/tutorials/devel/advanced/Bioinformatics/tophat/test2_path -O tophat/test2_path
-    (access)$> wget --no-check-certificate https://raw.github.com/ULHPC/tutorials/devel/advanced/Bioinformatics/mpiblast/test.fa -O mpiblast/test.fa
+    (access)$> wget --no-check-certificate https://raw.github.com/ULHPC/tutorials/devel/bio/basics/gromacs/pr.tpr -O gromacs/pr.tpr
+    (access)$> wget --no-check-certificate https://raw.github.com/ULHPC/tutorials/devel/bio/basics/tophat/test_data.tar.gz -O tophat/test_data.tar.gz
+    (access)$> wget --no-check-certificate https://raw.github.com/ULHPC/tutorials/devel/bio/basics/tophat/test2_path -O tophat/test2_path
+    (access)$> wget --no-check-certificate https://raw.github.com/ULHPC/tutorials/devel/bio/basics/mpiblast/test.fa -O mpiblast/test.fa
 
 Or simply clone the full tutorials repository and make a link to the Bioinformatics tutorial:
 
@@ -432,7 +432,7 @@ being proposed later on as exercises.
 mpiBLAST requires access to NCBI substitution matrices and pre-formatted BLAST databases. For the purposes of this tutorial, a FASTA (NR)
 database has been formatted and split into 12 fragments, enabling the parallel alignment of a query against the database.
 
-A `.ncbirc` file containing the paths to the necessary data files can be downloaded from [here](https://raw.github.com/ULHPC/tutorials/devel/advanced/Bioinformatics/mpiblast/.ncbirc)
+A `.ncbirc` file containing the paths to the necessary data files can be downloaded from [here](https://raw.github.com/ULHPC/tutorials/devel/bio/basics/mpiblast/.ncbirc)
 and placed in your $HOME directory (make sure to backup an existing $HOME/.ncbirc before overwriting it with the one in this tutorial).
 
 **Question: Knowing that the databases can take tens of gigabytes, what is an appropriate storage location for them on the clusters?**
