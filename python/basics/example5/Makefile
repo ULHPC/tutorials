@@ -36,7 +36,7 @@ $(SORTED_DATA): $(DATA)
 	sort -V $(DATA) > $(SORTED_DATA)
 
 $(SPEEDUP_DATA): $(SORTED_DATA)
-	awk -f compute_speedup.awk $(SORTED_DATA)
+	awk -f gnuplot/compute_speedup.awk $(SORTED_DATA)
 
 $(DATA): ./scoop.sh ./pi_calc.py
 	make clean
