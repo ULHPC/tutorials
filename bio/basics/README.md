@@ -309,19 +309,11 @@ versions prebuilt for Linux by the developers.
 (node)$> unzip bowtie2-2.3.4.1-linux-x86_64.zip
 (node)$> tar xzvf tophat-2.1.1.Linux_x86_64.tar.gz
 (node)$> tar xjvf samtools-1.8.tar.bz2
-```
-SAM tools requires compilation:
 
-* Gaia
+# SAMtools requires compilation:
+(node)$> module load tools/bzip2/1.0.6-intel-2017a
+(node)$> cd samtools-1.8 && ./configure && make && cd ..
 
-		(node)$> cd samtools-1.8 && ./configure && make && cd ..
-
-* Iris
-
-		(node)$> module load tools/bzip2/1.0.6-intel-2017a
-		(node)$> cd samtools-1.8 && ./configure && make && cd ..
-
-```
 # Create a file containing the paths to the binaries, to be sourced when needed
 (node)$> echo "export PATH=$HOME/bioinfo-tutorial/newsoft/bowtie2-2.3.4.1-linux-x86_64:\$PATH" > newsoft
 (node)$> echo "export PATH=$HOME/bioinfo-tutorial/newsoft/tophat-2.1.1.Linux_x86_64:\$PATH" >> newsoft
@@ -335,17 +327,19 @@ SAM tools requires compilation:
 
 Now we will make a quick TopHat test, using the provided sample files:
 
-    # Go to the test directory, unpack the sample dataset and go to it
-    (node)$> cd ~/bioinfo-tutorial/tophat
-    (node)$> tar xzvf test_data.tar.gz
-    (node)$> cd test_data
+```
+# Go to the test directory, unpack the sample dataset and go to it
+(node)$> cd ~/bioinfo-tutorial/tophat
+(node)$> tar xzvf test_data.tar.gz
+(node)$> cd test_data
 
 
-    # Launch TopHat, with Bowtie2 in serial mode
-    (node)$> tophat -r 20 test_ref reads_1.fq reads_2.fq
-    
-    # Launch TopHat, with Bowtie2 in parallel mode
-    (node)$> tophat -p 12 -r 20 test_ref reads_1.fq reads_2.fq
+# Launch TopHat, with Bowtie2 in serial mode
+(node)$> tophat -r 20 test_ref reads_1.fq reads_2.fq
+
+# Launch TopHat, with Bowtie2 in parallel mode
+(node)$> tophat -p 12 -r 20 test_ref reads_1.fq reads_2.fq
+```
 
 We can see that for this fast execution, increasing the number of threads does not improve the calculation time due to the relatively high overhead of thread creation.
 Note that TopHat / Bowtie are not MPI applications and as such can take advantage of at most one compute node.
