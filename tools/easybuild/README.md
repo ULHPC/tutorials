@@ -581,7 +581,11 @@ Yet you can see that we obtained HPL 2.2 without writing any EasyConfig file.
 There are multiple ways to amend a EasyConfig file. Check the `--try-*` option flags for all the possibilities.
 
 Generally you want to do that when the up-to-date version of the software you want is **not** available as a ReciPY within Easybuild.
+For instance, a very popular building environment [CMake](https://blog.kitware.com/cmake-3-11-3-available-for-download/) has recently released a new version (3.11.3), which you want to give a try.
 
+It is not available as module, so let's build it.
+
+First let's check for available easyconfigs ReciPy if one exist for the expected version:
 
 ```
 $> eb -S Cmake-3
