@@ -2,9 +2,11 @@
 
 # Galaxy Introduction Exercise: From Peaks to Genes
 
-      Copyright (c) 2014-2017 UL HPC Team  <hpc-sysadmins@uni.lu>
+**/!\ IMPORTANT NOTE:** This is an old version of the ["From peaks to genes"](http://galaxyproject.github.io/training-material/topics/introduction/tutorials/galaxy-intro-peaks2genes/tutorial.html) tutorial now provided by the [Galaxy Training Network](https://galaxyproject.org/teach/gtn/). For a much nicer version and many other Galaxy tutorials, check out the [Galaxy Training](http://galaxyproject.github.io/training-material/) webpage.
 
-[![](https://github.com/ULHPC/tutorials/raw/devel/advanced/Galaxy/cover_slides.png)](https://github.com/ULHPC/tutorials/raw/devel/advanced/Galaxy/introduction_to_galaxy_unilu.pdf)
+------
+
+[![](https://github.com/ULHPC/tutorials/raw/devel/bio/galaxy/cover_slides.png)](https://github.com/ULHPC/tutorials/raw/devel/advanced/Galaxy/introduction_to_galaxy_unilu.pdf)
 
 For a version of this tutorial with the results of important steps embedded and direct links to workflows, go to the Galaxy server, select "Shared Data" and then "Pages" from the top menu and have a look at [Galaxy Introduction](https://galaxy-server.uni.lu/u/sdiehl/p/galaxy-introduction).
 
