@@ -1,8 +1,10 @@
 [![By ULHPC](https://img.shields.io/badge/by-ULHPC-blue.svg)](https://hpc.uni.lu) [![Licence](https://img.shields.io/badge/license-GPL--3.0-blue.svg)](http://www.gnu.org/licenses/gpl-3.0.html) [![GitHub issues](https://img.shields.io/github/issues/ULHPC/tutorials.svg)](https://github.com/ULHPC/tutorials/issues/) [![](https://img.shields.io/badge/slides-PDF-red.svg)](https://github.com/ULHPC/tutorials/raw/devel/tools/easybuild/slides.pdf) [![Github](https://img.shields.io/badge/sources-github-green.svg)](https://github.com/ULHPC/tutorials/tree/devel/tools/easybuild/) [![Documentation Status](http://readthedocs.org/projects/ulhpc-tutorials/badge/?version=latest)](http://ulhpc-tutorials.readthedocs.io/en/latest/tools/easybuild/) [![GitHub forks](https://img.shields.io/github/stars/ULHPC/tutorials.svg?style=social&label=Star)](https://github.com/ULHPC/tutorials)
 
-# Building [custom] software with EasyBuild on UL HPC platform
+# Building [custom] software with EasyBuild on the UL HPC platform
 
-      Copyright (c) 2014-2018 S. Peter & UL HPC Team  <hpc-sysadmins@uni.lu>
+Copyright (c) 2014-2018 UL HPC Team  <hpc-sysadmins@uni.lu>
+
+Authors: Xavier Besseron, Maxime Schmitt, Sarah Peter, Sébastien Varrette
 
 [![](https://github.com/ULHPC/tutorials/raw/devel/tools/easybuild/cover_slides.png)](https://github.com/ULHPC/tutorials/raw/devel/tools/easybuild/slides.pdf)
 
@@ -14,16 +16,16 @@ Traditionally, this part is rather time-consuming and frustrating, especially wh
 And when it comes to have a build adapted to an HPC system, you are somehow _forced_ to make a custom build performed on the target machine to ensure you will get the best possible performances.
 [EasyBuild](https://github.com/easybuilders/easybuild) is one approach to facilitate this step.
 
-Moreover, later on, you probably want to recover a system configuration matching the detailed installation paths through a set of environmental variable  (Ex: `JAVA_HOME`, `HADOOP_HOME` etc...). At least you would like to see the traditional `PATH`, `CPATH` or `LD_LIBRARY_PATH` updated.
+Moreover, later on, you probably want to recover a system configuration matching the detailed installation paths through a set of environmental variable  (ex: `JAVA_HOME`, `HADOOP_HOME` etc.). At least you would like to see the traditional `PATH`, `CPATH` or `LD_LIBRARY_PATH` updated.
 
-**Question**: what is the purpose of the above mentioned environmental variable?
+**Question**: What is the purpose of the above mentioned environmental variable?
 
 For this second aspect, the solution came long time ago (in 1991) with the [Environment Modules](http://modules.sourceforge.net/).
 We will cover it in the first part of this tutorial.
 
 Then, another advantage of [EasyBuild](http://easybuild.readthedocs.io) comes into account that justifies its wide-spread deployment across many HPC centers (incl. [UL HPC](http://hpc.uni.lu)): it has been designed to not only build any piece of software, but also to generate the corresponding module files to facilitate further interactions with it.
 Thus we will cover [EasyBuild](http://easybuild.readthedocs.io) in the second part of this hands-on.
-It allows for  automated and reproducable build of software. Once a build has been made, the build script (via the *EasyConfig file*) or the installed software (via the *module file*) can be shared with other users.
+It allows for automated and reproducable builds of software. Once a build has been made, the build script (via the *EasyConfig file*) or the installed software (via the *module file*) can be shared with other users.
 
 You might be interested to know that we rely on [EasyBuild](http://easybuild.readthedocs.io) to provide the [software environment](https://hpc.uni.lu/users/software/) to the users of the platform.
 
@@ -34,8 +36,8 @@ In this tutorial, we are going to first build software that are supported by Eas
 --------------------
 ## Pre-requisites ##
 
-Ensure you are able to [connect to the UL HPC clusters](https://hpc.uni.lu/users/docs/access.html)
-**For all tests and compilation with Easybuild, you MUST work on a computing node**
+Ensure you are able to [connect to the UL HPC clusters](https://hpc.uni.lu/users/docs/access.html).
+**For all tests and compilation with Easybuild, you MUST work on a computing node.**
 
 In particular, the `module` command **is not** available on the access frontends.
 
@@ -51,11 +53,10 @@ In particular, the `module` command **is not** available on the access frontends
 (access-{gaia|chaos})$> oarsub -I -l core=2,walltime=2
 ```
 
-
 ------------------------------------------
 ## Part 1: Environment modules and LMod ##
 
-[Environment Modules](http://modules.sourceforge.net/) are a standard and well-established technology across HPC sites, to permit developing and using complex software and libraries builds with dependencies, allowing multiple versions of software stacks and combinations thereof to co-exist.
+[Environment Modules](http://modules.sourceforge.net/) are a standard and well-established technology across HPC sites, to permit developing and using complex software and libraries build with dependencies, allowing multiple versions of software stacks and combinations thereof to co-exist.
 
 The tool in itself is used to manage environment variables such as `PATH`, `LD_LIBRARY_PATH` and `MANPATH`, enabling the easy loading and unloading of application/library profiles and their dependencies.
 
@@ -78,13 +79,13 @@ You can also see our [modules page](https://hpc.uni.lu/users/docs/modules.html) 
 
 At the heart of environment modules interaction resides the following components:
 
-* the `MODULEPATH` environment variable, which defined the list of searched directories for modulefiles
+* the `MODULEPATH` environment variable, which defines the list of searched directories for modulefiles
 * `modulefile` (see [an example](http://www.nersc.gov/assets/modulefile-example.txt)) associated to each available software.
 
-Then, [Lmod](https://www.tacc.utexas.edu/research-development/tacc-projects/lmod)  is a [Lua](http://www.lua.org/)-based module system that easily handles the `MODULEPATH` Hierarchical problem.
+Then, [Lmod](https://www.tacc.utexas.edu/research-development/tacc-projects/lmod)  is a [Lua](http://www.lua.org/)-based module system that easily handles the `MODULEPATH` hierarchical problem.
 
-Lmod is a new implementation of Environment Modules that easily handles the MODULEPATH Hierarchical problem. It is drop-in replacement for TCL/C modules and reads TCL modulefiles directly.
-In particular, Lmod add many interesting features on top of the traditional implementation focusing on an easier interaction (search, load etc.) for the users. Thus that's the tool I would advise to deploy.
+Lmod is a new implementation of Environment Modules that easily handles the MODULEPATH hierarchical problem. It is a drop-in replacement for TCL/C modules and reads TCL modulefiles directly.
+In particular, Lmod adds many interesting features on top of the traditional implementation focusing on an easier interaction (search, load etc.) for the users. Thus that is the tool we would advise to deploy.
 
 * [User guide](https://www.tacc.utexas.edu/research-development/tacc-projects/lmod/user-guide)
 * [Advanced user guide](https://www.tacc.utexas.edu/research-development/tacc-projects/lmod/advanced-user-guide)
@@ -171,7 +172,7 @@ Python 3.6.0
 $> module purge
 ```
 
-Now let's assume that a given software your looking at does not exists, or not in the version you want.
+Now let's assume that a given software you're looking at is not available, or not in the version you want.
 That's where [EasyBuild](http://easybuild.readthedocs.io) comes into play.
 
 -----------------------
@@ -184,7 +185,7 @@ EasyBuild is a tool that allows to perform automated and reproducible compilatio
 All builds and installations are performed at user level, so you don't need the admin (i.e. `root`) rights.
 The software are installed in your home directory (by default in `$HOME/.local/easybuild/software/`) and a module file is generated (by default in `$HOME/.local/easybuild/modules/`) to use the software.
 
-EasyBuild relies on two main concepts: *Toolchains* and *EasyConfig file*.
+EasyBuild relies on two main concepts: *Toolchains* and *EasyConfig files*.
 
 A **toolchain** corresponds to a compiler and a set of libraries which are commonly used to build a software.
 The two main toolchains frequently used on the UL HPC platform are the `foss` ("_Free and Open Source Software_") and the `intel` one.
@@ -192,7 +193,7 @@ The two main toolchains frequently used on the UL HPC platform are the `foss` ("
 1. `foss`  is based on the GCC compiler and on open-source libraries (OpenMPI, OpenBLAS, etc.).
 2. `intel` is based on the Intel compiler and on Intel libraries (Intel MPI, Intel Math Kernel Library, etc.).
 
-An **EasyConfig file** is a simple text file that describes the build process of a software. For most software that uses standard procedure (like `configure`, `make` and `make install`), this file is very simple.
+An **EasyConfig file** is a simple text file that describes the build process of a software. For most software that uses standard procedures (like `configure`, `make` and `make install`), this file is very simple.
 Many [EasyConfig files](https://github.com/easybuilders/easybuild-easyconfigs/tree/master/easybuild/easyconfigs) are already provided with EasyBuild.
 By default, EasyConfig files and generated modules are named using the following convention:
 `<Software-Name>-<Software-Version>-<Toolchain-Name>-<Toolchain-Version>`.
@@ -208,15 +209,15 @@ Additional details are available on EasyBuild website:
 - [EasyConfig files](http://easybuild.readthedocs.io/en/latest/Writing_easyconfig_files.html)
 - [List of supported software packages](http://easybuild.readthedocs.io/en/latest/version-specific/Supported_software.html)
 
-### a. Installation.
+### a. Installation
 
 * [the official instructions](http://easybuild.readthedocs.io/en/latest/Installation.html).
 
 What is important for the installation of Easybuild are the following variables:
 
 * `EASYBUILD_PREFIX`: where to install **local** modules and software, _i.e._ `$HOME/.local/easybuild`
-* `EASYBUILD_MODULES_TOOL`, the type of [modules](http://modules.sourceforge.net/) tool you are using, _i.e._ `LMod` in this case
-* `EASYBUILD_MODULE_NAMING_SCHEME`, the way the software and modules should be organized (flat view or hierarchical) -- we're advising on `CategorizedModuleNamingScheme`.
+* `EASYBUILD_MODULES_TOOL`: the type of [modules](http://modules.sourceforge.net/) tool you are using, _i.e._ `LMod` in this case
+* `EASYBUILD_MODULE_NAMING_SCHEME`: the way the software and modules should be organized (flat view or hierarchical) -- we're advising on `CategorizedModuleNamingScheme`
 
 Add the following entries to your `~/.bashrc` (use your favorite CLI editor like `nano` or `vim`):
 
@@ -246,23 +247,23 @@ $> echo $EASYBUILD_PREFIX
 /home/users/<login>/.local/easybuild
 ```
 
-Now let's install Easybuild following the [boostrapping procedure](http://easybuild.readthedocs.io/en/latest/Installation.html#bootstrapping-easybuild)
+Now let's install Easybuild following the [boostrapping procedure](http://easybuild.readthedocs.io/en/latest/Installation.html#bootstrapping-easybuild):
 
 ```bash
-$> cd /tmp/
+$> cd
 # download script
-curl -o /tmp/bootstrap_eb.py  https://raw.githubusercontent.com/easybuilders/easybuild-framework/develop/easybuild/scripts/bootstrap_eb.py
+$> curl -o bootstrap_eb.py  https://raw.githubusercontent.com/easybuilders/easybuild-framework/develop/easybuild/scripts/bootstrap_eb.py
 
 # install Easybuild
-$> python /tmp/bootstrap_eb.py $EASYBUILD_PREFIX
+$> python bootstrap_eb.py $EASYBUILD_PREFIX
 ```
 
 Now you can use your freshly built software:
-The main EasyBuild command is `eb` (To get help on the EasyBuild options, use the `-h` or `-H` option flags:
+The main EasyBuild command is `eb` (to get help on the EasyBuild options, use the `-h` or `-H` option flags):
 
     $> eb -h
     $> eb -H
-:
+
 
 ```bash
 $> eb --version             # expected ;)
@@ -282,14 +283,14 @@ $> eb --version
 This is EasyBuild 3.6.1 (framework: 3.6.1, easyblocks: 3.6.1) on host iris-001.
 ```
 
-Since you are going to use quite often the above command to use locally built modules and load easybuild, an alias `mu` is provided and can be used from now on. Use it **now**
+Since you are going to use quite often the above command to use locally built modules and load easybuild, an alias `mu` is provided and can be used from now on. Use it **now**.
 
 ```
 $> mu
 $> module avail     # OR 'ma'
 ```
 
-### b. Local vs. Global Usage
+### b. Local vs. global usage
 
 As you probably guessed, we are going to use two places for the installed software:
 
@@ -301,7 +302,7 @@ Default usage (with the `eb` command) would install your software and modules in
 Before that, let's explore the basic usage of [EasyBuild](http://easybuild.readthedocs.io/) and the `eb` command.
 
 ```bash
-# Search for an Easybuild recipY with 'eb -S <pattern>'
+# Search for an Easybuild recipy with 'eb -S <pattern>'
 $> eb -S Spark
 CFGS1=/opt/apps/resif/data/easyconfigs/ulhpc/default/easybuild/easyconfigs/s/Spark
 CFGS2=/home/users/<login>/.local/easybuild/software/tools/EasyBuild/3.6.1/lib/python2.7/site-packages/easybuild_easyconfigs-3.6.1-py2.7.egg/easybuild/easyconfigs/s/Spark
@@ -335,7 +336,7 @@ Lmod has detected the following error: Unable to find: "HPL"
 Then, search for available EasyConfig files with HPL in their name. The EasyConfig files are named with the `.eb` extension.
 
 ```bash
-# Search for an Easybuild recipY with 'eb -S <pattern>'
+# Search for an Easybuild recipy with 'eb -S <pattern>'
 $> eb -S HPL-2.2
 CFGS1=/home/users/svarrette/.local/easybuild/software/tools/EasyBuild/3.6.1/lib/python2.7/site-packages/easybuild_easyconfigs-3.6.1-py2.7.egg/easybuild/easyconfigs/h/HPL
  * $CFGS1/HPL-2.2-foss-2016.07.eb
@@ -385,15 +386,15 @@ CFGS1=/home/users/svarrette/.local/easybuild/software/tools/EasyBuild/3.6.1/lib/
 
 We are going to build HPL 2.2 against the `intel` toolchain, typically the 2017a version which is available by default on the platform.
 
-Pick the corresponding recipY (for instance `HPL-2.2-intel-2017a.eb`), install it with
+Pick the corresponding recipy (for instance `HPL-2.2-intel-2017a.eb`), install it with
 
        eb <name>.eb [-D] -r
 
 * `-D` enables the dry-run mode to check what's going to be install -- **ALWAYS try it first**
-* `-r` enables the robot mode to automatically insatall all dependencies while searching for easyconfigs in a set of pre-defined directories -- you can also prepend new directories to search for eb files (like the current directory `$PWD`) using the option and syntax `--robot-paths=$PWD:` (do not forget the ':'). See [Controlling the robot search path documentation](http://easybuild.readthedocs.io/en/latest/Using_the_EasyBuild_command_line.html#controlling-the-robot-search-path)
+* `-r` enables the robot mode to automatically install all dependencies while searching for easyconfigs in a set of pre-defined directories -- you can also prepend new directories to search for eb files (like the current directory `$PWD`) using the option and syntax `--robot-paths=$PWD:` (do not forget the ':'). See [Controlling the robot search path documentation](http://easybuild.readthedocs.io/en/latest/Using_the_EasyBuild_command_line.html#controlling-the-robot-search-path)
 * The `$CFGS<n>/` prefix should be dropped unless you know what you're doing (and thus have previously defined the variable -- see the first output of the `eb -S [...]` command).
 
-So let's install `HPL` version 2.2 and **FIRST** check which  dependencies are satisfied with `-Dr`:
+So let's install `HPL` version 2.2 and **FIRST** check which dependencies are satisfied with `-Dr`:
 
 ```bash
 $> eb HPL-2.2-intel-2017a.eb -Dr
@@ -424,7 +425,7 @@ CFGS=/home/users/svarrette/.local/easybuild/software/tools/EasyBuild/3.6.1/lib/p
 == Temporary directory /tmp/eb-CTC2hq has been removed.
 ```
 
-As can be seen, there is a single element to installed and this has not been done so far (box not checked). All the dependencies are already present (box checked).
+As can be seen, there is a single element to install and this has not been done so far (box not checked). All the dependencies are already present (box checked).
 Let's really install the selected software -- you may want to prefix the `eb` command with the `time` to collect the installation time:
 
 ```bash
@@ -525,7 +526,7 @@ setenv("EBVERSIONHPL","2.2")
 setenv("EBDEVELHPL","/home/users/svarrette/.local/easybuild/software/tools/HPL/2.2-intel-2017a/easybuild/tools-HPL-2.2-intel-2017a-easybuild-devel")
 ```
 
-**Note**: to see the (locally) installed software, the `MODULEPATH` variable should include the `$HOME/.local/easybuild/modules/all/` (of `$LOCAL_MODULES`) path (which is what happen when using `module use <path>` -- see the `mu` command)
+**Note**: to see the (locally) installed software, the `MODULEPATH` variable should include the `$HOME/.local/easybuild/modules/all/` (of `$LOCAL_MODULES`) path (which is what happens when using `module use <path>` -- see the `mu` command)
 
 You can now load the freshly installed module like any other:
 
@@ -545,7 +546,7 @@ Currently Loaded Modules:
 **Tips**: When you load a module `<NAME>` generated by Easybuild, it is installed within the directory reported by the `$EBROOT<NAME>` variable.
 In the above case, you will find the generated binary for HPL in `${EBROOTHPL}/bin/xhpl`.
 
-You may want to test the newly built HPL benchmark (you need to reserve at least 4 cores for that to succeed:)
+You may want to test the newly built HPL benchmark (you need to reserve at least 4 cores for that to succeed):
 
 ```bash
 # In another terminal, connect to the cluster frontend
@@ -572,20 +573,20 @@ $> ls
 $> mpirun -hostfile $OAR_NODEFILE ./xhpl
 ```
 
-Running HPL benchmarks required more attention -- a [full tutorial](https://ulhpc-tutorials.readthedocs.io/en/latest/parallel/mpi/HPL/) is dedicated to it.
+Running HPL benchmarks requires more attention -- a [full tutorial](https://ulhpc-tutorials.readthedocs.io/en/latest/parallel/mpi/HPL/) is dedicated to it.
 Yet you can see that we obtained HPL 2.2 without writing any EasyConfig file.
 
 
 ### d. Build software using a customized EasyConfig file
 
-There are multiple ways to amend a EasyConfig file. Check the `--try-*` option flags for all the possibilities.
+There are multiple ways to amend an EasyConfig file. Check the `--try-*` option flags for all the possibilities.
 
-Generally you want to do that when the up-to-date version of the software you want is **not** available as a ReciPY within Easybuild.
+Generally you want to do that when the up-to-date version of the software you want is **not** available as a recipy within Easybuild.
 For instance, a very popular building environment [CMake](https://blog.kitware.com/cmake-3-11-3-available-for-download/) has recently released a new version (3.11.3), which you want to give a try.
 
 It is not available as module, so let's build it.
 
-First let's check for available easyconfigs ReciPy if one exist for the expected version:
+First let's check for available easyconfigs recipy if one exist for the expected version:
 
 ```
 $> eb -S Cmake-3
@@ -690,7 +691,7 @@ sys	1m15.185s
 
 * (eventually) connect to the allocated node (using `ssh` or `oarsub -C <jobid>` depending on the cluster)
 * run `htop`
-    - press 'u' ti filter by process owner, select your login
+    - press 'u' to filter by process owner, select your login
     - press 'F5' to enable the tree view
 
 Check the result:
@@ -703,7 +704,7 @@ That's all ;-)
 
 **Final remaks**
 
-This workflow (copying an existing RecipY, adapt the filename, the version and the source checksum) covers most of the test cases.
+This workflow (copying an existing recipy, adapting the filename, the version and the source checksum) covers most of the test cases.
 Yet sometimes you need to work on a more complex dependency check, in which case you'll need to adapt _many_ eb files.
 In this case, for each build, you need to instruct Easybuild to search for easyconfigs also in the current directory, in which case you will use:
 
@@ -721,31 +722,31 @@ For this example, we create an EasyConfig file to build GZip 1.4 with the GOOLF 
 Open your favorite editor and create a file named `gzip-1.4-goolf-1.4.10.eb` with the following content:
 
     easyblock = 'ConfigureMake'
-
+    
     name = 'gzip'
     version = '1.4'
-
+    
     homepage = 'http://www.gnu.org/software/gzip/'
     description = "gzip (GNU zip) is a popular data compression program as a replacement for compress"
-
+    
     # use the GOOLF toolchain
     toolchain = {'name': 'goolf', 'version': '1.4.10'}
-
+    
     # specify that GCC compiler should be used to build gzip
     preconfigopts = "CC='gcc'"
-
+    
     # source tarball filename
     sources = ['%s-%s.tar.gz'%(name,version)]
-
+    
     # download location for source files
     source_urls = ['http://ftpmirror.gnu.org/gzip']
-
+    
     # make sure the gzip and gunzip binaries are available after installation
     sanity_check_paths = {
                           'files': ["bin/gunzip", "bin/gzip"],
                           'dirs': []
                          }
-
+    
     # run 'gzip -h' and 'gzip --version' after installation
     sanity_check_commands = [True, ('gzip', '--version')]
 
@@ -756,7 +757,7 @@ This is a simple EasyConfig. Most of the fields are self-descriptive. No build m
 Let's build GZip with this EasyConfig file:
 
     $> time eb gzip-1.4-goolf-1.4.10.eb
-
+    
     == temporary log file in case of crash /tmp/eb-hiyyN1/easybuild-ynLsHC.log
     == processing EasyBuild easyconfig /mnt/nfs/users/homedirs/mschmitt/gzip-1.4-goolf-1.4.10.eb
     == building and installing base/gzip/1.4-goolf-1.4.10...
@@ -780,7 +781,7 @@ Let's build GZip with this EasyConfig file:
     == Build succeeded for 1 out of 1
     == temporary log file(s) /tmp/eb-hiyyN1/easybuild-ynLsHC.log* have been removed.
     == temporary directory /tmp/eb-hiyyN1 has been removed.
-
+    
     real    1m39.982s
     user    0m52.743s
     sys     0m11.297s
@@ -789,7 +790,7 @@ Let's build GZip with this EasyConfig file:
 We can now check that our version of GZip is available via the modules:
 
     $> module avail gzip
-
+    
     --------- /mnt/nfs/users/homedirs/mschmitt/.local/easybuild/modules/all ---------
         base/gzip/1.4-goolf-1.4.10
 
