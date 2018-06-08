@@ -562,14 +562,14 @@ $> srun -n $SLURM_NTASKS ./xhpl
 
 
 ############### gaia/chaos clusters (OAR) ###############
-(access-{gaia|chaos})$> oarsub -I -l core=4,walltime=2
+(access-{gaia|chaos})$> oarsub -I -l nodes=1/core=4,walltime=1
 $> mu
 $> module load tools/HPL
 $> cd $EBROOTHPL
 $> ls
 $> cd bin
 $> ls
-$>
+$> mpirun -hostfile $OAR_NODEFILE ./xhpl
 ```
 
 Running HPL benchmarks required more attention -- a [full tutorial](https://ulhpc-tutorials.readthedocs.io/en/latest/parallel/mpi/HPL/) is dedicated to it.
