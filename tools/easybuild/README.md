@@ -1,10 +1,10 @@
-<!-- [![By ULHPC](https://img.shields.io/badge/by-ULHPC-blue.svg)](https://hpc.uni.lu) [![Licence](https://img.shields.io/badge/license-GPL--3.0-blue.svg)](http://www.gnu.org/licenses/gpl-3.0.html) [![GitHub issues](https://img.shields.io/github/issues/ULHPC/tutorials.svg)](https://github.com/ULHPC/tutorials/issues/) [![](https://img.shields.io/badge/slides-PDF-red.svg)](https://github.com/ULHPC/tutorials/raw/devel/tools/easybuild/slides.pdf) [![Github](https://img.shields.io/badge/sources-github-green.svg)](https://github.com/ULHPC/tutorials/tree/devel/tools/easybuild/) [![Documentation Status](http://readthedocs.org/projects/ulhpc-tutorials/badge/?version=latest)](http://ulhpc-tutorials.readthedocs.io/en/latest/tools/easybuild/) [![GitHub forks](https://img.shields.io/github/stars/ULHPC/tutorials.svg?style=social&label=Star)](https://github.com/ULHPC/tutorials) -->
+[![By ULHPC](https://img.shields.io/badge/by-ULHPC-blue.svg)](https://hpc.uni.lu) [![Licence](https://img.shields.io/badge/license-GPL--3.0-blue.svg)](http://www.gnu.org/licenses/gpl-3.0.html) [![GitHub issues](https://img.shields.io/github/issues/ULHPC/tutorials.svg)](https://github.com/ULHPC/tutorials/issues/) [![](https://img.shields.io/badge/slides-PDF-red.svg)](https://github.com/ULHPC/tutorials/raw/devel/tools/easybuild/slides.pdf) [![Github](https://img.shields.io/badge/sources-github-green.svg)](https://github.com/ULHPC/tutorials/tree/devel/tools/easybuild/) [![Documentation Status](http://readthedocs.org/projects/ulhpc-tutorials/badge/?version=latest)](http://ulhpc-tutorials.readthedocs.io/en/latest/tools/easybuild/) [![GitHub forks](https://img.shields.io/github/stars/ULHPC/tutorials.svg?style=social&label=Star)](https://github.com/ULHPC/tutorials)
 
-<!-- # Building [custom] software with EasyBuild on UL HPC platform -->
+# Building [custom] software with EasyBuild on UL HPC platform
 
-<!--       Copyright (c) 2014-2018 S. Peter & UL HPC Team  <hpc-sysadmins@uni.lu> -->
+      Copyright (c) 2014-2018 S. Peter & UL HPC Team  <hpc-sysadmins@uni.lu>
 
-<!-- [![](https://github.com/ULHPC/tutorials/raw/devel/tools/easybuild/cover_slides.png)](https://github.com/ULHPC/tutorials/raw/devel/tools/easybuild/slides.pdf) -->
+[![](https://github.com/ULHPC/tutorials/raw/devel/tools/easybuild/cover_slides.png)](https://github.com/ULHPC/tutorials/raw/devel/tools/easybuild/slides.pdf)
 
 The objective of this tutorial is to show how [EasyBuild](http://easybuild.readthedocs.io) can be used to ease, automate and script the build of software on the [UL HPC](https://hpc.uni.lu) platforms.
 
@@ -583,7 +583,135 @@ There are multiple ways to amend a EasyConfig file. Check the `--try-*` option f
 Generally you want to do that when the up-to-date version of the software you want is **not** available as a ReciPY within Easybuild.
 
 
+```
+$> eb -S Cmake-3
+[...]
+ * $CFGS2/CMake-3.9.1.eb
+ * $CFGS2/CMake-3.9.4-GCCcore-6.4.0.eb
+ * $CFGS2/CMake-3.9.5-GCCcore-6.4.0.eb
+```
 
+We are going to reuse one of the latest EasyConfig available, for instance lets copy `$CFGS2/CMake-3.9.1.eb`
+
+```bash
+# Work in a dedicated directory
+$> mkdir -p ~/software/CMake
+$> cd ~/software/CMake
+
+$> eb -S Cmake-3|less   # collect the definition of the CFGS2 variable
+$> CFGS2=/home/users/svarrette/.local/easybuild/software/tools/EasyBuild/3.6.1/lib/python2.7/site-packages/easybuild_easyconfigs-3.6.1-py2.7.egg/easybuild/easyconfigs/c/CMake
+$> cp $CFGS2/CMake-3.9.1.eb .
+$> mv CMake-3.9.1.eb CMake-3.11.3.eb        # Adapt version suffix to the lastest realse
+```
+
+You need to perform the following changes (here: version upgrade, and adapted checksum)
+
+```diff
+--- CMake-3.9.1.eb      2018-06-08 10:56:24.447699000 +0200
++++ CMake-3.11.3.eb     2018-06-08 11:07:39.716672000 +0200
+@@ -1,7 +1,7 @@
+ easyblock = 'ConfigureMake'
+
+ name = 'CMake'
+-version = '3.9.1'
++version = '3.11.3'
+
+ homepage = 'http://www.cmake.org'
+ description = """CMake, the cross-platform, open-source build system.
+@@ -11,7 +11,7 @@
+
+ source_urls = ['http://www.cmake.org/files/v%(version_major_minor)s']
+ sources = [SOURCELOWER_TAR_GZ]
+-checksums = ['d768ee83d217f91bb597b3ca2ac663da7a8603c97e1f1a5184bc01e0ad2b12bb']
++checksums = ['287135b6beb7ffc1ccd02707271080bbf14c21d80c067ae2c0040e5f3508c39a']
+
+ configopts = '-- -DCMAKE_USE_OPENSSL=1'
+```
+
+If the checksum is not provided on the [official software page](https://cmake.org/download/), you will need to compute it yourself by downloading the sources and collect the checksum:
+
+```bash
+$> gsha256sum ~/Download/cmake-3.11.3.tar.gz
+287135b6beb7ffc1ccd02707271080bbf14c21d80c067ae2c0040e5f3508c39a  cmake-3.11.3.tar.gz
+```
+
+Let's build it:
+
+```bash
+$>  eb ./CMake-3.11.3.eb -Dr
+== temporary log file in case of crash /tmp/eb-UX7APP/easybuild-gxnyIv.log
+Dry run: printing build status of easyconfigs and dependencies
+CFGS=/mnt/irisgpfs/users/<login>/software/CMake
+ * [ ] $CFGS/CMake-3.11.3.eb (module: devel/CMake/3.11.3)
+== Temporary log file(s) /tmp/eb-UX7APP/easybuild-gxnyIv.log* have been removed.
+== Temporary directory /tmp/eb-UX7APP has been removed.
+```
+
+Dependencies are fine, so let's build it:
+
+```bash
+$> time eb ./CMake-3.11.3.eb -r
+== temporary log file in case of crash /tmp/eb-JjF92B/easybuild-RjzRjb.log
+== resolving dependencies ...
+== processing EasyBuild easyconfig /mnt/irisgpfs/users/<login>/software/CMake/CMake-3.11.3.eb
+== building and installing devel/CMake/3.11.3...
+== fetching files...
+== creating build dir, resetting environment...
+== unpacking...
+== patching...
+== preparing...
+== configuring...
+== building...
+== testing...
+== installing...
+== taking care of extensions...
+== postprocessing...
+== sanity checking...
+== cleaning up...
+== creating module...
+== permissions...
+== packaging...
+== COMPLETED: Installation ended successfully
+== Results of the build can be found in the log file(s) /home/users/<login>/.local/easybuild/software/devel/CMake/3.11.3/easybuild/easybuild-CMake-3.11.3-20180608.111611.log
+== Build succeeded for 1 out of 1
+== Temporary log file(s) /tmp/eb-JjF92B/easybuild-RjzRjb.log* have been removed.
+== Temporary directory /tmp/eb-JjF92B has been removed.
+
+real	7m40.358s
+user	5m56.442s
+sys	1m15.185s
+```
+
+**Note** you can follow the progress of the installation in a separate shell on the node:
+
+* (eventually) connect to the allocated node (using `ssh` or `oarsub -C <jobid>` depending on the cluster)
+* run `htop`
+    - press 'u' ti filter by process owner, select your login
+    - press 'F5' to enable the tree view
+
+Check the result:
+
+```bash
+$> module av CMake
+```
+
+That's all ;-)
+
+**Final remaks**
+
+This workflow (copying an existing RecipY, adapt the filename, the version and the source checksum) covers most of the test cases.
+Yet sometimes you need to work on a more complex dependency check, in which case you'll need to adapt _many_ eb files.
+In this case, for each build, you need to instruct Easybuild to search for easyconfigs also in the current directory, in which case you will use:
+
+```bash
+$> eb <filename>.eb --robot=$PWD:$EASYBUILD_ROBOT -D
+$> eb <filename>.eb --robot=$PWD:$EASYBUILD_ROBOT
+```
+
+--------------------------------------------------------
+### (OLD) Build software using your own EasyConfig file
+
+Below are obsolete instructions to write a full Easyconfig file, left for archiving and informal purposes.
 
 For this example, we create an EasyConfig file to build GZip 1.4 with the GOOLF toolchain.
 Open your favorite editor and create a file named `gzip-1.4-goolf-1.4.10.eb` with the following content:
@@ -663,7 +791,7 @@ We can now check that our version of GZip is available via the modules:
 
 
 
-## To go further
+## To go further (to update)
 
 
 - [EasyBuild homepage](http://easybuilders.github.io/easybuild)
