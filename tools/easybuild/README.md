@@ -1,10 +1,10 @@
-[![By ULHPC](https://img.shields.io/badge/by-ULHPC-blue.svg)](https://hpc.uni.lu) [![Licence](https://img.shields.io/badge/license-GPL--3.0-blue.svg)](http://www.gnu.org/licenses/gpl-3.0.html) [![GitHub issues](https://img.shields.io/github/issues/ULHPC/tutorials.svg)](https://github.com/ULHPC/tutorials/issues/) [![](https://img.shields.io/badge/slides-PDF-red.svg)](https://github.com/ULHPC/tutorials/raw/devel/tools/easybuild/slides.pdf) [![Github](https://img.shields.io/badge/sources-github-green.svg)](https://github.com/ULHPC/tutorials/tree/devel/tools/easybuild/) [![Documentation Status](http://readthedocs.org/projects/ulhpc-tutorials/badge/?version=latest)](http://ulhpc-tutorials.readthedocs.io/en/latest/tools/easybuild/) [![GitHub forks](https://img.shields.io/github/stars/ULHPC/tutorials.svg?style=social&label=Star)](https://github.com/ULHPC/tutorials)
+<!-- [![By ULHPC](https://img.shields.io/badge/by-ULHPC-blue.svg)](https://hpc.uni.lu) [![Licence](https://img.shields.io/badge/license-GPL--3.0-blue.svg)](http://www.gnu.org/licenses/gpl-3.0.html) [![GitHub issues](https://img.shields.io/github/issues/ULHPC/tutorials.svg)](https://github.com/ULHPC/tutorials/issues/) [![](https://img.shields.io/badge/slides-PDF-red.svg)](https://github.com/ULHPC/tutorials/raw/devel/tools/easybuild/slides.pdf) [![Github](https://img.shields.io/badge/sources-github-green.svg)](https://github.com/ULHPC/tutorials/tree/devel/tools/easybuild/) [![Documentation Status](http://readthedocs.org/projects/ulhpc-tutorials/badge/?version=latest)](http://ulhpc-tutorials.readthedocs.io/en/latest/tools/easybuild/) [![GitHub forks](https://img.shields.io/github/stars/ULHPC/tutorials.svg?style=social&label=Star)](https://github.com/ULHPC/tutorials) -->
 
-# Building [custom] software with EasyBuild on UL HPC platform
+<!-- # Building [custom] software with EasyBuild on UL HPC platform -->
 
-      Copyright (c) 2014-2018 S. Peter & UL HPC Team  <hpc-sysadmins@uni.lu>
+<!--       Copyright (c) 2014-2018 S. Peter & UL HPC Team  <hpc-sysadmins@uni.lu> -->
 
-[![](https://github.com/ULHPC/tutorials/raw/devel/tools/easybuild/cover_slides.png)](https://github.com/ULHPC/tutorials/raw/devel/tools/easybuild/slides.pdf)
+<!-- [![](https://github.com/ULHPC/tutorials/raw/devel/tools/easybuild/cover_slides.png)](https://github.com/ULHPC/tutorials/raw/devel/tools/easybuild/slides.pdf) -->
 
 The objective of this tutorial is to show how [EasyBuild](http://easybuild.readthedocs.io) can be used to ease, automate and script the build of software on the [UL HPC](https://hpc.uni.lu) platforms.
 
@@ -336,340 +336,254 @@ Then, search for available EasyConfig files with HPL in their name. The EasyConf
 
 ```bash
 # Search for an Easybuild recipY with 'eb -S <pattern>'
-$> eb -S HPL
+$> eb -S HPL-2.2
+CFGS1=/home/users/svarrette/.local/easybuild/software/tools/EasyBuild/3.6.1/lib/python2.7/site-packages/easybuild_easyconfigs-3.6.1-py2.7.egg/easybuild/easyconfigs/h/HPL
+ * $CFGS1/HPL-2.2-foss-2016.07.eb
+ * $CFGS1/HPL-2.2-foss-2016.09.eb
+ * $CFGS1/HPL-2.2-foss-2017a.eb
+ * $CFGS1/HPL-2.2-foss-2017b.eb
+ * $CFGS1/HPL-2.2-foss-2018a.eb
+ * $CFGS1/HPL-2.2-fosscuda-2018a.eb
+ * $CFGS1/HPL-2.2-giolf-2017b.eb
+ * $CFGS1/HPL-2.2-giolf-2018a.eb
+ * $CFGS1/HPL-2.2-giolfc-2017b.eb
+ * $CFGS1/HPL-2.2-gmpolf-2017.10.eb
+ * $CFGS1/HPL-2.2-goolfc-2016.08.eb
+ * $CFGS1/HPL-2.2-goolfc-2016.10.eb
+ * $CFGS1/HPL-2.2-intel-2017.00.eb
+ * $CFGS1/HPL-2.2-intel-2017.01.eb
+ * $CFGS1/HPL-2.2-intel-2017.02.eb
+ * $CFGS1/HPL-2.2-intel-2017.09.eb
+ * $CFGS1/HPL-2.2-intel-2017a.eb
+ * $CFGS1/HPL-2.2-intel-2017b.eb
+ * $CFGS1/HPL-2.2-intel-2018.00.eb
+ * $CFGS1/HPL-2.2-intel-2018.01.eb
+ * $CFGS1/HPL-2.2-intel-2018.02.eb
+ * $CFGS1/HPL-2.2-intel-2018a.eb
+ * $CFGS1/HPL-2.2-intelcuda-2016.10.eb
+ * $CFGS1/HPL-2.2-iomkl-2016.09-GCC-4.9.3-2.25.eb
+ * $CFGS1/HPL-2.2-iomkl-2016.09-GCC-5.4.0-2.26.eb
+ * $CFGS1/HPL-2.2-iomkl-2017.01.eb
+ * $CFGS1/HPL-2.2-intel-2017.02.eb
+ * $CFGS1/HPL-2.2-intel-2017.09.eb
+ * $CFGS1/HPL-2.2-intel-2017a.eb
+ * $CFGS1/HPL-2.2-intel-2017b.eb
+ * $CFGS1/HPL-2.2-intel-2018.00.eb
+ * $CFGS1/HPL-2.2-intel-2018.01.eb
+ * $CFGS1/HPL-2.2-intel-2018.02.eb
+ * $CFGS1/HPL-2.2-intel-2018a.eb
+ * $CFGS1/HPL-2.2-intelcuda-2016.10.eb
+ * $CFGS1/HPL-2.2-iomkl-2016.09-GCC-4.9.3-2.25.eb
+ * $CFGS1/HPL-2.2-iomkl-2016.09-GCC-5.4.0-2.26.eb
+ * $CFGS1/HPL-2.2-iomkl-2017.01.eb
+ * $CFGS1/HPL-2.2-iomkl-2017a.eb
+ * $CFGS1/HPL-2.2-iomkl-2017b.eb
+ * $CFGS1/HPL-2.2-iomkl-2018.02.eb
+ * $CFGS1/HPL-2.2-iomkl-2018a.eb
+ * $CFGS1/HPL-2.2-pomkl-2016.09.eb
 ```
 
+We are going to build HPL 2.2 against the `intel` toolchain, typically the 2017a version which is available by default on the platform.
 
-If we try to build `HPL-2.0-goolf-1.4.10`, nothing will be done as it is already installed on the cluster.
+Pick the corresponding recipY (for instance `HPL-2.2-intel-2017a.eb`), install it with
 
-    $> eb HPL-2.0-goolf-1.4.10.eb
+       eb <name>.eb [-D] -r
 
-    == temporary log file in case of crash /tmp/eb-JKadCH/easybuild-SoXdix.log
-    == tools/HPL/2.0-goolf-1.4.10 is already installed (module found), skipping
-    == No easyconfigs left to be built.
-    == Build succeeded for 0 out of 0
-    == temporary log file(s) /tmp/eb-JKadCH/easybuild-SoXdix.log* have been removed.
-    == temporary directory /tmp/eb-JKadCH has been removed.
+* `-D` enables the dry-run mode to check what's going to be install -- **ALWAYS try it first**
+* `-r` enables the robot mode to automatically insatall all dependencies while searching for easyconfigs in a set of pre-defined directories -- you can also prepend new directories to search for eb files (like the current directory `$PWD`) using the option and syntax `--robot-paths=$PWD:` (do not forget the ':'). See [Controlling the robot search path documentation](http://easybuild.readthedocs.io/en/latest/Using_the_EasyBuild_command_line.html#controlling-the-robot-search-path)
+* The `$CFGS<n>/` prefix should be dropped unless you know what you're doing (and thus have previously defined the variable -- see the first output of the `eb -S [...]` command).
 
+So let's install `HPL` version 2.2 and **FIRST** check which  dependencies are satisfied with `-Dr`:
 
-However the build can be forced using the `-f` option flag. Then this software will be re-built.
-(Tip: prefix your command with `time` to know its duration)
+```bash
+$> eb HPL-2.2-intel-2017a.eb -Dr
+== temporary log file in case of crash /tmp/eb-CTC2hq/easybuild-gfLf1W.log
+Dry run: printing build status of easyconfigs and dependencies
+CFGS=/home/users/svarrette/.local/easybuild/software/tools/EasyBuild/3.6.1/lib/python2.7/site-packages/easybuild_easyconfigs-3.6.1-py2.7.egg/easybuild/easyconfigs
+ * [x] $CFGS/m/M4/M4-1.4.17.eb (module: devel/M4/1.4.17)
+ * [x] $CFGS/b/Bison/Bison-3.0.4.eb (module: lang/Bison/3.0.4)
+ * [x] $CFGS/f/flex/flex-2.6.0.eb (module: lang/flex/2.6.0)
+ * [x] $CFGS/z/zlib/zlib-1.2.8.eb (module: lib/zlib/1.2.8)
+ * [x] $CFGS/b/binutils/binutils-2.27.eb (module: tools/binutils/2.27)
+ * [x] $CFGS/g/GCCcore/GCCcore-6.3.0.eb (module: compiler/GCCcore/6.3.0)
+ * [x] $CFGS/m/M4/M4-1.4.18-GCCcore-6.3.0.eb (module: devel/M4/1.4.18-GCCcore-6.3.0)
+ * [x] $CFGS/z/zlib/zlib-1.2.11-GCCcore-6.3.0.eb (module: lib/zlib/1.2.11-GCCcore-6.3.0)
+ * [x] $CFGS/h/help2man/help2man-1.47.4-GCCcore-6.3.0.eb (module: tools/help2man/1.47.4-GCCcore-6.3.0)
+ * [x] $CFGS/b/Bison/Bison-3.0.4-GCCcore-6.3.0.eb (module: lang/Bison/3.0.4-GCCcore-6.3.0)
+ * [x] $CFGS/f/flex/flex-2.6.3-GCCcore-6.3.0.eb (module: lang/flex/2.6.3-GCCcore-6.3.0)
+ * [x] $CFGS/b/binutils/binutils-2.27-GCCcore-6.3.0.eb (module: tools/binutils/2.27-GCCcore-6.3.0)
+ * [x] $CFGS/i/icc/icc-2017.1.132-GCC-6.3.0-2.27.eb (module: compiler/icc/2017.1.132-GCC-6.3.0-2.27)
+ * [x] $CFGS/i/ifort/ifort-2017.1.132-GCC-6.3.0-2.27.eb (module: compiler/ifort/2017.1.132-GCC-6.3.0-2.27)
+ * [x] $CFGS/i/iccifort/iccifort-2017.1.132-GCC-6.3.0-2.27.eb (module: toolchain/iccifort/2017.1.132-GCC-6.3.0-2.27)
+ * [x] $CFGS/i/impi/impi-2017.1.132-iccifort-2017.1.132-GCC-6.3.0-2.27.eb (module: mpi/impi/2017.1.132-iccifort-2017.1.132-GCC-6.3.0-2.27)
+ * [x] $CFGS/i/iimpi/iimpi-2017a.eb (module: toolchain/iimpi/2017a)
+ * [x] $CFGS/i/imkl/imkl-2017.1.132-iimpi-2017a.eb (module: numlib/imkl/2017.1.132-iimpi-2017a)
+ * [x] $CFGS/i/intel/intel-2017a.eb (module: toolchain/intel/2017a)
+ * [ ] $CFGS/h/HPL/HPL-2.2-intel-2017a.eb (module: tools/HPL/2.2-intel-2017a)
+== Temporary log file(s) /tmp/eb-CTC2hq/easybuild-gfLf1W.log* have been removed.
+== Temporary directory /tmp/eb-CTC2hq has been removed.
+```
 
-    $> time eb HPL-2.0-goolf-1.4.10.eb -f
+As can be seen, there is a single element to installed and this has not been done so far (box not checked). All the dependencies are already present (box checked).
+Let's really install the selected software -- you may want to prefix the `eb` command with the `time` to collect the installation time:
 
-    == temporary log file in case of crash /tmp/eb-FAO8AO/easybuild-ea15Cq.log
-    == processing EasyBuild easyconfig /opt/apps/resif/devel/v1.1-20150414/.installRef/easybuild-easyconfigs/easybuild/easyconfigs/h/HPL/HPL-2.0-goolf-1.4.10.eb
-    == building and installing tools/HPL/2.0-goolf-1.4.10...
-    == fetching files...
-    == creating build dir, resetting environment...
-    == unpacking...
-    == patching...
-    == preparing...
-    == configuring...
-    == building...
-    == testing...
-    == installing...
-    == taking care of extensions...
-    == packaging...
-    == postprocessing...
-    == sanity checking...
-    == cleaning up...
-    == creating module...
-    == COMPLETED: Installation ended successfully
-    == Results of the build can be found in the log file /home/users/mschmitt/.local/easybuild/software/tools/HPL/2.0-goolf-1.4.10/easybuild/easybuild-HPL-2.0-20150624.113223.log
-    == Build succeeded for 1 out of 1
-    == temporary log file(s) /tmp/eb-FAO8AO/easybuild-ea15Cq.log* have been removed.
-    == temporary directory /tmp/eb-FAO8AO has been removed.
+```bash
+$> time eb HPL-2.2-intel-2017a.eb -r       # Remove the '-D' (dry-run) flags
+== temporary log file in case of crash /tmp/eb-nub_oL/easybuild-J8sNzx.log
+== resolving dependencies ...
+== processing EasyBuild easyconfig /home/users/svarrette/.local/easybuild/software/tools/EasyBuild/3.6.1/lib/python2.7/site-packages/easybuild_easyconfigs-3.6.1-py2.7.egg/easybuild/easyconfigs/h/HPL/HPL-2.2-intel-2017a.eb
+== building and installing tools/HPL/2.2-intel-2017a...
+== fetching files...
+== creating build dir, resetting environment...
+== unpacking...
+== patching...
+== preparing...
+== configuring...
+== building...
+== testing...
+== installing...
+== taking care of extensions...
+== postprocessing...
+== sanity checking...
+== cleaning up...
+== creating module...
+== permissions...
+== packaging...
+== COMPLETED: Installation ended successfully
+== Results of the build can be found in the log file(s) /home/users/svarrette/.local/easybuild/software/tools/HPL/2.2-intel-2017a/easybuild/easybuild-HPL-2.2-20180608.094831.log
+== Build succeeded for 1 out of 1
+== Temporary log file(s) /tmp/eb-nub_oL/easybuild-J8sNzx.log* have been removed.
+== Temporary directory /tmp/eb-nub_oL has been removed.
 
-    real    1m10.619s
-    user    0m49.387s
-    sys     0m7.828s
+real    0m56.472s
+user    0m15.268s
+sys     0m19.998s
+```
 
+Check the installed software:
 
-Let's have a look at `HPL-2.0-ictce-5.3.0` which is not installed yet.
-We can check if a software and its dependencies are installed using the `-Dr` option flag:
+```
+$> module av HPL
 
-    $> eb HPL-2.0-ictce-5.3.0.eb -Dr
+------------------------- /home/users/<login>/.local/easybuild/modules/all -------------------------
+   tools/HPL/2.2-intel-2017a
 
-    == temporary log file in case of crash /tmp/eb-HlZDMR/easybuild-JbndYN.log
-    Dry run: printing build status of easyconfigs and dependencies
-    CFGS=/opt/apps/resif/devel/v1.1-20150414/.installRef/easybuild-easyconfigs/easybuild/easyconfigs
-     * [x] $CFGS/i/icc/icc-2013.3.163.eb (module: compiler/icc/2013.3.163)
-     * [x] $CFGS/i/ifort/ifort-2013.3.163.eb (module: compiler/ifort/2013.3.163)
-     * [x] $CFGS/i/iccifort/iccifort-2013.3.163.eb (module: toolchain/iccifort/2013.3.163)
-     * [x] $CFGS/i/impi/impi-4.1.0.030-iccifort-2013.3.163.eb (module: mpi/impi/4.1.0.030-iccifort-2013.3.163)
-     * [x] $CFGS/i/iimpi/iimpi-5.3.0.eb (module: toolchain/iimpi/5.3.0)
-     * [x] $CFGS/i/imkl/imkl-11.0.3.163-iimpi-5.3.0.eb (module: numlib/imkl/11.0.3.163-iimpi-5.3.0)
-     * [x] $CFGS/i/ictce/ictce-5.3.0.eb (module: toolchain/ictce/5.3.0)
-     * [ ] $CFGS/h/HPL/HPL-2.0-ictce-5.3.0.eb (module: tools/HPL/2.0-ictce-5.3.0)
-    == temporary log file(s) /tmp/eb-HlZDMR/easybuild-JbndYN.log* have been removed.
-    == temporary directory /tmp/eb-HlZDMR has been removed.
+Use "module spider" to find all possible modules.
+Use "module keyword key1 key2 ..." to search for all possible modules matching any of the "keys".
 
+$> module spider HPL
 
-`HPL-2.0-ictce-5.3.0` is not available but all it dependencies are. Let's build it:
+----------------------------------------------------------------------------------------------------
+  tools/HPL: tools/HPL/2.2-intel-2017a
+----------------------------------------------------------------------------------------------------
+    Description:
+      HPL is a software package that solves a (random) dense linear system in double precision
+      (64 bits) arithmetic on distributed-memory computers. It can thus be regarded as a portable
+      as well as freely available implementation of the High Performance Computing Linpack Benchmark.
 
-    $> time eb HPL-2.0-ictce-5.3.0.eb
+    This module can be loaded directly: module load tools/HPL/2.2-intel-2017a
 
-    == temporary log file in case of crash /tmp/eb-UFlEv7/easybuild-uVbm24.log
-    == processing EasyBuild easyconfig /opt/apps/resif/devel/v1.1-20150414/.installRef/easybuild-easyconfigs/easybuild/easyconfigs/h/HPL/HPL-2.0-ictce-5.3.0.eb
-    == building and installing tools/HPL/2.0-ictce-5.3.0...
-    == fetching files...
-    == creating build dir, resetting environment...
-    == unpacking...
-    == patching...
-    == preparing...
-    == configuring...
-    == building...
-    == testing...
-    == installing...
-    == taking care of extensions...
-    == packaging...
-    == postprocessing...
-    == sanity checking...
-    == cleaning up...
-    == creating module...
-    == COMPLETED: Installation ended successfully
-    == Results of the build can be found in the log file /home/users/mschmitt/.local/easybuild/software/tools/HPL/2.0-ictce-5.3.0/easybuild/easybuild-HPL-2.0-20150624.113547.log
-    == Build succeeded for 1 out of 1
-    == temporary log file(s) /tmp/eb-UFlEv7/easybuild-uVbm24.log* have been removed.
-    == temporary directory /tmp/eb-UFlEv7 has been removed.
+    Help:
 
-    real    1m25.849s
-    user    0m49.039s
-    sys     0m10.961s
-
-
-To see the newly installed modules, you need to add the path where they were installed to the MODULEPATH. On the cluster you have to use the `module use` command:
-
-    $> module use $HOME/.local/easybuild/modules/all/
-
-Check which HPL modules are available now:
-
-    $> module avail HPL
-
-    ------------- /mnt/nfs/users/homedirs/mschmitt/.local/easybuild/modules/all -------------
-        tools/HPL/2.0-goolf-1.4.10    tools/HPL/2.0-ictce-5.3.0 (D)
-
-    ---------------- /opt/apps/resif/devel/v1.1-20150414/core/modules/tools ----------------
-        tools/HPL/2.0-goolf-1.4.10
-
-The two newly-built versions of HPL are now available for your user. You can use them with the usually `module load` command.
-
-### Iris
-
-Let's search for available EasyConfig files with HPL in their name. The EasyConfig files are named with the `.eb` extension.
-
-    $> eb -S HPL
-
-		CFGS1=/home/users/sdiehl/.local/easybuild/software/tools/EasyBuild/3.2.1/lib/python2.7/site-packages/easybuild_easyconfigs-3.2.1-py2.7.egg/easybuild/easyconfigs
-		 * $CFGS1/h/HPL/HPL-2.0-foss-2014b.eb
-		 * $CFGS1/h/HPL/HPL-2.0-goolf-1.4.10.eb
-		 * $CFGS1/h/HPL/HPL-2.0-goolf-1.5.16.eb
-		 * $CFGS1/h/HPL/HPL-2.0-ictce-5.3.0.eb
-		 * $CFGS1/h/HPL/HPL-2.0-ictce-6.1.5.eb
-		 * $CFGS1/h/HPL/HPL-2.1-CrayCCE-2015.06.eb
-		 * $CFGS1/h/HPL/HPL-2.1-CrayCCE-2015.11.eb
-		 * $CFGS1/h/HPL/HPL-2.1-CrayGNU-2015.06.eb
-		 * $CFGS1/h/HPL/HPL-2.1-CrayGNU-2015.11.eb
-		 * $CFGS1/h/HPL/HPL-2.1-CrayGNU-2016.03.eb
-		 * $CFGS1/h/HPL/HPL-2.1-CrayGNU-2016.04.eb
-		 * $CFGS1/h/HPL/HPL-2.1-CrayGNU-2016.06.eb
-		 * $CFGS1/h/HPL/HPL-2.1-CrayIntel-2015.06.eb
-		 * $CFGS1/h/HPL/HPL-2.1-CrayIntel-2015.11.eb
-		 * $CFGS1/h/HPL/HPL-2.1-CrayIntel-2016.06.eb
-		 * $CFGS1/h/HPL/HPL-2.1-foss-2015.05.eb
-		 * $CFGS1/h/HPL/HPL-2.1-foss-2015a.eb
-		 * $CFGS1/h/HPL/HPL-2.1-foss-2015b.eb
-		 * $CFGS1/h/HPL/HPL-2.1-foss-2016.04.eb
-		 * $CFGS1/h/HPL/HPL-2.1-foss-2016.06.eb
-		 * $CFGS1/h/HPL/HPL-2.1-foss-2016a.eb
-		 * $CFGS1/h/HPL/HPL-2.1-foss-2016b.eb
-		 * $CFGS1/h/HPL/HPL-2.1-gimkl-2.11.5.eb
-		 * $CFGS1/h/HPL/HPL-2.1-gmpolf-2016a.eb
-		 * $CFGS1/h/HPL/HPL-2.1-gmvolf-1.7.20.eb
-		 * $CFGS1/h/HPL/HPL-2.1-gmvolf-2016a.eb
-		 * $CFGS1/h/HPL/HPL-2.1-goolf-1.7.20.eb
-		 * $CFGS1/h/HPL/HPL-2.1-ictce-7.1.2.eb
-		 * $CFGS1/h/HPL/HPL-2.1-ictce-7.3.5.eb
-		 * $CFGS1/h/HPL/HPL-2.1-intel-2014.06.eb
-		 * $CFGS1/h/HPL/HPL-2.1-intel-2014.10.eb
-		 * $CFGS1/h/HPL/HPL-2.1-intel-2014.11.eb
-		 * $CFGS1/h/HPL/HPL-2.1-intel-2014b.eb
-		 * $CFGS1/h/HPL/HPL-2.1-intel-2015.02.eb
-		 * $CFGS1/h/HPL/HPL-2.1-intel-2015.08.eb
-		 * $CFGS1/h/HPL/HPL-2.1-intel-2015a.eb
-		 * $CFGS1/h/HPL/HPL-2.1-intel-2015b.eb
-		 * $CFGS1/h/HPL/HPL-2.1-intel-2016.00.eb
-		 * $CFGS1/h/HPL/HPL-2.1-intel-2016.01.eb
-		 * $CFGS1/h/HPL/HPL-2.1-intel-2016.02-GCC-4.9.eb
-		 * $CFGS1/h/HPL/HPL-2.1-intel-2016.02-GCC-5.3.eb
-		 * $CFGS1/h/HPL/HPL-2.1-intel-2016.03-GCC-4.9.eb
-		 * $CFGS1/h/HPL/HPL-2.1-intel-2016.03-GCC-5.3.eb
-		 * $CFGS1/h/HPL/HPL-2.1-intel-2016.03-GCC-5.4.eb
-		 * $CFGS1/h/HPL/HPL-2.1-intel-2016a.eb
-		 * $CFGS1/h/HPL/HPL-2.1-intel-2016b.eb
-		 * $CFGS1/h/HPL/HPL-2.1-iomkl-2015.01.eb
-		 * $CFGS1/h/HPL/HPL-2.1-iomkl-2015.02.eb
-		 * $CFGS1/h/HPL/HPL-2.1-iomkl-2015.03.eb
-		 * $CFGS1/h/HPL/HPL-2.1-iomkl-2016.07.eb
-		 * $CFGS1/h/HPL/HPL-2.1-pomkl-2016.03.eb
-		 * $CFGS1/h/HPL/HPL-2.1-pomkl-2016.04.eb
-		 * $CFGS1/h/HPL/HPL-2.1-pomkl-2016.09.eb
-		 * $CFGS1/h/HPL/HPL-2.1_LINKER-ld.patch
-		 * $CFGS1/h/HPL/HPL-2.2-foss-2016.07.eb
-		 * $CFGS1/h/HPL/HPL-2.2-foss-2016.09.eb
-		 * $CFGS1/h/HPL/HPL-2.2-foss-2017a.eb
-		 * $CFGS1/h/HPL/HPL-2.2-goolfc-2016.08.eb
-		 * $CFGS1/h/HPL/HPL-2.2-goolfc-2016.10.eb
-		 * $CFGS1/h/HPL/HPL-2.2-intel-2017.00.eb
-		 * $CFGS1/h/HPL/HPL-2.2-intel-2017.01.eb
-		 * $CFGS1/h/HPL/HPL-2.2-intel-2017.02.eb
-		 * $CFGS1/h/HPL/HPL-2.2-intel-2017a.eb
-		 * $CFGS1/h/HPL/HPL-2.2-intelcuda-2016.10.eb
-		 * $CFGS1/h/HPL/HPL-2.2-iomkl-2016.09-GCC-4.9.3-2.25.eb
-		 * $CFGS1/h/HPL/HPL-2.2-iomkl-2016.09-GCC-5.4.0-2.26.eb
-		 * $CFGS1/h/HPL/HPL-2.2-iomkl-2017.01.eb
-		 * $CFGS1/h/HPL/HPL-2.2-iomkl-2017a.eb
-		 * $CFGS1/h/HPL/HPL-2.2-pomkl-2016.09.eb
-		 * $CFGS1/h/HPL/HPL_parallel-make.patch
-
-		Note: 15 matching archived easyconfig(s) found, use --consider-archived-easyconfigs to see them
+      Description
+      ===========
+      HPL is a software package that solves a (random) dense linear system in double precision
+      (64 bits) arithmetic on distributed-memory computers. It can thus be regarded as a portable
+      as well as freely available implementation of the High Performance Computing Linpack Benchmark.
 
 
-Let's have a look at `HPL-2.2-intel-2017a` which is not installed yet.
-We can check if a software and its dependencies are installed using the `-Dr` option flag:
+      More information
+      ================
+       - Homepage: http://www.netlib.org/benchmark/hpl/
 
-    $> eb HPL-2.2-intel-2017a.eb -Dr
-
-		== temporary log file in case of crash /tmp/eb-K1VnEh/easybuild-4C6ZpN.log
-		Dry run: printing build status of easyconfigs and dependencies
-		CFGS=/home/users/sdiehl/.local/easybuild/software/tools/EasyBuild/3.2.1/lib/python2.7/site-packages/easybuild_easyconfigs-3.2.1-py2.7.egg/easybuild/easyconfigs
-		 * [x] $CFGS/m/M4/M4-1.4.17.eb (module: devel/M4/1.4.17)
-		 * [x] $CFGS/b/Bison/Bison-3.0.4.eb (module: lang/Bison/3.0.4)
-		 * [x] $CFGS/f/flex/flex-2.6.0.eb (module: lang/flex/2.6.0)
-		 * [x] $CFGS/z/zlib/zlib-1.2.8.eb (module: lib/zlib/1.2.8)
-		 * [x] $CFGS/b/binutils/binutils-2.27.eb (module: tools/binutils/2.27)
-		 * [x] $CFGS/g/GCCcore/GCCcore-6.3.0.eb (module: compiler/GCCcore/6.3.0)
-		 * [x] $CFGS/m/M4/M4-1.4.18-GCCcore-6.3.0.eb (module: devel/M4/1.4.18-GCCcore-6.3.0)
-		 * [x] $CFGS/z/zlib/zlib-1.2.11-GCCcore-6.3.0.eb (module: lib/zlib/1.2.11-GCCcore-6.3.0)
-		 * [x] $CFGS/h/help2man/help2man-1.47.4-GCCcore-6.3.0.eb (module: tools/help2man/1.47.4-GCCcore-6.3.0)
-		 * [x] $CFGS/b/Bison/Bison-3.0.4-GCCcore-6.3.0.eb (module: lang/Bison/3.0.4-GCCcore-6.3.0)
-		 * [x] $CFGS/f/flex/flex-2.6.3-GCCcore-6.3.0.eb (module: lang/flex/2.6.3-GCCcore-6.3.0)
-		 * [x] $CFGS/b/binutils/binutils-2.27-GCCcore-6.3.0.eb (module: tools/binutils/2.27-GCCcore-6.3.0)
-		 * [x] $CFGS/i/icc/icc-2017.1.132-GCC-6.3.0-2.27.eb (module: compiler/icc/2017.1.132-GCC-6.3.0-2.27)
-		 * [x] $CFGS/i/ifort/ifort-2017.1.132-GCC-6.3.0-2.27.eb (module: compiler/ifort/2017.1.132-GCC-6.3.0-2.27)
-		 * [x] $CFGS/i/iccifort/iccifort-2017.1.132-GCC-6.3.0-2.27.eb (module: toolchain/iccifort/2017.1.132-GCC-6.3.0-2.27)
-		 * [x] $CFGS/i/impi/impi-2017.1.132-iccifort-2017.1.132-GCC-6.3.0-2.27.eb (module: mpi/impi/2017.1.132-iccifort-2017.1.132-GCC-6.3.0-2.27)
-		 * [x] $CFGS/i/iimpi/iimpi-2017a.eb (module: toolchain/iimpi/2017a)
-		 * [x] $CFGS/i/imkl/imkl-2017.1.132-iimpi-2017a.eb (module: numlib/imkl/2017.1.132-iimpi-2017a)
-		 * [x] $CFGS/i/intel/intel-2017a.eb (module: toolchain/intel/2017a)
-		 * [ ] $CFGS/h/HPL/HPL-2.2-intel-2017a.eb (module: tools/HPL/2.2-intel-2017a)
-		== Temporary log file(s) /tmp/eb-K1VnEh/easybuild-4C6ZpN.log* have been removed.
-		== Temporary directory /tmp/eb-K1VnEh has been removed.
+$> module show tools/HPL
+---------------------------------------------------------------------------------------------------
+   /home/users/svarrette/.local/easybuild/modules/all/tools/HPL/2.2-intel-2017a.lua:
+---------------------------------------------------------------------------------------------------
+help([[
+Description
+===========
+HPL is a software package that solves a (random) dense linear system in double precision
+(64 bits) arithmetic on distributed-memory computers. It can thus be regarded as a portable
+as well as freely available implementation of the High Performance Computing Linpack Benchmark.
 
 
-`HPL-2.2-intel-2017a` is not available but all it dependencies are. Let's build it:
+More information
+================
+ - Homepage: http://www.netlib.org/benchmark/hpl/
+]])
+whatis("Description: HPL is a software package that solves a (random) dense linear system in
+ double precision (64 bits) arithmetic on distributed-memory computers. It can thus be regarded
+ as a portable as well as freely available implementation of the High Performance Computing
+ Linpack Benchmark.")
+whatis("Homepage: http://www.netlib.org/benchmark/hpl/")
+conflict("tools/HPL")
+load("toolchain/intel/2017a")
+prepend_path("PATH","/home/users/svarrette/.local/easybuild/software/tools/HPL/2.2-intel-2017a/bin")
+setenv("EBROOTHPL","/home/users/svarrette/.local/easybuild/software/tools/HPL/2.2-intel-2017a")
+setenv("EBVERSIONHPL","2.2")
+setenv("EBDEVELHPL","/home/users/svarrette/.local/easybuild/software/tools/HPL/2.2-intel-2017a/easybuild/tools-HPL-2.2-intel-2017a-easybuild-devel")
+```
 
-    $> time eb HPL-2.2-intel-2017a.eb
+**Note**: to see the (locally) installed software, the `MODULEPATH` variable should include the `$HOME/.local/easybuild/modules/all/` (of `$LOCAL_MODULES`) path (which is what happen when using `module use <path>` -- see the `mu` command)
 
-		== temporary log file in case of crash /tmp/eb-152mYB/easybuild-myA4bD.log
-		== processing EasyBuild easyconfig /home/users/sdiehl/.local/easybuild/software/tools/EasyBuild/3.2.1/lib/python2.7/site-packages/easybuild_easyconfigs-3.2.1-py2.7.egg/easybuild/easyconfigs/h/HPL/HPL-2.2-intel-2017a.eb
-		== building and installing tools/HPL/2.2-intel-2017a...
-		== fetching files...
-		== creating build dir, resetting environment...
-		== unpacking...
-		== patching...
-		== preparing...
-		== configuring...
-		== building...
-		== testing...
-		== installing...
-		== taking care of extensions...
-		== postprocessing...
-		== sanity checking...
-		== cleaning up...
-		== creating module...
-		== permissions...
-		== packaging...
-		== COMPLETED: Installation ended successfully
-		== Results of the build can be found in the log file(s) /home/users/sdiehl/.local/easybuild/software/tools/HPL/2.2-intel-2017a/easybuild/easybuild-HPL-2.2-20170609.155430.log
-		== Build succeeded for 1 out of 1
-		== Temporary log file(s) /tmp/eb-152mYB/easybuild-myA4bD.log* have been removed.
-		== Temporary directory /tmp/eb-152mYB has been removed.
+You can now load the freshly installed module like any other:
 
-		real	0m54.624s
-		user	0m14.651s
-		sys	0m21.476s
+```bash
+$> module load tools/HPL
+$> module list
 
+Currently Loaded Modules:
+  1) tools/EasyBuild/3.6.1                          7) mpi/impi/2017.1.132-iccifort-2017.1.132-GCC-6.3.0-2.27
+  2) compiler/GCCcore/6.3.0                         8) toolchain/iimpi/2017a
+  3) tools/binutils/2.27-GCCcore-6.3.0              9) numlib/imkl/2017.1.132-iimpi-2017a
+  4) compiler/icc/2017.1.132-GCC-6.3.0-2.27        10) toolchain/intel/2017a
+  5) compiler/ifort/2017.1.132-GCC-6.3.0-2.27      11) tools/HPL/2.2-intel-2017a
+  6) toolchain/iccifort/2017.1.132-GCC-6.3.0-2.27
+```
 
-To see the newly installed modules, you need to add the path where they were installed to the MODULEPATH. On the cluster you have to use the `module use` command:
+**Tips**: When you load a module `<NAME>` generated by Easybuild, it is installed within the directory reported by the `$EBROOT<NAME>` variable.
+In the above case, you will find the generated binary for HPL in `${EBROOTHPL}/bin/xhpl`.
 
-    $> module use $HOME/.local/easybuild/modules/all
+You may want to test the newly built HPL benchmark (you need to reserve at least 4 cores for that to succeed:)
 
-Check which HPL modules are available now:
-
-    $> module avail HPL
-
-		---------------------- /home/users/sdiehl/.local/easybuild/modules/all ----------------------
-		   tools/HPL/2.2-intel-2017a
+```bash
+# In another terminal, connect to the cluster frontend
+# Have an interactive job
+############### iris cluster (slurm) ###############
+(access-iris)$> si -n 4        # this time reserve for 4 (mpi) tasks
+$> mu
+$> module load tools/HPL
+$> cd $EBROOTHPL
+$> ls
+$> cd bin
+$> ls
+$> srun -n $SLURM_NTASKS ./xhpl
 
 
-The newly-built version of HPL is now available for your user. You can use them with the usually `module load` command.
+############### gaia/chaos clusters (OAR) ###############
+(access-{gaia|chaos})$> oarsub -I -l core=4,walltime=2
+$> mu
+$> module load tools/HPL
+$> cd $EBROOTHPL
+$> ls
+$> cd bin
+$> ls
+$>
+```
 
-## Amending an existing EasyConfig file (Gaia only)
+Running HPL benchmarks required more attention -- a [full tutorial](https://ulhpc-tutorials.readthedocs.io/en/latest/parallel/mpi/HPL/) is dedicated to it.
+Yet you can see that we obtained HPL 2.2 without writing any EasyConfig file.
 
-It is possible to amend existing EasyConfig file to build software with slightly different parameters.
 
-As a example, we are going to build the lastest version of HPL (2.1) with ICTCE toolchain. We use the `--try-software-version` option flag to overide the HPL version.
-
-    $> time eb HPL-2.0-ictce-5.3.0.eb --try-software-version=2.1
-
-    == temporary log file in case of crash /tmp/eb-ocChbK/easybuild-liMmlk.log
-    == processing EasyBuild easyconfig /tmp/eb-ocChbK/tweaked_easyconfigs/HPL-2.1-ictce-5.3.0.eb
-    == building and installing tools/HPL/2.1-ictce-5.3.0...
-    == fetching files...
-    == creating build dir, resetting environment...
-    == unpacking...
-    == patching...
-    == preparing...
-    == configuring...
-    == building...
-    == testing...
-    == installing...
-    == taking care of extensions...
-    == packaging...
-    == postprocessing...
-    == sanity checking...
-    == cleaning up...
-    == creating module...
-    == COMPLETED: Installation ended successfully
-    == Results of the build can be found in the log file /home/users/mschmitt/.local/easybuild/software/tools/HPL/2.1-ictce-5.3.0/easybuild/easybuild-HPL-2.1-20150624.114243.log
-    == Build succeeded for 1 out of 1
-    == temporary log file(s) /tmp/eb-ocChbK/easybuild-liMmlk.log* have been removed.
-    == temporary directory /tmp/eb-ocChbK has been removed.
-
-    real    1m24.933s
-    user    0m53.167s
-    sys     0m11.533s
-
-    $> module avail HPL
-
-    ------------- /mnt/nfs/users/homedirs/mschmitt/.local/easybuild/modules/all -------------
-        tools/HPL/2.0-goolf-1.4.10    tools/HPL/2.0-ictce-5.3.0    tools/HPL/2.1-ictce-5.3.0 (D)
-
-    ---------------- /opt/apps/resif/devel/v1.1-20150414/core/modules/tools ----------------
-        tools/HPL/2.0-goolf-1.4.10
-
-We obtained HPL 2.1 without writing any EasyConfig file.
-
-**IMPORTANT**: LMod cache the modules available such that it may append that the `module avail HPL` command _does not_ report the newly created 2.1 version. In that case, you can use the following option:
-
-    $> module --ignore-cache avail HPL
+### d. Build software using a customized EasyConfig file
 
 There are multiple ways to amend a EasyConfig file. Check the `--try-*` option flags for all the possibilities.
 
+Generally you want to do that when the up-to-date version of the software you want is **not** available as a ReciPY within Easybuild.
 
-## Build software using your own EasyConfig file (Gaia only)
+
+
 
 For this example, we create an EasyConfig file to build GZip 1.4 with the GOOLF toolchain.
 Open your favorite editor and create a file named `gzip-1.4-goolf-1.4.10.eb` with the following content:
