@@ -68,18 +68,35 @@ The objective of this tutorial is to cover XXX, in particular:
 * objective 1
 * objective 2
 
-## Pre-requisites
+--------------------
+## Pre-requisites ##
 
-## Objective 1
+Ensure you are able to [connect to the UL HPC clusters](https://hpc.uni.lu/users/docs/access.html)
+**For all tests and compilation with Easybuild, you MUST work on a computing node**
+
+~~~bash
+# /!\ FOR ALL YOUR COMPILING BUSINESS, ENSURE YOU WORK ON A COMPUTING NODE
+# Have an interactive job
+############### iris cluster (slurm) ###############
+(access-iris)$> si -n 2 -t 2:00:00        # 2h interactive reservation
+# OR (long version)
+(access-iris)$> srun -p interactive -n 2 -t 2:00:00 --pty bash
+
+############### gaia/chaos clusters (OAR) ###############
+(access-{gaia|chaos})$> oarsub -I -l nodes=1/core=2,walltime=2
+~~~
+
+-----------------
+## Objective 1 ##
 
 instructions
 
-## Objective 2
+-----------------
+## Objective 2 ##
 
 instructions
 
 ## Useful references
-
 ```
 
 
