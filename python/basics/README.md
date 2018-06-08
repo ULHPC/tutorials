@@ -301,10 +301,11 @@ The batch script should contain:
 * 50 tasks reserved
 * maximum execution time of 35m
 * name of the job should be `scoop`
-* a job array which goes from 1 to 50
+* a job array which goes from 1 to 56 (maximal number of core on 2 nodes)
 * a minimum number of 2 nodes reserved
 * a call to `python -m scoop [...]` to call the script with increasing number of cores reserved (`$SLURM_ARRAY_TASK_ID`)
 * a command to disable concurrent run of this job
+* be the only user to use those ressources to avoid conflicting with other scoop users (see `--exclusive` option of sbatch)
 * output file should go to `scoop.log`
 
 **HINT** Have a look at `tutorials/advanced/Python/example5/scoop.sh` for the batch script example
