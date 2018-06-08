@@ -16,7 +16,7 @@ In this tutorial, we are going to explain the steps to run a Python script on th
 
 The first example used in this tutorial is fully inspired from [PythonCExtensions](https://github.com/mattfowler/PythonCExtensions). This code simply computes the mean value of an array of random numbers. The naïve code used to compute the mean of an array is:
 
-```example1.py
+```python
 def mean(lst):
     return sum(lst) / len(lst)
 
