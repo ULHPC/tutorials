@@ -14,9 +14,9 @@ pages:
   - Efficient Debugging:     'debugging/basics/index.md'
   - Performance engineering: 'debugging/advanced/index.md'
 - Parallel MPI and/or OpenMP:
-  - MVAPICH OSU Micro-benchmarks: 'parallel/mpi/OSU_MicroBenchmarks/index.md'
-  - High Performance Linpack (HPL): 'parallel/mpi/HPL/index.md'
-  - High Performance Conjugate Gradient (HPCG): 'parallel/hybrid/HPCG/index.md'
+  - OSU Micro-benchmarks: 'parallel/mpi/OSU_MicroBenchmarks/index.md'
+  - High Perf. Linpack (HPL): 'parallel/mpi/HPL/index.md'
+  - High Perf. Conjugate Gradient (HPCG): 'parallel/hybrid/HPCG/index.md'
 - Python:
   - Prototyping with Python: 'python/basics/index.md'
   - Jupyter and Celery: 'python/advanced/index.md'
