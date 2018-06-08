@@ -41,3 +41,4 @@ pages:
 - Documentation (RTFD): 'rtfd.md'
 - Contributing: 'contributing.md'
 - Contacts: 'contacts.md'
+theme: readthedocs
