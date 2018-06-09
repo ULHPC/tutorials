@@ -1,6 +1,6 @@
 ##################################################################################
 # Makefile - Configuration file for GNU make (http://www.gnu.org/software/make/)
-# Time-stamp: <Sat 2018-06-09 15:11 svarrette>
+# Time-stamp: <Sat 2018-06-09 15:14 svarrette>
 #
 # Copyright (c) 2013-2018 Sebastien Varrette <Sebastien.Varrette@uni.lu>
 #               http://varrette.gforge.uni.lu
@@ -78,47 +78,43 @@ __build.omp.intel: $(TARGET_OMP_INTEL)
 
 $(BUILD_DIR)/%_openmp: $(SRC_DIR)/%_openmp.c
 	@echo "==> OpenMP example build (from $<) with the foss toolchain"
-	@echo . /etc/profile
-	@echo module purge
-	@echo "module load toolchain/foss && $(CC) -fopenmp $(CFLAGS) $< -o $@"
+	. /etc/profile
+	module purge
+	module load toolchain/foss && $(CC) -fopenmp $(CFLAGS) $< -o $@
 
 $(BUILD_DIR)/intel_%_openmp: $(SRC_DIR)/%_openmp.c
 	@echo "==> OpenMP example build (from $<) with the intel toolchain"
-	@echo . /etc/profile
-	@echo module purge
-	@echo "module load toolchain/intel && icc -qopenmp $(CFLAGS) $< -o $@"
+	. /etc/profile
+	module purge
+	module load toolchain/intel && icc -qopenmp $(CFLAGS) $< -o $@
 
 ##### OpenMPI and hybrid OpenMP+OpenMPI builds
 __build.openmpi: $(TARGET_OPENMPI)
 $(BUILD_DIR)/openmpi_%: $(SRC_DIR)/%.c
 	@echo "==> OpenMPI example build (from $<)"
-	@echo . /etc/profile
-	@echo module purge
-	@echo "module load mpi/OpenMPI && mpicc -fopenmp $(CFLAGS) $< -o $@"
+	. /etc/profile
+	module purge
+	module load mpi/OpenMPI && mpicc -fopenmp $(CFLAGS) $< -o $@
 
 
 ##### Intel MPI and hybrid OpenMP+Intel MPI builds
 __build.intel: $(TARGET_INTEL)
 $(BUILD_DIR)/intel_%: $(SRC_DIR)/%.c
 	@echo "==> Intel MPI example build (from $<)"
-	@echo . /etc/profile
-	@echo module purge
-	@echo "module load toolchain/intel && mpiicc -qopenmp $(CFLAGS) $< -o $@"
+	. /etc/profile
+	module purge
+	module load toolchain/intel && mpiicc -qopenmp $(CFLAGS) $< -o $@
 
 ##### MVAPICH2 and hybrid OpenMP+MVAPICH2 builds
 __build.mvapich2: $(TARGET_MVAPICH2)
 $(BUILD_DIR)/mvapich2_%: $(SRC_DIR)/%.c
 	@echo "==> MVAPICH2 example build (from $<)"
-	@echo . /etc/profile
-	@echo module purge
-	@echo "module load mpi/MVAPICH2 && mpicc -fopenmp $(CFLAGS) $< -o $@"
+	. /etc/profile
+	module purge
+	module load mpi/MVAPICH2 && mpicc -fopenmp $(CFLAGS) $< -o $@
 
 
 clean:
 	@echo "=> removing $(BENCH_TARBALL) and $(BENCH_SRCDIR)"
 	rm -rf $(SRC_DIR)/$(DATARACEBENCH_DIR)
 	rm -f  $(TARGETS)
-
-# #	$(MAKE) -C $(PLOT_DIR)/ $@
-# # @echo "=> removing build directories"
-# # rm -rf  build.*
