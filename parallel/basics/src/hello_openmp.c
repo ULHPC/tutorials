@@ -1,5 +1,5 @@
 /***********************************************************************************
- * Source: Blaise Barney / https://computing.llnl.gov/tutorials/openMP/exercise.html
+ * Source: Blaise Barney - https://computing.llnl.gov/tutorials/openMP/exercise.html
  * Compilation:
  * - with 'toolchain/intel': icc -qopenmp hello_openmp.c -o hello_openmp
  * - with 'toolchain/foss':  gcc -fopenmp hello_openmp.c -o hello_openmp
