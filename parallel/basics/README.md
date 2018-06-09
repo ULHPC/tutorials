@@ -191,6 +191,7 @@ You can find in `src/hello_openmp.c` the traditional OpenMP "Helloworld" example
 * (__only__ if you have trouble to compile): `make openmp`
 
 * Execute the generated binaries multiple times. What do you notice?
+* Exit your interactive session (`exit` or `CTRL-D`)
 * Prepare a launcher script (use your favorite editor) to execute this application in batch mode.
   ```bash
   ############### iris cluster (slurm) ###############
@@ -200,60 +201,53 @@ You can find in `src/hello_openmp.c` the traditional OpenMP "Helloworld" example
   $> oarsub -S ./launcher.OpenMP.sh
   ```
 
+_Note_: you can inspire from `runs/launcher.OpenMP.sh`
 
-
-
-### Data race benchmark suite
+### (optional) Hands-on: OpenMP data race benchmark suite
 
 One way to test most of OpenMP feature is to evaluate its execution against a benchmark.
 For instance, we are going to test OpenMP installation against  [DataRaceBench](https://github.com/LLNL/dataracebench), a benchmark suite designed to systematically and quantitatively evaluate the effectiveness of data race detection tools.
 It includes a set of microbenchmarks with and without data races. Parallelism is represented by OpenMP directives.
 
 ```bash
-$> mkdir ~/tutorials/OpenMP
-$> cd  ~/tutorials/OpenMP
-$> git clone https://github.com/LLNL/dataracebench.git
-$> cd dataracebench.git
+$> cd ~/git/github.com/ULHPC/tutorials/parallel/basics
+$> make fetch      # clone src/dataracebench
+$> cd src/dataracebench
 ```
 
 Now you can reserve the nodes and set `OMP_NUM_THREADS`:
 
-```bash
-# /!\ FOR ALL YOUR COMPILING BUSINESS, ENSURE YOU WORK ON A COMPUTING NODE
-# Have an interactive job
-############### iris cluster (slurm) ###############
-(access-iris)$> si -N 1 -c 28 -t 0:10:00  # 10 min reservation
-# OR (long version)
-(access-iris)$> srun -p interactive -N 1 -c 14 -t 0:10:00 --pty bash
+* Reserve an interactive job to launch 12 OpenMP threads (for 30 minutes)
+  ```bash
+  ############### iris cluster (slurm) ###############
+  (access-iris)$> srun -p interactive --ntasks-per-node=1 -c 12 -t 0:30:00 --pty bash
+  $> export OMP_NUM_THREADS=${SLURM_CPUS_PER_TASK}
 
-$> export OMP_NUM_THREADS=${SLURM_CPUS_PER_TASK}
+  ############### gaia/chaos clusters (OAR) ###############
+  (access-{gaia|chaos})$> oarsub -I -l nodes=1/core=12,walltime=0:30:00
+  $> export OMP_NUM_THREADS=$(cat $OAR_NODEFILE| wc -l)
+  ```
 
-############### gaia/chaos clusters (OAR) ###############
-(access-{gaia|chaos})$> oarsub -I -l nodes=1/core=12,walltime=1
-$> export OMP_NUM_THREADS=$(cat $OAR_NODEFILE | wc -l)
-```
+* Open **another** terminal (or another `screen` window) to monitor the execution (see intructions on top).
 
-Open **another** terminal (or another `screen` window) to monitor the execution (see intructions on top).
+* Execute the benchmark, for instance using the intel toolchain:
+  ```bash
+  $> module load toolchain/intel
+  $> ./check-data-races.sh --help
 
-Execute the benchmark, for instance using the intel toolchain:
+  Usage: ./check-data-races.sh [--run] [--help]
 
-```bash
-$> module load toolchain/intel
-$> ./check-data-races.sh --help
+  --help     : this option
+  --small    : compile and test all benchmarks using small parameters with Helgrind, ThreadSanitizer, Archer, Intel inspector.
+  --run      : compile and run all benchmarks with gcc (no evaluation)
+  --run-intel: compile and run all benchmarks with Intel compilers (no evaluation)
+  --helgrind : compile and test all benchmarks with Helgrind
+  --tsan     : compile and test all benchmarks with clang ThreadSanitizer
+  --archer   : compile and test all benchmarks with Archer
+  --inspector: compile and test all benchmarks with Intel Inspector
 
-Usage: ./check-data-races.sh [--run] [--help]
-
---help     : this option
---small    : compile and test all benchmarks using small parameters with Helgrind, ThreadSanitizer, Archer, Intel inspector.
---run      : compile and run all benchmarks with gcc (no evaluation)
---run-intel: compile and run all benchmarks with Intel compilers (no evaluation)
---helgrind : compile and test all benchmarks with Helgrind
---tsan     : compile and test all benchmarks with clang ThreadSanitizer
---archer   : compile and test all benchmarks with Archer
---inspector: compile and test all benchmarks with Intel Inspector
-
-$> ./check-data-races.sh --run-intel
-```
+  $> ./check-data-races.sh --run-intel
+  ```
 
 
 
