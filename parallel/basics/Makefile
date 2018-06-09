@@ -1,6 +1,6 @@
 ##################################################################################
 # Makefile - Configuration file for GNU make (http://www.gnu.org/software/make/)
-# Time-stamp: <Sat 2018-06-09 15:14 svarrette>
+# Time-stamp: <Sat 2018-06-09 19:34 svarrette>
 #
 # Copyright (c) 2013-2018 Sebastien Varrette <Sebastien.Varrette@uni.lu>
 #               http://varrette.gforge.uni.lu
@@ -16,16 +16,13 @@ SHELL = /bin/bash
 CC      = gcc
 CFLAGS  = -Wall -Wextra -pedantic --std=c99 -O2
 
-#TOP_SRCDIR  = ../..
 SRC_DIR     = src
 BUILD_DIR   = bin
-# RUN_DIR     = runs
-# SCRIPT_DIR  = scripts
-# PLOT_DIR    = plots
+
 
 SRC     = $(wildcard $(SRC_DIR)/*.c)
 SRC_OMP = $(wildcard $(SRC_DIR)/*openmp*.c)
-SRC_MPI = $(wildcard $(SRC_DIR)/*mpi*.c)
+#SRC_MPI = $(wildcard $(SRC_DIR)/*mpi*.c)
 
 TARGET = $(SRC:$(SRC_DIR)/%.c=%)
 TARGET_OMP       = $(SRC_OMP:$(SRC_DIR)/%.c=$(BUILD_DIR)/%)
@@ -41,15 +38,17 @@ DATARACEBENCH_GIT = https://github.com/LLNL/dataracebench.git
 DATARACEBENCH_DIR = $(shell basename $(DATARACEBENCH_GIT) '.git')
 
 ############################
-.PHONY: all fetch print build
+.PHONY: all fetch print build  omp openmp openmpi intel mvapich2
 #uncompress configure build clean
 
 all: build
 
+# setup:
+
+
 print:
 	@echo "SRC     = $(SRC)"
 	@echo "SRC_OMP = $(SRC_OMP)"
-	@echo "SRC_MPI = $(SRC_MPI)"
 	@echo "==============="
 	@echo "TARGET  = $(TARGET)"
 	@echo "TARGET_OMP       = $(TARGET_OMP)"
@@ -71,6 +70,11 @@ fetch:
 
 build: __build.omp __build.openmpi __build.intel __build.mvapich2
 
+omp openmp: __build.omp
+openmpi:    __build.openmpi
+intel:      __build.omp.intel __build.intel
+mvapich2:   __build.mvapich2
+
 ##### OpenMP builds
 __build.omp: __build.omp.foss __build.omp.intel
 __build.omp.foss:  $(TARGET_OMP)
@@ -86,7 +90,7 @@ $(BUILD_DIR)/intel_%_openmp: $(SRC_DIR)/%_openmp.c
 	@echo "==> OpenMP example build (from $<) with the intel toolchain"
 	. /etc/profile
 	module purge
-	module load toolchain/intel && icc -qopenmp $(CFLAGS) $< -o $@
+	module load toolchain/intel && icc -qopenmp $< -o $@
 
 ##### OpenMPI and hybrid OpenMP+OpenMPI builds
 __build.openmpi: $(TARGET_OPENMPI)
@@ -103,7 +107,7 @@ $(BUILD_DIR)/intel_%: $(SRC_DIR)/%.c
 	@echo "==> Intel MPI example build (from $<)"
 	. /etc/profile
 	module purge
-	module load toolchain/intel && mpiicc -qopenmp $(CFLAGS) $< -o $@
+	module load toolchain/intel && mpiicc -qopenmp $< -o $@
 
 ##### MVAPICH2 and hybrid OpenMP+MVAPICH2 builds
 __build.mvapich2: $(TARGET_MVAPICH2)
@@ -113,8 +117,7 @@ $(BUILD_DIR)/mvapich2_%: $(SRC_DIR)/%.c
 	module purge
 	module load mpi/MVAPICH2 && mpicc -fopenmp $(CFLAGS) $< -o $@
 
-
 clean:
-	@echo "=> removing $(BENCH_TARBALL) and $(BENCH_SRCDIR)"
+	@echo "=> removing $(DATARACEBENCH_DIR) and binaries"
 	rm -rf $(SRC_DIR)/$(DATARACEBENCH_DIR)
 	rm -f  $(TARGETS)

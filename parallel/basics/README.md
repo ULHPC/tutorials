@@ -34,7 +34,33 @@ For all the executions we are going to perform in this tutorial, you probably wa
         * press 'u' to filter by process owner, select your login
         * press 'F5' to enable the tree view
 
+--------------------
+## Pre-requisites ##
 
+Ensure you are able to [connect to the UL HPC clusters](https://hpc.uni.lu/users/docs/access.html)
+**For all tests and compilation, you MUST work on a computing node**
+
+You'll need to prepare the data sources required by this tutorial once connected
+
+``` bash
+### ONLY if not yet done: setup the tutorials repo
+# See http://ulhpc-tutorials.rtfd.io/en/latest/setup/install/
+$> mkdir -p ~/git/github.com/ULHPC
+$> cd ~/git/github.com/ULHPC
+$> git clone https://github.com/ULHPC/tutorials.git
+$> cd tutorials
+$> make setup          # Initiate git submodules etc...
+```
+
+Now you can prepare a dedicated directory to work on this tutorial:
+
+```bash
+$> mkdir -p ~/tutorials/OpenMP-MPI/bin
+$> cd ~/tutorials/OpenMP-MPI
+$> ln -s ~/git/github.com/ULHPC/tutorials/parallel ref.d  # Symlink to the reference tutorial
+$> ln -s ref.d/basics .   # Basics instructions
+$> cd basics
+```
 
 
 -----------------------------------
@@ -69,20 +95,54 @@ For all the executions we are going to perform in this tutorial, you probably wa
 
 ### Slurm reservations for OpenMP programs
 
-* (eventually) set a _single_ task per node with `--ntasks-per-node=1`
+* (eventually as this is the default) set a _single_ task per node with `--ntasks-per-node=1`
 * Use `-c <N>` (or `--cpus-per-task <N>`) to set the number of OpenMP threads you wish to use.
+* (again) **The number of threads should not exceed the number of cores on a compute node.**
 
-Thus a minimal launcher would typically look like that:
+Thus a minimal launcher would typically look like that -- see also [our default Slurm launchers](https://github.com/ULHPC/launcher-scripts/blob/devel/slurm/launcher.default.sh).
 
 ```bash
 #!/bin/bash -l
-#SBATCH --ntasks-per-node=1   # Run a single task per node
-#SBATCH -c 28                 #  number of CPU cores i.e. OpenMP threads per task
+#SBATCH --ntasks-per-node=1 # Run a single task per node, more explicit than '-n 1'
+#SBATCH -c 28               #  number of CPU cores i.e. OpenMP threads per task
 #SBATCH --time=0-01:00:00
 #SBATCH -p batch
 #SBATCH --qos=qos-batch
 
 export OMP_NUM_THREADS=${SLURM_CPUS_PER_TASK}
+
+# Use the RESIF build modules of the UL HPC platform
+if [ -f  /etc/profile ]; then
+   .  /etc/profile
+fi
+# Load the {intel | foss} toolchain and whatever module(s) you need
+module purge
+module load toolchain/intel    # or toolchain/foss
+
+srun /path/to/your/openmp_program
+```
+
+### OAR reservations for OpenMP programs
+
+You have to setup the reservation to match the required number of OpenMP threads with the number of cores **within** the same node _i.e._
+
+      oarsub -l nodes=1/core=<N>[...]
+
+Thus a minimal launcher would typically look like that
+
+```bash
+#!/bin/bash -l
+#OAR -l nodes=1/core=4,walltime=1
+
+export OMP_NUM_THREADS=$(cat $OAR_NODEFILE| wc -l)
+
+# Use the RESIF build modules of the UL HPC platform
+if [ -f  /etc/profile ]; then
+   .  /etc/profile
+fi
+# Load the {intel | foss} toolchain and whatever module(s) you need
+module purge
+module load toolchain/intel    # or toolchain/foss
 
 path/to/your/openmp_program
 ```
@@ -94,8 +154,54 @@ path/to/your/openmp_program
 | `toolchain/intel` | `icc -qopenmp [...]` |
 | `toolchain/foss`  | `gcc -fopenmp [...]` |
 
+### Hands-on: OpenMP Helloworld
 
-### OpenMP Helloworld
+You can find in `src/hello_openmp.c` the traditional OpenMP "Helloworld" example.
+
+* Reserve an interactive job to launch 4 OpenMP threads (for 30 minutes)
+  ```bash
+  ############### iris cluster (slurm) ###############
+  (access-iris)$> srun -p interactive --ntasks-per-node=1 -c 4 -t 0:30:00 --pty bash
+  $> export OMP_NUM_THREADS=${SLURM_CPUS_PER_TASK}
+
+  ############### gaia/chaos clusters (OAR) ###############
+  (access-{gaia|chaos})$> oarsub -I -l nodes=1/core=4,walltime=0:30:00
+  $> export OMP_NUM_THREADS=$(cat $OAR_NODEFILE| wc -l)
+  ```
+
+* Check the set variable `$OMP_NUM_THREADS`. Which value do you expect?
+
+        $> echo $OMP_NUM_THREADS
+
+* Check and compile the source `src/hello_openmp.c` to generate:
+    - `bin/hello_openmp`       (compiled over the `foss`  toolchain)
+    - `bin/intel_hello_openmp` (compiled over the `intel` toolchain)
+  ```bash
+  $> cat src/hello_openmp.c
+  ######### foss toolchain
+  $> module purge                # Safeguard
+  $> module load toolchain/foss
+  $> gcc -fopenmp -Wall -O2 src/hello_openmp.c -o bin/hello_openmp
+
+  ######### intel toolchain
+  $> module purge                # Safeguard
+  $> module load toolchain/intel
+  $> icc -qopenmp -Wall -O2 src/hello_openmp.c -o bin/hello_openmp
+  ```
+* (__only__ if you have trouble to compile): `make openmp`
+
+* Execute the generated binaries multiple times. What do you notice?
+* Prepare a launcher script (use your favorite editor) to execute this application in batch mode.
+  ```bash
+  ############### iris cluster (slurm) ###############
+  $> sbatch ./launcher.OpenMP.sh
+
+  ############### gaia/chaos clusters (OAR) ###############
+  $> oarsub -S ./launcher.OpenMP.sh
+  ```
+
+
+
 
 ### Data race benchmark suite
 
