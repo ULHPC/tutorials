@@ -2,6 +2,10 @@ site_name: UL HPC Tutorials
 pages:
 - Home: 'index.md'
 - Latest HPC School: 'hpc-school.md'
+- Setup:
+  - Overview:       'setup/index.md'
+  - Pre-Requisites: 'setup/preliminaries.md'
+  - Installation:   'setup/install.md'
 - Basic Tutorials:
   - Getting Started: 'beginners/index.md'
   - HPC workflow with sequential jobs: 'basic/sequential_jobs/index.md'
