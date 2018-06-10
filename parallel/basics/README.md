@@ -162,15 +162,15 @@ You can find in `src/hello_openmp.c` the traditional OpenMP "Helloworld" example
 
 * Reserve an interactive job to launch 4 OpenMP threads (for 30 minutes)
 
-  ```bash
-  ############### iris cluster (slurm) ###############
-  (access-iris)$> srun -p interactive --ntasks-per-node=1 -c 4 -t 0:30:00 --pty bash
-  $> export OMP_NUM_THREADS=${SLURM_CPUS_PER_TASK}
+```bash
+############### iris cluster (slurm) ###############
+(access-iris)$> srun -p interactive --ntasks-per-node=1 -c 4 -t 0:30:00 --pty bash
+$> export OMP_NUM_THREADS=${SLURM_CPUS_PER_TASK}
 
-  ############### gaia/chaos clusters (OAR) ###############
-  (access-{gaia|chaos})$> oarsub -I -l nodes=1/core=4,walltime=0:30:00
-  $> export OMP_NUM_THREADS=$(cat $OAR_NODEFILE| wc -l)
-  ```
+############### gaia/chaos clusters (OAR) ###############
+(access-{gaia|chaos})$> oarsub -I -l nodes=1/core=4,walltime=0:30:00
+$> export OMP_NUM_THREADS=$(cat $OAR_NODEFILE| wc -l)
+```
 
 * Check the set variable `$OMP_NUM_THREADS`. Which value do you expect?
 
@@ -180,18 +180,18 @@ You can find in `src/hello_openmp.c` the traditional OpenMP "Helloworld" example
     - `bin/hello_openmp`       (compiled over the `foss`  toolchain)
     - `bin/intel_hello_openmp` (compiled over the `intel` toolchain)
 
-  ```bash
-  $> cat src/hello_openmp.c
-  ######### foss toolchain
-  $> module purge                # Safeguard
-  $> module load toolchain/foss
-  $> gcc -fopenmp -Wall -O2 src/hello_openmp.c -o bin/hello_openmp
+```bash
+$> cat src/hello_openmp.c
+######### foss toolchain
+$> module purge                # Safeguard
+$> module load toolchain/foss
+$> gcc -fopenmp -Wall -O2 src/hello_openmp.c -o bin/hello_openmp
 
-  ######### intel toolchain
-  $> module purge                # Safeguard
-  $> module load toolchain/intel
-  $> icc -qopenmp -xhost -Wall -O2 src/hello_openmp.c -o bin/hello_openmp
-  ```
+######### intel toolchain
+$> module purge                # Safeguard
+$> module load toolchain/intel
+$> icc -qopenmp -xhost -Wall -O2 src/hello_openmp.c -o bin/hello_openmp
+```
 
 * (__only__ if you have trouble to compile): `make openmp`
 
@@ -199,13 +199,13 @@ You can find in `src/hello_openmp.c` the traditional OpenMP "Helloworld" example
 * Exit your interactive session (`exit` or `CTRL-D`)
 * Prepare a launcher script (use your favorite editor) to execute this application in batch mode.
 
-  ```bash
-  ############### iris cluster (slurm) ###############
-  $> sbatch ./launcher.OpenMP.sh
+```bash
+############### iris cluster (slurm) ###############
+$> sbatch ./launcher.OpenMP.sh
 
-  ############### gaia/chaos clusters (OAR) ###############
-  $> oarsub -S ./launcher.OpenMP.sh
-  ```
+############### gaia/chaos clusters (OAR) ###############
+$> oarsub -S ./launcher.OpenMP.sh
+```
 
 Repeat the above procedure on a more serious computation: a naive matrix multiplication  using OpenMP, those source code is located in `src/matrix_mult_openmp.c`
 
@@ -275,37 +275,37 @@ Now you can reserve the nodes and set `OMP_NUM_THREADS`:
 
 * Reserve an interactive job to launch 12 OpenMP threads (for 30 minutes)
 
-  ```bash
-  ############### iris cluster (slurm) ###############
-  (access-iris)$> srun -p interactive --ntasks-per-node=1 -c 12 -t 0:30:00 --pty bash
-  $> export OMP_NUM_THREADS=${SLURM_CPUS_PER_TASK}
+```bash
+############### iris cluster (slurm) ###############
+(access-iris)$> srun -p interactive --ntasks-per-node=1 -c 12 -t 0:30:00 --pty bash
+$> export OMP_NUM_THREADS=${SLURM_CPUS_PER_TASK}
 
-  ############### gaia/chaos clusters (OAR) ###############
-  (access-{gaia|chaos})$> oarsub -I -l nodes=1/core=12,walltime=0:30:00
-  $> export OMP_NUM_THREADS=$(cat $OAR_NODEFILE| wc -l)
-  ```
+############### gaia/chaos clusters (OAR) ###############
+(access-{gaia|chaos})$> oarsub -I -l nodes=1/core=12,walltime=0:30:00
+$> export OMP_NUM_THREADS=$(cat $OAR_NODEFILE| wc -l)
+```
 
 * Open **another** terminal (or another `screen` window) to monitor the execution (see intructions on top).
 
 * Execute the benchmark, for instance using the intel toolchain:
 
-  ```bash
-  $> module load toolchain/intel
-  $> ./check-data-races.sh --help
+```bash
+$> module load toolchain/intel
+$> ./check-data-races.sh --help
 
-  Usage: ./check-data-races.sh [--run] [--help]
+Usage: ./check-data-races.sh [--run] [--help]
 
-  --help     : this option
-  --small    : compile and test all benchmarks using small parameters with Helgrind, ThreadSanitizer, Archer, Intel inspector.
-  --run      : compile and run all benchmarks with gcc (no evaluation)
-  --run-intel: compile and run all benchmarks with Intel compilers (no evaluation)
-  --helgrind : compile and test all benchmarks with Helgrind
-  --tsan     : compile and test all benchmarks with clang ThreadSanitizer
-  --archer   : compile and test all benchmarks with Archer
-  --inspector: compile and test all benchmarks with Intel Inspector
+--help     : this option
+--small    : compile and test all benchmarks using small parameters with Helgrind, ThreadSanitizer, Archer, Intel inspector.
+--run      : compile and run all benchmarks with gcc (no evaluation)
+--run-intel: compile and run all benchmarks with Intel compilers (no evaluation)
+--helgrind : compile and test all benchmarks with Helgrind
+--tsan     : compile and test all benchmarks with clang ThreadSanitizer
+--archer   : compile and test all benchmarks with Archer
+--inspector: compile and test all benchmarks with Intel Inspector
 
-  $> ./check-data-races.sh --run-intel
-  ```
+$> ./check-data-races.sh --run-intel
+```
 
 __Useful OpenMP links__:
 
@@ -434,49 +434,49 @@ You can find in `src/hello_mpi.c` the traditional MPI "Helloworld" example.
 
 * Reserve an interactive job to launch 6 MPI processes across two nodes 2x3 (for 30 minutes)
 
-  ```bash
-  ############### iris cluster (slurm) ###############
-  (access-iris)$> srun -p interactive -N 2 --ntasks-per-node=3 -t 0:30:00 --pty bash
+```bash
+############### iris cluster (slurm) ###############
+(access-iris)$> srun -p interactive -N 2 --ntasks-per-node=3 -t 0:30:00 --pty bash
 
-  ############### gaia/chaos clusters (OAR) ###############
-  (access-{gaia|chaos})$> oarsub -I -l nodes=2/core=3,walltime=0:30:00
-  ```
+############### gaia/chaos clusters (OAR) ###############
+(access-{gaia|chaos})$> oarsub -I -l nodes=2/core=3,walltime=0:30:00
+```
 
 * Check and compile the source `src/hello_mpi.c` to generate:
     - `bin/openmpi_hello_mpi`  (compiled with the `mpi/OpenMPI` module)
     - `bin/intel_hello_mpi`    (compiled over the `intel` toolchain and Intel MPI)
     - `bin/mvapich2_hello_mpi` (compiled over the `mpi/MVAPICH2` toolchain)
 
-  ```bash
-  $> cat src/hello_mpi.c
-  ######### OpenMPI
-  $> module purge                # Safeguard
-  $> module load mpi/OpenMPI
-  $> mpicc -Wall -O2 src/hello_mpi.c -o bin/openmpi_hello_mpi
+```bash
+$> cat src/hello_mpi.c
+######### OpenMPI
+$> module purge                # Safeguard
+$> module load mpi/OpenMPI
+$> mpicc -Wall -O2 src/hello_mpi.c -o bin/openmpi_hello_mpi
 
-  ######### Intel MPI
-  $> module purge                # Safeguard
-  $> module load toolchain/intel
-  $> mpiicc -Wall -xhost -O2 src/hello_mpi.c -o bin/intel_hello_mpi
+######### Intel MPI
+$> module purge                # Safeguard
+$> module load toolchain/intel
+$> mpiicc -Wall -xhost -O2 src/hello_mpi.c -o bin/intel_hello_mpi
 
-  ######### MVAPICH2
-  $> module purge                # Safeguard
-  $> module load mpi/MVAPICH2
-  $> mpicc -Wall -O2 src/hello_mpi.c -o bin/mvapich2_hello_mpi
-  ```
+######### MVAPICH2
+$> module purge                # Safeguard
+$> module load mpi/MVAPICH2
+$> mpicc -Wall -O2 src/hello_mpi.c -o bin/mvapich2_hello_mpi
+```
 
 * (__only__ if you have trouble to compile): `make mpi`
 * Execute the generated binaries multiple times. What do you notice?
 * Exit your interactive session (`exit` or `CTRL-D`)
 * Prepare a launcher script (use your favorite editor) to execute this application in batch mode.
 
-  ```bash
-  ############### iris cluster (slurm) ###############
-  $> sbatch ./launcher.MPI.sh
+```bash
+############### iris cluster (slurm) ###############
+$> sbatch ./launcher.MPI.sh
 
-  ############### gaia/chaos clusters (OAR) ###############
-  $> oarsub -S ./launcher.MPI.sh
-  ```
+############### gaia/chaos clusters (OAR) ###############
+$> oarsub -S ./launcher.MPI.sh
+```
 
 Repeat the above procedure on a more serious computation: a naive matrix multiplication  using MPI, those source code is located in `src/matrix_mult_mpi.c`
 
@@ -622,15 +622,15 @@ You can find in `src/hello_hybrid.c` the traditional OpenMP+MPI "Helloworld" exa
 
 * Reserve an interactive job to launch 4 OpenMP threads (for 30 minutes)
 
-  ```bash
-  ############### iris cluster (slurm) ###############
-  (access-iris)$> srun -p interactive -N 2 --ntasks-per-node=1 -c 4 -t 0:30:00 --pty bash
-  $> export OMP_NUM_THREADS=${SLURM_CPUS_PER_TASK}
+```bash
+############### iris cluster (slurm) ###############
+(access-iris)$> srun -p interactive -N 2 --ntasks-per-node=1 -c 4 -t 0:30:00 --pty bash
+$> export OMP_NUM_THREADS=${SLURM_CPUS_PER_TASK}
 
-  ############### gaia/chaos clusters (OAR) ###############
-  (access-{gaia|chaos})$> oarsub -I -l nodes=2/core=4,walltime=0:30:00
-  $> export OMP_NUM_THREADS=$(cat $OAR_NODEFILE | uniq -c | head -n1 | awk '{print $1}')
-  ```
+############### gaia/chaos clusters (OAR) ###############
+(access-{gaia|chaos})$> oarsub -I -l nodes=2/core=4,walltime=0:30:00
+$> export OMP_NUM_THREADS=$(cat $OAR_NODEFILE | uniq -c | head -n1 | awk '{print $1}')
+```
 
 * Check the set variable `$OMP_NUM_THREADS`. Which value do you expect?
 
@@ -641,36 +641,36 @@ You can find in `src/hello_hybrid.c` the traditional OpenMP+MPI "Helloworld" exa
     - `bin/intel_hello_hybrid`    (compiled over the `intel` toolchain and Intel MPI)
     - `bin/mvapich2_hello_hybrid` (compiled over the `mpi/MVAPICH2` toolchain)
 
-  ```bash
-  $> cat src/hello_hybrid.c
-  ######### OpenMPI
-  $> module purge                # Safeguard
-  $> module load mpi/OpenMPI
-  $> mpicc -fopenmp -Wall -O2 src/hello_hybrid.c -o bin/openmpi_hello_hybrid
+```bash
+$> cat src/hello_hybrid.c
+######### OpenMPI
+$> module purge                # Safeguard
+$> module load mpi/OpenMPI
+$> mpicc -fopenmp -Wall -O2 src/hello_hybrid.c -o bin/openmpi_hello_hybrid
 
-  ######### Intel MPI
-  $> module purge                # Safeguard
-  $> module load toolchain/intel
-  $> mpiicc -qopenmp -Wall -xhost -O2 src/hello_hybrid.c -o bin/intel_hello_hybrid
+######### Intel MPI
+$> module purge                # Safeguard
+$> module load toolchain/intel
+$> mpiicc -qopenmp -Wall -xhost -O2 src/hello_hybrid.c -o bin/intel_hello_hybrid
 
-  ######### MVAPICH2
-  $> module purge                # Safeguard
-  $> module load mpi/MVAPICH2
-  $> mpicc -f openmp -Wall -O2 src/hello_hybrid.c -o bin/mvapich2_hello_hybrid
-  ```
+######### MVAPICH2
+$> module purge                # Safeguard
+$> module load mpi/MVAPICH2
+$> mpicc -f openmp -Wall -O2 src/hello_hybrid.c -o bin/mvapich2_hello_hybrid
+```
 
 * (__only__ if you have trouble to compile): `make hybrid`
 * Execute the generated binaries (see above tips)
 * Exit your interactive session (`exit` or `CTRL-D`)
 * Adapt the MPI launcher to allow for batch jobs submissions over hybrid programs
 
-  ```bash
-  ############### iris cluster (slurm) ###############
-  $> sbatch ./launcher.hybrid.sh
+```bash
+############### iris cluster (slurm) ###############
+$> sbatch ./launcher.hybrid.sh
 
-  ############### gaia/chaos clusters (OAR) ###############
-  $> oarsub -S ./launcher.hybrid.sh
-  ```
+############### gaia/chaos clusters (OAR) ###############
+$> oarsub -S ./launcher.hybrid.sh
+```
 
 _Note_: if you are lazy (or late), you can use the provided launcher script `runs/launcher.MPI.sh`.
 
