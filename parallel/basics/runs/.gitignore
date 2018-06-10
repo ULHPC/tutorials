@@ -1,0 +1,3 @@
+*.log
+slurm-*
+hostfile*

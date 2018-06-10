@@ -9,6 +9,8 @@ To clone this repository, proceed as follows (adapt accordingly):
 $> mkdir -p ~/git/github.com/ULHPC
 $> cd ~/git/github.com/ULHPC
 $> git clone https://github.com/ULHPC/tutorials.git
+$> cd tutorials
+$> make setup          # Initiate git submodules etc...
 ```
 
 You'll probably wish to have a separate directory structure when working in this tutorial. Here is a suggested approach:
@@ -19,14 +21,10 @@ $> cd ~/tutorials/HPC-School-2018
 $> ln -s ~/git/github.com/ULHPC/tutorials  ref.d
 ```
 
-**`/!\ IMPORTANT` for contributors**: Once cloned, initiate your local copy of the repository by running:
-
-    $> cd ~/git/github.com/ULHPC/tutorials
-    $> make setup
-
+The `make setup` step is **required**.
 This will initiate the [Git submodules of this repository](.gitmodules) and setup the [git flow](https://www.atlassian.com/git/tutorials/comparing-workflows/gitflow-workflow) layout for this repository.
 
-Finally, later on, you can upgrade the [Git submodules](.gitmodules) to the latest version by running:
+Note that later on, you can upgrade the [Git submodules](.gitmodules) to the latest version by running:
 
     $> make upgrade
 
