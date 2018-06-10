@@ -3,8 +3,9 @@
  * @author Sebastien Varrette <Sebastien.Varrette@uni.lu>
  * @date   Tue Nov 27 2012
  * Compilation:
- * - with 'toolchain/intel': mpiicc hello_mpi.c -o hello_mpi
- * - with 'toolchain/foss':  mpicc  hello_mpi.c -o hello_mpi
+ * - with 'toolchain/intel':  mpiicc hello_mpi.c -o intel_hello_mpi
+ * - with 'mpi/OpenMPI':      mpicc  hello_mpi.c -o openmpi_hello_mpi
+ * - with 'mpi/MVAPICH2':     mpicc  hello_mpi.c -o mvapich2_hello_mpi
  ***********************************************************************************/
 #include <stdio.h>     /* for printf */
 #include <stdlib.h>    /* for exit  */
@@ -50,8 +51,9 @@ int main(int argc, char *argv[]) {
     // at the end, compute global elapsed time
     MPI_Barrier(MPI_COMM_WORLD);
     elapsed_time += MPI_Wtime();
-    if (id == 0)
-        xprintf("Global Elapsed time: %2f s\n", elapsed_time);
+    if (id == 0) {
+      xprintf("Global Elapsed time: %2f s\n", elapsed_time);
+    }
     MPI_Finalize();
     return 0;
 }
