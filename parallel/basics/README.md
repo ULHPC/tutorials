@@ -1,9 +1,9 @@
-<!-- [![By ULHPC](https://img.shields.io/badge/by-ULHPC-blue.svg)](https://hpc.uni.lu) [![Licence](https://img.shields.io/badge/license-GPL--3.0-blue.svg)](http://www.gnu.org/licenses/gpl-3.0.html) [![GitHub issues](https://img.shields.io/github/issues/ULHPC/tutorials.svg)](https://github.com/ULHPC/tutorials/issues/) [![](https://img.shields.io/badge/slides-PDF-red.svg)](https://github.com/ULHPC/tutorials/raw/devel/parallel/basics/slides.pdf) [![Github](https://img.shields.io/badge/sources-github-green.svg)](https://github.com/ULHPC/tutorials/tree/devel/parallel/basics/) [![Documentation Status](http://readthedocs.org/projects/ulhpc-tutorials/badge/?version=latest)](http://ulhpc-tutorials.readthedocs.io/en/latest/parallel/basics/) [![GitHub forks](https://img.shields.io/github/stars/ULHPC/tutorials.svg?style=social&label=Star)](https://github.com/ULHPC/tutorials) -->
+[![By ULHPC](https://img.shields.io/badge/by-ULHPC-blue.svg)](https://hpc.uni.lu) [![Licence](https://img.shields.io/badge/license-GPL--3.0-blue.svg)](http://www.gnu.org/licenses/gpl-3.0.html) [![GitHub issues](https://img.shields.io/github/issues/ULHPC/tutorials.svg)](https://github.com/ULHPC/tutorials/issues/) [![](https://img.shields.io/badge/slides-PDF-red.svg)](https://github.com/ULHPC/tutorials/raw/devel/parallel/basics/slides.pdf) [![Github](https://img.shields.io/badge/sources-github-green.svg)](https://github.com/ULHPC/tutorials/tree/devel/parallel/basics/) [![Documentation Status](http://readthedocs.org/projects/ulhpc-tutorials/badge/?version=latest)](http://ulhpc-tutorials.readthedocs.io/en/latest/parallel/basics/) [![GitHub forks](https://img.shields.io/github/stars/ULHPC/tutorials.svg?style=social&label=Star)](https://github.com/ULHPC/tutorials)
 
 
-<!-- # Parallel computations with OpenMP/MPI -->
+# Parallel computations with OpenMP/MPI
 
-<!--      Copyright (c) 2013-2018 UL HPC Team  <hpc-sysadmins@uni.lu> -->
+     Copyright (c) 2013-2018 UL HPC Team  <hpc-sysadmins@uni.lu>
 
 <!-- [![](https://github.com/ULHPC/tutorials/raw/devel/parallel/basics/cover_slides.png)](https://github.com/ULHPC/tutorials/raw/devel/parallel/basics/slides.pdf) -->
 
@@ -20,6 +20,7 @@ For all the executions we are going to perform in this tutorial, you probably wa
 
 * open **another** terminal (or another `screen` window) as you'll want to monitor the execution.
 * Connect to the allocated node:
+
   ```bash
   ############### iris cluster (slurm)
   (access-iris)$> sq     # Check the allocated node
@@ -29,6 +30,7 @@ For all the executions we are going to perform in this tutorial, you probably wa
   (access-{gaia|chaos})$> oarstat -u     # Collect the job ID
   (access-{gaia|chaos})$> oarsub -C <jobid>
   ```
+
 * **For this new terminal/window**
     - run `htop`
         * press 'u' to filter by process owner, select your login
@@ -159,6 +161,7 @@ path/to/your/openmp_program
 You can find in `src/hello_openmp.c` the traditional OpenMP "Helloworld" example.
 
 * Reserve an interactive job to launch 4 OpenMP threads (for 30 minutes)
+
   ```bash
   ############### iris cluster (slurm) ###############
   (access-iris)$> srun -p interactive --ntasks-per-node=1 -c 4 -t 0:30:00 --pty bash
@@ -176,6 +179,7 @@ You can find in `src/hello_openmp.c` the traditional OpenMP "Helloworld" example
 * Check and compile the source `src/hello_openmp.c` to generate:
     - `bin/hello_openmp`       (compiled over the `foss`  toolchain)
     - `bin/intel_hello_openmp` (compiled over the `intel` toolchain)
+
   ```bash
   $> cat src/hello_openmp.c
   ######### foss toolchain
@@ -188,11 +192,13 @@ You can find in `src/hello_openmp.c` the traditional OpenMP "Helloworld" example
   $> module load toolchain/intel
   $> icc -qopenmp -xhost -Wall -O2 src/hello_openmp.c -o bin/hello_openmp
   ```
+
 * (__only__ if you have trouble to compile): `make openmp`
 
 * Execute the generated binaries multiple times. What do you notice?
 * Exit your interactive session (`exit` or `CTRL-D`)
 * Prepare a launcher script (use your favorite editor) to execute this application in batch mode.
+
   ```bash
   ############### iris cluster (slurm) ###############
   $> sbatch ./launcher.OpenMP.sh
@@ -268,6 +274,7 @@ $> cd src/dataracebench
 Now you can reserve the nodes and set `OMP_NUM_THREADS`:
 
 * Reserve an interactive job to launch 12 OpenMP threads (for 30 minutes)
+
   ```bash
   ############### iris cluster (slurm) ###############
   (access-iris)$> srun -p interactive --ntasks-per-node=1 -c 12 -t 0:30:00 --pty bash
@@ -281,6 +288,7 @@ Now you can reserve the nodes and set `OMP_NUM_THREADS`:
 * Open **another** terminal (or another `screen` window) to monitor the execution (see intructions on top).
 
 * Execute the benchmark, for instance using the intel toolchain:
+
   ```bash
   $> module load toolchain/intel
   $> ./check-data-races.sh --help
@@ -425,6 +433,7 @@ mpirun -launcher ssh -launcher-exec /usr/bin/oarsh -f $OAR_NODEFILE path/to/mpi_
 You can find in `src/hello_mpi.c` the traditional MPI "Helloworld" example.
 
 * Reserve an interactive job to launch 6 MPI processes across two nodes 2x3 (for 30 minutes)
+
   ```bash
   ############### iris cluster (slurm) ###############
   (access-iris)$> srun -p interactive -N 2 --ntasks-per-node=3 -t 0:30:00 --pty bash
@@ -437,6 +446,7 @@ You can find in `src/hello_mpi.c` the traditional MPI "Helloworld" example.
     - `bin/openmpi_hello_mpi`  (compiled with the `mpi/OpenMPI` module)
     - `bin/intel_hello_mpi`    (compiled over the `intel` toolchain and Intel MPI)
     - `bin/mvapich2_hello_mpi` (compiled over the `mpi/MVAPICH2` toolchain)
+
   ```bash
   $> cat src/hello_mpi.c
   ######### OpenMPI
@@ -454,10 +464,12 @@ You can find in `src/hello_mpi.c` the traditional MPI "Helloworld" example.
   $> module load mpi/MVAPICH2
   $> mpicc -Wall -O2 src/hello_mpi.c -o bin/mvapich2_hello_mpi
   ```
+
 * (__only__ if you have trouble to compile): `make mpi`
 * Execute the generated binaries multiple times. What do you notice?
 * Exit your interactive session (`exit` or `CTRL-D`)
 * Prepare a launcher script (use your favorite editor) to execute this application in batch mode.
+
   ```bash
   ############### iris cluster (slurm) ###############
   $> sbatch ./launcher.MPI.sh
@@ -609,6 +621,7 @@ mpirun -ppn ${NPERNODE:=1} -np ${NP} -genv OMP_NUM_THREADS=${OMP_NUM_THREADS} \
 You can find in `src/hello_hybrid.c` the traditional OpenMP+MPI "Helloworld" example.
 
 * Reserve an interactive job to launch 4 OpenMP threads (for 30 minutes)
+
   ```bash
   ############### iris cluster (slurm) ###############
   (access-iris)$> srun -p interactive -N 2 --ntasks-per-node=1 -c 4 -t 0:30:00 --pty bash
@@ -618,6 +631,7 @@ You can find in `src/hello_hybrid.c` the traditional OpenMP+MPI "Helloworld" exa
   (access-{gaia|chaos})$> oarsub -I -l nodes=2/core=4,walltime=0:30:00
   $> export OMP_NUM_THREADS=$(cat $OAR_NODEFILE | uniq -c | head -n1 | awk '{print $1}')
   ```
+
 * Check the set variable `$OMP_NUM_THREADS`. Which value do you expect?
 
         $> echo $OMP_NUM_THREADS
@@ -626,6 +640,7 @@ You can find in `src/hello_hybrid.c` the traditional OpenMP+MPI "Helloworld" exa
     - `bin/openmpi_hello_hybrid`  (compiled with the `mpi/OpenMPI` module)
     - `bin/intel_hello_hybrid`    (compiled over the `intel` toolchain and Intel MPI)
     - `bin/mvapich2_hello_hybrid` (compiled over the `mpi/MVAPICH2` toolchain)
+
   ```bash
   $> cat src/hello_hybrid.c
   ######### OpenMPI
@@ -643,10 +658,12 @@ You can find in `src/hello_hybrid.c` the traditional OpenMP+MPI "Helloworld" exa
   $> module load mpi/MVAPICH2
   $> mpicc -f openmp -Wall -O2 src/hello_hybrid.c -o bin/mvapich2_hello_hybrid
   ```
+
 * (__only__ if you have trouble to compile): `make hybrid`
 * Execute the generated binaries (see above tips)
 * Exit your interactive session (`exit` or `CTRL-D`)
 * Adapt the MPI launcher to allow for batch jobs submissions over hybrid programs
+
   ```bash
   ############### iris cluster (slurm) ###############
   $> sbatch ./launcher.hybrid.sh
