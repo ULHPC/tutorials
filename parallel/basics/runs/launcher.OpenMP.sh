@@ -1,5 +1,5 @@
 #! /bin/bash -l
-# Time-stamp: <Sun 2018-06-10 14:42 svarrette>
+# Time-stamp: <Sun 2018-06-10 18:15 svarrette>
 ######## OAR directives ########
 #OAR -n OpenMP
 #OAR -l nodes=1/core=4,walltime=0:05:00
@@ -66,6 +66,7 @@ EXE="${APPDIR}/${APP}"
 
 echo "# =============================================================="
 echo "# => OpenMP run of '${APP}' with ${MODULE}"
+echo "#    OMP_NUM_THREADS=${OMP_NUM_THREADS}"
 echo "# =============================================================="
 
 module purge || print_error_and_exit "Unable to find the module command"
