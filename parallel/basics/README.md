@@ -21,15 +21,15 @@ For all the executions we are going to perform in this tutorial, you probably wa
 * open **another** terminal (or another `screen` window) as you'll want to monitor the execution.
 * Connect to the allocated node:
 
-  ```bash
-  ############### iris cluster (slurm)
-  (access-iris)$> sq     # Check the allocated node
-  (access-iris)$> ssh iris-XXX       # ADAPT accordingly
+```bash
+############### iris cluster (slurm)
+(access-iris)$> sq     # Check the allocated node
+(access-iris)$> ssh iris-XXX       # ADAPT accordingly
 
-  ############## gaia/chaos clusters (OAR)
-  (access-{gaia|chaos})$> oarstat -u     # Collect the job ID
-  (access-{gaia|chaos})$> oarsub -C <jobid>
-  ```
+############## gaia/chaos clusters (OAR)
+(access-{gaia|chaos})$> oarstat -u     # Collect the job ID
+(access-{gaia|chaos})$> oarsub -C <jobid>
+```
 
 * **For this new terminal/window**
     - run `htop`
@@ -65,8 +65,8 @@ $> cd basics
 ```
 
 
------------------------------------
-## Threaded Parallel OpenMP Jobs ##
+--------------------------
+## Parallel OpenMP Jobs ##
 
 [OpenMP](https://www.openmp.org/) (Open Multi-Processing) is a popular parallel programming model for multi-threaded applications. More precisely, it is an Application Programming Interface (API) that supports **multi-platform shared memory multiprocessing** programming in C, C++, and Fortran on most platforms, instruction set architectures and operating systems.
 
@@ -313,8 +313,8 @@ __Useful OpenMP links__:
 * [OpenMP Tutorial LLNL](https://computing.llnl.gov/tutorials/openMP/)
 * [Data race benchmark suite](https://github.com/LLNL/dataracebench)
 
----------------------------------------
-## Parallel and Distributed MPI Jobs ##
+-----------------------------------
+## Parallel/Distributed MPI Jobs ##
 
 
 The _Message Passing Interface_ (MPI) Standard  is a message passing library standard based on the consensus of the MPI Forum.
@@ -721,21 +721,6 @@ OAR_ARRAY_ID=4357843
      -  see the [Step by Step Performance Optimization with Intel(c) C++ Compiler](https://software.intel.com/en-us/articles/step-by-step-optimizing-with-intel-c-compiler)
          * the `-xhost` option permits to enable  processor-specific optimization.
          * you might wish to consider Interprocedural Optimization (IPO) approach, an automatic, multi-step process that allows the compiler to analyze your code to determine where you can benefit from specific optimizations.
-
---------------------------------------------------
-## Hands-on (MPI): MVAPICH OSU Micro-Benchmarks ##
-
-See <http://ulhpc-tutorials.readthedocs.io/en/latest/parallel/mpi/OSU_MicroBenchmarks/>
-
------------------------------------
-## Hands-on (MPI): HPL Benchmark ##
-
-See <http://ulhpc-tutorials.readthedocs.io/en/latest/parallel/mpi/HPL/>
-
---------------------------------------------------
-## Hands-on (OpenMP and/or MPI): HPCG Benchmark ##
-
-See <http://ulhpc-tutorials.readthedocs.io/en/latest/parallel/hybrid/HPCG/>
 
 ---------------------
 ## Troubleshooting ##

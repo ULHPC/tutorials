@@ -27,7 +27,8 @@ So far, the following tutorials are proposed:
 |                        | [Advanced debugging on the UL HPC platform](debugging/advanced/)                            | intermediate   |
 |                        | (OLD) [Unified profiling and debugging with Allinea](advanced/Allinea/)                     | intermediate   |
 |                        | (OLD) [Direct,  Reverse and parallel Memory debugging with TotalView](advanced/TotalView/)  | intermediate   |
-| _MPI_                  | [UL HPC MPI Tutorial: OSU Micro-Benchmarks](parallel/mpi/OSU_MicroBenchmarks/)              | intermediate   |
+| _MPI_                  | [Parallel computations with OpenMP/MPI](parallel/basics/)                                   | intermediate   |
+|                        | [UL HPC MPI Tutorial: OSU Micro-Benchmarks](parallel/mpi/OSU_MicroBenchmarks/)              | intermediate   |
 |                        | [High-Performance Linpack (HPL) benchmarking on UL HPC platform](parallel/mpi/HPL/)         | intermediate   |
 |                        | [HPCG benchmarking on UL HPC platform](parallel/hybrid/HPCG/)                               | intermediate   |
 | _Mathematics_          | [MATLAB (interactive, passive and sequential jobs)](maths/matlab/basics/)                   | intermediate   |
