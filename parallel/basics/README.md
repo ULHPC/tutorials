@@ -341,7 +341,7 @@ The [UL HPC platform](http://hpc.uni.lu) offers to you different MPI implementat
 
 Of course, it is possible to have **hybrid** code, mixing MPI and OpenMP primitives.
 
-### Slurm reservations for MPI programs
+### Slurm reservations and usage for MPI programs
 
 * set the number of distributed nodes you want to reserver with `-N <N>`
 * set the number of **MPI processes** per node (that's more explicit) with `--ntasks-per-node=<N>`
@@ -349,13 +349,22 @@ Of course, it is possible to have **hybrid** code, mixing MPI and OpenMP primiti
 * (eventually as this is the default) set a _single_ thread per MPI process  with `-c 1`
      - _except_ when running an hybrid code...
 
+**Important**:
+
+* To run your MPI program, be aware that Slurm is able to directly launch MPI tasks and initialize of MPI communications via [Process Management Interface (PMI)](https://slurm.schedmd.com/mpi_guide.html)
+     - pmi2 is currently available, we'll switch to PMIx with the incoming RESIF release introducing the 2018a toolchains.
+     - permits to resolve the task affinity by the scheduler (avoiding to use `mpirun --map-by [...]`)
+* Simply use (whatever MPI flavor you use):
+
+            srun -n $SLURM_NTASKS /path/to/mpiprog [...]
+
 Thus a minimal launcher would _typically_ look like that -- see also [our default Slurm launchers](https://github.com/ULHPC/launcher-scripts/blob/devel/slurm/launcher.default.sh).
 
 ```bash
 #!/bin/bash -l
 #SBATCH -N 2                  # Use 2 nodes
 #SBATCH --ntasks-per-node=28  # Number of MPI process per node
-#SBATCH -c 1                  # Number of threads per MPI process (1 unless hybrid code)
+#SBATCH -c 1        # Number of threads per MPI process (1 unless hybrid code)
 #SBATCH --time=0-01:00:00
 #SBATCH -p batch
 #SBATCH --qos=qos-batch
@@ -373,11 +382,20 @@ srun -n $SLURM_NTASKS /path/to/your/mpi_program
 
 In the above example, 2x28 = 56 MPI processes will be launched.
 
-### OAR reservations for MPI programs
+### OAR reservations and usage for MPI programs
 
 You have to setup the reservation to match the required number of MPI processes:
 
       oarsub -l nodes=2/core=12[...]
+
+As for running you MPI program, you typically need to rely on `mpirun` for which the command-line (unfortunately) differs depending on the MPI flavor:
+
+| MPI Suit                                                        | `module load`...  | Typical run command (OAR)                                                   |
+|-----------------------------------------------------------------|-------------------|-----------------------------------------------------------------------------|
+| [Intel MPI](http://software.intel.com/en-us/intel-mpi-library/) | `toolchain/intel` | `mpirun -hostfile $OAR_NODEFILE [...]`                                      |
+| [OpenMPI](http://www.open-mpi.org/)                             | `mpi/OpenMPI`     | `mpirun -hostfile $OAR_NODEFILE -x PATH -x LD_LIBRARY_PATH [...]`           |
+| [MVAPICH2](http://mvapich.cse.ohio-state.edu/overview/)         | `mpi/MVAPICH2`    | `mpirun -launcher ssh -launcher-exec /usr/bin/oarsh -f $OAR_NODEFILE [...]` |
+
 
 Thus a minimal OAR launcher would typically look like that
 
@@ -399,10 +417,10 @@ mpirun -hostfile $OAR_NODEFILE path/to/mpi_program
 ### OpenMPI
 mpirun -hostfile $OAR_NODEFILE -x PATH -x LD_LIBRARY_PATH path/to/mpi_program
 ### MVAPICH2
-mpirun -f $OAR_NODEFILE path/to/mpi_program
+mpirun -launcher ssh -launcher-exec /usr/bin/oarsh -f $OAR_NODEFILE path/to/mpi_program
 ```
 
-### Hands-on: MPI Helloworld
+### Hands-on: MPI Helloworld and matrix multiplication
 
 You can find in `src/hello_mpi.c` the traditional MPI "Helloworld" example.
 
@@ -429,9 +447,9 @@ You can find in `src/hello_mpi.c` the traditional MPI "Helloworld" example.
   ######### Intel MPI
   $> module purge                # Safeguard
   $> module load toolchain/intel
-  $> mpiicc -Wall -xhost -O2 src/hello_mpi.c -o bin/hello_mpi
+  $> mpiicc -Wall -xhost -O2 src/hello_mpi.c -o bin/intel_hello_mpi
 
-  ######### OpenMPI
+  ######### MVAPICH2
   $> module purge                # Safeguard
   $> module load mpi/MVAPICH2
   $> mpicc -Wall -O2 src/hello_mpi.c -o bin/mvapich2_hello_mpi
@@ -448,7 +466,49 @@ You can find in `src/hello_mpi.c` the traditional MPI "Helloworld" example.
   $> oarsub -S ./launcher.MPI.sh
   ```
 
-_Note_: you can inspire from `runs/launcher.MPI.sh`
+Repeat the above procedure on a more serious computation: a naive matrix multiplication  using MPI, those source code is located in `src/matrix_mult_mpi.c`
+
+Adapt the launcher script to sustain both executions (MPI helloworld and matrix multiplication)
+
+_Note_: if you are lazy (or late), you can use the provided launcher script `runs/launcher.MPI.sh`.
+
+```bash
+$> cd runs
+$> ./launcher.MPI.sh -h
+NAME
+  ./launcher.MPI.sh -- MPI launcher example
+USAGE
+  ./launcher.MPI.sh {intel | openmpi | mvapich2} [app]
+
+Example:
+  ./launcher.MPI.sh                          run OpenMPI on hello_mpi
+  ./launcher.MPI.sh intel                    run Intel MPI on hello_mpi
+  ./launcher.MPI.sh openmpi matrix_mult_mpi  run OpenMPI on matrix_mult_mpi
+```
+
+Passive jobs examples:
+
+```bash
+############### iris cluster (slurm) ###############
+$> sbatch ./launcher.MPI.sh openmpi matrix_mult_mpi
+$> sbatch ./launcher.MPI.sh intel   matrix_mult_mpi
+
+############### Gaia/chaos clusters (OAR) ###############
+# Arguments of the launcher script to tests
+$> cat > mpi-args.txt <<EOF
+openmpi matrix_mult_mpi
+intel   matrix_mult_mpi
+EOF
+
+$> oarsub -S ./launcher.MPI.sh --array-param-file mpi-args.txt
+[ADMISSION RULE] Modify resource description with type and ibpool constraints
+Simple array job submission is used
+OAR_JOB_ID=4357652
+OAR_JOB_ID=4357653
+OAR_ARRAY_ID=4357652
+```
+
+Check the elapsed time: what do you notice ?
 
 __Useful MPI links__:
 
@@ -458,12 +518,123 @@ __Useful MPI links__:
    - [Step by Step Performance Optimization with Intel® C++ Compiler](https://software.intel.com/en-us/articles/step-by-step-optimizing-with-intel-c-compiler)
    - [Intel(c) C++ Compiler 17.0 Developer Guide and Reference](https://software.intel.com/en-us/intel-cplusplus-compiler-17.0-user-and-reference-guide) (`toolchain/intel/2017a`)
 
+--------------------------------
+## Hybrid OpenMP+MPI Programs ##
+
+Of course, you can have _hybrid_ code mixing MPI and OpenMP primitives.
+
+* You need to compile the code with the `-qopenmp` (with Intel MPI) or `-fopenmp` (for the other MPI suits) flags
+* You need to adapt the `OMP_NUM_THREADS` environment variable accordingly
+* __(Slurm only)__: you need to adapt the value `-c <N>` (or `--cpus-per-task <N>`) to set the number of OpenMP threads you wish to use per MPI process
+
+### Slurm launcher for OpenMP+MPI programs
+
+```bash
+#!/bin/bash -l
+#SBATCH -N 2                  # Use 2 nodes
+#SBATCH --ntasks-per-node=1   # Number of MPI process per node
+#SBATCH -c 4                  # Number of OpenMP threads per MPI process
+#SBATCH --time=0-01:00:00
+#SBATCH -p batch
+#SBATCH --qos=qos-batch
+
+# Use the RESIF build modules of the UL HPC platform
+if [ -f  /etc/profile ]; then
+   .  /etc/profile
+fi
+export OMP_NUM_THREADS=${SLURM_CPUS_PER_TASK}
+
+# Load the intel toolchain and whatever MPI module you need
+module purge
+module load toolchain/intel    # or mpi/{OpenMPI|MVAPICH2}
+# export I_MPI_PMI_LIBRARY=/usr/lib64/libpmi.so
+srun -n $SLURM_NTASKS /path/to/your/hybrid_program
+```
+
+### OAR launcher for OpenMP+MPI programs
+
+```bash
+#!/bin/bash -l
+#OAR -l nodes=2/core=4,walltime=1
+
+# Use the RESIF build modules of the UL HPC platform
+if [ -f  /etc/profile ]; then
+   .  /etc/profile
+fi
+export OMP_NUM_THREADS=$(cat $OAR_NODEFILE | uniq -c | head -n1 | awk '{print $1}')
+NP=$(echo "$(cat $OAR_NODEFILE | wc -l)/$OMP_NUM_THREADS" | bc)
+
+# Load the intel toolchain and whatever MPI module you need
+module purge
+module load toolchain/intel    # or mpi/{OpenMPI|MVAPICH2}
+# ONLY on moonshot node that have no IB card: export I_MPI_FABRICS=tcp
+
+### Prepare the specific machine file
+MACHINEFILE=hostfile_${OAR_JOBID}.txt
+cat $OAR_NODEFILE | uniq > ${MACHINEFILE}
+
+### Intel MPI
+mpirun -hostfile $MACHINEFILE path/to/mpi_program
+### OpenMPI
+mpirun -hostfile $MACHINEFILE -x OMP_NUM_THREADS -x PATH -x LD_LIBRARY_PATH path/to/mpi_program
+### MVAPICH2
+mpirun -launcher ssh -launcher-exec /usr/bin/oarsh -f $MACHINEFILE path/to/mpi_program
+```
+
 ### Hands-on: Hybrid OpenMP+MPI Helloworld
 
+You can find in `src/hello_hybrid.c` the traditional OpenMP+MPI "Helloworld" example.
+
+* Reserve an interactive job to launch 4 OpenMP threads (for 30 minutes)
+  ```bash
+  ############### iris cluster (slurm) ###############
+  (access-iris)$> srun -p interactive -N 2 --ntasks-per-node=1 -c 4 -t 0:30:00 --pty bash
+  $> export OMP_NUM_THREADS=${SLURM_CPUS_PER_TASK}
+
+  ############### gaia/chaos clusters (OAR) ###############
+  (access-{gaia|chaos})$> oarsub -I -l nodes=2/core=4,walltime=0:30:00
+  $> export OMP_NUM_THREADS=$(cat $OAR_NODEFILE | uniq -c | head -n1 | awk '{print $1}')
+  ```
+* Check the set variable `$OMP_NUM_THREADS`. Which value do you expect?
+
+        $> echo $OMP_NUM_THREADS
+
+* Check and compile the source `src/hello_hybrid.c` to generate:
+    - `bin/openmpi_hello_hybrid`  (compiled with the `mpi/OpenMPI` module)
+    - `bin/intel_hello_hybrid`    (compiled over the `intel` toolchain and Intel MPI)
+    - `bin/mvapich2_hello_hybrid` (compiled over the `mpi/MVAPICH2` toolchain)
+  ```bash
+  $> cat src/hello_hybrid.c
+  ######### OpenMPI
+  $> module purge                # Safeguard
+  $> module load mpi/OpenMPI
+  $> mpicc -fopenmp -Wall -O2 src/hello_hybrid.c -o bin/openmpi_hello_hybrid
+
+  ######### Intel MPI
+  $> module purge                # Safeguard
+  $> module load toolchain/intel
+  $> mpiicc -qopenmp -Wall -xhost -O2 src/hello_hybrid.c -o bin/intel_hello_hybrid
+
+  ######### MVAPICH2
+  $> module purge                # Safeguard
+  $> module load mpi/MVAPICH2
+  $> mpicc -f openmp -Wall -O2 src/hello_hybrid.c -o bin/mvapich2_hello_hybrid
+  ```
+* (__only__ if you have trouble to compile): `make hybrid`
+* Execute the generated binaries multiple times. What do you notice?
+* Exit your interactive session (`exit` or `CTRL-D`)
+* Adapt the MPI launcher to allow for batch jobs submissions.
+  ```bash
+  ############### iris cluster (slurm) ###############
+  $> sbatch ./launcher.hybrid.sh
+
+  ############### gaia/chaos clusters (OAR) ###############
+  $> oarsub -S ./launcher.hybrid.sh
+  ```
 
 ### [Hybrid] OpenMP/MPI Code optimization Tips
 
-* Consider changing your memory allocation functions to avoid fragmentation and enable scalable concurrency support
+* Consider changing your memory allocation functions to avoid fragmentation and enable scalable concurrency support (this applies for OpenMP and/or MPI programs)
      - Facebook's [jemalloc](http://jemalloc.net/)
      - Google's [tcmalloc](https://github.com/gperftools/gperftools)
 
