@@ -693,7 +693,6 @@ OAR_JOB_ID=4357844
 OAR_ARRAY_ID=4357843
 ```
 
-
 ----------------------------------------------------------------
 ## Code optimization tips for your OpenMP and/or MPI programs ##
 
@@ -706,8 +705,23 @@ OAR_ARRAY_ID=4357843
          * the `-xhost` option permits to enable  processor-specific optimization.
          * you might wish to consider Interprocedural Optimization (IPO) approach, an automatic, multi-step process that allows the compiler to analyze your code to determine where you can benefit from specific optimizations.
 
+--------------------------------------------------
+## Hands-on (MPI): MVAPICH OSU Micro-Benchmarks ##
 
-## Troubleshooting
+See <http://ulhpc-tutorials.readthedocs.io/en/latest/parallel/mpi/OSU_MicroBenchmarks/>
+
+-----------------------------------
+## Hands-on (MPI): HPL Benchmark ##
+
+See <http://ulhpc-tutorials.readthedocs.io/en/latest/parallel/mpi/HPL/>
+
+--------------------------------------------------
+## Hands-on (OpenMP and/or MPI): HPCG Benchmark ##
+
+See <http://ulhpc-tutorials.readthedocs.io/en/latest/parallel/hybrid/HPCG/>
+
+---------------------
+## Troubleshooting ##
 
 * `srun: error: PMK_KVS_Barrier duplicate request from task ...`
    - you are trying to use `mpirun` (instead of `srun`) from Intel MPI within a SLURM session and receive such error on `mpirun`:  make sure `$I_MPI_PMI_LIBRARY` is **not** set (`unset I_MPI_PMI_LIBRARY``).
