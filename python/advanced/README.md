@@ -121,14 +121,103 @@ If you haven't chosen a password to protect your notebook, please append the tok
 
 ## Create your computing cluster
 
-Firstly enable the extension and then start a cluster locally:
+Jupyter offers you an extension that permits to run your notebook code in parallel on multiple cores. To use this extension you have to enable it in your Jupyter configuration file. Do do so, simply run the following command **on a reserved node**.
 
 ```bash
+# Ensure that your are outside of any virtualenv as you will have to use the
+# system Python to run our ipcluster
+deactivate
+# Be sure that the following packages are installed
+# ipyparallel for parallel execution of your code on several thread and/or nodes
+pip install --user ipyparallel
+# mpi4py for mpi integration in python
+pip install --user mpi4py
 ipcluster nbextension enable --user
-ipcluster start --engines=MPI
 ```
 
-Then run our dedicated notebook (by using the venv kernel) and that's it !
+Our Jupyter ip cluster and engine will run on the iris nodes with the default system Python. You have to ensure that you are outside any virtualenv by running the `deactivate` command before.
+
+The cluster comes with various *engines* that allow you to use different resources.
+
+* **local engine**: will use the available cores of the reserved node
+* **MPI engine**: will use MPI as a backend to connect to the available nodes. Please be sure that you have loaded a version of MPI (openMPI for example) **before** starting the ipcluster engine.
+* **Slurm engine**: will reserve resources via slurm for you and submit jobs for each execution of your code.
+
+### Use MPI engine
+
+You have to ensure that you run our Jupyter notebook on the same node as the ipcluster engine to avoid connectivity issues between the cluster and the notebook. To do we will proceed as this:
+
+```bash
+# Reserve a node with x11 redirection and 4 tasks
+./srunx11 -n 4
+# Begin a screen session
+screen
+# On the first tab, start ipcluster without any module Python or virtualenv
+# we can put the number of workers equal to 4 as we have reserved 4 tasks
+# First load OpenMPI
+module load mpi/OpenMPI
+ipcluster start --engines=MPI -n 4
+# Go on screen second tab
+Ctrl-A Ctrl-C
+# Load your Python version, virtualenv and run your notebook
+module load lang/Python/3.6.0-foss-2017a-bare
+source venv/bin/active
+jupyter [your options]
+```
+
+Now if you access to your notebook, you should see a cluster tab that show an MPI cluster running. You can execute the code of the MPI notebook and see that it is working: Jupyter distribute the execution of your code on different cores by using MPI.
+
+### Use Slurm engine
+
+When using Slurm engine, depending on the number of workers you ask for, your script might be executed on different nodes. It means that the engine should be accessible from those remote hosts.
+
+By default, ipcluster engine runs locally and bind himself on the localhost address (127.0.0.1). We have to change this behavior. The easiest way is to use the option `--ip '*'` that will bind the ipcluster engine on all the available interfaces.
+
+You have to ensure that you run our Jupyter notebook on the same node as the ipcluster engine to avoid connectivity issues between the cluster and the notebook. To do we will proceed as this:
+
+```bash
+# Reserve a node with x11 redirection
+# One task is enough to run the notebook
+./srunx11
+# Run squeue -u $USER to check that you have 1 interactive reservation running
+squeue -u $USER
+# Begin a screen session
+screen
+# On the first tab, start ipcluster without any module Python or virtualenv
+# we can put the number of workers equal to the number we need. ipcluster will
+# do the slurm reservation for us.
+ipcluster start --engines=Slurm -n 56
+# Go on screen second tab
+Ctrl-A Ctrl-C
+# Check that ipcluster engine has made a second reservation for you and that
+# the number of cores reserved is correct
+squeue -u $USER
+# Now you can run your notebook on the same node
+# Load your Python version, virtualenv and run your notebook
+module load lang/Python/3.6.0-foss-2017a-bare
+source venv/bin/active
+jupyter [your options]
+```
+
+Now if you execute the notebook 'Slurm', your code will be parallelize on 2 different nodes using 56 cores!
+
+## Create a profile to store and edit the default options
+
+You can create your own profile to store all the options needed for an experiment. For example to remind ipcluster to reserve a specific number of core or to change/adapt the output of different files.
+
+To create your own profile, type the following command:
+
+```bash
+ipython profile create --parallel --profile=IRIS
+```
+
+It will create several files in your .ipython directory. For example, to always use Slurm as an engine on iris, you can edit the file `$HOME/.ipython/profile_IRIS/ipcluster_config.py`.
+
+Now just specify which profile you want to use when you start the cluster:
+
+```bash
+ipcluster start --profile=IRIS
+```
 
 # Use Celery on Iris
 
