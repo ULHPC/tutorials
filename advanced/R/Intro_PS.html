@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>PS10: introduction to R</title>
+  <title>PS12: introduction to R</title>
 
   <meta charset="utf-8">
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -10,6 +10,7 @@
 
 
 
+  <meta name="date" content="2018-06-13" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -20,8 +21,8 @@
     var SLIDE_CONFIG = {
       // Slide settings
       settings: {
-                title: 'PS10: introduction to R',
-                        subtitle: 'UL HPC School 2017',
+                title: 'PS12: introduction to R',
+                        subtitle: 'HPC School 2018',
                 useBuilds: true,
         usePrettify: true,
         enableSlideAreas: true,
@@ -32,7 +33,7 @@
       // Author information
       presenters: [
             {
-        name:  'Joseph Emeras, Aurélien Ginolhac' ,
+        name:  'Aurélien Ginolhac' ,
         company: '',
         gplus: '',
         twitter: '',
@@ -70,6 +71,7 @@
     }
   </style>
 
+  <link rel="stylesheet" href="lecture.css" type="text/css" />
 
   <link href="Intro_PS_files/ioslides-13.5.1/fonts/fonts.css" rel="stylesheet" />
   <link href="Intro_PS_files/ioslides-13.5.1/theme/css/default.css" rel="stylesheet" />
@@ -80,188 +82,15 @@
   <script src="Intro_PS_files/ioslides-13.5.1/js/hammer.js"></script>
   <script src="Intro_PS_files/ioslides-13.5.1/js/slide-controller.js"></script>
   <script src="Intro_PS_files/ioslides-13.5.1/js/slide-deck.js"></script>
-  <link href="Intro_PS_files/iosp-0.1/css/iosp.css" rel="stylesheet" />
-  <script src="Intro_PS_files/iosp-0.1/js/lang-r.js"></script>
+  <link href="Intro_PS_files/iosp-0.1.1.9000/css/iosp.css" rel="stylesheet" />
+  <script src="Intro_PS_files/iosp-0.1.1.9000/js/lang-r.js"></script>
+  <script src="Intro_PS_files/iosp-0.1.1.9000/js/slide-deck_oride.js"></script>
+  <link href="Intro_PS_files/font-awesome-5.0.12/css/fontawesome-all.min.css" rel="stylesheet" />
   <style type="text/css">
-  /* bg-question colour */
-  
-  .bg-question {
-    background-color: #FFFFFF;
-    color: #000000;
-  }
-  
-  .bg-question a {
-    color: rgb(42, 124, 223);
-    border-bottom: 1px solid rgba(42, 124, 223, 0.5);
-  }
-  
-  .bg-question a:hover {
-    color: #000000 !important;
-  }
-  
-  .box.bg-question {
-    border: 2px solid #008B45;
-  }
-  
-  .box.bg-question > h3:first-child {
-    background-color: #008B45;
-    color: #FFD700;
-  }
-                          
-  blockquote.bg-question::before {
-    color : #008B45;
-  }
-   
-  blockquote.bg-question {
-    color: #000000;
-    border-color: #008B45;
-  }
-  
-  .box.bg-question > h3:first-child > code {
-    background-color: rgba(255, 255, 255, 0.7);
-  }
-  
-  .box.bg-question > h3:first-child > a {
-    color: rgb(200, 240, 250);
-    border-bottom: 1px solid rgba(200, 240, 250, 0.5);
-  }
-  
-  .box.bg-question > h3:first-child > a:hover {
-    color: #FFD700 !important;
-  }
-    
-  slide.bg-question > hgroup > h2 {
-    color: rgba(0, 0, 0, 0.8);
-  }
-  
-  slide.bg-question > hgroup > h3 {
-    color: rgba(0, 0, 0, 0.7);
-  }
-  
-  .bg-question code {
-    background-color: rgba(255, 255, 255, 0.3);
-  }
-  /* bg-uni colour */
-  
-  .bg-uni {
-    background-color: #F2F2F2;
-    color: #000000;
-  }
-  
-  .bg-uni a {
-    color: rgb(42, 124, 223);
-    border-bottom: 1px solid rgba(42, 124, 223, 0.5);
-  }
-  
-  .bg-uni a:hover {
-    color: #000000 !important;
-  }
-  
-  .box.bg-uni {
-    border: 2px solid #5A9FCE;
-  }
-  
-  .box.bg-uni > h3:first-child {
-    background-color: #5A9FCE;
-    color: #BC3330;
-  }
-                          
-  blockquote.bg-uni::before {
-    color : #5A9FCE;
-  }
-   
-  blockquote.bg-uni {
-    color: #000000;
-    border-color: #5A9FCE;
-  }
-  
-  .box.bg-uni > h3:first-child > code {
-    background-color: rgba(255, 255, 255, 0.3);
-  }
-  
-  .box.bg-uni > h3:first-child > a {
-    color: rgb(42, 124, 223);
-    border-bottom: 1px solid rgba(42, 124, 223, 0.5);
-  }
-  
-  .box.bg-uni > h3:first-child > a:hover {
-    color: #BC3330 !important;
-  }
-    
-  slide.bg-uni > hgroup > h2 {
-    color: rgba(0, 0, 0, 0.8);
-  }
-  
-  slide.bg-uni > hgroup > h3 {
-    color: rgba(0, 0, 0, 0.7);
-  }
-  
-  .bg-uni code {
-    background-color: rgba(255, 255, 255, 0.3);
-  }
-  /* bg-orange colour */
-  
-  .bg-orange {
-    background-color: #FFA500;
-    color: #000000;
-  }
-  
-  .bg-orange a {
-    color: rgb(42, 124, 223);
-    border-bottom: 1px solid rgba(42, 124, 223, 0.5);
-  }
-  
-  .bg-orange a:hover {
-    color: #000000 !important;
-  }
-  
-  .box.bg-orange {
-    border: 2px solid #7F5200;
-  }
-  
-  .box.bg-orange > h3:first-child {
-    background-color: #7F5200;
-    color: #FFFFFF;
-  }
-                          
-  blockquote.bg-orange::before {
-    color : #7F5200;
-  }
-   
-  blockquote.bg-orange {
-    color: #000000;
-    border-color: #7F5200;
-  }
-  
-  .box.bg-orange > h3:first-child > code {
-    background-color: rgba(255, 255, 255, 0.7);
-  }
-  
-  .box.bg-orange > h3:first-child > a {
-    color: rgb(200, 240, 250);
-    border-bottom: 1px solid rgba(200, 240, 250, 0.5);
-  }
-  
-  .box.bg-orange > h3:first-child > a:hover {
-    color: #FFFFFF !important;
-  }
-    
-  slide.bg-orange > hgroup > h2 {
-    color: rgba(0, 0, 0, 0.8);
-  }
-  
-  slide.bg-orange > hgroup > h3 {
-    color: rgba(0, 0, 0, 0.7);
-  }
-  
-  .bg-orange code {
-    background-color: rgba(255, 255, 255, 0.3);
-  }
   /* bg-red colour */
   
-  .bg-red {
+  .slide-bg-red {
     background-color: #FFAD99;
-    color: #000000;
   }
   
   .bg-red a {
@@ -274,6 +103,8 @@
   }
   
   .box.bg-red {
+    background-color: #FFAD99;
+    color: #000000;
     border: 2px solid #991F00;
   }
   
@@ -281,12 +112,13 @@
     background-color: #991F00;
     color: #FFFFFF;
   }
-                          
+  
   blockquote.bg-red::before {
     color : #991F00;
   }
-   
+  
   blockquote.bg-red {
+    background-color: #FFAD99;
     color: #000000;
     border-color: #991F00;
   }
@@ -303,23 +135,38 @@
   .box.bg-red > h3:first-child > a:hover {
     color: #FFFFFF !important;
   }
-    
-  slide.bg-red > hgroup > h2 {
+  
+  slide.slide-bg-red > hgroup > h2 {
     color: rgba(0, 0, 0, 0.8);
   }
   
-  slide.bg-red > hgroup > h3 {
+  slide.slide-bg-red > hgroup > h3 {
     color: rgba(0, 0, 0, 0.7);
   }
   
   .bg-red code {
     background-color: rgba(255, 255, 255, 0.3);
   }
+  
+  .bg-red .table-striped > tbody > tr:nth-of-type(odd) {
+    background-color: #f9f9f9;
+  }
+  
+  .bg-red .table-striped > tbody > tr:nth-of-type(odd) {
+    background-color: rgba(0, 0, 0, 0.1);
+  }
+  
+  .bg-red table th {
+    color: rgba(0, 0, 0, 0.7);
+  }
+  
+  .bg-red .table, .bg-red .table th, .bg-red .table td, .table thead tr div {
+    border-color: #991F00 !important;
+  }
   /* bg-green colour */
   
-  .bg-green {
+  .slide-bg-green {
     background-color: #ADEBAD;
-    color: #000000;
   }
   
   .bg-green a {
@@ -332,6 +179,8 @@
   }
   
   .box.bg-green {
+    background-color: #ADEBAD;
+    color: #000000;
     border: 2px solid #1F7A1F;
   }
   
@@ -339,12 +188,13 @@
     background-color: #1F7A1F;
     color: #FFFFFF;
   }
-                          
+  
   blockquote.bg-green::before {
     color : #1F7A1F;
   }
-   
+  
   blockquote.bg-green {
+    background-color: #ADEBAD;
     color: #000000;
     border-color: #1F7A1F;
   }
@@ -361,23 +211,38 @@
   .box.bg-green > h3:first-child > a:hover {
     color: #FFFFFF !important;
   }
-    
-  slide.bg-green > hgroup > h2 {
+  
+  slide.slide-bg-green > hgroup > h2 {
     color: rgba(0, 0, 0, 0.8);
   }
   
-  slide.bg-green > hgroup > h3 {
+  slide.slide-bg-green > hgroup > h3 {
     color: rgba(0, 0, 0, 0.7);
   }
   
   .bg-green code {
     background-color: rgba(255, 255, 255, 0.3);
   }
+  
+  .bg-green .table-striped > tbody > tr:nth-of-type(odd) {
+    background-color: #f9f9f9;
+  }
+  
+  .bg-green .table-striped > tbody > tr:nth-of-type(odd) {
+    background-color: rgba(0, 0, 0, 0.1);
+  }
+  
+  .bg-green table th {
+    color: rgba(0, 0, 0, 0.7);
+  }
+  
+  .bg-green .table, .bg-green .table th, .bg-green .table td, .table thead tr div {
+    border-color: #1F7A1F !important;
+  }
   /* bg-blue colour */
   
-  .bg-blue {
+  .slide-bg-blue {
     background-color: #99D6FF;
-    color: #000000;
   }
   
   .bg-blue a {
@@ -390,6 +255,8 @@
   }
   
   .box.bg-blue {
+    background-color: #99D6FF;
+    color: #000000;
     border: 2px solid #005C99;
   }
   
@@ -397,12 +264,13 @@
     background-color: #005C99;
     color: #FFFFFF;
   }
-                          
+  
   blockquote.bg-blue::before {
     color : #005C99;
   }
-   
+  
   blockquote.bg-blue {
+    background-color: #99D6FF;
     color: #000000;
     border-color: #005C99;
   }
@@ -419,23 +287,38 @@
   .box.bg-blue > h3:first-child > a:hover {
     color: #FFFFFF !important;
   }
-    
-  slide.bg-blue > hgroup > h2 {
+  
+  slide.slide-bg-blue > hgroup > h2 {
     color: rgba(0, 0, 0, 0.8);
   }
   
-  slide.bg-blue > hgroup > h3 {
+  slide.slide-bg-blue > hgroup > h3 {
     color: rgba(0, 0, 0, 0.7);
   }
   
   .bg-blue code {
     background-color: rgba(255, 255, 255, 0.3);
   }
+  
+  .bg-blue .table-striped > tbody > tr:nth-of-type(odd) {
+    background-color: #f9f9f9;
+  }
+  
+  .bg-blue .table-striped > tbody > tr:nth-of-type(odd) {
+    background-color: rgba(0, 0, 0, 0.1);
+  }
+  
+  .bg-blue table th {
+    color: rgba(0, 0, 0, 0.7);
+  }
+  
+  .bg-blue .table, .bg-blue .table th, .bg-blue .table td, .table thead tr div {
+    border-color: #005C99 !important;
+  }
   /* bg-yellow colour */
   
-  .bg-yellow {
+  .slide-bg-yellow {
     background-color: #FFEC8B;
-    color: #000000;
   }
   
   .bg-yellow a {
@@ -448,6 +331,8 @@
   }
   
   .box.bg-yellow {
+    background-color: #FFEC8B;
+    color: #000000;
     border: 2px solid #EEB422;
   }
   
@@ -455,12 +340,13 @@
     background-color: #EEB422;
     color: #000000;
   }
-                          
+  
   blockquote.bg-yellow::before {
     color : #EEB422;
   }
-   
+  
   blockquote.bg-yellow {
+    background-color: #FFEC8B;
     color: #000000;
     border-color: #EEB422;
   }
@@ -477,23 +363,38 @@
   .box.bg-yellow > h3:first-child > a:hover {
     color: #000000 !important;
   }
-    
-  slide.bg-yellow > hgroup > h2 {
+  
+  slide.slide-bg-yellow > hgroup > h2 {
     color: rgba(0, 0, 0, 0.8);
   }
   
-  slide.bg-yellow > hgroup > h3 {
+  slide.slide-bg-yellow > hgroup > h3 {
     color: rgba(0, 0, 0, 0.7);
   }
   
   .bg-yellow code {
     background-color: rgba(255, 255, 255, 0.3);
   }
+  
+  .bg-yellow .table-striped > tbody > tr:nth-of-type(odd) {
+    background-color: #f9f9f9;
+  }
+  
+  .bg-yellow .table-striped > tbody > tr:nth-of-type(odd) {
+    background-color: rgba(0, 0, 0, 0.1);
+  }
+  
+  .bg-yellow table th {
+    color: rgba(0, 0, 0, 0.7);
+  }
+  
+  .bg-yellow .table, .bg-yellow .table th, .bg-yellow .table td, .table thead tr div {
+    border-color: #EEB422 !important;
+  }
   /* bg-gray colour */
   
-  .bg-gray {
+  .slide-bg-gray {
     background-color: #FAFAFA;
-    color: #000000;
   }
   
   .bg-gray a {
@@ -506,6 +407,8 @@
   }
   
   .box.bg-gray {
+    background-color: #FAFAFA;
+    color: #000000;
     border: 2px solid #CECECE;
   }
   
@@ -513,12 +416,13 @@
     background-color: #CECECE;
     color: #000000;
   }
-                          
+  
   blockquote.bg-gray::before {
     color : #CECECE;
   }
-   
+  
   blockquote.bg-gray {
+    background-color: #FAFAFA;
     color: #000000;
     border-color: #CECECE;
   }
@@ -535,23 +439,38 @@
   .box.bg-gray > h3:first-child > a:hover {
     color: #000000 !important;
   }
-    
-  slide.bg-gray > hgroup > h2 {
+  
+  slide.slide-bg-gray > hgroup > h2 {
     color: rgba(0, 0, 0, 0.8);
   }
   
-  slide.bg-gray > hgroup > h3 {
+  slide.slide-bg-gray > hgroup > h3 {
     color: rgba(0, 0, 0, 0.7);
   }
   
   .bg-gray code {
     background-color: rgba(255, 255, 255, 0.3);
   }
+  
+  .bg-gray .table-striped > tbody > tr:nth-of-type(odd) {
+    background-color: #f9f9f9;
+  }
+  
+  .bg-gray .table-striped > tbody > tr:nth-of-type(odd) {
+    background-color: rgba(0, 0, 0, 0.1);
+  }
+  
+  .bg-gray table th {
+    color: rgba(0, 0, 0, 0.7);
+  }
+  
+  .bg-gray .table, .bg-gray .table th, .bg-gray .table td, .table thead tr div {
+    border-color: #CECECE !important;
+  }
   /* bg-white colour */
   
-  .bg-white {
+  .slide-bg-white {
     background-color: #FFFFFF;
-    color: #000000;
   }
   
   .bg-white a {
@@ -564,6 +483,8 @@
   }
   
   .box.bg-white {
+    background-color: #FFFFFF;
+    color: #000000;
     border: 2px solid #CECECE;
   }
   
@@ -571,12 +492,13 @@
     background-color: #CECECE;
     color: #000000;
   }
-                          
+  
   blockquote.bg-white::before {
     color : #CECECE;
   }
-   
+  
   blockquote.bg-white {
+    background-color: #FFFFFF;
     color: #000000;
     border-color: #CECECE;
   }
@@ -593,23 +515,38 @@
   .box.bg-white > h3:first-child > a:hover {
     color: #000000 !important;
   }
-    
-  slide.bg-white > hgroup > h2 {
+  
+  slide.slide-bg-white > hgroup > h2 {
     color: rgba(0, 0, 0, 0.8);
   }
   
-  slide.bg-white > hgroup > h3 {
+  slide.slide-bg-white > hgroup > h3 {
     color: rgba(0, 0, 0, 0.7);
   }
   
   .bg-white code {
     background-color: rgba(255, 255, 255, 0.3);
   }
+  
+  .bg-white .table-striped > tbody > tr:nth-of-type(odd) {
+    background-color: #f9f9f9;
+  }
+  
+  .bg-white .table-striped > tbody > tr:nth-of-type(odd) {
+    background-color: rgba(0, 0, 0, 0.1);
+  }
+  
+  .bg-white table th {
+    color: rgba(0, 0, 0, 0.7);
+  }
+  
+  .bg-white .table, .bg-white .table th, .bg-white .table td, .table thead tr div {
+    border-color: #CECECE !important;
+  }
   /* bg-cobalt colour */
   
-  .bg-cobalt {
+  .slide-bg-cobalt {
     background-color: #2B557A;
-    color: #FFFFFF;
   }
   
   .bg-cobalt a {
@@ -622,6 +559,8 @@
   }
   
   .box.bg-cobalt {
+    background-color: #2B557A;
+    color: #FFFFFF;
     border: 2px solid #002240;
   }
   
@@ -629,12 +568,13 @@
     background-color: #002240;
     color: #FFFFFF;
   }
-                          
+  
   blockquote.bg-cobalt::before {
     color : #002240;
   }
-   
+  
   blockquote.bg-cobalt {
+    background-color: #2B557A;
     color: #FFFFFF;
     border-color: #002240;
   }
@@ -651,17 +591,33 @@
   .box.bg-cobalt > h3:first-child > a:hover {
     color: #FFFFFF !important;
   }
-    
-  slide.bg-cobalt > hgroup > h2 {
+  
+  slide.slide-bg-cobalt > hgroup > h2 {
     color: rgba(255, 255, 255, 0.8);
   }
   
-  slide.bg-cobalt > hgroup > h3 {
+  slide.slide-bg-cobalt > hgroup > h3 {
     color: rgba(255, 255, 255, 0.7);
   }
   
   .bg-cobalt code {
     background-color: rgba(255, 255, 255, 0.7);
+  }
+  
+  .bg-cobalt .table-striped > tbody > tr:nth-of-type(odd) {
+    background-color: #f9f9f9;
+  }
+  
+  .bg-cobalt .table-striped > tbody > tr:nth-of-type(odd) {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+  
+  .bg-cobalt table th {
+    color: rgba(255, 255, 255, 0.7);
+  }
+  
+  .bg-cobalt .table, .bg-cobalt .table th, .bg-cobalt .table td, .table thead tr div {
+    border-color: #002240 !important;
   }
   </style>
 
@@ -678,91 +634,28 @@
       <h1 data-config-title><!-- populated from slide_config.json --></h1>
       <h2 data-config-subtitle><!-- populated from slide_config.json --></h2>
       <p data-config-presenter><!-- populated from slide_config.json --></p>
-            <p style="margin-top: 6px; margin-left: -2px;">13/06/2017</p>
+            <p style="margin-top: 6px; margin-left: -2px;">2018-06-13</p>
           </hgroup>
   </slide>
 
+<slide class=""><hgroup class = 'title-bar'><h2>What is R?</h2></hgroup><article  id="what-is-r" class="smaller vs2">
+
+<div id="section" class = 'icon col col-12'>
+
+<img src='https://hpc.uni.lu/images/logo/logo_hpc-shool2017.png' title=''/>
+
 <div id="unnamed-chunk-1">
-<style type="text/css">
-/* 
-  to add negative vertical space (push content up)
-  should be cleaned/fixed/enhanced in iosp...
-  to be used for example to push a full slide screenshot close to the header (nvs1 or nvs2)
-  https://gist.github.com/koncina/1c89e615654f123e879802e50291a0f6
-*/
+<i class="fab  fa-r-project fa-4x "></i></div>
 
-article.nvs1 {
-  margin-top: -1em !important;
-}
+<p></p>
 
-article.nvs2 {
-  margin-top: -2em !important;
-}
-
-article.nvs3 {
-  margin-top: -3em !important;
-}
-
-/* positive vertical space */
-
-.vs1 {
-  margin-top: 1em !important;
-}
-
-.vs2 {
-  margin-top: 2em !important;
-}
-
-.vs3 {
-  margin-top: 3em !important;
-}
-
-.center-pic img {
-  display: block;
-  margin: auto;
-  margin-top: 5px;
-  margin-bottom:5px;
-}
-
-.small-pic img {
-  max-height: 100px;
-}
-
-.icon img {
-  float: right;
-  margin-left: 20px;
-}
-
-.compact-output pre:not(.lang-r) {
-  line-height: 15px;
-}
-</style></div>
-
-<div id="unnamed-chunk-2">
-<style type="text/css">
-/* Eric Koncina, tweak the gradient */
-slides > slide.backdrop {
-  background: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #ffffff), color-stop(85%, #ffffff), color-stop(100%, #eeeeee));
-  background: -webkit-linear-gradient(#ffffff, #ffffff 85%, #eeeeee);
-  background: -moz-linear-gradient(#ffffff, #ffffff 85%, #eeeeee);
-  background: -o-linear-gradient(#ffffff, #ffffff 85%, #eeeeee);
-  background: linear-gradient(#ffffff, #ffffff 85%, #eeeeee);
-}
-</style></div>
-
-<slide class=''><hgroup class = 'title-bar'><h2>What is R?</h2></hgroup><article  id="what-is-r" class="smaller vs2">
-
-<div class = 'icon col col-12'>
-
-<img src='https://hpc.uni.lu/images/logo/logo_hpc-shool2017.png' title='fig:'/>
-
-<p><strong>R</strong> is shorthand for <a href='https://www.r-project.org' title=''>&quot;GNU R&quot;</a>:</p>
+<p>is shorthand for <a href='https://www.r-project.org' title=''>&ldquo;GNU R&rdquo;</a>:</p>
 
 <ul>
-<li>An interactive programming language derived from <strong>S</strong> (<strong>J. Chambers</strong>, Bell Lab, 1976)</li>
-<li>Appeared in 1993, created by <strong>R. Ihaka</strong> and <strong>R. Gentleman</strong>, University of Auckland</li>
+<li>An <strong>interactive</strong> programming language derived from <strong>S</strong> (<strong>J. Chambers</strong>, Bell Lab, 1976)</li>
+<li>Appeared in 1993, created by <strong>R. Ihaka</strong> and <strong>R. Gentleman</strong>, University of Auckland, NZ</li>
 <li>Focus on data analysis and plotting</li>
-<li><strong>R</strong> is also shorthand for the ecosystem around this language
+<li><i class="fab  fa-r-project "></i> is also shorthand for the ecosystem around this language
 
 <ul>
 <li>Book authors</li>
@@ -773,189 +666,441 @@ slides > slide.backdrop {
 
 <p>Learning to use <strong>R</strong> will make you <strong>more efficient</strong> and <strong>facilitate the use</strong> of advanced data analysis tools</p>
 
-</div></article><div class = "footer"><img src="Intro_PS_files/logo.png"><a href='https://github.com/ULHPC/tutorials/tree/devel/advanced/R'>R practical session</a></div></slide><slide class=''><hgroup class = 'title-bar'><h2>Why use R?</h2></hgroup><article  id="why-use-r" class="smaller vs2">
+</div></article><div class = "footer"><img src="Intro_PS_files/logo.png"><a href='https://github.com/ULHPC/tutorials/tree/devel/advanced/R'>R practical session</a></div></slide><slide class=""><hgroup class = 'title-bar'><h2>Why use R?</h2></hgroup><article  id="why-use-r" class="smaller vs2">
 
 <ul>
-<li>It&#39;s <em>free!</em></li>
+<li>It’s <em>free!</em> and <strong>open-source</strong></li>
 <li>easy to install / maintain</li>
-<li>easy to process big files and analyse huge amounts of data</li>
-<li>integrated data visualization tools, <em>even dynamic</em> via <a href='http://shiny.rstudio.com/' title=''>shiny</a></li>
+<li>multi-platform (Windows, macOS, GNU/Linux)</li>
+<li>can process big files and analyse huge amounts of data (db tools)</li>
+<li>integrated data visualization tools, <em>even dynamic</em></li>
 <li>fast, and even faster with <em>C++</em> integration via <a href='http://dirk.eddelbuettel.com/code/rcpp/Rcpp-attributes.pdf' title=''>Rcpp</a>.</li>
 <li>easy to get help
 
 <ul>
 <li><a href='https://support.rstudio.com/hc/en-us/articles/200552336-Getting-Help-with-R' title=''>huge R community in the web</a></li>
-<li><a href='http://stackoverflow.com/questions/tagged/r' title=''>stackoverflow</a> with a lot of tags like <strong>r</strong>, <strong>tidyverse</strong>, <strong>dplyr</strong>, <strong>ggplot2</strong> etc.</li>
+<li><a href='http://stackoverflow.com/questions/tagged/r' title=''>stackoverflow</a> with a lot of tags like <strong>r</strong>, <strong>ggplot2</strong> etc.</li>
 <li><a href='http://www.r-bloggers.com' title=''>rbloggers</a></li>
 </ul></li>
 </ul>
 
-</article><div class = "footer"><img src="Intro_PS_files/logo.png"><a href='https://github.com/ULHPC/tutorials/tree/devel/advanced/R'>R practical session</a></div></slide><slide class=''><hgroup class = 'title-bar'><h2>Twitter R community</h2></hgroup><article  id="twitter-r-community" class="smaller ">
+</article><div class = "footer"><img src="Intro_PS_files/logo.png"><a href='https://github.com/ULHPC/tutorials/tree/devel/advanced/R'>R practical session</a></div></slide><slide class=""><hgroup class = 'title-bar'><h2>Twitter R community</h2></hgroup><article  id="twitter-r-community" class="smaller ">
 
 <p><a href='https://twitter.com/search?q=%23rstats' title=''><code>#rstats</code></a> on twitter</p>
 
-<div id="unnamed-chunk-3">
-<p><img src="https://raw.githubusercontent.com/LSRU/tv_course/master/lectures/img/01_r_community.jpg" width="95%" /></p></div>
+<img src='https://rworkshop.uni.lu/lectures/img/01/r_community.jpg' title=''/>
 
-</article><div class = "footer"><img src="Intro_PS_files/logo.png"><a href='https://github.com/ULHPC/tutorials/tree/devel/advanced/R'>R practical session</a></div></slide><slide class=''><hgroup class = 'title-bar'><h2>Constant trend</h2></hgroup><article  id="constant-trend" class="smaller vs1">
+</article><div class = "footer"><img src="Intro_PS_files/logo.png"><a href='https://github.com/ULHPC/tutorials/tree/devel/advanced/R'>R practical session</a></div></slide><slide class=""><hgroup class = 'title-bar'><h2>Constant trend</h2></hgroup><article  id="constant-trend" class="smaller vs1">
 
-<div id="unnamed-chunk-4">
-<p><img src="https://raw.githubusercontent.com/LSRU/tv_course/master/lectures/img/01_r_progression.png" width="70%" style="display: block; margin: auto;" /></p></div>
+<div id="section-1" class = 'col col-6'>
 
-<p>From <a href='http://onlinelibrary.wiley.com/doi/10.1002/ecs2.1394/full' title=''>Touchon &amp; McCoy. <em>Ecosphere</em>. 2016</a></p>
+<img src='https://rworkshop.uni.lu/lectures/img/01/r_progression.png' title=''/>
 
-</article><div class = "footer"><img src="Intro_PS_files/logo.png"><a href='https://github.com/ULHPC/tutorials/tree/devel/advanced/R'>R practical session</a></div></slide><slide class=''><hgroup class = 'title-bar'><h2>Packages </h2><h3> +10,000 in Jan 2017</h3></hgroup><article  id="packages-10000-in-jan-2017" class="smaller vs1">
+<p><span class="small">
+Source: <a href='http://onlinelibrary.wiley.com/doi/10.1002/ecs2.1394/full' title=''>Touchon &amp; McCoy. <em>Ecosphere</em>. 2016</a></span></p>
 
-<div class = 'box col col-6 bg-green stretch'><h3><a href='https://cran.r-project.org/web/packages/available_packages_by_date.html' title=''>CRAN</a></h3><div class = 'box-body'>
+</div><div id="section-2" class = 'col col-6'>
+
+<img src='https://rworkshop.uni.lu/lectures/img/01/SO_yearly_progression.png' title=''/>
+
+<p><span class="small">
+Source: <a href='https://stackoverflow.blog/2017/10/10/impressive-growth-r/' title=''>D. Robinson, StackOverflow blog</a></span></p>
+
+</div></article><div class = "footer"><img src="Intro_PS_files/logo.png"><a href='https://github.com/ULHPC/tutorials/tree/devel/advanced/R'>R practical session</a></div></slide><slide class=""><hgroup class = 'title-bar'><h2>Packages </h2><h3> +12,000 in Feb 2018</h3></hgroup><article  id="packages-12000-in-feb-2018" class="smaller ">
+
+<div id="cran" class = 'box col col-4 intro stretch outline'><h3><a href='https://cran.r-project.org/web/packages/available_packages_by_date.html' title=''>CRAN</a></h3><div class = 'box-body'>
 
 <p><strong>reliable</strong>: package is checked during submission process</p>
 
-<p>typical install:</p>
-
-<div id="unnamed-chunk-5" class="col col-12 box chunk bg-cobalt">
-<pre class = 'prettyprint lang-r'>install.packages(&quot;ggplot2&quot;)</pre></div>
-
 <p><a href='https://mran.microsoft.com/packages/' title=''>MRAN</a> for Windows users</p>
 
-</div></div><div class = 'box col col-6 bg-green stretch'><h3><a href='https://www.bioconductor.org/' title=''>bioconductor</a></h3><div class = 'box-body'>
+</div></div><div id="bioconductor" class = 'box col col-4 intro stretch outline'><h3><a href='https://www.bioconductor.org/' title=''>bioconductor</a></h3><div class = 'box-body'>
 
 <p>dedicated to biology. <a href='https://www.bioconductor.org/packages/release/bioc/html/limma.html' title=''>status</a></p>
 
 <p>typical install:</p>
 
-<div id="unnamed-chunk-6" class="col col-12 box chunk bg-cobalt">
+<div id="unnamed-chunk-2" class="col col-12 box chunk bg-cobalt">
 <pre class = 'prettyprint lang-r'>source(&quot;https://bioconductor.org/biocLite.R&quot;)
 biocLite(&quot;limma&quot;)</pre></div>
 
-</div></div>
-
-<div class = 'box col col-6 bg-yellow stretch'><h3><a href='https://github.com/' title=''>GitHub</a></h3><div class = 'box-body'>
+</div></div><div id="github" class = 'box col col-4 warning stretch outline'><h3><a href='https://github.com/' title=''>GitHub</a></h3><div class = 'box-body'>
 
 <p>easy install thanks to <a href='https://github.com/hadley/devtools' title=''>devtools</a>. <a href='https://github.com/hadley/readr' title=''>status</a></p>
 
-<div id="unnamed-chunk-7" class="col col-12 box chunk bg-cobalt">
+<div id="unnamed-chunk-3" class="col col-12 box chunk bg-cobalt">
 <pre class = 'prettyprint lang-r'># install.packages(&quot;devtools&quot;)
 devtools::install_github(&quot;tidyverse/readr&quot;)</pre></div>
 
-</div></div><div class = 'box col col-6 bg-cobalt stretch'><h3>loading packages</h3><div class = 'box-body'>
+<p>could be a security issue</p>
 
-<div id="unnamed-chunk-8" class="col col-12 box chunk bg-cobalt">
-<pre class = 'prettyprint lang-r'>library(ggplot2)</pre></div>
+</div></div><div id="cran-install-from-rstudio" class = 'col col-6'><h3>CRAN install from Rstudio</h3>
 
-</div></div></article><div class = "footer"><img src="Intro_PS_files/logo.png"><a href='https://github.com/ULHPC/tutorials/tree/devel/advanced/R'>R practical session</a></div></slide><slide class=''><hgroup class = 'title-bar'><h2>Getting help</h2></hgroup><article  id="getting-help" class="smaller ">
+<img src='https://rworkshop.uni.lu/lectures/img/01/packages_install_cran.jpg' title=''/>
 
-<div id="unnamed-chunk-9">
-<style type="text/css">
-.to_right > p {
-  text-align: right;
-}
-</style></div>
+</div><div id="github-install-from-rstudio-console" class = 'col col-6'><h3>github install from Rstudio’ console</h3>
 
-<div class = 'col col-8 middle to_right'>
+<img src='https://rworkshop.uni.lu/lectures/img/01/packages_install_devtools.jpg' title=''/>
 
-<p>2 possibilities for manual pages.</p>
+<p>more in the article from <a href='http://blog.revolutionanalytics.com/2017/01/cran-10000.html' title=''>David Smith</a></p>
 
-</div><div class = 'col col-4'>
+</div></article><div class = "footer"><img src="Intro_PS_files/logo.png"><a href='https://github.com/ULHPC/tutorials/tree/devel/advanced/R'>R practical session</a></div></slide><slide class=""><hgroup class = 'title-bar'><h2>R is hard to learn</h2></hgroup><article  id="r-is-hard-to-learn" class="smaller vs1">
 
-<div id="unnamed-chunk-10" class="col col-12 box chunk bg-cobalt">
-<pre class = 'prettyprint lang-r'>?log
-help(log)</pre></div>
+<p><strong>R base</strong> is complex, has a long history and many contributors</p>
+
+<div id="why-r-is-hard-to-learn" class = 'warning box col col-11 outline'><h3>Why R is hard to learn</h3><div class = 'box-body'>
+
+<ul class = 'build'>
+<li>Unhelpful help <code>?print</code></li>
+<li>generic methods <code>print.data.frame</code></li>
+<li>too many commands <code>colnames, names</code></li>
+<li>inconsistent names <code>read.csv, load, readRDS</code></li>
+<li>unstrict syntax, was designed for interactive usage</li>
+<li>too many ways to select variables <code>df$x, df$&quot;x&quot;, df[,&quot;x&quot;], df[[1]]</code></li>
+<li>[…] see <a href='http://r4stats.com/articles/why-r-is-hard-to-learn/' title=''>r4stats’ post</a> for the full list</li>
+<li>the tidyverse curse</li>
+</ul>
+
+</div></div><div id="section-3" class = 'col col-8 offset-4'>
+
+<p><span class="small">
+source: <a href='http://r4stats.com/articles/why-r-is-hard-to-learn/' title=''>Robert A. Muenchen’ blog</a></span></p>
 
 </div>
 
-<p>In <strong>Rstudio</strong>, the help page can be viewed in the bottom right panel</p>
+<div id="section-4" class = 'col col-12 build'>
 
-<div class = 'col col-7'>
+<blockquote class = "advice">
+<p>Navigating the balance between base R and the tidyverse is a challenge to learn <cite> Robert A. Muenchen </p></cite>
+</blockquote>
 
-<img src='https://raw.githubusercontent.com/LSRU/tv_course/master/lectures/img/01_help_RStudio.png' title='fig:'/>
+</div></article><div class = "footer"><img src="Intro_PS_files/logo.png"><a href='https://github.com/ULHPC/tutorials/tree/devel/advanced/R'>R practical session</a></div></slide><slide class=""><hgroup class = 'title-bar'><h2>Tidyverse </h2><h3> creator</h3></hgroup><article  id="tidyverse-creator" class="smaller vs2">
 
-</div></article><div class = "footer"><img src="Intro_PS_files/logo.png"><a href='https://github.com/ULHPC/tutorials/tree/devel/advanced/R'>R practical session</a></div></slide><slide class='segue dark nobackground level1'><hgroup class = 'auto-fadein'><h2>RStudio</h2></hgroup><article  id="rstudio" class="smaller ">
+<div id="section-5" class = 'col col-12 icon'>
 
-<img src='https://raw.githubusercontent.com/LSRU/tv_course/master/lectures/img/01_logo_RStudio.png' title='fig:'/>
+<img src='https://rworkshop.uni.lu/lectures/img/00/logo_tidyverse.png' title=''/>
 
-</article><div class = "footer"><img src="Intro_PS_files/logo.png"><a href='https://github.com/ULHPC/tutorials/tree/devel/advanced/R'>R practical session</a></div></slide><slide class=''><hgroup class = 'title-bar'><h2>Rstudio </h2><h3> What is it?</h3></hgroup><article  id="rstudio-what-is-it" class="smaller build">
+<p>We think the <a href='http://tidyverse.org/' title=''><strong>tidyverse</strong></a> is better, especially for beginners. It is</p>
 
-<p><a href='https://www.rstudio.com/products/RStudio/' title=''>RStudio</a> is an Integrated Development Environment.<br/>It makes working with R much easier</p>
+<ul>
+<li>recent (both an issue and an advantage)</li>
+<li>allows <a href='http://varianceexplained.org/r/teach-tidyverse/' title=''>doing powerful things quickly</a></li>
+<li>unified</li>
+<li>consistent, one way to do things</li>
+<li>give strength to learn base R</li>
+<li>criticisms will come later (yes, many)</li>
+</ul>
 
-<div class = 'box col col-9 bg-green'><h3>Features</h3><div class = 'box-body'>
+</div><div id="hadley-wickham" class = 'box col col-8 intro outline'><h3>Hadley Wickham</h3><div class = 'box-body'>
 
-<ul class = 'build'>
+<p><a href='http://had.co.nz' title=''>Hadley</a>, Chief Scientist at <strong>Rstudio</strong></p>
+
+<ul>
+<li>coined the <em>tidyverse</em> at <a href='https://twitter.com/drob/status/748196885307920385' title=''>userR meeting in 2016</a></li>
+<li>developed and maintains most of the core <em>tidyverse</em> packages</li>
+</ul>
+
+</div></div><div id="section-6" class = 'col col-4'>
+
+<div id="unnamed-chunk-4">
+<p><img src="https://pbs.twimg.com/profile_images/905186381995147264/7zKAG5sY_400x400.jpg" width="75%" /></p></div>
+
+</div></article><div class = "footer"><img src="Intro_PS_files/logo.png"><a href='https://github.com/ULHPC/tutorials/tree/devel/advanced/R'>R practical session</a></div></slide><slide class="segue dark nobackground level1"><hgroup class = 'auto-fadein'><h2>RStudio</h2></hgroup><article  id="rstudio" class="smaller ">
+
+<img src='https://rworkshop.uni.lu/lectures/img/00/logo_rstudio.png' title=''/>
+
+</article><div class = "footer"><img src="Intro_PS_files/logo.png"><a href='https://github.com/ULHPC/tutorials/tree/devel/advanced/R'>R practical session</a></div></slide><slide class=""><hgroup class = 'title-bar'><h2>Rstudio </h2><h3> makes working with R easier</h3></hgroup><article  id="rstudio-makes-working-with-r-easier" class="smaller build">
+
+<p><a href='https://www.rstudio.com/products/RStudio/' title=''>RStudio is an Integrated Development Environment</a> .</p>
+
+<div id="features" class = 'box col col-8 intro outline'><h3>Features</h3><div class = 'box-body'>
+
+<ul>
 <li><em>Console</em> to run <strong>R</strong>, with syntax highlighter</li>
 <li><em>Editor</em> to work with scripts</li>
-<li><em>Viewer</em> for data / plots / website</li>
+<li><em>Viewer</em> for data / plots</li>
 <li><em>Package management</em> (including building)</li>
 <li><em>Autocompletion</em> using <kbd>TAB</kbd></li>
 <li><a href='https://www.rstudio.com/resources/cheatsheets/' title=''><em>Cheatsheets</em></a></li>
 <li><em>Git</em> integration for versioning</li>
+<li><em>Build</em> for website / packages</li>
 <li><em>Inline</em> outputs (&gt;= v1.03)</li>
 <li><em>Keyboard shortcuts</em></li>
 <li><a href='https://rviews.rstudio.com/2017/03/15/why-i-love-r-notebooks/' title=''><em>Notebooks</em></a></li>
 </ul>
 
-</div></div><div class = 'box col col-3 bg-orange'><h3>Warning</h3><div class = 'box-body'>
+</div></div><div id="warning" class = 'box col col-4 warning outline'><h3>Warning</h3><div class = 'box-body'>
 
-<p>Don&#39;t mix up <strong>R</strong> and <strong>RStudio</strong>.<br/><strong>R</strong> needs to be installed first.</p>
+<p>Don’t mix up <strong>R</strong> and <strong>RStudio</strong>.<br/><strong>R</strong> needs to be installed first.</p>
 
-</div></div></article><div class = "footer"><img src="Intro_PS_files/logo.png"><a href='https://github.com/ULHPC/tutorials/tree/devel/advanced/R'>R practical session</a></div></slide><slide class=''><hgroup class = 'title-bar'><h2>Rstudio </h2><h3> The 4 panels layout</h3></hgroup><article  id="rstudio-the-4-panels-layout" class="smaller ">
+</div></div></article><div class = "footer"><img src="Intro_PS_files/logo.png"><a href='https://github.com/ULHPC/tutorials/tree/devel/advanced/R'>R practical session</a></div></slide><slide class=""><hgroup class = 'title-bar'><h2>Rstudio </h2><h3> The 4 panels layout</h3></hgroup><article  id="rstudio-the-4-panels-layout" class="smaller center-img vs1">
 
-<img src='https://raw.githubusercontent.com/LSRU/tv_course/master/lectures//img/01_rstudio_layout.jpg' title='fig:'/>
+<img src='https://rworkshop.uni.lu/lectures/img/01/rstudio_layout.jpg' title=''/>
 
-</article><div class = "footer"><img src="Intro_PS_files/logo.png"><a href='https://github.com/ULHPC/tutorials/tree/devel/advanced/R'>R practical session</a></div></slide><slide class=''><hgroup class = 'title-bar'><h2>Useful Functions</h2></hgroup><article  id="useful-functions" class="smaller vs2">
+</article><div class = "footer"><img src="Intro_PS_files/logo.png"><a href='https://github.com/ULHPC/tutorials/tree/devel/advanced/R'>R practical session</a></div></slide><slide class=""><hgroup class = 'title-bar'><h2>Four panels</h2></hgroup><article  id="four-panels" class="smaller vs2">
+
+<div id="scripting" class = 'box col col-6 practical stretch outline'><h3>scripting</h3><div class = 'box-body'>
 
 <ul>
-<li>List all objects in memory: <code>ls()</code></li>
-<li>Save an object: <code>save(obj, file)</code></li>
-<li>Load an object: <code>load(file)</code></li>
-<li>Set working directory: <code>setwd(dir)</code></li>
+<li>could be your main window</li>
+<li>should be a <strong>Rmarkdown</strong> doc</li>
+<li>tabs are great</li>
 </ul>
 
-<p>For the last one, using <strong>Rstudio project</strong> is recommended together with <strong>Rmarkdown</strong> files</p>
+</div></div><div id="environment" class = 'box col col-6 intro stretch outline'><h3>Environment</h3><div class = 'box-body'>
 
-</article><div class = "footer"><img src="Intro_PS_files/logo.png"><a href='https://github.com/ULHPC/tutorials/tree/devel/advanced/R'>R practical session</a></div></slide><slide class=''><hgroup class = 'title-bar'><h2>Data types</h2></hgroup><article  id="data-types" class="smaller vs1">
+<ul>
+<li>Environment, display loaded objects and their <code>str()</code></li>
+<li>History is useless IMO</li>
+<li>nice <code>git</code> integration</li>
+<li>database <strong>connections</strong> interface</li>
+</ul>
 
-<table class = 'rmdtable'>
-<tr class="header">
+</div></div><div id="console" class = 'box col col-6 code stretch outline'><h3>Console</h3><div class = 'box-body'>
+
+<ul>
+<li>could be hidden with <strong>inline</strong> outputs</li>
+<li>embed a nice <code>terminal</code> tab</li>
+<li><code>Rmarkdown</code> logs</li>
+</ul>
+
+</div></div><div id="files-plots-help" class = 'box col col-6 intro stretch outline'><h3>Files / Plots / Help</h3><div class = 'box-body'>
+
+<ul>
+<li>necessary package management tab</li>
+<li>unnecessary plots tabs with <strong>inline</strong> outputs</li>
+<li>help tab</li>
+</ul>
+
+</div></div></article><div class = "footer"><img src="Intro_PS_files/logo.png"><a href='https://github.com/ULHPC/tutorials/tree/devel/advanced/R'>R practical session</a></div></slide><slide class=""><hgroup class = 'title-bar'><h2>For reproducibility </h2><h3> options to activate / deactivate</h3></hgroup><article  id="for-reproducibility-options-to-activate-deactivate" class="smaller ">
+
+<div id="section-7" class = 'col col-6'>
+
+<img src='https://rworkshop.uni.lu/lectures/img/01/rstudio_settings.png' title=''/>
+
+</div><div id="rmlist-ls-is-not-recommended" class = 'box col col-6 advice middle outline'><h3><code>rm(list = ls())</code> is not recommended</h3><div class = 'box-body'>
+
+<ul>
+<li>does <strong>not</strong> make a fresh R session
+
+<ul>
+<li><code>library()</code> calls remain</li>
+<li>working directory not set!</li>
+<li>modified functions, <a href='https://github.com/romainfrancois/evil.R' title=''>evil</a> <code>==</code> &lt;- <code>!=</code></li>
+</ul></li>
+<li>knitting <code>Rmarkdown</code> files solves it</li>
+</ul>
+
+<p><span class="small">
+<a href='https://www.tidyverse.org/articles/2017/12/workflow-vs-script/' title=''>source: Jenny Bryan article</a></span></p>
+
+</div></div></article><div class = "footer"><img src="Intro_PS_files/logo.png"><a href='https://github.com/ULHPC/tutorials/tree/devel/advanced/R'>R practical session</a></div></slide><slide class=""><hgroup class = 'title-bar'><h2>Code diagnostics </h2><h3> highly recommended</h3></hgroup><article  id="code-diagnostics-highly-recommended" class="smaller ">
+
+<p>using <code>Global Options -&gt; Code -&gt; Diagnostics</code> editing pane:</p>
+
+<div id="section-8" class = 'col col-6'>
+
+<p><img src='https://rworkshop.uni.lu/lectures/img/01/diag_RStudio.png' title=''/> <span class="small">
+source: <a href='https://support.rstudio.com/hc/en-us/articles/205753617-Code-Diagnostics?version=1.1.133&amp;mode=desktop' title=''>Kevin Ushey’ article</a></span></p>
+
+</div><div id="section-9" class = 'col col-6'>
+
+<ul>
+<li>check argument calls</li>
+</ul>
+
+<img src='https://support.rstudio.com/hc/en-us/article_attachments/201712378/Screen_Shot_2015-04-30_at_2.01.17_PM.png' title=''/>
+
+<ul>
+<li>missing arguments</li>
+</ul>
+
+<img src='https://support.rstudio.com/hc/en-us/article_attachments/201712398/Screen_Shot_2015-04-30_at_2.03.06_PM.png' title=''/>
+
+<ul>
+<li>variable definitions</li>
+</ul>
+
+<img src='https://support.rstudio.com/hc/en-us/article_attachments/201712428/Screen_Shot_2015-04-30_at_2.06.54_PM.png' title=''/>
+
+<ul>
+<li>unused variables &amp; style recommendations</li>
+</ul>
+
+</div></article><div class = "footer"><img src="Intro_PS_files/logo.png"><a href='https://github.com/ULHPC/tutorials/tree/devel/advanced/R'>R practical session</a></div></slide><slide class="segue dark nobackground level1"><hgroup class = 'auto-fadein'><h2>Data types and structures </h2><h3> R base</h3></hgroup><article  id="data-types-and-structures-r-base" class="smaller ">
+
+</article><div class = "footer"><img src="Intro_PS_files/logo.png"><a href='https://github.com/ULHPC/tutorials/tree/devel/advanced/R'>R practical session</a></div></slide><slide class=""><hgroup class = 'title-bar'><h2>Necessary R base</h2></hgroup><article  id="necessary-r-base" class="smaller build">
+
+<div id="we-could-let-base-down-but-the-tidyverse-is-wrapping-around-it" class = 'intro box col col-12 outline show'><h3>We could let <strong>base</strong> down, but the <strong>tidyverse</strong> is wrapping around it</h3><div class = 'box-body'>
+
+<p>Some functions need to be known. And in R, everything is a function.</p>
+
+</div></div><div id="advices-from-david-robinson" class = 'box col col-6 icon-small stretch advice outline'><h3>Advices from David Robinson</h3><div class = 'box-body'>
+
+<img src='img/01/drobinson2.png' title=''/>
+
+<ul>
+<li><a href='http://varianceexplained.org/r/teach-tidyverse/' title=''>Teach tidyverse to beginners</a>
+
+<ul>
+<li>base: summary functions</li>
+<li>vectorized operations</li>
+<li>stat modeling</li>
+<li>matrices</li>
+</ul></li>
+<li><a href='http://varianceexplained.org/r/teach-hard-way/' title=''>Don’t teach the hard way</a></li>
+</ul>
+
+<blockquote class = "warning">
+<p><em>I teach them X just to show them how much easier Y is</em> </p>
+</blockquote>
+
+<blockquote>
+<p>teaching programming is hard, don’t make it harder</p>
+</blockquote>
+
+</div></div><div id="section-10" class = 'col col-6'>
+
+<blockquote class="twitter-tweet" data-lang="fr">
+
+<p lang="en" dir="ltr">
+
+When you start writing a loop then turn it into dplyr<a href="https://twitter.com/hashtag/rstats?src=hash&amp;ref_src=twsrc%5Etfw">#rstats</a> <a href="https://t.co/M0gXUXuYCP">pic.twitter.com/M0gXUXuYCP</a>
+
+</p>
+
+— David Robinson (<span class="cite">@drob</span>) <a href="https://twitter.com/drob/status/701790246111825925?ref_src=twsrc%5Etfw">22 Feb 2016</a>
+
+</blockquote>
+
+<script async src="http://platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+</div></article><div class = "footer"><img src="Intro_PS_files/logo.png"><a href='https://github.com/ULHPC/tutorials/tree/devel/advanced/R'>R practical session</a></div></slide><slide class=""><hgroup class = 'title-bar'><h2>Getting started</h2></hgroup><article  id="getting-started" class="smaller vs3">
+
+<p>Let’s get ready to use <strong>R</strong> and <strong>RStudio</strong></p>
+
+<div id="do-the-following" class = 'practical box col col-8 offset-2'><h3>Do the following</h3><div class = 'box-body'>
+
+<ul>
+<li>Open up RStudio</li>
+<li>Maximize the RStudio window</li>
+<li>Click the Console pane, at the prompt (<code>&gt;</code>) type in <code>3 + 2</code> and hit enter</li>
+</ul>
+
+<div id="unnamed-chunk-5" class="col col-12 box chunk bg-cobalt">
+<pre class = 'prettyprint lang-r'>&gt; 3 + 2</pre></div>
+
+</div></div></article><div class = "footer"><img src="Intro_PS_files/logo.png"><a href='https://github.com/ULHPC/tutorials/tree/devel/advanced/R'>R practical session</a></div></slide><slide class=""><hgroup class = 'title-bar'><h2>4 main types </h2><h3> <code>mode()</code></h3></hgroup><article  id="main-types-mode" class="smaller vs1 build">
+
+<div id="section-11" class = 'col col-6 compact-table show'>
+
+<table class = 'table'>
+<thead><tr>
 <th align="left">Type</th>
 <th align="left">Example</th>
-</tr>
-<tr class="odd">
+</tr></thead>
+<tr>
 <td align="left">numeric</td>
 <td align="left">integer (2), double (2.34)</td>
 </tr>
-<tr class="even">
-<td align="left">string</td>
-<td align="left">&quot;tidyverse !&quot;</td>
+<tr>
+<td align="left">character (strings)</td>
+<td align="left">&ldquo;tidyverse!&rdquo;</td>
 </tr>
-<tr class="odd">
+<tr>
 <td align="left">boolean</td>
 <td align="left">TRUE / FALSE</td>
 </tr>
-<tr class="even">
+<tr>
 <td align="left">complex</td>
 <td align="left">2+0i</td>
 </tr>
 </table>
 
-<h3>Special cases</h3>
+</div><div id="section-12" class = 'col col-6'>
 
-<div id="unnamed-chunk-11" class="col col-12 box chunk bg-cobalt">
+<div id="unnamed-chunk-6" class="col col-12 box chunk bg-cobalt">
+<h3>
+
+in the console
+
+</h3>
+
+<div class="col col-6 r-source">
+<pre class = 'prettyprint lang-r'>2L</pre></div>
+
+<div class="col col-6 r-output">
+<pre >[1] 2</pre></div>
+
+<div class="col col-6 r-source">
+<pre class = 'prettyprint lang-r'>typeof(2L)</pre></div>
+
+<div class="col col-6 r-output">
+<pre >[1] &quot;integer&quot;</pre></div>
+
+<div class="col col-6 r-source">
+<pre class = 'prettyprint lang-r'>mode(2L)</pre></div>
+
+<div class="col col-6 r-output">
+<pre >[1] &quot;numeric&quot;</pre></div>
+
+<div class="col col-6 r-source">
+<pre class = 'prettyprint lang-r'>2.34</pre></div>
+
+<div class="col col-6 r-output">
+<pre >[1] 2.34</pre></div>
+
+<div class="col col-6 r-source">
+<pre class = 'prettyprint lang-r'>typeof(2.34)</pre></div>
+
+<div class="col col-6 r-output">
+<pre >[1] &quot;double&quot;</pre></div>
+
+<div class="col col-6 r-source">
+<pre class = 'prettyprint lang-r'>&quot;tidyverse!&quot;</pre></div>
+
+<div class="col col-6 r-output">
+<pre >[1] &quot;tidyverse!&quot;</pre></div>
+
+<div class="col col-6 r-source">
+<pre class = 'prettyprint lang-r'>TRUE</pre></div>
+
+<div class="col col-6 r-output">
+<pre >[1] TRUE</pre></div>
+
+<div class="col col-6 r-source">
+<pre class = 'prettyprint lang-r'>2+0i</pre></div>
+
+<div class="col col-6 r-output">
+<pre >[1] 2+0i</pre></div></div>
+
+</div><div id="section-13" class = 'col col-6 offset-3'>
+
+<div id="unnamed-chunk-7" class="col col-12 box chunk bg-cobalt">
+<h3>
+
+Special case
+
+</h3>
+
 <pre class = 'prettyprint lang-r'>NA   # not available, missing data
 NA_real_
 NA_integer_
 NA_character_
 NA_complex_
 NULL # empty
--Inf/Inf # infinite values</pre></div>
+-Inf/Inf # infinite values
+NaN # Not a Number</pre></div>
 
-</article><div class = "footer"><img src="Intro_PS_files/logo.png"><a href='https://github.com/ULHPC/tutorials/tree/devel/advanced/R'>R practical session</a></div></slide><slide class=''><hgroup class = 'title-bar'><h2>Data Structures</h2></hgroup><article  id="data-structures" class="smaller nvs1">
+</div></article><div class = "footer"><img src="Intro_PS_files/logo.png"><a href='https://github.com/ULHPC/tutorials/tree/devel/advanced/R'>R practical session</a></div></slide><slide class=""><hgroup class = 'title-bar'><h2>Structures</h2></hgroup><article  id="structures" class="smaller vs1 build">
 
-<div class = 'col col-5 box stretch'><h3>Vectors</h3><div class = 'box-body'>
+<div id="vectors" class = 'box col col-5 stretch intro outline show'><h3>Vectors</h3><div class = 'box-body'>
 
 <p><code>c()</code> is the function for <strong>concatenate</strong></p>
 
-</div></div><div class = 'col col-7 box bg-cobalt stretch'><div class = 'box-body'>
+</div></div><div id="section-14" class = 'col col-7 middle'>
 
-<div id="unnamed-chunk-12" class="col col-12 box chunk bg-cobalt">
+<div id="unnamed-chunk-8" class="col col-12 box chunk bg-cobalt">
 <div class="col col-6 r-source">
 <pre class = 'prettyprint lang-r'>4
 c(43, 5.6, 2.90)</pre></div>
@@ -964,13 +1109,13 @@ c(43, 5.6, 2.90)</pre></div>
 <pre >[1] 4
 [1] 43.0  5.6  2.9</pre></div></div>
 
-</div></div><div class = 'col col-5 box stretch'><h3>Factors</h3><div class = 'box-body'>
+</div><div id="factors" class = 'box col col-4 stretch intro outline'><h3>Factors</h3><div class = 'box-body'>
 
 <p>convert strings to factors, <code>levels</code> is the dictionary</p>
 
-</div></div><div class = 'box col col-7 bg-cobalt stretch'><div class = 'box-body'>
+</div></div><div id="section-15" class = 'col col-8 stretch'>
 
-<div id="unnamed-chunk-13" class="col col-12 box chunk bg-cobalt">
+<div id="unnamed-chunk-9" class="col col-12 box chunk bg-cobalt">
 <div class="col col-6 r-source">
 <pre class = 'prettyprint lang-r'>factor(c(&quot;AA&quot;, &quot;BB&quot;, &quot;AA&quot;, &quot;CC&quot;))</pre></div>
 
@@ -978,36 +1123,22 @@ c(43, 5.6, 2.90)</pre></div>
 <pre >[1] AA BB AA CC
 Levels: AA BB CC</pre></div></div>
 
-</div></div><div class = 'col col-5 box stretch'><h3>Matrix (2D), Arrays (\(\geq\) 3D)</h3><div class = 'box-body'>
+</div><div id="lists" class = 'box col col-4 intro outline'><h3>Lists</h3><div class = 'box-body'>
 
-<p>won&#39;t dig into those</p>
+<p>very important as it can contain anything</p>
 
-</div></div><div class = 'col col-7 box bg-cobalt stretch'><div class = 'box-body'>
+</div></div><div id="section-16" class = 'col col-8 compact-output'>
 
-<div id="unnamed-chunk-14" class="col col-12 box chunk bg-cobalt">
+<div id="unnamed-chunk-10" class="col col-12 box chunk bg-cobalt">
 <div class="col col-6 r-source">
-<pre class = 'prettyprint lang-r'>matrix(1:4, nrow = 2)</pre></div>
-
-<div class="col col-6 r-output">
-<pre >     [,1] [,2]
-[1,]    1    3
-[2,]    2    4</pre></div></div>
-
-</div></div><div class = 'col col-4 box bg-green'><h3>Lists</h3><div class = 'box-body'>
-
-<p>very important as can contain anything</p>
-
-</div></div><div class = 'col col-8 box bg-cobalt compact-output'><div class = 'box-body'>
-
-<div id="unnamed-chunk-15" class="col col-12 box chunk bg-cobalt">
-<div class="col col-6 r-source">
-<pre class = 'prettyprint lang-r'>list(f = c(&quot;rstudio&quot;, &quot;rocks&quot;),
+<pre class = 'prettyprint lang-r'>list(f = factor(c(&quot;AA&quot;, &quot;AA&quot;)),
      v = c(43, 5.6, 2.90),
-     s = 4)</pre></div>
+     s = 4L)</pre></div>
 
 <div class="col col-6 r-output">
 <pre >$f
-[1] &quot;rstudio&quot; &quot;rocks&quot;  
+[1] AA AA
+Levels: AA
 
 $v
 [1] 43.0  5.6  2.9
@@ -1015,457 +1146,232 @@ $v
 $s
 [1] 4</pre></div></div>
 
-</div></div></article><div class = "footer"><img src="Intro_PS_files/logo.png"><a href='https://github.com/ULHPC/tutorials/tree/devel/advanced/R'>R practical session</a></div></slide><slide class=''><hgroup class = 'title-bar'><h2>Data frames are special lists</h2></hgroup><article  id="data-frames-are-special-lists" class="smaller nvs1 build">
+</div></article><div class = "footer"><img src="Intro_PS_files/logo.png"><a href='https://github.com/ULHPC/tutorials/tree/devel/advanced/R'>R practical session</a></div></slide><slide class=""><hgroup class = 'title-bar'><h2>Data frames are special lists</h2></hgroup><article  id="data-frames-are-special-lists" class="smaller ">
 
-<div class = 'box col col-12 bg-green'><h3><code>data.frame</code></h3><div class = 'box-body'>
+<div id="data.frame" class = 'box col col-5 intro outline stretch'><h3><code>data.frame</code></h3><div class = 'box-body'>
 
 <p>same as list <strong>but</strong> where all objects <em>must</em> have the <strong>same</strong> length</p>
 
-</div></div><div class = 'box col col-12 bg-cobalt stretch'><h3>Example</h3><div class = 'box-body'>
+</div></div><div id="section-17" class = 'col col-7 stretch'>
 
-<div id="unnamed-chunk-17" class="col col-12 box chunk bg-cobalt">
-<div class="col col-6 r-source">
-<pre class = 'prettyprint lang-r'>data.frame(f = factor(c(&quot;AA&quot;, &quot;AA&quot;, &quot;BB&quot;)),
-           v = c(43, 5.6, 2.90),
-           s = rep(4, 3))</pre></div>
+<div id="unnamed-chunk-11" class="col col-12 box chunk bg-cobalt">
+<h3>
 
-<div class="col col-6 r-output">
+Example, 3 elements of same size
+
+</h3>
+
+<div class="col col-8 r-source">
+<pre class = 'prettyprint lang-r'>data.frame(
+  f = factor(c(&quot;AA&quot;, &quot;AA&quot;, &quot;BB&quot;)),
+  v = c(43, 5.6, 2.90),
+  s = rep(4, 3))</pre></div>
+
+<div class="col col-4 r-output">
 <pre >   f    v s
 1 AA 43.0 4
 2 AA  5.6 4
 3 BB  2.9 4</pre></div></div>
 
-</div></div><div class = 'box col col-5 bg-orange'><h3>colum are atomic vectors</h3><div class = 'box-body'>
+</div><div id="example-missing-one-element-in-v" class = 'box col col-7 bg-red offset-5'><h3>Example, missing one element in <code>v</code></h3><div class = 'box-body'>
+
+<div id="unnamed-chunk-12" class="col col-12 box chunk bg-cobalt">
+<pre class = 'prettyprint lang-r'>data.frame(
+  f = factor(c(&quot;AA&quot;, &quot;AA&quot;, &quot;BB&quot;)),
+  v = c(43, 5.6),
+  s = rep(4, 3))</pre>
+
+<pre >Error in data.frame(f = factor(c(&quot;AA&quot;, &quot;AA&quot;, &quot;BB&quot;)), v = c(43, 5.6), s = rep(4, : arguments imply differing number of rows: 3, 2</pre></div>
+
+</div></div></article><div class = "footer"><img src="Intro_PS_files/logo.png"><a href='https://github.com/ULHPC/tutorials/tree/devel/advanced/R'>R practical session</a></div></slide><slide class=""><hgroup class = 'title-bar'><h2>Concatenate atomic elements </h2><h3> i.e build a vector</h3></hgroup><article  id="concatenate-atomic-elements-i.e-build-a-vector" class="smaller vs1">
+
+<div id="collection-of-simple-things" class = 'box col col-6 intro outline'><h3>collection of simple <em>things</em></h3><div class = 'box-body'>
+
+<ul>
+<li><em>things</em> are the smallest elements: <strong>atomic</strong></li>
+<li><strong>must</strong> be of same <strong>mode</strong>: automatic coercion</li>
+<li>indexed, from <strong>1</strong> to <code>length(vector)</code></li>
+<li>created with the <strong><code>c()</code></strong> function</li>
+</ul>
+
+<div id="unnamed-chunk-13" class="col col-12 box chunk bg-cobalt">
+<pre class = 'prettyprint lang-r'>c(2, TRUE, &quot;a string&quot;)</pre>
+
+<pre >[1] &quot;2&quot;        &quot;TRUE&quot;     &quot;a string&quot;</pre></div>
+
+</div></div><div id="assignment-operator-create-object" class = 'box col col-6 intro outline'><h3>assignment operator, create object</h3><div class = 'box-body'>
+
+<p>operator is <code>&lt;-</code>, associate a <em>name</em> to an object</p>
+
+<div id="unnamed-chunk-14" class="col col-12 box chunk bg-cobalt">
+<pre class = 'prettyprint lang-r'>my_vec &lt;- c(3, 4, 1:3)
+my_vec</pre>
+
+<pre >[1] 3 4 1 2 3</pre></div>
+
+</div></div><div id="tip" class = 'box col col-8 offset-2 advice outline'><h3>Tip</h3><div class = 'box-body'>
+
+<p>Rstudio has the built-in shortcut <kbd>Alt</kbd>+<kbd>-</kbd> for <code>&lt;-</code></p>
+
+</div></div></article><div class = "footer"><img src="Intro_PS_files/logo.png"><a href='https://github.com/ULHPC/tutorials/tree/devel/advanced/R'>R practical session</a></div></slide><slide class=""><hgroup class = 'title-bar'><h2></h2><h3> hierarchy</h3></hgroup><article  id="hierarchy" class="smaller ">
+
+<div id="section-18" class = 'box col col-8'><div class = 'box-body'>
+
+<img src='img/01/data-structures-overview.png' title=''/>
+
+<p><span class="small">
+source: <strong>H. Wickham</strong> - <a href='http://r4ds.had.co.nz/vectors.html' title=''><em>R</em> for data science</a>, <a href='http://creativecommons.org/licenses/by-nc-nd/3.0/us/' title=''>licence CC</a></span></p>
+
+</div></div><div id="in-console" class = 'box col col-4 middle code outline'><h3>in console</h3><div class = 'box-body'>
+
+<div id="unnamed-chunk-15" class="col col-12 box chunk bg-cobalt">
+<pre class = 'prettyprint lang-r'>is.vector(c(&quot;a&quot;, &quot;c&quot;))</pre>
+
+<pre >[1] TRUE</pre>
+
+<pre class = 'prettyprint lang-r'>mode(c(&quot;a&quot;, &quot;c&quot;))</pre>
+
+<pre >[1] &quot;character&quot;</pre>
+
+<pre class = 'prettyprint lang-r'>is.vector(list(a = 1))</pre>
+
+<pre >[1] TRUE</pre>
+
+<pre class = 'prettyprint lang-r'>is.atomic(list(a = 1))</pre>
+
+<pre >[1] FALSE</pre>
+
+<pre class = 'prettyprint lang-r'>is.data.frame(list(a = 1))</pre>
+
+<pre >[1] FALSE</pre></div>
+
+</div></div></article><div class = "footer"><img src="Intro_PS_files/logo.png"><a href='https://github.com/ULHPC/tutorials/tree/devel/advanced/R'>R practical session</a></div></slide><slide class=""><hgroup class = 'title-bar'><h2>Vectors </h2><h3> subsetting</h3></hgroup><article  id="vectors-subsetting" class="smaller build">
+
+<div id="important" class = 'box col col-8 offset-2 warning show outline'><h3>important</h3><div class = 'box-body'>
+
+<p>Unlike <strong>python</strong> or <strong>Perl</strong>, vectors use <strong>1-based</strong> index!!</p>
+
+</div></div>
+
+<div id="operator" class = 'box col col-6 practical'><h3><code>:</code> operator</h3><div class = 'box-body'>
+
+<p>generate integer sequence</p>
+
+<div id="unnamed-chunk-16" class="col col-12 box chunk bg-cobalt">
+<pre class = 'prettyprint lang-r'>3:10</pre>
+
+<pre >[1]  3  4  5  6  7  8  9 10</pre></div>
+
+</div></div><div id="how-to-extract-1-element" class = 'box col col-6 practical'><h3>How to extract &gt; 1 element</h3><div class = 'box-body'>
+
+<p>select elements from position <strong>3</strong> to <strong>10</strong>:</p>
+
+<div id="unnamed-chunk-17" class="col col-12 box chunk bg-cobalt">
+<pre class = 'prettyprint lang-r'>LETTERS[3:10]</pre>
+
+<pre >[1] &quot;C&quot; &quot;D&quot; &quot;E&quot; &quot;F&quot; &quot;G&quot; &quot;H&quot; &quot;I&quot; &quot;J&quot;</pre></div>
+
+</div></div><div id="break-in-sequence" class = 'box col col-6 practical'><h3>break in sequence</h3><div class = 'box-body'>
 
 <div id="unnamed-chunk-18" class="col col-12 box chunk bg-cobalt">
-<pre class = 'prettyprint lang-r'>av &lt;- c(2.5, 5.1)
-av</pre>
+<pre class = 'prettyprint lang-r'>LETTERS[c(2:5, 7)]</pre>
 
-<pre >[1] 2.5 5.1</pre>
+<pre >[1] &quot;B&quot; &quot;C&quot; &quot;D&quot; &quot;E&quot; &quot;G&quot;</pre></div>
 
-<pre class = 'prettyprint lang-r'>c(av, &quot;char&quot;)</pre>
-
-<pre >[1] &quot;2.5&quot;  &quot;5.1&quot;  &quot;char&quot;</pre></div>
-
-</div></div><div class = 'box col col-7 bg-yellow compact-output'><h3>ok to mix in list-column, <code>tibbles</code> to avoid <code>I()</code></h3><div class = 'box-body'>
+</div></div><div id="negative-selection" class = 'box col col-6 practical'><h3>negative selection</h3><div class = 'box-body'>
 
 <div id="unnamed-chunk-19" class="col col-12 box chunk bg-cobalt">
-<pre class = 'prettyprint lang-r'>tibble( f = c(&quot;AA&quot;, &quot;AA&quot;, &quot;BB&quot;),
-        v = c(43, 5.6, 2.90),
-        l = list(av = c(2.5, 5.1),
-                 lg = c(TRUE, FALSE),
-                 st = &quot;char&quot;))</pre>
+<pre class = 'prettyprint lang-r'>LETTERS[-c(2:21)]</pre>
 
-<pre ># A tibble: 3 x 3
-      f     v         l
-  &lt;chr&gt; &lt;dbl&gt;    &lt;list&gt;
-1    AA  43.0 &lt;dbl [2]&gt;
-2    AA   5.6 &lt;lgl [2]&gt;
-3    BB   2.9 &lt;chr [1]&gt;</pre></div>
+<pre >[1] &quot;A&quot; &quot;V&quot; &quot;W&quot; &quot;X&quot; &quot;Y&quot; &quot;Z&quot;</pre></div>
 
-</div></div></article><div class = "footer"><img src="Intro_PS_files/logo.png"><a href='https://github.com/ULHPC/tutorials/tree/devel/advanced/R'>R practical session</a></div></slide><slide class=''><hgroup class = 'title-bar'><h2>Data import </h2><h3> text files</h3></hgroup><article  id="data-import-text-files" class="smaller build nvs1">
+</div></div></article><div class = "footer"><img src="Intro_PS_files/logo.png"><a href='https://github.com/ULHPC/tutorials/tree/devel/advanced/R'>R practical session</a></div></slide><slide class=""><hgroup class = 'title-bar'><h2>Vectorized operation</h2></hgroup><article  id="vectorized-operation" class="smaller vs1 build">
 
-<div class = 'box col col-6 bg-blue offset-0 stretch'><div class = 'box-body'>
-
-<ul>
-<li>Represents probably the first step of your work</li>
-<li>R can handle multiple data types
-
-<ul>
-<li>flat files (<code>.csv</code>, <code>.tsv</code>, &#8230;)</li>
-<li>excel files (<code>.xls</code>, <code>.xlsx</code>)</li>
-<li>foreign statistical formats (<code>.sas</code> from SAS, <code>.sav</code> from SPSS, <code>.dta</code> from Stata)</li>
-<li>databases (SQL, SQLite &#8230;)</li>
-</ul></li>
-</ul>
-
-</div></div><div class = 'box col col-6 bg-yellow offset-0 icon'><h3>Tidyverse implementation</h3><div class = 'box-body'>
-
-<img src='https://raw.githubusercontent.com/tidyverse/tidyverse/master/man/figures/logo.png' title='fig:'/>
-
-<ul>
-<li>R base already provides functions for text files (<em>i.e.</em> <code>read.csv()</code>)</li>
-<li>tidyverse redefines these functions:
-
-<ul>
-<li><strong>speed</strong></li>
-<li><strong>characters are not coerced to factors by default</strong></li>
-<li>generates tibbles</li>
-</ul></li>
-</ul>
-
-</div></div><div class = 'box col col-10 offset-1 bg-blue icon'><h3>Tidyverse packages to import your data</h3><div class = 'box-body'>
-
-<img src='https://raw.githubusercontent.com/tidyverse/readr/master/tools/logo.png' title='fig:'/>
-
-<ul>
-<li><code>read_csv()</code>: comma separated (CSV) files</li>
-<li><code>read_tsv()</code>: tab separated files</li>
-<li><code>read_delim()</code>: general delimited files</li>
-<li><code>read_fwf()</code>: fixed width files</li>
-<li><code>read_table()</code>: tabular files where colums are separated by white-space.</li>
-<li><code>read_log()</code>: web log files</li>
-</ul>
-
-</div></div></article><div class = "footer"><img src="Intro_PS_files/logo.png"><a href='https://github.com/ULHPC/tutorials/tree/devel/advanced/R'>R practical session</a></div></slide><slide class=''><hgroup class = 'title-bar'><h2>Data import </h2><h3> foreign softwares</h3></hgroup><article  id="data-import-foreign-softwares" class="smaller vs1">
-
-<div class = 'box col col-6 bg-green icon'><h3>readxl</h3><div class = 'box-body'>
-
-<img src='https://raw.githubusercontent.com/tidyverse/readxl/master/logo.png' title='fig:'/>
-
-<p>To import excel files (<code>.xls</code> and <code>.xlsx</code>):</p>
-
-<ul>
-<li><code>read_excel()</code>
-
-<ul>
-<li><code>read_xls()</code></li>
-<li><code>read_xlsx()</code></li>
-</ul></li>
-</ul>
-
-</div></div><div class = 'box col col-6 bg-red icon stretch'><h3>haven</h3><div class = 'box-body'>
-
-<img src='https://raw.githubusercontent.com/tidyverse/haven/master/logo.png' title='fig:'/>
-
-<ul>
-<li><code>read_sas()</code> for SAS</li>
-<li><code>read_sav()</code> for SPSS</li>
-<li><code>read_dta()</code> for Stata</li>
-</ul>
-
-</div></div></article><div class = "footer"><img src="Intro_PS_files/logo.png"><a href='https://github.com/ULHPC/tutorials/tree/devel/advanced/R'>R practical session</a></div></slide><slide class=''><hgroup class = 'title-bar'><h2>Data Frames Most easy structure to use, have a matrix structure</h2></hgroup><article  id="data-frames-most-easy-structure-to-use-have-a-matrix-structure" class="smaller vs1">
-
-<blockquote>
-<p>Tidy datasets are all alike; every messy dataset is messy in its own way <cite> Hadley Wickam</p></cite>
-</blockquote>
-
-<div class = 'box col col-10 offset-1 bg-blue'><h3>Definitions</h3><div class = 'box-body'>
-
-<ul>
-<li><strong>Variable</strong>: A quantity, quality, or property that you can measure.</li>
-<li><strong>Observation</strong>: A set of values that display the relationship between variables. To be an observation, values need to be measured under similar conditions, usually measured on the same observational unit at the same time.</li>
-<li><strong>Value</strong>: The state of a variable that you observe when you measure it.</li>
-</ul>
-
-<p><a href='http://garrettgman.github.io/tidying/' title=''>source: Garret Grolemund</a> and <code>vignette(&quot;tidy-data&quot;)</code></p>
-
-</div></div>
-
-<ul>
-<li><p>Individual rows, columns, and cells in a data frame can be accessed through many methods of indexing.</p></li>
-<li><p>We most commonly use <code>object[row, column]</code> notation.</p></li>
-</ul>
-
-</article><div class = "footer"><img src="Intro_PS_files/logo.png"><a href='https://github.com/ULHPC/tutorials/tree/devel/advanced/R'>R practical session</a></div></slide><slide class=''><hgroup class = 'title-bar'><h2>Accessing items in a <code>data.frame</code> </h2><h3> built-in datasets</h3></hgroup><article  id="accessing-items-in-a-data.frame-built-in-datasets" class="smaller build">
-
-<p><code>mtcars</code> that can be used</p>
+<div id="one-of-the-best-r-feature" class = 'box col col-6 show intro middle outline'><h3>one of the best R feature</h3><div class = 'box-body'>
 
 <div id="unnamed-chunk-20" class="col col-12 box chunk bg-cobalt">
-<pre class = 'prettyprint lang-r'>head(mtcars)</pre>
+<pre class = 'prettyprint lang-r'>my_vec &lt;- 10:18
+my_vec</pre>
 
-<pre >                   mpg cyl disp  hp drat    wt  qsec vs am gear carb
-Mazda RX4         21.0   6  160 110 3.90 2.620 16.46  0  1    4    4
-Mazda RX4 Wag     21.0   6  160 110 3.90 2.875 17.02  0  1    4    4
-Datsun 710        22.8   4  108  93 3.85 2.320 18.61  1  1    4    1
-Hornet 4 Drive    21.4   6  258 110 3.08 3.215 19.44  1  0    3    1
-Hornet Sportabout 18.7   8  360 175 3.15 3.440 17.02  0  0    3    2
-Valiant           18.1   6  225 105 2.76 3.460 20.22  1  0    3    1</pre>
+<pre >[1] 10 11 12 13 14 15 16 17 18</pre>
 
-<pre class = 'prettyprint lang-r'>colnames(mtcars)</pre>
+<pre class = 'prettyprint lang-r'>my_vec + 2</pre>
 
-<pre > [1] &quot;mpg&quot;  &quot;cyl&quot;  &quot;disp&quot; &quot;hp&quot;   &quot;drat&quot; &quot;wt&quot;   &quot;qsec&quot; &quot;vs&quot;   &quot;am&quot;   &quot;gear&quot;
-[11] &quot;carb&quot;</pre></div>
+<pre >[1] 12 13 14 15 16 17 18 19 20</pre></div>
 
-<div class = 'box col col-4 stretch'><h3>single cell value</h3><div class = 'box-body'>
+</div></div><div id="warning-1" class = 'box col col-6 warning outline'><h3>warning</h3><div class = 'box-body'>
 
-<p>[<strong>row</strong> value, <strong>column</strong> value]</p>
+<ul>
+<li><strong>R</strong> <em>recycles</em> vectors that are too short</li>
+<li>without any warnings:</li>
+</ul>
 
 <div id="unnamed-chunk-21" class="col col-12 box chunk bg-cobalt">
-<pre class = 'prettyprint lang-r'>mtcars[2, 3]</pre>
+<pre class = 'prettyprint lang-r'>1:10 + c(1, 2)</pre>
 
-<pre >[1] 160</pre></div>
+<pre > [1]  2  4  4  6  6  8  8 10 10 12</pre></div>
 
-</div></div><div class = 'box col col-4 stretch compact-output'><h3>one column</h3><div class = 'box-body'>
+</div></div><div id="avoid-writing-loops" class = 'box col col-8 offset-2 advice outline'><h3>avoid writing loops</h3><div class = 'box-body'>
 
-<p>omitting row implies all</p>
+<p>(still remember not to grow a vector)</p>
 
 <div id="unnamed-chunk-22" class="col col-12 box chunk bg-cobalt">
-<pre class = 'prettyprint lang-r'>mtcars[2, ]</pre>
+<pre class = 'prettyprint lang-r'>res &lt;- vector(mode = &quot;numeric&quot;, length = length(my_vec))
+for (i in seq_along(my_vec)) {
+  res[i] &lt;- my_vec[i] + 2
+}
+res</pre>
 
-<pre >              mpg cyl disp  hp drat    wt  qsec vs am gear carb
-Mazda RX4 Wag  21   6  160 110  3.9 2.875 17.02  0  1    4    4</pre></div>
+<pre >[1] 12 13 14 15 16 17 18 19 20</pre></div>
 
-</div></div><div class = 'box col col-4 stretch compact-output'><h3>one row</h3><div class = 'box-body'>
+</div></div></article><div class = "footer"><img src="Intro_PS_files/logo.png"><a href='https://github.com/ULHPC/tutorials/tree/devel/advanced/R'>R practical session</a></div></slide><slide class=""><hgroup class = 'title-bar'><h2>Tidyverse </h2><h3> packages in processes</h3></hgroup><article  id="tidyverse-packages-in-processes" class="smaller ">
 
-<p>omitting column implies all</p>
+<img src='https://rworkshop.uni.lu/lectures/img/01/tidyverse_data_science.png' title=''/>
 
-<div id="unnamed-chunk-23" class="col col-12 box chunk bg-cobalt">
-<pre class = 'prettyprint lang-r'>mtcars[, 3]</pre>
+</article><div class = "footer"><img src="Intro_PS_files/logo.png"><a href='https://github.com/ULHPC/tutorials/tree/devel/advanced/R'>R practical session</a></div></slide><slide class=""><hgroup class = 'title-bar'><h2>Tidyverse criticism </h2><h3> jobs</h3></hgroup><article  id="tidyverse-criticism-jobs" class="smaller vs2">
 
-<pre > [1] 160.0 160.0 108.0 258.0 360.0 225.0 360.0 146.7 140.8 167.6 167.6
-[12] 275.8 275.8 275.8 472.0 460.0 440.0  78.7  75.7  71.1 120.1 318.0
-[23] 304.0 350.0 400.0  79.0 120.3  95.1 351.0 145.0 301.0 121.0</pre></div>
-
-</div></div></article><div class = "footer"><img src="Intro_PS_files/logo.png"><a href='https://github.com/ULHPC/tutorials/tree/devel/advanced/R'>R practical session</a></div></slide><slide class=''><hgroup class = 'title-bar'><h2>Accessing items in a <code>data.frame</code> </h2><h3> named column</h3></hgroup><article  id="accessing-items-in-a-data.frame-named-column" class="smaller ">
-
-<p>We can also access variables directly by using their <strong>names</strong> instead of indexes</p>
-
-<p>Get <strong>first 10 rows</strong> of variable <code>mpg</code> using 3 notations:</p>
-
-<div class = 'box col col-12'><h3>first notation, <code>object[, &quot;variable&quot;]</code></h3><div class = 'box-body'>
-
-<div id="unnamed-chunk-24" class="col col-12 box chunk bg-cobalt">
-<pre class = 'prettyprint lang-r'>mtcars[1:10, &quot;mpg&quot;]</pre>
-
-<pre > [1] 21.0 21.0 22.8 21.4 18.7 18.1 14.3 24.4 22.8 19.2</pre></div>
-
-</div></div><div class = 'box col col-12'><h3>second notation, <code>object$variable</code></h3><div class = 'box-body'>
-
-<div id="unnamed-chunk-25" class="col col-12 box chunk bg-cobalt">
-<pre class = 'prettyprint lang-r'>mtcars$mpg[1:10]</pre>
-
-<pre > [1] 21.0 21.0 22.8 21.4 18.7 18.1 14.3 24.4 22.8 19.2</pre></div>
-
-</div></div>
-
-<p><code>$</code> is the shortcut for <code>[[</code></p>
-
-<div class = 'box col col-12'><h3>third notation, <code>object[[&quot;variable&quot;]]</code></h3><div class = 'box-body'>
-
-<div id="unnamed-chunk-26" class="col col-12 box chunk bg-cobalt">
-<pre class = 'prettyprint lang-r'>mtcars[[&quot;mpg&quot;]][1:10]</pre>
-
-<pre > [1] 21.0 21.0 22.8 21.4 18.7 18.1 14.3 24.4 22.8 19.2</pre></div>
-
-</div></div></article><div class = "footer"><img src="Intro_PS_files/logo.png"><a href='https://github.com/ULHPC/tutorials/tree/devel/advanced/R'>R practical session</a></div></slide><slide class=''><hgroup class = 'title-bar'><h2>Lists </h2><h3> Pepper analogy</h3></hgroup><article  id="lists-pepper-analogy" class="smaller vs2">
-
-<div class = 'col col-6'>
+<div id="section-19" class = 'box col col-6'><div class = 'box-body'>
 
 <blockquote class="twitter-tweet" data-lang="fr">
 
 <p lang="en" dir="ltr">
 
-Indexing lists in <a href="https://twitter.com/hashtag/rstats?src=hash">#rstats</a>. Inspired by the Residence Inn <a href="http://t.co/YQ6axb2w7t">pic.twitter.com/YQ6axb2w7t</a>
+Realized today: <a href="https://twitter.com/hashtag/tidyverse?src=hash">#tidyverse</a> R and base <a href="https://twitter.com/hashtag/rstats?src=hash">#rstats</a> have little in common. Beware when looking for job which requires knowledge of R.
 
 </p>
 
-— Hadley Wickham (<span class="cite">@hadleywickham</span>) <a href="https://twitter.com/hadleywickham/status/643381054758363136">14 septembre 2015</a>
+— Yeedle N. (<span class="cite">@Yeedle</span>) <a href="https://twitter.com/Yeedle/status/837448170963668992">2 mars 2017</a>
 
 </blockquote>
 
 <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
 
-</div><div class = 'box col col-6'><h3>Example</h3><div class = 'box-body'>
+</div></div><div id="personal-complains" class = 'box col col-6 warning outline'><h3>Personal complains</h3><div class = 'box-body'>
 
-<div id="unnamed-chunk-27" class="col col-12 box chunk bg-cobalt">
-<pre class = 'prettyprint lang-r'>l &lt;- list(name = &quot;Farina&quot;,
-          firstname = &quot;Geoff&quot;,
-          year = 1995)</pre></div>
+<ul>
+<li>still young so change quickly and drastically</li>
+<li>Backward compatibility is not always maintained.</li>
+<li><code>tibbles</code> are nice but a lot of non-tidyverse packages require <code>matrices</code>. <code>rownames</code> still an issue.</li>
+</ul>
 
-<div id="unnamed-chunk-28" class="col col-12 box chunk bg-cobalt">
-<pre class = 'prettyprint lang-r'>l[&quot;firstname&quot;]</pre>
+</div></div><div id="no-need-for-opposition-base-tidyverse" class = 'box col col-8 offset-2 advice outline'><h3>No need for opposition base / tidyverse</h3><div class = 'box-body'>
 
-<pre >$firstname
-[1] &quot;Geoff&quot;</pre>
+<p>Learning the <em>tidyverse</em> does not prevent to learn <em>R base</em>, it helps to get things done early in the process</p>
 
-<pre class = 'prettyprint lang-r'>l[[&quot;firstname&quot;]]</pre>
+</div></div></article><div class = "footer"><img src="Intro_PS_files/logo.png"><a href='https://github.com/ULHPC/tutorials/tree/devel/advanced/R'>R practical session</a></div></slide><slide class=""><hgroup class = 'title-bar'><h2>Community complains</h2></hgroup><article  id="community-complains" class="smaller vs2 center-img">
 
-<pre >[1] &quot;Geoff&quot;</pre></div>
+<p><img src='https://rworkshop.uni.lu/lectures/img/01/r_SO_chat_room.png' title=''/> <span class="small">
+source: <a href='https://chat.stackoverflow.com/rooms/106/r' title=''>SO, R chat room, 29 Nov 2017</a></span></p>
 
-</div></div><div class = 'box col col-5 bg-yellow'><h3>Question</h3><div class = 'box-body'>
+<p>4 days workshop at the <a href='https://rworkshop.uni.lu/' title=''>doctoral school@Uni</a> last Feb 2018, probably again March 2019</p>
 
-<p>How to subset a single pepper seed?</p>
+</article><div class = "footer"><img src="Intro_PS_files/logo.png"><a href='https://github.com/ULHPC/tutorials/tree/devel/advanced/R'>R practical session</a></div></slide><slide class="segue dark nobackground level1"><hgroup class = 'auto-fadein'><h2>Practical Session</h2></hgroup><article  id="practical-session" class="smaller ">
 
-</div></div></article><div class = "footer"><img src="Intro_PS_files/logo.png"><a href='https://github.com/ULHPC/tutorials/tree/devel/advanced/R'>R practical session</a></div></slide><slide class=''><hgroup class = 'title-bar'><h2>Exploring Data </h2><h3> Description Of Dataset</h3></hgroup><article  id="exploring-data-description-of-dataset" class="smaller vs2">
+</article><div class = "footer"><img src="Intro_PS_files/logo.png"><a href='https://github.com/ULHPC/tutorials/tree/devel/advanced/R'>R practical session</a></div></slide><slide class=""><hgroup class = 'title-bar'><h2>Objectives</h2></hgroup><article  id="objectives" class="smaller vs2">
 
-<div class = 'box col col-6'><h3>Using <code>dim</code></h3><div class = 'box-body'>
+<div id="you-will-learn-to" class = 'box col col-8 offset-2 intro icon'><h3>You will learn to:</h3><div class = 'box-body'>
 
-<p>we get the number of observations(rows) and variables(columns) in the dataset.</p>
-
-<div id="unnamed-chunk-29" class="col col-12 box chunk bg-cobalt">
-<pre class = 'prettyprint lang-r'>dim(mtcars)</pre>
-
-<pre >[1] 32 11</pre></div>
-
-</div></div><div class = 'box col col-6'><h3>Using <code>str</code></h3><div class = 'box-body'>
-
-<p>we get the structure of the dataset, including the <code>class(type)</code> of all variables.</p>
-
-<div id="unnamed-chunk-30" class="col col-12 box chunk bg-cobalt">
-<pre class = 'prettyprint lang-r'>str(mtcars)</pre>
-
-<pre >&#39;data.frame&#39;:   32 obs. of  11 variables:
- $ mpg : num  21 21 22.8 21.4 18.7 18.1 14.3 24.4 22.8 19.2 ...
- $ cyl : num  6 6 4 6 8 6 8 4 4 6 ...
- $ disp: num  160 160 108 258 360 ...
- $ hp  : num  110 110 93 110 175 105 245 62 95 123 ...
- $ drat: num  3.9 3.9 3.85 3.08 3.15 2.76 3.21 3.69 3.92 3.92 ...
- $ wt  : num  2.62 2.88 2.32 3.21 3.44 ...
- $ qsec: num  16.5 17 18.6 19.4 17 ...
- $ vs  : num  0 0 1 1 0 1 0 1 1 1 ...
- $ am  : num  1 1 1 0 0 0 0 0 0 0 ...
- $ gear: num  4 4 4 3 3 3 3 4 4 4 ...
- $ carb: num  4 4 1 1 2 1 4 2 2 4 ...</pre></div>
-
-</div></div></article><div class = "footer"><img src="Intro_PS_files/logo.png"><a href='https://github.com/ULHPC/tutorials/tree/devel/advanced/R'>R practical session</a></div></slide><slide class=''><hgroup class = 'title-bar'><h2>Exploring Data </h2><h3> Summary Stats Of Dataset</h3></hgroup><article  id="exploring-data-summary-stats-of-dataset" class="smaller ">
-
-<div class = 'box col col-6 compact-output'><h3><code>summary</code></h3><div class = 'box-body'>
-
-<p>when used on a dataset, returns distributional summaries of variables in the dataset.</p>
-
-<div id="unnamed-chunk-31" class="col col-12 box chunk bg-cobalt">
-<pre class = 'prettyprint lang-r'>summary(mtcars)</pre>
-
-<pre >      mpg             cyl             disp             hp       
- Min.   :10.40   Min.   :4.000   Min.   : 71.1   Min.   : 52.0  
- 1st Qu.:15.43   1st Qu.:4.000   1st Qu.:120.8   1st Qu.: 96.5  
- Median :19.20   Median :6.000   Median :196.3   Median :123.0  
- Mean   :20.09   Mean   :6.188   Mean   :230.7   Mean   :146.7  
- 3rd Qu.:22.80   3rd Qu.:8.000   3rd Qu.:326.0   3rd Qu.:180.0  
- Max.   :33.90   Max.   :8.000   Max.   :472.0   Max.   :335.0  
-      drat             wt             qsec             vs        
- Min.   :2.760   Min.   :1.513   Min.   :14.50   Min.   :0.0000  
- 1st Qu.:3.080   1st Qu.:2.581   1st Qu.:16.89   1st Qu.:0.0000  
- Median :3.695   Median :3.325   Median :17.71   Median :0.0000  
- Mean   :3.597   Mean   :3.217   Mean   :17.85   Mean   :0.4375  
- 3rd Qu.:3.920   3rd Qu.:3.610   3rd Qu.:18.90   3rd Qu.:1.0000  
- Max.   :4.930   Max.   :5.424   Max.   :22.90   Max.   :1.0000  
-       am              gear            carb      
- Min.   :0.0000   Min.   :3.000   Min.   :1.000  
- 1st Qu.:0.0000   1st Qu.:3.000   1st Qu.:2.000  
- Median :0.0000   Median :4.000   Median :2.000  
- Mean   :0.4062   Mean   :3.688   Mean   :2.812  
- 3rd Qu.:1.0000   3rd Qu.:4.000   3rd Qu.:4.000  
- Max.   :1.0000   Max.   :5.000   Max.   :8.000  </pre></div>
-
-</div></div><div class = 'box col col-6 compact-output'><h3><code>quantile</code></h3><div class = 'box-body'>
-
-<p>function enables to get statistical metrics on the selected data</p>
-
-<div id="unnamed-chunk-32" class="col col-12 box chunk bg-cobalt">
-<pre class = 'prettyprint lang-r'>quantile(mtcars$mpg)</pre>
-
-<pre >    0%    25%    50%    75%   100% 
-10.400 15.425 19.200 22.800 33.900 </pre></div>
-
-</div></div></article><div class = "footer"><img src="Intro_PS_files/logo.png"><a href='https://github.com/ULHPC/tutorials/tree/devel/advanced/R'>R practical session</a></div></slide><slide class=''><hgroup class = 'title-bar'><h2>Exploring Data </h2><h3> Conditional Exploration</h3></hgroup><article  id="exploring-data-conditional-exploration" class="smaller vs2">
-
-<div class = 'box col col-12'><h3><code>subset</code></h3><div class = 'box-body'>
-
-<p>enables to explore data conditionally</p>
-
-<div id="unnamed-chunk-33" class="col col-12 box chunk bg-cobalt">
-<pre class = 'prettyprint lang-r'>head(subset(mtcars, cyl &lt;= 5), 10)</pre>
-
-<pre >                mpg cyl  disp  hp drat    wt  qsec vs am gear carb
-Datsun 710     22.8   4 108.0  93 3.85 2.320 18.61  1  1    4    1
-Merc 240D      24.4   4 146.7  62 3.69 3.190 20.00  1  0    4    2
-Merc 230       22.8   4 140.8  95 3.92 3.150 22.90  1  0    4    2
-Fiat 128       32.4   4  78.7  66 4.08 2.200 19.47  1  1    4    1
-Honda Civic    30.4   4  75.7  52 4.93 1.615 18.52  1  1    4    2
-Toyota Corolla 33.9   4  71.1  65 4.22 1.835 19.90  1  1    4    1
-Toyota Corona  21.5   4 120.1  97 3.70 2.465 20.01  1  0    3    1
-Fiat X1-9      27.3   4  79.0  66 4.08 1.935 18.90  1  1    4    1
-Porsche 914-2  26.0   4 120.3  91 4.43 2.140 16.70  0  1    5    2
-Lotus Europa   30.4   4  95.1 113 3.77 1.513 16.90  1  1    5    2</pre></div>
-
-</div></div></article><div class = "footer"><img src="Intro_PS_files/logo.png"><a href='https://github.com/ULHPC/tutorials/tree/devel/advanced/R'>R practical session</a></div></slide><slide class=''><hgroup class = 'title-bar'><h2>Exploring Data </h2><h3> Conditional Exploration</h3></hgroup><article  id="exploring-data-conditional-exploration-1" class="smaller ">
-
-<div class = 'box col col-12 compact-output'><h3><code>by</code></h3><div class = 'box-body'>
-
-<p>enables to call a particular function to sub-groups of data</p>
-
-<div id="unnamed-chunk-34" class="col col-12 box chunk bg-cobalt">
-<pre class = 'prettyprint lang-r'>by(mtcars, mtcars$cyl, summary)</pre>
-
-<pre >mtcars$cyl: 4
-      mpg             cyl         disp              hp        
- Min.   :21.40   Min.   :4   Min.   : 71.10   Min.   : 52.00  
- 1st Qu.:22.80   1st Qu.:4   1st Qu.: 78.85   1st Qu.: 65.50  
- Median :26.00   Median :4   Median :108.00   Median : 91.00  
- Mean   :26.66   Mean   :4   Mean   :105.14   Mean   : 82.64  
- 3rd Qu.:30.40   3rd Qu.:4   3rd Qu.:120.65   3rd Qu.: 96.00  
- Max.   :33.90   Max.   :4   Max.   :146.70   Max.   :113.00  
-      drat             wt             qsec             vs        
- Min.   :3.690   Min.   :1.513   Min.   :16.70   Min.   :0.0000  
- 1st Qu.:3.810   1st Qu.:1.885   1st Qu.:18.56   1st Qu.:1.0000  
- Median :4.080   Median :2.200   Median :18.90   Median :1.0000  
- Mean   :4.071   Mean   :2.286   Mean   :19.14   Mean   :0.9091  
- 3rd Qu.:4.165   3rd Qu.:2.623   3rd Qu.:19.95   3rd Qu.:1.0000  
- Max.   :4.930   Max.   :3.190   Max.   :22.90   Max.   :1.0000  
-       am              gear            carb      
- Min.   :0.0000   Min.   :3.000   Min.   :1.000  
- 1st Qu.:0.5000   1st Qu.:4.000   1st Qu.:1.000  
- Median :1.0000   Median :4.000   Median :2.000  
- Mean   :0.7273   Mean   :4.091   Mean   :1.545  
- 3rd Qu.:1.0000   3rd Qu.:4.000   3rd Qu.:2.000  
- Max.   :1.0000   Max.   :5.000   Max.   :2.000  
--------------------------------------------------------- 
-mtcars$cyl: 6
-      mpg             cyl         disp             hp       
- Min.   :17.80   Min.   :6   Min.   :145.0   Min.   :105.0  
- 1st Qu.:18.65   1st Qu.:6   1st Qu.:160.0   1st Qu.:110.0  
- Median :19.70   Median :6   Median :167.6   Median :110.0  
- Mean   :19.74   Mean   :6   Mean   :183.3   Mean   :122.3  
- 3rd Qu.:21.00   3rd Qu.:6   3rd Qu.:196.3   3rd Qu.:123.0  
- Max.   :21.40   Max.   :6   Max.   :258.0   Max.   :175.0  
-      drat             wt             qsec             vs        
- Min.   :2.760   Min.   :2.620   Min.   :15.50   Min.   :0.0000  
- 1st Qu.:3.350   1st Qu.:2.822   1st Qu.:16.74   1st Qu.:0.0000  
- Median :3.900   Median :3.215   Median :18.30   Median :1.0000  
- Mean   :3.586   Mean   :3.117   Mean   :17.98   Mean   :0.5714  
- 3rd Qu.:3.910   3rd Qu.:3.440   3rd Qu.:19.17   3rd Qu.:1.0000  
- Max.   :3.920   Max.   :3.460   Max.   :20.22   Max.   :1.0000  
-       am              gear            carb      
- Min.   :0.0000   Min.   :3.000   Min.   :1.000  
- 1st Qu.:0.0000   1st Qu.:3.500   1st Qu.:2.500  
- Median :0.0000   Median :4.000   Median :4.000  
- Mean   :0.4286   Mean   :3.857   Mean   :3.429  
- 3rd Qu.:1.0000   3rd Qu.:4.000   3rd Qu.:4.000  
- Max.   :1.0000   Max.   :5.000   Max.   :6.000  
--------------------------------------------------------- 
-mtcars$cyl: 8
-      mpg             cyl         disp             hp       
- Min.   :10.40   Min.   :8   Min.   :275.8   Min.   :150.0  
- 1st Qu.:14.40   1st Qu.:8   1st Qu.:301.8   1st Qu.:176.2  
- Median :15.20   Median :8   Median :350.5   Median :192.5  
- Mean   :15.10   Mean   :8   Mean   :353.1   Mean   :209.2  
- 3rd Qu.:16.25   3rd Qu.:8   3rd Qu.:390.0   3rd Qu.:241.2  
- Max.   :19.20   Max.   :8   Max.   :472.0   Max.   :335.0  
-      drat             wt             qsec             vs   
- Min.   :2.760   Min.   :3.170   Min.   :14.50   Min.   :0  
- 1st Qu.:3.070   1st Qu.:3.533   1st Qu.:16.10   1st Qu.:0  
- Median :3.115   Median :3.755   Median :17.18   Median :0  
- Mean   :3.229   Mean   :3.999   Mean   :16.77   Mean   :0  
- 3rd Qu.:3.225   3rd Qu.:4.014   3rd Qu.:17.55   3rd Qu.:0  
- Max.   :4.220   Max.   :5.424   Max.   :18.00   Max.   :0  
-       am              gear            carb     
- Min.   :0.0000   Min.   :3.000   Min.   :2.00  
- 1st Qu.:0.0000   1st Qu.:3.000   1st Qu.:2.25  
- Median :0.0000   Median :3.000   Median :3.50  
- Mean   :0.1429   Mean   :3.286   Mean   :3.50  
- 3rd Qu.:0.0000   3rd Qu.:3.000   3rd Qu.:4.00  
- Max.   :1.0000   Max.   :5.000   Max.   :8.00  </pre></div>
-
-</div></div></article><div class = "footer"><img src="Intro_PS_files/logo.png"><a href='https://github.com/ULHPC/tutorials/tree/devel/advanced/R'>R practical session</a></div></slide><slide class=''><hgroup class = 'title-bar'><h2>Tidyverse </h2><h3> packages</h3></hgroup><article  id="tidyverse-packages" class="smaller vs1">
-
-<img src='https://raw.githubusercontent.com/LSRU/tv_course/master/lectures/img/01_tidyverse_components.png' title='fig:'/>
-
-</article><div class = "footer"><img src="Intro_PS_files/logo.png"><a href='https://github.com/ULHPC/tutorials/tree/devel/advanced/R'>R practical session</a></div></slide><slide class=''><hgroup class = 'title-bar'><h2>Tidyverse </h2><h3> packages in processes</h3></hgroup><article  id="tidyverse-packages-in-processes" class="smaller ">
-
-<div id="unnamed-chunk-35">
-<p><img src="https://raw.githubusercontent.com/LSRU/tv_course/master/lectures/img/01_tidyverse_data_science.png" width="70%" /></p></div>
-
-<p>4 days workshop at the <a href='https://lsru.github.io/tv_course/' title=''>doctoral school@Uni</a> last May 2017, probably again March 2018</p>
-
-</article><div class = "footer"><img src="Intro_PS_files/logo.png"><a href='https://github.com/ULHPC/tutorials/tree/devel/advanced/R'>R practical session</a></div></slide><slide class='segue dark nobackground level1'><hgroup class = 'auto-fadein'><h2>Practical Session</h2></hgroup><article  id="practical-session" class="smaller ">
-
-</article><div class = "footer"><img src="Intro_PS_files/logo.png"><a href='https://github.com/ULHPC/tutorials/tree/devel/advanced/R'>R practical session</a></div></slide><slide class=''><hgroup class = 'title-bar'><h2>Objectives</h2></hgroup><article  id="objectives" class="smaller vs2">
-
-<div class = 'box col col-10 offset-1 bg-yellow icon'><h3>You will learn to:</h3><div class = 'box-body'>
-
-<img src='https://raw.githubusercontent.com/LSRU/tv_course/master/lectures/img/00_kt.png' title='fig:'/>
+<img src='https://rworkshop.uni.lu/lectures/img/00/kt.png' title=''/>
 
 <ul>
 <li>install and run R and Rstudio on your machine</li>
@@ -1478,16 +1384,47 @@ mtcars$cyl: 8
 <li>perform cluster parallelisation on <code>gaia</code></li>
 </ul>
 
-</div></div></article><div class = "footer"><img src="Intro_PS_files/logo.png"><a href='https://github.com/ULHPC/tutorials/tree/devel/advanced/R'>R practical session</a></div></slide><slide class=''><hgroup class = 'title-bar'><h2>Acknowledgements</h2></hgroup><article  id="acknowledgements" class="smaller vs3">
+</div></div></article><div class = "footer"><img src="Intro_PS_files/logo.png"><a href='https://github.com/ULHPC/tutorials/tree/devel/advanced/R'>R practical session</a></div></slide><slide class=""><hgroup class = 'title-bar'><h2>Acknowledgements</h2></hgroup><article  id="acknowledgements" class="smaller vs3">
 
-<div class = 'bg-uni box col col-12 icon small-pic'><div class = 'box-body'>
+</article><div class = "footer"><img src="Intro_PS_files/logo.png"><a href='https://github.com/ULHPC/tutorials/tree/devel/advanced/R'>R practical session</a></div></slide><slide class=""><hgroup class = 'title-bar'><h2>Wrap up</h2></hgroup><article  id="wrap-up" class="smaller vs1">
 
-<img src='https://raw.githubusercontent.com/LSRU/r_workshop/gh-pages/img/uni.png' title='fig:'/>
+<div id="you-learned-to" class = 'box col col-8 offset-2 intro icon'><h3>You learned to:</h3><div class = 'box-body'>
+
+<img src='img/00/kt.png' title=''/>
 
 <ul>
-<li><strong>Jospeh Emeras</strong> who wrote most of this session</li>
+<li>Introduction
+
+<ul>
+<li>R</li>
+<li>Rstudio</li>
+<li>tidyverse rationale</li>
+</ul></li>
+<li>data types
+
+<ul>
+<li>main categories</li>
+<li>coerce</li>
+</ul></li>
+<li>data structures
+
+<ul>
+<li>main categories</li>
+<li>sub-setting</li>
+<li>vectorization</li>
+</ul></li>
+</ul>
+
+</div></div>
+
+<div id="section-20" class = 'bg-uni box col col-12 icon small-pic'><div class = 'box-body'>
+
+<img src='https://rworkshop.uni.lu/img/uni-logo.png' title=''/>
+
+<ul>
+<li>Jospeh Emeras who wrote earlier version of this session</li>
 <li>Eric Koncina, slides prepared with his <a href='https://github.com/koncina/iosp' title=''>iosp</a> R package</li>
-<li>Eric Koncina &amp; Roland Krause for their content in the <a href='https://lsru.github.io/tv_course/' title=''>R workshop</a></li>
+<li>Eric Koncina &amp; Roland Krause for their content in the <a href='https://rworkshop.uni.lu' title=''>R workshop</a></li>
 <li><em>HPC</em> team</li>
 </ul>
 
