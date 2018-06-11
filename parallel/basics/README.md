@@ -5,7 +5,7 @@
 
      Copyright (c) 2013-2018 UL HPC Team  <hpc-sysadmins@uni.lu>
 
-<!-- [![](https://github.com/ULHPC/tutorials/raw/devel/parallel/basics/cover_slides.png)](https://github.com/ULHPC/tutorials/raw/devel/parallel/basics/slides.pdf) -->
+[![](https://github.com/ULHPC/tutorials/raw/devel/parallel/basics/cover_slides.png)](https://github.com/ULHPC/tutorials/raw/devel/parallel/basics/slides.pdf)
 
 When granted access to the [UL HPC](https://hpc.uni.lu) platform you will have at your disposal **parallel computing** resources.
 
@@ -620,7 +620,7 @@ mpirun -ppn ${NPERNODE:=1} -np ${NP} -genv OMP_NUM_THREADS=${OMP_NUM_THREADS} \
 
 You can find in `src/hello_hybrid.c` the traditional OpenMP+MPI "Helloworld" example.
 
-* Reserve an interactive job to launch 4 OpenMP threads (for 30 minutes)
+* Reserve an interactive job to launch 2 MPI processes (1 per node), each composed of 4 OpenMP threads (for 30 minutes)
 
 ```bash
 ############### iris cluster (slurm) ###############
