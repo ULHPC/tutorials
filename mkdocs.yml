@@ -9,8 +9,9 @@ pages:
 - Basic Tutorials:
   - Getting Started: 'beginners/index.md'
   - HPC workflow with sequential jobs: 'basic/sequential_jobs/index.md'
-  - Job scheduling with SLURM: 'basic/scheduling/index.md'
   - Prototyping with Python: 'python/basics/index.md'
+- Scheduling:
+  - Job scheduling with SLURM: 'scheduling/advanced/index.md'
 - Tools / Software management:
   - Easybuild: 'tools/easybuild/index.md'
 #  - RESIF:     'tools/resif/index.md'

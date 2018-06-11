@@ -153,6 +153,13 @@ srun -p interactive --qos qos-besteffort --pty bash -i
 
 __Question__: can you make this job be preempted? try to allocate other nodes in the interactive partition and see what happens when the besteffort job is marked for preemption.
 
+* Start an interactive job on nodes with Skylake CPUs
+
+```
+srun -C skylake --pty bash -i
+```
+
+__Question__: what partition is this job running in?
 
 #### Collecting job information
 
