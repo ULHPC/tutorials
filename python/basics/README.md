@@ -91,7 +91,7 @@ Now run the script using
 
 Now, check that the content of `example1.out` corresponds to the expected output (in interactive mode).
 
-**HINT:** You can find the answer under `tutorials/advanced/Python/example1/example1.sh.answer`.
+**HINT:** You can find the answer under `tutorials/advanced/Python/example1/answer/example1.sh.answer`.
 
 ## Compare version of Python
 
@@ -133,7 +133,7 @@ Here are the steps to compare 2 codes:
 **HINT**
 
 * You can use `module load` command to load a specific version of Python.
-* An example of a BATCH script can be found under `tutorials/advanced/Python/example2/example2.sh.answer`
+* An example of a BATCH script can be found under `tutorials/advanced/Python/example2/answer/example2.sh.answer`
 
 ## Use a library to optimize your code
 

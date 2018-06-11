@@ -19,9 +19,9 @@ So far, the following tutorials are proposed:
 | :----------:           | ----------------------------------------------------------------------------                | -------------- |
 | _Basic_                | [Getting Started on the UL HPC platform](beginners/)                                        | beginners      |
 |                        | [HPC workflow with sequential jobs](basic/sequential_jobs/)                                 | beginners      |
-|                        | [Advanced scheduling with SLURM](basic/scheduling/)                                         | intermediate   |
 |                        | [Prototyping with Python](python/basics/)                                                   | beginners      |
 |                        | [Advanced prototyping with Python](python/advanced/)                                        | intermediate   |
+| _Scheduling_           | [Advanced scheduling with SLURM](scheduling/advanced)                                       | intermediate   |
 | _Software Management_  | [Building [custom] software with EasyBuild](tools/easyBuild/)                               | beginners      |
 | _Debuging & Profiling_ | [Know Your Bugs: Weapons for Efficient Debugging](debugging/basics/)                        | intermediate   |
 |                        | [Advanced debugging on the UL HPC platform](debugging/advanced/)                            | intermediate   |

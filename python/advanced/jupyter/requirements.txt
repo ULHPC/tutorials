@@ -1,0 +1,5 @@
+jupyter==1.0.0
+matplotlib==2.2.2
+ipyparallel==6.1.1
+mpi4py==3.0.0
+ipykernel==4.8.2
