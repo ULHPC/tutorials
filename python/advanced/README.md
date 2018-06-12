@@ -110,7 +110,7 @@ If you haven't chosen a password to protect your notebook, please append the tok
 
 # Run our first notebook
 
-* Just click on the Notebook **TODO add a notebook for simple stuff**.
+* Just click on the Notebook **jupyter/Monte-Carlo calculation of pi.ipynb**.
 * Change the kernel for the `venv` one
   * Go onto **Kernel** tab
   * Choose **Change kernel**
@@ -199,7 +199,7 @@ source venv/bin/active
 jupyter [your options]
 ```
 
-Now if you execute the notebook 'Slurm', your code will be parallelize on 2 different nodes using 56 cores!
+Now if you execute the notebook **jupyter/Parallel Notebook.ipynb**, your code will be parallelize on 2 different nodes using 56 cores!
 
 ## Create a profile to store and edit the default options
 
@@ -259,7 +259,7 @@ The resources are by default shared with other users. You can't run a redis inst
 We will run our redis server on a different port number for each run by using this bash command: `$(($SLURM_JOB_ID % 1000 + 64000))`. It will give us a port number between 64000 and 64999 based on the last 3 digits of our job ID.
 
 ```bash
-srun --pty bash -i -N1 -c28 -J redis-server
+srun --pty bash -i -N1 -c1 -J redis-server
 ./src/redis-server $HOME/celery/redis/redis.conf --port $(($SLURM_JOB_ID % 1000 + 64000)) --bind $(facter ipaddress)
 ```
 
@@ -326,6 +326,9 @@ module load lang/Python/3.6.0
 virtualenv venv
 source venv/bin/activate
 pip install "celery[redis]"
+pip install redis
+# (optional) Flower is a frontend for visualization of the queues status
+pip install flower
 ```
 
 ### Configuration
@@ -335,38 +338,79 @@ We need to give to celery 3 informations about our Redis:
 * **hostname** of the node on which the server is running
 * **port** the port number of the database
 
-As those parameters will change on each run, we will create a new parameter for each in a simple script. Let's create a script that take as argument the password, the hostname and the port.
+As those parameters will change on each run, we will put the 3 value inside a configuration file and import it in the python code to create the broker address which will looks like this:
 
 ```python
-if __name__ == "__main__":
-    import sys
-    params = {
-      "password": str(sys.argv[1]),
-      "hostname": str(sys.argv[2]),
-      "port": int(sys.argv[3])
-    }
-    redis_broker = "redis://:{password}@{hostname}:{port}/0".format(**params)
+redis_broker = "redis://:{password}@{hostname}:{port}/0".format(**params)
 ```
 
-Let's create a task.py that take this broken into account:
-
-```python
-from celery import Celery
-redis_broker = ""
-
-app = Celery('tasks', broker=redis_broker)
-
-@app.task
-def add(x, y):
-    return x + y
-
-if __name__ == "__main__":
-    import sys
-    params = {
-      "password": str(sys.argv[1]),
-      "hostname": str(sys.argv[2]),
-      "port": int(sys.argv[3])
-    }   
-    redis_broker = "redis://:{password}@{hostname}:{port}/0".format(**params)
+In file `celery.ini`, fill the redis section like this:
 
 ```
+[redis]
+broker_password=<ỳourverysecurepassword>
+broker_hostname=<hostname of the redis server that can be find with `squeue -u $USER`>
+broker_port=<port that you have defined in the configuration (by default 64867)
+```
+
+We have created a list of tasks to execute in `ulhpccelery/tasks.py`. There are 3 tasks:
+
+* add(x, y) add x and y number
+* mul(x, y) multiplie x and y
+* xsum(numbers) return the sum of an array of numbers
+
+We will start a worker on a full node that will run the code on the 28 cores of iris. For that, reserve a full node and 28 cores, load the virtual environment and run celery.
+
+```
+si -N1 -c28
+cd celery
+module load lang/Python/3.6.0
+source venv/bin/activate
+celery -A ulhpccelery worker
+```
+
+You should see the working starting on the 28 cores and connect to the redis instance successfully. If you have issue connecting to the redis instance, check that it is still running and that you have access to it from the node (via telnet command for example).
+
+### Launch several tasks
+
+From the **ulhpccelery** module, simply reserve a node and execute the following commands.
+
+```
+si -N1 -c1
+cd celery
+module load lang/Python/3.6.0
+source venv/bin/activate
+python
+>> from ulhpccelery import tasks
+>> res = []
+>> for i in range(10**6):
+>>     res.append(tasks.add.delay(i, i+1))
+>> for r in res:
+>>     print(r.get())
+```
+
+You should see the results of the additions. The tasks have been distributed to all the available cores.
+
+### Monitor the experiment
+
+You can use Flower to monitor the usage of the queues.
+
+```
+si -N1 -c28
+cd celery
+module load lang/Python/3.6.0
+virtualenv venv
+source venv/bin/activate
+celery -A ulhpccelery flower --address="$(facter ipaddress)"
+```
+
+Now, directly access to the web interface of the node (after a tunnel redirection): http://172.17.6.55:5555/
+
+You should see this kind of output:
+
+![Flower interface](./celery/Flower.png)
+
+### To go further
+
+* Try to add / suppress workers during the execution
+* Try to stop restart redis server

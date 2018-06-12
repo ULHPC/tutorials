@@ -6,4 +6,4 @@
 
 module load lang/Python/3.6.0-foss-2017a
 source venv/bin/activate
-celery -A ulhpccelery flower --address="$(facter ipaddress p3p2)"
+celery -A ulhpccelery flower --address="$(facter ipaddress)"
