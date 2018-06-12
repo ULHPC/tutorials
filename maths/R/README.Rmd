@@ -470,6 +470,7 @@ see below the benefit of using more cores on the elapsed time for computationall
 
 just for the fun of it, using the [experimental gganimate](https://github.com/thomasp85/gganimate), we can visualise how the t-SNE evolves with increased perplexities
 
+![](figures/tsne_110_component.gif)
 
 ### Useful links
 
