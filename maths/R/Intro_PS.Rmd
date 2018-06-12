@@ -1,0 +1,656 @@
+---
+title: "PS12: introduction to R"
+subtitle: "HPC School 2018"
+author: "Aurélien Ginolhac"
+date: "2018-06-13"
+output:
+  iosp::ioslides_plus:
+    keep_md: no
+    logo: figures/hpc150x150.png
+    footer: "[R practical session](https://github.com/ULHPC/tutorials/tree/devel/advanced/R)"
+    smaller: yes
+    widescreen: yes
+    self_contained: no
+    css: lecture.css
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+```
+
+
+## What is R? {.vs2}
+
+### {.icon .col-12}
+
+![](https://hpc.uni.lu/images/logo/logo_hpc-shool2017.png)
+
+```{r, echo = FALSE}
+icon::fa("r-project", size = 4)
+```
+
+ `r emojifont::fontawesome('fa-github')`
+
+is shorthand for ["GNU R"](https://www.r-project.org):
+
+- An **interactive** programming language derived from **S** (**J. Chambers**, Bell Lab, 1976)
+- Appeared in 1993, created by **R. Ihaka** and **R. Gentleman**, University of Auckland, NZ
+- Focus on data analysis and plotting
+- `r icon::fa("r-project")` is also shorthand for the ecosystem around this language
+    + Book authors
+    + Package developers
+    + Ordinary useRs
+  
+Learning to use **R** will make you **more efficient** and **facilitate the use** of advanced data analysis tools
+
+## Why use R? {.vs2}
+
+- It's *free!* and **open-source**
+- easy to install / maintain
+- multi-platform (Windows, macOS, GNU/Linux)
+- can process big files and analyse huge amounts of data (db tools)
+- integrated data visualization tools, *even dynamic*
+- fast, and even faster with *C++* integration via [Rcpp](http://dirk.eddelbuettel.com/code/rcpp/Rcpp-attributes.pdf).
+- easy to get help
+    + [huge R community in the web](https://support.rstudio.com/hc/en-us/articles/200552336-Getting-Help-with-R)
+    + [stackoverflow](http://stackoverflow.com/questions/tagged/r) with a lot of tags like **r**, **ggplot2** etc.
+    + [rbloggers](http://www.r-bloggers.com)
+    
+
+
+## Twitter R community    
+
+[`#rstats`](https://twitter.com/search?q=%23rstats) on twitter
+
+![](https://rworkshop.uni.lu/lectures/img/01/r_community.jpg)
+
+
+
+
+
+## Constant trend {.vs1}
+
+### {.col-6}
+
+![](https://rworkshop.uni.lu/lectures/img/01/r_progression.png)
+
+<span class = "small">Source: [Touchon & McCoy. _Ecosphere_. 2016](http://onlinelibrary.wiley.com/doi/10.1002/ecs2.1394/full)</span>
+
+### {.col-6}
+
+![](https://rworkshop.uni.lu/lectures/img/01/SO_yearly_progression.png)
+
+
+<span class = "small">Source: [D. Robinson, StackOverflow blog](https://stackoverflow.blog/2017/10/10/impressive-growth-r/)</span>
+
+
+
+
+
+## Packages | +12,000 in Feb 2018
+
+### [CRAN](https://cran.r-project.org/web/packages/available_packages_by_date.html) {.box-4 .intro .stretch .outline}
+
+**reliable**: package is checked during submission process
+
+[MRAN](https://mran.microsoft.com/packages/) for Windows users
+
+### [bioconductor](https://www.bioconductor.org/) {.box-4 .intro .stretch .outline}
+
+dedicated to biology. [status](https://www.bioconductor.org/packages/release/bioc/html/limma.html)
+
+typical install:
+```{r, eval=FALSE}
+source("https://bioconductor.org/biocLite.R")
+biocLite("limma")
+```
+
+### [GitHub](https://github.com/) {.box-4 .warning .stretch .outline}
+
+easy install thanks to [devtools](https://github.com/hadley/devtools). [status](https://github.com/hadley/readr)
+
+```{r, eval=FALSE}
+# install.packages("devtools")
+devtools::install_github("tidyverse/readr")
+```
+
+could be a security issue
+
+### CRAN install from Rstudio {.col-6}
+
+![](https://rworkshop.uni.lu/lectures/img/01/packages_install_cran.jpg)
+
+### github install from Rstudio' console {.col-6}
+
+![](https://rworkshop.uni.lu/lectures/img/01/packages_install_devtools.jpg)
+
+more in the article from [David Smith](http://blog.revolutionanalytics.com/2017/01/cran-10000.html)
+
+## R is hard to learn {.vs1}
+
+**R base** is complex, has a long history and many contributors
+
+### Why R is hard to learn {.warning .box-11 .outline}
+
+>- Unhelpful help `?print`
+>- generic methods `print.data.frame`
+>- too many commands `colnames, names`
+>- inconsistent names `read.csv, load, readRDS`
+>- unstrict syntax, was designed for interactive usage
+>- too many ways to select variables `df$x, df$"x", df[,"x"], df[[1]]`
+>- [...] see [r4stats' post](http://r4stats.com/articles/why-r-is-hard-to-learn/) for the full list
+>- the tidyverse curse
+
+### {.col-8 .offset-4} 
+
+<span class = "small">source: [Robert A. Muenchen' blog](http://r4stats.com/articles/why-r-is-hard-to-learn/)</span>
+
+%end%
+
+### {.col-12 .build}
+> Navigating the balance between base R and the tidyverse is a challenge to learn | Robert A. Muenchen {.advice}
+
+## Tidyverse | creator {.vs2}
+
+### {.col-12 .icon}
+
+![](https://rworkshop.uni.lu/lectures/img/00/logo_tidyverse.png)
+
+We think the [**tidyverse**](http://tidyverse.org/) is better, especially for beginners. It is
+
+- recent (both an issue and an advantage)
+- allows [doing powerful things quickly](http://varianceexplained.org/r/teach-tidyverse/)
+- unified
+- consistent, one way to do things
+- give strength to learn base R
+- criticisms will come later (yes, many)
+
+### Hadley Wickham {.box-8 .intro .outline}
+
+[Hadley](http://had.co.nz), Chief Scientist at **Rstudio**
+
+- coined the _tidyverse_ at [userR meeting in 2016](https://twitter.com/drob/status/748196885307920385)
+- developed and maintains most of the core _tidyverse_ packages
+
+### {.col-4}
+
+```{r, echo = FALSE, out.width = "75%"}
+knitr::include_graphics("https://pbs.twimg.com/profile_images/905186381995147264/7zKAG5sY_400x400.jpg")
+```
+
+# RStudio
+
+![](https://rworkshop.uni.lu/lectures/img/00/logo_rstudio.png)
+
+## Rstudio | makes working with R easier {.build}
+
+[RStudio is an Integrated Development Environment](https://www.rstudio.com/products/RStudio/) .  
+
+### Features {.box-8 .intro .outline}
+
+- _Console_ to run **R**, with syntax highlighter
+- _Editor_ to work with scripts
+- _Viewer_ for data / plots
+- _Package management_ (including building)
+- _Autocompletion_ using <kbd>TAB</kbd>
+- [_Cheatsheets_](https://www.rstudio.com/resources/cheatsheets/)
+- _Git_ integration for versioning
+- _Build_ for website / packages
+- _Inline_ outputs (>= v1.03)
+- _Keyboard shortcuts_
+- [_Notebooks_](https://rviews.rstudio.com/2017/03/15/why-i-love-r-notebooks/)
+
+### Warning {.box-4 .warning .outline}
+
+Don't mix up **R** and **RStudio**.  
+**R** needs to be installed first.
+
+## Rstudio | The 4 panels layout {.center-img .vs1}
+
+![](https://rworkshop.uni.lu/lectures/img/01/rstudio_layout.jpg)
+
+## Four panels {.vs2}
+
+### scripting {.box-6 .practical .stretch .outline}
+
+- could be your main window
+- should be a **Rmarkdown** doc
+- tabs are great
+
+### Environment {.box-6 .intro .stretch .outline}
+
+- Environment, display loaded objects and their `str()`
+- History is useless IMO
+- nice `git` integration
+- database **connections** interface
+
+### Console {.box-6 .code .stretch .outline}
+
+- could be hidden with **inline** outputs
+- embed a nice `terminal` tab
+- `Rmarkdown` logs
+
+### Files / Plots / Help {.box-6 .intro .stretch .outline}
+
+- necessary package management tab
+- unnecessary plots tabs with **inline** outputs
+- help tab
+
+## For reproducibility | options to activate / deactivate
+
+
+### {.col-6}
+
+![](https://rworkshop.uni.lu/lectures/img/01/rstudio_settings.png)
+
+### `rm(list = ls())` is not recommended {.box-6 .advice .middle .outline}
+
+- does **not** make a fresh R session
+    + `library()` calls remain
+    + working directory not set!
+    + modified functions, [evil](https://github.com/romainfrancois/evil.R) `==` <- `!=`
+- knitting `Rmarkdown` files solves it
+
+<span class = "small">[source: Jenny Bryan article](https://www.tidyverse.org/articles/2017/12/workflow-vs-script/)</span>
+
+
+## Code diagnostics | highly recommended
+
+using  `Global Options -> Code -> Diagnostics` editing pane:
+
+### {.col-6}
+
+![](https://rworkshop.uni.lu/lectures/img/01/diag_RStudio.png)
+<span class = "small">source: [Kevin Ushey' article](https://support.rstudio.com/hc/en-us/articles/205753617-Code-Diagnostics?version=1.1.133&mode=desktop)</span> 
+
+### {.col-6}
+
+- check argument calls
+
+![](https://support.rstudio.com/hc/en-us/article_attachments/201712378/Screen_Shot_2015-04-30_at_2.01.17_PM.png)
+
+- missing arguments
+
+![](https://support.rstudio.com/hc/en-us/article_attachments/201712398/Screen_Shot_2015-04-30_at_2.03.06_PM.png)
+
+- variable definitions
+
+![](https://support.rstudio.com/hc/en-us/article_attachments/201712428/Screen_Shot_2015-04-30_at_2.06.54_PM.png)
+
++ unused variables & style recommendations
+
+
+
+  
+
+
+# Data types and structures | R base
+
+## Necessary R base {.build}
+
+### We could let **base** down, but the **tidyverse** is wrapping around it {.intro .box-12 .outline .show}
+
+Some functions need to be known. And in R, everything is a function.
+
+
+### Advices from David Robinson {.box-6 .icon-small .stretch .advice .outline}
+
+![](img/01/drobinson2.png)
+
+- [Teach tidyverse to beginners](http://varianceexplained.org/r/teach-tidyverse/)
+    + base: summary functions
+    + vectorized operations
+    + stat modeling
+    + matrices
+- [Don't teach the hard way](http://varianceexplained.org/r/teach-hard-way/)
+
+> _I teach them X just to show them how much easier Y is_ {.warning}
+
+> teaching programming is hard, don’t make it harder
+
+### {.col-6}
+
+
+<blockquote class="twitter-tweet" data-lang="fr"><p lang="en" dir="ltr">When you start writing a loop then turn it into dplyr<a href="https://twitter.com/hashtag/rstats?src=hash&amp;ref_src=twsrc%5Etfw">#rstats</a> <a href="https://t.co/M0gXUXuYCP">pic.twitter.com/M0gXUXuYCP</a></p>&mdash; David Robinson (@drob) <a href="https://twitter.com/drob/status/701790246111825925?ref_src=twsrc%5Etfw">22 Feb 2016</a></blockquote>
+<script async src="http://platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+
+## Getting started {.vs3}
+
+Let's get ready to use **R** and **RStudio**
+
+### Do the following {.practical .box-8 .offset-2}
+
+- Open up RStudio
+- Maximize the RStudio window
+- Click the Console pane, at the prompt (`>`) type in `3 + 2` and hit enter
+
+```{r, eval = FALSE, prompt = TRUE}
+3 + 2
+```
+
+
+## 4 main types | `mode()` {.vs1 .build}
+
+### {.col-6 .compact-table .show}
+
+Type                | Example
+------------------- | ---------------------------
+numeric             | integer (2), double (2.34)
+character (strings) | "tidyverse!"
+boolean             | TRUE / FALSE
+complex             | 2+0i
+
+### {.col-6}
+
+```{r, title = "in the console", row = TRUE}
+2L
+typeof(2L)
+mode(2L)
+2.34
+typeof(2.34)
+"tidyverse!"
+TRUE
+2+0i
+```
+
+
+
+### {.col-6 .offset-3}
+
+```{r, eval = FALSE, title = "Special case"}
+NA   # not available, missing data
+NA_real_
+NA_integer_
+NA_character_
+NA_complex_
+NULL # empty
+-Inf/Inf # infinite values
+NaN # Not a Number
+```
+
+
+
+## Structures {.vs1 .build}
+
+### Vectors {.box-5 .stretch .intro .outline .show}
+
+`c()` is the function for **concatenate**
+
+### {.col-7 .middle}
+
+```{r, row = TRUE, collapse = TRUE}
+4
+c(43, 5.6, 2.90)
+```
+
+
+### Factors {.box-4 .stretch .intro .outline}
+
+convert strings to factors, `levels` is the dictionary
+
+### {.col-8 .stretch}
+
+```{r, row = TRUE, collapse = TRUE}
+factor(c("AA", "BB", "AA", "CC"))
+```
+
+### Lists {.box-4 .intro .outline}
+
+very important as it can contain anything
+
+###  {.col-8 .compact-output}
+
+```{r, row = TRUE, collapse = TRUE}
+list(f = factor(c("AA", "AA")),
+     v = c(43, 5.6, 2.90),
+     s = 4L)
+```
+
+## Data frames are special lists
+
+###  `data.frame`{} {.box-5 .intro .outline .stretch}
+
+same as list **but** where all objects _must_ have the **same** length
+
+### {.col-7 .stretch}
+
+```{r, row = c(8, 4), collapse = TRUE, title = "Example, 3 elements of same size"}
+data.frame(
+  f = factor(c("AA", "AA", "BB")),
+  v = c(43, 5.6, 2.90),
+  s = rep(4, 3))
+```
+
+### Example, missing one element in `v` {.box-7 .bg-red .offset-5}
+
+```{r, row = F, collapse = TRUE, error=TRUE}
+data.frame(
+  f = factor(c("AA", "AA", "BB")),
+  v = c(43, 5.6),
+  s = rep(4, 3))
+```
+
+
+
+## Concatenate atomic elements | i.e build a vector {.vs1}
+
+
+### collection of simple _things_ {.box-6 .intro .outline}
+
+- _things_ are the smallest elements: **atomic**
+- **must** be of same **mode**: automatic coercion
+- indexed, from **1** to `length(vector)`
+- created with the **`c()`** function
+
+```{r}
+c(2, TRUE, "a string")
+```
+
+### assignment operator, create object {.box-6 .intro .outline}
+
+operator is `<-`, associate a _name_ to an object
+```{r}
+my_vec <- c(3, 4, 1:3)
+my_vec
+```
+
+### Tip {.box-8 .offset-2 .advice .outline}
+
+Rstudio has the built-in shortcut <kbd>Alt</kbd>+<kbd>-</kbd> for `<-`
+
+##  | hierarchy 
+
+### {.box-8}
+
+![](img/01/data-structures-overview.png)
+
+
+
+<span class = "small">source: **H. Wickham** - [_R_ for data science](http://r4ds.had.co.nz/vectors.html), [licence CC](http://creativecommons.org/licenses/by-nc-nd/3.0/us/)</span>
+
+
+### in console {.box-4 .middle .code .outline}
+
+```{r}
+is.vector(c("a", "c"))
+mode(c("a", "c"))
+is.vector(list(a = 1))
+is.atomic(list(a = 1))
+is.data.frame(list(a = 1))
+```
+
+## Vectors | subsetting {.build}
+
+### important {.box-8 .offset-2 .warning .show .outline}
+
+Unlike **python** or **Perl**, vectors use **1-based** index!!
+
+%end%
+
+### `:` operator  {.box-6 .practical}
+
+generate integer sequence
+
+```{r}
+3:10
+```
+
+### How to extract > 1 element {.box-6 .practical}
+
+select elements from position **3** to **10**:
+
+```{r}
+LETTERS[3:10]
+```
+
+
+### break in sequence {.box-6 .practical}
+
+```{r}
+LETTERS[c(2:5, 7)]
+```
+
+
+### negative selection {.box-6 .practical}
+
+```{r}
+LETTERS[-c(2:21)]
+```
+
+## Vectorized operation {.vs1 .build}
+
+
+### one of the best R feature {.box-6 .show .intro .middle .outline}
+
+```{r}
+my_vec <- 10:18
+my_vec
+my_vec + 2
+```
+
+### warning {.box-6 .warning .outline}
+
+- **R** _recycles_ vectors that are too short
+- without any warnings:
+
+```{r}
+1:10 + c(1, 2)
+```
+
+### avoid writing loops {.box-8 .offset-2 .advice .outline}
+
+(still remember not to grow a vector)
+
+```{r}
+res <- vector(mode = "numeric", length = length(my_vec))
+for (i in seq_along(my_vec)) {
+  res[i] <- my_vec[i] + 2
+}
+res
+```
+
+
+
+
+
+## Tidyverse | packages in processes
+
+
+![](https://rworkshop.uni.lu/lectures/img/01/tidyverse_data_science.png)
+
+
+
+## Tidyverse criticism  | jobs {.vs2}
+
+### {.box-6}
+
+<blockquote class="twitter-tweet" data-lang="fr"><p lang="en" dir="ltr">Realized today: <a href="https://twitter.com/hashtag/tidyverse?src=hash">#tidyverse</a> R and base <a href="https://twitter.com/hashtag/rstats?src=hash">#rstats</a> have little in common. Beware when looking for  job which requires knowledge of R.</p>&mdash; Yeedle N. (@Yeedle) <a href="https://twitter.com/Yeedle/status/837448170963668992">2 mars 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+### Personal complains {.box-6 .warning .outline}
+
+- still young so change quickly and drastically
+- Backward compatibility is not always maintained.
+- `tibbles` are nice but a lot of non-tidyverse packages require `matrices`. `rownames` still an issue.
+
+
+### No need for opposition base / tidyverse {.box-8 .offset-2 .advice .outline}
+
+Learning the _tidyverse_ does not prevent to learn _R base_, it helps to get things done early in the process
+
+
+## Community complains {.vs2 .center-img}
+
+![](https://rworkshop.uni.lu/lectures/img/01/r_SO_chat_room.png)
+<span class = "small">source: [SO, R chat room, 29 Nov 2017](https://chat.stackoverflow.com/rooms/106/r)</span>
+
+
+
+
+4 days workshop at the [doctoral school@Uni](https://rworkshop.uni.lu/) last Feb 2018, probably again March 2019
+
+
+# Practical Session
+
+## Objectives {.vs2}
+
+### You will learn to: {.box-8 .offset-2 .intro .icon}
+
+![](https://rworkshop.uni.lu/lectures/img/00/kt.png)
+
+- install and run R and Rstudio on your machine
+- use R on the clusters
+- download a file and process it
+- create a simple _ggplot_ remotely
+- summarise a dataset using different packages and benchmark them
+- demonstrate why packages are so much better than R base
+- perform single machine parallelisation on `gaia`
+- perform cluster parallelisation on `gaia`
+
+
+
+
+## Acknowledgements {.vs3}
+
+## Wrap up {.vs1}
+
+### You learned to: {.box-8 .offset-2 .intro .icon}
+
+![](img/00/kt.png)
+
+- Introduction
+    + R
+    + Rstudio
+    + tidyverse rationale
+- data types
+    + main categories
+    + coerce
+- data structures
+    + main categories
+    + sub-setting
+    + vectorization
+
+%end%
+
+
+
+### {.bg-uni .box-12 .icon .small-pic}
+
+![](https://rworkshop.uni.lu/img/uni-logo.png)
+
+- _HPC_ team, especially Valentin Plugaru for setting up the `furrr` runs in `iris`
+- Eric Koncina, slides prepared with his [iosp](https://github.com/koncina/iosp) R package
+- Eric Koncina & Roland Krause for their content in the [R workshop](https://rworkshop.uni.lu)
+- Joseph Emeras who wrote earlier version of this practical session
+
+%end%
+
+</br>
+
+- Practical here: https://github.com/ULHPC/tutorials/tree/devel/advanced/R
+
+- Slides (html): https://cdn.rawgit.com/ULHPC/tutorials/devel/advanced/R/Intro_PS.html
+
+- Slides (pdf): https://github.com/ULHPC/tutorials/raw/devel/advanced/R/Intro_PS.pdf
