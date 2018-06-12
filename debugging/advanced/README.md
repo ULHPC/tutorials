@@ -21,7 +21,7 @@ They review:
 ## Your tasks
 
 1. Compile and make a first timed run of unmodified HPCG v3.0 (MPI only) as per the [ULHPC HPCG tutorial](http://ulhpc-tutorials.readthedocs.io/en/latest/parallel/hybrid/HPCG/)
-     - full single node, use $\geq$ `80 80 80` for input params (edit `hpcg.dat`)
+     - full single node, use >= `80 80 80` for input params (edit `hpcg.dat`)
      - use `/usr/bin/time -v` to get details (especially as regards timing and memory usage)
 2. Run HPCG (timed) through Allinea Performance Reports
      - use `perf-report` (bonus points if using `iris` to get energy metrics)
