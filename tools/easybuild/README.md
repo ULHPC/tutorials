@@ -258,12 +258,7 @@ $> curl -o bootstrap_eb.py  https://raw.githubusercontent.com/easybuilders/easyb
 $> python bootstrap_eb.py $EASYBUILD_PREFIX
 ```
 
-Now you can use your freshly built software:
-The main EasyBuild command is `eb` (to get help on the EasyBuild options, use the `-h` or `-H` option flags):
-
-    $> eb -h
-    $> eb -H
-
+Now you can use your freshly built software. The main EasyBuild command is `eb`:
 
 ```bash
 $> eb --version             # expected ;)
@@ -289,6 +284,10 @@ Since you are going to use quite often the above command to use locally built mo
 $> mu
 $> module avail     # OR 'ma'
 ```
+To get help on the EasyBuild options, use the `-h` or `-H` option flags:
+
+    $> eb -h
+    $> eb -H
 
 ### b. Local vs. global usage
 
