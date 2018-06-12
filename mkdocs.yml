@@ -37,6 +37,8 @@ pages:
    - Advanced Parallel execution: 'multiphysics/index.md'
 - Big Data:
   - Big Data Application Over Apache Spark: 'bigdata/spark/index.md'
+- Containers:
+  - Singularity: 'containers/singularity/index.md'
 - Virtualization:
    - Vagrant: 'virtualization/vagrant/index.md'
    - Grid5000 - Automatic VM deployment with VM5K: 'virtualization/vm5k/index.md'
