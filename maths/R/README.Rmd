@@ -18,7 +18,7 @@ library(tidyverse)
 
 [![](https://github.com/ULHPC/tutorials/raw/devel/maths/R/figures/cover_slides.png)](https://github.com/ULHPC/tutorials/raw/devel/maths/R/PS12-introduction_to_R.pdf)
 
-- [here as html](https://github.com/ULHPC/tutorials/raw/devel/maths/R/Intro_PS.html)
+- [slides as dynamic html](https://github.com/ULHPC/tutorials/raw/devel/maths/R/Intro_PS.html)
 
 Through this tutorial you will learn how to use R from your local machine or from one of the [UL HPC platform](http://hpc.uni.lu) clusters.
 Then, we will see how to organize and group data. Finally we will illustrate how R can benefit from multicore and cluster parallelization.
@@ -82,12 +82,13 @@ A call to `sessionInfo()` function will return `ggplot2` version as it is now at
 
 ## Warm-up Session -- dataSaurus
 
+in R or Rstudio do `install.packages("tidyverse")` (takes some time)
 
 see [the tutorial](https://cdn.rawgit.com/ULHPC/tutorials/raw/devel/maths/R/practical_datasaurus.html)
 
 
 
-## Comparing methods for aggreagating data
+## Comparing methods for aggregating data
 
 Let's say we are working with the full `diamonds` dataset (suppplied by the `ggplot2` package) and we want to compute the **average** price for a given diamond **cut**. 
 

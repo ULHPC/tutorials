@@ -23,7 +23,7 @@ forks](https://img.shields.io/github/stars/ULHPC/tutorials.svg?style=social&labe
 
 [![](https://github.com/ULHPC/tutorials/raw/devel/maths/R/figures/cover_slides.png)](https://github.com/ULHPC/tutorials/raw/devel/maths/R/PS12-introduction_to_R.pdf)
 
-  - [here as
+  - [slides as dynamic
     html](https://github.com/ULHPC/tutorials/raw/devel/maths/R/Intro_PS.html)
 
 Through this tutorial you will learn how to use R from your local
@@ -99,10 +99,12 @@ is now attached to the current session.
 
 ## Warm-up Session – dataSaurus
 
+in R or Rstudio do `install.packages("tidyverse")` (takes some time)
+
 see [the
 tutorial](https://cdn.rawgit.com/ULHPC/tutorials/raw/devel/maths/R/practical_datasaurus.html)
 
-## Comparing methods for aggreagating data
+## Comparing methods for aggregating data
 
 Let’s say we are working with the full `diamonds` dataset (suppplied by
 the `ggplot2` package) and we want to compute the **average** price for
@@ -283,13 +285,13 @@ m
 ```
 
     ## # A tibble: 4 x 10
-    ##   expression      min     mean   median      max `itr/sec` mem_alloc  n_gc
-    ##   <chr>      <bch:tm> <bch:tm> <bch:tm> <bch:tm>     <dbl> <bch:byt> <dbl>
-    ## 1 LAPPLY       9.26ms  12.18ms  10.89ms  20.62ms      82.1    8.04MB    67
-    ## 2 AGGREGATE   39.08ms  46.88ms  46.65ms 104.79ms      21.3   13.09MB   139
-    ## 3 DPLYR       10.99ms  12.36ms   11.7ms  17.41ms      80.9    1.53MB    12
-    ## 4 DATATABLE    1.18ms   1.68ms   1.46ms   5.95ms     596.   623.85KB     6
-    ## # ... with 2 more variables: n_itr <int>, total_time <bch:tm>
+    ##   expression     min   mean median     max `itr/sec` mem_alloc  n_gc n_itr
+    ##   <chr>      <bch:t> <bch:> <bch:> <bch:t>     <dbl> <bch:byt> <dbl> <int>
+    ## 1 LAPPLY      9.39ms 12.5ms 11.3ms 23.18ms      80.2    8.04MB    67   233
+    ## 2 AGGREGATE  39.06ms 46.9ms 47.2ms  77.1ms      21.3   13.09MB   139   161
+    ## 3 DPLYR         11ms 12.6ms 11.8ms 20.43ms      79.6    1.53MB    12   288
+    ## 4 DATATABLE   1.17ms  1.7ms  1.5ms  7.18ms     589.   623.85KB     6   294
+    ## # ... with 1 more variable: total_time <bch:tm>
 
   - makes comparison easier to read using **relative** values. 1 for the
     fastest.
@@ -303,10 +305,10 @@ summary(m, relative = TRUE)
     ## # A tibble: 4 x 10
     ##   expression   min  mean median   max `itr/sec` mem_alloc  n_gc n_itr
     ##   <chr>      <dbl> <dbl>  <dbl> <dbl>     <dbl>     <dbl> <dbl> <dbl>
-    ## 1 LAPPLY      7.86  7.26   7.45  3.46      3.85     13.2   11.2  1.45
-    ## 2 AGGREGATE  33.2  27.9   31.9  17.6       1        21.5   23.2  1   
-    ## 3 DPLYR       9.33  7.37   8.01  2.92      3.79      2.51   2    1.79
-    ## 4 DATATABLE   1     1      1     1        27.9       1      1    1.83
+    ## 1 LAPPLY      8.00  7.34   7.57  3.23      3.76     13.2   11.2  1.45
+    ## 2 AGGREGATE  33.3  27.6   31.6  10.7       1        21.5   23.2  1   
+    ## 3 DPLYR       9.37  7.39   7.86  2.85      3.74      2.51   2    1.79
+    ## 4 DATATABLE   1     1      1     1        27.6       1      1    1.83
     ## # ... with 1 more variable: total_time <dbl>
 
 ### Plotting the benchmark
@@ -447,7 +449,7 @@ nothingness <- future_map(c(2, 2, 2), ~Sys.sleep(.x), .progress = TRUE)
 tictoc::toc()
 ```
 
-    ## 6.314 sec elapsed
+    ## 6.15 sec elapsed
 
   - second in parallel
 
@@ -468,7 +470,7 @@ nothingness <- future_map(c(2, 2, 2), ~Sys.sleep(.x), .progress = TRUE)
 tictoc::toc()
 ```
 
-    ## 2.102 sec elapsed
+    ## 2.105 sec elapsed
 
 ### t-SNE example
 

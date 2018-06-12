@@ -20,6 +20,21 @@ library(tidyverse)
 ```
 
 
+## Objectives {.vs2}
+
+### You will learn to: {.box-8 .offset-2 .intro .icon}
+
+![](https://rworkshop.uni.lu/lectures/img/00/kt.png)
+
+- install and run R and Rstudio on your machine
+- use R on the clusters
+- explore `ggplot2` and `dplyr` on the _dataSaurus_
+- summarise a dataset using different packages and benchmark them
+- demonstrate why packages are better than R base
+- perform single node parallelisation on `iris`
+
+
+
 ## What is R? {.vs2}
 
 ### {.icon .col-12}
@@ -29,8 +44,6 @@ library(tidyverse)
 ```{r, echo = FALSE}
 icon::fa("r-project", size = 4)
 ```
-
- `r emojifont::fontawesome('fa-github')`
 
 is shorthand for ["GNU R"](https://www.r-project.org):
 
@@ -296,7 +309,7 @@ Some functions need to be known. And in R, everything is a function.
 
 ### Advices from David Robinson {.box-6 .icon-small .stretch .advice .outline}
 
-![](img/01/drobinson2.png)
+![](https://rworkshop.uni.lu/lectures/img/01/drobinson2.png)
 
 - [Teach tidyverse to beginners](http://varianceexplained.org/r/teach-tidyverse/)
     + base: summary functions
@@ -464,7 +477,7 @@ Rstudio has the built-in shortcut <kbd>Alt</kbd>+<kbd>-</kbd> for `<-`
 
 ### {.box-8}
 
-![](img/01/data-structures-overview.png)
+![](https://rworkshop.uni.lu/lectures/img/01/data-structures-overview.png)
 
 
 
@@ -592,33 +605,15 @@ Learning the _tidyverse_ does not prevent to learn _R base_, it helps to get thi
 4 days workshop at the [doctoral school@Uni](https://rworkshop.uni.lu/) last Feb 2018, probably again March 2019
 
 
-# Practical Session
-
-## Objectives {.vs2}
-
-### You will learn to: {.box-8 .offset-2 .intro .icon}
-
-![](https://rworkshop.uni.lu/lectures/img/00/kt.png)
-
-- install and run R and Rstudio on your machine
-- use R on the clusters
-- download a file and process it
-- create a simple _ggplot_ remotely
-- summarise a dataset using different packages and benchmark them
-- demonstrate why packages are so much better than R base
-- perform single machine parallelisation on `gaia`
-- perform cluster parallelisation on `gaia`
+# Practical Session | dataSaurus & furrr
 
 
-
-
-## Acknowledgements {.vs3}
 
 ## Wrap up {.vs1}
 
 ### You learned to: {.box-8 .offset-2 .intro .icon}
 
-![](img/00/kt.png)
+![](https://rworkshop.uni.lu/lectures/img/00/kt.png)
 
 - Introduction
     + R
@@ -635,8 +630,9 @@ Learning the _tidyverse_ does not prevent to learn _R base_, it helps to get thi
 %end%
 
 
+## Acknowledgements {.vs3}
 
-### {.bg-uni .box-12 .icon .small-pic}
+### {.intro .box-12 .icon .small-pic}
 
 ![](https://rworkshop.uni.lu/img/uni-logo.png)
 
@@ -649,8 +645,8 @@ Learning the _tidyverse_ does not prevent to learn _R base_, it helps to get thi
 
 </br>
 
-- Practical here: https://github.com/ULHPC/tutorials/tree/devel/advanced/R
+- Practical here: https://github.com/ULHPC/tutorials/tree/devel/maths/R
 
-- Slides (html): https://cdn.rawgit.com/ULHPC/tutorials/devel/advanced/R/Intro_PS.html
+- Slides (html): https://github.com/ULHPC/tutorials/raw/devel/advanced/R/Intro_PS.html
 
 - Slides (pdf): https://github.com/ULHPC/tutorials/raw/devel/advanced/R/Intro_PS.pdf
