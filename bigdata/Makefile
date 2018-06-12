@@ -1,7 +1,7 @@
 ##################################################################################
 # Makefile - Configuration file for GNU make (http://www.gnu.org/software/make/)
 # Creation : 07 Nov 2013
-# Time-stamp: <Tue 2018-06-12 14:23 svarrette>
+# Time-stamp: <Tue 2018-06-12 22:08 svarrette>
 #
 # Copyright (c) 2013 Sebastien Varrette <Sebastien.Varrette@uni.lu>
 #               http://varrette.gforge.uni.lu
@@ -27,7 +27,6 @@ TARGETS = $(ARCHIVE_JAVA7) $(ARCHIVE_JAVA8)
 
 all:  $(TARGETS)
 
-
 print:
 	@echo "SCRIPT = $(SCRIPT)"
 	@echo "ARCHIVE_JAVA7 = $(ARCHIVE_JAVA7)"
@@ -47,18 +46,18 @@ $(ARCHIVE_JAVA8):
 java7: $(ARCHIVE_JAVA7)
 java8: $(ARCHIVE_JAVA8)
 
-# Building the modules with Easybuild
-build: java maven
+# # Building the modules with Easybuild
+# build: java maven
 
-build.java7: java7
-	$(SCRIPT) --java7 --eb
-build.java8: java8
-	$(SCRIPT) --java8 --eb
+# build.java7: java7
+# 	$(SCRIPT) --java7 --eb -d $(SRC_DIR)
+# build.java8: java8
+# 	$(SCRIPT) --java8 --eb -d $(SRC_DIR)
 
-build.maven maven: $(MAVEN_EB)
-	$(SCRIPT) --maven --eb
+# build.maven maven: $(MAVEN_EB)
+# 	$(SCRIPT) --maven --eb
 
-java: build.java7 build.java8
+# java: build.java7 build.java8
 
 
 clean:

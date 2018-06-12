@@ -3,7 +3,7 @@
 #         Mandatory for loading the modules
 ################################################################################
 # bootstrap.sh - Bootstrap Java, eventually with Easybuild
-# Time-stamp: <Tue 2018-06-12 14:25 svarrette>
+# Time-stamp: <Tue 2018-06-12 22:14 svarrette>
 ################################################################################
 
 DO_EASYBUILD=
@@ -40,9 +40,9 @@ fi
 # Usage: eb_install <filename>.eb
 ##
 function eb_install() {
-    local ebconfig=${OUTPUT_DIR}/$1
+    local ebconfig=$1
     [ -z "$ebconfig" ] && return || true
-    cmd="eb $ebconfig --robot-paths=$PWD: "
+    cmd="cd ${OUTPUT_DIR} && eb $ebconfig --robot-paths=$PWD/${OUTPUT_DIR}: "
     echo "==> running '${cmd} -D'"
     ${cmd} -D
     echo "==> running '${cmd}'"
@@ -84,7 +84,10 @@ if [ -n "${INSTALL_JAVA7}" ]; then
             mv ${ARCHIVE_JAVA7} ${OUTPUT_DIR}/
         fi
     fi
-    [ -n "${DO_EASYBUILD}" ] && eb_install "${JAVA7_EB}"
+    if [ -n "${DO_EASYBUILD}" ]; then
+        cd ${OUTPUT_DIR} && eb "${JAVA7_EB}" -Dr
+        cd ${OUTPUT_DIR} && eb "${JAVA7_EB}" -r
+    fi
 fi
 
 # Download and eventually install Java 8
@@ -97,7 +100,10 @@ if [ -n "${INSTALL_JAVA8}" ]; then
             mv ${ARCHIVE_JAVA8} ${OUTPUT_DIR}/
         fi
     fi
-    [ -n "${DO_EASYBUILD}" ] && eb_install "${JAVA8_EB}"
+    if [ -n "${DO_EASYBUILD}" ]; then
+        cd ${OUTPUT_DIR} && eb "${JAVA8_EB}" -Dr
+        cd ${OUTPUT_DIR} && eb "${JAVA8_EB}" -r
+    fi
 fi
 
 # eventually install Maven
