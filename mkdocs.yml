@@ -1,34 +1,49 @@
 site_name: UL HPC Tutorials
 pages:
 - Home: 'index.md'
+- Latest HPC School: 'hpc-school.md'
+- Setup:
+  - Overview:       'setup/index.md'
+  - Pre-Requisites: 'setup/preliminaries.md'
+  - Installation:   'setup/install.md'
 - Basic Tutorials:
-  - Getting Started: 'basic/getting_started/index.md'
+  - Getting Started: 'beginners/index.md'
   - HPC workflow with sequential jobs: 'basic/sequential_jobs/index.md'
-  - Efficient Debugging: 'advanced/Debug/README.md'
-- Advanced Software Management:
-  - Easybuild: 'advanced/EasyBuild/README.md'
-  - RESIF: 'advanced/RESIF/README.md'
-- MPI:
-  - OSU Micro-benchmarks: 'advanced/OSU_MicroBenchmarks/index.md'
-  - High Performance Linpack (HPL): 'advanced/HPL/index.md'
-  - High Performance Conjugate Gradient (HPCG): 'advanced/HPCG/README.md'
+  - Prototyping with Python: 'python/basics/index.md'
+- Scheduling:
+  - Job scheduling with SLURM: 'scheduling/advanced/index.md'
+- Tools / Software management:
+  - Easybuild: 'tools/easybuild/index.md'
+#  - RESIF:     'tools/resif/index.md'
+- Debugging and Profiling:
+  - Efficient Debugging:     'debugging/basics/index.md'
+  - Performance engineering: 'debugging/advanced/index.md'
+- Parallel MPI and/or OpenMP:
+  - Overview: 'parallel/basics/index.md'
+  - OSU Micro-benchmarks: 'parallel/mpi/OSU_MicroBenchmarks/index.md'
+  - High Perf. Linpack (HPL): 'parallel/mpi/HPL/index.md'
+  - High Perf. Conjugate Gradient (HPCG): 'parallel/hybrid/HPCG/index.md'
+- Python:
+  - Prototyping with Python: 'python/basics/index.md'
+  - Jupyter and Celery: 'python/advanced/index.md'
 - Mathematics:
-  - MATLAB: 'advanced/MATLAB1/README.md'
-  - R - statistical computing: 'advanced/R/README.md'
+  - MATLAB: 'maths/matlab/basics/index.md'
+  - MATLAB (advanced): 'maths/matlab/advanced/index.md'
+  - R - statistical computing: 'maths/R/index.md'
 - Bioinformatics:
-  - Running bioinformatics software: 'advanced/Bioinformatics/README.md'
-  - Galaxy: 'advanced/Galaxy/README.md'
-- Parallel Debuggers:
-  - Allinea: 'advanced/Allinea/README.md'
-  - TotalView: 'advanced/TotalView/README.md'
-- Virtualization:
-  - Vagrant: 'advanced/Vagrant/README.md'
-  - Grid5000 - Automatic VM deployment with VM5K: 'advanced/vm5k/README.md'
+  - Running bioinformatics software: 'bio/basics/index.md'
+  - Galaxy: 'bio/galaxy/index.md'
 - CFD/MD/Chemistry:
-  - Advanced Parallel execution: 'advanced/ParallelExec/README.md'
-- Advanced topics:
-  - Advanced workflows on sequential jobs management: 'advanced/advanced_workflows/README.md'
-  - Advanced scheduling with SLURM: 'advanced/advanced_scheduling/index.md'
+   - Advanced Parallel execution: 'multiphysics/index.md'
+- Big Data:
+  - Big Data Application Over Apache Spark: 'bigdata/spark/index.md'
+- Virtualization:
+   - Vagrant: 'virtualization/vagrant/index.md'
+   - Grid5000 - Automatic VM deployment with VM5K: 'virtualization/vm5k/index.md'
+- Misc:
+  - Reproducible Research: 'misc/reproducible-research/index.md'
+# - Advanced topics:
+#   - Advanced workflows on sequential jobs management: 'advanced/advanced_workflows/README.md'
 - Documentation (RTFD): 'rtfd.md'
 - Contributing: 'contributing.md'
 - Contacts: 'contacts.md'

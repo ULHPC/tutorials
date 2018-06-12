@@ -1,0 +1,12 @@
+#!/bin/bash -l
+#SBATCH --job-name=example4
+#SBATCH --output=example4.out
+#
+#SBATCH --ntasks=1
+#SBATCH --time=0-00:10:00
+#SBATCH -p batch
+#SBATCH --qos=qos-batch
+
+pythran example4.py -o std.so
+python c_compare.py
+gnuplot gnuplot/time_vs_array_size.gpi

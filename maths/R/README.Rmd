@@ -60,7 +60,6 @@ Thus you can use whether R interactive shell or R-Studio embedded shell.
 
 
 
-
 ### Installing R Packages
 
 To install libraries you can use the `install.packages()` function. _e.g_
@@ -126,6 +125,7 @@ ggplot(diamonds) +
 
 We could do a for loop to aggregate the data per cuts and manually compute the average price, but in R loops are generally a bad idea (if you avoid growing vectors there are fine). It is better to concentrate on actions and not on programming, so the looping can be efficiently done internally to available functions.
 
+
 Thus instead of looping around the dataset, we will use a function from the `dplyr` package part of the [tidyverse](http://tidyverse.org) idiom
 
 ### `dplyr` from the tidyverse
@@ -165,6 +165,7 @@ aggregate(price ~ cut,
 ### `lapply` from base
 
 In the previous example we used `aggregate` for the **aggregation**, we could also have used `lapply` (but in a more complex way):
+
 
 ```{r}
 as.data.frame(cbind(cut = as.character(unique(diamonds$cut)), avg_price = lapply(unique(diamonds$cut), function(x) mean(diamonds$price[which(diamonds$cut == x)]))))
@@ -480,6 +481,7 @@ just for the fun of it, using the [experimental gganimate](https://github.com/th
 * [CRAN HPC Packages](https://cran.r-project.org/web/views/HighPerformanceComputing.html)
 
 * [tidyverse Documentation](https://tidyverse.org/)
+
 
 * [Advanced R programming by Hadley Wickham](http://adv-r.had.co.nz/)
 

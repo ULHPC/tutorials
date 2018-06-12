@@ -1,13 +1,10 @@
--*- mode: markdown; mode: auto-fill; fill-column: 80 -*-
+[![By ULHPC](https://img.shields.io/badge/by-ULHPC-blue.svg)](https://hpc.uni.lu) [![Licence](https://img.shields.io/badge/license-GPL--3.0-blue.svg)](http://www.gnu.org/licenses/gpl-3.0.html) [![GitHub issues](https://img.shields.io/github/issues/ULHPC/tutorials.svg)](https://github.com/ULHPC/tutorials/issues/) [![](https://img.shields.io/badge/slides-PDF-red.svg)](https://github.com/ULHPC/tutorials/raw/devel/basic/sequential_jobs/slides.pdf) [![Github](https://img.shields.io/badge/sources-github-green.svg)](https://github.com/ULHPC/tutorials/tree/devel/basic/sequential_jobs/) [![Documentation Status](http://readthedocs.org/projects/ulhpc-tutorials/badge/?version=latest)](http://ulhpc-tutorials.readthedocs.io/en/latest/basic/sequential_jobs/) [![GitHub forks](https://img.shields.io/github/stars/ULHPC/tutorials.svg?style=social&label=Star)](https://github.com/ULHPC/tutorials)
 
-Copyright (c) 2016-2017 [ULHPC management team](mailto:<hpc-sysadmins@uni.lu>) --  [www](http://hpc.uni.lu)
+# HPC workflow with sequential jobs
 
----------------------------------------------------------
-# UL HPC Tutorial: HPC workflow with sequential jobs
+     Copyright (c) 2013-2018 UL HPC Team <hpc-sysadmins@uni.lu>
 
-[![By ULHPC](https://img.shields.io/badge/by-ULHPC-blue.svg)](https://hpc.uni.lu) [![Licence](https://img.shields.io/badge/license-GPL--3.0-blue.svg)](http://www.gnu.org/licenses/gpl-3.0.html) [![GitHub issues](https://img.shields.io/github/issues/ULHPC/tutorials.svg)](https://github.com/ULHPC/tutorials/issues/) [![](https://img.shields.io/badge/slides-PDF-red.svg)](slides.pdf) [![Github](https://img.shields.io/badge/sources-github-green.svg)](https://github.com/ULHPC/tutorials/tree/devel/basic/sequential_jobs/) [![Documentation Status](http://readthedocs.org/projects/ulhpc-tutorials/badge/?version=latest)](http://ulhpc-tutorials.readthedocs.io/en/latest/basic/sequential_jobs/) [![GitHub forks](https://img.shields.io/github/stars/ULHPC/tutorials.svg?style=social&label=Star)](https://github.com/ULHPC/tutorials)
-
-[![](cover_slides.png)](slides.pdf)
+[![](https://github.com/ULHPC/tutorials/raw/devel/basic/sequential_jobs/cover_slides.png)](https://github.com/ULHPC/tutorials/raw/devel/basic/sequential_jobs/slides.pdf)
 
 **Prerequisites**
 
@@ -85,8 +82,16 @@ In order to edit files in your terminal, you are expected to use your preferred 
 * [emacs](http://www.jesshamrick.com/2012/09/10/absolute-beginners-guide-to-emacs/)
 * ...
 
-If you have never used any of them, `nano` is intuitive, but vim and emacs are more powerful.
+If you have never used any of them, `nano` is intuitive, but `vim` and `emacs` are more powerful.
 
+With nano, you will only have to learn a few shortcuts to get started:
+
+* `$ nano <path/filename>`
+* quit and save: `CTRL+x`
+* save: `CTRL+o`
+* highlight text: `Alt-a`
+* Cut the highlighted text: `CTRL+k`
+* Paste: `CTRL+u`
 
 
 ## Exercise 1: Parametric experiment with Gromacs
@@ -96,7 +101,7 @@ In this exercise, we will process some example input files, and make the paramet
 
 Create a file which contains the list of parameters:
 
-    (access)$> seq 0.1 0.005 0.2 > $HOME/PS2/param_file
+    (access)$> seq 0.1 0.002 0.2 > $HOME/PS2/param_file
 
 
 #### Step 1: Naive workflow
@@ -178,11 +183,11 @@ and check the status of the system using standard linux command (`free`, `top`, 
     Swap:         4095         47       4048
     0 14:51:59 hcartiaux@d-cluster1-1(chaos-cluster)[OAR1542592->119] ~ $ htop
 
-![Htop screenshot](src/images/chaos_htop.png)
+![Htop screenshot](https://github.com/ULHPC/tutorials/raw/devel/basic/sequential_jobs/images/chaos_htop.png)
 
 During the execution, you can try to locate your job on the [monika web interface](https://hpc.uni.lu/chaos/monika).
 
-![Monika screenshot](src/images/chaos_monika.png)
+![Monika screenshot](https://github.com/ULHPC/tutorials/raw/devel/basic/sequential_jobs/images/chaos_monika.png)
 
 Using the [system monitoring tool ganglia](https://hpc.uni.lu/chaos/ganglia), check the activity on your node.
 
@@ -259,10 +264,10 @@ Or with `sbatch` if you are using Iris
 
 
 * Naive workflow: time = **16m 32s**
-  ![CPU usage for the sequential workflow](src/images/chaos_ganglia_seq.png)
+  ![CPU usage for the sequential workflow](https://github.com/ULHPC/tutorials/raw/devel/basic/sequential_jobs/images/chaos_ganglia_seq.png)
 
 * Parallel workflow: time = **2m 11s**
-  ![CPU usage for the parallel workflow](src/images/chaos_ganglia_parallel.png)
+  ![CPU usage for the parallel workflow](https://github.com/ULHPC/tutorials/raw/devel/basic/sequential_jobs/images/chaos_ganglia_parallel.png)
 
 
 **/!\ Gaia and Chaos nodes are heterogeneous. In order to compare execution times,
@@ -306,8 +311,8 @@ In an interactive job, install `pillow` in your home directory using this comman
 
 Copy the source files in your $HOME directory.
 
-    (access)>$ tar xvf /mnt/isilon/projects/ulhpc-tutorials/sequential/images.tgz -C $HOME/PS2/
-    (access)>$ cp /mnt/isilon/projects/ulhpc-tutorials/sequential/copyright.png $HOME/PS2
+    (access)>$ tar xvf /mnt/isilon/projects/ulhpc-tutorials/sequential/images2.tgz -C $HOME/PS2/
+    (access)>$ cp /mnt/isilon/projects/ulhpc-tutorials/sequential/ulhpc_logo.png $HOME/PS2
 
     (access)>$ cd $HOME/PS2
 
@@ -315,7 +320,7 @@ Copy the source files in your $HOME directory.
 
 We must create a file containing a list of parameters, each line will be passed to `watermark.py`.
 
-    ls -d -1 $HOME/PS2/images/*.JPG | awk -v watermark=$HOME/PS2/copyright.png '{print watermark " " $1}' > $HOME/PS2/generic_launcher_param
+    ls -d -1 $HOME/PS2/images/*.JPG | awk -v watermark=$HOME/PS2/ulhpc_logo.png '{print watermark " " $1}' > $HOME/PS2/generic_launcher_param
     \_____________________________/   \_________________________________________________________________/ \_________________________________/
                    1                                                    2                                                3
 
@@ -348,7 +353,7 @@ On Iris, the Slurm job submission command is `sbatch`
 
 On Chaos and Gaia, the OAR job submission command is `oarsub`
 
-    (access Chaos/Gaia)>$ oarsub $HOME/PS2/launcher-scripts/bash/generic/parallel_launcher.sh
+    (access Chaos/Gaia)>$ oarsub -l nodes=2 $HOME/PS2/launcher-scripts/bash/generic/parallel_launcher.sh
 
 
 #### Step 5: Download the files

@@ -81,6 +81,7 @@ interactive shell or R-Studio embedded shell.
 To install libraries you can use the `install.packages()` function.
 *e.g*
 
+
 `install.packages("ggplot2")`
 
 This will install the `ggplot2` library.
@@ -164,6 +165,7 @@ the `dplyr` package part of the [tidyverse](http://tidyverse.org) idiom
 
 ### `dplyr` from the tidyverse
 
+
 Of note, all core packages of the *tidyverse* could be installed at once
 
 ``` r
@@ -197,6 +199,7 @@ diamonds %>%
 Note: `summarise()` from the `dplyr` package is similar to `aggregate()`
 from base package, `dplyr` functions simply provide a more consistent
 naming convention together with better performance
+
 
 ### `aggregate` from base
 
@@ -605,3 +608,4 @@ the t-SNE evolves with increased perplexities
   - [tidyverse Documentation](https://tidyverse.org/)
 
   - [Advanced R programming by Hadley Wickham](http://adv-r.had.co.nz/)
+

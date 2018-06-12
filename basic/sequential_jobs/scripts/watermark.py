@@ -14,6 +14,13 @@ except ImportError:
     import Image
     import ImageEnhance
 
+# Python 3 compatibility hack
+try:
+    unicode('')
+except NameError:
+    unicode = str
+
+
 def _percent(var):
     """
     Just a simple interface to the _val function with a more meaningful name.
@@ -90,11 +97,11 @@ def determine_scale(scale, img, mark):
         # determine the new width and height
         w = int(mark.size[0] * float(scale)) / 2
         h = int(mark.size[1] * float(scale)) / 2
-        print w, h
+        print(w, h)
         # apply the new width and height, and return the new `mark`
         return (w, h)
     else:
-        print 'Mark Size', mark.size
+        print('Mark Size', mark.size)
         return mark.size
 
 
@@ -174,7 +181,7 @@ def determine_position(position, img, mark):
                 top = max_top * _percent(top)
             else:
                 top = _int(top)
-    print 'top left', left, top
+    print('top left', left, top)
     return (left, top)
 
 
@@ -188,7 +195,7 @@ def watermark(img, mark, position=(0, 0), opacity=1, scale=1.0, tile=False,
 
     if type(scale) != tuple:
         scale = determine_scale(scale, img, mark)
-    print 'mark mode', mark.mode
+    print('mark mode', mark.mode)
     mark = mark.resize(scale, Image.ANTIALIAS)
 
     if greyscale and mark.mode != 'LA':
@@ -209,11 +216,11 @@ def watermark(img, mark, position=(0, 0), opacity=1, scale=1.0, tile=False,
         mark = new_mark.rotate(rotation, Image.BICUBIC, expand=True)
 
     position = determine_position(position, img, mark)
-    print 'image mode', img.mode
-    print 'mark mode', mark.mode
+    print('image mode', img.mode)
+    print('mark mode', mark.mode)
     if img.mode != 'RGBA':
         img = img.convert('RGBA')
-    print 'image ---', img.mode
+    print('image ---', img.mode)
     alpha = img.split()[3]
     alpha = ImageEnhance.Brightness(alpha).enhance(opacity)
     img.putalpha(alpha)
@@ -241,10 +248,10 @@ def main(argv):
     im = Image.open(argv[1])
     mark = Image.open(argv[0])
     watermark(im, mark,
-              position='C',
-              opacity=0.8,
+              position='BR',
+              opacity=0.3,
               scale='f',
-              rotation=45).save(argv[1] + '.watermarked_' + socket.gethostname() + '.jpg', 'JPEG')
+              rotation=0).convert("RGB").save(argv[1] + '.watermarked_' + socket.gethostname() + '.jpg', 'JPEG')
 
 
 if __name__ == '__main__':

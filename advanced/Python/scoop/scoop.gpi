@@ -1,7 +1,0 @@
-set terminal jpeg
-set output "output/output.jpeg"
-show output
-set title "Time of execution compared to core used"
-set xlabel "#core"
-set ylabel "time (s)"
-plot 'data/time_per_core_sorted.dat' with linespoints title "pi calculation with Scoop"
