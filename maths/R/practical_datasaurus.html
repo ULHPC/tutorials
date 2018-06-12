@@ -1,0 +1,1565 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+<meta name="author" content="Aurelien Ginolhac" />
+
+<meta name="date" content="2018-06-15" />
+
+<title>practical R session</title>
+
+<script src="practical_datasaurus_files/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="practical_datasaurus_files/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="practical_datasaurus_files/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="practical_datasaurus_files/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="practical_datasaurus_files/bootstrap-3.3.5/shim/respond.min.js"></script>
+<link href="practical_datasaurus_files/tutorial-0.3.0.9000/css/style.css" rel="stylesheet" />
+<script src="practical_datasaurus_files/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="practical_datasaurus_files/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="practical_datasaurus_files/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="practical_datasaurus_files/navigation-1.1/tabsets.js"></script>
+<link href="practical_datasaurus_files/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="practical_datasaurus_files/highlightjs-9.12.0/highlight.js"></script>
+<link href="practical_datasaurus_files/ionicons-2.0.1/css/ionicons.min.css" rel="stylesheet" />
+<script src="practical_datasaurus_files/kePrint-0.0.1/kePrint.js"></script>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+<link rel="stylesheet" href="practical.css" type="text/css" />
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+  padding-left: 25px;
+  text-indent: 0;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">practical R session</h1>
+<h4 class="author"><em>Aurelien Ginolhac</em></h4>
+<h4 class="date"><em>2018-06-15</em></h4>
+
+</div>
+
+
+<p>This guided practical will demonstrate that the <strong>tidyverse</strong> allows to compute summary statistics and visualize datasets easily. Those datasets are already compile in a <strong>tidy</strong> <code>tibble</code>, cleaning steps will come in future prracticals.</p>
+<div id="datasaurus-package" class="section level2">
+<h2><code>datasauRus</code> package</h2>
+<ul>
+<li>check if you have the package <code>datasauRus</code> installed</li>
+</ul>
+<pre class="r"><code>library(datasauRus)</code></pre>
+<ul>
+<li>should return nothing. If <code>there is no package called ‘datasauRus’</code> appears, it means that the package needs to be installed. Use this:</li>
+</ul>
+<pre class="r"><code>install.packages(&quot;datasauRus&quot;)</code></pre>
+</div>
+<div id="explore-the-dataset" class="section level2">
+<h2>Explore the dataset</h2>
+<p>Since we are dealing with a <code>tibble</code>, we can just type</p>
+<pre class="r"><code>datasaurus_dozen</code></pre>
+<p>only the first <strong>10</strong> rows are displayed.</p>
+<table class="table table-striped table-hover table-condensed" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;">
+dataset
+</th>
+<th style="text-align:right;">
+x
+</th>
+<th style="text-align:right;">
+y
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+dino
+</td>
+<td style="text-align:right;">
+55.3846
+</td>
+<td style="text-align:right;">
+97.1795
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+dino
+</td>
+<td style="text-align:right;">
+51.5385
+</td>
+<td style="text-align:right;">
+96.0256
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+dino
+</td>
+<td style="text-align:right;">
+46.1538
+</td>
+<td style="text-align:right;">
+94.4872
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+dino
+</td>
+<td style="text-align:right;">
+42.8205
+</td>
+<td style="text-align:right;">
+91.4103
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+dino
+</td>
+<td style="text-align:right;">
+40.7692
+</td>
+<td style="text-align:right;">
+88.3333
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+dino
+</td>
+<td style="text-align:right;">
+38.7179
+</td>
+<td style="text-align:right;">
+84.8718
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+dino
+</td>
+<td style="text-align:right;">
+35.6410
+</td>
+<td style="text-align:right;">
+79.8718
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+dino
+</td>
+<td style="text-align:right;">
+33.0769
+</td>
+<td style="text-align:right;">
+77.5641
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+dino
+</td>
+<td style="text-align:right;">
+28.9744
+</td>
+<td style="text-align:right;">
+74.4872
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+dino
+</td>
+<td style="text-align:right;">
+26.1538
+</td>
+<td style="text-align:right;">
+71.4103
+</td>
+</tr>
+</tbody>
+</table>
+<div id="what-are-the-dimensions-of-this-dataset-rows-and-columns" class="section level5">
+<h5>what are the dimensions of this dataset? Rows and columns?</h5>
+<ul>
+<li><strong>base</strong> version, using either <code>dim()</code>, <code>ncol()</code> and <code>nrow()</code></li>
+</ul>
+<div class="panel-group">
+<div class="panel" style="background-color:rgba(172, 225, 175, 0.3); border:2px solid rgba(172, 225, 175, 1);">
+<div class="panel-heading" style="background-color:rgba(172, 225, 175, 1); color:rgba(69, 90, 70, 1)!important;">
+<h4 class="panel-title">
+<a class = "collapsed" style="color: rgba(69, 90, 70, 1);" data-toggle="collapse" href="#unnamed-chunk-5">Solution</a>
+</h4>
+</div>
+<div id="unnamed-chunk-5" class="panel-collapse collapse">
+<div class="panel-body">
+<pre class="r"><code># dim() returns the dimensions of the data frame, i.e number of rows and columns
+dim(datasaurus_dozen)</code></pre>
+<pre><code>## [1] 1846    3</code></pre>
+<pre class="r"><code># ncol() only number of columns
+ncol(datasaurus_dozen)</code></pre>
+<pre><code>## [1] 3</code></pre>
+<pre class="r"><code># nrow() only number of rows
+nrow(datasaurus_dozen)</code></pre>
+<pre><code>## [1] 1846</code></pre>
+</div>
+</div>
+</div>
+</div>
+<ul>
+<li><strong>tidyverse</strong> version</li>
+</ul>
+<div class="panel-group">
+<div class="panel" style="background-color:rgba(172, 225, 175, 0.3); border:2px solid rgba(172, 225, 175, 1);">
+<div class="panel-heading" style="background-color:rgba(172, 225, 175, 1); color:rgba(69, 90, 70, 1)!important;">
+<h4 class="panel-title">
+<a class = "collapsed" style="color: rgba(69, 90, 70, 1);" data-toggle="collapse" href="#unnamed-chunk-6">Solution</a>
+</h4>
+</div>
+<div id="unnamed-chunk-6" class="panel-collapse collapse">
+<div class="panel-body">
+nothing to be done, a <code>tibble</code> display its dimensions, starting by a comment (‘#’ character)
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="assign-the-datasaurus_dozen-to-the-ds_dozen-object.-this-aims-at-populating-the-global-environment" class="section level5">
+<h5>assign the <code>datasaurus_dozen</code> to the <code>ds_dozen</code> object. This aims at populating the <strong>Global Environment</strong></h5>
+<div class="panel-group">
+<div class="panel" style="background-color:rgba(172, 225, 175, 0.3); border:2px solid rgba(172, 225, 175, 1);">
+<div class="panel-heading" style="background-color:rgba(172, 225, 175, 1); color:rgba(69, 90, 70, 1)!important;">
+<h4 class="panel-title">
+<a class = "" style="color: rgba(69, 90, 70, 1);" data-toggle="collapse" href="#unnamed-chunk-7">Solution</a>
+</h4>
+</div>
+<div id="unnamed-chunk-7" class="panel-collapse collapse in">
+<div class="panel-body">
+<pre class="r"><code>ds_dozen &lt;- datasaurus_dozen</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="using-rstudio-those-dimensions-are-now-also-reported-within-the-interface-where" class="section level5">
+<h5>using Rstudio, those dimensions are now also reported within the interface, where?</h5>
+<div class="panel-group">
+<div class="panel" style="background-color:rgba(172, 225, 175, 0.3); border:2px solid rgba(172, 225, 175, 1);">
+<div class="panel-heading" style="background-color:rgba(172, 225, 175, 1); color:rgba(69, 90, 70, 1)!important;">
+<h4 class="panel-title">
+<a class = "collapsed" style="color: rgba(69, 90, 70, 1);" data-toggle="collapse" href="#unnamed-chunk-8">Solution</a>
+</h4>
+</div>
+<div id="unnamed-chunk-8" class="panel-collapse collapse">
+<div class="panel-body">
+in the Environment panel -&gt; Global Environment
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="how-many-datasets-are-present" class="section level2">
+<h2>How many datasets are present?</h2>
+<ul>
+<li><strong>base</strong> version</li>
+</ul>
+<p>you want to count the number of <strong>unique</strong> elements in the column <strong>dataset</strong>. The function <strong>length()</strong> returns the length of a vector, such as the unique elements</p>
+<div class="panel-group">
+<div class="panel" style="background-color:rgba(172, 225, 175, 0.3); border:2px solid rgba(172, 225, 175, 1);">
+<div class="panel-heading" style="background-color:rgba(172, 225, 175, 1); color:rgba(69, 90, 70, 1)!important;">
+<h4 class="panel-title">
+<a class = "collapsed" style="color: rgba(69, 90, 70, 1);" data-toggle="collapse" href="#unnamed-chunk-10">Solution</a>
+</h4>
+</div>
+<div id="unnamed-chunk-10" class="panel-collapse collapse">
+<div class="panel-body">
+<pre class="r"><code>unique(ds_dozen$dataset) %&gt;% length()</code></pre>
+<pre><code>## [1] 13</code></pre>
+</div>
+</div>
+</div>
+</div>
+<ul>
+<li><strong>tidyverse</strong> version</li>
+</ul>
+<pre class="r"><code>summarise(ds_dozen, n = n_distinct(dataset))</code></pre>
+<pre><code>## # A tibble: 1 x 1
+##       n
+##   &lt;int&gt;
+## 1    13</code></pre>
+<ul>
+<li>even better way, compute and display the number of lines per <code>dataset</code></li>
+</ul>
+<p>the function <code>count</code> in <code>dplyr</code> does the <code>group_by()</code> by the specified column + <code>summarise(n = n())</code> which returns the number of observation per defined group.</p>
+<div class="panel-group">
+<div class="panel" style="background-color:rgba(172, 225, 175, 0.3); border:2px solid rgba(172, 225, 175, 1);">
+<div class="panel-heading" style="background-color:rgba(172, 225, 175, 1); color:rgba(69, 90, 70, 1)!important;">
+<h4 class="panel-title">
+<a class = "collapsed" style="color: rgba(69, 90, 70, 1);" data-toggle="collapse" href="#unnamed-chunk-13">Solution</a>
+</h4>
+</div>
+<div id="unnamed-chunk-13" class="panel-collapse collapse">
+<div class="panel-body">
+<pre class="r"><code>count(ds_dozen, dataset)</code></pre>
+<pre><code>## # A tibble: 13 x 2
+##    dataset        n
+##    &lt;chr&gt;      &lt;int&gt;
+##  1 away         142
+##  2 bullseye     142
+##  3 circle       142
+##  4 dino         142
+##  5 dots         142
+##  6 h_lines      142
+##  7 high_lines   142
+##  8 slant_down   142
+##  9 slant_up     142
+## 10 star         142
+## 11 v_lines      142
+## 12 wide_lines   142
+## 13 x_shape      142</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="check-summary-statistics-per-dataset" class="section level2">
+<h2>Check summary statistics per dataset</h2>
+<div id="compute-the-mean-of-the-x-y-column.-for-this-you-need-to-group_by-the-appropriate-column-and-then-summarise" class="section level5">
+<h5>compute the mean of the <code>x</code> &amp; <code>y</code> column. For this, you need to <code>group_by()</code> the appropriate column and then <code>summarise()</code></h5>
+<p>in <code>summarise()</code> you can define as many new columns as you wish. No need to call it for every single variable.</p>
+<div class="panel-group">
+<div class="panel" style="background-color:rgba(172, 225, 175, 0.3); border:2px solid rgba(172, 225, 175, 1);">
+<div class="panel-heading" style="background-color:rgba(172, 225, 175, 1); color:rgba(69, 90, 70, 1)!important;">
+<h4 class="panel-title">
+<a class = "collapsed" style="color: rgba(69, 90, 70, 1);" data-toggle="collapse" href="#unnamed-chunk-15">Solution</a>
+</h4>
+</div>
+<div id="unnamed-chunk-15" class="panel-collapse collapse">
+<div class="panel-body">
+<pre class="r"><code>ds_dozen %&gt;%
+  group_by(dataset) %&gt;%
+  summarise(mean_x = mean(x),
+            mean_y = mean(y))</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="panel-group">
+<div class = "panel" style = "background-color:rgba(172, 225, 175, 0.3); border:2px solid rgba(172, 225, 175, 1);">
+<div class="panel-heading" style="background-color:rgba(172, 225, 175, 1); color:rgba(69, 90, 70, 1)!important;">
+<h4 class="panel-title">
+<a class = "collapsed" style="color: rgba(69, 90, 70, 1);" data-toggle="collapse" href="#unnamed-chunk-16">Solution</a>
+</h4>
+</div>
+<div id="unnamed-chunk-16" class="panel-collapse collapse">
+<div class="panel-body">
+<table class="table table-striped table-hover table-condensed" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;">
+dataset
+</th>
+<th style="text-align:right;">
+mean_x
+</th>
+<th style="text-align:right;">
+mean_y
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+away
+</td>
+<td style="text-align:right;">
+54.26610
+</td>
+<td style="text-align:right;">
+47.83472
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+bullseye
+</td>
+<td style="text-align:right;">
+54.26873
+</td>
+<td style="text-align:right;">
+47.83082
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+circle
+</td>
+<td style="text-align:right;">
+54.26732
+</td>
+<td style="text-align:right;">
+47.83772
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+dino
+</td>
+<td style="text-align:right;">
+54.26327
+</td>
+<td style="text-align:right;">
+47.83225
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+dots
+</td>
+<td style="text-align:right;">
+54.26030
+</td>
+<td style="text-align:right;">
+47.83983
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+h_lines
+</td>
+<td style="text-align:right;">
+54.26144
+</td>
+<td style="text-align:right;">
+47.83025
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+high_lines
+</td>
+<td style="text-align:right;">
+54.26881
+</td>
+<td style="text-align:right;">
+47.83545
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+slant_down
+</td>
+<td style="text-align:right;">
+54.26785
+</td>
+<td style="text-align:right;">
+47.83590
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+slant_up
+</td>
+<td style="text-align:right;">
+54.26588
+</td>
+<td style="text-align:right;">
+47.83150
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+star
+</td>
+<td style="text-align:right;">
+54.26734
+</td>
+<td style="text-align:right;">
+47.83955
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+v_lines
+</td>
+<td style="text-align:right;">
+54.26993
+</td>
+<td style="text-align:right;">
+47.83699
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+wide_lines
+</td>
+<td style="text-align:right;">
+54.26692
+</td>
+<td style="text-align:right;">
+47.83160
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+x_shape
+</td>
+<td style="text-align:right;">
+54.26015
+</td>
+<td style="text-align:right;">
+47.83972
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="compute-the-standard-deviation-of-the-x-y-column-in-a-same-way" class="section level5">
+<h5>compute the standard deviation of the <code>x</code> &amp; <code>y</code> column in a same way</h5>
+<div class="panel-group">
+<div class="panel" style="background-color:rgba(172, 225, 175, 0.3); border:2px solid rgba(172, 225, 175, 1);">
+<div class="panel-heading" style="background-color:rgba(172, 225, 175, 1); color:rgba(69, 90, 70, 1)!important;">
+<h4 class="panel-title">
+<a class = "collapsed" style="color: rgba(69, 90, 70, 1);" data-toggle="collapse" href="#unnamed-chunk-17">Solution</a>
+</h4>
+</div>
+<div id="unnamed-chunk-17" class="panel-collapse collapse">
+<div class="panel-body">
+<pre class="r"><code>ds_dozen %&gt;%
+  group_by(dataset) %&gt;%
+  summarise(sd_x = sd(x),
+            sd_y = sd(y))</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="panel-group">
+<div class = "panel" style = "background-color:rgba(172, 225, 175, 0.3); border:2px solid rgba(172, 225, 175, 1);">
+<div class="panel-heading" style="background-color:rgba(172, 225, 175, 1); color:rgba(69, 90, 70, 1)!important;">
+<h4 class="panel-title">
+<a class = "collapsed" style="color: rgba(69, 90, 70, 1);" data-toggle="collapse" href="#unnamed-chunk-18">Solution</a>
+</h4>
+</div>
+<div id="unnamed-chunk-18" class="panel-collapse collapse">
+<div class="panel-body">
+<table class="table table-striped table-hover table-condensed" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;">
+dataset
+</th>
+<th style="text-align:right;">
+sd_x
+</th>
+<th style="text-align:right;">
+sd_y
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+away
+</td>
+<td style="text-align:right;">
+16.76983
+</td>
+<td style="text-align:right;">
+26.93974
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+bullseye
+</td>
+<td style="text-align:right;">
+16.76924
+</td>
+<td style="text-align:right;">
+26.93573
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+circle
+</td>
+<td style="text-align:right;">
+16.76001
+</td>
+<td style="text-align:right;">
+26.93004
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+dino
+</td>
+<td style="text-align:right;">
+16.76514
+</td>
+<td style="text-align:right;">
+26.93540
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+dots
+</td>
+<td style="text-align:right;">
+16.76774
+</td>
+<td style="text-align:right;">
+26.93019
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+h_lines
+</td>
+<td style="text-align:right;">
+16.76590
+</td>
+<td style="text-align:right;">
+26.93988
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+high_lines
+</td>
+<td style="text-align:right;">
+16.76670
+</td>
+<td style="text-align:right;">
+26.94000
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+slant_down
+</td>
+<td style="text-align:right;">
+16.76676
+</td>
+<td style="text-align:right;">
+26.93610
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+slant_up
+</td>
+<td style="text-align:right;">
+16.76885
+</td>
+<td style="text-align:right;">
+26.93861
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+star
+</td>
+<td style="text-align:right;">
+16.76896
+</td>
+<td style="text-align:right;">
+26.93027
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+v_lines
+</td>
+<td style="text-align:right;">
+16.76996
+</td>
+<td style="text-align:right;">
+26.93768
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+wide_lines
+</td>
+<td style="text-align:right;">
+16.77000
+</td>
+<td style="text-align:right;">
+26.93790
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+x_shape
+</td>
+<td style="text-align:right;">
+16.76996
+</td>
+<td style="text-align:right;">
+26.93000
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="do-then-all-in-one-go-using-summarise_if-so-we-exclude-the-dataset-column-and-compute-the-others" class="section level5 bonus">
+<h5>do then all in one go using <code>summarise_if</code> so we exclude the <code>dataset</code> column and compute the others</h5>
+<div class="panel-group">
+<div class="panel" style="background-color:rgba(172, 225, 175, 0.3); border:2px solid rgba(172, 225, 175, 1);">
+<div class="panel-heading" style="background-color:rgba(172, 225, 175, 1); color:rgba(69, 90, 70, 1)!important;">
+<h4 class="panel-title">
+<a class = "collapsed" style="color: rgba(69, 90, 70, 1);" data-toggle="collapse" href="#unnamed-chunk-19">Solution</a>
+</h4>
+</div>
+<div id="unnamed-chunk-19" class="panel-collapse collapse">
+<div class="panel-body">
+<pre class="r"><code>ds_dozen %&gt;%
+  group_by(dataset) %&gt;%
+  summarise_if(is.double, funs(mean = mean, sd = sd))</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="panel-group">
+<div class = "panel" style = "background-color:rgba(172, 225, 175, 0.3); border:2px solid rgba(172, 225, 175, 1);">
+<div class="panel-heading" style="background-color:rgba(172, 225, 175, 1); color:rgba(69, 90, 70, 1)!important;">
+<h4 class="panel-title">
+<a class = "collapsed" style="color: rgba(69, 90, 70, 1);" data-toggle="collapse" href="#unnamed-chunk-20">Solution</a>
+</h4>
+</div>
+<div id="unnamed-chunk-20" class="panel-collapse collapse">
+<div class="panel-body">
+<table class="table table-striped table-hover table-condensed" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;">
+dataset
+</th>
+<th style="text-align:right;">
+x_mean
+</th>
+<th style="text-align:right;">
+y_mean
+</th>
+<th style="text-align:right;">
+x_sd
+</th>
+<th style="text-align:right;">
+y_sd
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+away
+</td>
+<td style="text-align:right;">
+54.26610
+</td>
+<td style="text-align:right;">
+47.83472
+</td>
+<td style="text-align:right;">
+16.76983
+</td>
+<td style="text-align:right;">
+26.93974
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+bullseye
+</td>
+<td style="text-align:right;">
+54.26873
+</td>
+<td style="text-align:right;">
+47.83082
+</td>
+<td style="text-align:right;">
+16.76924
+</td>
+<td style="text-align:right;">
+26.93573
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+circle
+</td>
+<td style="text-align:right;">
+54.26732
+</td>
+<td style="text-align:right;">
+47.83772
+</td>
+<td style="text-align:right;">
+16.76001
+</td>
+<td style="text-align:right;">
+26.93004
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+dino
+</td>
+<td style="text-align:right;">
+54.26327
+</td>
+<td style="text-align:right;">
+47.83225
+</td>
+<td style="text-align:right;">
+16.76514
+</td>
+<td style="text-align:right;">
+26.93540
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+dots
+</td>
+<td style="text-align:right;">
+54.26030
+</td>
+<td style="text-align:right;">
+47.83983
+</td>
+<td style="text-align:right;">
+16.76774
+</td>
+<td style="text-align:right;">
+26.93019
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+h_lines
+</td>
+<td style="text-align:right;">
+54.26144
+</td>
+<td style="text-align:right;">
+47.83025
+</td>
+<td style="text-align:right;">
+16.76590
+</td>
+<td style="text-align:right;">
+26.93988
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+high_lines
+</td>
+<td style="text-align:right;">
+54.26881
+</td>
+<td style="text-align:right;">
+47.83545
+</td>
+<td style="text-align:right;">
+16.76670
+</td>
+<td style="text-align:right;">
+26.94000
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+slant_down
+</td>
+<td style="text-align:right;">
+54.26785
+</td>
+<td style="text-align:right;">
+47.83590
+</td>
+<td style="text-align:right;">
+16.76676
+</td>
+<td style="text-align:right;">
+26.93610
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+slant_up
+</td>
+<td style="text-align:right;">
+54.26588
+</td>
+<td style="text-align:right;">
+47.83150
+</td>
+<td style="text-align:right;">
+16.76885
+</td>
+<td style="text-align:right;">
+26.93861
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+star
+</td>
+<td style="text-align:right;">
+54.26734
+</td>
+<td style="text-align:right;">
+47.83955
+</td>
+<td style="text-align:right;">
+16.76896
+</td>
+<td style="text-align:right;">
+26.93027
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+v_lines
+</td>
+<td style="text-align:right;">
+54.26993
+</td>
+<td style="text-align:right;">
+47.83699
+</td>
+<td style="text-align:right;">
+16.76996
+</td>
+<td style="text-align:right;">
+26.93768
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+wide_lines
+</td>
+<td style="text-align:right;">
+54.26692
+</td>
+<td style="text-align:right;">
+47.83160
+</td>
+<td style="text-align:right;">
+16.77000
+</td>
+<td style="text-align:right;">
+26.93790
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+x_shape
+</td>
+<td style="text-align:right;">
+54.26015
+</td>
+<td style="text-align:right;">
+47.83972
+</td>
+<td style="text-align:right;">
+16.76996
+</td>
+<td style="text-align:right;">
+26.93000
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="what-can-you-conclude" class="section level5">
+<h5>what can you conclude?</h5>
+<div class="panel-group">
+<div class="panel" style="background-color:rgba(172, 225, 175, 0.3); border:2px solid rgba(172, 225, 175, 1);">
+<div class="panel-heading" style="background-color:rgba(172, 225, 175, 1); color:rgba(69, 90, 70, 1)!important;">
+<h4 class="panel-title">
+<a class = "collapsed" style="color: rgba(69, 90, 70, 1);" data-toggle="collapse" href="#unnamed-chunk-21">Solution</a>
+</h4>
+</div>
+<div id="unnamed-chunk-21" class="panel-collapse collapse">
+<div class="panel-body">
+all mean and sd are the same for the 13 datasets
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="plot-the-datasaurus" class="section level2">
+<h2>Plot the <em>datasauRus</em></h2>
+<div id="plot-the-ds_dozen-with-ggplot-such-the-aesthetics-are-aesx-x-y-y" class="section level5">
+<h5>plot the <code>ds_dozen</code> with <code>ggplot</code> such the <strong>aesthetics</strong> are <code>aes(x = x, y = y)</code></h5>
+<p>with the <strong>geometry</strong> <code>geom_point()</code></p>
+<p>the <code>ggplot()</code> and <code>geom_point()</code> functions must be linked with a <strong>+</strong> sign</p>
+<div class="panel-group">
+<div class="panel" style="background-color:rgba(172, 225, 175, 0.3); border:2px solid rgba(172, 225, 175, 1);">
+<div class="panel-heading" style="background-color:rgba(172, 225, 175, 1); color:rgba(69, 90, 70, 1)!important;">
+<h4 class="panel-title">
+<a class = "collapsed" style="color: rgba(69, 90, 70, 1);" data-toggle="collapse" href="#unnamed-chunk-23">Solution</a>
+</h4>
+</div>
+<div id="unnamed-chunk-23" class="panel-collapse collapse">
+<div class="panel-body">
+<pre class="r"><code>ggplot(ds_dozen, aes(x = x, y = y)) +
+  geom_point()</code></pre>
+<img src="practical_datasaurus_files/figure-html/unnamed-chunk-23-1.png" width="672" />
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="reuse-the-above-command-and-now-colored-by-the-dataset-column" class="section level5">
+<h5>reuse the above command, and now colored by the <code>dataset</code> column</h5>
+<div class="panel-group">
+<div class="panel" style="background-color:rgba(172, 225, 175, 0.3); border:2px solid rgba(172, 225, 175, 1);">
+<div class="panel-heading" style="background-color:rgba(172, 225, 175, 1); color:rgba(69, 90, 70, 1)!important;">
+<h4 class="panel-title">
+<a class = "collapsed" style="color: rgba(69, 90, 70, 1);" data-toggle="collapse" href="#unnamed-chunk-24">Solution</a>
+</h4>
+</div>
+<div id="unnamed-chunk-24" class="panel-collapse collapse">
+<div class="panel-body">
+<pre class="r"><code>ggplot(ds_dozen, aes(x = x, y = y, colour = dataset)) +
+  geom_point()</code></pre>
+<img src="practical_datasaurus_files/figure-html/unnamed-chunk-24-1.png" width="672" />
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="too-many-datasets-are-displayed-how-can-we-plot-only-one-at-a-time" class="section level5">
+<h5>too many datasets are displayed, how can we plot only one at a time?</h5>
+<div class="panel-group">
+<div class="panel" style="background-color:rgba(172, 225, 175, 0.3); border:2px solid rgba(172, 225, 175, 1);">
+<div class="panel-heading" style="background-color:rgba(172, 225, 175, 1); color:rgba(69, 90, 70, 1)!important;">
+<h4 class="panel-title">
+<a class = "collapsed" style="color: rgba(69, 90, 70, 1);" data-toggle="collapse" href="#unnamed-chunk-25">Solution</a>
+</h4>
+</div>
+<div id="unnamed-chunk-25" class="panel-collapse collapse">
+<div class="panel-body">
+<pre class="r"><code>ds_dozen %&gt;%
+  filter(dataset == &quot;away&quot;) %&gt;%
+  ggplot(aes(x = x, y = y)) +
+  geom_point()</code></pre>
+<img src="practical_datasaurus_files/figure-html/unnamed-chunk-25-1.png" width="672" />
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="adjust-the-filtering-step-to-plot-two-datasets" class="section level5">
+<h5>adjust the <strong>filtering</strong> step to plot two datasets?</h5>
+<p>R provides the inline instruction <code>%in%</code> to test if there a match of the left operand in the right one (a <strong>vector</strong> most probably)</p>
+<div class="panel-group">
+<div class="panel" style="background-color:rgba(172, 225, 175, 0.3); border:2px solid rgba(172, 225, 175, 1);">
+<div class="panel-heading" style="background-color:rgba(172, 225, 175, 1); color:rgba(69, 90, 70, 1)!important;">
+<h4 class="panel-title">
+<a class = "collapsed" style="color: rgba(69, 90, 70, 1);" data-toggle="collapse" href="#unnamed-chunk-27">Solution</a>
+</h4>
+</div>
+<div id="unnamed-chunk-27" class="panel-collapse collapse">
+<div class="panel-body">
+<pre class="r"><code>ds_dozen %&gt;%
+  filter(dataset %in% c(&quot;away&quot;, &quot;dino&quot;)) %&gt;%
+  # alternative without %in% and using OR (|)
+  #filter(dataset == &quot;away&quot; | dataset == &quot;dino&quot;) %&gt;%
+  ggplot(aes(x = x, y = y, colour = dataset)) +
+  geom_point()</code></pre>
+<img src="practical_datasaurus_files/figure-html/unnamed-chunk-27-1.png" width="672" />
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="expand-now-by-getting-one-dataset-per-facet" class="section level5">
+<h5>expand now by getting one <code>dataset</code> per <strong>facet</strong></h5>
+<div class="panel-group">
+<div class="panel" style="background-color:rgba(172, 225, 175, 0.3); border:2px solid rgba(172, 225, 175, 1);">
+<div class="panel-heading" style="background-color:rgba(172, 225, 175, 1); color:rgba(69, 90, 70, 1)!important;">
+<h4 class="panel-title">
+<a class = "collapsed" style="color: rgba(69, 90, 70, 1);" data-toggle="collapse" href="#unnamed-chunk-28">Solution</a>
+</h4>
+</div>
+<div id="unnamed-chunk-28" class="panel-collapse collapse">
+<div class="panel-body">
+<pre class="r"><code>ds_dozen %&gt;%
+  filter(dataset %in% c(&quot;away&quot;, &quot;dino&quot;)) %&gt;%
+  ggplot(aes(x = x, y = y, colour = dataset)) +
+  geom_point() +
+  facet_wrap(~ dataset)</code></pre>
+<img src="practical_datasaurus_files/figure-html/unnamed-chunk-28-1.png" width="672" />
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="remove-the-filtering-step-to-facet-all-datasets" class="section level5">
+<h5>remove the filtering step to facet all datasets</h5>
+<div class="panel-group">
+<div class="panel" style="background-color:rgba(172, 225, 175, 0.3); border:2px solid rgba(172, 225, 175, 1);">
+<div class="panel-heading" style="background-color:rgba(172, 225, 175, 1); color:rgba(69, 90, 70, 1)!important;">
+<h4 class="panel-title">
+<a class = "collapsed" style="color: rgba(69, 90, 70, 1);" data-toggle="collapse" href="#unnamed-chunk-29">Solution</a>
+</h4>
+</div>
+<div id="unnamed-chunk-29" class="panel-collapse collapse">
+<div class="panel-body">
+<pre class="r"><code>ds_dozen %&gt;%
+  ggplot(aes(x = x, y = y, colour = dataset)) +
+  geom_point() +
+  facet_wrap(~ dataset, ncol = 3)</code></pre>
+<img src="practical_datasaurus_files/figure-html/unnamed-chunk-29-1.png" width="672" />
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="tweak-the-theme-and-use-the-theme_void-and-remove-the-legend" class="section level5">
+<h5>tweak the theme and use the <code>theme_void</code> and remove the legend</h5>
+<div class="panel-group">
+<div class="panel" style="background-color:rgba(172, 225, 175, 0.3); border:2px solid rgba(172, 225, 175, 1);">
+<div class="panel-heading" style="background-color:rgba(172, 225, 175, 1); color:rgba(69, 90, 70, 1)!important;">
+<h4 class="panel-title">
+<a class = "collapsed" style="color: rgba(69, 90, 70, 1);" data-toggle="collapse" href="#unnamed-chunk-30">Solution</a>
+</h4>
+</div>
+<div id="unnamed-chunk-30" class="panel-collapse collapse">
+<div class="panel-body">
+<pre class="r"><code>ggplot(ds_dozen, aes(x = x, y = y, colour = dataset)) +
+  geom_point() +
+  theme_void() +
+  theme(legend.position = &quot;none&quot;) +
+  facet_wrap(~ dataset, ncol = 3)</code></pre>
+<img src="practical_datasaurus_files/figure-html/unnamed-chunk-30-1.png" width="672" />
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="are-the-datasets-actually-that-similar" class="section level5">
+<h5>are the datasets actually that similar?</h5>
+<div class="panel-group">
+<div class="panel" style="background-color:rgba(172, 225, 175, 0.3); border:2px solid rgba(172, 225, 175, 1);">
+<div class="panel-heading" style="background-color:rgba(172, 225, 175, 1); color:rgba(69, 90, 70, 1)!important;">
+<h4 class="panel-title">
+<a class = "collapsed" style="color: rgba(69, 90, 70, 1);" data-toggle="collapse" href="#unnamed-chunk-31">Solution</a>
+</h4>
+</div>
+<div id="unnamed-chunk-31" class="panel-collapse collapse">
+<div class="panel-body">
+no ;) We were fooled by the summary stats
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="animation" class="section level2 bonus">
+<h2>Animation</h2>
+<p>the sofware <a href="https://www.imagemagick.org/script/download.php">ImageMagick</a> must be installed on your machine</p>
+<div id="install-the-experimental-gganimate-package-from-github-by-thomas-pedersen" class="section level5">
+<h5>install the experimental <code>gganimate</code> package from <code>github</code>, by Thomas Pedersen</h5>
+<pre class="r"><code>devtools::install_github(&quot;thomasp85/gganimate&quot;)</code></pre>
+<p>this requires also the development version of <code>ggplot2</code>.</p>
+</div>
+<div id="animate-using-transition_states" class="section level5">
+<h5>animate using <code>transition_states()</code></h5>
+<div class="panel-group">
+<div class="panel" style="background-color:rgba(172, 225, 175, 0.3); border:2px solid rgba(172, 225, 175, 1);">
+<div class="panel-heading" style="background-color:rgba(172, 225, 175, 1); color:rgba(69, 90, 70, 1)!important;">
+<h4 class="panel-title">
+<a class = "collapsed" style="color: rgba(69, 90, 70, 1);" data-toggle="collapse" href="#unnamed-chunk-34">Solution</a>
+</h4>
+</div>
+<div id="unnamed-chunk-34" class="panel-collapse collapse">
+<div class="panel-body">
+<pre class="r"><code>library(gganimate)
+ds_dozen %&gt;%
+  ggplot(aes(x = x, y = y)) +
+  geom_point() +
+  # transition will be made using the dataset column
+  transition_states(dataset, transition_length = 5, state_length = 2) +
+  # for a firework effect!
+  shadow_wake(wake_length = 0.05) +
+  labs(title = &quot;dataset: {closest_state}&quot;) +
+  theme_void(14) +
+  theme(legend.position = &quot;none&quot;) -&gt; ds_anim
+# more frames to slow down the animation
+ds_gif &lt;- animate(ds_anim, nframes = 500, fps = 10)
+ds_gif
+#magick::image_write(ds_gif, &quot;figures/ds.gif&quot;)</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="panel-group">
+<div class="panel" style="background-color:rgba(172, 225, 175, 0.3); border:2px solid rgba(172, 225, 175, 1);">
+<div class="panel-heading" style="background-color:rgba(172, 225, 175, 1); color:rgba(69, 90, 70, 1)!important;">
+<h4 class="panel-title">
+<a class = "collapsed" style="color: rgba(69, 90, 70, 1);" data-toggle="collapse" href="#unnamed-chunk-35">Solution</a>
+</h4>
+</div>
+<div id="unnamed-chunk-35" class="panel-collapse collapse">
+<div class="panel-body">
+<img src="figures/ds.gif" />
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="visualized-as-small-the-differences-in-means-for-both-coordinates" class="section level5">
+<h5>visualized as small the differences in means for both coordinates</h5>
+<ul>
+<li>need to zoom tremendously to see almost nothing. Accumule all states to better see the motions.</li>
+</ul>
+<div class="panel-group">
+<div class="panel" style="background-color:rgba(172, 225, 175, 0.3); border:2px solid rgba(172, 225, 175, 1);">
+<div class="panel-heading" style="background-color:rgba(172, 225, 175, 1); color:rgba(69, 90, 70, 1)!important;">
+<h4 class="panel-title">
+<a class = "collapsed" style="color: rgba(69, 90, 70, 1);" data-toggle="collapse" href="#unnamed-chunk-36">Solution</a>
+</h4>
+</div>
+<div id="unnamed-chunk-36" class="panel-collapse collapse">
+<div class="panel-body">
+<pre class="r"><code>ds_dozen %&gt;%
+  group_by(dataset) %&gt;%
+  summarise_if(is.double, funs(mean = mean, sd = sd)) %&gt;% 
+  ggplot(aes(x = x_mean, y = y_mean, colour = dataset)) +
+  geom_point(size = 25, alpha = 0.6) +
+  # zoom in like crazy
+  coord_cartesian(xlim = c(54.25, 54.3), ylim = c(47.75, 47.9)) +
+  # animate
+  transition_states(dataset, transition_length = 5, state_length = 2) +
+  # do not remove previous states to pile up dots
+  shadow_mark() +
+  labs(title = &quot;dataset: {closest_state}&quot;) +
+  theme_minimal(14) +
+  theme(legend.position = &quot;none&quot;) -&gt; ds_mean_anim
+ds_mean_gif &lt;- animate(ds_mean_anim, nframes = 100, fps = 10)
+ds_mean_gif
+magick::image_write(ds_mean_gif, &quot;figures/ds_mean.gif&quot;)</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="panel-group">
+<div class="panel" style="background-color:rgba(172, 225, 175, 0.3); border:2px solid rgba(172, 225, 175, 1);">
+<div class="panel-heading" style="background-color:rgba(172, 225, 175, 1); color:rgba(69, 90, 70, 1)!important;">
+<h4 class="panel-title">
+<a class = "collapsed" style="color: rgba(69, 90, 70, 1);" data-toggle="collapse" href="#unnamed-chunk-37">Solution</a>
+</h4>
+</div>
+<div id="unnamed-chunk-37" class="panel-collapse collapse">
+<div class="panel-body">
+<img src="figures/ds_mean.gif" />
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="using-the-stable-gganimate-package-from-david-robinson" class="section level5">
+<h5>using the stable <code>gganimate</code> package from David Robinson</h5>
+<p>However, no tweening between states in this first version.</p>
+<pre class="r"><code>devtools::install_github(&quot;dgrtwo/gganimate&quot;)</code></pre>
+</div>
+<div id="add-the-dataset-variable-to-the-frame-argument-in-the-aes-function-call" class="section level5">
+<h5>add the <code>dataset</code> variable to the <code>frame</code> argument in the <code>aes()</code> function call</h5>
+<div class="panel-group">
+<div class="panel" style="background-color:rgba(172, 225, 175, 0.3); border:2px solid rgba(172, 225, 175, 1);">
+<div class="panel-heading" style="background-color:rgba(172, 225, 175, 1); color:rgba(69, 90, 70, 1)!important;">
+<h4 class="panel-title">
+<a class = "collapsed" style="color: rgba(69, 90, 70, 1);" data-toggle="collapse" href="#unnamed-chunk-39">Solution</a>
+</h4>
+</div>
+<div id="unnamed-chunk-39" class="panel-collapse collapse">
+<div class="panel-body">
+<pre class="r"><code>library(gganimate)
+
+p &lt;- ggplot(ds_dozen, aes(x = x, y = y, frame = dataset)) +
+  geom_point() +
+  theme_gray(20) +
+  theme(legend.position = &quot;none&quot;)
+
+gganimate(p, title_frame = TRUE, &quot;./img/dino.gif&quot;)</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="panel-group">
+<div class="panel" style="background-color:rgba(172, 225, 175, 0.3); border:2px solid rgba(172, 225, 175, 1);">
+<div class="panel-heading" style="background-color:rgba(172, 225, 175, 1); color:rgba(69, 90, 70, 1)!important;">
+<h4 class="panel-title">
+<a class = "collapsed" style="color: rgba(69, 90, 70, 1);" data-toggle="collapse" href="#unnamed-chunk-40">Solution</a>
+</h4>
+</div>
+<div id="unnamed-chunk-40" class="panel-collapse collapse">
+<div class="panel-body">
+<img src="./figures/dino.gif" />
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="conclusion" class="section level2">
+<h2>Conclusion</h2>
+<blockquote>
+<p>never trust summary statistics alone; always visualize your data | Alberto Cairo</p>
+</blockquote>
+<p><strong>Authors</strong></p>
+<ul>
+<li>Alberto Cairo, (creator)</li>
+<li>Justin Matejka</li>
+<li>George Fitzmaurice</li>
+<li>Lucy McGowan</li>
+</ul>
+<p>from this <a href="https://itsalocke.com/datasaurus-now-cran/">post</a></p>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

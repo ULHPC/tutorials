@@ -1,0 +1,379 @@
+---
+title: "practical R session"
+author: "Aurelien Ginolhac"
+date: "2018-06-15"
+output:
+  unilur::tutorial_html_solution:
+    toc: true
+    toc_float: true
+    solution_suffix: ""
+    theme: cosmo
+    css: practical.css
+    self_contained: no
+---
+
+
+```{r setup-practical, child = '_setup_practical.Rmd'}
+```
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(knitr)
+library(kableExtra)
+options(knitr.table.format = "html")
+```
+
+This guided practical will demonstrate that the **tidyverse** allows to compute summary statistics and visualize datasets easily.
+Those datasets are already compile in a **tidy** `tibble`, cleaning steps will come in future prracticals.
+
+## `datasauRus` package
+
+- check if you have the package `datasauRus` installed
+
+```{r}
+library(datasauRus)
+```
+
+- should return nothing. If `there is no package called ‘datasauRus’` appears, it means that the package needs 
+to be installed. Use this:
+
+```{r, eval=FALSE}
+install.packages("datasauRus")
+```
+
+## Explore the dataset
+
+Since we are dealing with a `tibble`, we can just type
+
+```{r, eval = FALSE}
+datasaurus_dozen
+```
+
+
+only the first **10** rows are displayed.
+
+```{r, echo = FALSE}
+datasaurus_dozen %>%
+  head(10) %>%
+  kable() %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = FALSE)
+```
+
+##### what are the dimensions of this dataset? Rows and columns?
+
+- **base** version, using either `dim()`, `ncol()` and `nrow()`
+
+```{r, solution = TRUE}
+# dim() returns the dimensions of the data frame, i.e number of rows and columns
+dim(datasaurus_dozen)
+# ncol() only number of columns
+ncol(datasaurus_dozen)
+# nrow() only number of rows
+nrow(datasaurus_dozen)
+```
+
+- **tidyverse** version
+
+```{block, solution = TRUE}
+nothing to be done, a `tibble` display its dimensions, starting by a comment ('#' character)
+```
+
+
+##### assign the `datasaurus_dozen` to the `ds_dozen` object. This aims at populating the **Global Environment**
+
+```{r, solution = TRUE, box.collapse = FALSE}
+ds_dozen <- datasaurus_dozen
+```
+
+
+##### using Rstudio, those dimensions are now also reported within the interface, where?
+
+```{block, solution = TRUE}
+in the Environment panel -> Global Environment
+```
+
+## How many datasets are present?
+
+- **base** version
+
+```{block, box.type = "advice"}
+you want to count the number of **unique** elements in the column **dataset**.
+The function **length()** returns the length of a vector, such as the unique elements
+```
+
+```{r, solution = TRUE}
+unique(ds_dozen$dataset) %>% length()
+```
+
+- **tidyverse** version
+
+```{r, box.collapse = FALSE}
+summarise(ds_dozen, n = n_distinct(dataset))
+```
+
+- even better way, compute and display the number of lines per `dataset`
+
+```{block, box.type = "advice"}
+the function `count` in `dplyr` does the `group_by()` by the specified column + `summarise(n = n())` which returns the number of observation per defined group.
+```
+
+```{r, solution = TRUE}
+count(ds_dozen, dataset)
+```
+
+
+## Check summary statistics per dataset
+
+##### compute the mean of the `x` & `y` column. For this, you need to `group_by()` the appropriate column and then `summarise()`
+
+```{block, box.type = "advice"}
+in `summarise()` you can define as many new columns as you wish. No need to call it for every single variable.
+```
+
+```{r, eval = FALSE, solution = TRUE}
+ds_dozen %>%
+  group_by(dataset) %>%
+  summarise(mean_x = mean(x),
+            mean_y = mean(y))
+```
+
+```{r, echo = FALSE, solution = TRUE}
+ds_dozen %>%
+  group_by(dataset) %>%
+  summarise(mean_x = mean(x),
+            mean_y = mean(y)) %>%
+  kable() %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = FALSE)
+```
+
+##### compute the standard deviation of the `x` & `y` column in a same way
+
+```{r, eval = FALSE, solution = TRUE}
+ds_dozen %>%
+  group_by(dataset) %>%
+  summarise(sd_x = sd(x),
+            sd_y = sd(y))
+
+```
+```{r, echo = FALSE, solution = TRUE}
+ds_dozen %>%
+  group_by(dataset) %>%
+  summarise(sd_x = sd(x),
+            sd_y = sd(y)) %>%
+  kable() %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = FALSE)
+```
+
+##### do then all in one go using `summarise_if` so we exclude the `dataset` column and compute the others {.bonus}
+
+```{r, eval = FALSE, solution = TRUE}
+ds_dozen %>%
+  group_by(dataset) %>%
+  summarise_if(is.double, funs(mean = mean, sd = sd))
+```
+```{r, echo = FALSE, solution = TRUE}
+ds_dozen %>%
+  group_by(dataset) %>%
+  summarise_if(is.double, funs(mean = mean, sd = sd)) %>%
+  kable() %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = FALSE)
+```
+
+
+##### what can you conclude?
+
+```{block, solution = TRUE}
+all mean and sd are the same for the 13 datasets
+```
+
+## Plot the _datasauRus_
+
+##### plot the `ds_dozen` with `ggplot` such the **aesthetics** are `aes(x = x, y = y)` 
+with the **geometry** `geom_point()`
+
+```{block, box.type = "advice"}
+the `ggplot()` and `geom_point()` functions must be linked with a **+** sign
+```
+
+```{r, fig.height = 8, fig.asp = 1, solution = TRUE}
+ggplot(ds_dozen, aes(x = x, y = y)) +
+  geom_point()
+```
+
+##### reuse the above command, and now colored by the `dataset` column
+
+```{r, fig.height = 8, fig.asp = 1, solution = TRUE}
+ggplot(ds_dozen, aes(x = x, y = y, colour = dataset)) +
+  geom_point()
+```
+
+##### too many datasets are displayed, how can we plot only one at a time?
+
+```{r, solution = TRUE}
+ds_dozen %>%
+  filter(dataset == "away") %>%
+  ggplot(aes(x = x, y = y)) +
+  geom_point()
+```
+
+##### adjust the **filtering** step to plot two datasets?
+
+```{block, box.type = "advice"}
+R provides the inline instruction `%in%` to test if there a match of the left operand in the right one (a **vector** most probably)
+```
+
+```{r, solution = TRUE}
+ds_dozen %>%
+  filter(dataset %in% c("away", "dino")) %>%
+  # alternative without %in% and using OR (|)
+  #filter(dataset == "away" | dataset == "dino") %>%
+  ggplot(aes(x = x, y = y, colour = dataset)) +
+  geom_point()
+```
+
+##### expand now by getting one `dataset` per **facet**
+
+```{r, fig.height = 8, fig.asp = 1, solution = TRUE}
+ds_dozen %>%
+  filter(dataset %in% c("away", "dino")) %>%
+  ggplot(aes(x = x, y = y, colour = dataset)) +
+  geom_point() +
+  facet_wrap(~ dataset)
+```
+
+##### remove the filtering step to facet all datasets
+
+```{r, solution = TRUE}
+ds_dozen %>%
+  ggplot(aes(x = x, y = y, colour = dataset)) +
+  geom_point() +
+  facet_wrap(~ dataset, ncol = 3)
+```
+
+
+##### tweak the theme and use the `theme_void` and remove the legend
+
+```{r, fig.height = 8, fig.asp = 1, solution = TRUE}
+ggplot(ds_dozen, aes(x = x, y = y, colour = dataset)) +
+  geom_point() +
+  theme_void() +
+  theme(legend.position = "none") +
+  facet_wrap(~ dataset, ncol = 3)
+```
+
+##### are the datasets actually that similar?
+
+```{block, solution = TRUE}
+no ;) We were fooled by the summary stats
+```
+
+## Animation {.bonus}
+
+
+```{block, box.type = "warning"}
+the sofware [ImageMagick](https://www.imagemagick.org/script/download.php) must be installed on your machine
+```
+
+
+##### install the experimental `gganimate` package from `github`, by Thomas Pedersen
+
+```{r, eval = FALSE}
+devtools::install_github("thomasp85/gganimate")
+```
+
+this requires also the development version of `ggplot2`.
+
+##### animate using `transition_states()`
+
+```{r, fig.width=8, fig.width=8, solution = TRUE, eval = FALSE}
+library(gganimate)
+ds_dozen %>%
+  ggplot(aes(x = x, y = y)) +
+  geom_point() +
+  # transition will be made using the dataset column
+  transition_states(dataset, transition_length = 5, state_length = 2) +
+  # for a firework effect!
+  shadow_wake(wake_length = 0.05) +
+  labs(title = "dataset: {closest_state}") +
+  theme_void(14) +
+  theme(legend.position = "none") -> ds_anim
+# more frames to slow down the animation
+ds_gif <- animate(ds_anim, nframes = 500, fps = 10)
+ds_gif
+#magick::image_write(ds_gif, "figures/ds.gif")
+```
+
+```{block, solution = TRUE}
+![](figures/ds.gif)
+```
+
+##### visualized as small the differences in means for both coordinates
+
+- need to zoom tremendously to see almost nothing. Accumule all states to better see the motions.
+
+```{r, solution = TRUE, eval = FALSE}
+ds_dozen %>%
+  group_by(dataset) %>%
+  summarise_if(is.double, funs(mean = mean, sd = sd)) %>% 
+  ggplot(aes(x = x_mean, y = y_mean, colour = dataset)) +
+  geom_point(size = 25, alpha = 0.6) +
+  # zoom in like crazy
+  coord_cartesian(xlim = c(54.25, 54.3), ylim = c(47.75, 47.9)) +
+  # animate
+  transition_states(dataset, transition_length = 5, state_length = 2) +
+  # do not remove previous states to pile up dots
+  shadow_mark() +
+  labs(title = "dataset: {closest_state}") +
+  theme_minimal(14) +
+  theme(legend.position = "none") -> ds_mean_anim
+ds_mean_gif <- animate(ds_mean_anim, nframes = 100, fps = 10)
+ds_mean_gif
+magick::image_write(ds_mean_gif, "figures/ds_mean.gif")
+```
+
+```{block, solution = TRUE}
+![](figures/ds_mean.gif)
+```
+
+##### using the stable `gganimate` package from David Robinson
+
+However, no tweening between states in this first version.
+
+```{r, eval = FALSE}
+devtools::install_github("dgrtwo/gganimate")
+```
+
+##### add the `dataset` variable to the `frame` argument in the `aes()` function call
+
+```{r, eval = FALSE, solution = TRUE}
+library(gganimate)
+
+p <- ggplot(ds_dozen, aes(x = x, y = y, frame = dataset)) +
+  geom_point() +
+  theme_gray(20) +
+  theme(legend.position = "none")
+
+gganimate(p, title_frame = TRUE, "./img/dino.gif")
+```
+
+
+
+```{block, solution = TRUE}
+![](./figures/dino.gif)
+```
+
+
+
+## Conclusion
+
+> never trust summary statistics alone; always visualize your data | Alberto Cairo
+
+**Authors**
+
+- Alberto Cairo, (creator)
+- Justin Matejka
+- George Fitzmaurice
+- Lucy McGowan
+
+from this [post](https://itsalocke.com/datasaurus-now-cran/)
