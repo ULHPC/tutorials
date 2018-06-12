@@ -33,8 +33,10 @@ If you have never used virtualenv before, please have a look at [Python1 tutoria
 # Load your prefered version of Python
 module load lang/Python/3.6.0-foss-2017a-bare
 # Create a new virtualenv
-cd tutorials/advanced/Python2
+git clone https://github.com/ULHPC/tutorials
+cd tutorials/python/advanced/jupyter/
 pip install --user virtualenv
+PATH=$PATH:$HOME/.local/bin
 virtualenv venv
 source venv/bin/activate
 ```
@@ -79,7 +81,7 @@ The `--no-browser` command is used to disable the openning of the browser after 
 To make things easier, we will protect our Notebook with a password. You have just to choose a password after typing the `jupyter notebook password` command. A hash of your password will be stored in the jupyter config file.
 
 ```bash
-cd tutorials/advanced/Python2
+cd tutorials/python/advanced/jupyter
 jupyter notebook --generate-config
 jupyter notebook password
 jupyter notebook --ip $(ip addr show em1 | grep 'inet ' | awk '{print $2}' | cut -d/ -f1) --no-browser
@@ -126,6 +128,7 @@ Jupyter offers you an extension that permits to run your notebook code in parall
 ```bash
 # Ensure that your are outside of any virtualenv as you will have to use the
 # system Python to run our ipcluster
+module purge
 deactivate
 # Be sure that the following packages are installed
 # ipyparallel for parallel execution of your code on several thread and/or nodes
