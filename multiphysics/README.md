@@ -96,11 +96,11 @@ Now, let's check for the environment modules (available through Lmod) which matc
 
        (node)$> module avail mpi/
 
-       ---------------------------------------------------- /opt/apps/resif/devel/v1.1-20150414/core/modules/mpi ----------------------------------------------------
-          mpi/OpenMPI/1.6.4-GCC-4.7.2    mpi/OpenMPI/1.8.4-GCC-4.9.2 (D)    mpi/impi/4.1.0.030-iccifort-2013.3.163    mpi/impi/5.0.3.048-iccifort-2015.3.187 (D)
 
-       ------------------------------------------------- /opt/apps/resif/devel/v1.1-20150414/core/modules/toolchain -------------------------------------------------
-          toolchain/gompi/1.4.10    toolchain/iimpi/5.3.0    toolchain/iimpi/7.3.5 (D)
+     --------------- /opt/apps/resif/data/production/v0.3/default/modules/all -----------------------------
+     mpi/MVAPICH2/2.3a-GCC-6.3.0-2.28        mpi/impi/2017.1.132-iccifort-2017.1.132-GCC-6.3.0-2.27        toolchain/iimpi/2017a
+     mpi/OpenMPI/2.1.1-GCC-6.3.0-2.27        mpi/impi/2017.3.196-iccifort-2017.1.132-GCC-6.3.0-2.27 (D)
+     mpi/OpenMPI/2.1.1-GCC-6.3.0-2.28 (D)    toolchain/gompi/2017a
 
          Where:
           (D):  Default Module
@@ -116,12 +116,12 @@ Perform the same search for the toolchains:
 Toolchains represent sets of compilers together with libraries commonly required to build software, such as MPI, BLAS/LAPACK (linear algebra) and FFT (Fast Fourier Transforms).
 For more details, see [the EasyBuild page on toolchains](https://github.com/hpcugent/easybuild/wiki/Compiler-toolchains).
 
-For our initial tests we will use the __goolf__ toolchain which includes GCC, OpenMPI, OpenBLAS/LAPACK, ScaLAPACK(/BLACS) and FFTW:
+For our initial tests we will use the __foss__ toolchain which includes GCC, OpenMPI, OpenBLAS/LAPACK, ScaLAPACK(/BLACS) and FFTW:
 
-       (node)$> module load toolchain/goolf/1.4.10
+       (node)$> module load toolchain/foss
        (node)$> module list
 
-The main alternative to this toolchain (as of June 2015) is __ictce__ (toolchain/ictce/7.3.5) that includes the Intel tools icc, ifort, impi and imkl.
+The main alternative to this toolchain is __intel__ (toolchain/intel) that includes the Intel tools icc, ifort, impi and imkl.
 
 #### On Iris:
 
@@ -140,7 +140,13 @@ The main alternative to this toolchain (as of June 2015) is __ictce__ (toolchain
 
       (node)$> module avail toolchain/
 
-On iris the main two toolchains are __foss__ (GCC, OpenMPI, OpenBLAS, ScaLAPACK and FFTW) and __intel__ (Intel C/C++/Fortran, MKL).
+As of June 2018 we are testing a new set of global software with updated versions for our major applications, libraries and their dependencies.  
+To try them out, you'll need first to `module use /opt/apps/resif/data/devel/default/modules/all`
+
+Test now:
+
+      (node)$> module use /opt/apps/resif/data/devel/default/modules/all
+      (node)$> module avail toolchain/
 
 ### Simple test cases on Gaia
 
@@ -240,30 +246,26 @@ Note that SLURM's `srun` knows the environment of your job and this will drive p
 
 ## QuantumESPRESSO
 
-Check for the available versions of QuantumESPRESSO (QE in short), as of June 2015 this shows on the Gaia cluster:
+Check for the available versions of QuantumESPRESSO (QE in short), as of June 2018 this shows on the Gaia cluster:
 
        (node)$> module spider quantum
 
-       ----------------------------------------------------------------------------------------------------------------------------------------------------------
-         chem/QuantumESPRESSO:
-       ----------------------------------------------------------------------------------------------------------------------------------------------------------
+       ------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+         chem/QuantumESPRESSO: chem/QuantumESPRESSO/6.1-intel-2017a
+       ------------------------------------------------------------------------------------------------------------------------------------------------------------------------
            Description:
-             Quantum ESPRESSO is an integrated suite of computer codes for electronic-structure calculations and materials modeling at the nanoscale. It is
-             based on density-functional theory, plane waves, and pseudopotentials (both norm-conserving and ultrasoft). - Homepage: http://www.pwscf.org/
+             Quantum ESPRESSO is an integrated suite of computer codes for electronic-structure calculations and materials modeling at the nanoscale. It is based on
+             density-functional theory, plane waves, and pseudopotentials (both norm-conserving and ultrasoft).
+       
+           This module can be loaded directly: module load chem/QuantumESPRESSO/6.1-intel-2017a
 
-            Versions:
-               chem/QuantumESPRESSO/5.0.2-goolf-1.4.10-hybrid
-               chem/QuantumESPRESSO/5.0.2-goolf-1.4.10
-               chem/QuantumESPRESSO/5.0.2-ictce-5.3.0-hybrid
-               chem/QuantumESPRESSO/5.0.2-ictce-5.3.0
-               chem/QuantumESPRESSO/5.1.2-ictce-7.3.5
 
-One thing we note is that some versions have a _-hybrid_ suffix. These versions are hybrid MPI+OpenMP builds of QE.
+One thing we note is that some versions may have a _-hybrid_ suffix. These versions are hybrid MPI+OpenMP builds of QE.
 MPI+OpenMP QE can give better performance than the pure MPI versions, by running only one MPI process per node (instead of one MPI process for each core in the job) that creates (OpenMP) threads which run in parallel locally.
 
 Load the latest QE version:
 
-       (node)$> module load chem/QuantumESPRESSO/5.1.2-ictce-7.3.5
+       (node)$> module load chem/QuantumESPRESSO
 
 We will use the PWscf (Plane-Wave Self-Consistent Field) package of QE for our tests.
 Run it in sequential mode, it will wait for your input. You should see a "Parallel version (MPI), running on     1 processors" message, and can stop it with CTRL-C:
@@ -323,16 +325,23 @@ Finally, we clean the environment by running `module purge`:
 
 #### On Iris
 
-As of June 2017, the Iris cluster has a newer QuantumESPRESSO available, let us find it:
+As of June 2018, the Iris cluster has a newer QuantumESPRESSO available for testing, let us find it:
 
-       (node)$> module avail Quantum
+       (node)$> module use /opt/apps/resif/data/devel/default/modules/all
+       (node)$> module avail quantum
 
-       --------------------- /opt/apps/resif/data/stable/default/modules/all --------------------------
-          chem/QuantumESPRESSO/6.1-intel-2017a
+       --------------------------- /opt/apps/resif/data/devel/default/modules/all ----------------------------
+          chem/QuantumESPRESSO/6.2.1-intel-2018a (D)    phys/Yambo/4.2.2-intel-2018a-QuantumESPRESSO-6.2.1 (D)
+       
+       --------------------------- /opt/apps/resif/data/stable/default/modules/all ---------------------------
+          chem/QuantumESPRESSO/6.1-intel-2017a    phys/Yambo/4.1.4-intel-2017a-QuantumESPRESSO-6.1
+
+You can see that in addition to QuantumESPRESSO, Yambo versions that are linked with QE are found by `module avail`.
 
 Using the same input data as above (transfer the input file to Iris) let's run QE in parallel:
 
        (node)$> module load chem/QuantumESPRESSO
+       (node)$> module list
        (node)$> srun pw.x < si.scf.efield2.in > si.scf.efield2.out
 
 ### References
@@ -345,19 +354,19 @@ Using the same input data as above (transfer the input file to Iris) let's run Q
 
 ## OpenFOAM
 
-Check for the available versions of OpenFOAM on Gaia:
+Check for the available versions of OpenFOAM on Gaia or Iris:
 
        (node)$> module spider openfoam
 
-We will use the `cae/OpenFOAM/2.3.0-goolf-1.4.10` version:
+We will use the `cae/OpenFOAM/4.1-intel-2017a` version on Gaia:
 
-        (node)$> module load cae/OpenFOAM/2.3.0-goolf-1.4.10
+        (node)$> module load cae/OpenFOAM/4.1-intel-2017a
 
 We load OpenFOAM's startup file:
 
        (node)$> source $FOAM_BASH
 
-Now we will run the `reactingParcelFilmFoam` solver of OpenFOAM on an example showing the spray-film cooling of hot boxes (lagrangian/reactingParcelFilmFoam/hotBoxes).
+Now we will run the `reactingParcelFoam` solver of OpenFOAM on an example showing the spray-film cooling of hot boxes (lagrangian/reactingParcelFilmFoam/hotBoxes).
 For reference, many examples are given in the installation directory of OpenFOAM, see `$FOAM_TUTORIALS`.
 
 Before the main execution, some pre-processing steps:
@@ -380,7 +389,8 @@ Before the main execution, some pre-processing steps:
 
 Solver execution, note the environment variables we need to export:
 
-       (node)$> mpirun -x MPI_BUFFER_SIZE -x WM_PROJECT_DIR -x PATH -x LD_LIBRARY_PATH -hostfile $OAR_NODEFILE reactingParcelFilmFoam -parallel
+       (gaia_node)$> mpirun -x MPI_BUFFER_SIZE -x WM_PROJECT_DIR -x PATH -x LD_LIBRARY_PATH -hostfile $OAR_NODEFILE reactingParcelFilmFoam -parallel
+       (on iris nodes you'd do)$> srun --export MPI_BUFFER_SIZE,WM_PROJECT_DIR reactingParcelFilmFoam -parallel
 
 Note that the solver execution will take a long time - you can interrupt and/or test in a larger job, which would require:
 
@@ -421,23 +431,18 @@ Finally, we clean the environment:
 
 ## ABINIT
 
-Check for the available versions of ABINIT on Gaia:
+Check for the available versions of ABINIT and load the latest:
 
        (node)$> module spider abinit
-
-As of June 2015 there is only one version, we load it with:
-
        (node)$> module load chem/ABINIT
 
-There is no dependency on a MPI suite in the build of ABINIT, we can use the latest Intel toolchain:
-
-       (node)$> module load toolchain/ictce/7.3.5
 
 We will use one of ABINIT's parallel test cases to exemplify parallel execution.
 For reference, many examples are given in the installation directory of ABINIT, see `$EBROOTABINIT/share/abinit-test`.
 
        (node)$> cd ~/multiphysics-tutorial/inputs/abinit
-       (node)$> mpirun -hostfile $OAR_NODEFILE abinit < si_kpt_band_fft.files
+       (gaia_node)$> mpirun -hostfile $OAR_NODEFILE abinit < si_kpt_band_fft.files
+       (iris_node)$> srun abinit < si_kpt_band_fft.files
 
 After some initial processing and messages, we will see:
 
@@ -461,7 +466,7 @@ After some initial processing and messages, we will see:
 
 As shown above, ABINIT itself can give details into how to tune input parameters for the dataset used.
 
-Edit the input file `si_kpt_band_fft` as per ABINIT's instructions, then re-run ABINIT.
+Edit the input file `si_kpt_band_fft.in` as per ABINIT's instructions, then re-run ABINIT.
 The following message will be shown, with a list of parameters that you will need to edit in `si_kpt_band_fft`.
 
        "Computing all possible proc distrib for this input with nproc less than      4"
@@ -502,9 +507,7 @@ We will use one of the benchmark inputs of NAMD to test it, specifically the [re
 _STMV (virus) benchmark (1,066,628 atoms, periodic, PME)_.
 
 
-        (node)$> mkdir namd-test
-        (node)$> cd namd-test
-        (node)$> wget http://www.ks.uiuc.edu/Research/namd/utilities/stmv.tar.gz
+        (node)$> cd ~/multiphysics-tutorial/inputs/namd
         (node)$> tar xf stmv.tar.gz
         (node)$> cd stmv
         (node)$> module load chem/NAMD
@@ -527,7 +530,31 @@ Next we will perform the parallel execution of NAMD, showing its runtime output 
 
 ASE is a Python library for working with atoms [*](https://wiki.fysik.dtu.dk/ase/_downloads/ase-talk.pdf).
 
-ASE can interface with many external codes as `calculators`: Asap, GPAW, Hotbit, ABINIT, CP2K, CASTEP, DFTB+, ELK, EXCITING, FHI-aims, FLEUR, GAUSSIAN, Gromacs, Jacapo, LAMMPS, MOPAC, NWChem, SIESTA, TURBOMOLE and VASP.
+ASE can interface with many external codes as `calculators`: Asap, GPAW, Hotbit, ABINIT, CP2K, CASTEP, DFTB+, ELK, EXCITING, FHI-aims, FLEUR, GAUSSIAN, Gromacs, Jacapo, LAMMPS, MOPAC, NWChem, SIESTA, TURBOMOLE and VASP. More details on the [official webpage](https://wiki.fysik.dtu.dk/ase/index.html).
+
+Let us run the official short example _structure optimization of hydrogen molecule_ on the Iris cluster. Note that parallel executions of the external codes require specific environment variables to be set up, e.g. for NWChem it's `ASE_NWCHEM_COMMAND` which needs to include the `srun` parallel job launcher of Iris, which integrates with the MPI suites.
+
+      (node)$> module avail NWChem ASE
+      (node)$> module load chem/NWChem chem/ASE
+      (node)$> export ASE_NWCHEM_COMMAND='srun nwchem PREFIX.nw > PREFIX.out'
+      (node)$> python
+             >>> from ase import Atoms
+             >>> from ase.optimize import BFGS
+             >>> from ase.calculators.nwchem import NWChem
+             >>> from ase.io import write
+             >>> h2 = Atoms('H2', positions=[[0, 0, 0], [0, 0, 0.7]])
+             >>> h2.calc = NWChem(xc='PBE')
+             >>> opt = BFGS(h2)
+             >>> opt.run(fmax=0.02)
+                   Step     Time          Energy         fmax
+             BFGS:    0 11:55:55      -31.435218        2.2691
+             BFGS:    1 11:55:55      -31.490762        0.3740
+             BFGS:    2 11:55:56      -31.492780        0.0630
+             BFGS:    3 11:55:57      -31.492837        0.0023
+             True
+             >>> write('H2.xyz', h2)
+             >>> h2.get_potential_energy()
+             -31.49283665375563
 
 ### References
 
