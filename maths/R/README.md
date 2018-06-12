@@ -7,9 +7,9 @@ ULHPC](https://img.shields.io/badge/by-ULHPC-blue.svg)](https://hpc.uni.lu)
 [![GitHub
 issues](https://img.shields.io/github/issues/ULHPC/tutorials.svg)](https://github.com/ULHPC/tutorials/issues/)
 [![](https://img.shields.io/badge/slides-PDF-red.svg)](https://github.com/ULHPC/tutorials/raw/devel/path/to/slides.pdf)
-[![Github](https://img.shields.io/badge/sources-github-green.svg)](https://github.com/ULHPC/tutorials/tree/devel/path/to/)
+[![Github](https://img.shields.io/badge/sources-github-green.svg)](https://github.com/ULHPC/tutorials/tree/devel/maths/R/)
 [![Documentation
-Status](http://readthedocs.org/projects/ulhpc-tutorials/badge/?version=latest)](http://ulhpc-tutorials.readthedocs.io/en/latest/path/to/)
+Status](http://readthedocs.org/projects/ulhpc-tutorials/badge/?version=latest)](http://ulhpc-tutorials.readthedocs.io/en/latest/maths/R/)
 [![GitHub
 forks](https://img.shields.io/github/stars/ULHPC/tutorials.svg?style=social&label=Star)](https://github.com/ULHPC/tutorials)
 
@@ -285,10 +285,10 @@ m
     ## # A tibble: 4 x 10
     ##   expression      min     mean   median      max `itr/sec` mem_alloc  n_gc
     ##   <chr>      <bch:tm> <bch:tm> <bch:tm> <bch:tm>     <dbl> <bch:byt> <dbl>
-    ## 1 LAPPLY       9.35ms  12.93ms  10.88ms  37.34ms      77.4    8.04MB    67
-    ## 2 AGGREGATE   40.25ms  48.42ms  48.02ms  77.64ms      20.7   13.09MB   139
-    ## 3 DPLYR        11.1ms  12.63ms  11.62ms  18.83ms      79.1    1.53MB    12
-    ## 4 DATATABLE    1.18ms   1.69ms   1.49ms   5.73ms     591.   623.85KB     6
+    ## 1 LAPPLY       9.26ms  12.18ms  10.89ms  20.62ms      82.1    8.04MB    67
+    ## 2 AGGREGATE   39.08ms  46.88ms  46.65ms 104.79ms      21.3   13.09MB   139
+    ## 3 DPLYR       10.99ms  12.36ms   11.7ms  17.41ms      80.9    1.53MB    12
+    ## 4 DATATABLE    1.18ms   1.68ms   1.46ms   5.95ms     596.   623.85KB     6
     ## # ... with 2 more variables: n_itr <int>, total_time <bch:tm>
 
   - makes comparison easier to read using **relative** values. 1 for the
@@ -303,10 +303,10 @@ summary(m, relative = TRUE)
     ## # A tibble: 4 x 10
     ##   expression   min  mean median   max `itr/sec` mem_alloc  n_gc n_itr
     ##   <chr>      <dbl> <dbl>  <dbl> <dbl>     <dbl>     <dbl> <dbl> <dbl>
-    ## 1 LAPPLY      7.94  7.64   7.31  6.52      3.75     13.2   11.2  1.45
-    ## 2 AGGREGATE  34.2  28.6   32.3  13.6       1        21.5   23.2  1   
-    ## 3 DPLYR       9.43  7.46   7.81  3.29      3.83      2.51   2    1.79
-    ## 4 DATATABLE   1     1      1     1        28.6       1      1    1.83
+    ## 1 LAPPLY      7.86  7.26   7.45  3.46      3.85     13.2   11.2  1.45
+    ## 2 AGGREGATE  33.2  27.9   31.9  17.6       1        21.5   23.2  1   
+    ## 3 DPLYR       9.33  7.37   8.01  2.92      3.79      2.51   2    1.79
+    ## 4 DATATABLE   1     1      1     1        27.9       1      1    1.83
     ## # ... with 1 more variable: total_time <dbl>
 
 ### Plotting the benchmark
@@ -447,7 +447,7 @@ nothingness <- future_map(c(2, 2, 2), ~Sys.sleep(.x), .progress = TRUE)
 tictoc::toc()
 ```
 
-    ## 6.293 sec elapsed
+    ## 6.314 sec elapsed
 
   - second in parallel
 
@@ -460,9 +460,9 @@ nothingness <- future_map(c(2, 2, 2), ~Sys.sleep(.x), .progress = TRUE)
 ```
 
     ## 
-     Progress:                                                                                                  100%
-     Progress:                                                                                                  100%
-     Progress: ──────────────────────────────────────────────────────────────────────────────────────────────── 100%
+     Progress:                                                                                            100%
+     Progress:                                                                                            100%
+     Progress: ────────────────────────────────────────────────────────────────────────────────────────── 100%
 
 ``` r
 tictoc::toc()
