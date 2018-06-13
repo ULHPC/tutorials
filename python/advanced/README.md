@@ -22,7 +22,7 @@ Due to an issue on iris, you will need a specific script to reverse a node with 
 ssh -X iris-cluster    # OR ssh -Y iris-cluster
 git clone https://github.com/jbornschein/srun.x11.git
 # Reserve an node interactively
-./srun.x11/srun.x11
+./srun.x11/srun.x11  -p interactive
 ```
 
 # Load Python and install required modules in a virtualenv
