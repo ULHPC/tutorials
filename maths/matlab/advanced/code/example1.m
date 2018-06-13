@@ -8,6 +8,8 @@
 %%%
 %%%		Valentin Plugaru <Valentin.Plugaru@gmail.com> 2014-03-18
 %%%     - 2017-06-12: Use Google Finance in place of Yahoo, which dissapeared
+%%%     - 2018-06-13: Mention use of an offline data source, in case Google
+%%%                   Finance API is not available
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Start a stopwatch timer we'll use to see how much time this script takes
@@ -18,6 +20,7 @@ tic
 company_ticker = 'AAPL';
 
 % Use the external function to download Google finance data for the selected period
+% Change this to [...] = file_data_source('AAPL') if the google_finance_data returns an error
 [hist_date, hist_high, hist_low, hist_open, hist_close, hist_vol] = google_finance_data(company_ticker, '2016-01-01', '2017-01-01');
 
 % Convert string dates for plotting

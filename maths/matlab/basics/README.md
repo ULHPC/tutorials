@@ -28,14 +28,17 @@ along with their dependencies, before following the instructions in the next sec
 
         (gaia-frontend)$> mkdir -p ~/matlab-tutorial/code
         (gaia-frontend)$> cd ~/matlab-tutorial/code
-        (gaia-frontend)$> wget --no-check-certificate https://raw.github.com/ULHPC/tutorials/devel/advanced/MATLAB1/code/example1.m
-        (gaia-frontend)$> wget --no-check-certificate https://raw.github.com/ULHPC/tutorials/devel/advanced/MATLAB1/code/example2.m
-        (gaia-frontend)$> wget --no-check-certificate https://raw.github.com/ULHPC/tutorials/devel/advanced/MATLAB1/code/google_finance_data.m
+        (gaia-frontend)$> wget --no-check-certificate https://raw.github.com/ULHPC/tutorials/devel/maths/matlab/basics/code/example1.m
+        (gaia-frontend)$> wget --no-check-certificate https://raw.github.com/ULHPC/tutorials/devel/maths/matlab/basics/code/example2.m
+        (gaia-frontend)$> wget --no-check-certificate https://raw.github.com/ULHPC/tutorials/devel/maths/matlab/basics/code/google_finance_data.m
+        (gaia-frontend)$> wget --no-check-certificate https://raw.github.com/ULHPC/tutorials/devel/maths/matlab/basics/code/file_data_source.m
+        (gaia-frontend)$> wget --no-check-certificate https://raw.github.com/ULHPC/tutorials/devel/maths/matlab/basics/code/AAPL.csv
 
-Or simply clone the full tutorials repository and make a link to the MATLAB tutorial:
+
+Or simply clone the full tutorials repository and make a link to this part of the MATLAB tutorial:
 
         (gaia-frontend)$> git clone https://github.com/ULHPC/tutorials.git
-        (gaia-frontend)$> ln -s tutorials/advanced/MATLAB1/ ~/matlab-tutorial
+        (gaia-frontend)$> ln -s tutorials/maths/matlab/basics ~/matlab-tutorial
 
 ## Matlab execution in interactive mode
 
@@ -137,6 +140,8 @@ for IBM (whose stock symbol is 'IBM'):
          ans =
              2.7618
 
+__Note__: If the Google Finance API is not available, you can use the `file_data_source.m` function with the `AAPL` ticker to use pre-downloaded data.
+
 Through these commands we have seen that the function returns column vectors, we were able to get 24 days' worth of information and
 we used simple statistic functions to get an idea of how the stock varied in the given period.
 
@@ -152,6 +157,8 @@ Now we will use the example1.m script that shows:
          (node)$> ls *pdf *eps
          example1-2dplot.eps  example1-2dplot.pdf  example1-scatter.eps
 
+__Note__: You'll need to edit `example1.m` to use the offline data source `file_data_source.m` in place of the Google Finance API, if running example1 shows an error.
+
 We have run the example1.m script which has downloaded Apple ('AAPL' ticker) stock data for the year 2016 and generated three plots:
 
   - example1-2dplot.pdf : color PDF generated with the saveas function, plotting dates (x-axis) vs closing stock price (y-axis)
@@ -165,8 +172,8 @@ and process data from the Google Finance API and generate the plots.
 Finally, we have closed our Matlab session and were returned to the cluster's command line prompt where we found the generated plots.
 
 A PNG version of the latter two plots is shown below:
-![2D Plot](https://raw.githubusercontent.com/ULHPC/tutorials/devel/advanced/MATLAB1/plots/example1-2dplot.png)
-![3D Scatter Plot](https://raw.githubusercontent.com/ULHPC/tutorials/devel/advanced/MATLAB1/plots/example1-scatter.png)
+![2D Plot](https://raw.githubusercontent.com/ULHPC/tutorials/devel/maths/matlab/basics/plots/example1-2dplot.png)
+![3D Scatter Plot](https://raw.githubusercontent.com/ULHPC/tutorials/devel/maths/matlab/basics/plots/example1-scatter.png)
 
 Further examples showing serial and parallel executions are given below in the 'Example usage of Matlab in passive mode' section.
 
@@ -444,7 +451,7 @@ Before testing the following commands, edit the `matlab-minlauncher2.sh` script 
 file.
 
       (gaia-frontend)$> cd ~/matlab-tutorial/code
-      (gaia-frontend)$> oarsub -l nodes=1/core=6,walltime=00:05:00 -p "gpu='YES'" ~/matlab-tutorial/code/matlab-minlauncher2.sh
+      (gaia-frontend)$> oarsub -l nodes=1/core=6,walltime=00:05:00 -t gpu ~/matlab-tutorial/code/matlab-minlauncher2.sh
       # now wait for the job to complete execution, then check the output file
       (gaia-frontend)$> tail -n 5 example2c.out
       -- GPU test
