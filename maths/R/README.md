@@ -6,7 +6,7 @@ ULHPC](https://img.shields.io/badge/by-ULHPC-blue.svg)](https://hpc.uni.lu)
 [![Licence](https://img.shields.io/badge/license-GPL--3.0-blue.svg)](http://www.gnu.org/licenses/gpl-3.0.html)
 [![GitHub
 issues](https://img.shields.io/github/issues/ULHPC/tutorials.svg)](https://github.com/ULHPC/tutorials/issues/)
-[![](https://img.shields.io/badge/slides-PDF-red.svg)](https://github.com/ULHPC/tutorials/raw/devel/path/to/slides.pdf)
+[![](https://img.shields.io/badge/slides-PDF-red.svg)](https://github.com/ULHPC/tutorials/raw/devel/maths/R/PS12-introduction_to_R.pdf)
 [![Github](https://img.shields.io/badge/sources-github-green.svg)](https://github.com/ULHPC/tutorials/tree/devel/maths/R/)
 [![Documentation
 Status](http://readthedocs.org/projects/ulhpc-tutorials/badge/?version=latest)](http://ulhpc-tutorials.readthedocs.io/en/latest/maths/R/)
@@ -24,7 +24,7 @@ forks](https://img.shields.io/github/stars/ULHPC/tutorials.svg?style=social&labe
 [![](https://github.com/ULHPC/tutorials/raw/devel/maths/R/figures/cover_slides.png)](https://github.com/ULHPC/tutorials/raw/devel/maths/R/PS12-introduction_to_R.pdf)
 
   - [slides as dynamic
-    html](https://github.com/ULHPC/tutorials/raw/devel/maths/R/Intro_PS.html)
+    html](https://rworkshop.uni.lu/preview/hpcschool/Intro_PS.html)
 
 Through this tutorial you will learn how to use R from your local
 machine or from one of the [UL HPC platform](http://hpc.uni.lu)
@@ -81,7 +81,6 @@ interactive shell or R-Studio embedded shell.
 To install libraries you can use the `install.packages()` function.
 *e.g*
 
-
 `install.packages("ggplot2")`
 
 This will install the `ggplot2` library.
@@ -103,7 +102,7 @@ is now attached to the current session.
 in R or Rstudio do `install.packages("tidyverse")` (takes some time)
 
 see [the
-tutorial](https://cdn.rawgit.com/ULHPC/tutorials/raw/devel/maths/R/practical_datasaurus.html)
+tutorial](https://rworkshop.uni.lu/preview/hpcschool/practical_datasaurus.html)
 
 ## Comparing methods for aggregating data
 
@@ -165,7 +164,6 @@ the `dplyr` package part of the [tidyverse](http://tidyverse.org) idiom
 
 ### `dplyr` from the tidyverse
 
-
 Of note, all core packages of the *tidyverse* could be installed at once
 
 ``` r
@@ -199,7 +197,6 @@ diamonds %>%
 Note: `summarise()` from the `dplyr` package is similar to `aggregate()`
 from base package, `dplyr` functions simply provide a more consistent
 naming convention together with better performance
-
 
 ### `aggregate` from base
 
@@ -288,13 +285,13 @@ m
 ```
 
     ## # A tibble: 4 x 10
-    ##   expression     min   mean median     max `itr/sec` mem_alloc  n_gc n_itr
-    ##   <chr>      <bch:t> <bch:> <bch:> <bch:t>     <dbl> <bch:byt> <dbl> <int>
-    ## 1 LAPPLY      9.39ms 12.5ms 11.3ms 23.18ms      80.2    8.04MB    67   233
-    ## 2 AGGREGATE  39.06ms 46.9ms 47.2ms  77.1ms      21.3   13.09MB   139   161
-    ## 3 DPLYR         11ms 12.6ms 11.8ms 20.43ms      79.6    1.53MB    12   288
-    ## 4 DATATABLE   1.17ms  1.7ms  1.5ms  7.18ms     589.   623.85KB     6   294
-    ## # ... with 1 more variable: total_time <bch:tm>
+    ##   expression      min     mean   median      max `itr/sec` mem_alloc  n_gc
+    ##   <chr>      <bch:tm> <bch:tm> <bch:tm> <bch:tm>     <dbl> <bch:byt> <dbl>
+    ## 1 LAPPLY       9.79ms  13.01ms  11.21ms   43.2ms      76.9    8.04MB    67
+    ## 2 AGGREGATE   39.27ms  48.72ms  49.37ms   64.2ms      20.5   13.09MB   139
+    ## 3 DPLYR       11.15ms  12.99ms   11.8ms   19.8ms      77.0    1.53MB    12
+    ## 4 DATATABLE    1.17ms   1.79ms   1.51ms    8.8ms     559.   623.85KB     6
+    ## # ... with 2 more variables: n_itr <int>, total_time <bch:tm>
 
   - makes comparison easier to read using **relative** values. 1 for the
     fastest.
@@ -308,10 +305,10 @@ summary(m, relative = TRUE)
     ## # A tibble: 4 x 10
     ##   expression   min  mean median   max `itr/sec` mem_alloc  n_gc n_itr
     ##   <chr>      <dbl> <dbl>  <dbl> <dbl>     <dbl>     <dbl> <dbl> <dbl>
-    ## 1 LAPPLY      8.00  7.34   7.57  3.23      3.76     13.2   11.2  1.45
-    ## 2 AGGREGATE  33.3  27.6   31.6  10.7       1        21.5   23.2  1   
-    ## 3 DPLYR       9.37  7.39   7.86  2.85      3.74      2.51   2    1.79
-    ## 4 DATATABLE   1     1      1     1        27.6       1      1    1.83
+    ## 1 LAPPLY      8.36  7.28   7.42  4.91      3.74     13.2   11.2  1.45
+    ## 2 AGGREGATE  33.5  27.3   32.7   7.29      1        21.5   23.2  1   
+    ## 3 DPLYR       9.52  7.27   7.80  2.25      3.75      2.51   2    1.79
+    ## 4 DATATABLE   1     1      1     1        27.3       1      1    1.83
     ## # ... with 1 more variable: total_time <dbl>
 
 ### Plotting the benchmark
@@ -452,7 +449,7 @@ nothingness <- future_map(c(2, 2, 2), ~Sys.sleep(.x), .progress = TRUE)
 tictoc::toc()
 ```
 
-    ## 6.15 sec elapsed
+    ## 6.334 sec elapsed
 
   - second in parallel
 
@@ -473,7 +470,7 @@ nothingness <- future_map(c(2, 2, 2), ~Sys.sleep(.x), .progress = TRUE)
 tictoc::toc()
 ```
 
-    ## 2.105 sec elapsed
+    ## 2.11 sec elapsed
 
 ### t-SNE example
 
@@ -608,4 +605,3 @@ the t-SNE evolves with increased perplexities
   - [tidyverse Documentation](https://tidyverse.org/)
 
   - [Advanced R programming by Hadley Wickham](http://adv-r.had.co.nz/)
-
