@@ -28,12 +28,12 @@ They review:
 3. Download the Git repository of [Tensorflow models and examples](https://github.com/tensorflow/models.git)
 4. Run the _LeNet-5-like convolutional MNIST model example_ `tutorials/image/mnist/convolutional.py` with Singularity
 
-       (node)$> mkdir singularity-tests
-       (node)$> git clone https://github.com/tensorflow/models.git
-       (node)$> module use /opt/apps/resif/data/devel/default/modules/all
-       (node)$> module load tools/Singularity 
-       (node)$> singularity pull docker://tensorflow/tensorflow
-       (node)$> singularity exec tensorflow.simg python models/tutorials/image/mnist/convolutional.py
+        (node)$> mkdir singularity-tests
+        (node)$> git clone https://github.com/tensorflow/models.git
+        (node)$> module use /opt/apps/resif/data/devel/default/modules/all
+        (node)$> module load tools/Singularity 
+        (node)$> singularity pull docker://tensorflow/tensorflow
+        (node)$> singularity exec tensorflow.simg python models/tutorials/image/mnist/convolutional.py
 
 
 ### Part 2 - building a container
