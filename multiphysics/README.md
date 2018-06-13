@@ -76,7 +76,7 @@ The SLURM scheduler provides several environment variables once we are inside a 
 We are interested especially in the environment variable which lists the compute nodes reserved for the job -- SLURM\_NODELIST.
 Let's check its content:
 
-       (node)$> cat $SLURM_NODELIST
+       (node)$> echo $SLURM_NODELIST
 
 To get the total number of cores available in the job, we can use the wordcount `wc` utility, in line counting mode:
 
