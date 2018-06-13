@@ -37,7 +37,7 @@ pages:
    - Advanced Parallel execution: 'multiphysics/index.md'
 - Big Data:
   - Big Data Application Over Hadoop and Spark: 'bigdata/index.md'
-- Machine/Deep Learning:
+- Machine and Deep Learning:
   - Machine and Deep learning workflows: 'deep_learning/index.md'
 - Containers:
   - Singularity: 'containers/singularity/index.md'
