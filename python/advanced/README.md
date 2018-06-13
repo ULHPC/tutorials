@@ -19,7 +19,7 @@ Due to an issue on iris, you will need a specific script to reverse a node with 
 
 ```bash
 # Connect to iris using the X11 forwarding
-ssh -X iris-cluster
+ssh -X iris-cluster    # OR ssh -Y iris-cluster
 git clone https://github.com/jbornschein/srun.x11.git
 # Reserve an node interactively
 ./srun.x11/srun.x11
@@ -272,23 +272,23 @@ You should have the following output:
 7625:C 24 May 14:06:06.280 # Redis version=4.0.9, bits=64, commit=00000000, modified=0, pid=7625, just started
 7625:C 24 May 14:06:06.280 # Configuration loaded
 7625:M 24 May 14:06:06.281 * Increased maximum number of open files to 10032 (it was originally set to 1024).
-                _._                                                  
-           _.-``__ ''-._                                             
+                _._
+           _.-``__ ''-._
       _.-``    `.  `_.  ''-._           Redis 4.0.9 (00000000/0) 64 bit
-  .-`` .-```.  ```\/    _.,_ ''-._                                   
+  .-`` .-```.  ```\/    _.,_ ''-._
  (    '      ,       .-`  | `,    )     Running in standalone mode
  |`-._`-...-` __...-.``-._|'` _.-'|     Port: 64856
  |    `-._   `._    /     _.-'    |     PID: 7625
-  `-._    `-._  `-./  _.-'    _.-'                                   
- |`-._`-._    `-.__.-'    _.-'_.-'|                                  
- |    `-._`-._        _.-'_.-'    |           http://redis.io        
-  `-._    `-._`-.__.-'_.-'    _.-'                                   
- |`-._`-._    `-.__.-'    _.-'_.-'|                                  
- |    `-._`-._        _.-'_.-'    |                                  
-  `-._    `-._`-.__.-'_.-'    _.-'                                   
-      `-._    `-.__.-'    _.-'                                       
-          `-._        _.-'                                           
-              `-.__.-'                                               
+  `-._    `-._  `-./  _.-'    _.-'
+ |`-._`-._    `-.__.-'    _.-'_.-'|
+ |    `-._`-._        _.-'_.-'    |           http://redis.io
+  `-._    `-._`-.__.-'_.-'    _.-'
+ |`-._`-._    `-.__.-'    _.-'_.-'|
+ |    `-._`-._        _.-'_.-'    |
+  `-._    `-._`-.__.-'_.-'    _.-'
+      `-._    `-.__.-'    _.-'
+          `-._        _.-'
+              `-.__.-'
 
 7625:M 24 May 14:06:06.283 # WARNING: The TCP backlog setting of 511 cannot be enforced because /proc/sys/net/core/somaxconn is set to the lower value of 128.
 7625:M 24 May 14:06:06.283 # Server initialized
