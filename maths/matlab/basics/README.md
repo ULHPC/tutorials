@@ -28,14 +28,16 @@ along with their dependencies, before following the instructions in the next sec
 
         (gaia-frontend)$> mkdir -p ~/matlab-tutorial/code
         (gaia-frontend)$> cd ~/matlab-tutorial/code
-        (gaia-frontend)$> wget --no-check-certificate https://raw.github.com/ULHPC/tutorials/devel/advanced/MATLAB1/code/example1.m
-        (gaia-frontend)$> wget --no-check-certificate https://raw.github.com/ULHPC/tutorials/devel/advanced/MATLAB1/code/example2.m
-        (gaia-frontend)$> wget --no-check-certificate https://raw.github.com/ULHPC/tutorials/devel/advanced/MATLAB1/code/google_finance_data.m
+        (gaia-frontend)$> wget --no-check-certificate https://raw.github.com/ULHPC/tutorials/devel/maths/matlab/basics/code/example1.m
+        (gaia-frontend)$> wget --no-check-certificate https://raw.github.com/ULHPC/tutorials/devel/maths/matlab/basics/code/example2.m
+        (gaia-frontend)$> wget --no-check-certificate https://raw.github.com/ULHPC/tutorials/devel/maths/matlab/basics/code/google_finance_data.m
+        (gaia-frontend)$> wget --no-check-certificate https://raw.github.com/ULHPC/tutorials/devel/maths/matlab/basics/code/file_data_source.m
+
 
 Or simply clone the full tutorials repository and make a link to the MATLAB tutorial:
 
         (gaia-frontend)$> git clone https://github.com/ULHPC/tutorials.git
-        (gaia-frontend)$> ln -s tutorials/advanced/MATLAB1/ ~/matlab-tutorial
+        (gaia-frontend)$> ln -s tutorials/maths/matlab/basics ~/matlab-tutorial
 
 ## Matlab execution in interactive mode
 
@@ -137,6 +139,8 @@ for IBM (whose stock symbol is 'IBM'):
          ans =
              2.7618
 
+__Note__: If the Google Finance API is not available, you can use the `file_data_source.m` function with the `AAPL` ticker to use pre-downloaded data.
+
 Through these commands we have seen that the function returns column vectors, we were able to get 24 days' worth of information and
 we used simple statistic functions to get an idea of how the stock varied in the given period.
 
@@ -165,8 +169,8 @@ and process data from the Google Finance API and generate the plots.
 Finally, we have closed our Matlab session and were returned to the cluster's command line prompt where we found the generated plots.
 
 A PNG version of the latter two plots is shown below:
-![2D Plot](https://raw.githubusercontent.com/ULHPC/tutorials/devel/advanced/MATLAB1/plots/example1-2dplot.png)
-![3D Scatter Plot](https://raw.githubusercontent.com/ULHPC/tutorials/devel/advanced/MATLAB1/plots/example1-scatter.png)
+![2D Plot](https://raw.githubusercontent.com/ULHPC/tutorials/devel/maths/matlab/basics/plots/example1-2dplot.png)
+![3D Scatter Plot](https://raw.githubusercontent.com/ULHPC/tutorials/devel/maths/matlab/basics/plots/example1-scatter.png)
 
 Further examples showing serial and parallel executions are given below in the 'Example usage of Matlab in passive mode' section.
 
