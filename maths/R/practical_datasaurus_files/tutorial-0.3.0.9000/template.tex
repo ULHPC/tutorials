@@ -1,0 +1,490 @@
+\documentclass[$if(fontsize)$$fontsize$,$endif$$if(lang)$$lang$,$endif$$if(papersize)$$papersize$,$endif$$for(classoption)$$classoption$$sep$,$endfor$]{$documentclass$}
+$if(fontfamily)$
+\usepackage{$fontfamily$}
+$else$
+\usepackage{lmodern}
+$endif$
+$if(linestretch)$
+\usepackage{setspace}
+\setstretch{$linestretch$}
+$endif$
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+$if(euro)$
+  \usepackage{eurosym}
+$endif$
+\else % if luatex or xelatex
+  \ifxetex
+    \usepackage{mathspec}
+    \usepackage{xltxtra,xunicode}
+  \else
+    \usepackage{fontspec}
+  \fi
+  \defaultfontfeatures{Mapping=tex-text,Scale=MatchLowercase}
+  \newcommand{\euro}{€}
+$if(mainfont)$
+    \setmainfont{$mainfont$}
+$endif$
+$if(sansfont)$
+    \setsansfont{$sansfont$}
+$endif$
+$if(monofont)$
+    \setmonofont[Mapping=tex-ansi]{$monofont$}
+$endif$
+$if(mathfont)$
+    \setmathfont(Digits,Latin,Greek){$mathfont$}
+$endif$
+\fi
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+% use microtype if available
+\IfFileExists{microtype.sty}{%
+\usepackage{microtype}
+\UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+$if(geometry)$
+\usepackage[$for(geometry)$$geometry$$sep$,$endfor$]{geometry}
+$endif$
+\ifxetex
+  \usepackage[setpagesize=false, % page size defined by xetex
+              unicode=false, % unicode breaks when used with xetex
+              xetex]{hyperref}
+\else
+  \usepackage[unicode=true]{hyperref}
+\fi
+\hypersetup{breaklinks=true,
+            bookmarks=true,
+            pdfauthor={$author-meta$},
+            pdftitle={$title-meta$},
+            colorlinks=true,
+            citecolor=$if(citecolor)$$citecolor$$else$blue$endif$,
+            urlcolor=$if(urlcolor)$$urlcolor$$else$blue$endif$,
+            linkcolor=$if(linkcolor)$$linkcolor$$else$magenta$endif$,
+            pdfborder={0 0 0}}
+\urlstyle{same}  % don't use monospace font for urls
+$if(lang)$
+\ifxetex
+  \usepackage{polyglossia}
+  \setmainlanguage{$mainlang$}
+  \setotherlanguages{$for(otherlang)$$otherlang$$sep$,$endfor$}
+\else
+  \usepackage[shorthands=off,$lang$]{babel}
+\fi
+$endif$
+$if(natbib)$
+\usepackage{natbib}
+\bibliographystyle{$if(biblio-style)$$biblio-style$$else$plainnat$endif$}
+$endif$
+$if(biblatex)$
+\usepackage{biblatex}
+$for(bibliography)$
+\addbibresource{$bibliography$}
+$endfor$
+$endif$
+$if(listings)$
+\usepackage{listings}
+$endif$
+$if(lhs)$
+\lstnewenvironment{code}{\lstset{language=Haskell,basicstyle=\small\ttfamily}}{}
+$endif$
+$if(highlighting-macros)$
+$highlighting-macros$
+$endif$
+$if(verbatim-in-note)$
+\usepackage{fancyvrb}
+\VerbatimFootnotes
+$endif$
+$if(tables)$
+\usepackage{longtable,booktabs}
+$endif$
+$if(graphics)$
+\usepackage{graphicx,grffile}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+$endif$
+$if(links-as-notes)$
+% Make links footnotes instead of hotlinks:
+\renewcommand{\href}[2]{#2\footnote{\url{#1}}}
+$endif$
+$if(strikeout)$
+\usepackage[normalem]{ulem}
+% avoid problems with \sout in headers with hyperref:
+\pdfstringdefDisableCommands{\renewcommand{\sout}{}}
+$endif$
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+$if(exam)$
+\setcounter{secnumdepth}{5}
+\renewcommand{\thesubparagraph}{\arabic{subparagraph}.}
+$else$
+$if(numbersections)$
+\setcounter{secnumdepth}{5}
+$else$
+\setcounter{secnumdepth}{0}
+$endif$
+$endif$
+
+
+
+$if(verbatim-in-note)$
+\VerbatimFootnotes % allows verbatim text in footnotes
+$endif$
+
+%%% Use protect on footnotes to avoid problems with footnotes in titles
+\let\rmarkdownfootnote\footnote%
+\def\footnote{\protect\rmarkdownfootnote}
+
+%%% Change title format to be more compact
+\usepackage{titling}
+
+% Create subtitle command for use in maketitle
+\newcommand{\subtitle}[1]{
+  \posttitle{
+    \begin{center}\large#1\end{center}
+    }
+}
+
+\setlength{\droptitle}{-2em}
+$if(title)$
+  \title{$title$}
+  \pretitle{\vspace{\droptitle}\centering\huge}
+  \posttitle{\par}
+$else$
+  \title{}
+  \pretitle{\vspace{\droptitle}}
+  \posttitle{}
+$endif$
+$if(subtitle)$
+\subtitle{$subtitle$}
+$endif$
+$if(author)$
+  \author{$for(author)$$author$$sep$ \\ $endfor$}
+  \preauthor{\centering\large\emph}
+  \postauthor{\par}
+$else$
+  \author{}
+  \preauthor{}\postauthor{}
+$endif$
+$if(date)$
+  \predate{\centering\large\emph}
+  \postdate{\par}
+  \date{$date$}
+$else$
+  \date{}
+  \predate{}\postdate{}
+$endif$
+
+% Including original header.tex directly in the template to allow the use of header-includes in Rmarkdown
+
+% Using xcolors with dvipsnames before mdframed to avoid option clash
+\usepackage{xcolor}
+\usepackage[framemethod=TikZ]{mdframed}
+
+\usepackage{fancyvrb} % Fancy Verbatim: Used for the R code output
+\usepackage{caption}  % We will not place figures in floats: required if captions are needed
+
+\definecolor{celadon}{rgb}{0.67, 0.88, 0.69} % Define a nice green color for the correction
+
+% Used to format the R code when setting "only_asis" to FALSE (uses knitr:::hilight_source)
+\makeatletter
+\newcommand{\hlnum}[1]{\textcolor[rgb]{0.686,0.059,0.569}{#1}}
+\newcommand{\hlstr}[1]{\textcolor[rgb]{0.192,0.494,0.8}{#1}}
+\newcommand{\hlcom}[1]{\textcolor[rgb]{0.678,0.584,0.686}{\textit{#1}}}
+\newcommand{\hlopt}[1]{\textcolor[rgb]{0,0,0}{#1}}
+\newcommand{\hlstd}[1]{\textcolor[rgb]{0.345,0.345,0.345}{#1}}
+\newcommand{\hlkwa}[1]{\textcolor[rgb]{0.161,0.373,0.58}{\textbf{#1}}}
+\newcommand{\hlkwb}[1]{\textcolor[rgb]{0.69,0.353,0.396}{#1}}
+\newcommand{\hlkwc}[1]{\textcolor[rgb]{0.333,0.667,0.333}{#1}}
+\newcommand{\hlkwd}[1]{\textcolor[rgb]{0.737,0.353,0.396}{\textbf{#1}}}
+\makeatother
+
+% Defining the base style of the box as bbox
+\mdfdefinestyle{bbox}{
+	leftmargin = 0cm,%
+	rightmargin = 0cm,%
+	innerleftmargin = 0.5cm,%
+	innerrightmargin = 0.5cm,%
+	roundcorner = 5pt,%
+	linewidth = 2pt,%
+	nobreak=false%,
+	%needspace=1in % Trying to avoid a page break after the title but does not do the trick...
+	}
+
+% Defining custom box environment (cbox) with 2 arguments:
+% The first optional (defaults to empty string) is the title of the box
+% The second (mandatory) defines the color of the box (linecolor and background is linecolor!30)
+\newenvironment{cbox}[2][]{
+\def\temp{#1}\ifx\temp\empty
+	\begin{mdframed}[style=bbox,%
+		linecolor = #2,%
+		innertopmargin = 10pt,%
+		skipabove = 10pt,%
+		backgroundcolor = #2!30]%
+\else
+	\begin{mdframed}[style=bbox,%
+		linecolor = #2,%
+		backgroundcolor = #2!30,%
+		innertopmargin = 3pt,%
+		skipabove = 10pt,%
+		frametitle={\tikz[baseline = (current bounding box.east), outer sep = 0pt]
+		\node[anchor = east, rounded corners = 3pt, rectangle, fill = #2]{#1};},%
+		frametitleaboveskip = \dimexpr-\ht\strutbox\relax]
+\fi
+
+}{\end{mdframed}}
+
+\mdfdefinestyle{input}{
+  frametitle = {},%
+  leftmargin = 0cm,%
+  rightmargin = 0cm,%
+  innerleftmargin = 0.2cm,%
+  innerrightmargin = 0.2cm,%
+  innertopmargin=0.5em,%
+  roundcorner = 2pt,%
+  linecolor = lightgray,%
+  linewidth = 1pt,%
+  backgroundcolor = lightgray!30
+  }
+
+% Defining the cbox, solution and answer environments to draw a colored block
+% around the content
+
+\newcommand{\cboxs}[2][]{\begin{cbox}[#1]{#2}}
+\newcommand{\cboxe}{\end{cbox}}
+\newcommand{\solutions}{\begin{cbox}[Solution]{celadon}}
+\newcommand{\solutione}{\end{cbox}}
+\newcommand{\answers}{\begin{cbox}[Answer]{Dandelion}}
+\newcommand{\answere}{\end{cbox}}
+
+\makeatletter
+
+% Collection of macros calling the MCQ environments from
+%  the exam class instead of the itemize environment
+
+% Backing up item and the itemize environment.
+\let\origitem\item
+\let\origitemize\itemize
+\let\origenditemize\enditemize
+
+% Macro to restore the original itemize environment
+\newcommand{\restoreitemize}{
+	\let\itemize\origitemize
+	\let\enditemize\origenditemize
+	\let\item\origitem
+}
+
+\newcommand{\opc}[1]{
+	\ifstrequal{#1}{on}{
+		\let\itemize\oneparchoices
+		\let\enditemize\endoneparchoices
+		\def\item{\choice}
+	}{\restoreitemize}
+}
+
+\newcommand{\opcb}[1]{
+	\ifstrequal{#1}{on}{
+		\let\itemize\oneparcheckboxes
+		\let\enditemize\endoneparcheckboxes
+		\def\item{\choice}
+	}{\restoreitemize}
+}
+
+\newcommand{\cb}[1]{
+	\ifstrequal{#1}{on}{
+		\let\itemize\checkboxes
+		\let\enditemize\endcheckboxes
+		\def\item{\choice}
+	}{\restoreitemize}
+}
+
+\newcommand{\ch}[1]{
+	\ifstrequal{#1}{on}{
+		\let\itemize\choices
+		\let\enditemize\endchoices
+		\def\item{\choice}
+	}{\restoreitemize}
+}
+\makeatother
+
+% Alternative oneparchoices and oneparcheckboxes
+% with equally spaced horizontal items.
+% The number of items per line can be adjusted (defaults to 3)
+%
+% Taken and adapted from the following stackexchange post:
+% http://tex.stackexchange.com/questions/149101/inline-arrangement-using-enumitem
+
+\usepackage{environ, multido, calc}% http://ctan.org/pkg/{environ,multido,calc}
+\makeatletter
+% Taken from http://tex.stackexchange.com/a/128318/5764
+\newcounter{listcount}% Keep track of \item
+\newcounter{q}% Enumerate the different items
+
+\NewEnviron{oneparchoicesalt}[1][\perline]{%
+  \setcounter{listcount}{0}% Start with 0 \items
+  \g@addto@macro{\BODY}{\item\relax\item}% Used to delimit the items; last item identified by \item\relax\item
+  \def\item##1\item{% Redefine \item to capture contents
+    \def\optarg{##1}%
+    \expandafter\ifx\optarg\relax\else% Last item not reached
+      \stepcounter{listcount}% Next item being processed
+      \expandafter\gdef\csname inlineitem@\thelistcount\endcsname{##1}% Store item in control sequence
+      \expandafter\item% Recursively continue processing items
+    \fi
+  }%
+  \BODY% Process environment (save items)
+  \setlength{\@tempdima}{\linewidth/#1}% Set length of each \item \parbox; possibly corrent...
+  \ifnum\value{listcount}<#1\relax\setlength{\@tempdima}{\linewidth/\value{listcount}}\fi%... if needed
+  \par\noindent% Start new non-indented paragraph
+  \multido{\i=1+1}{\value{listcount}}{% Insert all items in a \parbox
+    \parbox[t]{\@tempdima}{\raggedright\hangindent=1.5em\hangafter=1% Paragraph formatting
+      \makebox[1.5em][r]{ \setcounter{q}{\i}
+\opccounter\space}\strut\csname inlineitem@\i\endcsname\strut}\hspace{0pt}}%
+}
+
+
+\newcommand{\perline}{3}
+\newcommand{\opccounter}{\Alph{q})}
+\newcommand{\opcalt}[2][3]{
+	% Passing variables with the help of macros
+	% and not arguments to homogenize the call.
+	\renewcommand{\perline}{#1}
+	\renewcommand{\opccounter}{\Alph{q})}
+  \ifstrequal{#2}{on}{
+    % Switching itemize to MCQ mode
+    \let\itemize\oneparchoicesalt
+    \let\enditemize\endoneparchoicesalt
+	}{\restoreitemize}
+}
+
+\newcommand{\opcbalt}[2][3]{
+	% Passing variables with the help of macros
+	% and not arguments to homogenize the call.
+	\renewcommand{\perline}{#1}
+	\renewcommand{\opccounter}{\checkbox@char}
+  \ifstrequal{#2}{on}{
+    % Switching itemize to MCQ mode
+    \let\itemize\oneparchoicesalt
+    \let\enditemize\endoneparchoicesalt
+	}{\restoreitemize}
+}
+
+\makeatother
+
+% End of header.tex
+
+% Credit header
+$if(credit)$
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\lhead{} % Leaving header empty as mactex does not like \let\runauthor\@author
+\rhead{}
+
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0.4pt}
+\fancyfoot[L]{\href{http://eric.koncina.eu/r/unilur/}{\color{gray}unilur Rmarkdown template}\color{gray}\textit{ - E. Koncina}}
+\fancyfoot[R]{\thepage}
+\fancyfoot[C]{}
+$endif$
+% End of Credit header
+
+$for(header-includes)$
+$header-includes$
+$endfor$
+
+% Redefines (sub)paragraphs to behave more like sections
+% Eric Koncina 27/01/2016: Added \nopagebreak after paragraph/subparagraph title
+\ifx\paragraph\undefined\else
+\let\oldparagraph\paragraph
+\renewcommand{\paragraph}[1]{\oldparagraph{#1}\mbox{}\nopagebreak}
+\fi
+\ifx\subparagraph\undefined\else
+\let\oldsubparagraph\subparagraph
+\renewcommand{\subparagraph}[1]{\oldsubparagraph{#1}\mbox{}\nopagebreak}
+\fi
+
+% Redefining the subparagraph section which is used to render
+% The exam questions.
+% https://tex.stackexchange.com/questions/31780/where-can-i-find-help-files-or-documentation-for-commands-like-startsection-fo
+% \@startsection{<name>}{<level>}{<indent>}{<beforeskip>}{<afterskip>}{<style>}*[<altheading>]{<heading>}
+% Default values can be found in the article class: using original subparagraph with afterskip from
+% subsection/subsubsection
+\makeatletter
+\renewcommand\subparagraph{
+	\@startsection{subparagraph}{5}{\parindent}%
+                {3.25ex \@plus1ex \@minus .2ex}%
+                {1.5ex \@plus .2ex}{\normalfont\normalsize\bfseries}}
+
+\makeatother
+
+\begin{document}
+\maketitle
+%\thispagestyle{headandfoot}
+$if(abstract)$
+\begin{abstract}
+$abstract$
+\end{abstract}
+$endif$
+
+$if(idbox)$
+\begin{mdframed}[roundcorner = 2pt, linewidth = 1pt]
+\vspace{0.1in}
+\makebox[\textwidth]{{\fontfamily{phv}\selectfont \Large First name:}\enspace\hrulefill}
+\\[12pt]
+\vspace{0.2in}
+\makebox[\textwidth]{{\fontfamily{phv}\selectfont \Large Last name:}\enspace\hrulefill}
+\end{mdframed}
+$endif$
+
+$for(include-before)$
+$include-before$
+
+$endfor$
+$if(toc)$
+{
+\hypersetup{linkcolor=$if(toccolor)$$toccolor$$else$black$endif$}
+\setcounter{tocdepth}{$toc-depth$}
+\tableofcontents
+}
+$endif$
+$if(lot)$
+\listoftables
+$endif$
+$if(lof)$
+\listoffigures
+$endif$
+$body$
+
+$if(natbib)$
+$if(bibliography)$
+$if(biblio-title)$
+$if(book-class)$
+\renewcommand\bibname{$biblio-title$}
+$else$
+\renewcommand\refname{$biblio-title$}
+$endif$
+$endif$
+\bibliography{$for(bibliography)$$bibliography$$sep$,$endfor$}
+
+$endif$
+$endif$
+$if(biblatex)$
+\printbibliography$if(biblio-title)$[title=$biblio-title$]$endif$
+
+$endif$
+$for(include-after)$
+$include-after$
+
+$endfor$
+\end{document}
