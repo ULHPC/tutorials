@@ -54,6 +54,13 @@ Finally, be aware that the latest version of this tutorial is available on
 <http://ulhpc-tutorials.readthedocs.io/en/latest/deep_learning/>
 
 This hands-on is **not** about learning Machine Machine Learning (ML)/Deep Learning (DL).
+For that, we encourage you to take a look at the **EXCELLENT** courses being taught at as part of [Master Datascience Paris Saclay](http://datascience-x-master-paris-saclay.fr/) and available on
+
+https://github.com/m2dsupsdlclass/lectures-labs
+
+In particular, start with the
+[Introduction to Deep Learning](https://m2dsupsdlclass.github.io/lectures-labs/slides/01_intro_to_deep_learning/index.html#1) _by_ Charles Ollion and Olivier Grisel.
+
 Just as a short reminder, here are the main steps in ML:
 
 * __Step 0 - 1__: Asking the right questions
@@ -97,6 +104,13 @@ $> cd ~/tutorials/ML-DL
 $> ln -s ~/git/hub.com/ULHPC/tutorials/deep_learning ref.d
 ```
 
+As mentioned above, we are going to reuse some of the **EXCELLENT** labs materials taught at as part of [Master Datascience Paris Saclay](http://datascience-x-master-paris-saclay.fr/).
+
+``` bash
+$> pwd
+$HOME/tutorials/ML-DL
+$> git clone https://github.com/m2dsupsdlclass/lectures-labs/
+```
 
 ### Step 1.a Prepare python virtualenv
 
@@ -222,8 +236,8 @@ $> ssh -NL 8888:<IP OF YOUR NODE>:8888 iris-cluster
 Then, by accessing to your local port 8888 on the localhost address 127.0.0.1, you should see the Python notebook.
 
 
---------------------------------------------------------------
-## MNIST Machine Learning (ML) and Deep ML using Tensorflow ##
+-----------------------------------------------------------------
+## 2. MNIST Machine Learning (ML) and Deep ML using Tensorflow ##
 
 You are ready to open the jupiter notebook.
 
@@ -276,10 +290,30 @@ In this hands-on, we will design two **classifiers** for MNIST images:
 
 Open now the `ref.d/tensorflow/mnist-1-simple.ipynb`
 
-**`/!\ IMPORTANT`** You will need to **change** the kernel to `dlenv` using 'Kernel -> Change kernel' menu
+**`/!\ IMPORTANT`** You will need to **change** the kernel to `dlenv`.  Enter it when the message "Kernel not found" appears. You can also use the 'Kernel -> Change kernel' menu
+
 
 ### Deep MNIST classifier using convolutional layer
 
 You can now open `ref.d/tensorflow/mnist-2-deep_convolutional_NN.ipynb`
 
-**`/!\ IMPORTANT`** You will need to **change** the kernel to `dlenv` using 'Kernel -> Change kernel' menu
+**`/!\ IMPORTANT`** You will need to **change** the kernel to `dlenv`.  Enter it when the message "Kernel not found" appears. You can also use the 'Kernel -> Change kernel' menu
+
+--------------------------------------------
+## 3. Training Neural Networks with Keras ##
+
+Let's first install `keras` -- you will need to open another tab session with `screen` (using `CTRL-A c` (for create))
+
+``` bash
+$> module load lang/Python/2.7.13-foss-2017a
+$> source dlenv/bin/activate
+$> pip install keras
+```
+
+You can now open in the jupyter `lectures-labs/labs/01_keras/Intro\ Keras.ipynb`
+
+
+----------------------------------------------
+## 4. Pretrained Models for Computer Vision ##
+
+You can now open in the jupyter `lectures-labs/labs/01_keras/Intro\ pretrained\ models\ for\ computer\ vision.ipynb`
