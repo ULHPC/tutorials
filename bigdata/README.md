@@ -39,7 +39,7 @@ $> cd ~/git/github.com/ULHPC/tutorials/bigdata
 Finally, be aware that the latest version of this tutorial is available on
 [Github](https://github.com/ULHPC/tutorials/tree/devel/bigdata/) and on
 
-<http://ulhpc-tutorials.readthedocs.io/en/latest/bigdata/spark/>
+<http://ulhpc-tutorials.readthedocs.io/en/latest/bigdata/>
 
 One of the first objective is to install the  [Hadoop MapReduce by Cloudera](https://www.cloudera.com/downloads/cdh/5-12-0.html) using [EasyBuild](http://easybuild.readthedocs.io/).
 
