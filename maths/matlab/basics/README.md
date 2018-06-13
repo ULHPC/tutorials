@@ -32,9 +32,10 @@ along with their dependencies, before following the instructions in the next sec
         (gaia-frontend)$> wget --no-check-certificate https://raw.github.com/ULHPC/tutorials/devel/maths/matlab/basics/code/example2.m
         (gaia-frontend)$> wget --no-check-certificate https://raw.github.com/ULHPC/tutorials/devel/maths/matlab/basics/code/google_finance_data.m
         (gaia-frontend)$> wget --no-check-certificate https://raw.github.com/ULHPC/tutorials/devel/maths/matlab/basics/code/file_data_source.m
+        (gaia-frontend)$> wget --no-check-certificate https://raw.github.com/ULHPC/tutorials/devel/maths/matlab/basics/code/AAPL.csv
 
 
-Or simply clone the full tutorials repository and make a link to the MATLAB tutorial:
+Or simply clone the full tutorials repository and make a link to this part of the MATLAB tutorial:
 
         (gaia-frontend)$> git clone https://github.com/ULHPC/tutorials.git
         (gaia-frontend)$> ln -s tutorials/maths/matlab/basics ~/matlab-tutorial
@@ -155,6 +156,8 @@ Now we will use the example1.m script that shows:
          (node)$>
          (node)$> ls *pdf *eps
          example1-2dplot.eps  example1-2dplot.pdf  example1-scatter.eps
+
+__Note__: You'll need to edit `example1.m` to use the offline data source `file_data_source.m` in place of the Google Finance API, if running example1 shows an error.
 
 We have run the example1.m script which has downloaded Apple ('AAPL' ticker) stock data for the year 2016 and generated three plots:
 
@@ -448,7 +451,7 @@ Before testing the following commands, edit the `matlab-minlauncher2.sh` script 
 file.
 
       (gaia-frontend)$> cd ~/matlab-tutorial/code
-      (gaia-frontend)$> oarsub -l nodes=1/core=6,walltime=00:05:00 -p "gpu='YES'" ~/matlab-tutorial/code/matlab-minlauncher2.sh
+      (gaia-frontend)$> oarsub -l nodes=1/core=6,walltime=00:05:00 -t gpu ~/matlab-tutorial/code/matlab-minlauncher2.sh
       # now wait for the job to complete execution, then check the output file
       (gaia-frontend)$> tail -n 5 example2c.out
       -- GPU test
