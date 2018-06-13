@@ -36,7 +36,7 @@ pages:
 - CFD/MD/Chemistry:
    - Advanced Parallel execution: 'multiphysics/index.md'
 - Big Data:
-  - Big Data Application Over Apache Spark: 'bigdata/spark/index.md'
+  - Big Data Application Over Apache Spark: 'bigdata/index.md'
 - Containers:
   - Singularity: 'containers/singularity/index.md'
 - Virtualization:
