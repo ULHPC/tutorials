@@ -5,7 +5,7 @@
 
      Copyright (c) 2013-2018 UL HPC Team  <hpc-sysadmins@uni.lu>
 
-<!-- [![](https://github.com/ULHPC/tutorials/raw/devel/parallel/basics/cover_slides.png)](https://github.com/ULHPC/tutorials/raw/devel/parallel/basics/slides.pdf) -->
+[![](https://github.com/ULHPC/tutorials/raw/devel/bigdata/cover_slides.png)](https://github.com/ULHPC/tutorials/raw/devel/bigdata/slides.pdf)
 
 The objective of this tutorial is to demonstrate how to build and run on top of the [UL HPC](http://hpc.uni.lu) platform a couple of reference analytics engine for large-scale Big Data processing, _i.e._ [Hadoop](http://hadoop.apache.org/) or  [Apache Spark](http://spark.apache.org/)
 
@@ -52,6 +52,16 @@ In the next part, we are going to install a few mandatory software required to i
 ## 1. Preliminary installations ##
 
 As this involves Java (something more probably HPC users don't like), and that Java needs to be treated specifically within Easybuild do to the licences involved, we will now cover it.
+
+For these builds, reserve an interactive job on one full node (for 3 hours)
+
+```bash
+############### iris cluster (slurm) ###############
+(access-iris)$> srun -p interactive -N 1 -n 1 -c 28 -t 3:00:00 --pty bash
+
+############### gaia/chaos clusters (OAR) ###############
+(access-{gaia|chaos})$> oarsub -I -l nodes=1,walltime=3
+```
 
 ### Step 1.a. Java 7u80 and 8u152
 
@@ -171,10 +181,13 @@ module av Maven
 
 A few other elements need to be installed.
 
-### Step 1.c snappy and protobuf
+### Step 1.c CMake, snappy, protobuf
 
-Let's repeat the process globally for [snappy](https://github.com/google/snappy)
-**version 1.1.6** (the version is important), the fast compressor/decompressor from Google, and [protobuf](https://github.com/google/protobuf), Google's language-neutral, platform-neutral, extensible mechanism for serializing structured data (**version 2.5.0**) we'll need later:
+Let's repeat the process globally for:
+
+* [Cmake](https://cmake.org/) **3.9.1**  (the version is important), a very popular an open-source, cross-platform family of tools designed to build, test and package software,  * [snappy](https://github.com/google/snappy)
+**version 1.1.6** (the version is important), the fast compressor/decompressor from Google, and
+* [protobuf](https://github.com/google/protobuf), Google's language-neutral, platform-neutral, extensible mechanism for serializing structured data (**version 2.5.0**) we'll need later:
 
 ```bash
 $> eb CMake-3.9.1.eb -Dr
@@ -362,7 +375,7 @@ As for Hadoop, we are first going to build Spark using Easybuild before performi
 1. a single conffiguration where the classical interactive wrappers (`pyspark`, `scala` and `R` wrappers) will be reviewed.
 2. a [Standalone](https://spark.apache.org/docs/latest/spark-standalone.html) cluster configuration - a simple cluster manager included with Spark that makes it easy to set up a cluster), where we will run the Pi estimation.
 
-### Building Spark
+### 4.1 Building Spark
 
 Spark 2.1.1 is available by default.
 
@@ -382,7 +395,7 @@ user    0m5.167s
 sys     0m2.475s
 ```
 
-### Interactive usage
+### 4.2 Interactive usage
 
 Exit your reservation to reload one with the `--exclusive` flag to allocate an exclusive node.
 Let's load the installed module:
@@ -401,9 +414,7 @@ $> module av Spark
 $> module load devel/Spark
 ```
 
-### 4.1. Interactive usage
-
-#### 4.1.a. Pyspark
+#### 4.2.a. Pyspark
 
 PySpark is the Spark Python API and exposes Spark Contexts to the Python programming environment.
 
@@ -433,7 +444,7 @@ SparkSession available as 'spark'.
 
 See [this tutorial](https://www.dezyre.com/apache-spark-tutorial/pyspark-tutorial) for playing with pyspark.
 
-#### 4.1.b. Scala Spark Shell
+#### 4.2.b. Scala Spark Shell
 
 Spark includes a modified version of the Scala shell that can be used interactively.
 Instead of running `pyspark` above, run the `spark-shell` command:
@@ -460,14 +471,13 @@ Type :help for more information.
 scala>
 ```
 
-#### 4.1.c.  R Spark Shell
+#### 4.2.c.  R Spark Shell
 
 The Spark R API is still experimental. Only a subset of the R API is available -- See the [SparkR Documentation](https://spark.apache.org/docs/latest/sparkr.html).
 Since this tutorial does not cover R, we are not going to use it.
 
 
------------------------------------------
-## Running Spark in standalone cluster ##
+### 4.3 Running Spark in standalone cluster
 
 * [Reference Documentation](https://spark.apache.org/docs/latest/cluster-overview.html)
 
