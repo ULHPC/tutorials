@@ -1,13 +1,13 @@
 ---
 title: "PS12: introduction to R"
 subtitle: "HPC School 2018"
-author: "Aurélien Ginolhac"
+author: "Aurélien Ginolhac (aurelien.ginolhac@uni.lu) - Life Sciences Research Unit"
 date: "2018-06-13"
 output:
   iosp::ioslides_plus:
     keep_md: no
     logo: figures/hpc150x150.png
-    footer: "[R practical session](https://github.com/ULHPC/tutorials/tree/devel/advanced/R)"
+    footer: "[R practical session](http://ulhpc-tutorials.readthedocs.io/en/latest/maths/R/)"
     smaller: yes
     widescreen: yes
     self_contained: no
@@ -295,9 +295,6 @@ using  `Global Options -> Code -> Diagnostics` editing pane:
 
 + unused variables & style recommendations
 
-
-
-  
 
 
 # Data types and structures | R base

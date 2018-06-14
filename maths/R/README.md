@@ -24,7 +24,7 @@ forks](https://img.shields.io/github/stars/ULHPC/tutorials.svg?style=social&labe
 [![](https://github.com/ULHPC/tutorials/raw/devel/maths/R/figures/cover_slides.png)](https://github.com/ULHPC/tutorials/raw/devel/maths/R/PS12-introduction_to_R.pdf)
 
   - [slides as dynamic
-    html](https://rworkshop.uni.lu/preview/hpcschool/Intro_PS.html)
+    html](https://cdn.rawgit.com/ULHPC/tutorials/devel/maths/R/Intro_PS.html)
 
 Through this tutorial you will learn how to use R from your local
 machine or from one of the [UL HPC platform](http://hpc.uni.lu)
@@ -81,16 +81,17 @@ interactive shell or R-Studio embedded shell.
 To install libraries you can use the `install.packages()` function.
 *e.g*
 
-`install.packages("ggplot2")`
+`install.packages("tidyverse")`
 
-This will install the `ggplot2` library.
+This will install the core packages of the `tidyverse`, including
+`ggplot2` and `dplyr`.
 
 Note: on the first run, R might ask you various questions during the
 installation. e.g. selecting a CRAN mirror to use for downloading
 packages. Select a mirror close to your location. For other questions,
 using default values is ok.
 
-Now, to load this library call:
+Now, to load packages with a `library()` call:
 
 `library(ggplot2)`
 
@@ -102,7 +103,7 @@ is now attached to the current session.
 in R or Rstudio do `install.packages("tidyverse")` (takes some time)
 
 see [the
-tutorial](https://rworkshop.uni.lu/preview/hpcschool/practical_datasaurus.html)
+tutorial](https://cdn.rawgit.com/ULHPC/tutorials/devel/maths/R/practical_datasaurus.html)
 
 ## Comparing methods for aggregating data
 
@@ -151,13 +152,14 @@ ggplot(diamonds) +
 #ggsave(file = "diamonds_plot.pdf", last_plot(), width = 8, height = 4)
 ```
 
-## Speed comparison of different tools
+## Speed comparison of different tools for aggregating data
 
 We could do a for loop to aggregate the data per cuts and manually
-compute the average price, but in R loops are generally a bad idea (if
-you avoid growing vectors there are fine). It is better to concentrate
-on actions and not on programming, so the looping can be efficiently
-done internally to available functions.
+compute the average price, but in R loops are generally a bad idea ([if
+you avoid growing vectors there are
+fine](https://privefl.github.io/blog/why-loops-are-slow-in-r/)). It is
+better to concentrate on actions and not on programming, so the looping
+can be efficiently done internally.
 
 Thus instead of looping around the dataset, we will use a function from
 the `dplyr` package part of the [tidyverse](http://tidyverse.org) idiom
@@ -275,6 +277,7 @@ grabbing its performance (time and ressources used)
 ``` r
 library(data.table)
 library(bench)
+set.seed(123)
 m <- bench::mark(LAPPLY   = as.data.frame(cbind(cut = as.character(unique(diamonds$cut)),
                                                 price = lapply(unique(diamonds$cut), function(x) mean(diamonds$price[which(diamonds$cut == x)])))),
                  AGGREGATE = aggregate(price ~ cut, FUN = mean, data = diamonds),
@@ -287,10 +290,10 @@ m
     ## # A tibble: 4 x 10
     ##   expression      min     mean   median      max `itr/sec` mem_alloc  n_gc
     ##   <chr>      <bch:tm> <bch:tm> <bch:tm> <bch:tm>     <dbl> <bch:byt> <dbl>
-    ## 1 LAPPLY       9.79ms  13.01ms  11.21ms   43.2ms      76.9    8.04MB    67
-    ## 2 AGGREGATE   39.27ms  48.72ms  49.37ms   64.2ms      20.5   13.09MB   139
-    ## 3 DPLYR       11.15ms  12.99ms   11.8ms   19.8ms      77.0    1.53MB    12
-    ## 4 DATATABLE    1.17ms   1.79ms   1.51ms    8.8ms     559.   623.85KB     6
+    ## 1 LAPPLY       9.91ms  13.95ms  11.54ms   56.9ms      71.7    8.04MB    67
+    ## 2 AGGREGATE   38.38ms  53.09ms  49.63ms  192.3ms      18.8   13.09MB   135
+    ## 3 DPLYR       11.12ms  13.78ms  12.09ms   25.3ms      72.6    1.53MB    15
+    ## 4 DATATABLE    1.19ms   2.08ms   1.56ms   11.1ms     481.   623.85KB     6
     ## # ... with 2 more variables: n_itr <int>, total_time <bch:tm>
 
   - makes comparison easier to read using **relative** values. 1 for the
@@ -305,17 +308,15 @@ summary(m, relative = TRUE)
     ## # A tibble: 4 x 10
     ##   expression   min  mean median   max `itr/sec` mem_alloc  n_gc n_itr
     ##   <chr>      <dbl> <dbl>  <dbl> <dbl>     <dbl>     <dbl> <dbl> <dbl>
-    ## 1 LAPPLY      8.36  7.28   7.42  4.91      3.74     13.2   11.2  1.45
-    ## 2 AGGREGATE  33.5  27.3   32.7   7.29      1        21.5   23.2  1   
-    ## 3 DPLYR       9.52  7.27   7.80  2.25      3.75      2.51   2    1.79
-    ## 4 DATATABLE   1     1      1     1        27.3       1      1    1.83
+    ## 1 LAPPLY      8.34  6.71   7.39  5.14      3.81     13.2   11.2  1.41
+    ## 2 AGGREGATE  32.3  25.5   31.8  17.4       1        21.5   22.5  1   
+    ## 3 DPLYR       9.36  6.63   7.74  2.28      3.85      2.51   2.5  1.73
+    ## 4 DATATABLE   1     1      1     1        25.5       1      1    1.78
     ## # ... with 1 more variable: total_time <dbl>
 
 ### Plotting the benchmark
 
-result gives us a boxplot graph if you use the base function `autoplot`
-
-Of note, you can use `ggplot2` via the `autoplot` function
+You can use `ggplot2` via the `autoplot()` function
 
 ``` r
 autoplot(m) +
@@ -340,7 +341,7 @@ m %>%
 
 ![](README_files/figure-gfm/unnamed-chunk-12-1.png)<!-- -->
 
-### Parallel computing using HPC
+## Parallel computing using HPC
 
 R is already available in `chaos`, `gaia` and `iris` clusters as a
 module. Only `iris` has the latest version `3.4.4`. The first step is
@@ -414,12 +415,11 @@ On `iris`, in an interactive session, load the module to get R version
     module use /opt/apps/resif/data/devel/default/modules/all
     module load lang/R/3.4.4-foss-2018a-X11-20180131-bare
 
-After entering R using the `R` command, install both packages
+After entering R using the `R` command, install both
+packages
 
 ``` r
-install.packages(future, repos = "https://cran.rstudio.com")
-install.packages(furrr, repos = "https://cran.rstudio.com")
-install.packages(Rtsne, repos = "https://cran.rstudio.com")
+install.packages(c("future", "furrr", "purrr", "dplyr", "dbscan", "tictoc", "Rtsne"), repos = "https://cran.rstudio.com")
 ```
 
 quit by typing `quit()` and `n` do not save workspace image.
@@ -449,7 +449,7 @@ nothingness <- future_map(c(2, 2, 2), ~Sys.sleep(.x), .progress = TRUE)
 tictoc::toc()
 ```
 
-    ## 6.334 sec elapsed
+    ## 6.249 sec elapsed
 
   - second in parallel
 
@@ -462,15 +462,15 @@ nothingness <- future_map(c(2, 2, 2), ~Sys.sleep(.x), .progress = TRUE)
 ```
 
     ## 
-     Progress:                                                                                            100%
-     Progress:                                                                                            100%
-     Progress: ────────────────────────────────────────────────────────────────────────────────────────── 100%
+     Progress:                                                                                                                                        100%
+     Progress:                                                                                                                                        100%
+     Progress: ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── 100%
 
 ``` r
 tictoc::toc()
 ```
 
-    ## 2.11 sec elapsed
+    ## 2.098 sec elapsed
 
 ### t-SNE example
 
@@ -481,7 +481,8 @@ Create both the R and bash script in a folder on the `iris` cluster.
 
 #### R script
 
-    library(tidyverse)
+    library(dplyr)
+    library(purrr)
     library(furrr)
     library(Rtsne)
     
@@ -522,7 +523,7 @@ Create both the R and bash script in a folder on the `iris` cluster.
     
     saveRDS(res_tib, "tsne_future.rds")
 
-save as **tsne.R**
+save as file named **tsne.R**
 
 #### launcher for 10 minutes on one full node (28 cores)
 
@@ -550,12 +551,13 @@ save as **tsne.R**
     
     Rscript tsne.R > job_${SLURM_JOB_NAME}.out 2>&1
 
-save as **launcher.sh**. The request a full node of **28** cores
+save as file named **launcher.sh**. It requests a full node of **28**
+cores
 
 #### Run the job
 
 on the `iris` frontend, in the folder where both the **tsne.R** and
-**launcher.sh** files are located, simply run:
+**launcher.sh** files are located, type the `slurm` command:
 
     sbatch launcher.sh
 
@@ -563,9 +565,9 @@ you can monitor the queue line with:
 
     squeue -l -u $USER
 
-When you *passive* job has started, you can connect to the assigned node
-using the `sjoin` command by Valentin Plugaru, use <TAB> to autocomplete
-the correct job and node ids.
+When your *passive* job has started, you can connect to the assigned
+node using the `sjoin` command on the frontend by Valentin Plugaru, use
+<TAB> to autocomplete the correct job and node ids.
 
 Once logged in, you can check that the job is indeed run using the 28
 cores as the output of `htop` below
@@ -583,7 +585,8 @@ fetching of the processes.
 #### Conclusion
 
 see below the benefit of using more cores on the elapsed time for
-computationally intensive tasks such as t-SNE
+computationally intensive tasks such as t-SNE (code in
+[`furrr_benchmark.Rmd`](https://github.com/ULHPC/tutorials/blob/devel/maths/R/furrr_benchmark.Rmd))
 
 ![](figures/furrr_tsne.png)
 

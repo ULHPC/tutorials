@@ -1,0 +1,123 @@
+---
+title: "benchmark future"
+author: "Aurelien Ginolhac"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+```
+
+## benchmark future
+
+on `iris`, in `~/future` run:
+
+`sbatch launcher_intel_bm.sh`
+`sbatch launcher_bm.sh`
+
+
+### fetch data
+
+```{r}
+session <- ssh::ssh_connect("aginolhac@access-iris.uni.lu:8022")
+out <- ssh::ssh_exec_internal(session, command = "ls /home/users/aginolhac/future/benchmark/*out")
+timing <- rawToChar(out$stdout) %>% read_lines()
+```
+
+```{r}
+read_ssh_file <- function(session, file) {
+  out <- ssh::ssh_exec_internal(session, command = paste("cat", file))
+  rawToChar(out$stdout) %>% read_lines()
+}
+get_elapsed <- function(text, pattern) {
+  str_subset(text, pattern) %>%
+  str_extract("[[:digit:]\\.]+") %>%
+  as.double()
+}
+
+tibble(bm_path = timing,
+       bm = map_chr(bm_path, fs::path_file)) %>%
+  filter(str_count(bm, "_") == 4) %>%
+  mutate(toolchain = case_when(str_detect(bm, "foss") ~ "GNU",
+                               str_detect(bm, "intel") ~ "intel",
+                               TRUE ~ "NA"),
+         ncores = str_extract_all(bm, "\\d+"),
+         # use possibly because files can be empty and parsing faill
+         content = map(bm_path, possibly(read_ssh_file, otherwise = NA_character_), session = session)) -> res
+# retain only benchmark with ncores and 
+res %>%
+  filter(map_int(ncores, length) == 2, !is.na(content)) %>%
+  mutate(ncpu = map(ncores, pluck, 1) %>% map_int(as.integer), 
+         iter = map(ncores, pluck, 2) %>% map_int(as.integer)) %>% 
+  select(-ncores) -> res_tidy
+```
+
+```{r, fig.width=10, fig.height=6}
+res_tidy %>%
+  # some intel failed, remove incomplete runs for now
+  filter(map(content, str_detect, "finding") %>% map(sum) == 1) %>% 
+  mutate(tsne       =  map_dbl(content, get_elapsed, pattern = "tsne.+elapsed"),
+         clustering =  map_dbl(content, get_elapsed, pattern = "clust.+elapsed")) %>%
+  gather(step, time, tsne, clustering) %>%
+  group_by(toolchain, ncpu, step) %>%
+  summarise(mean = mean(time),
+            max = max(time),
+            min = min(time)) %>% 
+  mutate(step = fct_relevel(step, "tsne")) -> res_plot
+res_plot %>% 
+  ggplot(aes(x = ncpu, y = mean, colour = toolchain)) +
+  geom_ribbon(aes(ymin = min, ymax = max, fill = toolchain), colour = NA, alpha = 0.6) +
+  geom_line() +
+  geom_point() +
+  facet_wrap(~ step, scales = "free_y") +
+  scale_x_continuous(breaks = c(1, seq(4, 28, 4))) +
+  #annotation_logticks(sides = "l") +
+  #scale_y_log10() +
+  theme_minimal(14) +
+  labs(y = "time (sec)",
+       x = "# cores",
+       title = "Parallelization of t-SNE",
+       subtitle = "using the furrr/future pkgs on iris") -> p1
+
+```
+
+speedup / efficiency
+
+```{r}
+res_plot %>%
+  select(-max, -min) %>%
+  filter(step == "tsne") %>%
+  group_by(toolchain) %>%
+  mutate(speedup = max(mean) / mean,
+         efficiency = speedup / ncpu * 100) -> res_p
+res_p %>%
+  ggplot(aes(x = ncpu, y = speedup, colour = toolchain)) +
+  geom_line() +
+  geom_point() +
+  geom_abline(intercept = 0, slope = 1, linetype = "dashed") +
+  coord_equal() +
+  scale_x_continuous(breaks = c(1, seq(4, 28, 4))) +
+  theme_minimal(14) +
+  theme(legend.position = "none") +
+  labs(y = "speedup",
+       x = "# cores",
+       title = NULL,
+       subtitle = "t-SNE: Speedup") -> p2
+res_p %>%
+  ggplot(aes(x = ncpu, y = efficiency, colour = toolchain)) +
+  geom_line() +
+  geom_point() +
+  geom_abline(intercept = 0, slope = 1, linetype = "dashed") +
+  scale_x_continuous(breaks = c(1, seq(4, 28, 4))) +
+  theme_minimal(14) +
+  theme(legend.position = "none") +
+  labs(y = "efficiency",
+       x = "# cores",
+       title = NULL,
+       subtitle = "t-SNE: efficiency") -> p3
+library(patchwork)
+p1 / (p2 | p3)
+ggsave("figures/furrr_tsne.png", last_plot(), width = 8, height = 7)
+```
+
