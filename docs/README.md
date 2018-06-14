@@ -15,33 +15,34 @@ The list of proposed tutorials is continuously evolving.
 They used on a regular basis during the [UL HPC School](http://hpc.uni.lu/hpc-school/) we organise.
 So far, the following tutorials are proposed:
 
-| **Category**           | **Description**                                                                             | **Level**      |
-| :----------:           | ----------------------------------------------------------------------------                | -------------- |
-| _Basic_                | [Getting Started on the UL HPC platform](beginners/)                                        | beginners      |
-|                        | [HPC workflow with sequential jobs](basic/sequential_jobs/)                                 | beginners      |
-|                        | [Prototyping with Python](python/basics/)                                                   | beginners      |
-|                        | [Advanced prototyping with Python](python/advanced/)                                        | intermediate   |
-| _Scheduling_           | [Advanced scheduling with SLURM](scheduling/advanced)                                       | intermediate   |
-| _Software Management_  | [Building [custom] software with EasyBuild](tools/easyBuild/)                               | beginners      |
-| _Debuging & Profiling_ | [Know Your Bugs: Weapons for Efficient Debugging](debugging/basics/)                        | intermediate   |
-|                        | [Advanced debugging on the UL HPC platform](debugging/advanced/)                            | intermediate   |
-|                        | (OLD) [Unified profiling and debugging with Allinea](advanced/Allinea/)                     | intermediate   |
-|                        | (OLD) [Direct,  Reverse and parallel Memory debugging with TotalView](advanced/TotalView/)  | intermediate   |
-| _MPI_                  | [Parallel computations with OpenMP/MPI](parallel/basics/)                                   | intermediate   |
-|                        | [UL HPC MPI Tutorial: OSU Micro-Benchmarks](parallel/mpi/OSU_MicroBenchmarks/)              | intermediate   |
-|                        | [High-Performance Linpack (HPL) benchmarking on UL HPC platform](parallel/mpi/HPL/)         | intermediate   |
-|                        | [HPCG benchmarking on UL HPC platform](parallel/hybrid/HPCG/)                               | intermediate   |
-| _Mathematics_          | [MATLAB (interactive, passive and sequential jobs)](maths/matlab/basics/)                   | intermediate   |
-|                        | [Advanced MATLAB execution: checkpointing and parallel jobs](maths/matlab/advanced/)        | advanced       |
-|                        | [R / Statictical Computing](maths/R/)                                                       | intermediate   |
-| _Bioinformatics_       | [Bioinformatics software on the UL HPC platform](bio/basics/)                               | intermediate   |
-|                        | [Galaxy Introduction Exercise: From Peaks to Genes](bio/galaxy/)                            | intermediate   |
-| _CFD/MD/Chemistry_     | [Running parallel software: test cases on CFD / MD / Chemistry applications](multiphysics/) | advanced       |
-| _Big Data_             | [Running Big Data Application using Apache Hadoop and Spark ](bigdata/)                     | intermediate   |
-| _Containers_           | [HPC Containers with Singularity](containers/singularity/)                                  | advanced       |
-| _Virtualization_       | (OLD) [Create and reproduce work environments using Vagrant](advanced/Vagrant/)             | intermediate   |
-|                        | [Deploying virtual machines with Vm5k on Grid'5000](advanced/vm5k/)                         | intermediate   |
-| _Misc_                 | [Reproducible Research at the Cloud Era](misc/reproducible-research/)                       | intermediate   |
+| **Category**            | **Description**                                                                             | **Level**      |
+| :----------:            | ----------------------------------------------------------------------------                | -------------- |
+| _Basic_                 | [Getting Started on the UL HPC platform](beginners/)                                        | beginners      |
+|                         | [HPC workflow with sequential jobs](basic/sequential_jobs/)                                 | beginners      |
+|                         | [Prototyping with Python](python/basics/)                                                   | beginners      |
+|                         | [Advanced prototyping with Python](python/advanced/)                                        | intermediate   |
+| _Scheduling_            | [Advanced scheduling with SLURM](scheduling/advanced)                                       | intermediate   |
+| _Software Management_   | [Building [custom] software with EasyBuild](tools/easyBuild/)                               | beginners      |
+| _Debuging & Profiling_  | [Know Your Bugs: Weapons for Efficient Debugging](debugging/basics/)                        | intermediate   |
+|                         | [Advanced debugging on the UL HPC platform](debugging/advanced/)                            | intermediate   |
+|                         | (OLD) [Unified profiling and debugging with Allinea](advanced/Allinea/)                     | intermediate   |
+|                         | (OLD) [Direct,  Reverse and parallel Memory debugging with TotalView](advanced/TotalView/)  | intermediate   |
+| _MPI_                   | [Parallel computations with OpenMP/MPI](parallel/basics/)                                   | intermediate   |
+|                         | [UL HPC MPI Tutorial: OSU Micro-Benchmarks](parallel/mpi/OSU_MicroBenchmarks/)              | intermediate   |
+|                         | [High-Performance Linpack (HPL) benchmarking on UL HPC platform](parallel/mpi/HPL/)         | intermediate   |
+|                         | [HPCG benchmarking on UL HPC platform](parallel/hybrid/HPCG/)                               | intermediate   |
+| _Mathematics_           | [MATLAB (interactive, passive and sequential jobs)](maths/matlab/basics/)                   | intermediate   |
+|                         | [Advanced MATLAB execution: checkpointing and parallel jobs](maths/matlab/advanced/)        | advanced       |
+|                         | [R / Statictical Computing](maths/R/)                                                       | intermediate   |
+| _Bioinformatics_        | [Bioinformatics software on the UL HPC platform](bio/basics/)                               | intermediate   |
+|                         | [Galaxy Introduction Exercise: From Peaks to Genes](bio/galaxy/)                            | intermediate   |
+| _CFD/MD/Chemistry_      | [Running parallel software: test cases on CFD / MD / Chemistry applications](multiphysics/) | advanced       |
+| _Big Data_              | [Running Big Data Application using Apache Hadoop and Spark ](bigdata/)                     | intermediate   |
+| _Machine/Deep Learning_ | [Machine and Deep learning workflows](deep_learning/)                                       | intermediate   |
+| _Containers_            | [HPC Containers with Singularity](containers/singularity/)                                  | advanced       |
+| _Virtualization_        | (OLD) [Create and reproduce work environments using Vagrant](advanced/Vagrant/)             | intermediate   |
+|                         | [Deploying virtual machines with Vm5k on Grid'5000](advanced/vm5k/)                         | intermediate   |
+| _Misc_                  | [Reproducible Research at the Cloud Era](misc/reproducible-research/)                       | intermediate   |
 
 __List of contributors__
 
