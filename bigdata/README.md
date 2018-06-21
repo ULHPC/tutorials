@@ -668,7 +668,7 @@ Kindly pay attention to the fact that:
 
 * you can afford 4 GiB per core to the workers, but take into account that Spark master and worker daemons themselves will need 4GiB to run
 
-  ```bash
+```bash
   export DAEMON_MEM=${SLURM_MEM_PER_CPU:=4096}
   # Memory to allocate to the Spark master and worker daemons themselves
   export SPARK_DAEMON_MEMORY=${DAEMON_MEM}m
@@ -679,7 +679,7 @@ Kindly pay attention to the fact that:
   export SPARK_WORKER_MEMORY=${SPARK_MEM}m
   # Options read in YARN client mode
   export SPARK_EXECUTOR_MEMORY=${SPARK_MEM}m
-  ```
+```
 
 _Note_: if you are lazy (or late), you can use the provided launcher script `runs/launcher.Spark.sh`.
 
