@@ -604,8 +604,8 @@ on your browser.
 
 ```bash
 $> export SPARK_HOME=$EBROOTSPARK           # Required
-$> export MASTER=spark://$(hostname):7077   # Helpful
-$> echo $MASTER
+$> export MASTER_URL=spark://$(hostname -s):7077   # Helpful
+$> echo $MASTER_URL
 ```
 Now we can start a worker:
 
@@ -630,7 +630,7 @@ Options:
   --properties-file FILE   Path to a custom Spark properties file.
                            Default is conf/spark-defaults.conf.
 
-$> start-slave.sh -c ${SLURM_CPUS_PER_TASK} $MASTER
+$> start-slave.sh -c ${SLURM_CPUS_PER_TASK} $MASTER_URL
 ```
 
 Check the result on the master website `http://<IP>:8082`.
@@ -640,7 +640,7 @@ Now we can submit an example python Pi estimation script to the Spark cluster wi
 _Note_: partitions in this context refers of course to Spark's Resilient Distributed Dataset (RDD) and how the dataset is distributed across the nodes in the Spark cluster.
 
 ```bash
-$> spark-submit --master $MASTER  $SPARK_HOME/examples/src/main/python/pi.py 100
+$> spark-submit --master $MASTER_URL  $SPARK_HOME/examples/src/main/python/pi.py 100
 [...]
 18/06/13 02:03:43 INFO DAGScheduler: Job 0 finished: reduce at /home/users/svarrette/.local/easybuild/software/devel/Spark/2.2.0-Hadoop-2.6-Java-1.8.0_152/examples/src/main/python/pi.py:43, took 3.738313 s
 Pi is roughly 3.140860
@@ -653,5 +653,82 @@ Finally, at the end, clean your environment and
 $SPARK_HOME/sbin/stop-all.sh
 ```
 
-Prepare a launcher.
-See also [Spark launcher example](https://hpc.uni.lu/users/docs/slurm_launchers.html#apache-spark).
+Prepare a launcher (use your favorite editor) to setup a spark cluster and submit a task to this cluster in batch mode.
+Kindly pay attention to the fact that:
+
+* the master is expected to use **1 core** (and 4GiB of RAM) on the first allocated node
+    - in particular, the first worker running on the master node will use **1 less core** than  the allocated ones, _i.e._ `$((${SLURM_CPUS_PER_TASK}-1))`
+    - once set, the master URL can be obtained with
+
+             MASTER_URL="spark://$(scontrol show hostname $SLURM_NODELIST | head -n 1):7077"
+
+* the workers can use `$SLURM_CPUS_PER_TASK` cores (and a minimum of 1 core)
+
+        export SPARK_WORKER_CORES=${SLURM_CPUS_PER_TASK:-1}
+
+* you can afford 4 GiB per core to the workers, but take into account that Spark master and worker daemons themselves will need 4GiB to run
+
+  ```bash
+  export DAEMON_MEM=${SLURM_MEM_PER_CPU:=4096}
+  # Memory to allocate to the Spark master and worker daemons themselves
+  export SPARK_DAEMON_MEMORY=${DAEMON_MEM}m
+  export SPARK_MEM=$(( ${DAEMON_MEM}*(${SPARK_WORKER_CORES} -1) ))
+  # Total amount of memory to allow Spark applications to use on the machine,
+  # note that each application's individual memory is configured using its
+  # spark.executor.memory property.
+  export SPARK_WORKER_MEMORY=${SPARK_MEM}m
+  # Options read in YARN client mode
+  export SPARK_EXECUTOR_MEMORY=${SPARK_MEM}m
+  ```
+
+_Note_: if you are lazy (or late), you can use the provided launcher script `runs/launcher.Spark.sh`.
+
+```bash
+$> cd runs
+$> ./launcher.Spark.sh -h
+NAME
+  ./launcher.Spark.sh -- Spark Standalone Mode launcher
+
+  This launcher will setup a Spark cluster composed of 1 master and <N> workers,
+  where <N> is the number of (full) nodes reserved (i.e. $SLURM_NNODES).
+  Then a spark application is submitted (using spark-submit) to the cluster
+  By default, $EBROOTSPARK/examples/src/main/python/pi.py is executed.
+
+SYNOPSIS
+  ./launcher.Spark.sh -h
+  ./launcher.Spark.sh [-i] [path/to/spark_app]
+
+OPTIONS
+  -i --interactive
+    Interactive mode: setup the cluster and give back the hand
+    Only mean with interactive jobs
+  -m --master
+    Setup a spark master (only)
+  -c --client
+    Setup spark worker(s)/slave(s). This assumes a master is running
+  -n --no-setup
+    Do not bootstrap the spark cluster
+
+AUTHOR
+  UL HPC Team <hpc-sysadmins@uni.lu>
+COPYRIGHT
+  This is free software; see the source for copying conditions.  There is
+  NO warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+```
+
+Passive jobs examples:
+
+```bash
+############### iris cluster (slurm) ###############
+$> sbatch ./launcher.Spark.sh
+[...]
+```
+
+Once finished, you can check the result of the default application submitted (in `result_${SLURM_JOB_NAME}-${SLURM_JOB_ID}.out`).
+
+```bash
+$> cat result_${SLURM_JOB_NAME}-${SLURM_JOB_ID}.out
+Pi is roughly 3.141420
+```
+
+In case of problems, you can check the logs of the daemons in `~/.spark/logs/`
