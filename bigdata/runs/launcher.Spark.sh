@@ -1,5 +1,5 @@
 #!/bin/bash -l
-# Time-stamp: <Thu 2018-06-21 09:26 svarrette>
+# Time-stamp: <Thu 2018-06-21 09:43 svarrette>
 ##################################################################
 # Spark standalone cluster
 # Resources:
@@ -273,8 +273,8 @@ echo
 # stop the workers
 if [ -n "${SETUP_SLAVE}" ]; then
     echo "=> stopping worker(s)"
-    #scancel ${SLURM_JOBID}.0
-    srun --label stop-slave.sh
+    scancel ${SLURM_JOBID}.0
+    #srun --label stop-slave.sh
 fi
 # stop the master
 if [ -n "${SETUP_MASTER}" ]; then
