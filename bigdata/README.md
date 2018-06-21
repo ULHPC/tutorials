@@ -732,3 +732,11 @@ Pi is roughly 3.141420
 ```
 
 In case of problems, you can check the logs of the daemons in `~/.spark/logs/`
+
+__Further Reading__
+
+You can find on the Internet many resources for expanding your HPC experience
+with Spark. Here are some links you might find useful to go further:
+
+* [Using Spark with GPFS on the ACCRE Cluster](https://bigdata-vandy.github.io/using-spark-with-gpfs/)
+* [ARIS notes on Spark](http://doc.aris.grnet.gr/software/spark/)
