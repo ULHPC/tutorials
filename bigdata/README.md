@@ -681,7 +681,7 @@ Kindly pay attention to the fact that:
   export SPARK_EXECUTOR_MEMORY=${SPARK_MEM}m
 ```
 
-_Note_: if you are lazy (or late), you can use the provided launcher script `runs/launcher.Spark.sh`.
+_Note_: if you are lazy (or late), you can use the provided launcher script [`runs/launcher.Spark.sh`](https://github.com/ULHPC/tutorials/blob/devel/bigdata/runs/launcher.Spark.sh).
 
 ```bash
 $> cd runs
