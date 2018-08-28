@@ -22,7 +22,7 @@ So far, the following tutorials are proposed:
 |                         | [Prototyping with Python](python/basics/)                                                   | beginners      |
 |                         | [Advanced prototyping with Python](python/advanced/)                                        | intermediate   |
 | _Scheduling_            | [Advanced scheduling with SLURM](scheduling/advanced)                                       | intermediate   |
-| _Software Management_   | [Building [custom] software with EasyBuild](tools/easyBuild/)                               | beginners      |
+| _Software Management_   | [Building [custom] software with EasyBuild](tools/easybuild/)                               | beginners      |
 | _Debuging & Profiling_  | [Know Your Bugs: Weapons for Efficient Debugging](debugging/basics/)                        | intermediate   |
 |                         | [Advanced debugging on the UL HPC platform](debugging/advanced/)                            | intermediate   |
 |                         | (OLD) [Unified profiling and debugging with Allinea](advanced/Allinea/)                     | intermediate   |
