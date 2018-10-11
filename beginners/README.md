@@ -58,11 +58,11 @@ In order to be able to login to the clusters, you have sent us through the Accou
 
 Run the following commands in a terminal (substituting *yourlogin* with the login name you received from us):
 
-        (laptop)$> ssh -p 8022 yourlogin@access-gaia.uni.lu
-
-If you want to connect to the iris cluster,
-
         (laptop)$> ssh -p 8022 yourlogin@access-iris.uni.lu
+
+If you want to connect to the gaia cluster,
+
+        (laptop)$> ssh -p 8022 yourlogin@access-gaia.uni.lu
 
 Now you probably want to avoid taping this long command to connect to the platform. You can customize SSH aliases for that. Edit the file `~/.ssh/config` (create it if it does not already exist) and adding the following entries:
 
@@ -82,9 +82,9 @@ Now you probably want to avoid taping this long command to connect to the platfo
 
 Now you shall be able to issue the following (simpler) command to connect to the cluster and obtain the welcome banner:
 
-		(laptop)$> ssh gaia-cluster
-
 		(laptop)$> ssh iris-cluster
+
+		(laptop)$> ssh gaia-cluster
 
 In the sequel, we assume these aliases to be defined.
 
@@ -114,11 +114,11 @@ The SSH key you provided us secure your connection __from__ your laptop (or pers
 
 You shall have also a new key pair configured in your account to permit a bi-directional transparent connection from one cluster to the other (you can check that in your `~/.ssh/authorized_keys` and by successfully running:
 
-		(access-gaia)$> ssh chaos-cluster
+		(access-iris)$> ssh gaia-cluster
 
 or
 
-		(access-chaos)$> ssh gaia-cluster
+		(access-gaia)$> ssh iris-cluster
 
 If that's the case, you can ignore the rest of this section.
 **Otherwise**, you will now have to configure a passphrase-free SSH key pair to permit a transparent connection from one cluster to another. Have a look at this [FAQ](https://hpc.uni.lu/blog/2017/faq-how-to-permit-bi-directional-connection/)
@@ -150,25 +150,25 @@ Of both, normally the second approach should be preferred, as more generic; note
 
 * Transfer the file with scp:
 
-		(laptop)$> scp GSM409307_UCSD.H1.H3K4me1.LL228.bed.gz gaia-cluster:
+		(laptop)$> scp GSM409307_UCSD.H1.H3K4me1.LL228.bed.gz iris-cluster:
 
 * Connect to the cluster, check if the file is there and delete it.
 
-		(laptop)$> ssh gaia-cluster
-		(access-gaia)$> ls
-		(access-gaia)$> rm GSM409307_UCSD.H1.H3K4me1.LL228.bed.gz
+		(laptop)$> ssh iris-cluster
+		(access-iris)$> ls
+		(access-iris)$> rm GSM409307_UCSD.H1.H3K4me1.LL228.bed.gz
 		rm: remove regular file `GSM409307_UCSD.H1.H3K4me1.LL228.bed.gz'? y
-		(access-gaia)$> exit
+		(access-iris)$> exit
 
 * Transfer the directory with rsync:
 
 		(laptop)$> cd ..
-		(laptop)$> rsync -avzu file_transfer gaia-cluster:
+		(laptop)$> rsync -avzu file_transfer iris-cluster:
 
 * Delete the file and retrieve it from the cluster:
 
 		(laptop)$> rm file_transfer/GSM409307_UCSD.H1.H3K4me1.LL228.bed.gz
-		(laptop)$> rsync -avzu gaia-cluster:file_transfer .
+		(laptop)$> rsync -avzu iris-cluster:file_transfer .
 
 * **Bonus**: Check where the file is located on the cluster after the rsync.
 
@@ -190,7 +190,7 @@ You can get more information about these transfer methods in the [file transfer 
 
 * Back in the main window click on the `Site Manager` button on the top left or select `Site Manager` from the `File` menu.
 * Click on the `New Site` button and enter/select the following:
-  * Host: `access-gaia.uni.lu`
+  * Host: `access-iris.uni.lu`
 	* Port: 8022
   * Protocol: `SFTP - SSH File Transfer Protocol`
   * Logon Type: `Interactive`
@@ -958,7 +958,7 @@ If you use Slurm, you can use the `srun` command. Create an interactive job, wit
 
 It might happen that the port 8022 is filtered from your working place. You can easily bypass this firewall rule using an SSH proxycommand to setup transparently multi-hop connexions *through* one host (a gateway) to get to the access frontend of the cluster, as depited below:
 
-    [laptop] -----||--------> 22 [SSH gateway] ---------> 8022 [access-{chaos,gaia}]
+    [laptop] -----||--------> 22 [SSH gateway] ---------> 8022 [access-{iris,gaia,chaos}]
                firewall
 
 The gateway can be any SSH server which have access to the access frontend of the cluster. The [Gforge @ UL](http://gforge.uni.lu) is typically used in this context but you can prefer any other alternative (your personal NAS @ home etc.). Then alter the SSH config on your laptop (in `~/.ssh/config` typically) as follows:
@@ -984,4 +984,4 @@ Ensure you can connect to the gateway:
 
 The `.ulhpc` suffix we mentioned in the previous configuration is an arbitrary suffix you will now specify in your command lines in order to access the UL HPC platform via the gateway as follows:
 
-    (laptop)$> ssh gaia.ulhpc
+    (laptop)$> ssh iris.ulhpc
