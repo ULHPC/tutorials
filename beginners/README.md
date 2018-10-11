@@ -800,13 +800,13 @@ The `.ulhpc` suffix we mentioned in the previous configuration is an arbitrary s
 
     (laptop)$> ssh iris.ulhpc
 
-# Getting started with OAR scheduling (Chaos and Gaia only)
+## Getting started with OAR scheduling (Chaos and Gaia only)
 
 **This section is only usefull for reserving resources on Chaos and Gaia clusters. For reserving resources on Iris, please have a look at [the Getting Started doc on how to discover and reserve UL HPC resources](#discovering-visualizing-and-reserving-ul-hpc-resources)**
 
-## Reserving resources with OAR
+### Reserving resources with OAR
 
-### The basics
+#### The basics
 
 * [reference documentation](https://hpc.uni.lu/users/docs/oar.html)
 
@@ -891,7 +891,7 @@ e. **(for geeks)** output the number of reserved nodes times number of cores per
 
    * _hint_: `man awk` -- use `printf` command of `awk` over the pipe command, for instance `awk '{ printf "%s*%d\n",$2,$1 }'`. You might prefer `sed` or any other advanced geek command.
 
-### Job management
+#### Job management
 
 Normally, the previously run job is still running.
 
@@ -925,7 +925,7 @@ The `-l` switch allows you to pass a comma-separated list of parameters specifyi
 
 		(access)$> oarsub -I -l nodes=3,walltime=3:15
 
-### Hierarchical filtering of resources
+#### Hierarchical filtering of resources
 
 OAR features a very powerful resource filtering/matching engine able to specify resources in a **hierarchical**  way using the `/` delimiter. The resource property hierarchy is as follows:
 
@@ -949,7 +949,7 @@ a. `oarsub -I -l /nodes=2/cpu=1` vs `oarsub -I -l cpu=2` vs `oarsub -I -l /nodes
 
 b. `oarsub -I -l /enclosure=1/nodes=2` vs `oarsub -I -l nodes=2` vs `oarsub -I -l /enclosure=2/nodes=1`
 
-### Using OAR properties
+#### Using OAR properties
 
 You might have notice on [Monika](https://hpc.uni.lu/status/monika.html) for each site a list of properties assigned to each resource.
 
@@ -972,7 +972,7 @@ You can find the available OAR properties on the [UL HPC documentation](https://
 		(access-gaia)$> oarsub -I -l nodes=1/core=4,walltime=8 -p "gpu='yes'" -p "network_address='gaia-65'"
 
 
-### Reserving specific resources `bigsmp`and `bigmem`
+#### Reserving specific resources `bigsmp`and `bigmem`
 
 Some nodes are very specific (for instance the nodes with 1TB of memory or the BCS subsystem of Gaia composed of 4 motherboards of 4 processors with a total of 160 cores aggregated in a ccNUMA architecture).
 **Due to this specificity, they are NOT scheduled by default**  and can only be reserved with an explicit oarsub parameter: `-t bigmem` or `-t bigsmp`
@@ -985,7 +985,7 @@ Some nodes are very specific (for instance the nodes with 1TB of memory or the B
 **Question: why are these resources not scheduled by default?**
 
 
-### Reservation at a given period of time
+#### Reservation at a given period of time
 
 You can use the `-r "YYYY-MM-DD HH:MM:SS"` option of `oarsub` to specify the date you wish the reservation to be issued. This is of particular interest for you to book in advance resources out of the working hours (at night and/or over week ends)
 
