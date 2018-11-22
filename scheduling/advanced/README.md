@@ -35,6 +35,9 @@ __Notes__:
     - `alias si='srun -p interactive --qos qos-interactive-001 --pty bash -i'`
     - `alias six='srun -p interactive --qos qos-interactive --x11 --pty bash -i'`
 * Users that are part of groups with access to dedicated QOS should use their specific QOS when launching jobs below (e.g. `qos-interactive-001`)
+* For the HPC Schools we generally create node reservations named as `hpcschool`
+    - see information about the reservation with `sinfo -T` and `scontrol show res`
+    - generally the reservation is made in the _batch_ partition, thus to the (srun/sbatch) commands below that ask you to run in the _batch_ partition you can prepend `--reservation=hpcschool` to use it
 
 ### Partition (queue) and node status
 
@@ -159,7 +162,7 @@ __Question__: can you make this job be preempted? try to allocate other nodes in
 srun -C skylake --pty bash -i
 ```
 
-__Question__: what partition is this job running in?
+__Question__: what partition is this job running in? how many cores and walltime did it reserve?
 
 #### Collecting job information
 
@@ -245,8 +248,8 @@ sacct -p -j $jobid1,$jobid2 --format=account,user,jobid,jobname,partition,state,
 * Show statistics for all personal jobs started since a particular date, then without job steps:
 
 ```
-sacct --starttime 2017-06-12 -u $USER
-sacct -X --starttime 2017-06-12 -u $USER
+sacct --starttime 2018-11-23 -u $USER
+sacct -X --starttime 2018-11-23 -u $USER
 ```
 
 #### Pausing, resuming and cancelling jobs
@@ -333,7 +336,8 @@ You should now:
 * monitor job progression:
     - with `sprio` / `sprio -l` to see its priority in the queue
     - using `sstat` once it starts, to get running metrics
-    - by connecting to the job (`--jobid` parameter of `srun`) and using `htop`
+    - by connecting to the job (`sjoin $jobid` or using the `--jobid` parameter of `srun`) and then using `htop`
 * finally, once the job finished or you have stopped it:
     - check the information visible with `sacct`
     - how did your fair-share and usage values change?
+    - what efficiency values are shown by `seff` for the job?
