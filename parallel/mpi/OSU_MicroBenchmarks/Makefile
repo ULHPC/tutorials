@@ -1,7 +1,7 @@
 ##################################################################################
 # Makefile - Configuration file for GNU make (http://www.gnu.org/software/make/)
 # Creation : 07 Nov 2013
-# Time-stamp: <Fri 2018-11-23 15:38 svarrette>
+# Time-stamp: <Fri 2018-11-23 16:17 svarrette>
 #
 # Copyright (c) 2013 Sebastien Varrette <Sebastien.Varrette@uni.lu>
 #               http://varrette.gforge.uni.lu
@@ -63,7 +63,7 @@ build: uncompress __build.intel __build.openmpi # __build.mvapich2
 
 __build.%:
 	@echo "=> building $(BENCH_DESC) with $*"
-	$(BUILD_SCRIPT)  $*
+	$(BUILD_SCRIPT) --srcdir $(PWD)/src/osu-micro-benchmarks-$(BENCH_VERSION)  $*
 	@echo "=> building complete - see build.*"
 
 plot:
