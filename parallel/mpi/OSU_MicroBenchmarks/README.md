@@ -59,22 +59,31 @@ For the sake of time and simplicity, we will focus on the first two suits. Event
 
 ## Pre-requisites
 
-On the **access** and a **computing** node of the cluster you're working on, clone the [ULHPC/tutorials](https://github.com/ULHPC/tutorials)  and [ULHPC/launcher-scripts](https://github.com/ULHPC/launcher-scripts) repositories
+On the **access** and a **computing** node of the cluster you're working on, clone the [ULHPC/tutorials](https://github.com/ULHPC/tutorials)  and [ULHPC/launcher-scripts](https://github.com/ULHPC/launcher-scripts) repositories (if not yet done)
 
-```bash
-$> cd
-$> mkdir -p git/ULHPC && cd  git/ULHPC
+``` bash
+### ONLY if not yet done: setup the tutorials repo
+# See http://ulhpc-tutorials.rtfd.io/en/latest/setup/install/
+$> mkdir -p ~/git/github.com/ULHPC
+$> cd ~/git/github.com/ULHPC
+# Clone the tutorial repository
+$> git clone https://github.com/ULHPC/tutorials.git
+$> cd tutorials
+$> make setup          # Initiate git submodules etc...
+# Clone the launcher-scripts repository
+$> cd ~/git/github.com/ULHPC
 $> git clone https://github.com/ULHPC/launcher-scripts.git
-$> git clone https://github.com/ULHPC/tutorials.git         # If not yet done
 ```
+
 
 Prepare your working directory
 
 ```bash
 $> mkdir -p ~/tutorials/OSU-MicroBenchmarks
 $> cd ~/tutorials/OSU-MicroBenchmarks
-$> ln -s ~/git/ULHPC/tutorials/advanced/OSU_MicroBenchmarks ref.ulhpc.d   # Keep a symlink to the reference tutorial
+$> ln -s ~/git/github.com/ULHPC/tutorials/parallel/mpi/OSU_MicroBenchmarks/ ref.ulhpc.d   # Keep a symlink to the reference tutorial
 $> ln -s ref.ulhpc.d/Makefile .     # symlink to the root Makefile
+$> ln -s ref.ulhpc.d/scripts  .     # symlinkls to launcher/build scripts
 ```
 
 Fetch and uncompress the latest version of the [OSU micro-benchmarks](http://mvapich.cse.ohio-state.edu/benchmarks/)
@@ -84,7 +93,7 @@ $> cd ~/tutorials/OSU-MicroBenchmarks
 $> mkdir src
 $> cd src
 # Download the latest version
-$> export OSU_VERSION=5.4     # Just to abstract from the version to download
+$> export OSU_VERSION=5.5     # Just to abstract from the version to download
 $> wget --no-check-certificate http://mvapich.cse.ohio-state.edu/download/mvapich/osu-micro-benchmarks-${OSU_VERSION}.tar.gz
 $> tar xvzf osu-micro-benchmarks-${OSU_VERSION}.tar.gz
 $> cd osu-micro-benchmarks-${OSU_VERSION}

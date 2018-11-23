@@ -1,5 +1,5 @@
 #!/bin/bash -l
-# Time-stamp: <Thu 2017-05-11 21:15 svarrette>
+# Time-stamp: <Fri 2018-11-23 15:38 svarrette>
 ################################################################################
 # build.OSU - Build OSU Micro-benchmarks
 ################################################################################
@@ -31,7 +31,7 @@ else
 fi
 
 
-OSU_VERSION="5.3.2"
+OSU_VERSION="5.5"
 OSU_SRCDIR=
 #TOP_SRCDIR="${TOP_SRCDIR}/src/osu-micro-benchmarks-${OSU_VERSION}"
 
