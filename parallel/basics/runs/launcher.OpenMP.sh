@@ -1,5 +1,5 @@
 #! /bin/bash -l
-# Time-stamp: <Sun 2018-06-10 18:15 svarrette>
+# Time-stamp: <Fri 2018-11-23 14:28 svarrette>
 ######## OAR directives ########
 #OAR -n OpenMP
 #OAR -l nodes=1/core=4,walltime=0:05:00
@@ -13,6 +13,7 @@
 #SBATCH --time=0-00:05:00
 #SBATCH -p batch
 #SBATCH --qos=qos-batch
+#SBATCH -o %x-%j.out
 #
 ### Usage:
 # $0 intel  [app]
