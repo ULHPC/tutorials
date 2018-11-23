@@ -147,7 +147,8 @@ Launch the job, in interactive mode and execute the launcher:
 
     (access)$> srun -p interactive -N 1 --qos qos-interactive --pty bash -i
 
-    (node)$ $SCRATCH/PS2/launcher-scripts/bash/serial/NAIVE_AKA_BAD_launcher_serial.sh
+    (node)$> source venv/bin/activate
+    (node)$> $SCRATCH/PS2/launcher-scripts/bash/serial/NAIVE_AKA_BAD_launcher_serial.sh
 
 **Or** in passive mode (the output will be written in a file named `BADSerial-<JOBID>.out`)
 
