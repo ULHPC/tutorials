@@ -8,8 +8,8 @@
   :by: ULHPC
   :author: UL HPC Team
   :mail: hpc-sysadmins@uni.lu
-  :summary: rtfm
-  :description: rtfm
+  :summary: This repository holds a set of tutorials to help the users of the UL HPC platform to better understand or simply use our platform.
+  :description: This repository holds a set of tutorials to help the users of the UL HPC platform to better understand or simply use our platform.
   :forge: :github
   :source: https://github.com/ULHPC/tutorials
   :project_page: https://github.com/ULHPC/tutorials
