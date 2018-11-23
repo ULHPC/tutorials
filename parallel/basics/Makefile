@@ -73,7 +73,7 @@ fetch:
 		echo "=> $(DATARACEBENCH_DIR) has already been cloned in $(SRC_DIR)/"; \
 	fi
 
-build: __build.omp __build.openmpi __build.intel __build.mvapich2
+build: __build.omp __build.openmpi __build.intel # __build.mvapich2
 mpi:    $(filter-out %hybrid,  $(TARGET_MPI))
 hybrid: $(filter-out %mpi,     $(TARGET_MPI))
 omp openmp: __build.omp
