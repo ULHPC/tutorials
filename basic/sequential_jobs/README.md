@@ -299,7 +299,7 @@ On Iris, the Slurm job submission command is `sbatch`
 On your laptop, transfer the files in the current directory and look at them with your favorite viewer.
 Use one of these commands according to the cluster you have used:
 
-    (yourmachine)$> rsync -avz iris-cluster:/home/users/<LOGIN>/PS2/images .
+    (yourmachine)$> rsync -avz iris-cluster:/scratch/users/<LOGIN>/PS2/images .
 
 
 **Question**: which nodes are you using, identify your nodes with the command `sacct` or Slurmweb 
@@ -366,7 +366,7 @@ On Iris, the Slurm job submission command is `sbatch`
 
 Use one of these commands according to the cluster you have used:
 
-        (yourmachine)$> rsync -avz iris-cluster:/home/users/<LOGIN>/PS2/jcell/results .
+        (yourmachine)$> rsync -avz iris-cluster:/scratch/users/<LOGIN>/PS2/jcell/results .
 
 
 **Question**: check the system load and memory usage with [Ganglia](https://hpc.uni.lu/iris/ganglia)
