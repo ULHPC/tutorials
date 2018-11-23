@@ -273,15 +273,15 @@ $> cd src/dataracebench
 
 Now you can reserve the nodes and set `OMP_NUM_THREADS`:
 
-* Reserve an interactive job to launch 12 OpenMP threads (for 30 minutes)
+* Reserve an interactive job to launch 12 OpenMP threads (for 1 hour)
 
 ```bash
 ############### iris cluster (slurm) ###############
-(access-iris)$> srun -p interactive --ntasks-per-node=1 -c 12 -t 0:30:00 --pty bash
+(access-iris)$> srun -p interactive --ntasks-per-node=1 -c 12 -t 1:00:00 --pty bash
 $> export OMP_NUM_THREADS=${SLURM_CPUS_PER_TASK}
 
 ############### gaia/chaos clusters (OAR) ###############
-(access-{gaia|chaos})$> oarsub -I -l nodes=1/core=12,walltime=0:30:00
+(access-{gaia|chaos})$> oarsub -I -l nodes=1/core=12,walltime=1:00:00
 $> export OMP_NUM_THREADS=$(cat $OAR_NODEFILE| wc -l)
 ```
 

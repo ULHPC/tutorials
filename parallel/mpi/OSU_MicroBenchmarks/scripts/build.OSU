@@ -1,5 +1,5 @@
 #!/bin/bash -l
-# Time-stamp: <Thu 2017-05-11 21:15 svarrette>
+# Time-stamp: <Fri 2018-11-23 16:17 svarrette>
 ################################################################################
 # build.OSU - Build OSU Micro-benchmarks
 ################################################################################
@@ -31,7 +31,7 @@ else
 fi
 
 
-OSU_VERSION="5.3.2"
+OSU_VERSION=5.5
 OSU_SRCDIR=
 #TOP_SRCDIR="${TOP_SRCDIR}/src/osu-micro-benchmarks-${OSU_VERSION}"
 
@@ -51,7 +51,7 @@ while [ $# -ge 1 ]; do
     case $1 in
         -v | --version | --osu-version)
             shift;
-            OSU_VERSION="$1";;
+            OSU_VERSION=$1;;
         -d | --srcdir)
             shift;
             OSU_SRCDIR=$1;;
@@ -85,7 +85,7 @@ module list
 if [ -d "${build_dir}" ]; then
     echo "=> installing OSU Micro-benchmarks with ${MODULE} in ${build_dir}"
     cd ${build_dir}
-    ${OSU_SRCDIR}/configure ${CCopt} --prefix=$(pwd)
+    ${OSU_SRCDIR}/configure ${CCopt} CFLAGS=-I${OSU_SRCDIR}/util --prefix=$(pwd)
     make && make install
     cd -
 fi
