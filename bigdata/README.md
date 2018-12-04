@@ -496,12 +496,12 @@ $> mu
 $> module av Spark
 
 ---------- /home/users/svarrette/.local/easybuild/modules/all ----------
-   devel/Spark/2.2.0-Hadoop-2.6-Java-1.8.0_152 (D)
+   devel/Spark/2.4.0-Hadoop-2.7-Java-1.8.0_162 (D)
 
 ------------ /opt/apps/resif/data/stable/default/modules/all -----------
-   devel/Spark/2.1.1
+   devel/Spark/2.3.0-intel-2018a-Hadoop-2.7-Java-1.8.0_162-Python-3.6.4
 
-$> module load devel/Spark
+$> module load devel/Spark/2.4.0
 ```
 
 #### 4.2.a. Pyspark
@@ -509,22 +509,18 @@ $> module load devel/Spark
 PySpark is the Spark Python API and exposes Spark Contexts to the Python programming environment.
 
 ```bash
-pyspark
+$> pyspark
 Python 2.7.5 (default, Aug  4 2017, 00:39:18)
 [GCC 4.8.5 20150623 (Red Hat 4.8.5-16)] on linux2
 Type "help", "copyright", "credits" or "license" for more information.
-Using Spark's default log4j profile: org/apache/spark/log4j-defaults.properties
+2018-12-04 13:57:55 WARN  NativeCodeLoader:62 - Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
 Setting default log level to "WARN".
 To adjust logging level use sc.setLogLevel(newLevel). For SparkR, use setLogLevel(newLevel).
-18/06/13 00:51:28 WARN NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
-18/06/13 00:51:33 WARN ObjectStore: Version information not found in metastore. hive.metastore.schema.verification is not enabled so recording the schema version 1.2.0
-18/06/13 00:51:33 WARN ObjectStore: Failed to get database default, returning NoSuchObjectException
-18/06/13 00:51:34 WARN ObjectStore: Failed to get database global_temp, returning NoSuchObjectException
 Welcome to
       ____              __
      / __/__  ___ _____/ /__
     _\ \/ _ \/ _ `/ __/  '_/
-   /__ / .__/\_,_/_/ /_/\_\   version 2.2.0
+   /__ / .__/\_,_/_/ /_/\_\   version 2.4.0
       /_/
 
 Using Python version 2.7.5 (default, Aug  4 2017 00:39:18)
@@ -541,20 +537,20 @@ Instead of running `pyspark` above, run the `spark-shell` command:
 
 ```bash
 $> spark-shell
-Using Spark's default log4j profile: org/apache/spark/log4j-defaults.properties
+2018-12-04 13:58:43 WARN  NativeCodeLoader:62 - Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
 Setting default log level to "WARN".
-[...]
-Spark context Web UI available at http://172.17.6.1:4040
-Spark context available as 'sc' (master = local[*], app id = local-1528844025861).
+To adjust logging level use sc.setLogLevel(newLevel). For SparkR, use setLogLevel(newLevel).
+Spark context Web UI available at http://node-1.iris-cluster.uni.lux:4040
+Spark context available as 'sc' (master = local[*], app id = local-1543928329271).
 Spark session available as 'spark'.
 Welcome to
       ____              __
      / __/__  ___ _____/ /__
     _\ \/ _ \/ _ `/ __/  '_/
-   /___/ .__/\_,_/_/ /_/\_\   version 2.2.0
+   /___/ .__/\_,_/_/ /_/\_\   version 2.4.0
       /_/
 
-Using Scala version 2.11.8 (Java HotSpot(TM) 64-Bit Server VM, Java 1.8.0_152)
+Using Scala version 2.11.12 (Java HotSpot(TM) 64-Bit Server VM, Java 1.8.0_162)
 Type in expressions to have them evaluated.
 Type :help for more information.
 
