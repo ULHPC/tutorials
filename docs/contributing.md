@@ -34,22 +34,72 @@ So assuming you have [forked this repository](https://help.github.com/articles/f
 ### Directory Layout
 
 ```
-{advanced | basic}/<name>  # Select the appropriate root directory
+<topic>/<name>  # Select the appropriate root directory
 ├── README.md              # Main tutorial file, in Markdown
 ├── index.md -> README.md  # Symlink (for mkdocs)
 ├── slides.pdf             # Slides proposing an overview of the tutorial
 ├── cover_slides.png       # Picture of the cover of the slide
-├── Makefile               # GNU Makefile offering the targets 'fetch', 'compile', 'run' and 'run_interactive'
+├── Makefile               # GNU Makefile offering the targets 'fetch', 'compile', 'run' and 'plot'
 ├── plots                  # Directory hosting the Gnuplots / R plots data
-├── runs/                  # Directory hosting the logs of the runs
+├── runs/                  # Directory hosting the data/logs of the runs
 ├── scripts/               # Eventually, a directory hosting some specific scripts
 └── launcher-<name>.{slurm|oar}.sh # launcher script to be used in the tutorial
 
-# Prepare the appropriate link for ReadtheDocs
-docs/{advanced | basic}/<name>/ -> ../../../{advanced | basic}/<name>
+# Prepare the appropriate link for ReadtheDocs -- if needed
+docs/<topic> -> ../<topic>
+# such that 'docs/<topic>/<name>' points to '../<topic>/<name>'
 ```
 
-You shall stick to a single `README.md` file, (using the [markdown](http://github.github.com/github-flavored-markdown/) format) if possible.
+You SHOULD  stick to a single `README.md` file, (using the [markdown](http://github.github.com/github-flavored-markdown/) format) if possible.
+
+Kindly follow the following format for this file (adapt `path/to` accordingly):
+
+```
+[![By ULHPC](https://img.shields.io/badge/by-ULHPC-blue.svg)](https://hpc.uni.lu) [![Licence](https://img.shields.io/badge/license-GPL--3.0-blue.svg)](http://www.gnu.org/licenses/gpl-3.0.html) [![GitHub issues](https://img.shields.io/github/issues/ULHPC/tutorials.svg)](https://github.com/ULHPC/tutorials/issues/) [![](https://img.shields.io/badge/slides-PDF-red.svg)](https://github.com/ULHPC/tutorials/raw/devel/path/to/slides.pdf) [![Github](https://img.shields.io/badge/sources-github-green.svg)](https://github.com/ULHPC/tutorials/tree/devel/path/to/) [![Documentation Status](http://readthedocs.org/projects/ulhpc-tutorials/badge/?version=latest)](http://ulhpc-tutorials.readthedocs.io/en/latest/path/to/) [![GitHub forks](https://img.shields.io/github/stars/ULHPC/tutorials.svg?style=social&label=Star)](https://github.com/ULHPC/tutorials)
+
+# <the title>
+
+      Copyright (c) 2013-2018 [You name,] UL HPC Team  <hpc-sysadmins@uni.lu>
+
+[![](https://github.com/ULHPC/tutorials/raw/devel/path/to/cover_slides.png)](https://github.com/ULHPC/tutorials/raw/devel/path/to/slides.pdf)
+
+The objective of this tutorial is to cover XXX, in particular:
+
+* objective 1
+* objective 2
+
+--------------------
+## Pre-requisites ##
+
+Ensure you are able to [connect to the UL HPC clusters](https://hpc.uni.lu/users/docs/access.html)
+**For all tests and compilation with Easybuild, you MUST work on a computing node**
+
+~~~bash
+# /!\ FOR ALL YOUR COMPILING BUSINESS, ENSURE YOU WORK ON A COMPUTING NODE
+# Have an interactive job
+############### iris cluster (slurm) ###############
+(access-iris)$> si -n 2 -t 2:00:00        # 2h interactive reservation
+# OR (long version)
+(access-iris)$> srun -p interactive -n 2 -t 2:00:00 --pty bash
+
+############### gaia/chaos clusters (OAR) ###############
+(access-{gaia|chaos})$> oarsub -I -l nodes=1/core=2,walltime=2
+~~~
+
+-----------------
+## Objective 1 ##
+
+instructions
+
+-----------------
+## Objective 2 ##
+
+instructions
+
+## Useful references
+```
+
+
 Remember that they shall be understandable for users having no or very few knowledge on your topic!
 
 One _proposal_ to organize the workflow of your tutorial:

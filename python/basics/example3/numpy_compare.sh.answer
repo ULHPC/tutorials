@@ -1,0 +1,15 @@
+#!/bin/bash -l
+#SBATCH --job-name=numpy_compare
+#SBATCH --output=numpy_compare.out
+#
+#SBATCH --ntasks=1
+#SBATCH --time=0-00:10:00
+#SBATCH -p batch
+#SBATCH --qos=qos-batch
+
+python example1.py
+source numpy12/bin/activate
+python numpy_compare.py
+deactivate
+python numpy_compare.py
+gnuplot gnuplot/numpy_compare.gpi

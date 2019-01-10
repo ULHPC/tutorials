@@ -1,0 +1,14 @@
+#!/bin/bash -l
+#SBATCH --job-name=example2
+#SBATCH --output=example2.out
+#
+#SBATCH --ntasks=1
+#SBATCH --time=0-00:10:00
+#SBATCH -p batch
+#SBATCH --qos=qos-batch
+
+module load lang/Python/2.7.13-foss-2017a-bare
+python example2.py
+module load lang/Python/3.6.0-foss-2017a-bare
+python example2.py
+gnuplot gnuplot/time_vs_array_size.gpi

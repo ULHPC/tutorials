@@ -1,0 +1,84 @@
+/* Fix to avoid an oversized green box */
+div.solution > h2, div.box > h2 {
+    padding-top: 0;
+    margin-top: 0;
+}
+
+.float-r {
+  position: relative;
+  float: right;
+  z-index: 999;
+  padding: 10px;
+}
+
+.float-l {
+  position: relative;
+  float: left;
+  z-index: 999;
+  padding: 10px;
+}
+
+div.float-r img, div.float-r img {
+  display: flex;
+}
+
+.center-img img {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* css for a bonus question: add the header to the bonus class
+   ### My header {.bonus}
+   
+   rosybrown colour
+*/
+.bonus {
+  border-left: 10px solid rgba(188, 143, 143, 1);
+  padding: 1em 0 1em 1em;
+}
+
+.bonus > h1:before, .bonus > h2:before, .bonus > h3:before,
+.bonus > h4:before, .bonus > h5:before {
+  content: "Bonus question: ";
+  color: rgba(188, 143, 143, 1);
+  font-style: italic;
+  font-weight: bold;
+}
+
+body {
+  counter-reset: h2counter;
+}
+
+h1 {
+  counter-reset: h2counter;
+  margin-top: 5px;
+}
+
+h2 {
+  font-size: 25px
+}
+
+.section h2:before {
+  counter-increment: h2counter;
+  counter-reset: h3counter;
+  content: counter(h2counter) ".\0000a0\0000a0";
+}
+
+.level3 {
+  counter-increment: h3counter;
+}
+
+.section h3:before {
+  content: counter(h2counter) "." counter(h3counter) ".\0000a0\0000a0";
+}
+
+.level1::before {
+  content: "";
+  display: block;
+  width: 100%;
+  border-bottom-style: groove;
+  border-bottom-color: lightgray;
+  margin-top: 30px;
+}
+

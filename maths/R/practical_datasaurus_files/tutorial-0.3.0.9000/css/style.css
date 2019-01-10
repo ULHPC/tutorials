@@ -1,0 +1,32 @@
+.panel-heading {
+  border-top-left-radius: unset;
+  border-top-right-radius: unset;
+}
+
+.panel-heading h4 {
+  font-weight: bold;
+}
+
+/* adapted from https://stackoverflow.com/a/18568997 */
+.panel-heading a:after {
+    font-family: 'Glyphicons Halflings';
+    content: "\e114";
+    float: right;
+}
+
+.panel-heading a.collapsed:after {
+    content: "\e080";
+}
+
+.credit {
+  text-align: center;
+  color: gray;
+  border-top: 2px solid gray;
+  font-style: italic;
+  padding: 5px;
+}
+
+.credit a {
+  color: gray;
+  font-style: normal;
+}

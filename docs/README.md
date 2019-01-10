@@ -1,74 +1,71 @@
--*- mode: markdown; mode: visual-line;  -*-
+[![By ULHPC](https://img.shields.io/badge/by-ULHPC-blue.svg)](https://hpc.uni.lu) [![Licence](https://img.shields.io/badge/license-GPL--3.0-blue.svg)](http://www.gnu.org/licenses/gpl-3.0.html) [![GitHub issues](https://img.shields.io/github/issues/ULHPC/tutorials.svg)](https://github.com/ULHPC/tutorials/issues/) [![Github](https://img.shields.io/badge/sources-github-green.svg)](https://github.com/ULHPC/tutorials/) [![Documentation Status](http://readthedocs.org/projects/ulhpc-tutorials/badge/?version=latest)](http://ulhpc-tutorials.readthedocs.io) [![GitHub forks](https://img.shields.io/github/stars/ULHPC/tutorials.svg?style=social&label=Star)](https://github.com/ULHPC/tutorials)
 
-# UL HPC Tutorials
+# High Performance Computing (HPC) Tutorials
 
-[![By ULHPC](https://img.shields.io/badge/by-ULHPC-blue.svg)](https://hpc.uni.lu) [![Licence](https://img.shields.io/badge/license-GPL--3.0-blue.svg)](http://www.gnu.org/licenses/gpl-3.0.html) [![GitHub issues](https://img.shields.io/github/issues/ULHPC/tutorials.svg)](https://github.com/ULHPC/tutorials/issues/) [![Github](https://img.shields.io/badge/sources-github-green.svg)](https://github.com/ULHPC/tutorials/tree/devel/basic/getting_started/) [![Documentation Status](http://readthedocs.org/projects/ulhpc-tutorials/badge/?version=latest)](http://ulhpc-tutorials.readthedocs.io/en/latest/basic/getting_started/) [![GitHub forks](https://img.shields.io/github/stars/ULHPC/tutorials.svg?style=social&label=Star)](https://github.com/ULHPC/tutorials)
-
-> Copyright (c) 2015-2017 UL HPC Team <hpc-sysadmins@uni.lu>
+     Copyright (c) 2013-2018 UL HPC Team <hpc-sysadmins@uni.lu>
 
 This repository holds a set of tutorials to help the users of the [UL HPC](https://hpc.uni.lu) platform to better understand or simply use our platform.
-The list of proposed tutorials are evolving and are used on a regular basis during the [UL HPC School](http://hpc.uni.lu/hpc-school/) we organise.
+
+This is the main page of the documentation for this repository, which relies on [MkDocs](http://www.mkdocs.org/) and the [Read the Docs](http://readthedocs.io) theme.
+In particular, the latest version of these tutorials is available online:
+
+<http://ulhpc-tutorials.rtfd.io>
+
+The list of proposed tutorials is continuously evolving.
+They used on a regular basis during the [UL HPC School](http://hpc.uni.lu/hpc-school/) we organise.
 So far, the following tutorials are proposed:
 
-| **Category**          | **Description**                                                                                      | **Level**      |
-| :----------:          | ----------------------------------------------------------------------------                         | -------------- |
-| _Basic_               | [Getting Started on the UL HPC platform](basic/getting_started/)                                     | beginners      |
-|                       | [HPC workflow with sequential jobs](basic/sequential_jobs/)                                          | beginners      |
-|                       | [Know Your Bugs: Weapons for Efficient Debugging](advanced/Debug/)                                   | intermediate   |
-| _Software Management_ | [Building [custom] software with EasyBuild](advanced/EasyBuild/)                                     | beginners      |
-| _MPI_                 | [UL HPC MPI Tutorial: OSU Micro-Benchmarks](advanced/OSU_MicroBenchmarks/)                           | intermediate   |
-|                       | [High-Performance Linpack (HPL) benchmarking on UL HPC platform](advanced/HPL/)                      | intermediate   |
-|                       | [HPCG benchmarking on UL HPC platform](advanced/HPCG/)                                               | intermediate   |
-| _Mathematics_         | [MATLAB execution on the UL HPC platform](advanced/MATLAB1/)                                         | intermediate   |
-|                       | [R / Statictical Computing](advanced/R/)                                                             | intermediate   |
-| _Bioinformatics_      | [Bioinformatics software on the UL HPC platform](advanced/Bioinformatics/)                           | intermediate   |
-|                       | [Galaxy Introduction Exercise: From Peaks to Genes](advanced/Galaxy/)                                | intermediate   |
-| _Parallel Debuging_   | [Unified profiling and debugging with Allinea](advanced/Allinea/)                                    | intermediate   |
-|                       | [Direct,  Reverse and parallel Memory debugging with TotalView](advanced/TotalView/)                 | intermediate   |
-| _Virtualization_      | [Create and reproduce work environments using Vagrant](advanced/Vagrant/)                            | intermediate   |
-|                       | [Deploying virtual machines with Vm5k on Grid'5000](advanced/vm5k/)                                  | intermediate   |
-| _CFD/MD/Chemistry_    | [Running parallel software: test cases on CFD / MD / Chemistry applications](advanced/MultiPhysics/) | advanced       |
-| _Big Data_            | [Running Big Data Application using Apache Spark on UL HPC platform](advanced/Spark/)                | intermediate   |
-| _Misc_                | [Advanced workflows on sequential jobs management](advanced/advanced_workflows/)                     | advanced       |
-|                       | [Advanced scheduling with SLURM](advanced/advanced_scheduling/)                                      | intermediate   |
-|                       | [[Advanced] Prototyping with Python](advanced/Python/)                                               | advanced       |
-|                       | [Reproducible Research at the Cloud Era](advanced/ReproducibleResearch/)                             | intermediate   |
+| **Category**            | **Description**                                                                             | **Level**      |
+| :----------:            | ----------------------------------------------------------------------------                | -------------- |
+| _Basic_                 | [Getting Started on the UL HPC platform](beginners/)                                        | beginners      |
+|                         | [HPC workflow with sequential jobs](basic/sequential_jobs/)                                 | beginners      |
+|                         | [Prototyping with Python](python/basics/)                                                   | beginners      |
+|                         | [Advanced prototyping with Python](python/advanced/)                                        | intermediate   |
+| _Scheduling_            | [Advanced scheduling with SLURM](scheduling/advanced)                                       | intermediate   |
+| _Software Management_   | [Building [custom] software with EasyBuild](tools/easybuild/)                               | beginners      |
+| _Debuging & Profiling_  | [Know Your Bugs: Weapons for Efficient Debugging](debugging/basics/)                        | intermediate   |
+|                         | [Advanced debugging on the UL HPC platform](debugging/advanced/)                            | intermediate   |
+|                         | (OLD) [Unified profiling and debugging with Allinea](advanced/Allinea/)                     | intermediate   |
+|                         | (OLD) [Direct,  Reverse and parallel Memory debugging with TotalView](advanced/TotalView/)  | intermediate   |
+| _MPI_                   | [Parallel computations with OpenMP/MPI](parallel/basics/)                                   | intermediate   |
+|                         | [UL HPC MPI Tutorial: OSU Micro-Benchmarks](parallel/mpi/OSU_MicroBenchmarks/)              | intermediate   |
+|                         | [High-Performance Linpack (HPL) benchmarking on UL HPC platform](parallel/mpi/HPL/)         | intermediate   |
+|                         | [HPCG benchmarking on UL HPC platform](parallel/hybrid/HPCG/)                               | intermediate   |
+| _Mathematics_           | [MATLAB (interactive, passive and sequential jobs)](maths/matlab/basics/)                   | intermediate   |
+|                         | [Advanced MATLAB execution: checkpointing and parallel jobs](maths/matlab/advanced/)        | advanced       |
+|                         | [R / Statictical Computing](maths/R/)                                                       | intermediate   |
+| _Bioinformatics_        | [Bioinformatics software on the UL HPC platform](bio/basics/)                               | intermediate   |
+|                         | [Galaxy Introduction Exercise: From Peaks to Genes](bio/galaxy/)                            | intermediate   |
+| _CFD/MD/Chemistry_      | [Running parallel software: test cases on CFD / MD / Chemistry applications](multiphysics/) | advanced       |
+| _Big Data_              | [Running Big Data Application using Apache Hadoop and Spark ](bigdata/)                     | intermediate   |
+| _Machine/Deep Learning_ | [Machine and Deep learning workflows](deep_learning/)                                       | intermediate   |
+| _Containers_            | [HPC Containers with Singularity](containers/singularity/)                                  | advanced       |
+| _Virtualization_        | (OLD) [Create and reproduce work environments using Vagrant](advanced/Vagrant/)             | intermediate   |
+|                         | [Deploying virtual machines with Vm5k on Grid'5000](advanced/vm5k/)                         | intermediate   |
+| _Misc_                  | [Reproducible Research at the Cloud Era](misc/reproducible-research/)                       | intermediate   |
 
-## List of contributors
+__List of contributors__
 
-The material provided in this reporitory is benefiting from the contributions of the following persons:
+* See [`docs/contacts.md`](contacts.md).
+* In the advent where you want to contribute yourself to these tutorials, do not hesitate! See below for instructions.
 
-* The UL HPC Team of course, _i.e._:
-    - Dr. [Sebastien Varrette](https://varrette.gforge.uni.lu),  Research Scientist, [UL HPC](http://hpc.uni.lu) Manager
-    - Valentin Plugaru, MSc, Research Collaborator
-    - Sarah Peter (formally Sarah Diehl), MSc, Research Associate
-    - Hyacinthe Cartiaux,
-    - Clément Parisot
-* Dr. Joseph Emeras, Research Associate
-* Dr. Xavier Besseron, Research Scientist
-* Dr. Aurelien Ginolhac, Research Scientist
-* Maxime Schmitt
+__Issues / Feature request__
 
-In the advent where you want to contribute yourself to these tutorials, do not hesitate! See below for instructions.
+* You can submit bug / issues / feature request using the [`ULHPC/tutorials` Tracker](https://github.com/ULHPC/tutorials/issues).
+    - See also [`docs/contributing/`](docs/contributing/) for further information.
 
-## Issues / Feature request
+__ Contributing__
 
-You can submit bug / issues / feature request using the [ULHPC/tutorials Tracker](https://github.com/ULHPC/tutorials/issues).
+* If you want to contribute to the code, you shall be aware of the way this module is organized.
+* These elements are detailed on [`docs/contributing.md`](contributing.md).
+    - You are more than welcome to contribute to its development by [sending a pull request](https://help.github.com/articles/using-pull-requests).
 
-## Developments / Contributing to the code
+__Online Documentation__
 
-If you want to contribute to the code, you shall be aware of the way this module is organized.
-These elements are detailed on [`docs/contributing.md`](contributing.md).
+* [Read the Docs](https://readthedocs.org/) aka RTFD hosts documentation for the open source community and the [ULHPC/sysadmins](https://github.com/ULHPC/tutorials) has its documentation (see the `docs/` directly) hosted on [readthedocs](http://ulhpc-tutorials.rtfd.org).
+* See [`docs/rtfd.md`](rtfd.md) for more details.
 
-You are more than welcome to contribute to its development by [sending a pull request](https://help.github.com/articles/using-pull-requests).
-
-### Online Documentation
-
-[Read the Docs](https://readthedocs.org/) aka RTFD hosts documentation for the open source community and the [ULHPC/sysadmins](https://github.com/ULHPC/tutorials) has its documentation (see the `docs/` directly) hosted on [readthedocs](http://ulhpc-tutorials.rtfd.org).
-
-See [`docs/rtfd.md`](rtfd.md) for more details.
-
-### Licence
+__Licence__
 
 This project and the sources proposed within this repository are released under the terms of the [GPL-3.0](LICENCE) licence.
 

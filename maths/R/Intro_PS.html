@@ -1,0 +1,1467 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>PS12: introduction to R</title>
+
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  <meta name="generator" content="pandoc" />
+
+
+
+  <meta name="date" content="2018-06-13" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+
+  <base target="_blank">
+
+  <script type="text/javascript">
+    var SLIDE_CONFIG = {
+      // Slide settings
+      settings: {
+                title: 'PS12: introduction to R',
+                        subtitle: 'HPC School 2018',
+                useBuilds: true,
+        usePrettify: true,
+        enableSlideAreas: true,
+        enableTouch: true,
+                        favIcon: 'Intro_PS_files/logo.png',
+              },
+
+      // Author information
+      presenters: [
+            {
+        name:  'Aurélien Ginolhac (<a href="mailto:aurelien.ginolhac@uni.lu">aurelien.ginolhac@uni.lu</a>) - Life Sciences Research Unit' ,
+        company: '',
+        gplus: '',
+        twitter: '',
+        www: '',
+        github: ''
+      },
+            ]
+    };
+  </script>
+
+  <style type="text/css">
+
+    b, strong {
+      font-weight: bold;
+    }
+
+    em {
+      font-style: italic;
+    }
+
+    slides > slide {
+      -webkit-transition: all 0.4s ease-in-out;
+      -moz-transition: all 0.4s ease-in-out;
+      -o-transition: all 0.4s ease-in-out;
+      transition: all 0.4s ease-in-out;
+    }
+
+    .auto-fadein {
+      -webkit-transition: opacity 0.6s ease-in;
+      -webkit-transition-delay: 0.4s;
+      -moz-transition: opacity 0.6s ease-in 0.4s;
+      -o-transition: opacity 0.6s ease-in 0.4s;
+      transition: opacity 0.6s ease-in 0.4s;
+      opacity: 0;
+    }
+  </style>
+
+  <link rel="stylesheet" href="lecture.css" type="text/css" />
+
+  <link href="Intro_PS_files/ioslides-13.5.1/fonts/fonts.css" rel="stylesheet" />
+  <link href="Intro_PS_files/ioslides-13.5.1/theme/css/default.css" rel="stylesheet" />
+  <link href="Intro_PS_files/ioslides-13.5.1/theme/css/phone.css" rel="stylesheet" />
+  <script src="Intro_PS_files/ioslides-13.5.1/js/modernizr.custom.45394.js"></script>
+  <script src="Intro_PS_files/ioslides-13.5.1/js/prettify/prettify.js"></script>
+  <script src="Intro_PS_files/ioslides-13.5.1/js/prettify/lang-yaml.js"></script>
+  <script src="Intro_PS_files/ioslides-13.5.1/js/hammer.js"></script>
+  <script src="Intro_PS_files/ioslides-13.5.1/js/slide-controller.js"></script>
+  <script src="Intro_PS_files/ioslides-13.5.1/js/slide-deck.js"></script>
+  <link href="Intro_PS_files/iosp-0.1.1.9000/css/iosp.css" rel="stylesheet" />
+  <script src="Intro_PS_files/iosp-0.1.1.9000/js/lang-r.js"></script>
+  <script src="Intro_PS_files/iosp-0.1.1.9000/js/slide-deck_oride.js"></script>
+  <link href="Intro_PS_files/font-awesome-5.0.12/css/fontawesome-all.min.css" rel="stylesheet" />
+  <style type="text/css">
+  /* bg-red colour */
+  
+  .slide-bg-red {
+    background-color: #FFAD99;
+  }
+  
+  .bg-red a {
+    color: rgb(42, 124, 223);
+    border-bottom: 1px solid rgba(42, 124, 223, 0.5);
+  }
+  
+  .bg-red a:hover {
+    color: #000000 !important;
+  }
+  
+  .box.bg-red {
+    background-color: #FFAD99;
+    color: #000000;
+    border: 2px solid #991F00;
+  }
+  
+  .box.bg-red > h3:first-child {
+    background-color: #991F00;
+    color: #FFFFFF;
+  }
+  
+  blockquote.bg-red::before {
+    color : #991F00;
+  }
+  
+  blockquote.bg-red {
+    background-color: #FFAD99;
+    color: #000000;
+    border-color: #991F00;
+  }
+  
+  .box.bg-red > h3:first-child > code {
+    background-color: rgba(255, 255, 255, 0.7);
+  }
+  
+  .box.bg-red > h3:first-child > a {
+    color: rgb(200, 240, 250);
+    border-bottom: 1px solid rgba(200, 240, 250, 0.5);
+  }
+  
+  .box.bg-red > h3:first-child > a:hover {
+    color: #FFFFFF !important;
+  }
+  
+  slide.slide-bg-red > hgroup > h2 {
+    color: rgba(0, 0, 0, 0.8);
+  }
+  
+  slide.slide-bg-red > hgroup > h3 {
+    color: rgba(0, 0, 0, 0.7);
+  }
+  
+  .bg-red code {
+    background-color: rgba(255, 255, 255, 0.3);
+  }
+  
+  .bg-red .table-striped > tbody > tr:nth-of-type(odd) {
+    background-color: #f9f9f9;
+  }
+  
+  .bg-red .table-striped > tbody > tr:nth-of-type(odd) {
+    background-color: rgba(0, 0, 0, 0.1);
+  }
+  
+  .bg-red table th {
+    color: rgba(0, 0, 0, 0.7);
+  }
+  
+  .bg-red .table, .bg-red .table th, .bg-red .table td, .table thead tr div {
+    border-color: #991F00 !important;
+  }
+  /* bg-green colour */
+  
+  .slide-bg-green {
+    background-color: #ADEBAD;
+  }
+  
+  .bg-green a {
+    color: rgb(42, 124, 223);
+    border-bottom: 1px solid rgba(42, 124, 223, 0.5);
+  }
+  
+  .bg-green a:hover {
+    color: #000000 !important;
+  }
+  
+  .box.bg-green {
+    background-color: #ADEBAD;
+    color: #000000;
+    border: 2px solid #1F7A1F;
+  }
+  
+  .box.bg-green > h3:first-child {
+    background-color: #1F7A1F;
+    color: #FFFFFF;
+  }
+  
+  blockquote.bg-green::before {
+    color : #1F7A1F;
+  }
+  
+  blockquote.bg-green {
+    background-color: #ADEBAD;
+    color: #000000;
+    border-color: #1F7A1F;
+  }
+  
+  .box.bg-green > h3:first-child > code {
+    background-color: rgba(255, 255, 255, 0.7);
+  }
+  
+  .box.bg-green > h3:first-child > a {
+    color: rgb(200, 240, 250);
+    border-bottom: 1px solid rgba(200, 240, 250, 0.5);
+  }
+  
+  .box.bg-green > h3:first-child > a:hover {
+    color: #FFFFFF !important;
+  }
+  
+  slide.slide-bg-green > hgroup > h2 {
+    color: rgba(0, 0, 0, 0.8);
+  }
+  
+  slide.slide-bg-green > hgroup > h3 {
+    color: rgba(0, 0, 0, 0.7);
+  }
+  
+  .bg-green code {
+    background-color: rgba(255, 255, 255, 0.3);
+  }
+  
+  .bg-green .table-striped > tbody > tr:nth-of-type(odd) {
+    background-color: #f9f9f9;
+  }
+  
+  .bg-green .table-striped > tbody > tr:nth-of-type(odd) {
+    background-color: rgba(0, 0, 0, 0.1);
+  }
+  
+  .bg-green table th {
+    color: rgba(0, 0, 0, 0.7);
+  }
+  
+  .bg-green .table, .bg-green .table th, .bg-green .table td, .table thead tr div {
+    border-color: #1F7A1F !important;
+  }
+  /* bg-blue colour */
+  
+  .slide-bg-blue {
+    background-color: #99D6FF;
+  }
+  
+  .bg-blue a {
+    color: rgb(42, 124, 223);
+    border-bottom: 1px solid rgba(42, 124, 223, 0.5);
+  }
+  
+  .bg-blue a:hover {
+    color: #000000 !important;
+  }
+  
+  .box.bg-blue {
+    background-color: #99D6FF;
+    color: #000000;
+    border: 2px solid #005C99;
+  }
+  
+  .box.bg-blue > h3:first-child {
+    background-color: #005C99;
+    color: #FFFFFF;
+  }
+  
+  blockquote.bg-blue::before {
+    color : #005C99;
+  }
+  
+  blockquote.bg-blue {
+    background-color: #99D6FF;
+    color: #000000;
+    border-color: #005C99;
+  }
+  
+  .box.bg-blue > h3:first-child > code {
+    background-color: rgba(255, 255, 255, 0.7);
+  }
+  
+  .box.bg-blue > h3:first-child > a {
+    color: rgb(200, 240, 250);
+    border-bottom: 1px solid rgba(200, 240, 250, 0.5);
+  }
+  
+  .box.bg-blue > h3:first-child > a:hover {
+    color: #FFFFFF !important;
+  }
+  
+  slide.slide-bg-blue > hgroup > h2 {
+    color: rgba(0, 0, 0, 0.8);
+  }
+  
+  slide.slide-bg-blue > hgroup > h3 {
+    color: rgba(0, 0, 0, 0.7);
+  }
+  
+  .bg-blue code {
+    background-color: rgba(255, 255, 255, 0.3);
+  }
+  
+  .bg-blue .table-striped > tbody > tr:nth-of-type(odd) {
+    background-color: #f9f9f9;
+  }
+  
+  .bg-blue .table-striped > tbody > tr:nth-of-type(odd) {
+    background-color: rgba(0, 0, 0, 0.1);
+  }
+  
+  .bg-blue table th {
+    color: rgba(0, 0, 0, 0.7);
+  }
+  
+  .bg-blue .table, .bg-blue .table th, .bg-blue .table td, .table thead tr div {
+    border-color: #005C99 !important;
+  }
+  /* bg-yellow colour */
+  
+  .slide-bg-yellow {
+    background-color: #FFEC8B;
+  }
+  
+  .bg-yellow a {
+    color: rgb(42, 124, 223);
+    border-bottom: 1px solid rgba(42, 124, 223, 0.5);
+  }
+  
+  .bg-yellow a:hover {
+    color: #000000 !important;
+  }
+  
+  .box.bg-yellow {
+    background-color: #FFEC8B;
+    color: #000000;
+    border: 2px solid #EEB422;
+  }
+  
+  .box.bg-yellow > h3:first-child {
+    background-color: #EEB422;
+    color: #000000;
+  }
+  
+  blockquote.bg-yellow::before {
+    color : #EEB422;
+  }
+  
+  blockquote.bg-yellow {
+    background-color: #FFEC8B;
+    color: #000000;
+    border-color: #EEB422;
+  }
+  
+  .box.bg-yellow > h3:first-child > code {
+    background-color: rgba(255, 255, 255, 0.3);
+  }
+  
+  .box.bg-yellow > h3:first-child > a {
+    color: rgb(42, 124, 223);
+    border-bottom: 1px solid rgba(42, 124, 223, 0.5);
+  }
+  
+  .box.bg-yellow > h3:first-child > a:hover {
+    color: #000000 !important;
+  }
+  
+  slide.slide-bg-yellow > hgroup > h2 {
+    color: rgba(0, 0, 0, 0.8);
+  }
+  
+  slide.slide-bg-yellow > hgroup > h3 {
+    color: rgba(0, 0, 0, 0.7);
+  }
+  
+  .bg-yellow code {
+    background-color: rgba(255, 255, 255, 0.3);
+  }
+  
+  .bg-yellow .table-striped > tbody > tr:nth-of-type(odd) {
+    background-color: #f9f9f9;
+  }
+  
+  .bg-yellow .table-striped > tbody > tr:nth-of-type(odd) {
+    background-color: rgba(0, 0, 0, 0.1);
+  }
+  
+  .bg-yellow table th {
+    color: rgba(0, 0, 0, 0.7);
+  }
+  
+  .bg-yellow .table, .bg-yellow .table th, .bg-yellow .table td, .table thead tr div {
+    border-color: #EEB422 !important;
+  }
+  /* bg-gray colour */
+  
+  .slide-bg-gray {
+    background-color: #FAFAFA;
+  }
+  
+  .bg-gray a {
+    color: rgb(42, 124, 223);
+    border-bottom: 1px solid rgba(42, 124, 223, 0.5);
+  }
+  
+  .bg-gray a:hover {
+    color: #000000 !important;
+  }
+  
+  .box.bg-gray {
+    background-color: #FAFAFA;
+    color: #000000;
+    border: 2px solid #CECECE;
+  }
+  
+  .box.bg-gray > h3:first-child {
+    background-color: #CECECE;
+    color: #000000;
+  }
+  
+  blockquote.bg-gray::before {
+    color : #CECECE;
+  }
+  
+  blockquote.bg-gray {
+    background-color: #FAFAFA;
+    color: #000000;
+    border-color: #CECECE;
+  }
+  
+  .box.bg-gray > h3:first-child > code {
+    background-color: rgba(255, 255, 255, 0.3);
+  }
+  
+  .box.bg-gray > h3:first-child > a {
+    color: rgb(42, 124, 223);
+    border-bottom: 1px solid rgba(42, 124, 223, 0.5);
+  }
+  
+  .box.bg-gray > h3:first-child > a:hover {
+    color: #000000 !important;
+  }
+  
+  slide.slide-bg-gray > hgroup > h2 {
+    color: rgba(0, 0, 0, 0.8);
+  }
+  
+  slide.slide-bg-gray > hgroup > h3 {
+    color: rgba(0, 0, 0, 0.7);
+  }
+  
+  .bg-gray code {
+    background-color: rgba(255, 255, 255, 0.3);
+  }
+  
+  .bg-gray .table-striped > tbody > tr:nth-of-type(odd) {
+    background-color: #f9f9f9;
+  }
+  
+  .bg-gray .table-striped > tbody > tr:nth-of-type(odd) {
+    background-color: rgba(0, 0, 0, 0.1);
+  }
+  
+  .bg-gray table th {
+    color: rgba(0, 0, 0, 0.7);
+  }
+  
+  .bg-gray .table, .bg-gray .table th, .bg-gray .table td, .table thead tr div {
+    border-color: #CECECE !important;
+  }
+  /* bg-white colour */
+  
+  .slide-bg-white {
+    background-color: #FFFFFF;
+  }
+  
+  .bg-white a {
+    color: rgb(42, 124, 223);
+    border-bottom: 1px solid rgba(42, 124, 223, 0.5);
+  }
+  
+  .bg-white a:hover {
+    color: #000000 !important;
+  }
+  
+  .box.bg-white {
+    background-color: #FFFFFF;
+    color: #000000;
+    border: 2px solid #CECECE;
+  }
+  
+  .box.bg-white > h3:first-child {
+    background-color: #CECECE;
+    color: #000000;
+  }
+  
+  blockquote.bg-white::before {
+    color : #CECECE;
+  }
+  
+  blockquote.bg-white {
+    background-color: #FFFFFF;
+    color: #000000;
+    border-color: #CECECE;
+  }
+  
+  .box.bg-white > h3:first-child > code {
+    background-color: rgba(255, 255, 255, 0.3);
+  }
+  
+  .box.bg-white > h3:first-child > a {
+    color: rgb(42, 124, 223);
+    border-bottom: 1px solid rgba(42, 124, 223, 0.5);
+  }
+  
+  .box.bg-white > h3:first-child > a:hover {
+    color: #000000 !important;
+  }
+  
+  slide.slide-bg-white > hgroup > h2 {
+    color: rgba(0, 0, 0, 0.8);
+  }
+  
+  slide.slide-bg-white > hgroup > h3 {
+    color: rgba(0, 0, 0, 0.7);
+  }
+  
+  .bg-white code {
+    background-color: rgba(255, 255, 255, 0.3);
+  }
+  
+  .bg-white .table-striped > tbody > tr:nth-of-type(odd) {
+    background-color: #f9f9f9;
+  }
+  
+  .bg-white .table-striped > tbody > tr:nth-of-type(odd) {
+    background-color: rgba(0, 0, 0, 0.1);
+  }
+  
+  .bg-white table th {
+    color: rgba(0, 0, 0, 0.7);
+  }
+  
+  .bg-white .table, .bg-white .table th, .bg-white .table td, .table thead tr div {
+    border-color: #CECECE !important;
+  }
+  /* bg-cobalt colour */
+  
+  .slide-bg-cobalt {
+    background-color: #2B557A;
+  }
+  
+  .bg-cobalt a {
+    color: rgb(200, 240, 250);
+    border-bottom: 1px solid rgba(200, 240, 250, 0.5);
+  }
+  
+  .bg-cobalt a:hover {
+    color: #FFFFFF !important;
+  }
+  
+  .box.bg-cobalt {
+    background-color: #2B557A;
+    color: #FFFFFF;
+    border: 2px solid #002240;
+  }
+  
+  .box.bg-cobalt > h3:first-child {
+    background-color: #002240;
+    color: #FFFFFF;
+  }
+  
+  blockquote.bg-cobalt::before {
+    color : #002240;
+  }
+  
+  blockquote.bg-cobalt {
+    background-color: #2B557A;
+    color: #FFFFFF;
+    border-color: #002240;
+  }
+  
+  .box.bg-cobalt > h3:first-child > code {
+    background-color: rgba(255, 255, 255, 0.7);
+  }
+  
+  .box.bg-cobalt > h3:first-child > a {
+    color: rgb(200, 240, 250);
+    border-bottom: 1px solid rgba(200, 240, 250, 0.5);
+  }
+  
+  .box.bg-cobalt > h3:first-child > a:hover {
+    color: #FFFFFF !important;
+  }
+  
+  slide.slide-bg-cobalt > hgroup > h2 {
+    color: rgba(255, 255, 255, 0.8);
+  }
+  
+  slide.slide-bg-cobalt > hgroup > h3 {
+    color: rgba(255, 255, 255, 0.7);
+  }
+  
+  .bg-cobalt code {
+    background-color: rgba(255, 255, 255, 0.7);
+  }
+  
+  .bg-cobalt .table-striped > tbody > tr:nth-of-type(odd) {
+    background-color: #f9f9f9;
+  }
+  
+  .bg-cobalt .table-striped > tbody > tr:nth-of-type(odd) {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+  
+  .bg-cobalt table th {
+    color: rgba(255, 255, 255, 0.7);
+  }
+  
+  .bg-cobalt .table, .bg-cobalt .table th, .bg-cobalt .table td, .table thead tr div {
+    border-color: #002240 !important;
+  }
+  </style>
+
+</head>
+
+<body style="opacity: 0">
+
+<slides class="layout-widescreen">
+
+  <slide class="title-slide segue nobackground">
+        <aside class="gdbar"><img src="Intro_PS_files/logo.png"></aside>
+        <!-- The content of this hgroup is replaced programmatically through the slide_config.json. -->
+    <hgroup class="auto-fadein">
+      <h1 data-config-title><!-- populated from slide_config.json --></h1>
+      <h2 data-config-subtitle><!-- populated from slide_config.json --></h2>
+      <p data-config-presenter><!-- populated from slide_config.json --></p>
+            <p style="margin-top: 6px; margin-left: -2px;">2018-06-13</p>
+          </hgroup>
+  </slide>
+
+<slide class=""><hgroup class = 'title-bar'><h2>Objectives</h2></hgroup><article  id="objectives" class="smaller vs2">
+
+<div id="you-will-learn-to" class = 'box col col-8 offset-2 intro icon'><h3>You will learn to:</h3><div class = 'box-body'>
+
+<img src='https://rworkshop.uni.lu/lectures/img/00/kt.png' title=''/>
+
+<ul>
+<li>install and run R and Rstudio on your machine</li>
+<li>use R on the clusters</li>
+<li>explore <code>ggplot2</code> and <code>dplyr</code> on the <em>dataSaurus</em></li>
+<li>summarise a dataset using different packages and benchmark them</li>
+<li>demonstrate why packages are better than R base</li>
+<li>perform single node parallelisation on <code>iris</code></li>
+</ul>
+
+</div></div></article><div class = "footer"><img src="Intro_PS_files/logo.png"><a href='http://ulhpc-tutorials.readthedocs.io/en/latest/maths/R/'>R practical session</a></div></slide><slide class=""><hgroup class = 'title-bar'><h2>What is R?</h2></hgroup><article  id="what-is-r" class="smaller vs2">
+
+<div id="section" class = 'icon col col-12'>
+
+<img src='https://hpc.uni.lu/images/logo/logo_hpc-shool2017.png' title=''/>
+
+<div id="unnamed-chunk-1">
+<i class="fab  fa-r-project fa-4x "></i></div>
+
+<p>is shorthand for <a href='https://www.r-project.org' title=''>&ldquo;GNU R&rdquo;</a>:</p>
+
+<ul>
+<li>An <strong>interactive</strong> programming language derived from <strong>S</strong> (<strong>J. Chambers</strong>, Bell Lab, 1976)</li>
+<li>Appeared in 1993, created by <strong>R. Ihaka</strong> and <strong>R. Gentleman</strong>, University of Auckland, NZ</li>
+<li>Focus on data analysis and plotting</li>
+<li><i class="fab  fa-r-project "></i> is also shorthand for the ecosystem around this language
+
+<ul>
+<li>Book authors</li>
+<li>Package developers</li>
+<li>Ordinary useRs</li>
+</ul></li>
+</ul>
+
+<p>Learning to use <strong>R</strong> will make you <strong>more efficient</strong> and <strong>facilitate the use</strong> of advanced data analysis tools</p>
+
+</div></article><div class = "footer"><img src="Intro_PS_files/logo.png"><a href='http://ulhpc-tutorials.readthedocs.io/en/latest/maths/R/'>R practical session</a></div></slide><slide class=""><hgroup class = 'title-bar'><h2>Why use R?</h2></hgroup><article  id="why-use-r" class="smaller vs2">
+
+<ul>
+<li>It’s <em>free!</em> and <strong>open-source</strong></li>
+<li>easy to install / maintain</li>
+<li>multi-platform (Windows, macOS, GNU/Linux)</li>
+<li>can process big files and analyse huge amounts of data (db tools)</li>
+<li>integrated data visualization tools, <em>even dynamic</em></li>
+<li>fast, and even faster with <em>C++</em> integration via <a href='http://dirk.eddelbuettel.com/code/rcpp/Rcpp-attributes.pdf' title=''>Rcpp</a>.</li>
+<li>easy to get help
+
+<ul>
+<li><a href='https://support.rstudio.com/hc/en-us/articles/200552336-Getting-Help-with-R' title=''>huge R community in the web</a></li>
+<li><a href='http://stackoverflow.com/questions/tagged/r' title=''>stackoverflow</a> with a lot of tags like <strong>r</strong>, <strong>ggplot2</strong> etc.</li>
+<li><a href='http://www.r-bloggers.com' title=''>rbloggers</a></li>
+</ul></li>
+</ul>
+
+</article><div class = "footer"><img src="Intro_PS_files/logo.png"><a href='http://ulhpc-tutorials.readthedocs.io/en/latest/maths/R/'>R practical session</a></div></slide><slide class=""><hgroup class = 'title-bar'><h2>Twitter R community</h2></hgroup><article  id="twitter-r-community" class="smaller ">
+
+<p><a href='https://twitter.com/search?q=%23rstats' title=''><code>#rstats</code></a> on twitter</p>
+
+<img src='https://rworkshop.uni.lu/lectures/img/01/r_community.jpg' title=''/>
+
+</article><div class = "footer"><img src="Intro_PS_files/logo.png"><a href='http://ulhpc-tutorials.readthedocs.io/en/latest/maths/R/'>R practical session</a></div></slide><slide class=""><hgroup class = 'title-bar'><h2>Constant trend</h2></hgroup><article  id="constant-trend" class="smaller vs1">
+
+<div id="section-1" class = 'col col-6'>
+
+<img src='https://rworkshop.uni.lu/lectures/img/01/r_progression.png' title=''/>
+
+<p><span class="small">
+Source: <a href='http://onlinelibrary.wiley.com/doi/10.1002/ecs2.1394/full' title=''>Touchon &amp; McCoy. <em>Ecosphere</em>. 2016</a></span></p>
+
+</div><div id="section-2" class = 'col col-6'>
+
+<img src='https://rworkshop.uni.lu/lectures/img/01/SO_yearly_progression.png' title=''/>
+
+<p><span class="small">
+Source: <a href='https://stackoverflow.blog/2017/10/10/impressive-growth-r/' title=''>D. Robinson, StackOverflow blog</a></span></p>
+
+</div></article><div class = "footer"><img src="Intro_PS_files/logo.png"><a href='http://ulhpc-tutorials.readthedocs.io/en/latest/maths/R/'>R practical session</a></div></slide><slide class=""><hgroup class = 'title-bar'><h2>Packages </h2><h3> +12,000 in Feb 2018</h3></hgroup><article  id="packages-12000-in-feb-2018" class="smaller ">
+
+<div id="cran" class = 'box col col-4 intro stretch outline'><h3><a href='https://cran.r-project.org/web/packages/available_packages_by_date.html' title=''>CRAN</a></h3><div class = 'box-body'>
+
+<p><strong>reliable</strong>: package is checked during submission process</p>
+
+<p><a href='https://mran.microsoft.com/packages/' title=''>MRAN</a> for Windows users</p>
+
+</div></div><div id="bioconductor" class = 'box col col-4 intro stretch outline'><h3><a href='https://www.bioconductor.org/' title=''>bioconductor</a></h3><div class = 'box-body'>
+
+<p>dedicated to biology. <a href='https://www.bioconductor.org/packages/release/bioc/html/limma.html' title=''>status</a></p>
+
+<p>typical install:</p>
+
+<div id="unnamed-chunk-2" class="col col-12 box chunk bg-cobalt">
+<pre class = 'prettyprint lang-r'>source(&quot;https://bioconductor.org/biocLite.R&quot;)
+biocLite(&quot;limma&quot;)</pre></div>
+
+</div></div><div id="github" class = 'box col col-4 warning stretch outline'><h3><a href='https://github.com/' title=''>GitHub</a></h3><div class = 'box-body'>
+
+<p>easy install thanks to <a href='https://github.com/hadley/devtools' title=''>devtools</a>. <a href='https://github.com/hadley/readr' title=''>status</a></p>
+
+<div id="unnamed-chunk-3" class="col col-12 box chunk bg-cobalt">
+<pre class = 'prettyprint lang-r'># install.packages(&quot;devtools&quot;)
+devtools::install_github(&quot;tidyverse/readr&quot;)</pre></div>
+
+<p>could be a security issue</p>
+
+</div></div><div id="cran-install-from-rstudio" class = 'col col-6'><h3>CRAN install from Rstudio</h3>
+
+<img src='https://rworkshop.uni.lu/lectures/img/01/packages_install_cran.jpg' title=''/>
+
+</div><div id="github-install-from-rstudio-console" class = 'col col-6'><h3>github install from Rstudio’ console</h3>
+
+<img src='https://rworkshop.uni.lu/lectures/img/01/packages_install_devtools.jpg' title=''/>
+
+<p>more in the article from <a href='http://blog.revolutionanalytics.com/2017/01/cran-10000.html' title=''>David Smith</a></p>
+
+</div></article><div class = "footer"><img src="Intro_PS_files/logo.png"><a href='http://ulhpc-tutorials.readthedocs.io/en/latest/maths/R/'>R practical session</a></div></slide><slide class=""><hgroup class = 'title-bar'><h2>R is hard to learn</h2></hgroup><article  id="r-is-hard-to-learn" class="smaller vs1">
+
+<p><strong>R base</strong> is complex, has a long history and many contributors</p>
+
+<div id="why-r-is-hard-to-learn" class = 'warning box col col-11 outline'><h3>Why R is hard to learn</h3><div class = 'box-body'>
+
+<ul class = 'build'>
+<li>Unhelpful help <code>?print</code></li>
+<li>generic methods <code>print.data.frame</code></li>
+<li>too many commands <code>colnames, names</code></li>
+<li>inconsistent names <code>read.csv, load, readRDS</code></li>
+<li>unstrict syntax, was designed for interactive usage</li>
+<li>too many ways to select variables <code>df$x, df$&quot;x&quot;, df[,&quot;x&quot;], df[[1]]</code></li>
+<li>[…] see <a href='http://r4stats.com/articles/why-r-is-hard-to-learn/' title=''>r4stats’ post</a> for the full list</li>
+<li>the tidyverse curse</li>
+</ul>
+
+</div></div><div id="section-3" class = 'col col-8 offset-4'>
+
+<p><span class="small">
+source: <a href='http://r4stats.com/articles/why-r-is-hard-to-learn/' title=''>Robert A. Muenchen’ blog</a></span></p>
+
+</div>
+
+<div id="section-4" class = 'col col-12 build'>
+
+<blockquote class = "advice">
+<p>Navigating the balance between base R and the tidyverse is a challenge to learn <cite> Robert A. Muenchen </p></cite>
+</blockquote>
+
+</div></article><div class = "footer"><img src="Intro_PS_files/logo.png"><a href='http://ulhpc-tutorials.readthedocs.io/en/latest/maths/R/'>R practical session</a></div></slide><slide class=""><hgroup class = 'title-bar'><h2>Tidyverse </h2><h3> creator</h3></hgroup><article  id="tidyverse-creator" class="smaller vs2">
+
+<div id="section-5" class = 'col col-12 icon'>
+
+<img src='https://rworkshop.uni.lu/lectures/img/00/logo_tidyverse.png' title=''/>
+
+<p>We think the <a href='http://tidyverse.org/' title=''><strong>tidyverse</strong></a> is better, especially for beginners. It is</p>
+
+<ul>
+<li>recent (both an issue and an advantage)</li>
+<li>allows <a href='http://varianceexplained.org/r/teach-tidyverse/' title=''>doing powerful things quickly</a></li>
+<li>unified</li>
+<li>consistent, one way to do things</li>
+<li>give strength to learn base R</li>
+<li>criticisms will come later (yes, many)</li>
+</ul>
+
+</div><div id="hadley-wickham" class = 'box col col-8 intro outline'><h3>Hadley Wickham</h3><div class = 'box-body'>
+
+<p><a href='http://had.co.nz' title=''>Hadley</a>, Chief Scientist at <strong>Rstudio</strong></p>
+
+<ul>
+<li>coined the <em>tidyverse</em> at <a href='https://twitter.com/drob/status/748196885307920385' title=''>userR meeting in 2016</a></li>
+<li>developed and maintains most of the core <em>tidyverse</em> packages</li>
+</ul>
+
+</div></div><div id="section-6" class = 'col col-4'>
+
+<div id="unnamed-chunk-4">
+<p><img src="https://pbs.twimg.com/profile_images/905186381995147264/7zKAG5sY_400x400.jpg" width="75%" /></p></div>
+
+</div></article><div class = "footer"><img src="Intro_PS_files/logo.png"><a href='http://ulhpc-tutorials.readthedocs.io/en/latest/maths/R/'>R practical session</a></div></slide><slide class="segue dark nobackground level1"><hgroup class = 'auto-fadein'><h2>RStudio</h2></hgroup><article  id="rstudio" class="smaller ">
+
+<img src='https://rworkshop.uni.lu/lectures/img/00/logo_rstudio.png' title=''/>
+
+</article><div class = "footer"><img src="Intro_PS_files/logo.png"><a href='http://ulhpc-tutorials.readthedocs.io/en/latest/maths/R/'>R practical session</a></div></slide><slide class=""><hgroup class = 'title-bar'><h2>Rstudio </h2><h3> makes working with R easier</h3></hgroup><article  id="rstudio-makes-working-with-r-easier" class="smaller build">
+
+<p><a href='https://www.rstudio.com/products/RStudio/' title=''>RStudio is an Integrated Development Environment</a> .</p>
+
+<div id="features" class = 'box col col-8 intro outline'><h3>Features</h3><div class = 'box-body'>
+
+<ul>
+<li><em>Console</em> to run <strong>R</strong>, with syntax highlighter</li>
+<li><em>Editor</em> to work with scripts</li>
+<li><em>Viewer</em> for data / plots</li>
+<li><em>Package management</em> (including building)</li>
+<li><em>Autocompletion</em> using <kbd>TAB</kbd></li>
+<li><a href='https://www.rstudio.com/resources/cheatsheets/' title=''><em>Cheatsheets</em></a></li>
+<li><em>Git</em> integration for versioning</li>
+<li><em>Build</em> for website / packages</li>
+<li><em>Inline</em> outputs (&gt;= v1.03)</li>
+<li><em>Keyboard shortcuts</em></li>
+<li><a href='https://rviews.rstudio.com/2017/03/15/why-i-love-r-notebooks/' title=''><em>Notebooks</em></a></li>
+</ul>
+
+</div></div><div id="warning" class = 'box col col-4 warning outline'><h3>Warning</h3><div class = 'box-body'>
+
+<p>Don’t mix up <strong>R</strong> and <strong>RStudio</strong>.<br/><strong>R</strong> needs to be installed first.</p>
+
+</div></div></article><div class = "footer"><img src="Intro_PS_files/logo.png"><a href='http://ulhpc-tutorials.readthedocs.io/en/latest/maths/R/'>R practical session</a></div></slide><slide class=""><hgroup class = 'title-bar'><h2>Rstudio </h2><h3> The 4 panels layout</h3></hgroup><article  id="rstudio-the-4-panels-layout" class="smaller center-img vs1">
+
+<img src='https://rworkshop.uni.lu/lectures/img/01/rstudio_layout.jpg' title=''/>
+
+</article><div class = "footer"><img src="Intro_PS_files/logo.png"><a href='http://ulhpc-tutorials.readthedocs.io/en/latest/maths/R/'>R practical session</a></div></slide><slide class=""><hgroup class = 'title-bar'><h2>Four panels</h2></hgroup><article  id="four-panels" class="smaller vs2">
+
+<div id="scripting" class = 'box col col-6 practical stretch outline'><h3>scripting</h3><div class = 'box-body'>
+
+<ul>
+<li>could be your main window</li>
+<li>should be a <strong>Rmarkdown</strong> doc</li>
+<li>tabs are great</li>
+</ul>
+
+</div></div><div id="environment" class = 'box col col-6 intro stretch outline'><h3>Environment</h3><div class = 'box-body'>
+
+<ul>
+<li>Environment, display loaded objects and their <code>str()</code></li>
+<li>History is useless IMO</li>
+<li>nice <code>git</code> integration</li>
+<li>database <strong>connections</strong> interface</li>
+</ul>
+
+</div></div><div id="console" class = 'box col col-6 code stretch outline'><h3>Console</h3><div class = 'box-body'>
+
+<ul>
+<li>could be hidden with <strong>inline</strong> outputs</li>
+<li>embed a nice <code>terminal</code> tab</li>
+<li><code>Rmarkdown</code> logs</li>
+</ul>
+
+</div></div><div id="files-plots-help" class = 'box col col-6 intro stretch outline'><h3>Files / Plots / Help</h3><div class = 'box-body'>
+
+<ul>
+<li>necessary package management tab</li>
+<li>unnecessary plots tabs with <strong>inline</strong> outputs</li>
+<li>help tab</li>
+</ul>
+
+</div></div></article><div class = "footer"><img src="Intro_PS_files/logo.png"><a href='http://ulhpc-tutorials.readthedocs.io/en/latest/maths/R/'>R practical session</a></div></slide><slide class=""><hgroup class = 'title-bar'><h2>For reproducibility </h2><h3> options to activate / deactivate</h3></hgroup><article  id="for-reproducibility-options-to-activate-deactivate" class="smaller ">
+
+<div id="section-7" class = 'col col-6'>
+
+<img src='https://rworkshop.uni.lu/lectures/img/01/rstudio_settings.png' title=''/>
+
+</div><div id="rmlist-ls-is-not-recommended" class = 'box col col-6 advice middle outline'><h3><code>rm(list = ls())</code> is not recommended</h3><div class = 'box-body'>
+
+<ul>
+<li>does <strong>not</strong> make a fresh R session
+
+<ul>
+<li><code>library()</code> calls remain</li>
+<li>working directory not set!</li>
+<li>modified functions, <a href='https://github.com/romainfrancois/evil.R' title=''>evil</a> <code>==</code> &lt;- <code>!=</code></li>
+</ul></li>
+<li>knitting <code>Rmarkdown</code> files solves it</li>
+</ul>
+
+<p><span class="small">
+<a href='https://www.tidyverse.org/articles/2017/12/workflow-vs-script/' title=''>source: Jenny Bryan article</a></span></p>
+
+</div></div></article><div class = "footer"><img src="Intro_PS_files/logo.png"><a href='http://ulhpc-tutorials.readthedocs.io/en/latest/maths/R/'>R practical session</a></div></slide><slide class=""><hgroup class = 'title-bar'><h2>Code diagnostics </h2><h3> highly recommended</h3></hgroup><article  id="code-diagnostics-highly-recommended" class="smaller ">
+
+<p>using <code>Global Options -&gt; Code -&gt; Diagnostics</code> editing pane:</p>
+
+<div id="section-8" class = 'col col-6'>
+
+<p><img src='https://rworkshop.uni.lu/lectures/img/01/diag_RStudio.png' title=''/> <span class="small">
+source: <a href='https://support.rstudio.com/hc/en-us/articles/205753617-Code-Diagnostics?version=1.1.133&amp;mode=desktop' title=''>Kevin Ushey’ article</a></span></p>
+
+</div><div id="section-9" class = 'col col-6'>
+
+<ul>
+<li>check argument calls</li>
+</ul>
+
+<img src='https://support.rstudio.com/hc/en-us/article_attachments/201712378/Screen_Shot_2015-04-30_at_2.01.17_PM.png' title=''/>
+
+<ul>
+<li>missing arguments</li>
+</ul>
+
+<img src='https://support.rstudio.com/hc/en-us/article_attachments/201712398/Screen_Shot_2015-04-30_at_2.03.06_PM.png' title=''/>
+
+<ul>
+<li>variable definitions</li>
+</ul>
+
+<img src='https://support.rstudio.com/hc/en-us/article_attachments/201712428/Screen_Shot_2015-04-30_at_2.06.54_PM.png' title=''/>
+
+<ul>
+<li>unused variables &amp; style recommendations</li>
+</ul>
+
+</div></article><div class = "footer"><img src="Intro_PS_files/logo.png"><a href='http://ulhpc-tutorials.readthedocs.io/en/latest/maths/R/'>R practical session</a></div></slide><slide class="segue dark nobackground level1"><hgroup class = 'auto-fadein'><h2>Data types and structures </h2><h3> R base</h3></hgroup><article  id="data-types-and-structures-r-base" class="smaller ">
+
+</article><div class = "footer"><img src="Intro_PS_files/logo.png"><a href='http://ulhpc-tutorials.readthedocs.io/en/latest/maths/R/'>R practical session</a></div></slide><slide class=""><hgroup class = 'title-bar'><h2>Necessary R base</h2></hgroup><article  id="necessary-r-base" class="smaller build">
+
+<div id="we-could-let-base-down-but-the-tidyverse-is-wrapping-around-it" class = 'intro box col col-12 outline show'><h3>We could let <strong>base</strong> down, but the <strong>tidyverse</strong> is wrapping around it</h3><div class = 'box-body'>
+
+<p>Some functions need to be known. And in R, everything is a function.</p>
+
+</div></div><div id="advices-from-david-robinson" class = 'box col col-6 icon-small stretch advice outline'><h3>Advices from David Robinson</h3><div class = 'box-body'>
+
+<img src='https://rworkshop.uni.lu/lectures/img/01/drobinson2.png' title=''/>
+
+<ul>
+<li><a href='http://varianceexplained.org/r/teach-tidyverse/' title=''>Teach tidyverse to beginners</a>
+
+<ul>
+<li>base: summary functions</li>
+<li>vectorized operations</li>
+<li>stat modeling</li>
+<li>matrices</li>
+</ul></li>
+<li><a href='http://varianceexplained.org/r/teach-hard-way/' title=''>Don’t teach the hard way</a></li>
+</ul>
+
+<blockquote class = "warning">
+<p><em>I teach them X just to show them how much easier Y is</em> </p>
+</blockquote>
+
+<blockquote>
+<p>teaching programming is hard, don’t make it harder</p>
+</blockquote>
+
+</div></div><div id="section-10" class = 'col col-6'>
+
+<blockquote class="twitter-tweet" data-lang="fr">
+
+<p lang="en" dir="ltr">
+
+When you start writing a loop then turn it into dplyr<a href="https://twitter.com/hashtag/rstats?src=hash&amp;ref_src=twsrc%5Etfw">#rstats</a> <a href="https://t.co/M0gXUXuYCP">pic.twitter.com/M0gXUXuYCP</a>
+
+</p>
+
+— David Robinson (<span class="cite">@drob</span>) <a href="https://twitter.com/drob/status/701790246111825925?ref_src=twsrc%5Etfw">22 Feb 2016</a>
+
+</blockquote>
+
+<script async src="http://platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+</div></article><div class = "footer"><img src="Intro_PS_files/logo.png"><a href='http://ulhpc-tutorials.readthedocs.io/en/latest/maths/R/'>R practical session</a></div></slide><slide class=""><hgroup class = 'title-bar'><h2>Getting started</h2></hgroup><article  id="getting-started" class="smaller vs3">
+
+<p>Let’s get ready to use <strong>R</strong> and <strong>RStudio</strong></p>
+
+<div id="do-the-following" class = 'practical box col col-8 offset-2'><h3>Do the following</h3><div class = 'box-body'>
+
+<ul>
+<li>Open up RStudio</li>
+<li>Maximize the RStudio window</li>
+<li>Click the Console pane, at the prompt (<code>&gt;</code>) type in <code>3 + 2</code> and hit enter</li>
+</ul>
+
+<div id="unnamed-chunk-5" class="col col-12 box chunk bg-cobalt">
+<pre class = 'prettyprint lang-r'>&gt; 3 + 2</pre></div>
+
+</div></div></article><div class = "footer"><img src="Intro_PS_files/logo.png"><a href='http://ulhpc-tutorials.readthedocs.io/en/latest/maths/R/'>R practical session</a></div></slide><slide class=""><hgroup class = 'title-bar'><h2>4 main types </h2><h3> <code>mode()</code></h3></hgroup><article  id="main-types-mode" class="smaller vs1 build">
+
+<div id="section-11" class = 'col col-6 compact-table show'>
+
+<table class = 'table'>
+<thead><tr>
+<th align="left">Type</th>
+<th align="left">Example</th>
+</tr></thead>
+<tr>
+<td align="left">numeric</td>
+<td align="left">integer (2), double (2.34)</td>
+</tr>
+<tr>
+<td align="left">character (strings)</td>
+<td align="left">&ldquo;tidyverse!&rdquo;</td>
+</tr>
+<tr>
+<td align="left">boolean</td>
+<td align="left">TRUE / FALSE</td>
+</tr>
+<tr>
+<td align="left">complex</td>
+<td align="left">2+0i</td>
+</tr>
+</table>
+
+</div><div id="section-12" class = 'col col-6'>
+
+<div id="unnamed-chunk-6" class="col col-12 box chunk bg-cobalt">
+<h3>
+
+in the console
+
+</h3>
+
+<div class="col col-6 r-source">
+<pre class = 'prettyprint lang-r'>2L</pre></div>
+
+<div class="col col-6 r-output">
+<pre >[1] 2</pre></div>
+
+<div class="col col-6 r-source">
+<pre class = 'prettyprint lang-r'>typeof(2L)</pre></div>
+
+<div class="col col-6 r-output">
+<pre >[1] &quot;integer&quot;</pre></div>
+
+<div class="col col-6 r-source">
+<pre class = 'prettyprint lang-r'>mode(2L)</pre></div>
+
+<div class="col col-6 r-output">
+<pre >[1] &quot;numeric&quot;</pre></div>
+
+<div class="col col-6 r-source">
+<pre class = 'prettyprint lang-r'>2.34</pre></div>
+
+<div class="col col-6 r-output">
+<pre >[1] 2.34</pre></div>
+
+<div class="col col-6 r-source">
+<pre class = 'prettyprint lang-r'>typeof(2.34)</pre></div>
+
+<div class="col col-6 r-output">
+<pre >[1] &quot;double&quot;</pre></div>
+
+<div class="col col-6 r-source">
+<pre class = 'prettyprint lang-r'>&quot;tidyverse!&quot;</pre></div>
+
+<div class="col col-6 r-output">
+<pre >[1] &quot;tidyverse!&quot;</pre></div>
+
+<div class="col col-6 r-source">
+<pre class = 'prettyprint lang-r'>TRUE</pre></div>
+
+<div class="col col-6 r-output">
+<pre >[1] TRUE</pre></div>
+
+<div class="col col-6 r-source">
+<pre class = 'prettyprint lang-r'>2+0i</pre></div>
+
+<div class="col col-6 r-output">
+<pre >[1] 2+0i</pre></div></div>
+
+</div><div id="section-13" class = 'col col-6 offset-3'>
+
+<div id="unnamed-chunk-7" class="col col-12 box chunk bg-cobalt">
+<h3>
+
+Special case
+
+</h3>
+
+<pre class = 'prettyprint lang-r'>NA   # not available, missing data
+NA_real_
+NA_integer_
+NA_character_
+NA_complex_
+NULL # empty
+-Inf/Inf # infinite values
+NaN # Not a Number</pre></div>
+
+</div></article><div class = "footer"><img src="Intro_PS_files/logo.png"><a href='http://ulhpc-tutorials.readthedocs.io/en/latest/maths/R/'>R practical session</a></div></slide><slide class=""><hgroup class = 'title-bar'><h2>Structures</h2></hgroup><article  id="structures" class="smaller vs1 build">
+
+<div id="vectors" class = 'box col col-5 stretch intro outline show'><h3>Vectors</h3><div class = 'box-body'>
+
+<p><code>c()</code> is the function for <strong>concatenate</strong></p>
+
+</div></div><div id="section-14" class = 'col col-7 middle'>
+
+<div id="unnamed-chunk-8" class="col col-12 box chunk bg-cobalt">
+<div class="col col-6 r-source">
+<pre class = 'prettyprint lang-r'>4
+c(43, 5.6, 2.90)</pre></div>
+
+<div class="col col-6 r-output">
+<pre >[1] 4
+[1] 43.0  5.6  2.9</pre></div></div>
+
+</div><div id="factors" class = 'box col col-4 stretch intro outline'><h3>Factors</h3><div class = 'box-body'>
+
+<p>convert strings to factors, <code>levels</code> is the dictionary</p>
+
+</div></div><div id="section-15" class = 'col col-8 stretch'>
+
+<div id="unnamed-chunk-9" class="col col-12 box chunk bg-cobalt">
+<div class="col col-6 r-source">
+<pre class = 'prettyprint lang-r'>factor(c(&quot;AA&quot;, &quot;BB&quot;, &quot;AA&quot;, &quot;CC&quot;))</pre></div>
+
+<div class="col col-6 r-output">
+<pre >[1] AA BB AA CC
+Levels: AA BB CC</pre></div></div>
+
+</div><div id="lists" class = 'box col col-4 intro outline'><h3>Lists</h3><div class = 'box-body'>
+
+<p>very important as it can contain anything</p>
+
+</div></div><div id="section-16" class = 'col col-8 compact-output'>
+
+<div id="unnamed-chunk-10" class="col col-12 box chunk bg-cobalt">
+<div class="col col-6 r-source">
+<pre class = 'prettyprint lang-r'>list(f = factor(c(&quot;AA&quot;, &quot;AA&quot;)),
+     v = c(43, 5.6, 2.90),
+     s = 4L)</pre></div>
+
+<div class="col col-6 r-output">
+<pre >$f
+[1] AA AA
+Levels: AA
+
+$v
+[1] 43.0  5.6  2.9
+
+$s
+[1] 4</pre></div></div>
+
+</div></article><div class = "footer"><img src="Intro_PS_files/logo.png"><a href='http://ulhpc-tutorials.readthedocs.io/en/latest/maths/R/'>R practical session</a></div></slide><slide class=""><hgroup class = 'title-bar'><h2>Data frames are special lists</h2></hgroup><article  id="data-frames-are-special-lists" class="smaller ">
+
+<div id="data.frame" class = 'box col col-5 intro outline stretch'><h3><code>data.frame</code></h3><div class = 'box-body'>
+
+<p>same as list <strong>but</strong> where all objects <em>must</em> have the <strong>same</strong> length</p>
+
+</div></div><div id="section-17" class = 'col col-7 stretch'>
+
+<div id="unnamed-chunk-11" class="col col-12 box chunk bg-cobalt">
+<h3>
+
+Example, 3 elements of same size
+
+</h3>
+
+<div class="col col-8 r-source">
+<pre class = 'prettyprint lang-r'>data.frame(
+  f = factor(c(&quot;AA&quot;, &quot;AA&quot;, &quot;BB&quot;)),
+  v = c(43, 5.6, 2.90),
+  s = rep(4, 3))</pre></div>
+
+<div class="col col-4 r-output">
+<pre >   f    v s
+1 AA 43.0 4
+2 AA  5.6 4
+3 BB  2.9 4</pre></div></div>
+
+</div><div id="example-missing-one-element-in-v" class = 'box col col-7 bg-red offset-5'><h3>Example, missing one element in <code>v</code></h3><div class = 'box-body'>
+
+<div id="unnamed-chunk-12" class="col col-12 box chunk bg-cobalt">
+<pre class = 'prettyprint lang-r'>data.frame(
+  f = factor(c(&quot;AA&quot;, &quot;AA&quot;, &quot;BB&quot;)),
+  v = c(43, 5.6),
+  s = rep(4, 3))</pre>
+
+<pre >Error in data.frame(f = factor(c(&quot;AA&quot;, &quot;AA&quot;, &quot;BB&quot;)), v = c(43, 5.6), s = rep(4, : arguments imply differing number of rows: 3, 2</pre></div>
+
+</div></div></article><div class = "footer"><img src="Intro_PS_files/logo.png"><a href='http://ulhpc-tutorials.readthedocs.io/en/latest/maths/R/'>R practical session</a></div></slide><slide class=""><hgroup class = 'title-bar'><h2>Concatenate atomic elements </h2><h3> i.e build a vector</h3></hgroup><article  id="concatenate-atomic-elements-i.e-build-a-vector" class="smaller vs1">
+
+<div id="collection-of-simple-things" class = 'box col col-6 intro outline'><h3>collection of simple <em>things</em></h3><div class = 'box-body'>
+
+<ul>
+<li><em>things</em> are the smallest elements: <strong>atomic</strong></li>
+<li><strong>must</strong> be of same <strong>mode</strong>: automatic coercion</li>
+<li>indexed, from <strong>1</strong> to <code>length(vector)</code></li>
+<li>created with the <strong><code>c()</code></strong> function</li>
+</ul>
+
+<div id="unnamed-chunk-13" class="col col-12 box chunk bg-cobalt">
+<pre class = 'prettyprint lang-r'>c(2, TRUE, &quot;a string&quot;)</pre>
+
+<pre >[1] &quot;2&quot;        &quot;TRUE&quot;     &quot;a string&quot;</pre></div>
+
+</div></div><div id="assignment-operator-create-object" class = 'box col col-6 intro outline'><h3>assignment operator, create object</h3><div class = 'box-body'>
+
+<p>operator is <code>&lt;-</code>, associate a <em>name</em> to an object</p>
+
+<div id="unnamed-chunk-14" class="col col-12 box chunk bg-cobalt">
+<pre class = 'prettyprint lang-r'>my_vec &lt;- c(3, 4, 1:3)
+my_vec</pre>
+
+<pre >[1] 3 4 1 2 3</pre></div>
+
+</div></div><div id="tip" class = 'box col col-8 offset-2 advice outline'><h3>Tip</h3><div class = 'box-body'>
+
+<p>Rstudio has the built-in shortcut <kbd>Alt</kbd>+<kbd>-</kbd> for <code>&lt;-</code></p>
+
+</div></div></article><div class = "footer"><img src="Intro_PS_files/logo.png"><a href='http://ulhpc-tutorials.readthedocs.io/en/latest/maths/R/'>R practical session</a></div></slide><slide class=""><hgroup class = 'title-bar'><h2></h2><h3> hierarchy</h3></hgroup><article  id="hierarchy" class="smaller ">
+
+<div id="section-18" class = 'box col col-8'><div class = 'box-body'>
+
+<img src='https://rworkshop.uni.lu/lectures/img/01/data-structures-overview.png' title=''/>
+
+<p><span class="small">
+source: <strong>H. Wickham</strong> - <a href='http://r4ds.had.co.nz/vectors.html' title=''><em>R</em> for data science</a>, <a href='http://creativecommons.org/licenses/by-nc-nd/3.0/us/' title=''>licence CC</a></span></p>
+
+</div></div><div id="in-console" class = 'box col col-4 middle code outline'><h3>in console</h3><div class = 'box-body'>
+
+<div id="unnamed-chunk-15" class="col col-12 box chunk bg-cobalt">
+<pre class = 'prettyprint lang-r'>is.vector(c(&quot;a&quot;, &quot;c&quot;))</pre>
+
+<pre >[1] TRUE</pre>
+
+<pre class = 'prettyprint lang-r'>mode(c(&quot;a&quot;, &quot;c&quot;))</pre>
+
+<pre >[1] &quot;character&quot;</pre>
+
+<pre class = 'prettyprint lang-r'>is.vector(list(a = 1))</pre>
+
+<pre >[1] TRUE</pre>
+
+<pre class = 'prettyprint lang-r'>is.atomic(list(a = 1))</pre>
+
+<pre >[1] FALSE</pre>
+
+<pre class = 'prettyprint lang-r'>is.data.frame(list(a = 1))</pre>
+
+<pre >[1] FALSE</pre></div>
+
+</div></div></article><div class = "footer"><img src="Intro_PS_files/logo.png"><a href='http://ulhpc-tutorials.readthedocs.io/en/latest/maths/R/'>R practical session</a></div></slide><slide class=""><hgroup class = 'title-bar'><h2>Vectors </h2><h3> subsetting</h3></hgroup><article  id="vectors-subsetting" class="smaller build">
+
+<div id="important" class = 'box col col-8 offset-2 warning show outline'><h3>important</h3><div class = 'box-body'>
+
+<p>Unlike <strong>python</strong> or <strong>Perl</strong>, vectors use <strong>1-based</strong> index!!</p>
+
+</div></div>
+
+<div id="operator" class = 'box col col-6 practical'><h3><code>:</code> operator</h3><div class = 'box-body'>
+
+<p>generate integer sequence</p>
+
+<div id="unnamed-chunk-16" class="col col-12 box chunk bg-cobalt">
+<pre class = 'prettyprint lang-r'>3:10</pre>
+
+<pre >[1]  3  4  5  6  7  8  9 10</pre></div>
+
+</div></div><div id="how-to-extract-1-element" class = 'box col col-6 practical'><h3>How to extract &gt; 1 element</h3><div class = 'box-body'>
+
+<p>select elements from position <strong>3</strong> to <strong>10</strong>:</p>
+
+<div id="unnamed-chunk-17" class="col col-12 box chunk bg-cobalt">
+<pre class = 'prettyprint lang-r'>LETTERS[3:10]</pre>
+
+<pre >[1] &quot;C&quot; &quot;D&quot; &quot;E&quot; &quot;F&quot; &quot;G&quot; &quot;H&quot; &quot;I&quot; &quot;J&quot;</pre></div>
+
+</div></div><div id="break-in-sequence" class = 'box col col-6 practical'><h3>break in sequence</h3><div class = 'box-body'>
+
+<div id="unnamed-chunk-18" class="col col-12 box chunk bg-cobalt">
+<pre class = 'prettyprint lang-r'>LETTERS[c(2:5, 7)]</pre>
+
+<pre >[1] &quot;B&quot; &quot;C&quot; &quot;D&quot; &quot;E&quot; &quot;G&quot;</pre></div>
+
+</div></div><div id="negative-selection" class = 'box col col-6 practical'><h3>negative selection</h3><div class = 'box-body'>
+
+<div id="unnamed-chunk-19" class="col col-12 box chunk bg-cobalt">
+<pre class = 'prettyprint lang-r'>LETTERS[-c(2:21)]</pre>
+
+<pre >[1] &quot;A&quot; &quot;V&quot; &quot;W&quot; &quot;X&quot; &quot;Y&quot; &quot;Z&quot;</pre></div>
+
+</div></div></article><div class = "footer"><img src="Intro_PS_files/logo.png"><a href='http://ulhpc-tutorials.readthedocs.io/en/latest/maths/R/'>R practical session</a></div></slide><slide class=""><hgroup class = 'title-bar'><h2>Vectorized operation</h2></hgroup><article  id="vectorized-operation" class="smaller vs1 build">
+
+<div id="one-of-the-best-r-feature" class = 'box col col-6 show intro middle outline'><h3>one of the best R feature</h3><div class = 'box-body'>
+
+<div id="unnamed-chunk-20" class="col col-12 box chunk bg-cobalt">
+<pre class = 'prettyprint lang-r'>my_vec &lt;- 10:18
+my_vec</pre>
+
+<pre >[1] 10 11 12 13 14 15 16 17 18</pre>
+
+<pre class = 'prettyprint lang-r'>my_vec + 2</pre>
+
+<pre >[1] 12 13 14 15 16 17 18 19 20</pre></div>
+
+</div></div><div id="warning-1" class = 'box col col-6 warning outline'><h3>warning</h3><div class = 'box-body'>
+
+<ul>
+<li><strong>R</strong> <em>recycles</em> vectors that are too short</li>
+<li>without any warnings:</li>
+</ul>
+
+<div id="unnamed-chunk-21" class="col col-12 box chunk bg-cobalt">
+<pre class = 'prettyprint lang-r'>1:10 + c(1, 2)</pre>
+
+<pre > [1]  2  4  4  6  6  8  8 10 10 12</pre></div>
+
+</div></div><div id="avoid-writing-loops" class = 'box col col-8 offset-2 advice outline'><h3>avoid writing loops</h3><div class = 'box-body'>
+
+<p>(still remember not to grow a vector)</p>
+
+<div id="unnamed-chunk-22" class="col col-12 box chunk bg-cobalt">
+<pre class = 'prettyprint lang-r'>res &lt;- vector(mode = &quot;numeric&quot;, length = length(my_vec))
+for (i in seq_along(my_vec)) {
+  res[i] &lt;- my_vec[i] + 2
+}
+res</pre>
+
+<pre >[1] 12 13 14 15 16 17 18 19 20</pre></div>
+
+</div></div></article><div class = "footer"><img src="Intro_PS_files/logo.png"><a href='http://ulhpc-tutorials.readthedocs.io/en/latest/maths/R/'>R practical session</a></div></slide><slide class=""><hgroup class = 'title-bar'><h2>Tidyverse </h2><h3> packages in processes</h3></hgroup><article  id="tidyverse-packages-in-processes" class="smaller ">
+
+<img src='https://rworkshop.uni.lu/lectures/img/01/tidyverse_data_science.png' title=''/>
+
+</article><div class = "footer"><img src="Intro_PS_files/logo.png"><a href='http://ulhpc-tutorials.readthedocs.io/en/latest/maths/R/'>R practical session</a></div></slide><slide class=""><hgroup class = 'title-bar'><h2>Tidyverse criticism </h2><h3> jobs</h3></hgroup><article  id="tidyverse-criticism-jobs" class="smaller vs2">
+
+<div id="section-19" class = 'box col col-6'><div class = 'box-body'>
+
+<blockquote class="twitter-tweet" data-lang="fr">
+
+<p lang="en" dir="ltr">
+
+Realized today: <a href="https://twitter.com/hashtag/tidyverse?src=hash">#tidyverse</a> R and base <a href="https://twitter.com/hashtag/rstats?src=hash">#rstats</a> have little in common. Beware when looking for job which requires knowledge of R.
+
+</p>
+
+— Yeedle N. (<span class="cite">@Yeedle</span>) <a href="https://twitter.com/Yeedle/status/837448170963668992">2 mars 2017</a>
+
+</blockquote>
+
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+</div></div><div id="personal-complains" class = 'box col col-6 warning outline'><h3>Personal complains</h3><div class = 'box-body'>
+
+<ul>
+<li>still young so change quickly and drastically</li>
+<li>Backward compatibility is not always maintained.</li>
+<li><code>tibbles</code> are nice but a lot of non-tidyverse packages require <code>matrices</code>. <code>rownames</code> still an issue.</li>
+</ul>
+
+</div></div><div id="no-need-for-opposition-base-tidyverse" class = 'box col col-8 offset-2 advice outline'><h3>No need for opposition base / tidyverse</h3><div class = 'box-body'>
+
+<p>Learning the <em>tidyverse</em> does not prevent to learn <em>R base</em>, it helps to get things done early in the process</p>
+
+</div></div></article><div class = "footer"><img src="Intro_PS_files/logo.png"><a href='http://ulhpc-tutorials.readthedocs.io/en/latest/maths/R/'>R practical session</a></div></slide><slide class=""><hgroup class = 'title-bar'><h2>Community complains</h2></hgroup><article  id="community-complains" class="smaller vs2 center-img">
+
+<p><img src='https://rworkshop.uni.lu/lectures/img/01/r_SO_chat_room.png' title=''/> <span class="small">
+source: <a href='https://chat.stackoverflow.com/rooms/106/r' title=''>SO, R chat room, 29 Nov 2017</a></span></p>
+
+<p>4 days workshop at the <a href='https://rworkshop.uni.lu/' title=''>doctoral school@Uni</a> last Feb 2018, probably again March 2019</p>
+
+</article><div class = "footer"><img src="Intro_PS_files/logo.png"><a href='http://ulhpc-tutorials.readthedocs.io/en/latest/maths/R/'>R practical session</a></div></slide><slide class="segue dark nobackground level1"><hgroup class = 'auto-fadein'><h2>Practical Session </h2><h3> dataSaurus &amp; furrr</h3></hgroup><article  id="practical-session-datasaurus-furrr" class="smaller ">
+
+</article><div class = "footer"><img src="Intro_PS_files/logo.png"><a href='http://ulhpc-tutorials.readthedocs.io/en/latest/maths/R/'>R practical session</a></div></slide><slide class=""><hgroup class = 'title-bar'><h2>Wrap up</h2></hgroup><article  id="wrap-up" class="smaller vs1">
+
+<div id="you-learned-to" class = 'box col col-8 offset-2 intro icon'><h3>You learned to:</h3><div class = 'box-body'>
+
+<img src='https://rworkshop.uni.lu/lectures/img/00/kt.png' title=''/>
+
+<ul>
+<li>Introduction
+
+<ul>
+<li>R</li>
+<li>Rstudio</li>
+<li>tidyverse rationale</li>
+</ul></li>
+<li>data types
+
+<ul>
+<li>main categories</li>
+<li>coerce</li>
+</ul></li>
+<li>data structures
+
+<ul>
+<li>main categories</li>
+<li>sub-setting</li>
+<li>vectorization</li>
+</ul></li>
+</ul>
+
+</div></div>
+
+</article><div class = "footer"><img src="Intro_PS_files/logo.png"><a href='http://ulhpc-tutorials.readthedocs.io/en/latest/maths/R/'>R practical session</a></div></slide><slide class=""><hgroup class = 'title-bar'><h2>Acknowledgements</h2></hgroup><article  id="acknowledgements" class="smaller vs3">
+
+<div id="section-20" class = 'intro box col col-12 icon small-pic'><div class = 'box-body'>
+
+<img src='https://rworkshop.uni.lu/img/uni-logo.png' title=''/>
+
+<ul>
+<li><em>HPC</em> team, especially Valentin Plugaru for setting up the <code>furrr</code> runs in <code>iris</code></li>
+<li>Eric Koncina, slides prepared with his <a href='https://github.com/koncina/iosp' title=''>iosp</a> R package</li>
+<li>Eric Koncina &amp; Roland Krause for their content in the <a href='https://rworkshop.uni.lu' title=''>R workshop</a></li>
+<li>Joseph Emeras who wrote earlier version of this practical session</li>
+</ul>
+
+</div></div>
+
+<p></br></p>
+
+<ul>
+<li><p>Practical here: <a href='https://github.com/ULHPC/tutorials/tree/devel/maths/R' title=''>https://github.com/ULHPC/tutorials/tree/devel/maths/R</a></p></li>
+<li><p>Slides (html): <a href='https://github.com/ULHPC/tutorials/raw/devel/advanced/R/Intro_PS.html' title=''>https://github.com/ULHPC/tutorials/raw/devel/advanced/R/Intro_PS.html</a></p></li>
+<li><p>Slides (pdf): <a href='https://github.com/ULHPC/tutorials/raw/devel/advanced/R/Intro_PS.pdf' title=''>https://github.com/ULHPC/tutorials/raw/devel/advanced/R/Intro_PS.pdf</a></p></li>
+</ul></article><div class = "footer"><img src="Intro_PS_files/logo.png"><a href='http://ulhpc-tutorials.readthedocs.io/en/latest/maths/R/'>R practical session</a></div></slide>
+
+
+  <slide class="backdrop"></slide>
+
+</slides>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+<!-- map slide visiblity events into shiny -->
+<script>
+  (function() {
+    if (window.jQuery) {
+       window.jQuery(document).on('slideleave', function(e) {
+         window.jQuery(e.target).trigger('hidden');
+      });
+       window.jQuery(document).on('slideenter', function(e) {
+         window.jQuery(e.target).trigger('shown');
+      });
+    }
+  })();
+</script>
+
+</body>
+</html>

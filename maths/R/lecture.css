@@ -1,0 +1,548 @@
+/*
+  add more space between main title and subtitle
+  should be fixed in iosp
+*/
+.title-slide hgroup h2 {
+  margin-top: 20px;
+}
+
+/*
+  I already adjusted the z-index for a box but not for a "chunk box"
+  should be fixed in iosp but chunk boxes should anyway be rendered using the box class...
+*/
+
+.chunk pre {
+  z-index: 15; /* I used 10 for the box. */
+}
+
+/* compact table 
+   add .compact-table for example to the box containing the table
+*/
+
+.compact-table table.rmdtable {
+  border-top: 2px solid black;
+  border-bottom: 2px solid black;
+  border-collapse: collapse;
+  width: auto;
+  margin-left: auto;
+  margin-right: auto;
+  padding-bottom: 0.5em;
+}
+
+.compact-table table.rmdtable tr.header, .compact-table table.rmdtable tr > th {
+  background: none;
+  color: black;
+  padding: 0.5em 0.5em;
+}
+
+.compact-table table.rmdtable tr.header {
+  border-bottom: 2px solid black;
+}
+
+.compact-table table.rmdtable tr.even {
+  background: none;
+}
+
+.compact-table table.rmdtable td, .compact-table table.rmdtable tr > td:first-child {
+  font-size: 100%;
+  color: black;
+  font-weight: normal;
+  padding: 0.3em 0.5em;
+}
+
+.compact-table table.rmdtable tr:last-child > td {
+  padding-bottom: 0.5em;
+}
+
+article.smaller .compact-table table.rmdtable td, article.smaller .compact-table table.rmdtable th,
+article.smaller.compact-table table.rmdtable td, article.smaller.compact-table table.rmdtable th {
+  font-size: 16px;
+}
+
+/* end of compact table */
+
+
+/* 
+  to show a floating right icon in a box
+  add the image as the first element in the box
+*/
+
+.icon img {
+  float: right;
+  margin-left: 20px;
+}
+
+.icon-small img {
+  float: right;
+  margin-left: 20px;
+  max-height: 75px !important;
+}
+
+/*
+  to render code spans more visible in box with dark headers
+  should be fixed in a future iosp release!
+*/
+.box > h3:first-child > code {
+  background-color: rgba(250, 250, 250, 0.5);
+  padding: 0 5px;
+}
+
+/*
+  to reduce line-height of output chunks:
+  avoids unnecessary oversized outputs
+*/
+
+.compact-output pre:not(.lang-r) {
+  line-height: 15px;
+}
+
+/* 
+  to add negative vertical space (push content up)
+  should be cleaned/fixed/enhanced in iosp...
+  to be used for example to push a full slide screenshot close to the header (nvs1 or nvs2)
+*/
+
+article.nvs1 {
+  margin-top: -1em;
+}
+
+article.nvs2 {
+  margin-top: -2em;
+}
+
+article.nvs3 {
+  margin-top: -3em;
+}
+
+article.vs1 {
+  margin-top: 1em;
+}
+
+article.vs2 {
+  margin-top: 2em;
+}
+
+article.vs3 {
+  margin-top: 3em;
+}
+
+/* Should be fixed in IOSP */
+/* Check if it breaks something else... */
+
+.chunk .r-output pre {
+  height: unset;
+}
+
+article > div {
+  width: 100%; /* Ensures the width is properly inherited to avoid a default width of 300px (https://stackoverflow.com/a/22844117) */
+}
+
+article > ul {
+  width: 100%; /* Fix missing width preventing break after unordered list */
+}
+
+/*
+  setting .footer z-index = -1 disables link (will be behind article...) 
+*/
+slides > slide:not(.nobackground)::after {
+  z-index: -1;
+}
+
+article > .col, article > p, article > ul {
+  z-index: 10;
+}
+
+.center-img img {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.middle > blockquote {
+  align-self: center;
+  -webkit-align-self: center;
+}
+/* intro colour */
+
+.slide-intro {
+  background-color: #ADEBAD;
+}
+
+.intro a {
+  color: rgb(42, 124, 223);
+  border-bottom: 1px solid rgba(42, 124, 223, 0.5);
+}
+
+.intro a:hover {
+  color: #000000 !important;
+}
+
+.box.intro {
+  background-color: #ADEBAD;
+  color: #000000;
+  border: 2px solid #1F7A1F;
+}
+
+.box.intro > h3:first-child {
+  background-color: #1F7A1F;
+  color: #FFFFFF;
+}
+
+blockquote.intro::before {
+  color : #1F7A1F;
+}
+
+blockquote.intro {
+  background-color: #ADEBAD;
+  color: #000000;
+  border-color: #1F7A1F;
+}
+
+.box.intro > h3:first-child > code {
+  background-color: rgba(255, 255, 255, 0.7);
+}
+
+.box.intro > h3:first-child > a {
+  color: rgb(200, 240, 250);
+  border-bottom: 1px solid rgba(200, 240, 250, 0.5);
+}
+
+.box.intro > h3:first-child > a:hover {
+  color: #FFFFFF !important;
+}
+
+slide.slide-intro > hgroup > h2 {
+  color: rgba(0, 0, 0, 0.8);
+}
+
+slide.slide-intro > hgroup > h3 {
+  color: rgba(0, 0, 0, 0.7);
+}
+
+.intro code {
+  background-color: rgba(255, 255, 255, 0.3);
+}
+
+.intro .table-striped > tbody > tr:nth-of-type(odd) {
+  background-color: #f9f9f9;
+}
+
+.intro .table-striped > tbody > tr:nth-of-type(odd) {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+.intro table th {
+  color: rgba(0, 0, 0, 0.7);
+}
+
+.intro .table, .intro .table th, .intro .table td, .table thead tr div {
+  border-color: #1F7A1F !important;
+}
+/* warning colour */
+
+.slide-warning {
+  background-color: #FFAD99;
+}
+
+.warning a {
+  color: rgb(42, 124, 223);
+  border-bottom: 1px solid rgba(42, 124, 223, 0.5);
+}
+
+.warning a:hover {
+  color: #000000 !important;
+}
+
+.box.warning {
+  background-color: #FFAD99;
+  color: #000000;
+  border: 2px solid #991F00;
+}
+
+.box.warning > h3:first-child {
+  background-color: #991F00;
+  color: #FFFFFF;
+}
+
+blockquote.warning::before {
+  color : #991F00;
+}
+
+blockquote.warning {
+  background-color: #FFAD99;
+  color: #000000;
+  border-color: #991F00;
+}
+
+.box.warning > h3:first-child > code {
+  background-color: rgba(255, 255, 255, 0.7);
+}
+
+.box.warning > h3:first-child > a {
+  color: rgb(200, 240, 250);
+  border-bottom: 1px solid rgba(200, 240, 250, 0.5);
+}
+
+.box.warning > h3:first-child > a:hover {
+  color: #FFFFFF !important;
+}
+
+slide.slide-warning > hgroup > h2 {
+  color: rgba(0, 0, 0, 0.8);
+}
+
+slide.slide-warning > hgroup > h3 {
+  color: rgba(0, 0, 0, 0.7);
+}
+
+.warning code {
+  background-color: rgba(255, 255, 255, 0.3);
+}
+
+.warning .table-striped > tbody > tr:nth-of-type(odd) {
+  background-color: #f9f9f9;
+}
+
+.warning .table-striped > tbody > tr:nth-of-type(odd) {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+.warning table th {
+  color: rgba(0, 0, 0, 0.7);
+}
+
+.warning .table, .warning .table th, .warning .table td, .table thead tr div {
+  border-color: #991F00 !important;
+}
+/* advice colour */
+
+.slide-advice {
+  background-color: #FFEC8B;
+}
+
+.advice a {
+  color: rgb(42, 124, 223);
+  border-bottom: 1px solid rgba(42, 124, 223, 0.5);
+}
+
+.advice a:hover {
+  color: #000000 !important;
+}
+
+.box.advice {
+  background-color: #FFEC8B;
+  color: #000000;
+  border: 2px solid #EEB422;
+}
+
+.box.advice > h3:first-child {
+  background-color: #EEB422;
+  color: #000000;
+}
+
+blockquote.advice::before {
+  color : #EEB422;
+}
+
+blockquote.advice {
+  background-color: #FFEC8B;
+  color: #000000;
+  border-color: #EEB422;
+}
+
+.box.advice > h3:first-child > code {
+  background-color: rgba(255, 255, 255, 0.3);
+}
+
+.box.advice > h3:first-child > a {
+  color: rgb(42, 124, 223);
+  border-bottom: 1px solid rgba(42, 124, 223, 0.5);
+}
+
+.box.advice > h3:first-child > a:hover {
+  color: #000000 !important;
+}
+
+slide.slide-advice > hgroup > h2 {
+  color: rgba(0, 0, 0, 0.8);
+}
+
+slide.slide-advice > hgroup > h3 {
+  color: rgba(0, 0, 0, 0.7);
+}
+
+.advice code {
+  background-color: rgba(255, 255, 255, 0.3);
+}
+
+.advice .table-striped > tbody > tr:nth-of-type(odd) {
+  background-color: #f9f9f9;
+}
+
+.advice .table-striped > tbody > tr:nth-of-type(odd) {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+.advice table th {
+  color: rgba(0, 0, 0, 0.7);
+}
+
+.advice .table, .advice .table th, .advice .table td, .table thead tr div {
+  border-color: #EEB422 !important;
+}
+/* code colour */
+
+.slide-code {
+  background-color: #2B557A;
+}
+
+.code a {
+  color: rgb(200, 240, 250);
+  border-bottom: 1px solid rgba(200, 240, 250, 0.5);
+}
+
+.code a:hover {
+  color: #FFFFFF !important;
+}
+
+.box.code {
+  background-color: #2B557A;
+  color: #FFFFFF;
+  border: 2px solid #002240;
+}
+
+.box.code > h3:first-child {
+  background-color: #002240;
+  color: #FFFFFF;
+}
+
+blockquote.code::before {
+  color : #002240;
+}
+
+blockquote.code {
+  background-color: #2B557A;
+  color: #FFFFFF;
+  border-color: #002240;
+}
+
+.box.code > h3:first-child > code {
+  background-color: rgba(255, 255, 255, 0.7);
+}
+
+.box.code > h3:first-child > a {
+  color: rgb(200, 240, 250);
+  border-bottom: 1px solid rgba(200, 240, 250, 0.5);
+}
+
+.box.code > h3:first-child > a:hover {
+  color: #FFFFFF !important;
+}
+
+slide.slide-code > hgroup > h2 {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+slide.slide-code > hgroup > h3 {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.code code {
+  background-color: rgba(255, 255, 255, 0.7);
+}
+
+.code .table-striped > tbody > tr:nth-of-type(odd) {
+  background-color: #f9f9f9;
+}
+
+.code .table-striped > tbody > tr:nth-of-type(odd) {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.code table th {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.code .table, .code .table th, .code .table td, .table thead tr div {
+  border-color: #002240 !important;
+}
+/* practical colour */
+
+.slide-practical {
+  background-color: #CAE1FF;
+}
+
+.practical a {
+  color: rgb(42, 124, 223);
+  border-bottom: 1px solid rgba(42, 124, 223, 0.5);
+}
+
+.practical a:hover {
+  color: #000000 !important;
+}
+
+.box.practical {
+  background-color: #CAE1FF;
+  color: #000000;
+  border: 2px solid #65707F;
+}
+
+.box.practical > h3:first-child {
+  background-color: #65707F;
+  color: #FFFFFF;
+}
+
+blockquote.practical::before {
+  color : #65707F;
+}
+
+blockquote.practical {
+  background-color: #CAE1FF;
+  color: #000000;
+  border-color: #65707F;
+}
+
+.box.practical > h3:first-child > code {
+  background-color: rgba(255, 255, 255, 0.7);
+}
+
+.box.practical > h3:first-child > a {
+  color: rgb(200, 240, 250);
+  border-bottom: 1px solid rgba(200, 240, 250, 0.5);
+}
+
+.box.practical > h3:first-child > a:hover {
+  color: #FFFFFF !important;
+}
+
+slide.slide-practical > hgroup > h2 {
+  color: rgba(0, 0, 0, 0.8);
+}
+
+slide.slide-practical > hgroup > h3 {
+  color: rgba(0, 0, 0, 0.7);
+}
+
+.practical code {
+  background-color: rgba(255, 255, 255, 0.3);
+}
+
+.practical .table-striped > tbody > tr:nth-of-type(odd) {
+  background-color: #f9f9f9;
+}
+
+.practical .table-striped > tbody > tr:nth-of-type(odd) {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+.practical table th {
+  color: rgba(0, 0, 0, 0.7);
+}
+
+.practical .table, .practical .table th, .practical .table td, .table thead tr div {
+  border-color: #65707F !important;
+} 
+.box.outline {
+	background-color: white;
+	color: black;
+}
