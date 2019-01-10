@@ -10,7 +10,7 @@
 The objective of this tutorial is to practice using the SLURM cluster
 workload manager in use on the UL HPC [iris cluster](https://hpc.uni.lu/systems/iris/).
 
-It's important that you read the [slides](https://github.com/ULHPC/tutorials/blob/devel/advanced/advanced_scheduling/advanced_scheduling.pdf?raw=true) first.
+It's important that you read the [slides](https://github.com/ULHPC/tutorials/raw/devel/scheduling/advanced/slides.pdf) first.
 
 They review, for iris:
 
