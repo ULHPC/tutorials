@@ -25,7 +25,8 @@ pages:
   - High Perf. Conjugate Gradient (HPCG): 'parallel/hybrid/HPCG/index.md'
 - Python:
   - Prototyping with Python: 'python/basics/index.md'
-  - Jupyter and Celery: 'python/advanced/index.md'
+  - Jupyter and Celery: 'python/advanced/jupyter-celery/index.md'
+  - Scikit-learn: 'python/advanced/scikit-learn/index.md'
 - Mathematics:
   - MATLAB: 'maths/matlab/basics/index.md'
   - MATLAB (advanced): 'maths/matlab/advanced/index.md'
