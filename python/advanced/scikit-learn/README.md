@@ -374,15 +374,6 @@ results.to_csv(os.path.join(FILE_DIR,'scores_rbf_digits.csv'))
 
 scores = search.cv_results_['mean_test_score'].reshape(len(param_space['C']),len(param_space['gamma']))
 
-# Draw heatmap of the validation accuracy as a function of gamma and C
-#
-# The score are encoded as colors with the hot colormap which varies from dark
-# red to bright yellow. As the most interesting scores are all located in the
-# 0.92 to 0.97 range we use a custom normalizer to set the mid-point to 0.92 so
-# as to make it easier to visualize the small variations of score values in the
-# interesting range while not brutally collapsing all the low score values to
-# the same color.
-
 plt.figure()
 #plt.subplots_adjust(left=.2, right=0.95, bottom=0.15, top=0.95)
 plt.imshow(scores, interpolation='nearest', cmap=plt.cm.hot)
