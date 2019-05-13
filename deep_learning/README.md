@@ -3,7 +3,7 @@
 
 # Machine and Deep Learning on the UL HPC Platform
 
-     Copyright (c) 2013-2018 UL HPC Team  <hpc-sysadmins@uni.lu>
+     Copyright (c) 2013-2019 UL HPC Team  <hpc-sysadmins@uni.lu>
 
 [![](https://github.com/ULHPC/tutorials/raw/devel/deep_learning/cover_slides.png)](https://github.com/ULHPC/tutorials/raw/devel/deep_learning/slides.pdf)
 
