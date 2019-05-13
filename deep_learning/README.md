@@ -21,6 +21,12 @@ _Reference_:
 * [Tensorflow tutorial on MNIST](https://www.tensorflow.org/versions/master/get_started/mnist/beginners)
     - MNIST dataset: see [Yann LeCun's website](http://yann.lecun.com/exdb/mnist/)
 
+--------------------
+Outline 2019
+
+* Set up environment
+* Develop, with Keras. Simple code, reservations
+* Launch batch Keras job. Simple code above, reservations
 
 --------------------
 ## Pre-requisites ##
