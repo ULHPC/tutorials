@@ -31,6 +31,7 @@ pages:
   - MATLAB: 'maths/matlab/basics/index.md'
   - MATLAB (advanced): 'maths/matlab/advanced/index.md'
   - R - statistical computing: 'maths/R/index.md'
+  - Cplex - Gurobi: 'maths/Cplex-Gurobi/index.md'
 - Bioinformatics:
   - Running bioinformatics software: 'bio/basics/index.md'
   - Galaxy: 'bio/galaxy/index.md'

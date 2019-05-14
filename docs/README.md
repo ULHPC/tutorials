@@ -35,6 +35,7 @@ So far, the following tutorials are proposed:
 | _Mathematics_           | [MATLAB (interactive, passive and sequential jobs)](maths/matlab/basics/)                   | intermediate   |
 |                         | [Advanced MATLAB execution: checkpointing and parallel jobs](maths/matlab/advanced/)        | advanced       |
 |                         | [R / Statictical Computing](maths/R/)                                                       | intermediate   |
+|                         | [Cplex / Gurobi](maths/Cplex-Gurobi/)                                                       | intermediate   |
 | _Bioinformatics_        | [Bioinformatics software on the UL HPC platform](bio/basics/)                               | intermediate   |
 |                         | [Galaxy Introduction Exercise: From Peaks to Genes](bio/galaxy/)                            | intermediate   |
 | _CFD/MD/Chemistry_      | [Running parallel software: test cases on CFD / MD / Chemistry applications](multiphysics/) | advanced       |
