@@ -48,7 +48,7 @@ For this tutorial we will use the `conda` [1] package manager to install the req
    (node)$> conda install -c bioconda snakemake
    (node)$> conda install -c bioconda bwa
    (node)$> conda install -c bioconda jamm
-(node)$> conda install -c bioconda deeptools
+   (node)$> conda install -c bioconda deeptools
    ```
    
    
