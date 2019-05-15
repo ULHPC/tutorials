@@ -15,25 +15,25 @@ For this tutorial we will use the `conda` [1] package manager to install the req
 
 2. Install conda
 
-  ```bash
-  (node)$> mkdir -p $HOME/downloads
-  (node)$> cd $HOME/downloads
-  (node)$> wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
-  (node)$> chmod u+x Miniconda3-latest-Linux-x86_64.sh
-  (node)$> ./Miniconda3-latest-Linux-x86_64.sh 
-  ```
-  You will need to specify your installation destination, e.g. `/home/users/sdiehl/tools/miniconda3`. You must use the **full** path and can**not** user `$HOME/tools/miniconda3`. Answer `yes` to initialize Miniconda3. 
+   ```bash
+   (node)$> mkdir -p $HOME/downloads
+   (node)$> cd $HOME/downloads
+   (node)$> wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
+   (node)$> chmod u+x Miniconda3-latest-Linux-x86_64.sh
+   (node)$> ./Miniconda3-latest-Linux-x86_64.sh 
+   ```
+   You will need to specify your installation destination, e.g. `/home/users/sdiehl/tools/miniconda3`. You must use the **full** path and can**not** user `$HOME/tools/miniconda3`. Answer `yes` to initialize Miniconda3. 
 
-  The installation will modify your `.bashrc` to make conda directly available after each login. To activate the changes now, run
+   The installation will modify your `.bashrc` to make conda directly available after each login. To activate the changes now, run
 
-  ```bash
-  (node)$> source ~/.bashrc
-  ```
+   ```bash
+   (node)$> source ~/.bashrc
+   ```
 
-  Update conda to the latest version:
-  ```bash
-  (node)$> conda update conda 
-  ```
+   Update conda to the latest version:
+   ```bash
+   (node)$> conda update conda 
+   ```
 
 3. Create a new conda environment and activate it
 
@@ -41,14 +41,16 @@ For this tutorial we will use the `conda` [1] package manager to install the req
    (node)$> conda create -n bioinfo_tutorial
    (node)$> conda activate bioinfo_tutorial
    ```
-	You can see that your prompt will now be prefixed with `(bioinfo_tutorial)` to show which environment is active. For rest of the tutorial make sure that you always have this environment active.
+   You can see that your prompt will now be prefixed with `(bioinfo_tutorial)` to show which environment is active. For rest of the tutorial make sure that you always have this environment active.
 4. Install required tools
 
    ```bash
    (node)$> conda install -c bioconda snakemake
    (node)$> conda install -c bioconda bwa
+   (node)$> conda install -c bioconda jamm
+(node)$> conda install -c bioconda deeptools
    ```
-
+   
    
 
 ## Create snakemake workflow
@@ -59,9 +61,11 @@ To speed up computing time we will use source files that only contain sequencing
 
 ### Mapping with BWA
 
-### Peak calling with MACS
+### Peak calling with JAMM
 
 ### Generate bigwig files for visualisation
+
+Using deepTools?
 
 
 
@@ -70,6 +74,18 @@ To speed up computing time we will use source files that only contain sequencing
 1. Running BWA on multiple threads
 2. Configure job parameters with cluster.json
 3. Run snakemake with cluster configuration
+
+
+
+## Inspect results in IGV
+
+
+
+## (optional) Plot enrichment with deepTools
+
+
+
+
 
 ## References
 
