@@ -25,7 +25,7 @@ _Reference_:
 Outline 2019
 
 * Develop, with Keras. 
-	- code on cpu, later deploy on gpu then
+	- code on cpu, later deploy on gpu
 	- env: python foss, add 
 	- test on gpu (interactive)
 * Launch batch Keras job. 
@@ -55,7 +55,7 @@ In particular, start with the
 ```bash
 $> ssh iris-cluster
 $> srun -N 1 -c 1 -p interactive --pty bash -i
-[<user-name>@iris-<some-node-number>scontrol show job $SLURM_JOB_ID
+[<user-name>@iris-<some-node-number>scontrol show job $SLURM_JOB_ID  # sj $SLURM_JOB_ID
 ```
 
 ### Step 1.b Prepare python virtualenv
@@ -63,59 +63,69 @@ $> srun -N 1 -c 1 -p interactive --pty bash -i
 If you have never used virtualenv before, please have a look at [Python1 tutorial](http://ulhpc-tutorials.readthedocs.io/en/latest/python/basics/).
 
 ```bash
-# Load your prefered version of Python
-$> module load lang/Python/2.7.14-foss-2018a
+$># Load the required version of python:
+$> module load lang/Python/3.6.4-foss-2018a
+$># Save the module in a specific module list named 'tf': 
+$> module save tf
 # Create a directory for your environment:
 $> mkdir ~/venv && cd ~/venv
-$> virtualenv dlenv
-$> source dlenv/bin/activate
-# deactivate to leave the dlenv environment
+$> virtualenv tfenv
+$> source ~/tfenv/bin/activate
+# deactivate to leave the tfenv environment
 ```
 ## Step 1.b. Install Tensorflow
 
 See also [installation notes](https://www.tensorflow.org/install/)
 
-Assuming you work within a `dlenv` virtualenv environment:
+Assuming you will use a `tfenv` virtualenv environment:
 
+```bash
+# ENSURE you are in tfenv environment
+(tfenv) $> pip install tensorflow
 ```
-# ENSURE you are in dlenv environment
-$> pip install tensorflow
+
+To check the installation, within the python interpreter:
+```python
+>>> import tensorflow as tf
+>>> tf.VERSION
+>>> tf.keras.__version__
 ```
+
 -----------------------------------------------------------------
-## 2. Example application ##
+## 2. Interactive development of a TensorFlow tutorial ##
 
-### Overview
+### Pre-requisites
 
-Keras, why. Overview of APIs.
+If Python is not already loaded:
+```bash
+$> module restore tf
+```
 
-Development
+If your virtual environment is not available, activate it:
+```bash
+$> source ~/tfenv/bin/activate
+(tfenv) $>
+```
+
+At the time of writing, recent versions of numpy broke a tensorflow tutorial source file.
+In case of exception when unpickling the training data, apply a corrective patch:
+
+```bash
+# the file imdb.patch comes from the github.com repository
+$> cp imdb.patch $VIRTUAL_ENV  
+$> cd $VIRTUAL_ENV
+$> patch -p0 <imdb.patch
+```
+
+
+-----------------------------------------------------------------
+## 3. Batch training of a TensorFlow tutorial ##
+
 
 References:
 
 * [Tensorflow Tutorial](https://www.tensorflow.org/versions/master/get_started/mnist/beginners)
 
-MNIST is a simple computer vision dataset. It consists of images of handwritten digits like these:
-
-![](https://www.tensorflow.org/images/MNIST.png)
-
-The MNIST data is split into three parts:
-
-1. 55,000 data points of training data (`mnist.train`),
-2. 10,000 points of test data (`mnist.test`),
-3. 5,000 points of validation data (`mnist.validation`).
-
-This split is very important: it's of course essential in ML that we have separate data which we don't learn from so that we can make sure that what we've learned actually generalizes!
-
-Each image is 28 pixels by 28 pixels. We can interpret this as a big array of numbers:
-
 ![](https://www.tensorflow.org/images/MNIST-Matrix.png)
-
-Thus after flattening the image into vectors of 28*28=784, we obtain as `mnist.train.images` a tensor (an n-dimensional array) with a shape of [55000, 784].
-
-MNIST images is of a handwritten digit between zero and nine. So there are only ten possible things that a given image can be.
-In this hands-on, we will design two **classifiers** for MNIST images:
-
-1. A very [simple MNIST classifier](https://www.tensorflow.org/get_started/mnist/beginners), able to reach an accuracy of around 92% -- see Jupyter notebook `mnist-1-simple.ipynb`
-2. A more advanced [deep MNIST classifier using convolutional layers](https://www.tensorflow.org/get_started/mnist/pros), which will reach an accuracy of around 99.25%, which is way better than the previously obtained results (around 92%) -- see Jupyter Notebook `mnist-2-deep_convolutional_NN.ipynb`
 
 
