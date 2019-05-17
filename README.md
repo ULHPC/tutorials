@@ -4,7 +4,7 @@ Author: Sarah Peter
 
 ## Setup the environment
 
-For this tutorial we will use the `conda` [1] package manager to install the required tools. It can encapsulate software and packages in environments, so you can have multiple different versions of a software installed at the same time. It also has functionality to easily port and replicate environments.
+For this tutorial we will use the `conda` [1] package manager to install the required tools. It can encapsulate software and packages in environments, so you can have multiple different versions of a software installed at the same time. It also has functionality to easily port and replicate environments, which is important to ensure reproducibility of analyses.
 
 1. Start a job on the cluster
 
@@ -49,6 +49,8 @@ For this tutorial we will use the `conda` [1] package manager to install the req
    (node)$> conda install -c bioconda bwa
    (node)$> conda install -c bioconda jamm
    (node)$> conda install -c bioconda deeptools
+   (node)$> conda install -c bioconda bedtools
+   (node)$> /usr/bin/pip install --user macs2
    ```
    
    
@@ -57,11 +59,74 @@ For this tutorial we will use the `conda` [1] package manager to install the req
 
 In this tutorial we will analyse ChIP-seq data [2] from a paper recently published by our colleagues in LSRU [3].
 
-To speed up computing time we will use source files that only contain sequencing reads from chromosome 7. The files for input (control) and H3K4me3 (ChIP) are available on the cluster in the directory `/mnt/isilon/projects/ulhpc-tutorials/bioinformatics/`.
+To speed up computing time we will use source files that only contain sequencing reads from chromosome 7. The files for input (control) and H3K4me3 (ChIP) are available on the cluster in the directory `/work/projects/ulhpc-tutorials/bio/snakemake/chip-seq` and the corresponding reference in `/work/projects/ulhpc-tutorials/bio/snakemake/reference`.
 
-### Mapping with BWA
+Create a working directory:
 
-### Peak calling with JAMM
+```bash
+cd $SCRATCH
+mkdir bioinfo_tutorial
+cd bioinfo_tutorial
+ln -s /work/projects/ulhpc-tutorials/bio/snakemake/chip-seq .
+ln -s /work/projects/ulhpc-tutorials/bio/snakemake/reference .
+```
+
+Create a file called `Snakefile` and open it in your favourite editor.
+
+### Mapping
+
+Snakemake is based on Python and we can use Python code in the Snakefile.
+
+TODO: Rule without wildcards
+
+Let's define a rule for the mapping:
+
+```python
+rule mapping:
+  input: "/chip-seq/{sample}.fastq.gz"
+  output: "bowtie/{sample}.bam"
+  params:
+    idx = "/reference/Mus_musculus.GRCm38.dna_sm.chromosome.7"
+  shell:
+    """
+    bowtie2 \
+      -x {params.idx} \
+      -U {input} \
+      -S {output}.tmp
+
+    samtools sort {output}.tmp > {output}
+    samtools index {output}
+    """
+```
+
+You can test the rule by specifying one of the potential outputs. We will just do a dry-run with with option`-n` for now.
+
+```bash
+(node)$> snakemake -npr bowtie/TC1-I-ST2-D0.7.bam
+```
+
+
+
+### Peak calling
+
+```python
+rule peak_calling:
+	input:
+		control = "bowtie/TC1-I-ST2-D0.7.bam"
+		chip = "bowtie/TC1-H3K4-ST2-D0.7.bam"
+	output:
+		"jamm/output/peaks/TC1-H3K4-ST2-D0.7.bed"
+	params:
+		idx = "/reference/Mus_musculus.GRCm38.dna_sm.chromosome.7.fa.fai"
+	shell:
+		"""
+		bedtools bamtobed -i {input.control} > jamm/control/TC1-I-ST2-D0.7.bed
+		bedtools bamtobed -i {input.chip} > jamm/chip/TC1-H3K4-ST2-D0.7.bed
+		JAMM.sh -s jamm/chip -c jamm/control -g {params.idx} -o jamm/output
+		"""
+```
+
+
 
 ### Generate bigwig files for visualisation
 
@@ -71,7 +136,7 @@ Using deepTools?
 
 ## Cluster configuration for snakemake
 
-1. Running BWA on multiple threads
+1. Run mapping and peak calling on multiple threads
 2. Configure job parameters with cluster.json
 3. Run snakemake with cluster configuration
 
