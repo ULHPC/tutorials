@@ -46,11 +46,6 @@ For this tutorial we will use the `conda` [1] package manager to install the req
 
    ```bash
    (node)$> conda install -c bioconda snakemake
-   (node)$> conda install -c bioconda bwa
-   (node)$> conda install -c bioconda jamm
-   (node)$> conda install -c bioconda deeptools
-   (node)$> conda install -c bioconda bedtools
-   (node)$> /usr/bin/pip install --user macs2
    ```
    
    
@@ -69,6 +64,7 @@ mkdir bioinfo_tutorial
 cd bioinfo_tutorial
 ln -s /work/projects/ulhpc-tutorials/bio/snakemake/chip-seq .
 ln -s /work/projects/ulhpc-tutorials/bio/snakemake/reference .
+ln -s /work/projects/ulhpc-tutorials/bio/snakemake/envs .
 ```
 
 Create a file called `Snakefile` and open it in your favourite editor.
@@ -83,10 +79,11 @@ Let's define a rule for the mapping:
 
 ```python
 rule mapping:
-  input: "/chip-seq/{sample}.fastq.gz"
+  input: "chip-seq/{sample}.fastq.gz"
   output: "bowtie/{sample}.bam"
   params:
-    idx = "/reference/Mus_musculus.GRCm38.dna_sm.chromosome.7"
+    idx = "reference/Mus_musculus.GRCm38.dna_sm.chromosome.7"
+  conda: "envs/bowtie.yaml"
   shell:
     """
     bowtie2 \
@@ -99,10 +96,12 @@ rule mapping:
     """
 ```
 
+TODO: Skip intermediate {output}.tmp file if possible
+
 You can test the rule by specifying one of the potential outputs. We will just do a dry-run with with option`-n` for now.
 
 ```bash
-(node)$> snakemake -npr bowtie/TC1-I-ST2-D0.7.bam
+(node)$> snakemake -npr --use-conda bowtie/TC1-I-ST2-D0.7.bam
 ```
 
 
@@ -115,34 +114,125 @@ rule peak_calling:
 		control = "bowtie/TC1-I-ST2-D0.7.bam"
 		chip = "bowtie/TC1-H3K4-ST2-D0.7.bam"
 	output:
-		"jamm/output/peaks/TC1-H3K4-ST2-D0.7.bed"
+		"macs2/TC1-ST2-H3K4-D0_peaks.narrowPeak"
 	params:
 		idx = "/reference/Mus_musculus.GRCm38.dna_sm.chromosome.7.fa.fai"
-	shell:
+	conda: "envs/macs2.yaml"
+  shell:
 		"""
-		bedtools bamtobed -i {input.control} > jamm/control/TC1-I-ST2-D0.7.bed
-		bedtools bamtobed -i {input.chip} > jamm/chip/TC1-H3K4-ST2-D0.7.bed
-		JAMM.sh -s jamm/chip -c jamm/control -g {params.idx} -o jamm/output
+		macs2 callpeak -t {input.chip} -c {input.control} -f BAM -g mm -n TC1-ST2-H3K4-D0 -B -q 0.01 --outdir macs2
+		"""
+```
+
+Disclaimer: Please be aware that the results of this step might be screwed, because we only have data from one chromosome.
+
+### Generate bigwig files for visualisation
+
+```python
+rule bigwig:
+	input: "macs2/{sample}.bdg"
+	output: "output/{sample}.bigwig"
+  params:
+    idx = "reference/Mus_musculus.GRCm38.dna_sm.chromosome.7.fa.fai"
+	conda: "envs/ucsc.yaml"
+  shell:
+		"""
+		bedGraphToBigWig {input} {params.idx} {output}
 		"""
 ```
 
 
 
-### Generate bigwig files for visualisation
+## Summary rule
 
-Using deepTools?
+```python
+rule all:
+	input: "macs2/TC1-ST2-H3K4-D0_peaks.narrowPeak", "output/TC1-ST2-H3K4-D0_control_lambda.bigwig", "output/TC1-ST2-H3K4-D0_treat_pileup.bigwig"
+	
+```
 
 
 
 ## Cluster configuration for snakemake
 
-1. Run mapping and peak calling on multiple threads
-2. Configure job parameters with cluster.json
+1. Run mapping on multiple threads
+
+   ```python
+   rule mapping:
+     input: "chip-seq/{sample}.fastq.gz"
+     output: "bowtie/{sample}.bam"
+     params:
+       idx = "reference/Mus_musculus.GRCm38.dna_sm.chromosome.7"
+     conda: "envs/bowtie.yaml"
+     threads: 4
+     shell:
+       """
+       bowtie2 -p {threads} \
+         -x {params.idx} \
+         -U {input} \
+         -S {output}.tmp
+   
+       samtools sort {output}.tmp > {output}
+       samtools index {output}
+       """
+   ```
+
+   Run test:
+
+   ```bash
+   snakemake -j 4 -npr --use-conda bowtie/TC1-I-ST2-D0.7.bam
+   ```
+
+   
+
+2. Configure job parameters with `cluster.json`
+
+   ```json
+   {
+       "__default__" :
+       {
+           "time" : "0-00:10:00",
+           "n" : 1,
+           "partition" : "batch",
+           "ncpus": 1,
+           "job-name" : "{rule}",
+           "output" : "slurm-%j-%x.out",
+           "error" : "slurm-%j-%x.err"
+       },
+       "mapping":
+       {
+           "ncpus": 4,
+       },
+   }
+   ```
+
+   
+
 3. Run snakemake with cluster configuration
+
+   ```bash
+   (access)$> conda activate bioinfo_tutorial
+   
+   (access)$> SLURM_ARGS="-p {cluster.partition} -N 1 -n {cluster.n} -c {cluster.ncpus} -t {cluster.time} --job-name={cluster.job-name} -o {cluster.output} -e {cluster.error}"
+   
+   (access)$> snakemake -j 10 -pr --use-conda --cluster-config cluster.json --cluster "sbatch $SLURM_ARGS"
+   ```
+
+   
 
 
 
 ## Inspect results in IGV
+
+Download IGV from http://software.broadinstitute.org/software/igv/download.
+
+```
+rsync -avz iris-cluster:/scratch/users/sdiehl/bioinfo_tutorial/output .
+```
+
+Select mouse mm10 as genome in the upper left.
+
+Use `TC1-ST2-H3K4-D0_peaks.narrowPeak` to visualize peaks.
 
 
 
