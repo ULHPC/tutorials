@@ -159,7 +159,7 @@ rule bigwig:
 
 
 
-## Summary rule
+### Summary rule
 
 Add this rule to the **top** of the `Snakefile`:
 
@@ -185,74 +185,73 @@ Snakemake can visualise the dependency graph of the workflow with the following 
 
 ## Cluster configuration for snakemake
 
-1. Adjust mapping step to run on multiple threads
+### Adjust mapping step to run on multiple threads
 
-   ```python
-   rule mapping:
-     input: "chip-seq/{sample}.fastq.gz"
-     output: "bowtie/{sample}.bam"
-     params:
-       idx = "reference/Mus_musculus.GRCm38.dna_sm.chromosome.7"
-     log: "logs/bowtie2_{sample}.log"
-     conda: "envs/bowtie2.yaml"
-     threads: 4
-     shell:
-       """
-       bowtie2 -p {threads} \
-         -x {params.idx} \
-         -U {input} \
-         -S {output}.tmp
-   
-       samtools sort {output}.tmp > {output}
-       samtools index {output}
-       """
-   ```
+```python
+rule mapping:
+  input: "chip-seq/{sample}.fastq.gz"
+  output: "bowtie/{sample}.bam"
+  params:
+    idx = "reference/Mus_musculus.GRCm38.dna_sm.chromosome.7"
+  log: "logs/bowtie2_{sample}.log"
+  conda: "envs/bowtie2.yaml"
+  threads: 4
+  shell:
+    """
+    bowtie2 -p {threads} \
+      -x {params.idx} \
+      -U {input} \
+      -S {output}.tmp
 
-   Run test:
+    samtools sort {output}.tmp > {output}
+    samtools index {output}
+    """
+```
 
-   ```bash
-   snakemake -j 4 -npr --use-conda bowtie/TC1-I-ST2-D0.7.bam
-   ```
+Run test:
 
-   
+```bash
+snakemake -j 4 -npr --use-conda bowtie/TC1-I-ST2-D0.7.bam
+```
 
-2. Configure job parameters with `cluster.json`
 
-   ```json
-   {
-       "__default__" :
-       {
-           "time" : "0-00:10:00",
-           "n" : 1,
-           "partition" : "batch",
-           "ncpus": 1,
-           "job-name" : "{rule}",
-           "output" : "slurm-%j-%x.out",
-           "error" : "slurm-%j-%x.err"
-       },
-       "mapping":
-       {
-           "ncpus": 4,
-       },
-   }
-   ```
 
-   
+### Configure job parameters with `cluster.json`
 
-3. Run snakemake with cluster configuration
+```json
+{
+    "__default__" :
+    {
+        "time" : "0-00:10:00",
+        "n" : 1,
+        "partition" : "batch",
+        "ncpus": 1,
+        "job-name" : "{rule}",
+        "output" : "slurm-%j-%x.out",
+        "error" : "slurm-%j-%x.err"
+    },
+    "mapping":
+    {
+        "ncpus": 4,
+    },
+}
+```
+
+
+
+### Run snakemake with cluster configuration
+
 Make sure you quit your job and run the following from the access node.
-   
-   ```bash
-   (access)$> conda activate bioinfo_tutorial
-   
-   (access)$> SLURM_ARGS="-p {cluster.partition} -N 1 -n {cluster.n} -c {cluster.ncpus} -t {cluster.time} --job-name={cluster.job-name} -o {cluster.output} -e {cluster.error}"
-   
-   (access)$> snakemake -j 10 -pr --use-conda --cluster-config cluster.json --cluster "sbatch $SLURM_ARGS"
-   ```
-   
-   
 
+```bash
+ (access)$> conda activate bioinfo_tutorial
+ 
+ (access)$> SLURM_ARGS="-p {cluster.partition} -N 1 -n {cluster.n} -c {cluster.ncpus} -t {cluster.time} --job-name={cluster.job-name} -o {cluster.output} -e {cluster.error}"
+ 
+ (access)$> snakemake -j 10 -pr --use-conda --cluster-config cluster.json --cluster "sbatch $SLURM_ARGS"
+```
 
+ 
 
 ## Inspect results in IGV
 
