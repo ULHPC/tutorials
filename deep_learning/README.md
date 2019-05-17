@@ -117,15 +117,18 @@ $> cd $VIRTUAL_ENV
 $> patch -p0 <imdb.patch
 ```
 
+Follow the tutorial on: 
+[TensorFlow text classification tutorial](https://www.tensorflow.org/tutorials/keras/basic_text_classification).
+
 
 -----------------------------------------------------------------
-## 3. Batch training of a TensorFlow tutorial ##
+## 3. Batch training of a TensorFlow application ##
 
+One solution to the tutorial can be found here [imdb-train.py](./imdb-train.py).
 
 References:
 
+* [TensorFlow text classification tutorial](https://www.tensorflow.org/tutorials/keras/basic_text_classification)
 * [Tensorflow Tutorial](https://www.tensorflow.org/versions/master/get_started/mnist/beginners)
-
-![](https://www.tensorflow.org/images/MNIST-Matrix.png)
 
 
