@@ -39,4 +39,70 @@ bwa index Mus_musculus.GRCm38.dna_sm.toplevel.fa
 
 ## Mapping
 
-Follow the "Setup" and "Mapping" steps from http://ginolhac.github.io/chip-seq, but use full genome as reference.
+Follow the "Setup" and "Mapping" steps from http://ginolhac.github.io/chip-seq, but use the full genome as reference.
+
+
+
+## Extracting reads from one chromosome
+
+Extracting the reads:
+
+```bash
+samtools index TC1-H3K4-ST2-D0.GRCm38.q30.bam
+samtools index TC1-I-ST2-D0.GRCm38.q30.bam
+samtools view -h -b TC1-H3K4-ST2-D0.GRCm38.q30.bam 7 > TC1-H3K4-ST2-D0.GRCm38.q30.7.bam
+samtools view -h -b TC1-I-ST2-D0.GRCm38.q30.bam 7 > TC1-I-ST2-D0.GRCm38.q30.7.bam
+```
+
+Reverting to fastq format:
+
+```
+conda install -c bioconda picard
+
+picard RevertSam I=TC1-H3K4-ST2-D0.GRCm38.q30.7.bam O=TC1-H3K4-ST2-D0.GRCm38.q30.7.revertsam.bam SANITIZE=true MAX_DISCARD_FRACTION=0.005 ATTRIBUTE_TO_CLEAR=XT ATTRIBUTE_TO_CLEAR=XN ATTRIBUTE_TO_CLEAR=AS ATTRIBUTE_TO_CLEAR=OC ATTRIBUTE_TO_CLEAR=OP
+
+picard RevertSam I=TC1-I-ST2-D0.GRCm38.q30.7.bam O=TC1-I-ST2-D0.GRCm38.q30.7.revertsam.bam SANITIZE=true MAX_DISCARD_FRACTION=0.005 ATTRIBUTE_TO_CLEAR=XT ATTRIBUTE_TO_CLEAR=XN ATTRIBUTE_TO_CLEAR=AS ATTRIBUTE_TO_CLEAR=OC ATTRIBUTE_TO_CLEAR=OP
+
+samtools fastq TC1-H3K4-ST2-D0.GRCm38.q30.7.revertsam.bam > TC1-H3K4-ST2-D0.7.fastq
+samtools fastq TC1-I-ST2-D0.GRCm38.q30.7.revertsam.bam > TC1-I-ST2-D0.7.fastq
+gzip TC1-H3K4-ST2-D0.7.fastq
+gzip TC1-I-ST2-D0.7.fastq
+```
+
+
+
+## Creating reference for one chromosome
+
+Extract single chromosome from fasta:
+
+```bash
+samtools faidx Mus_musculus.GRCm38.dna_sm.toplevel.fasta 7 > Mus_musculus.GRCm38.dna_sm.chromosome.7.fa
+```
+
+or just download the single chromosome fasta from Ensembl:
+
+```bash
+wget "ftp://ftp.ensembl.org/pub/release-96/fasta/mus_musculus/dna/Mus_musculus.GRCm38.dna_sm.chromosome.7.fa.gz"
+gunzip Mus_musculus.GRCm38.dna_sm.chromosome.7.fa.gz
+```
+
+Create BWA index:
+
+```
+bwa index Mus_musculus.GRCm38.dna_sm.chromosome.7.fa
+```
+
+
+
+## Copy everything to shared directory
+
+```bash
+cd /work/projects/ulhpc-tutorials
+mkdir -p bio/snakemake
+cd bio/snakemake/
+mkdir reference
+mkdir chip-seq
+cp /scratch/users/sdiehl/bioinfo_tutorial/reference/Mus_musculus.GRCm38.dna_sm.chromosome.7.fa* reference/
+cp ~/chip-seq/*.fastq.gz chip-seq/
+```
+
