@@ -1,10 +1,14 @@
-# Bioinfo workflow with snakemake and conda
+# Bioinformatics workflow with snakemake and conda
 
 Author: Sarah Peter
+
+In this tutorial you will learn how to run a ChIP-seq analysis with the snakemake workflow engine on the cluster.
 
 ## Setup the environment
 
 For this tutorial we will use the `conda` [1] package manager to install the required tools. It can encapsulate software and packages in environments, so you can have multiple different versions of a software installed at the same time. It also has functionality to easily port and replicate environments, which is important to ensure reproducibility of analyses.
+
+We will use conda on two levels in this tutorial. First we use a conda environment to install and run snakemake. Second, inside the snakemake workflow we will define separate conda environments for each step.
 
 1. Start a job on the cluster
 
@@ -45,7 +49,7 @@ For this tutorial we will use the `conda` [1] package manager to install the req
 4. Install required tools
 
    ```bash
-   (node)$> conda install -c bioconda snakemake
+   (node)$> conda install -c bioconda -c conda-forge snakemake-minimal
    ```
    
    
@@ -56,7 +60,7 @@ In this tutorial we will analyse ChIP-seq data [2] from a paper recently publish
 
 To speed up computing time we will use source files that only contain sequencing reads from chromosome 7. The files for input (control) and H3K4me3 (ChIP) are available on the cluster in the directory `/work/projects/ulhpc-tutorials/bio/snakemake/chip-seq` and the corresponding reference in `/work/projects/ulhpc-tutorials/bio/snakemake/reference`.
 
-Create a working directory:
+Create a working directory and link the necessary data:
 
 ```bash
 cd $SCRATCH
@@ -67,13 +71,22 @@ ln -s /work/projects/ulhpc-tutorials/bio/snakemake/reference .
 ln -s /work/projects/ulhpc-tutorials/bio/snakemake/envs .
 ```
 
-Create a file called `Snakefile` and open it in your favourite editor.
+Create a file called `Snakefile` in the current directory and open it in your favourite editor.
 
 ### Mapping
 
-Snakemake is based on Python and we can use Python code in the Snakefile.
+Note: Snakemake is based on Python and we can use Python code in the Snakefile.
 
-TODO: Rule without wildcards
+```python
+rule NAME:
+    input: "path/to/inputfile", "path/to/other/inputfile"
+    output: "path/to/outputfile", "path/to/another/outputfile"
+    shell: "somecommand {input} {output}"
+```
+
+
+
+TODO: Rule without wildcards; add params, log, conda step by step
 
 Let's define a rule for the mapping:
 
@@ -83,7 +96,8 @@ rule mapping:
   output: "bowtie/{sample}.bam"
   params:
     idx = "reference/Mus_musculus.GRCm38.dna_sm.chromosome.7"
-  conda: "envs/bowtie.yaml"
+  log: "logs/bowtie2_{sample}.log"
+  conda: "envs/bowtie2.yaml"
   shell:
     """
     bowtie2 \
@@ -98,7 +112,7 @@ rule mapping:
 
 TODO: Skip intermediate {output}.tmp file if possible
 
-You can test the rule by specifying one of the potential outputs. We will just do a dry-run with with option`-n` for now.
+You can test the rule by specifying one of the potential outputs. We will just do a dry-run with with option `-n` for now.
 
 ```bash
 (node)$> snakemake -npr --use-conda bowtie/TC1-I-ST2-D0.7.bam
@@ -110,18 +124,20 @@ You can test the rule by specifying one of the potential outputs. We will just d
 
 ```python
 rule peak_calling:
-	input:
-		control = "bowtie/TC1-I-ST2-D0.7.bam"
-		chip = "bowtie/TC1-H3K4-ST2-D0.7.bam"
-	output:
-		"macs2/TC1-ST2-H3K4-D0_peaks.narrowPeak"
-	params:
-		idx = "/reference/Mus_musculus.GRCm38.dna_sm.chromosome.7.fa.fai"
-	conda: "envs/macs2.yaml"
+  input:
+    control = "bowtie/TC1-I-ST2-D0.7.bam",
+    chip = "bowtie/TC1-H3K4-ST2-D0.7.bam"
+  output:
+    "output/TC1-ST2-H3K4-D0_peaks.narrowPeak",
+    "macs2/TC1-ST2-H3K4-D0_control_lambda.bdg",
+    "macs2/TC1-ST2-H3K4-D0_treat_pileup.bdg"
+  conda: "envs/macs2.yaml"
   shell:
-		"""
-		macs2 callpeak -t {input.chip} -c {input.control} -f BAM -g mm -n TC1-ST2-H3K4-D0 -B -q 0.01 --outdir macs2
-		"""
+    """
+    macs2 callpeak -t {input.chip} -c {input.control} -f BAM -g mm -n TC1-ST2-H3K4-D0 -B -q 0.01 --outdir macs2
+    
+    cp macs2/TC1-ST2-H3K4-D0_peaks.narrowPeak output/
+    """
 ```
 
 Disclaimer: Please be aware that the results of this step might be screwed, because we only have data from one chromosome.
@@ -130,32 +146,46 @@ Disclaimer: Please be aware that the results of this step might be screwed, beca
 
 ```python
 rule bigwig:
-	input: "macs2/{sample}.bdg"
-	output: "output/{sample}.bigwig"
+  input: "macs2/{sample}.bdg"
+  output: "output/{sample}.bigwig"
   params:
     idx = "reference/Mus_musculus.GRCm38.dna_sm.chromosome.7.fa.fai"
-	conda: "envs/ucsc.yaml"
+  conda: "envs/ucsc.yaml"
   shell:
-		"""
-		bedGraphToBigWig {input} {params.idx} {output}
-		"""
+    """
+    bedGraphToBigWig {input} {params.idx} {output}
+    """
 ```
 
 
 
 ## Summary rule
 
+Add this rule to the **top** of the `Snakefile`:
+
 ```python
 rule all:
-	input: "macs2/TC1-ST2-H3K4-D0_peaks.narrowPeak", "output/TC1-ST2-H3K4-D0_control_lambda.bigwig", "output/TC1-ST2-H3K4-D0_treat_pileup.bigwig"
+  input: "output/TC1-ST2-H3K4-D0_peaks.narrowPeak", "output/TC1-ST2-H3K4-D0_control_lambda.bigwig", "output/TC1-ST2-H3K4-D0_treat_pileup.bigwig"
 	
 ```
 
+Finally test the workflow again, this time without a specific target file:
 
+```bash
+(node)$> snakemake --use-conda -npr
+```
+
+Snakemake can visualise the dependency graph of the workflow with the following command:
+
+```bash
+(nodes)$> snakemake --dag | dot -Tpng > dag.png
+```
+
+![DAG](dag.png)
 
 ## Cluster configuration for snakemake
 
-1. Run mapping on multiple threads
+1. Adjust mapping step to run on multiple threads
 
    ```python
    rule mapping:
@@ -163,7 +193,8 @@ rule all:
      output: "bowtie/{sample}.bam"
      params:
        idx = "reference/Mus_musculus.GRCm38.dna_sm.chromosome.7"
-     conda: "envs/bowtie.yaml"
+     log: "logs/bowtie2_{sample}.log"
+     conda: "envs/bowtie2.yaml"
      threads: 4
      shell:
        """
@@ -209,15 +240,16 @@ rule all:
    
 
 3. Run snakemake with cluster configuration
-
+Make sure you quit your job and run the following from the access node.
+   
    ```bash
    (access)$> conda activate bioinfo_tutorial
    
    (access)$> SLURM_ARGS="-p {cluster.partition} -N 1 -n {cluster.n} -c {cluster.ncpus} -t {cluster.time} --job-name={cluster.job-name} -o {cluster.output} -e {cluster.error}"
    
    (access)$> snakemake -j 10 -pr --use-conda --cluster-config cluster.json --cluster "sbatch $SLURM_ARGS"
-   ```
-
+```
+   
    
 
 
