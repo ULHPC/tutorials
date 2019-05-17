@@ -3,7 +3,7 @@ import tensorflow as tf
 from tensorflow import keras
 import numpy as np
 
-def prepare_data(vocab_size):
+def prepare_data(vocab_size, input_length):
 	imdb = keras.datasets.imdb
 	(train_data, train_labels), (test_data, test_labels) = imdb.load_data(num_words=vocab_size)
 	print("Training entries: {}, labels: {}.".format(len(train_data), len(train_labels)))
@@ -21,15 +21,15 @@ def prepare_data(vocab_size):
 	print(decode_review(train_data[12]), train_labels[12])
 
 	train_data = keras.preprocessing.sequence.pad_sequences(
-			train_data, value=word_index["<PAD>"], padding='post', maxlen=256)
+			train_data, value=word_index["<PAD>"], padding='post', maxlen=input_length)
 	test_data = keras.preprocessing.sequence.pad_sequences(
-			test_data, value=word_index["<PAD>"], padding='post', maxlen=256)
+			test_data, value=word_index["<PAD>"], padding='post', maxlen=input_length)
 	return (train_data, train_labels), (test_data, test_labels)
 
-def mtrain(vocab_size, train_data, train_labels):
+def mtrain(vocab_size, train_data, train_labels, input_length):
 	# input shape is the vocabulary count used for the movie reviews (10,000 words)
 	model = keras.Sequential()
-	model.add(keras.layers.Embedding(vocab_size, 16))
+	model.add(keras.layers.Embedding(vocab_size, 16, input_length=input_length, mask_zero=True))
 	model.add(keras.layers.GlobalAveragePooling1D())
 	model.add(keras.layers.Dense(16, activation=tf.nn.relu))
 	model.add(keras.layers.Dense(1, activation=tf.nn.sigmoid))
@@ -50,10 +50,10 @@ def mtrain(vocab_size, train_data, train_labels):
 			verbose=1)
 	return model
 
-def main(vocab_size=20000):
+def main(vocab_size=10000, input_length=256):
 	print("TF {}, TF.Keras {}.".format(tf.__version__, tf.keras.__version__))
-	(train_data, train_labels), (test_data, test_labels) = prepare_data(vocab_size)
-	model = mtrain(vocab_size, train_data, train_labels)
+	(train_data, train_labels), (test_data, test_labels) = prepare_data(vocab_size, input_length)
+	model = mtrain(vocab_size, train_data, train_labels, input_length)
 	results = model.evaluate(test_data, test_labels)
 	print(results)
 
