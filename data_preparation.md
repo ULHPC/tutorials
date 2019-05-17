@@ -86,10 +86,10 @@ wget "ftp://ftp.ensembl.org/pub/release-96/fasta/mus_musculus/dna/Mus_musculus.G
 gunzip Mus_musculus.GRCm38.dna_sm.chromosome.7.fa.gz
 ```
 
-Create BWA index:
+Create bowtie2 index:
 
 ```
-bwa index Mus_musculus.GRCm38.dna_sm.chromosome.7.fa
+bowtie2-build Mus_musculus.GRCm38.dna_sm.chromosome.7.fa Mus_musculus.GRCm38.dna_sm.chromosome.7
 ```
 
 
