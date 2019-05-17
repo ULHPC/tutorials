@@ -180,8 +180,8 @@ rule peak_calling:
     chip = "bowtie2/H3K4-{sample}.bam"
   output:
     peaks = "output/{sample}_peaks.narrowPeak",
-    ibdg = "macs2/{sample}_control_lambda.bdg",
-    cbdg = "macs2/{sample}_treat_pileup.bdg"
+    control_bdg = "macs2/{sample}_control_lambda.bdg",
+    chip_bdg = "macs2/{sample}_treat_pileup.bdg"
   conda: "envs/macs2.yaml"
   shell:
     """
@@ -210,7 +210,7 @@ rule bigwig:
 
 ### Summary rule
 
-At the very top of the Snakefile, define a variable for the name of the sample:
+At the **very top** of the Snakefile, define a variable for the name of the sample:
 
 ```python
 SAMPLE = "TC1-ST2-D0.7"
@@ -218,7 +218,7 @@ SAMPLE = "TC1-ST2-D0.7"
 
 This makes it easier to change the Snakefile and apply it to other datasets. Snakemake is based on Python so we can use Python code inside the Snakefile. We will use f-Strings [10] to include the variable in the file names.
 
-Add this rule to the **top** of the `Snakefile`:
+Add this rule at the top of the `Snakefile` after the line above:
 
 ```python
 rule all:
