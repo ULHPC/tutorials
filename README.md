@@ -180,8 +180,8 @@ Check the benchmark report:
 
 ```bash
 (node)$> cat benchmarks/mapping/INPUT-TC1-ST2-D0.12.tsv
-s	      h:m:s	  max_rss	max_vms	max_uss	max_pss	io_in io_out mean_load
-19.1737	0:00:19	262.14	1404.55	258.79	258.94	0.00	0.00	 0.00
+s       h:m:s   max_rss max_vms max_uss max_pss io_in io_out mean_load
+19.1737 0:00:19 262.14  1404.55 258.79  258.94  0.00  0.00   0.00
 ```
 
 
@@ -367,8 +367,8 @@ In order to make snakemake run all the steps again, we need to the delete the ou
 
 ```bash
 (access)$> cat benchmarks/mapping/INPUT-TC1-ST2-D0.12.tsv
-s	      h:m:s	  max_rss	max_vms	max_uss	max_pss	io_in	io_out mean_load
-6.7687	0:00:06	295.01	1728.68	291.64	291.79	0.00	16.00	 0.00
+s      h:m:s   max_rss max_vms max_uss max_pss io_in io_out mean_load
+6.7687 0:00:06 295.01  1728.68 291.64  291.79  0.00  16.00  0.00
 ```
 
 Notice that the runtime has decreased, but I/O has increased.
