@@ -28,7 +28,7 @@ We will use conda on two levels in this tutorial. First we use a conda environme
    (node)$> chmod u+x Miniconda3-latest-Linux-x86_64.sh
    (node)$> ./Miniconda3-latest-Linux-x86_64.sh 
    ```
-   You will need to specify your installation destination, e.g. `/home/users/sdiehl/tools/miniconda3`. You must use the **full** path and can**not** user `$HOME/tools/miniconda3`. Answer `yes` to initialize Miniconda3. 
+   You need to specify your installation destination, e.g. `/home/users/sdiehl/tools/miniconda3`. You must use the **full** path and can**not** user `$HOME/tools/miniconda3`. Answer `yes` to initialize Miniconda3. 
 
    The installation will modify your `.bashrc` to make conda directly available after each login. To activate the changes now, run
 
@@ -60,7 +60,7 @@ We will use conda on two levels in this tutorial. First we use a conda environme
 
 In this tutorial we will analyse ChIP-seq data [3] from a paper recently published by our colleagues in LSRU [4].
 
-To speed up computing time we will use source files that only contain sequencing reads from chromosome 7. The files for input (control) and H3K4me3 (ChIP) are available on the cluster in the directory `/work/projects/ulhpc-tutorials/bio/snakemake/chip-seq` and the corresponding reference in `/work/projects/ulhpc-tutorials/bio/snakemake/reference`.
+To speed up computing time we use source files that only contain sequencing reads from chromosome 7. The files for input (control) and H3K4me3 (ChIP) are available on the cluster in the directory `/work/projects/ulhpc-tutorials/bio/snakemake/chip-seq` and the corresponding reference in `/work/projects/ulhpc-tutorials/bio/snakemake/reference`.
 
 We have also already prepared the conda environments for each step in the workflow in `/work/projects/ulhpc-tutorials/bio/snakemake/envs`.
 
@@ -94,8 +94,8 @@ A basic rule for mapping a fastq file with bowtie2 [7] could look like this:
 
 ```python
 rule mapping:
-  input: "chip-seq/TC1-H3K4-ST2-D0.7.fastq.gz"
-  output: "bowtie/TC1-H3K4-ST2-D0.7.bam"
+  input: "chip-seq/H3K4-TC1-ST2-D0.7.fastq.gz "
+  output: "bowtie/H3K4-TC1-ST2-D0.7.bam"
   shell:
     """
     bowtie2 -x reference/Mus_musculus.GRCm38.dna_sm.chromosome.7 -U {input} | \  
@@ -135,7 +135,9 @@ dependencies:
   - samtools
 ```
 
-We will also use the `params` directive to define the path to the reference and declutter the command-line call, as well as the `log` directive to define a path to permanently store the output of the execution. This is especially useful in this step to store the bowtie2 mapping statistics, which are just written to the command-line (stderr) otherwise.
+We also use the `params` directive to define the path to the reference and declutter the command-line call, as well as the `log` directive to define a path to permanently store the output of the execution. This is especially useful in this step to store the bowtie2 mapping statistics, which are just written to the command-line (stderr) otherwise.
+
+To track resource usage we add the `benchmark` directive, which will write performance measures to a tsv file.
 
 Create a file called `Snakefile` in the current directory and open it in your favourite editor, e.g.
 
@@ -152,6 +154,7 @@ rule mapping:
   params:
     idx = "reference/Mus_musculus.GRCm38.dna_sm.chromosome.7"
   log: "logs/bowtie2_{sample}.log"
+  benchmark: "benchmarks/mapping/{sample}.tsv"
   conda: "envs/bowtie2.yaml"
   shell:
     """
@@ -161,17 +164,27 @@ rule mapping:
     """
 ```
 
-You can test the rule by specifying one of the potential outputs. We will just do a dry-run with with option `-n` for now.
+You can test the rule by specifying one of the potential outputs. We first do a dry-run with with option `-n`.
 
 ```bash
-(node)$> snakemake -npr --use-conda bowtie2/TC1-I-ST2-D0.7.bam
+(node)$> snakemake -npr --use-conda bowtie2/INPUT-TC1-ST2-D0.7.bam
+```
+
+If everything is fine we can run the rule to create the file `bowtie2/INPUT-TC1-ST2-D0.7.bam`:
+
+```bash
+(node)$> snakemake -pr --use-conda bowtie2/INPUT-TC1-ST2-D0.7.bam
 ```
 
 
 
 ### Peak calling
 
-Macs2 [9]
+The next step in the workflow is to call peaks with MACS2 [9]. This tells us where there is enrichment of the ChIP versus the input (control). 
+
+You should always choose the peak caller based on how you expect your enriched regions to look like, e.g. narrow or broad peaks.
+
+Besides the list of peaks in BED format, MACS2 also produces coverage tracks.
 
 ```python
 rule peak_calling:
@@ -191,7 +204,17 @@ rule peak_calling:
     """
 ```
 
+Let's run this step with:
+
+```bash
+(node)$> snakemake -pr --use-conda output/TC1-ST2-D0.7_peaks.narrowPeak
+```
+
+Note that snakemake will not run the mapping step for `bowtie2/INPUT-TC1-ST2-D0.7.bam` again. It only runs rules for which the output is not present or the input has changed.
+
 ### Generate bigwig files for visualisation
+
+For easier visualisation and faster transfer, we convert the two coverage tracks from the MACS2 output to bigWiggle format.
 
 ```python
 rule bigwig:
@@ -206,11 +229,21 @@ rule bigwig:
     """
 ```
 
+Let's test this step with:
+
+```bash
+(node)$> snakemake -pr --use-conda output/TC1-ST2-D0.7_treat_pileup.bigwig
+```
+
+This time snakemake will only run the "bigwig" rule for the one file we specified.
+
 
 
 ### Summary rule
 
-At the **very top** of the Snakefile, define a variable for the name of the sample:
+To avoid always having to specify which output file we want on the command-line, we add one rule with just inputs that defines the result files we want to have in the end. Since by default snakemake executes the first rule in the snakefile, we need add this rule as the first one to the top, and then we don't need to specify anything additional on the command-line.
+
+First, at the **very top** of the Snakefile, define a variable for the name of the sample:
 
 ```python
 SAMPLE = "TC1-ST2-D0.7"
@@ -223,13 +256,12 @@ Add this rule at the top of the `Snakefile` after the line above:
 ```python
 rule all:
   input: f"output/{SAMPLE}_peaks.narrowPeak", f"output/{SAMPLE}_control_lambda.bigwig", f"output/{SAMPLE}_treat_pileup.bigwig"
-	
 ```
 
-Finally test the workflow again, this time without a specific target file:
+Finally run the workflow again, this time without a specific target file:
 
 ```bash
-(node)$> snakemake --use-conda -npr
+(node)$> snakemake --use-conda -pr
 ```
 
 Snakemake can visualise the dependency graph of the workflow with the following command:
@@ -242,7 +274,13 @@ Snakemake can visualise the dependency graph of the workflow with the following 
 
 ## Cluster configuration for snakemake
 
+Until now the workflow just runs on a single CPU on a single machine, which is not very efficient when we have much more resources available. To speed up the computation you should check in the documentation of the software you use in how far it can do multithreading or multiprocessing. For bioinformatics tools some can do multithreading, but only very few can scale to multiple nodes or GPUs.
+
+In this workflow only bowtie2 has the option to run on multiple threads.
+
 ### Adjust mapping step to run on multiple threads
+
+We add the `thread` directive to the snakemake rule for the mapping step, to tell snakemake that this step can use multiple threads. We also need to add the option `-p` to the bowtie2 command-line call, to make it actually use those threads.
 
 ```python
 rule mapping:
@@ -251,6 +289,7 @@ rule mapping:
   params:
     idx = "reference/Mus_musculus.GRCm38.dna_sm.chromosome.7"
   log: "logs/bowtie2_{sample}.log"
+  benchmark: "benchmarks/mapping/{sample}.tsv"
   conda: "envs/bowtie2.yaml"
   threads: 4
   shell:
@@ -261,17 +300,21 @@ rule mapping:
     """
 ```
 
-Run test:
-
-We also need to tell snakemake to run multithreaded or run multiple tasks in parallel with `-j` option.
+Now we also need to tell snakemake that it has multiple cores available and can run steps multithreaded or run multiple tasks in parallel. This is done with `-j` option followed by the number of available cores (e.g. the number of cores you have reserved if you run it interactively).
 
 ```bash
 snakemake -j 4 -npr --use-conda bowtie/TC1-I-ST2-D0.7.bam
 ```
 
+You should see in the output that the command-line call of bowtie2 now shows `-p 4`.
+
 
 
 ### Configure job parameters with `cluster.json`
+
+Instead of reserving an interactive job and running snakemake inside that job, we want to use snakemake's cluster functionality to make it submit jobs to SLURM. For this we create configuration file named `cluster.json` to define the values for the different `sbatch` options.
+
+Options under the `__default__` header apply to all rules, but it's possible to override them selectively with rule-specific options.
 
 ```json
 {
@@ -298,33 +341,49 @@ snakemake -j 4 -npr --use-conda bowtie/TC1-I-ST2-D0.7.bam
 
 Make sure you quit your job and run the following from the access node. Now we need to map the variables defined in `cluster.json` to the command-line parameters of `sbatch`.
 
+The meaning of the option `-j` changes when running in cluster mode to denote the maximum number of simultaneous jobs.
+
+In order to make snakemake run all the steps again, we need to the delete the output folders.
+
 ```bash
- (access)$> conda activate bioinfo_tutorial
+(access)$> cd $SCRATCH/bioinfo_tutorial
+(access)$> rm -rf bowtie2/ macs2/ output/
+(access)$> conda activate bioinfo_tutorial
  
- (access)$> SLURM_ARGS="-p {cluster.partition} -N 1 -n {cluster.n} -c {cluster.ncpus} -t {cluster.time} --job-name={cluster.job-name} -o {cluster.output} -e {cluster.error}"
+(access)$> SLURM_ARGS="-p {cluster.partition} -N 1 -n {cluster.n} -c {cluster.ncpus} -t {cluster.time} --job-name={cluster.job-name} -o {cluster.output} -e {cluster.error}"
  
- (access)$> snakemake -j 10 -pr --use-conda --cluster-config cluster.json --cluster "sbatch $SLURM_ARGS"
+(access)$> snakemake -j 10 -pr --use-conda --cluster-config cluster.json --cluster "sbatch $SLURM_ARGS"
 ```
 
- 
+ TODO: check benchmark files for comparison
 
 ## Inspect results in IGV
 
-Download IGV from http://software.broadinstitute.org/software/igv/download.
+Now that we have completed the workflow, let's have a look at the results.
 
+For visualisation, download IGV from http://software.broadinstitute.org/software/igv/download, or use any other genome browser of your choice.
+
+To copy the results from the cluster to your laptop, run the following and replace `<your username>` with your ULHPC user login. Pay attention in which directory you are, so you can find the files again.
+
+```bash
+(laptop)$> mkdir bioinfo_tutorial
+(laptop)$> cd bioinfo_tutorial
+(laptop)$> rsync -avz iris-cluster:/scratch/users/<your username>/bioinfo_tutorial/output .
 ```
-rsync -avz iris-cluster:/scratch/users/sdiehl/bioinfo_tutorial/output .
-```
 
-Select mouse mm10 as genome in the upper left.
+Start IGV and select mouse mm10 as genome in the drop-down menu in the upper left. Go to "File" -> "Load from File…" and select all three files that you have copied from the cluster.
 
-Use `TC1-ST2-H3K4-D0_peaks.narrowPeak` to visualize peaks.
+TODO: screenshot of IGV
 
 
 
 ## (optional) Plot enrichment with deepTools
 
 
+
+## Useful stuff
+
+* To avoid too much overhead in the number of jobs submitted to SLURM, use the`group` directive to group rules that can run together in a single job.
 
 
 
