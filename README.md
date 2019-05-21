@@ -28,7 +28,7 @@ We will use conda on two levels in this tutorial. First we use a conda environme
    (node)$> chmod u+x Miniconda3-latest-Linux-x86_64.sh
    (node)$> ./Miniconda3-latest-Linux-x86_64.sh 
    ```
-   You need to specify your installation destination, e.g. `/home/users/<your username>/tools/miniconda3`. You must use the **full** path and can**not** user `$HOME/tools/miniconda3`. Answer `yes` to initialize Miniconda3. 
+   You need to specify your installation destination, e.g. `/home/users/<your_username>/tools/miniconda3`. You must use the **full** path and can**not** user `$HOME/tools/miniconda3`. Answer `yes` to initialize Miniconda3. 
 
    The installation will modify your `.bashrc` to make conda directly available after each login. To activate the changes now, run
 
@@ -120,7 +120,7 @@ rule mapping:
     """
 ```
 
-Now we need to tell snakemake to use a conda environment with bowtie2 and [samtools](http://www.htslib.org/) inside to run this rule. For this purpose there is a specific `conda` directive that can be added to the rule. It accepts a yaml file that defines the conda environment. 
+Now we need to tell snakemake to use a conda environment with bowtie2 and [samtools](http://www.htslib.org/) inside to run this rule. For this purpose there is a specific `conda` directive that can be added to the rule. It accepts a [yaml](https://yaml.org/spec/1.2/spec.html) file that defines the conda environment. 
 
 ```python
 conda: "envs/bowtie2.yaml"
@@ -178,9 +178,17 @@ If everything is fine we can run the rule to create the file `bowtie2/INPUT-TC1-
 (node)$> snakemake -pr --use-conda bowtie2/INPUT-TC1-ST2-D0.12.bam
 ```
 
-Check the benchmark report:
+Check the mapping statistics and the benchmark report:
 
 ```bash
+(node)$> cat logs/bowtie2_INPUT-TC1-ST2-D0.12.log
+400193 reads; of these:
+  400193 (100.00%) were unpaired; of these:
+    1669 (0.42%) aligned 0 times
+    379290 (94.78%) aligned exactly 1 time
+    19234 (4.81%) aligned >1 times
+99.58% overall alignment rate
+
 (node)$> cat benchmarks/mapping/INPUT-TC1-ST2-D0.12.tsv
 s       h:m:s   max_rss max_vms max_uss max_pss io_in io_out mean_load
 19.1737 0:00:19 262.14  1404.55 258.79  258.94  0.00  0.00   0.00
@@ -194,7 +202,7 @@ The next step in the workflow is to call peaks with [MACS2](https://github.com/t
 
 You should always choose the peak caller based on how you expect your enriched regions to look like, e.g. narrow or broad peaks.
 
-Besides the list of peaks in BED format, MACS2 also produces coverage tracks.
+Besides the list of peaks in [BED](https://genome.ucsc.edu/FAQ/FAQformat.html#format1) format, MACS2 also produces coverage tracks.
 
 ```python
 rule peak_calling:
@@ -232,9 +240,11 @@ Let's run this step with:
 
 Note that snakemake will not run the mapping step for `bowtie2/INPUT-TC1-ST2-D0.12.bam` again. It only runs rules for which the output is not present or the input has changed.
 
-### Generate bigwig files for visualisation
 
-For easier visualisation and faster transfer, we convert the two coverage tracks from the MACS2 output to bigWiggle format.
+
+### Generate bigWig files for visualisation
+
+For easier visualisation and faster transfer, we convert the two coverage tracks from the MACS2 output to [bigWig](https://genome.ucsc.edu/goldenpath/help/bigWig.html) format.
 
 ```python
 rule bigwig:
@@ -312,7 +322,7 @@ In this workflow only bowtie2 has the option to run on multiple threads.
 
 We add the `thread` directive to the snakemake rule for the mapping step, to tell snakemake that this step can use multiple threads. 
 
-> The specified threads have to be seen as a maximum. When Snakemake is executed with fewer cores, the number of threads will be adjusted, i.e. `threads = min(threads, cores)` with `cores` being the number of cores specified at the command line (option `-j`). [11]
+> The specified threads have to be seen as a maximum. When Snakemake is executed with fewer cores, the number of threads will be adjusted, i.e. `threads = min(threads, cores)` with `cores` being the number of cores specified at the command line (option `-j`).
 >
 > &mdash; <cite>[Snakemake manual - Threads](https://snakemake.readthedocs.io/en/stable/snakefiles/rules.html#threads)</cite>
 
@@ -356,7 +366,7 @@ Run the clean-up rule:
 (node)$> snakemake clean
 ```
 
-Quit your current job and start a new one with more cores to test the multi-threading:
+Quit your current job and start a new one with more cores to test the multithreading:
 
 ```bash
 (node)$> exit
@@ -365,7 +375,7 @@ Quit your current job and start a new one with more cores to test the multi-thre
 (node)$> cd $SCRATCH/bioinfo_tutorial
 ```
 
-Now we also need to tell snakemake that it has multiple cores available and can run steps multithreaded or run multiple tasks in parallel. This is done with `-j` option followed by the number of available cores (e.g. the number of cores you have reserved if you run it interactively).
+Now we also need to tell snakemake that it has multiple cores available and can run steps multithreaded or run multiple tasks in parallel. This is done with the  `-j` option followed by the number of available cores (e.g. the number of cores you have reserved if you run it interactively).
 
 ```bash
 (node)$> snakemake -j 4 -pr --use-conda bowtie2/INPUT-TC1-ST2-D0.12.bam
@@ -409,11 +419,13 @@ mapping:
 
 **Attention:** Be aware that `ncpus` should match the `threads` directive in the respective rule. If `ncpus` is less than `threads` snakemake will reserve only  `ncpus` cores, but run the rule on the number of threads specified with `threads` .
 
+
+
 ### Run snakemake with cluster configuration
 
 Make sure you quit your job and run the following from the access node.
 
-Now we need to map the variables defined in `cluster.json` to the command-line parameters of `sbatch`. Check the documentation on the [HPC website](https://hpc.uni.lu/users/docs/slurm.html#basic-usage-commands) for details about the parameters.
+Now we need to map the variables defined in `cluster.yaml` to the command-line parameters of `sbatch`. Check the documentation on the [HPC website](https://hpc.uni.lu/users/docs/slurm.html#basic-usage-commands) for details about the parameters.
 
 The meaning of the option `-j` changes when running in cluster mode to denote the maximum number of simultaneous jobs.
 
@@ -447,12 +459,12 @@ Now that we have completed the workflow, let's have a look at the results.
 
 For visualisation, [download IGV](http://software.broadinstitute.org/software/igv/download), or use any other genome browser of your choice.
 
-To copy the results from the cluster to your laptop, run the following and replace `<your username>` with your ULHPC user login. Pay attention in which directory you are, so you can find the files again.
+To copy the results from the cluster to your laptop, run the following and replace `<your_username>` with your ULHPC user login. Pay attention in which directory you are, so you can find the files again.
 
 ```bash
 (laptop)$> mkdir bioinfo_tutorial
 (laptop)$> cd bioinfo_tutorial
-(laptop)$> rsync -avz iris-cluster:/scratch/users/<your username>/bioinfo_tutorial/output .
+(laptop)$> rsync -avz iris-cluster:/scratch/users/<your_username>/bioinfo_tutorial/output .
 ```
 
 Start IGV and select mouse mm10 as genome in the drop-down menu in the upper left. Go to "File" -> "Load from File…" and select all three files that you have copied from the cluster.
@@ -468,6 +480,7 @@ TODO: screenshot of IGV
 ## Useful stuff
 
 * To avoid too much overhead in the number of jobs submitted to SLURM, use the`group` directive to group rules that can run together in a single job.
+* If your workflow runs for longer than just a few minutes, run snakemake inside`screen` or prefix it with `nohup`. This prevents the workflow from stopping when your SSH session get's disconnected.
 
 
 
