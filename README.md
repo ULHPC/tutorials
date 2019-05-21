@@ -269,7 +269,7 @@ This time snakemake will only run the "bigwig" rule for the one file we specifie
 
 ### Summary rule
 
-To avoid always having to specify which output file we want on the command-line, we add one rule with just inputs that defines the result files we want to have in the end. Since by default snakemake executes the first rule in the snakefile, we need add this rule as the first one to the top, and then we don't need to specify anything additional on the command-line.
+To avoid always having to specify which output file we want on the command-line, we add one rule with just inputs that defines the result files we want to have in the end. Since by default snakemake executes the first rule in the snakefile, we need to add this rule as the first one to the top, and then we don't need to specify anything additional on the command-line.
 
 First, at the **very top** of the Snakefile, define a variable for the name of the sample:
 
@@ -308,7 +308,13 @@ In this workflow only bowtie2 has the option to run on multiple threads.
 
 ### Adjust mapping step to run on multiple threads
 
-We add the `thread` directive to the snakemake rule for the mapping step, to tell snakemake that this step can use multiple threads. We also need to add the option `-p` to the bowtie2 command-line call, to make it actually use those threads.
+We add the `thread` directive to the snakemake rule for the mapping step, to tell snakemake that this step can use multiple threads. 
+
+"The specified threads have to be seen as a maximum. When Snakemake is executed with fewer cores, the number of threads will be adjusted, i.e. `threads = min(threads, cores)` with `cores` being the number of cores specified at the command line (option `-j`)." [11]
+
+So the value for threads should be the maximum that is reasonable for the respective software. For many software the speed-up plateaus at a certain number of threads or even starts to decrease again. For a regular bowtie2 run 16 is a good maximum, but for this tutorial we will only go up to 4 because we have a small dataset.
+
+We also need to add the option `-p` to the bowtie2 command-line call, to make it actually use those threads.
 
 ```python
 rule mapping:
@@ -328,74 +334,106 @@ rule mapping:
     """
 ```
 
-TODO: new slurm job with more cores; remove results with clean rule
+If we want to rerun the workflow to compare different options, we need to delete the output files, otherwise snakemake will not run the steps again. Since we want to do a bit of testing, let's define a rule that removes all the output:
+
+```python
+rule clean:
+    shell:  
+        """
+        rm -rf bowtie2/ macs2/ output/
+        """
+```
+
+**Warning:** Be careful with `rm -rf` and double-check you're deleting the right directories, since it will remove everything without asking.
+
+Run the clean-up rule:
+
+```bash
+(node)$> snakemake clean
+```
+
+Quit your current job and start a new one with more cores to test the multi-threading:
+
+```bash
+(node)$> exit
+(access)$> srun --cpu-bind=none -p interactive -t 0-0:15:0 -N 1 -c 6 --ntasks-per-node=1 --pty bash -i
+(node)$> conda activate bioinfo_tutorial
+(node)$> cd $SCRATCH/bioinfo_tutorial
+```
 
 Now we also need to tell snakemake that it has multiple cores available and can run steps multithreaded or run multiple tasks in parallel. This is done with `-j` option followed by the number of available cores (e.g. the number of cores you have reserved if you run it interactively).
 
 ```bash
-snakemake -j 4 -npr --use-conda bowtie/TC1-I-ST2-D0.12.bam
+(node)$> snakemake -j 4 -pr --use-conda bowtie2/INPUT-TC1-ST2-D0.12.bam
 ```
 
 You should see in the output that the command-line call of bowtie2 now shows `-p 4`.
 
-TODO:  test several options for -j and compare benchmark
-
-
-
-### Configure job parameters with `cluster.json`
-
-Instead of reserving an interactive job and running snakemake inside that job, we want to use snakemake's cluster functionality to make it submit jobs to SLURM. For this we create configuration file named `cluster.json` to define the values for the different `sbatch` options.
-
-Options under the `__default__` header apply to all rules, but it's possible to override them selectively with rule-specific options.
-
-```json
-{
-    "__default__" :
-    {
-        "time" : "0-00:10:00",
-        "n" : 1,
-        "partition" : "batch",
-        "ncpus": 1,
-        "job-name" : "{rule}",
-        "output" : "slurm-%j-%x.out",
-        "error" : "slurm-%j-%x.err"
-    },
-    "mapping":
-    {
-        "ncpus": 4,
-    },
-}
-```
-
-
-
-### Run snakemake with cluster configuration
-
-Make sure you quit your job and run the following from the access node. Now we need to map the variables defined in `cluster.json` to the command-line parameters of `sbatch`.
-
-The meaning of the option `-j` changes when running in cluster mode to denote the maximum number of simultaneous jobs.
-
-In order to make snakemake run all the steps again, we need to the delete the output folders.
+Check again the benchmark report:
 
 ```bash
-(access)$> cd $SCRATCH/bioinfo_tutorial
-(access)$> rm -rf bowtie2/ macs2/ output/ # please be careful with this command!
-(access)$> conda activate bioinfo_tutorial
- 
-(access)$> SLURM_ARGS="-p {cluster.partition} -N 1 -n {cluster.n} -c {cluster.ncpus} -t {cluster.time} --job-name={cluster.job-name} -o {cluster.output} -e {cluster.error}"
- 
-(access)$> snakemake -j 10 -pr --use-conda --cluster-config cluster.json --cluster "sbatch $SLURM_ARGS"
-```
-
- Check again the benchmark report:
-
-```bash
-(access)$> cat benchmarks/mapping/INPUT-TC1-ST2-D0.12.tsv
+(node)$> cat benchmarks/mapping/INPUT-TC1-ST2-D0.12.tsv
 s      h:m:s   max_rss max_vms max_uss max_pss io_in io_out mean_load
 6.7687 0:00:06 295.01  1728.68 291.64  291.79  0.00  16.00  0.00
 ```
 
 Notice that the runtime has decreased, but I/O has increased.
+
+**Exercise:** Try several options for `-j` up to the number of cores you reserved (6) and check the bowtie2 command and the values in the benchmark. 
+
+
+
+### Configure job parameters with `cluster.yaml`
+
+Instead of reserving an interactive job and running snakemake inside that job, we want to use snakemake's cluster functionality to make it submit jobs to SLURM. For this we create configuration file named `cluster.yaml` to define the values for the different `sbatch` options.
+
+Options under the `__default__` header apply to all rules, but it's possible to override them selectively with rule-specific options.
+
+```yaml
+__default__:
+  time: "0-00:01:00"
+  partition: "batch"
+  nodes: 1
+  ntasks: 1
+  ncpus: 1
+  job-name: "{rule}"
+  output: "slurm-%j-%x.out"
+  error: "slurm-%j-%x.err"
+mapping:
+  ncpus: 4
+```
+
+**Attention:** Be aware that `ncpus` should match the `threads` directive in the respective rule. If `ncpus` is less than `threads` snakemake will reserve only  `ncpus` cores, but run the rule on the number of threads specified with `threads` .
+
+### Run snakemake with cluster configuration
+
+Make sure you quit your job and run the following from the access node.
+
+Now we need to map the variables defined in `cluster.json` to the command-line parameters of `sbatch`. Check the documentation on the [HPC website](https://hpc.uni.lu/users/docs/slurm.html#basic-usage-commands) for details about the parameters.
+
+The meaning of the option `-j` changes when running in cluster mode to denote the maximum number of simultaneous jobs.
+
+```bash
+(access)$> cd $SCRATCH/bioinfo_tutorial
+(access)$> conda activate bioinfo_tutorial
+(access)$> snakemake clean
+ 
+(access)$> SLURM_ARGS="-p {cluster.partition} -N {cluster.nodes} -n {cluster.ntasks} -c {cluster.ncpus} -t {cluster.time} -J {cluster.job-name} -o {cluster.output} -e {cluster.error}"
+ 
+(access)$> snakemake -j 10 -pr --use-conda --cluster-config cluster.yaml --cluster "sbatch $SLURM_ARGS"
+```
+
+Let's have a look at the jobs that SLURM submitted:
+
+```bash
+# only job allocations
+(access)$> sacct -X --name="mapping","peak_calling","bigwig" --format JobID%15,JobName%15,AllocCPUS,Submit,Start,End,Elapsed
+
+# including all steps
+(access)$> sacct --name="mapping","peak_calling","bigwig" --format JobID%15,JobName%15,NTasks,AllocCPUS,Submit,Start,End,Elapsed,MaxVMSize
+```
+
+Check the submit and end time to see which jobs were running at the same time and when snakemake waited for jobs to finish.
 
 
 
@@ -445,6 +483,7 @@ TODO: screenshot of IGV
 * [8] [Samtools](http://www.htslib.org/)
 * [9] [MACS2](https://github.com/taoliu/MACS)
 * [10] [Python f-Strings](https://docs.python.org/3.6/reference/lexical_analysis.html#f-strings)
+* [11] https://snakemake.readthedocs.io/en/stable/snakefiles/rules.html#threads
 * deepTools
 
 ## Acknowledgements
