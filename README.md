@@ -58,9 +58,9 @@ We will use conda on two levels in this tutorial. First we use a conda environme
 
 ## Create snakemake workflow
 
-In this tutorial we will analyse ChIP-seq data [3] from a paper recently published by our colleagues in LSRU [4].
+In this tutorial we will analyse ChIP-seq data [3] from a paper published by our colleagues in LSRU [4].
 
-To speed up computing time we use source files that only contain sequencing reads from chromosome 12. The files for input (control) and H3K4me3 (ChIP) are available on the cluster in the directory `/work/projects/ulhpc-tutorials/bio/snakemake/chip-seq` and the corresponding reference in `/work/projects/ulhpc-tutorials/bio/snakemake/reference`.
+To speed up computing time we use source files that only contain sequencing reads that map to chromosome 12. The files for input (control) and H3K4me3 (ChIP) are available on the cluster in the directory `/work/projects/ulhpc-tutorials/bio/snakemake/chip-seq` and the corresponding reference in `/work/projects/ulhpc-tutorials/bio/snakemake/reference`.
 
 We have also already prepared the conda environments for each step in the workflow in `/work/projects/ulhpc-tutorials/bio/snakemake/envs`.
 
@@ -95,7 +95,7 @@ A basic rule for mapping a fastq file with bowtie2 [7] could look like this:
 ```python
 rule mapping:
   input: "chip-seq/H3K4-TC1-ST2-D0.12.fastq.gz "
-  output: "bowtie/H3K4-TC1-ST2-D0.12.bam"
+  output: "bowtie2/H3K4-TC1-ST2-D0.12.bam"
   shell:
     """
     bowtie2 -x reference/Mus_musculus.GRCm38.dna_sm.chromosome.12 -U {input} | \  
@@ -109,7 +109,7 @@ Since we have two fastq files to map, we should generalise the rule with wildcar
 ```python
 rule mapping:
   input: "chip-seq/{sample}.fastq.gz"
-  output: "bowtie/{sample}.bam"
+  output: "bowtie2/{sample}.bam"
   shell:
     """
     bowtie2 -x reference/Mus_musculus.GRCm38.dna_sm.chromosome.12 -U {input} | \  
@@ -212,6 +212,16 @@ rule peak_calling:
     """
 ```
 
+The conda environment `envs/macs2.yaml` for this step is:
+
+```yaml
+name: macs2
+channels:
+  - bioconda
+dependencies:
+  - macs2
+```
+
 Let's run this step with:
 
 ```bash
@@ -235,6 +245,16 @@ rule bigwig:
     """
     bedGraphToBigWig {input} {params.idx} {output}
     """
+```
+
+The conda environment `envs/ucsc.yaml` for this step is:
+
+```yaml
+name: ucsc
+channels:
+  - bioconda
+dependencies:
+  - ucsc-bedgraphtobigwig
 ```
 
 Let's test this step with:
@@ -308,6 +328,8 @@ rule mapping:
     """
 ```
 
+TODO: new slurm job with more cores; remove results with clean rule
+
 Now we also need to tell snakemake that it has multiple cores available and can run steps multithreaded or run multiple tasks in parallel. This is done with `-j` option followed by the number of available cores (e.g. the number of cores you have reserved if you run it interactively).
 
 ```bash
@@ -315,6 +337,8 @@ snakemake -j 4 -npr --use-conda bowtie/TC1-I-ST2-D0.12.bam
 ```
 
 You should see in the output that the command-line call of bowtie2 now shows `-p 4`.
+
+TODO:  test several options for -j and compare benchmark
 
 
 
