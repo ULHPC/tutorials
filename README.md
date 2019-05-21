@@ -2,13 +2,13 @@
 
 Author: Sarah Peter
 
-In this tutorial you will learn how to run a ChIP-seq analysis with the snakemake workflow engine [1] on the cluster.
+In this tutorial you will learn how to run a ChIP-seq analysis with the [snakemake workflow engine](https://snakemake.readthedocs.io/en/stable/)  on the cluster.
 
 **Disclaimer:** In order to keep this tutorial simple, we use default parameters for the different tools as much as possible. However, for a real analysis you should always adapt the parameters to your dataset. Also, be aware that the results of some steps might be screwed, because we only work on data from one chromosome.
 
 ## Setup the environment
 
-For this tutorial we will use the `conda` [2] package manager to install the required tools. It can encapsulate software and packages in environments, so you can have multiple different versions of a software installed at the same time and avoid incompatibilities between different tools. It also has functionality to easily port and replicate environments, which is important to ensure reproducibility of analyses.
+For this tutorial we will use the [`conda` package manager](https://www.anaconda.com/) to install the required tools. It can encapsulate software and packages in environments, so you can have multiple different versions of a software installed at the same time and avoid incompatibilities between different tools. It also has functionality to easily port and replicate environments, which is important to ensure reproducibility of analyses.
 
 We will use conda on two levels in this tutorial. First we use a conda environment to install and run snakemake. Second, inside the snakemake workflow we will define separate conda environments for each step.
 
@@ -58,7 +58,7 @@ We will use conda on two levels in this tutorial. First we use a conda environme
 
 ## Create snakemake workflow
 
-In this tutorial we will analyse ChIP-seq data [3] from a paper published by our colleagues in LSRU [4].
+In this tutorial we will analyse [ChIP-seq data](https://www.ebi.ac.uk/ena/data/view/PRJEB20933) from the paper [Gérard D, Schmidt F, Ginolhac A, Schmitz M, Halder R, Ebert P, Schulz MH, Sauter T, Sinkkonen L. Temporal enhancer profiling of parallel lineages identifies AHR and GLIS1 as regulators of mesenchymal multipotency. *Nucleic Acids Research*, Volume 47, Issue 3, 20 February 2019, Pages 1141–1163, https://doi.org/10.1093/nar/gky1240](https://www.ncbi.nlm.nih.gov/pubmed/30544251) published by our colleagues in LSRU.
 
 To speed up computing time we use source files that only contain sequencing reads that map to chromosome 12. The files for input (control) and H3K4me3 (ChIP) are available on the cluster in the directory `/work/projects/ulhpc-tutorials/bio/snakemake/chip-seq` and the corresponding reference in `/work/projects/ulhpc-tutorials/bio/snakemake/reference`.
 
@@ -77,20 +77,21 @@ Create a working directory and link the necessary data:
 
 ### Mapping
 
-"In Snakemake, workflows are specified as Snakefiles. Inspired by GNU Make, a Snakefile contains rules that denote how to create output files from input files. Dependencies between rules are handled implicitly, by matching filenames of input files against output files. Thereby wildcards can be used to write general rules." [5]
+> In Snakemake, workflows are specified as Snakefiles. Inspired by GNU Make, a Snakefile contains rules that denote how to create output files from input files. Dependencies between rules are handled implicitly, by matching filenames of input files against output files. Thereby wildcards can be used to write general rules. 
+> &mdash; <cite>[Snakemake manual - Writing Workflows](https://snakemake.readthedocs.io/en/stable/snakefiles/writing_snakefiles.html)</cite>
 
-"Most importantly, a rule can consist of a name (the name is optional and can be left out, creating an anonymous rule), input files, output files, and a shell command to generate the output from the input, i.e." [6]
+> Most importantly, a rule can consist of a name (the name is optional and can be left out, creating an anonymous rule), input files, output files, and a shell command to generate the output from the input, i.e. 
+> ```python
+> rule NAME:
+>     input: "path/to/inputfile", "path/to/other/inputfile"
+>     output: "path/to/outputfile", "path/to/another/outputfile"
+>     shell: "somecommand {input} {output}"
+> ```
+> &mdash; <cite>[Snakemake manual - Rules](https://snakemake.readthedocs.io/en/stable/snakefiles/rules.html)</cite>
 
-```python
-rule NAME:
-    input: "path/to/inputfile", "path/to/other/inputfile"
-    output: "path/to/outputfile", "path/to/another/outputfile"
-    shell: "somecommand {input} {output}"
-```
 
 
-
-A basic rule for mapping a fastq file with bowtie2 [7] could look like this:
+A basic rule for mapping a fastq file with [bowtie2](http://bowtie-bio.sourceforge.net/bowtie2/index.shtml) could look like this:
 
 ```python
 rule mapping:
@@ -118,7 +119,7 @@ rule mapping:
     """
 ```
 
-Now we need to tell snakemake to use a conda environment with bowtie2 and samtools [8] inside to run this rule. For this purpose there is a specific `conda` directive that can be added to the rule. It accepts a yaml file that defines the conda environment. 
+Now we need to tell snakemake to use a conda environment with bowtie2 and [samtools](http://www.htslib.org/) inside to run this rule. For this purpose there is a specific `conda` directive that can be added to the rule. It accepts a yaml file that defines the conda environment. 
 
 ```python
 conda: "envs/bowtie2.yaml"
@@ -178,7 +179,7 @@ If everything is fine we can run the rule to create the file `bowtie2/INPUT-TC1-
 
 Check the benchmark report:
 
-```bash
+​```bash
 (node)$> cat benchmarks/mapping/INPUT-TC1-ST2-D0.12.tsv
 s       h:m:s   max_rss max_vms max_uss max_pss io_in io_out mean_load
 19.1737 0:00:19 262.14  1404.55 258.79  258.94  0.00  0.00   0.00
@@ -188,7 +189,7 @@ s       h:m:s   max_rss max_vms max_uss max_pss io_in io_out mean_load
 
 ### Peak calling
 
-The next step in the workflow is to call peaks with MACS2 [9]. This tells us where there is enrichment of the ChIP versus the input (control). 
+The next step in the workflow is to call peaks with [MACS2](https://github.com/taoliu/MACS). This tells us where there is enrichment of the ChIP versus the input (control). 
 
 You should always choose the peak caller based on how you expect your enriched regions to look like, e.g. narrow or broad peaks.
 
@@ -269,7 +270,7 @@ This time snakemake will only run the "bigwig" rule for the one file we specifie
 
 ### Summary rule
 
-To avoid always having to specify which output file we want on the command-line, we add one rule with just inputs that defines the result files we want to have in the end. Since by default snakemake executes the first rule in the snakefile, we need to add this rule as the first one to the top, and then we don't need to specify anything additional on the command-line.
+To avoid always having to specify which output file we want on the command-line, we add one rule with just inputs that defines the result files we want to have in the end. Since by default snakemake executes the first rule in the snakefile, we add this rule as the first one to the top and then we don't need to specify anything additional on the command-line.
 
 First, at the **very top** of the Snakefile, define a variable for the name of the sample:
 
@@ -277,7 +278,7 @@ First, at the **very top** of the Snakefile, define a variable for the name of t
 SAMPLE = "TC1-ST2-D0.12"
 ```
 
-This makes it easier to change the Snakefile and apply it to other datasets. Snakemake is based on Python so we can use Python code inside the Snakefile. We will use f-Strings [10] to include the variable in the file names.
+This makes it easier to change the Snakefile and apply it to other datasets. Snakemake is based on Python so we can use Python code inside the Snakefile. We will use [f-Strings](https://docs.python.org/3.6/reference/lexical_analysis.html#f-strings) to include the variable in the file names.
 
 Add this rule at the top of the `Snakefile` after the line above:
 
@@ -310,7 +311,8 @@ In this workflow only bowtie2 has the option to run on multiple threads.
 
 We add the `thread` directive to the snakemake rule for the mapping step, to tell snakemake that this step can use multiple threads. 
 
-"The specified threads have to be seen as a maximum. When Snakemake is executed with fewer cores, the number of threads will be adjusted, i.e. `threads = min(threads, cores)` with `cores` being the number of cores specified at the command line (option `-j`)." [11]
+> The specified threads have to be seen as a maximum. When Snakemake is executed with fewer cores, the number of threads will be adjusted, i.e. `threads = min(threads, cores)` with `cores` being the number of cores specified at the command line (option `-j`). [11]
+> &mdash; <cite>[Snakemake manual - Threads](https://snakemake.readthedocs.io/en/stable/snakefiles/rules.html#threads)</cite>
 
 So the value for threads should be the maximum that is reasonable for the respective software. For many software the speed-up plateaus at a certain number of threads or even starts to decrease again. For a regular bowtie2 run 16 is a good maximum, but for this tutorial we will only go up to 4 because we have a small dataset.
 
@@ -461,30 +463,11 @@ TODO: screenshot of IGV
 
 
 
-## (optional) Plot enrichment with deepTools
-
-
-
 ## Useful stuff
 
 * To avoid too much overhead in the number of jobs submitted to SLURM, use the`group` directive to group rules that can run together in a single job.
 
 
-
-## References
-
-* [1] [Snakemake](https://snakemake.readthedocs.io/en/stable/)
-* [2] [Anaconda](https://www.anaconda.com/)
-* [3] [ChIP-seq data](https://www.ebi.ac.uk/ena/data/view/PRJEB20933)
-* [4] [Gérard D, Schmidt F, Ginolhac A, Schmitz M, Halder R, Ebert P, Schulz MH, Sauter T, Sinkkonen L. Temporal enhancer profiling of parallel lineages identifies AHR and GLIS1 as regulators of mesenchymal multipotency. *Nucleic Acids Research*, Volume 47, Issue 3, 20 February 2019, Pages 1141–1163, https://doi.org/10.1093/nar/gky1240](https://www.ncbi.nlm.nih.gov/pubmed/30544251)
-* [5] https://snakemake.readthedocs.io/en/stable/snakefiles/writing_snakefiles.html
-* [6] https://snakemake.readthedocs.io/en/stable/snakefiles/rules.html
-* [7] [Bowtie2](http://bowtie-bio.sourceforge.net/bowtie2/index.shtml)
-* [8] [Samtools](http://www.htslib.org/)
-* [9] [MACS2](https://github.com/taoliu/MACS)
-* [10] [Python f-Strings](https://docs.python.org/3.6/reference/lexical_analysis.html#f-strings)
-* [11] https://snakemake.readthedocs.io/en/stable/snakefiles/rules.html#threads
-* deepTools
 
 ## Acknowledgements
 
