@@ -77,7 +77,8 @@ Create a working directory and link the necessary data:
 
 ### Mapping
 
-> In Snakemake, workflows are specified as Snakefiles. Inspired by GNU Make, a Snakefile contains rules that denote how to create output files from input files. Dependencies between rules are handled implicitly, by matching filenames of input files against output files. Thereby wildcards can be used to write general rules. 
+> In Snakemake, workflows are specified as Snakefiles. Inspired by GNU Make, a Snakefile contains rules that denote how to create output files from input files. Dependencies between rules are handled implicitly, by matching filenames of input files against output files. Thereby wildcards can be used to write general rules.
+> 
 > &mdash; <cite>[Snakemake manual - Writing Workflows](https://snakemake.readthedocs.io/en/stable/snakefiles/writing_snakefiles.html)</cite>
 
 > Most importantly, a rule can consist of a name (the name is optional and can be left out, creating an anonymous rule), input files, output files, and a shell command to generate the output from the input, i.e. 
@@ -179,7 +180,7 @@ If everything is fine we can run the rule to create the file `bowtie2/INPUT-TC1-
 
 Check the benchmark report:
 
-​```bash
+```bash
 (node)$> cat benchmarks/mapping/INPUT-TC1-ST2-D0.12.tsv
 s       h:m:s   max_rss max_vms max_uss max_pss io_in io_out mean_load
 19.1737 0:00:19 262.14  1404.55 258.79  258.94  0.00  0.00   0.00
@@ -312,6 +313,7 @@ In this workflow only bowtie2 has the option to run on multiple threads.
 We add the `thread` directive to the snakemake rule for the mapping step, to tell snakemake that this step can use multiple threads. 
 
 > The specified threads have to be seen as a maximum. When Snakemake is executed with fewer cores, the number of threads will be adjusted, i.e. `threads = min(threads, cores)` with `cores` being the number of cores specified at the command line (option `-j`). [11]
+>
 > &mdash; <cite>[Snakemake manual - Threads](https://snakemake.readthedocs.io/en/stable/snakefiles/rules.html#threads)</cite>
 
 So the value for threads should be the maximum that is reasonable for the respective software. For many software the speed-up plateaus at a certain number of threads or even starts to decrease again. For a regular bowtie2 run 16 is a good maximum, but for this tutorial we will only go up to 4 because we have a small dataset.
