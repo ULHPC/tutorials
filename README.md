@@ -477,6 +477,55 @@ TODO: screenshot of IGV
 
 
 
+## (Optional) Immediately submit all jobs
+
+We need a wrapper script to get the dependencies right. Unfortunately snakemake doesn't parse the job submission message from slurm cleanly, so the dependency lists look like   ` 'Submitted', 'batch', 'job', '374519', 'Submitted', 'batch', 'job', '374520'` instead of being just a list of the job IDs. 
+
+Create a python script called `immediate_submit.py` with the following content:
+
+```python
+#!/usr/bin/env python3
+import os
+import sys
+
+from snakemake.utils import read_job_properties
+
+# last command-line argument is the job script
+jobscript = sys.argv[-1]
+
+# all other command-line arguments are the dependencies
+dependencies = set(sys.argv[1:-1])
+
+# parse the job script for the job properties that are encoded by snakemake within
+job_properties = read_job_properties(jobscript)
+
+# collect all command-line options in an array
+cmdline = ["sbatch"]
+
+# set all the slurm submit options as before
+slurm_args = " -p {partition} -N {nodes} -n {ntasks} -c {ncpus} -t {time} -J {job_name} -o {output} -e {error} ".format(partition=job_properties["cluster"]["partition"], nodes=job_properties["cluster"]["nodes"], ntasks=job_properties["cluster"]["ntasks"], ncpus=job_properties["cluster"]["ncpus"], time=job_properties["cluster"]["time"], job_name=job_properties["cluster"]["job-name"], output=job_properties["cluster"]["output"], error=job_properties["cluster"]["error"])
+
+cmdline.append(slurm_args)
+
+if dependencies:
+    cmdline.append("--dependency")
+    # only keep numbers in dependencies list
+    dependencies = [ x for x in dependencies if x.isdigit() ]
+    cmdline.append("afterok:" + ",".join(dependencies))
+
+cmdline.append(jobscript)
+
+os.system(" ".join(cmdline))
+```
+
+Submit with
+
+```bash
+(access)$> snakemake --cluster-config cluster.yaml -j 10 -pr --use-conda --immediate-submit --notemp --cluster "/scratch/users/<your_username>/bioinfo_tutorial/immediate_submit.py {dependencies}"
+```
+
+
+
 ## Useful stuff
 
 * To avoid too much overhead in the number of jobs submitted to SLURM, use the`group` directive to group rules that can run together in a single job.
