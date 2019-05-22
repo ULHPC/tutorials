@@ -405,7 +405,7 @@ Notice that the runtime has decreased, but I/O has increased.
 
 ### Configure job parameters with `cluster.yaml`
 
-Instead of reserving an interactive job and running snakemake inside that job, we want to use snakemake's cluster functionality to make it submit jobs to SLURM. For this we create a configuration file named `cluster.yaml` to define the values for the different `sbatch` options.
+Instead of reserving an interactive job and running snakemake inside that job, we want to use snakemake's cluster functionality to make it submit jobs to Slurm. For this we create a configuration file named `cluster.yaml` to define the values for the different `sbatch` options.
 
 Options under the `__default__` header apply to all rules, but it's possible to override them selectively with rule-specific options.
 
@@ -445,7 +445,7 @@ The meaning of the option `-j` changes when running in cluster mode to denote th
 (access)$> snakemake -j 10 -pr --use-conda --cluster-config cluster.yaml --cluster "sbatch $SLURM_ARGS"
 ```
 
-Let's have a look at the jobs that SLURM submitted:
+Let's have a look at the jobs that were submitted:
 
 ```bash
 # only job allocations
@@ -485,9 +485,9 @@ TODO: screenshot of IGV
 
 ## (Optional) Immediately submit all jobs
 
-Snakemake has an option to immediately submit all jobs to the cluster and tell the scheduler about the dependencies so they run in the right order. It submits the jobs one-by-one, collecting the job ID of each from the slurm output, and then forwards those job IDs as dependencies to the follow-up jobs.
+Snakemake has an option to immediately submit all jobs to the cluster and tell the scheduler about the dependencies so they run in the right order. It submits the jobs one-by-one, collecting the job ID of each from the Slurm output, and then forwards those job IDs as dependencies to the follow-up jobs.
 
-Unfortunately snakemake doesn't parse the job submission message from slurm cleanly, so the dependency lists look like   ` 'Submitted', 'batch', 'job', '374519', 'Submitted', 'batch', 'job', '374520'` instead of being just a list of the job IDs. Therefore, we need a wrapper script to get the dependencies right.
+Unfortunately snakemake doesn't parse the job submission message from Slurm cleanly, so the dependency lists look like   ` 'Submitted', 'batch', 'job', '374519', 'Submitted', 'batch', 'job', '374520'` instead of being just a list of the job IDs. Therefore, we need a wrapper script to get the dependencies right.
 
 Create a python script called `immediate_submit.py` with the following content:
 
@@ -526,7 +526,7 @@ cmdline.append(jobscript)
 os.system(" ".join(cmdline))
 ```
 
-Besides the dependencies this script now also takes care of all the other slurm options, so you don't need to define `SLURM_ARGS` anymore in the shell.
+Besides the dependencies this script now also takes care of all the other Slurm options, so you don't need to define `SLURM_ARGS` anymore in the shell.
 
 Make the script executable:
 
@@ -546,7 +546,7 @@ With `squeue -u <your_username>` you can check the status of the submitted jobs 
 
 ## Useful stuff
 
-* To avoid too much overhead in the number of jobs submitted to SLURM, use the`group` directive to group rules that can run together in a single job.
+* To avoid too much overhead in the number of jobs submitted to Slurm, use the`group` directive to group rules that can run together in a single job.
 * If your workflow runs for longer than just a few minutes, run snakemake inside`screen` or prefix it with `nohup`. This prevents the workflow from stopping when your SSH session get's disconnected.
 
 
