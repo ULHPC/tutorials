@@ -479,7 +479,9 @@ TODO: screenshot of IGV
 
 ## (Optional) Immediately submit all jobs
 
-We need a wrapper script to get the dependencies right. Unfortunately snakemake doesn't parse the job submission message from slurm cleanly, so the dependency lists look like   ` 'Submitted', 'batch', 'job', '374519', 'Submitted', 'batch', 'job', '374520'` instead of being just a list of the job IDs. 
+Snakemake has an option to immediately submit all jobs to the cluster and tell the scheduler about the dependencies so they run in the right order. It submits the jobs one-by-one, collecting the job ID of each from the slurm output, and then forwards those job IDs as dependencies to the follow-up jobs.
+
+Unfortunately snakemake doesn't parse the job submission message from slurm cleanly, so the dependency lists look like   ` 'Submitted', 'batch', 'job', '374519', 'Submitted', 'batch', 'job', '374520'` instead of being just a list of the job IDs. Therefore, we need a wrapper script to get the dependencies right.
 
 Create a python script called `immediate_submit.py` with the following content:
 
@@ -503,7 +505,7 @@ job_properties = read_job_properties(jobscript)
 cmdline = ["sbatch"]
 
 # set all the slurm submit options as before
-slurm_args = " -p {partition} -N {nodes} -n {ntasks} -c {ncpus} -t {time} -J {job_name} -o {output} -e {error} ".format(partition=job_properties["cluster"]["partition"], nodes=job_properties["cluster"]["nodes"], ntasks=job_properties["cluster"]["ntasks"], ncpus=job_properties["cluster"]["ncpus"], time=job_properties["cluster"]["time"], job_name=job_properties["cluster"]["job-name"], output=job_properties["cluster"]["output"], error=job_properties["cluster"]["error"])
+slurm_args = " -p {partition} -N {nodes} -n {ntasks} -c {ncpus} -t {time} -J {job-name} -o {output} -e {error} ".format(**job_properties["cluster"])
 
 cmdline.append(slurm_args)
 
@@ -518,11 +520,15 @@ cmdline.append(jobscript)
 os.system(" ".join(cmdline))
 ```
 
-Submit with
+Besides the dependencies this script now also takes care of all the other slurm options, so you don't need to define `SLURM_ARGS` anymore in the shell.
+
+Run snakemake with the following command:
 
 ```bash
-(access)$> snakemake --cluster-config cluster.yaml -j 10 -pr --use-conda --immediate-submit --notemp --cluster "/scratch/users/<your_username>/bioinfo_tutorial/immediate_submit.py {dependencies}"
+(access)$> snakemake --cluster-config cluster.yaml -j 50 -pr --use-conda --immediate-submit --notemp --cluster "/scratch/users/<your_username>/bioinfo_tutorial/immediate_submit.py {dependencies}"
 ```
+
+With `squeue -u <your_username>` you can check the status of the submitted jobs and see when they all have finished.
 
 
 
