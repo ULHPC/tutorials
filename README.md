@@ -204,6 +204,8 @@ You should always choose the peak caller based on how you expect your enriched r
 
 Besides the list of peaks in [BED](https://genome.ucsc.edu/FAQ/FAQformat.html#format1) format, MACS2 also produces coverage tracks.
 
+Add the following rule to your `Snakefile`:
+
 ```python
 rule peak_calling:
   input:
@@ -245,6 +247,8 @@ Note that snakemake will not run the mapping step for `bowtie2/INPUT-TC1-ST2-D0.
 ### Generate bigWig files for visualisation
 
 For easier visualisation and faster transfer, we convert the two coverage tracks from the MACS2 output to [bigWig](https://genome.ucsc.edu/goldenpath/help/bigWig.html) format.
+
+Add the following rule to your `Snakefile`:
 
 ```python
 rule bigwig:
@@ -330,6 +334,8 @@ So the value for threads should be the maximum that is reasonable for the respec
 
 We also need to add the option `-p` to the bowtie2 command-line call, to make it actually use those threads.
 
+Change the mapping rule in your `Snakefile` to the following:
+
 ```python
 rule mapping:
   input: "chip-seq/{sample}.fastq.gz"
@@ -399,7 +405,7 @@ Notice that the runtime has decreased, but I/O has increased.
 
 ### Configure job parameters with `cluster.yaml`
 
-Instead of reserving an interactive job and running snakemake inside that job, we want to use snakemake's cluster functionality to make it submit jobs to SLURM. For this we create configuration file named `cluster.yaml` to define the values for the different `sbatch` options.
+Instead of reserving an interactive job and running snakemake inside that job, we want to use snakemake's cluster functionality to make it submit jobs to SLURM. For this we create a configuration file named `cluster.yaml` to define the values for the different `sbatch` options.
 
 Options under the `__default__` header apply to all rules, but it's possible to override them selectively with rule-specific options.
 
@@ -522,7 +528,13 @@ os.system(" ".join(cmdline))
 
 Besides the dependencies this script now also takes care of all the other slurm options, so you don't need to define `SLURM_ARGS` anymore in the shell.
 
-Run snakemake with the following command:
+Make the script executable:
+
+```bash
+(access)$> chmod +x immediate_submit.py
+```
+
+Run snakemake with the following command and replace `<your_username>` with your ULHPC user login:
 
 ```bash
 (access)$> snakemake --cluster-config cluster.yaml -j 50 -pr --use-conda --immediate-submit --notemp --cluster "/scratch/users/<your_username>/bioinfo_tutorial/immediate_submit.py {dependencies}"
