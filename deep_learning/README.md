@@ -22,14 +22,13 @@ _Reference_:
     - MNIST dataset: see [Yann LeCun's website](http://yann.lecun.com/exdb/mnist/)
 
 --------------------
-Outline 2019
+Outline
 
-* Develop, with Keras. 
-	- code on cpu, later deploy on gpu
-	- env: python foss, add 
-	- test on gpu (interactive)
-* Launch batch Keras job. 
-	- run on gpu.
+* Develop a model with Keras
+	- Work on a CPU node
+	- Test on a GPU (interactive)
+* Launch batch job on a single node
+	- run on GPU
 
 --------------------
 ## Pre-requisites ##
@@ -52,36 +51,58 @@ In particular, start with the
 
 ### Step 1.a Connect to a cluster node
 
+We only need one core of one node, because this is for configuring the environment.
+
 ```bash
 $> ssh iris-cluster
-$> srun -N 1 -c 1 -p interactive --pty bash -i
-[<user-name>@iris-<some-node-number>scontrol show job $SLURM_JOB_ID  # sj $SLURM_JOB_ID
+$> srun -n1 -c1 -pinteractive --pty bash -i
+[]$ scontrol show job $SLURM_JOB_ID  # sj $SLURM_JOB_ID
 ```
 
-### Step 1.b Prepare python virtualenv
+### Step 1.b Prepare python virtualenvs
 
+Our working environment consists of:
+
+- python 3
+- CUDA toolkit for the GPU tests
+- tensorflow, both for CPU and GPU. 
+
+Tensorflow comes in different versions for CPU and GPU.
+We install both, and will select the correct one (matching the reserved node) before running the code.
+To do so, we can rely on virtualenv.
 If you have never used virtualenv before, please have a look at [Python1 tutorial](http://ulhpc-tutorials.readthedocs.io/en/latest/python/basics/).
 
 ```bash
-$># Load the required version of python:
-$> module load lang/Python/3.6.4-foss-2018a
-$># Save the module in a specific module list named 'tf': 
-$> module save tf
-# Create a directory for your environment:
-$> mkdir ~/venv && cd ~/venv
-$> virtualenv tfenv
-$> source ~/tfenv/bin/activate
-# deactivate to leave the tfenv environment
+[]$ # Load the required version of python, and the CUDA libraries:
+$> module load lang/Python/3.6.4-foss-2018a system/CUDA numlib/cuDNN
+$> module list # ml
 ```
-## Step 1.b. Install Tensorflow
+To quickly recover our configuration, when developing interactively, we can save a module configuration:
+```bash
+$> # Save the module in a specific module list named 'tf': 
+$> module save tf  # module s tf
+$> module purge
+$> module restore tf  # module r tf
+```
+Set up virtualenv:
+```bash
+$> # Create a common directory for your python environments:
+$> mkdir ~/venv && cd ~/venv
+$> # for the CPU tensorflow version
+$> virtualenv tfcpu
+$> # for the GPU tensorflow version
+$> virtualenv tfgpu
+```
+## Step 1.c. Install Tensorflow
 
 See also [installation notes](https://www.tensorflow.org/install/)
 
-Assuming you will use a `tfenv` virtualenv environment:
+You should have 2 virtualenvs created: tfcpu and tfgpu.
 
 ```bash
 # ENSURE you are in tfenv environment
-(tfenv) $> pip install tensorflow
+$> 
+(tfenv) $> pip install tensorflow-gpu
 ```
 
 To check the installation, within the python interpreter:
@@ -103,7 +124,7 @@ $> module restore tf
 
 If your virtual environment is not available, activate it:
 ```bash
-$> source ~/tfenv/bin/activate
+$> source ~/venv/tfenv/bin/activate
 (tfenv) $>
 ```
 
@@ -117,9 +138,12 @@ $> cd $VIRTUAL_ENV
 $> patch -p0 <imdb.patch
 ```
 
+### TensorFlow example
+
 Follow the tutorial on: 
 [TensorFlow text classification tutorial](https://www.tensorflow.org/tutorials/keras/basic_text_classification).
 
+This tutorial can be assembled on a regular, CPU-only, node.
 
 -----------------------------------------------------------------
 ## 3. Batch training of a TensorFlow application ##
