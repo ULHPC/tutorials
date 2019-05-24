@@ -7,16 +7,20 @@
 
 [![](https://github.com/ULHPC/tutorials/raw/devel/deep_learning/cover_slides.png)](https://github.com/ULHPC/tutorials/raw/devel/deep_learning/slides.pdf)
 
-The objective of this tutorial is to demonstrate how to build and run on top of the [UL HPC](http://hpc.uni.lu) platform a deep learning application using the Tensorflow framework.
+This tutorial demonstrates how to develop and run on the [UL HPC](http://hpc.uni.lu) platform a deep learning application using the Tensorflow framework.
+
+The scope of this tutorial is *single* node execution, multi-CPU and multi-GPU.
+Another tutorial covers multi-node execution.
 
 --------------------
 Outline
 
-* Develop a model with Tensorflow's Keras
-	- Work on a CPU or GPU node (interactive)
-	- Test on a GPU (interactive)
-* Launch job on a single node
-	- run on GPU (batch)
+* Developing deep learning model with Tensorflow Keras on the HPC
+	- develop, interactively, on a CPU (or GPU) node
+	- run on a GPU node (still interactive)
+* Batch execution on a single node
+	- run on CPU node
+	- run on GPU node
 
 --------------------
 ## Pre-requisites ##
@@ -24,15 +28,12 @@ Outline
 Ensure you are able to [connect to the UL HPC clusters](https://hpc.uni.lu/users/docs/access.html)
 **For all tests and compilation, you MUST work on a computing node**
 
-You'll need to download the data sources required by this tutorial once connected.
+This hands-on is **not** a tutorial on Deep Learning (DL).
+For that, we encourage you to take a look at:
 
-This hands-on is **not** about learning Machine Machine Learning (ML)/Deep Learning (DL).
-For that, we encourage you to take a look at the **EXCELLENT** courses being taught at as part of [Master Datascience Paris Saclay](http://datascience-x-master-paris-saclay.fr/) and available on
-
-https://github.com/m2dsupsdlclass/lectures-labs
-
-In particular, start with the
-[Introduction to Deep Learning](https://m2dsupsdlclass.github.io/lectures-labs/slides/01_intro_to_deep_learning/index.html#1) _by_ Charles Ollion and Olivier Grisel.
+- [MIT introduction to deep learning](http://introtodeeplearning.com/)
+- [Nvidia resources on deep learning](https://www.nvidia.com/en-us/deep-learning-ai/), and [developer site](https://developer.nvidia.com/)
+- the courses taught at [Master Datascience Paris Saclay](http://datascience-x-master-paris-saclay.fr/) and available on https://github.com/m2dsupsdlclass/lectures-labs
 
 ----------------------------------
 ## 1. Preliminary installation ##
@@ -45,19 +46,23 @@ Request such resource from the iris-cluster:
 ```bash
 []$ ssh iris-cluster
 []$ srun -n1 -c1 -pinteractive --pty bash -i
-[]$ scontrol show job $SLURM_JOB_ID  # sj $SLURM_JOB_ID
+[]$ # Inspect your resources, several ways:
+[]$ scontrol show job $SLURM_JOB_ID
+[]$ sj $SLURM_JOB_ID  # alias for the above
+[]$ env | grep SLURM  # similar information via env variables
 ```
 
 ### Step 1.b Prepare python virtualenv(s)
 
 Our working environment will consist of:
 
-- Python 3
-- CUDA toolkit for the GPU tests
+- Python 3,
+- CUDA toolkit for the GPU tests,
 - Tensorflow, both for CPU and GPU. 
 
 Tensorflow comes in different versions for CPU and GPU.
 We install both, and will select the correct one (matching the reserved node) before running the code.
+
 To do so, we can rely on virtualenv.
 If you have never used virtualenv before, please have a look at [Python1 tutorial](http://ulhpc-tutorials.readthedocs.io/en/latest/python/basics/).
 
@@ -75,7 +80,7 @@ To quickly recover our configuration, when developing interactively, we can save
 ```
 Set up virtualenv:
 ```bash
-[]$ # Create a common directory for your python environments:
+[]$ # Create a common directory for your python 3 environments:
 []$ mkdir ~/venv && cd ~/venv
 []$ # for the CPU tensorflow version
 []$ virtualenv tfcpu
@@ -89,11 +94,11 @@ See also [installation notes](https://www.tensorflow.org/install/)
 
 You should have 2 virtualenvs created: tfcpu and tfgpu.
 
-First install for the CPU environment (that matches the reservation request):
+First install for the *CPU environment* (that matches the current reservation request):
 
 ```bash
 []$ source ~/venv/tfcpu/bin/activate
-(tfcpu) []$ pip install tensorflow
+(tfcpu) []$ pip install tensorflow  # check the prompt for the environment
 (tfcpu) []$ # Check the installation:
 (tfcpu) []$ python -c "import tensorflow as tf; print('tf:{}, keras:{}.'.format(tf.__version__, tf.keras.__version__))"
 ```
@@ -108,43 +113,101 @@ In case of exception when unpickling the training data, apply a patch `imdb.patc
 (tfcpu) []$ patch -p0 <imdb.patch
 ```
 
+Then install for the *GPU environment*.
+You can install from a CPU node, but not execute any GPU specific code.
+To change virtual environments, you do not need to `deactivate` the tfcpu environment first:
+
 ```bash
-[]$ # ENSURE you are in tfgpu environment
 []$ source ~/venv/tfgpu/bin/activate
-(tfgpu) $> pip install tensorflow-gpu
+(tfgpu) []$ pip install tensorflow-gpu  # check the prompt for the environment
+(tfgpu) []$ # Check the installation:
+(tfgpu) []$ python -c "import tensorflow as tf; print('tf:{}, keras:{}.'.format(tf.__version__, tf.keras.__version__))"
+```
+Apply the patch again (patch file should still be there):
+```bash
+(tfgpu) []$ cd $VIRTUAL_ENV
+(tfgpu) []$ patch -p0 <imdb.patch
 ```
 
 -----------------------------------------------------------------
-## 2. Interactive development of a TensorFlow tutorial ##
+## 2. Interactive development of a Tensorflow application ##
+
+In this step, we will develop a tensorflow model on a CPU node (more available), and execute it interactively on both CPU and GPU nodes.
 
 ### Pre-requisites
+
+Connect to an iris cluster node, GPU is not required.
+See above to request such a resource.
 
 If Python is not already loaded:
 ```bash
 []$ module restore tf
 ```
-
 If your virtual environment is not available, activate it:
 ```bash
-[]$ source ~/venv/tfenv/bin/activate
-(tfenv) $>
+[]$ source ~/venv/tfcpu/bin/activate
+(tfcpu) []$ 
 ```
 
-### TensorFlow example
+### Tensorflow example model
 
-Follow the tutorial on: 
+The Tensorflow model can be obtained from the tutorial on: 
 [TensorFlow text classification tutorial](https://www.tensorflow.org/tutorials/keras/basic_text_classification).
 
-This tutorial can be assembled on a regular, CPU-only, node.
+You should end up with a standalone python program that defines, trains and predicts a model.
+
+### GPU interactive execution
+
+Here, we will execute the functioning program developed above on a GPU node, interactively.
+
+Request such resource from the iris-cluster:
+```bash
+[]$ ssh iris-cluster
+[]$ srun -n1 -c1 --gres:gpu:1 -pgpu --pty bash -i
+```
+Load the modules, and the choose the proper python environment:
+```bash
+[]$ module restore tf
+[]$ source ~/venv/tfgpu/bin/activate
+(tfgpu) []$ 
+```
+Run the same python/tensorflow program that was developed under the CPU node.
 
 -----------------------------------------------------------------
-## 3. Batch training of a TensorFlow application ##
+## 3. Batch execution of a Tensorlow application ##
 
-One solution to the tutorial can be found here [imdb-train.py](./imdb-train.py).
+Now, we will execute the same Tensorflow program in batch mode, on a CPU or GPU node.
+
+One program from the tutorial is here [imdb-train.py](./imdb-train.py).
+
+To run in batch mode, you need a *launcher* file, that is passed as an argument to `sbatch`.
+From the previous interactive sessions, you can write such launcher files.
+
+If you get stuck, here is an initial version for the CPU node:
+```bash
+#!/bin/bash -l
+
+#SBATCH --job-name="CPU imdb"
+#SBATCH --nodes=1
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=1
+#SBATCH --time=0-00:10:00
+#SBATCH --partition=batch
+#SBATCH --qos=qos-batch
+
+module restore tf
+source ~/venv/tfcpu/bin/activate
+srun python imdb-train.py
+```
+
+Adjust the script for the GPU node.
+(See [tfgpu.sh](./tfgpu.sh) for one example)
+
+What happens if you change the resources assigned to this job? (number of cores, number of GPUs)
+
 
 References:
 
 * [TensorFlow text classification tutorial](https://www.tensorflow.org/tutorials/keras/basic_text_classification)
-* [Tensorflow Tutorial](https://www.tensorflow.org/versions/master/get_started/mnist/beginners)
 
 
