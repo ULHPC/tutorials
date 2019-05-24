@@ -150,8 +150,9 @@ If your virtual environment is not available, activate it:
 
 ### Tensorflow example model
 
-The Tensorflow model can be obtained from the tutorial on: 
-[TensorFlow text classification tutorial](https://www.tensorflow.org/tutorials/keras/basic_text_classification).
+Head to the 
+[TensorFlow text classification tutorial](https://www.tensorflow.org/tutorials/keras/basic_text_classification)
+and follow the steps there to assemble a Tensorflow application.
 
 You should end up with a standalone python program that defines, trains and predicts a model.
 
@@ -170,7 +171,7 @@ Load the modules, and the choose the proper python environment:
 []$ source ~/venv/tfgpu/bin/activate
 (tfgpu) []$ 
 ```
-Run the same python/tensorflow program that was developed under the CPU node.
+Run the *same* tensorflow tutorial program that was developed under the CPU node.
 
 -----------------------------------------------------------------
 ## 3. Batch execution of a Tensorlow application ##
@@ -203,10 +204,4 @@ Adjust the script for the GPU node.
 (See [tfgpu.sh](./tfgpu.sh) for one example)
 
 What happens if you change the resources assigned to this job? (number of cores, number of GPUs)
-
-
-References:
-
-* [TensorFlow text classification tutorial](https://www.tensorflow.org/tutorials/keras/basic_text_classification)
-
 
