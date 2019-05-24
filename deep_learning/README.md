@@ -13,14 +13,14 @@ The scope of this tutorial is *single* node execution, multi-CPU and multi-GPU.
 Another tutorial covers multi-node execution.
 
 --------------------
-Outline
+## Outline ##
 
 * Developing deep learning model with Tensorflow Keras on the HPC
 	- develop, interactively, on a CPU (or GPU) node
 	- run on a GPU node (still interactive)
 * Batch execution on a single node
-	- run on CPU node
-	- run on GPU node
+	- CPU only
+	- GPU accelerated
 
 --------------------
 ## Pre-requisites ##
@@ -104,8 +104,7 @@ First install for the *CPU environment* (that matches the current reservation re
 ```
 
 At the time of writing, recent versions of numpy broke a tensorflow tutorial source file.
-In case of exception when unpickling the training data, apply a patch `imdb.patch`, located at 
-[this tutorial](https://github.com/ULHPC/tutorials/tree/devel/deep_learning)
+In case of exception when unpickling the training data, apply a patch [`imdb.patch`](./imdb.patch). 
 
 ```bash
 (tfcpu) []$ cp imdb.patch $VIRTUAL_ENV  
