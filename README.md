@@ -20,14 +20,15 @@ It can encapsulate software and packages in environments, so you can have multip
 
 We will use conda on two levels in this tutorial. First we use a conda environment to install and run snakemake. Second, inside the snakemake workflow we will define separate conda environments for each step.
 
-1. Start a job on the cluster:
+1. Connect to the cluster
+
+2. Start an interactive job:
 
    ```bash
-   (laptop)$> ssh iris-cluster
    (access)$> si
    ```
-
-2. Install conda:
+   
+3. Install conda:
 
    ```bash
    (node)$> mkdir -p $SCRATCH/downloads
@@ -49,19 +50,20 @@ We will use conda on two levels in this tutorial. First we use a conda environme
    (node)$> conda update conda 
    ```
 
-3. Create a new conda environment and activate it:
+4. Create a new conda environment and activate it:
 
    ```bash
    (node)$> conda create -n bioinfo_tutorial
    (node)$> conda activate bioinfo_tutorial
    ```
    You can see that your prompt will now be prefixed with `(bioinfo_tutorial)` to show which environment is active. For the rest of the tutorial make sure that you always have this environment active.
-4. Install snakemake:
+
+5. Install snakemake:
 
    ```bash
    (node)$> conda install -c bioconda -c conda-forge snakemake-minimal
    ```
-   
+
    
 
 ## Create snakemake workflow
@@ -496,12 +498,17 @@ Now that we have completed the workflow, let's have a look at the results.
 
 For visualisation, [download IGV](http://software.broadinstitute.org/software/igv/download), or use any other genome browser of your choice.
 
-To copy the results from the cluster to your laptop, run the following and replace `<your_username>` with your ULHPC user login. Pay attention in which directory you are, so you can find the files again.
+To copy the results from the cluster to your laptop, run the following in a local terminal (Linux and MacOS) or a MobaXterm local session (Windows) and replace `<your_username>` with your ULHPC user login. For alternative ways to transfer files, see the [documentation on the HPC website](https://hpc.uni.lu/users/docs/filetransfer.html). Pay attention in which directory you are, so you can find the files again.
 
 ```bash
 (laptop)$> mkdir bioinfo_tutorial
 (laptop)$> cd bioinfo_tutorial
-(laptop)$> rsync -avz iris-cluster:/scratch/users/<your_username>/bioinfo_tutorial/output .
+
+# check where you are
+(laptop)$> pwd
+
+# transfer the output directory
+(laptop)$> rsync -avz --rsh='ssh -p 8022' <your_username>@access-iris.uni.lu:/scratch/users/<your_username>/bioinfo_tutorial/output .
 ```
 
 Start IGV and select mouse mm10 as genome in the drop-down menu in the upper left. Go to "File" -> "Load from File…" and select all three files that you have copied from the cluster.
@@ -587,4 +594,4 @@ With `squeue -u <your_username>` you can check the status of the submitted jobs 
 
 ## Acknowledgements
 
-Many thanks to Nikola de Lange, Aurélien Ginolhac, Roland Krause and Cedric Laczny for their help in developing this tutorial.
+Many thanks to Aurélien Ginolhac, Cedric Laczny, Nikola de Lange and Roland Krause for their help in developing this tutorial.
