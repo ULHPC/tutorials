@@ -2,13 +2,21 @@
 
 Author: Sarah Peter
 
-In this tutorial you will learn how to run a ChIP-seq analysis with the [snakemake workflow engine](https://snakemake.readthedocs.io/en/stable/)  on the cluster.
+In this tutorial you will learn how to run a [ChIP-seq](https://en.wikipedia.org/wiki/ChIP-sequencing) analysis with the [snakemake workflow engine](https://snakemake.readthedocs.io/en/stable/)  on the cluster.
 
 **Disclaimer:** In order to keep this tutorial simple, we use default parameters for the different tools as much as possible. However, for a real analysis you should always adapt the parameters to your dataset. Also, be aware that the results of some steps might be screwed, because we only work on data from one chromosome.
 
 ## Setup the environment
 
-For this tutorial we will use the [`conda` package manager](https://www.anaconda.com/) to install the required tools. It can encapsulate software and packages in environments, so you can have multiple different versions of a software installed at the same time and avoid incompatibilities between different tools. It also has functionality to easily port and replicate environments, which is important to ensure reproducibility of analyses.
+For this tutorial we will use the [`conda` package manager](https://www.anaconda.com/) to install the required tools. 
+
+> Conda is an open source package management system and environment management system that runs on Windows, macOS and Linux. Conda quickly installs, runs and updates packages and their dependencies. Conda easily creates, saves, loads and switches between environments on your local computer. It was created for Python programs, but it can package and distribute software for any language.
+>
+> Conda as a package manager helps you find and install packages. If you need a package that requires a different version of Python, you do not need to switch to a different environment manager, because conda is also an environment manager. With just a few commands, you can set up a totally separate environment to run that different version of Python, while continuing to run your usual version of Python in your normal environment.
+> 
+> &mdash; <cite>[Conda  manual](https://docs.conda.io/en/latest/index.html)</cite>
+
+It can encapsulate software and packages in environments, so you can have multiple different versions of a software installed at the same time and avoid incompatibilities between different tools. It also has functionality to easily port and replicate environments, which is important to ensure reproducibility of analyses.
 
 We will use conda on two levels in this tutorial. First we use a conda environment to install and run snakemake. Second, inside the snakemake workflow we will define separate conda environments for each step.
 
@@ -58,7 +66,28 @@ We will use conda on two levels in this tutorial. First we use a conda environme
 
 ## Create snakemake workflow
 
+> The Snakemake workflow management system is a tool to create **reproducible and scalable** data analyses. Workflows are described via a human readable, Python based language. They can be seamlessly scaled to server, cluster, grid and cloud environments, without the need to modify the workflow definition. Finally, Snakemake workflows can entail a description of required software, which will be automatically deployed to any execution environment.
+> 
+> &mdash; <cite>[Snakemake manual](https://snakemake.readthedocs.io/en/stable/index.html)</cite>
+
+Snakemake is a very useful tool if you need to combine multiple steps using different software into a coherent workflow. It comes with many features desired for running workflows, like 
+
+* ensuring all input and result files are present
+* restarting at a failed step
+* rerunning (parts of a) pipeline when (some of) the input changed
+* support for wildcards to apply a step to a set of files
+* automatically parallelising where possible
+* software management
+* collecting benchmark data
+* modularisation
+* creating launcher scripts and submitting jobs to the cluster
+* creating a visualisation of the workflow steps (see below)
+
 In this tutorial we will analyse [ChIP-seq data](https://www.ebi.ac.uk/ena/data/view/PRJEB20933) from the paper [Gérard D, Schmidt F, Ginolhac A, Schmitz M, Halder R, Ebert P, Schulz MH, Sauter T, Sinkkonen L. Temporal enhancer profiling of parallel lineages identifies AHR and GLIS1 as regulators of mesenchymal multipotency. *Nucleic Acids Research*, Volume 47, Issue 3, 20 February 2019, Pages 1141–1163, https://doi.org/10.1093/nar/gky1240](https://www.ncbi.nlm.nih.gov/pubmed/30544251) published by our colleagues in LSRU.
+
+We will set up the following workflow:
+
+![DAG](img/dag.png)
 
 To speed up computing time we use source files that only contain sequencing reads that map to chromosome 12. The files for input (control) and H3K4me3 (ChIP) are available on the cluster in the directory `/work/projects/ulhpc-tutorials/bio/snakemake/chip-seq` and the corresponding reference in `/work/projects/ulhpc-tutorials/bio/snakemake/reference`.
 
@@ -177,6 +206,8 @@ If everything is fine we can run the rule to create the file `bowtie2/INPUT-TC1-
 ```bash
 (node)$> snakemake -pr --use-conda bowtie2/INPUT-TC1-ST2-D0.12.bam
 ```
+
+The first run will take a bit longer, because snakemake creates the conda environment. In subsequent runs it will just activate the existing environment. However, it will recognise if the yaml files changes and then recreate the environment.
 
 Check the mapping statistics and the benchmark report:
 
@@ -314,7 +345,7 @@ Snakemake can visualise the dependency graph of the workflow with the following 
 (node)$> snakemake --dag | dot -Tpng > dag.png
 ```
 
-![DAG](dag.png)
+![DAG](img/dag.png)
 
 ## Cluster configuration for snakemake
 
@@ -358,10 +389,10 @@ If we want to rerun the workflow to compare different options, we need to delete
 
 ```python
 rule clean:
-    shell:  
-        """
-        rm -rf bowtie2/ macs2/ output/
-        """
+  shell:  
+    """
+    rm -rf bowtie2/ macs2/ output/
+    """
 ```
 
 **Warning:** Be careful with `rm -rf` and double-check you're deleting the right directories, since it will remove everything without asking.
@@ -399,7 +430,7 @@ s      h:m:s   max_rss max_vms max_uss max_pss io_in io_out mean_load
 
 Notice that the runtime has decreased, but I/O has increased.
 
-**Exercise:** Try several options for `-j` up to the number of cores you reserved (6) and check the bowtie2 command and the values in the benchmark. 
+**Exercise:** Try several options for `-j` up to the number of cores you reserved (6) and check the bowtie2 command and the values in the benchmark. Don't forget the clean-up between the tries.
 
 
 
@@ -479,7 +510,9 @@ In the search box enter for example "Ahr" to check the signal around one of the 
 
 Pay attention to the scale on which the two coverage tracks are shown. You can right-click on the track name on the left and select "Autoscale" to adjust the range.
 
-TODO: screenshot of IGV
+When you hover over the blocks in the `TC1-ST2-D0.12_peaks.narrowPeak` track, you can see additional information about the called peaks, e.g. p-value. The peaks should be at the transcription start sites, because that is what H3K4me3 marks. Pay attention to the arrows in the "Refseq genes" track to see in which direction transcription goes.
+
+![IGV](img/IGV_annotated.jpg)
 
 
 
@@ -537,6 +570,7 @@ Make the script executable:
 Run snakemake with the following command and replace `<your_username>` with your ULHPC user login:
 
 ```bash
+(access)$> snakemake clean
 (access)$> snakemake --cluster-config cluster.yaml -j 50 -pr --use-conda --immediate-submit --notemp --cluster "/scratch/users/<your_username>/bioinfo_tutorial/immediate_submit.py {dependencies}"
 ```
 
