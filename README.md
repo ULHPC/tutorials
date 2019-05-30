@@ -87,7 +87,7 @@ Snakemake is a very useful tool if you need to combine multiple steps using diff
 * creating launcher scripts and submitting jobs to the cluster
 * creating a visualisation of the workflow steps (see below)
 
-In this tutorial we will analyse [ChIP-seq data](https://www.ebi.ac.uk/ena/data/view/PRJEB20933) from the paper [Gérard D, Schmidt F, Ginolhac A, Schmitz M, Halder R, Ebert P, Schulz MH, Sauter T, Sinkkonen L. Temporal enhancer profiling of parallel lineages identifies AHR and GLIS1 as regulators of mesenchymal multipotency. *Nucleic Acids Research*, Volume 47, Issue 3, 20 February 2019, Pages 1141–1163, https://doi.org/10.1093/nar/gky1240](https://www.ncbi.nlm.nih.gov/pubmed/30544251) published by our colleagues in LSRU.
+In this tutorial we will analyse [ChIP-seq data](https://www.ebi.ac.uk/ena/data/view/PRJEB20933) from the paper [Gérard D, Schmidt F, Ginolhac A, Schmitz M, Halder R, Ebert P, Schulz MH, Sauter T, Sinkkonen L. Temporal enhancer profiling of parallel lineages identifies AHR and GLIS1 as regulators of mesenchymal multipotency. *Nucleic Acids Research*, Volume 47, Issue 3, 20 February 2019, Pages 1141–1163, https://doi.org/10.1093/nar/gky1240](https://www.ncbi.nlm.nih.gov/pubmed/30544251) published by our colleagues at LSRU.
 
 We will set up the following workflow:
 
@@ -129,7 +129,7 @@ A basic rule for mapping a fastq file with [bowtie2](http://bowtie-bio.sourcefor
 
 ```python
 rule mapping:
-  input: "chip-seq/H3K4-TC1-ST2-D0.12.fastq.gz "
+  input: "chip-seq/H3K4-TC1-ST2-D0.12.fastq.gz"
   output: "bowtie2/H3K4-TC1-ST2-D0.12.bam"
   shell:
     """
@@ -346,7 +346,7 @@ Finally run the workflow again, this time without a specific target file:
 Snakemake can visualise the dependency graph of the workflow with the following command:
 
 ```bash
-(node)$> snakemake --dag | dot -Tpng > dag.png
+(node)$> snakemake --dag | dot -Tpdf > dag.pdf
 ```
 
 ![DAG](img/dag.png)
@@ -444,6 +444,8 @@ Instead of reserving an interactive job and running snakemake inside that job, w
 
 Options under the `__default__` header apply to all rules, but it's possible to override them selectively with rule-specific options.
 
+Create the file `cluster.yaml` in the same directory as the `Snakefile` with the following content:
+
 ```yaml
 __default__:
   time: "0-00:01:00"
@@ -471,6 +473,7 @@ Now we need to map the variables defined in `cluster.yaml` to the command-line p
 The meaning of the option `-j` changes when running in cluster mode to denote the maximum number of simultaneous jobs.
 
 ```bash
+(node)$> exit
 (access)$> cd $SCRATCH/bioinfo_tutorial
 (access)$> conda activate bioinfo_tutorial
 (access)$> snakemake clean
