@@ -367,9 +367,19 @@ We add the `thread` directive to the snakemake rule for the mapping step, to tel
 
 So the value for threads should be the maximum that is reasonable for the respective software. For many software the speed-up plateaus at a certain number of threads or even starts to decrease again. For a regular bowtie2 run 16 is a good maximum, but for this tutorial we will only go up to 4 because we have a small dataset.
 
-We also need to add the option `-p` to the bowtie2 command-line call, to make it actually use those threads.
+In the **mapping rule** in your `Snakefile` add the following line after the `conda` directive:
 
-Change the mapping rule in your `Snakefile` to the following:
+```python
+  threads: 4
+```
+
+We also need to add the option `-p {threads}` to the bowtie2 command-line call, to make it actually use those threads:
+
+```python
+    bowtie2 -p {threads} -x {params.idx} -U {input} 2> {log} | \
+```
+
+such that the complete mapping rule now is the following:
 
 ```python {highlight=[8,11]}
 rule mapping:
