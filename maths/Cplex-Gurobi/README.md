@@ -237,3 +237,9 @@ rm ${GUROBI_INNER_LAUNCHER}
 
 
 Copy and paste the previous script into a file ```gurobi_dist.slurm ``` and launch a batch job using the ```sbatch``` command as follows ``` sbatch gurobi_dist.slurm```.
+
+## Next 
+
+
+1. Download and try to solve other [miplib](http://miplib2017.zib.de) instances using Cplex and/or Gurobi
+2. Modify the number of parallel tasks  

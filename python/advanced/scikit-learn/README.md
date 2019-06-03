@@ -16,7 +16,7 @@ This library allows you to tackle:
 * Regression
 * etc ...
 
-In this tutorial, we are going to show how to perform parrallel machine learning computation on a High Performance Computing platform such as the **Iris cluster**.
+In this tutorial, we are going to show how to perform parrallel machine learning computations on a High Performance Computing platform such as the **Iris cluster**.
 
 ## Dependencies
 
@@ -63,10 +63,10 @@ Clement Parisot in the tutorial **Python : Use Jupyter notebook on UL HPC** give
 
 #!/bin/bash -l
 
-#BATCH -p batch           #available partition, depends on your HPC 
+#BATCH -p batch           #batch partition 
 #SBATCH -J ipy_engines      #job name
-#SBATCH -n 10                # 4 cores, you can increase it
-#SBATCH -N 2                # 1 node, you can increase it
+#SBATCH -n 10                # 10 cores, you can increase it
+#SBATCH -N 2                # 2 node, you can increase it
 #SBATCH -t 1:00:00         # Job is killed after 1h
 
 module load lang/Python/3.6.4-foss-2018a-bare 
@@ -387,3 +387,20 @@ plt.savefig("validation.png")
 ```
 
 ![Scores heatmap](./images/validation.png)
+
+## Next 
+
+1. (Part 1.) Adapt the script for another unsupervised algorithms  
+2. (Part 2.) Increase the number of parameters to be searched by the GridSearchCV approach
+
+
+## References
+
+See the following books to know all about python parallel programming.
+
+
+<center>
+![](https://books.google.lu/books/content?id=Aht1CgAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&imgtk=AFLRE72vWMXyOSaMskI0_sf5DeB7ihiLbyKwwR2XuTzUgG8RW-R1zeT_HYQOgB7cLJzHISLSNnDJbiFOnHBSlKbiIf4vqPEveKi5fle22hnXB32EQGYmluTDCgyyw7SZRBYUPQtclx1A)
+![](https://books.google.lu/books/content?id=VQDgDAAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&imgtk=AFLRE72bAKvQFTHad239xCDVRI_SVuA7MsLyGI-Kjv8hcEelMXlXkfiL3KCFuDVfU5X-ucXh8HQ0P77am_9Tsi0c8xE9Z7xgHAz7yEC5fMsNp96XeE1J2PHTJbv2zLUg3ATEp_e43jKw)
+![](https://books.google.lu/books/content?id=tyfJBQAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&imgtk=AFLRE73VaVDmXxCPJuh-xl0gVq-cy62z_emWyovesSXEuyv7pdQmOKJ_T22AVsGxZi0D2kdCCiguXqkgM-on8iKgMN00OXKFV3NhCJz1AqGeqJ1Gvv2C12G8IYDHmFi-eAJAZz_EjfHd)
+</center> 

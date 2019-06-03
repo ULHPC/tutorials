@@ -32,6 +32,7 @@ So far, the following tutorials are proposed:
 | _Python_                | [Prototyping with Python](python/basics/)                                                   | beginners      |
 |                         | [Advanced prototyping with Python](python/advanced/jupyter-celery)                          | intermediate   |
 |                         | [Parallel machine learning with scikit-learn](python/advanced/scikit-learn)                 | intermediate   |
+|                         | [Parallel evolutionary computing](python/advanced/scoop-deap)                		| intermediate   |
 | _Mathematics_           | [MATLAB (interactive, passive and sequential jobs)](maths/matlab/basics/)                   | intermediate   |
 |                         | [Advanced MATLAB execution: checkpointing and parallel jobs](maths/matlab/advanced/)        | advanced       |
 |                         | [R / Statictical Computing](maths/R/)                                                       | intermediate   |
