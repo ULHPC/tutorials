@@ -371,7 +371,7 @@ We also need to add the option `-p` to the bowtie2 command-line call, to make it
 
 Change the mapping rule in your `Snakefile` to the following:
 
-```python
+```python {highlight=[8,11]}
 rule mapping:
   input: "chip-seq/{sample}.fastq.gz"
   output: "bowtie2/{sample}.bam"
