@@ -9,11 +9,11 @@ This document describes how to prepare the data for the tutorial.
 ChIP-seq data:
 
 * H3K4me3: https://www.ebi.ac.uk/ena/data/view/ERR2008263
-* Input: https://www.ebi.ac.uk/ena/data/view/ERR2014243
+* Input: https://www.ebi.ac.uk/ena/data/view/ERR2008264
 
 ```bash
 wget "ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR200/003/ERR2008263/ERR2008263.fastq.gz"
-wget "ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR201/003/ERR2014243/ERR2014243.fastq.gz"
+wget "ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR200/004/ERR2008264/ERR2008264.fastq.gz"
 mv ERR2008263.fastq.gz TC1-H3K4-ST2-D0.fastq.gz
 mv ERR2014243.fastq.gz TC1-INPUT-ST2-D0.fastq.gz
 ```
