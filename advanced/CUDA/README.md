@@ -253,6 +253,7 @@ Edit the source code to update the execution configuration so that the success m
 /*
  * FIXME
  */
+
 #include <cstdio>
 
 void printSuccessForCorrectExecutionConfiguration()
@@ -328,29 +329,23 @@ int main()
 }
 ```
 
-### Coordinating Parallel Threads
-Using Block Dimensions for More Parallelization
-There is a limit to the number of threads that can exist in a thread block: 1024 to be precise. In order to increase the amount of parallelism in accelerated applications, we must be able to coordinate among multiple thread blocks.
+### Using Block Dimensions for More Parallelization
 
-CUDA Kernels have access to a special variable that gives the number of threads in a block: blockDim.x. Using this variable, in conjunction with blockIdx.x and threadIdx.x, increased parallelization can be accomplished by organizing parallel execution accross multiple blocks of multiple threads with the idiomatic expression threadIdx.x + blockIdx.x * blockDim.x. Here is a detailed example.
-
-The execution configuration <<<10, 10>>> would launch a grid with a total of 100 threads, contained in 10 blocks of 10 threads. We would therefore hope for each thread to have the ability to calculate some index unique to itself between 0 and 99.
-
-If block blockIdx.x equals 0, then blockIdx.x * blockDim.x is 0. Adding to 0 the possible threadIdx.x values 0 through 9, then we can generate the indices 0 through 9 within the 100 thread grid.
-If block blockIdx.x equals 1, then blockIdx.x * blockDim.x is 10. Adding to 10 the possible threadIdx.x values 0 through 9, then we can generate the indices 10 through 19 within the 100 thread grid.
-If block blockIdx.x equals 5, then blockIdx.x * blockDim.x is 50. Adding to 50 the possible threadIdx.x values 0 through 9, then we can generate the indices 50 through 59 within the 100 thread grid.
-If block blockIdx.x equals 9, then blockIdx.x * blockDim.x is 90. Adding to 90 the possible threadIdx.x values 0 through 9, then we can generate the indices 90 through 99 within the 100 thread grid.
+CUDA Kernels have access to another special variable that gives the number of threads in a block: blockDim.x. 
+Using this variable, in conjunction with blockIdx.x and threadIdx.x, increased parallelization can be accomplished by organizing parallel execution accross multiple blocks of multiple threads with the idiomatic expression threadIdx.x + blockIdx.x * blockDim.x. 
 
 ### Exercise: Accelerating a For Loop with Multiple Blocks of Threads
 
 Currently, the loop function inside 02-multi-block-loop.cu runs a for loop that will serially print the numbers 0 through 9. Refactor the loop function to be a CUDA kernel which will launch to execute N iterations in parallel. After successfully refactoring, the numbers 0 through 9 should still be printed. For this exercise, as an additional constraint, use an execution configuration that launches at least 2 blocks of threads. Refer to the solution if you get stuck.
 
-#include <stdio.h>
-
+```
 /*
- * Refactor `loop` to be a CUDA Kernel. The new kernel should
- * only do the work of 1 iteration of the original loop.
+ * Refactor `loop` to be a CUDA Kernel. 
+ * The new kernel should only do the work 
+ * of 1 iteration of the original loop.
  */
+
+#include <cstdio>
 
 void loop(int N)
 {
@@ -374,9 +369,7 @@ int main()
   int N = 10;
   loop(N);
 }
-
-
-!nvcc -arch=sm_70 -o multi-block-loop 04-loops/02-multi-block-loop.cu -run
+```
 
 ## Allocating Memory to be accessed on the GPU and the CPU
 
