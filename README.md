@@ -6,7 +6,27 @@ In this tutorial you will learn how to run a [ChIP-seq](https://en.wikipedia.org
 
 **Disclaimer:** In order to keep this tutorial simple, we use default parameters for the different tools as much as possible. However, for a real analysis you should always adapt the parameters to your dataset. Also, be aware that the results of some steps might be screwed, because we only work on data from one chromosome.
 
-## Setup the environment
+## Table of contents
+
+1. [Setup the environment](#env)
+2. [Create snakemake workflow](#snakemake)
+   1. [Mapping](#mapping)
+   2. [Peak calling](#peaks)
+   3. [Generate bigWig files for visualisation](#bigwig)
+   4. [Summary rule](#summary)
+3. [Cluster configuration for snakemake](#cluster)
+   1. [Adjust mapping step to run on multiple threads](#multithreading)
+   2. [Configure job parameters with `cluster.yaml`](#job_params)
+   3. [Run snakemake with cluster configuration](#cluster_config)
+4. [Inspect results in IGV][#igv]
+5. [(Optional) Immediately submit all jobs](#immediate_submit)
+6. [Useful stuff](#useful)
+7. [References](#references)
+8. [Acknowledgements](#acknowledgements)
+
+<a name="env"></a>
+
+## Setup the environment 
 
 For this tutorial we will use the [`conda` package manager](https://www.anaconda.com/) to install the required tools. 
 
@@ -68,6 +88,8 @@ We will use conda on two levels in this tutorial. First we use a conda environme
 
    
 
+<a name="snakemake"></a>
+
 ## Create snakemake workflow
 
 > The Snakemake workflow management system is a tool to create **reproducible and scalable** data analyses. Workflows are described via a human readable, Python based language. They can be seamlessly scaled to server, cluster, grid and cloud environments, without the need to modify the workflow definition. Finally, Snakemake workflows can entail a description of required software, which will be automatically deployed to any execution environment.
@@ -107,6 +129,8 @@ Create a working directory and link the necessary data:
 (node)$> ln -s /work/projects/ulhpc-tutorials/bio/snakemake/reference .
 (node)$> ln -s /work/projects/ulhpc-tutorials/bio/snakemake/envs .
 ```
+
+<a name="mapping"></a>
 
 ### Mapping
 
@@ -229,7 +253,7 @@ s       h:m:s   max_rss max_vms max_uss max_pss io_in io_out mean_load
 19.1737 0:00:19 262.14  1404.55 258.79  258.94  0.00  0.00   0.00
 ```
 
-
+<a name="peaks"></a>
 
 ### Peak calling
 
@@ -277,7 +301,7 @@ Let's run this step with:
 
 Note that snakemake will not run the mapping step for `bowtie2/INPUT-TC1-ST2-D0.12.bam` again. It only runs rules for which the output is not present or the input has changed.
 
-
+<a name="bigwig"></a>
 
 ### Generate bigWig files for visualisation
 
@@ -316,7 +340,7 @@ Let's test this step with:
 
 This time snakemake will only run the "bigwig" rule for the one file we specified.
 
-
+<a name="summary"></a>
 
 ### Summary rule
 
@@ -351,11 +375,15 @@ Snakemake can visualise the dependency graph of the workflow with the following 
 
 ![DAG](img/dag.png)
 
+<a name="cluster"></a>
+
 ## Cluster configuration for snakemake
 
 Until now the workflow just runs on a single CPU on a single machine, which is not very efficient when we have much more resources available. To speed up the computation you should check in the documentation of the software you use how it can scale. For bioinformatics tools the most common option is multithreading.
 
 In this workflow only bowtie2 has the option to run on multiple threads.
+
+<a name="multithreading"></a>
 
 ### Adjust mapping step to run on multiple threads
 
@@ -446,7 +474,7 @@ Notice that the runtime has decreased, but I/O has increased.
 
 **Exercise:** Try several options for `-j` up to the number of cores you reserved (6) and check the bowtie2 command and the values in the benchmark. Don't forget the clean-up between the tries.
 
-
+<a name="job_params"></a>
 
 ### Configure job parameters with `cluster.yaml`
 
@@ -472,7 +500,7 @@ mapping:
 
 **Attention:** Be aware that `ncpus` should match the `threads` directive in the respective rule. If `ncpus` is less than `threads` snakemake will reserve only  `ncpus` cores, but run the rule on the number of threads specified with `threads` .
 
-
+<a name="cluster_config"></a>
 
 ### Run snakemake with cluster configuration
 
@@ -505,7 +533,7 @@ Let's have a look at the jobs that were submitted:
 
 Check the submit and end time to see which jobs were running at the same time and when snakemake waited for jobs to finish.
 
-
+<a name="igv"></a>
 
 ## Inspect results in IGV
 
@@ -536,7 +564,7 @@ When you hover over the blocks in the `TC1-ST2-D0.12_peaks.narrowPeak` track, yo
 
 ![IGV](img/IGV_annotated.jpg)
 
-
+<a name="immediate_submit"></a>
 
 ## (Optional) Immediately submit all jobs
 
@@ -598,14 +626,14 @@ Run snakemake with the following command and replace `<your_username>` with your
 
 With `squeue -u <your_username>` you can check the status of the submitted jobs and see when they all have finished.
 
-
+<a name="useful"></a>
 
 ## Useful stuff
 
 * To avoid too much overhead in the number of jobs submitted to Slurm, use the`group` directive to group rules that can run together in a single job.
 * If your workflow runs for longer than just a few minutes, run snakemake inside`screen` or prefix it with `nohup`. This prevents the workflow from stopping when your SSH session get's disconnected.
 
-
+<a name="references"></a>
 
 ## References
 
@@ -614,7 +642,7 @@ With `squeue -u <your_username>` you can check the status of the submitted jobs 
 * [Langmead B, Salzberg S. Fast gapped-read alignment with Bowtie 2. *Nature Methods*. 2012, 9:357-359.](http://www.nature.com/nmeth/journal/v9/n4/full/nmeth.1923.html)
 * [Zhang et al. Model-based Analysis of ChIP-Seq (MACS). *Genome Biol* (2008) vol. 9 (9) pp. R137](http://www.ncbi.nlm.nih.gov/sites/entrez?db=pubmed&cmd=search&term=18798982%5Bpmid%5D)
 
-
+<a name="acknowledgements"></a>
 
 ## Acknowledgements
 
