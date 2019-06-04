@@ -18,7 +18,7 @@ In this tutorial you will learn how to run a [ChIP-seq](https://en.wikipedia.org
    1. [Adjust mapping step to run on multiple threads](#multithreading)
    2. [Configure job parameters with `cluster.yaml`](#job_params)
    3. [Run snakemake with cluster configuration](#cluster_config)
-4. [Inspect results in IGV][#igv]
+4. [Inspect results in IGV](#igv)
 5. [(Optional) Immediately submit all jobs](#immediate_submit)
 6. [Useful stuff](#useful)
 7. [References](#references)
