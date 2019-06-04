@@ -253,6 +253,24 @@ s       h:m:s   max_rss max_vms max_uss max_pss io_in io_out mean_load
 19.1737 0:00:19 262.14  1404.55 258.79  258.94  0.00  0.00   0.00
 ```
 
+After this step your working directory should contain the following files:
+
+```
+.
+|-- benchmarks
+|   `-- mapping
+|       `-- INPUT-TC1-ST2-D0.12.tsv
+|-- bowtie2
+|   |-- INPUT-TC1-ST2-D0.12.bam
+|   `-- INPUT-TC1-ST2-D0.12.bam.bai
+|-- chip-seq -> /work/projects/ulhpc-tutorials/bio/snakemake/chip-seq
+|-- envs -> /work/projects/ulhpc-tutorials/bio/snakemake/envs
+|-- logs
+|   `-- bowtie2_INPUT-TC1-ST2-D0.12.log
+|-- reference -> /work/projects/ulhpc-tutorials/bio/snakemake/reference/
+|-- Snakefile
+```
+
 <a name="peaks"></a>
 
 ### Peak calling
@@ -301,6 +319,37 @@ Let's run this step with:
 
 Note that snakemake will not run the mapping step for `bowtie2/INPUT-TC1-ST2-D0.12.bam` again. It only runs rules for which the output is not present or the input has changed.
 
+After this step your working directory should contain the following files:
+
+```
+.
+|-- benchmarks
+|   `-- mapping
+|       |-- H3K4-TC1-ST2-D0.12.tsv
+|       `-- INPUT-TC1-ST2-D0.12.tsv
+|-- bowtie2
+|   |-- H3K4-TC1-ST2-D0.12.bam
+|   |-- H3K4-TC1-ST2-D0.12.bam.bai
+|   |-- INPUT-TC1-ST2-D0.12.bam
+|   `-- INPUT-TC1-ST2-D0.12.bam.bai
+|-- chip-seq -> /work/projects/ulhpc-tutorials/bio/snakemake/chip-seq
+|-- envs -> /work/projects/ulhpc-tutorials/bio/snakemake/envs
+|-- logs
+|   |-- bowtie2_H3K4-TC1-ST2-D0.12.log
+|   `-- bowtie2_INPUT-TC1-ST2-D0.12.log
+|-- macs2
+|   |-- TC1-ST2-D0.12_control_lambda.bdg
+|   |-- TC1-ST2-D0.12_model.r
+|   |-- TC1-ST2-D0.12_peaks.narrowPeak
+|   |-- TC1-ST2-D0.12_peaks.xls
+|   |-- TC1-ST2-D0.12_summits.bed
+|   `-- TC1-ST2-D0.12_treat_pileup.bdg
+|-- output
+|   `-- TC1-ST2-D0.12_peaks.narrowPeak
+|-- reference -> /work/projects/ulhpc-tutorials/bio/snakemake/reference/
+|-- Snakefile
+```
+
 <a name="bigwig"></a>
 
 ### Generate bigWig files for visualisation
@@ -340,6 +389,13 @@ Let's test this step with:
 
 This time snakemake will only run the "bigwig" rule for the one file we specified.
 
+After this step the `output` directory should contain the following files:
+
+```
+TC1-ST2-D0.12_peaks.narrowPeak
+TC1-ST2-D0.12_treat_pileup.bigwig
+```
+
 <a name="summary"></a>
 
 ### Summary rule
@@ -365,6 +421,14 @@ Finally run the workflow again, this time without a specific target file:
 
 ```bash
 (node)$> snakemake --use-conda -pr
+```
+
+After this step the `output` directory should contain the following files:
+
+```
+TC1-ST2-D0.12_control_lambda.bigwig
+TC1-ST2-D0.12_peaks.narrowPeak
+TC1-ST2-D0.12_treat_pileup.bigwig
 ```
 
 Snakemake can visualise the dependency graph of the workflow with the following command:
@@ -532,6 +596,8 @@ Let's have a look at the jobs that were submitted:
 ```
 
 Check the submit and end time to see which jobs were running at the same time and when snakemake waited for jobs to finish.
+
+After this step you should see a bunch of `slurm-XXXXXX-<rule name>.out` and `slurm-XXXXXX-<rule name>.err` files in your working directory, which contain the (error) logs of the different snakemake rules.
 
 <a name="igv"></a>
 
