@@ -123,7 +123,7 @@ Create a working directory and link the necessary data:
 > ```
 > &mdash; <cite>[Snakemake manual - Rules](https://snakemake.readthedocs.io/en/stable/snakefiles/rules.html)</cite>
 
-
+For a detailed explanation of rules, have a look at the official [Snakemake tutorial](https://snakemake.readthedocs.io/en/stable/tutorial/basics.html).
 
 A basic rule for mapping a fastq file with [bowtie2](http://bowtie-bio.sourceforge.net/bowtie2/index.shtml) could look like this:
 
@@ -604,6 +604,15 @@ With `squeue -u <your_username>` you can check the status of the submitted jobs 
 
 * To avoid too much overhead in the number of jobs submitted to Slurm, use the`group` directive to group rules that can run together in a single job.
 * If your workflow runs for longer than just a few minutes, run snakemake inside`screen` or prefix it with `nohup`. This prevents the workflow from stopping when your SSH session get's disconnected.
+
+
+
+## References
+
+* [Köster, Johannes and Rahmann, Sven. “Snakemake - A scalable bioinformatics workflow engine”. Bioinformatics 2012.](http://bioinformatics.oxfordjournals.org/content/28/19/2520)
+* [Gérard D, Schmidt F, Ginolhac A, Schmitz M, Halder R, Ebert P, Schulz MH, Sauter T, Sinkkonen L. Temporal enhancer profiling of parallel lineages identifies AHR and GLIS1 as regulators of mesenchymal multipotency. *Nucleic Acids Research*, Volume 47, Issue 3, 20 February 2019, Pages 1141–1163, https://doi.org/10.1093/nar/gky1240](https://www.ncbi.nlm.nih.gov/pubmed/30544251)
+* [Langmead B, Salzberg S. Fast gapped-read alignment with Bowtie 2. *Nature Methods*. 2012, 9:357-359.](http://www.nature.com/nmeth/journal/v9/n4/full/nmeth.1923.html)
+* [Zhang et al. Model-based Analysis of ChIP-Seq (MACS). *Genome Biol* (2008) vol. 9 (9) pp. R137](http://www.ncbi.nlm.nih.gov/sites/entrez?db=pubmed&cmd=search&term=18798982%5Bpmid%5D)
 
 
 
