@@ -1,10 +1,14 @@
 ---
 fontsize: 12pt
 ---
+[![By ULHPC](https://img.shields.io/badge/by-ULHPC-blue.svg)](https://hpc.uni.lu) [![Licence](https://img.shields.io/badge/license-GPL--3.0-blue.svg)](http://www.gnu.org/licenses/gpl-3.0.html) [![GitHub issues](https://img.shields.io/github/issues/ULHPC/tutorials.svg)](https://github.com/ULHPC/tutorials/issues/) [![](https://img.shields.io/badge/slides-PDF-red.svg)](https://github.com/ULHPC/tutorials/raw/devel/maths/Cplex-Gurobi/slides.pdf) [![Github](https://img.shields.io/badge/sources-github-green.svg)](https://github.com/ULHPC/tutorials/tree/devel/maths/Cplex-Gurobi/) [![Documentation Status](http://readthedocs.org/projects/ulhpc-tutorials/badge/?version=latest)](http://ulhpc-tutorials.readthedocs.io/en/latest/maths/Cplex-Gurobi/) [![GitHub forks](https://img.shields.io/github/stars/ULHPC/tutorials.svg?style=social&label=Star)](https://github.com/ULHPC/tutorials)
 
 # Distributed Mixed-Integer Programming (MIP) optimization with Cplex and Gurobi
 
 ![](./images/cplex-gurobi.png)
+
+[![](cover_slides.png)](slides.pdf)
+
 
 [**Cplex**](https://www.ibm.com/analytics/cplex-optimizer) is an optimization software for mathematical programming.
 The Cplex optimizer can solve:
