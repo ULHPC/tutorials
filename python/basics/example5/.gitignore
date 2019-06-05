@@ -1,3 +1,4 @@
 output/*.jpeg
 .vagrant/*
 .vagrant
+*.log
