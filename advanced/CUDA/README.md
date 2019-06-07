@@ -600,7 +600,7 @@ void kernel(int *a, int N)
 Refactor the previous code to use a grid-stride loop in the `doubleElements` kernel, in order that the grid, which is smaller than N, can reuse threads to cover every element in the array. 
 The program will print whether or not every element in the array has been doubled, currently the program accurately prints `FALSE`. 
 ```
-#include <stdio.h>
+#include <cstdio>
 
 void init(int *a, int N)
 {
