@@ -59,7 +59,7 @@ We will use conda on two levels in this tutorial. First we use a conda environme
    (node)$> chmod u+x Miniconda3-latest-Linux-x86_64.sh
    (node)$> ./Miniconda3-latest-Linux-x86_64.sh 
    ```
-   You need to specify your installation destination, e.g. `/home/users/<your_username>/tools/miniconda3`. You must use the **full** path and can**not** user `$HOME/tools/miniconda3`. Answer `yes` to initialize Miniconda3. 
+   You need to specify your installation destination, e.g. `/home/users/<your_username>/tools/miniconda3`. You must use the **full** path and can**not** use `$HOME/tools/miniconda3`. Answer `yes` to initialize Miniconda3. 
 
    The installation will modify your `.bashrc` to make conda directly available after each login. To activate the changes now, run
 
@@ -78,12 +78,12 @@ We will use conda on two levels in this tutorial. First we use a conda environme
    (node)$> conda create -n bioinfo_tutorial
    (node)$> conda activate bioinfo_tutorial
    ```
-   You can see that your prompt will now be prefixed with `(bioinfo_tutorial)` to show which environment is active. For the rest of the tutorial make sure that you always have this environment active.
+   After validation of the creation step, once activation you can see that your prompt will now be prefixed with `(bioinfo_tutorial)` to show which environment is active. For the rest of the tutorial make sure that you always have this environment active.
 
 5. Install snakemake:
 
    ```bash
-   (node)$> conda install -c bioconda -c conda-forge snakemake-minimal
+   (bioinfo_tutorial) (node)$> conda install -c bioconda -c conda-forge snakemake-minimal
    ```
 
    
@@ -253,7 +253,7 @@ s       h:m:s   max_rss max_vms max_uss max_pss io_in io_out mean_load
 19.1737 0:00:19 262.14  1404.55 258.79  258.94  0.00  0.00   0.00
 ```
 
-After this step your working directory should contain the following files:
+After this step your working directory should contain the following files (using the `tree` command):
 
 ```
 .
