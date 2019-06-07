@@ -275,11 +275,11 @@ After this step your working directory should contain the following files (using
 
 ### Peak calling
 
-The next step in the workflow is to call peaks with [MACS2](https://github.com/taoliu/MACS). This tells us where there is enrichment of the ChIP versus the input (control). 
+The next step in the workflow is to call peaks with [`MACS2`](https://github.com/taoliu/MACS). This tells us where there is enrichment of the ChIP versus the input (control). 
 
 You should always choose the peak caller based on how you expect your enriched regions to look like, e.g. narrow or broad peaks.
 
-Besides the list of peaks in [BED](https://genome.ucsc.edu/FAQ/FAQformat.html#format1) format, MACS2 also produces coverage tracks.
+Besides the list of peaks in [BED](https://genome.ucsc.edu/FAQ/FAQformat.html#format1) format, `MACS2` also produces coverage tracks.
 
 Add the following rule to your `Snakefile`:
 
@@ -354,7 +354,7 @@ After this step your working directory should contain the following files:
 
 ### Generate bigWig files for visualisation
 
-For easier visualisation and faster transfer, we convert the two coverage tracks from the MACS2 output to [bigWig](https://genome.ucsc.edu/goldenpath/help/bigWig.html) format.
+For easier visualisation and faster transfer, we convert the two coverage tracks from the `MACS2` output to [bigWig](https://genome.ucsc.edu/goldenpath/help/bigWig.html) format.
 
 Add the following rule to your `Snakefile`:
 
