@@ -60,17 +60,7 @@ Run the following commands in a terminal (substituting *yourlogin* with the logi
 
         (laptop)$> ssh -p 8022 yourlogin@access-iris.uni.lu
 
-If you want to connect to the gaia cluster,
-
-        (laptop)$> ssh -p 8022 yourlogin@access-gaia.uni.lu
-
 Now you probably want to avoid taping this long command to connect to the platform. You can customize SSH aliases for that. Edit the file `~/.ssh/config` (create it if it does not already exist) and adding the following entries:
-
-        Host chaos-cluster
-            Hostname access-chaos.uni.lu
-
-        Host gaia-cluster
-            Hostname access-gaia.uni.lu
 
         Host iris-cluster
             Hostname access-iris.uni.lu
@@ -83,8 +73,6 @@ Now you probably want to avoid taping this long command to connect to the platfo
 Now you shall be able to issue the following (simpler) command to connect to the cluster and obtain the welcome banner:
 
 		(laptop)$> ssh iris-cluster
-
-		(laptop)$> ssh gaia-cluster
 
 In the sequel, we assume these aliases to be defined.
 
@@ -105,10 +93,11 @@ In the sequel, we assume these aliases to be defined.
 	  * Check `Use private key` box
 		* Select your previously generated `id_rsa.ppk`
   * Click on **Save**
-	* Do the same thing for the other clusters (chaos, gaia) by changing the **Remote host** field.
 
 
 ### Step 2: Connect from one cluster to the other
+
+**If you use only IRIS cluster, you can ignore this part of the tutorial**
 
 The SSH key you provided us secure your connection __from__ your laptop (or personal workstation) __to__ the cluster frontends. It is thus important to protect them by a passphrase.
 
@@ -263,9 +252,8 @@ Your homedir is under a regular backup policy. Therefore you are asked to pay at
 Each cluster offers a set of web services to monitor the platform usage:
 
 * A [pie-chart overview of the platform usage](https://hpc.uni.lu/status/overview.html)
-* [Monika](https://hpc.uni.lu/status/monika.html), the visualization interface of the OAR scheduler, which  display the status of the clusters as regards the jobs running on the platform.
-* [DrawGantt](https://hpc.uni.lu/status/drawgantt.html), the Gantt visualization of jobs scheduled on OAR
 * [Ganglia](https://hpc.uni.lu/status/ganglia.html), a scalable distributed monitoring system for high-performance computing systems such as clusters and Grids.
+* [SLURM Web](https://access-iris.uni.lu/slurm/), a website that show the status of jobs and nodes with a nice graphical interface.
 
 ### Step 3: Reserving resources with Slurm
 
