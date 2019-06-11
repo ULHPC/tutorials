@@ -666,3 +666,254 @@ int main()
 ```
 One solution is in file `array.cu`.
 
+## Performance considerations
+
+In this section, we will investigate how to improve the performance (runtime) of a CUDA application.
+
+Chart of GPU hardware: blocks, warps, threads, memory transfers.
+Provide specifications for the GPU on iris.
+
+We'll be looking at:
+
+- Measuring the performance.
+- Features that affect peformance: execution configuration and memory management.
+
+### Preparation
+
+The starting point for all experiments is a simple vector addition program `vectoradd.cu`, which can be found in the [samples sub-directory][3].
+The file is included here:
+```
+#include <stdio.h>
+#include "cuda.h"
+
+/*
+ * Host function to initialize vector elements. This function
+ * simply initializes each element to equal its index in the
+ * vector.
+ */
+
+void initWith(float num, float *a, int N)
+{
+  for(int i = 0; i < N; ++i) {
+    a[i] = num;
+  }
+}
+
+/*
+ * Device kernel stores into 'result' the sum of each
+ * same-indexed value of 'a' and 'b'.
+ */
+
+__global__
+void addVectorsInto(float *result, float *a, float *b, int N)
+{
+  int index = threadIdx.x + blockIdx.x * blockDim.x;
+  int stride = blockDim.x * gridDim.x;
+
+  for(int i = index; i < N; i += stride) {
+    result[i] = a[i] + b[i];
+  }
+}
+
+/*
+ * Host function to confirm values in 'vector'. This function
+ * assumes all values are the same 'target' value.
+ */
+
+void checkElementsAre(float target, float *vector, int N)
+{
+  for(int i = 0; i < N; i++) {
+    if(vector[i] != target)
+    {
+      printf("FAIL: vector[%d] - %0.0f does not equal %0.0f\n", i, vector[i], target);
+      exit(1);
+    }
+  }
+  printf("Success! All values calculated correctly.\n");
+}
+
+int main()
+{
+  const int N = 2<<24;
+  size_t size = N * sizeof(float);
+
+  float *a, *b, *c;
+
+  cudaMallocManaged(&a, size);
+  cudaMallocManaged(&b, size);
+  cudaMallocManaged(&c, size);
+
+  initWith(3, a, N);
+  initWith(4, b, N);
+  initWith(0, c, N);
+
+  size_t threadsPerBlock;
+  size_t numberOfBlocks;
+
+  threadsPerBlock = 1;
+  numberOfBlocks = 1;
+
+  addVectorsInto<<<numberOfBlocks, threadsPerBlock>>>(c, a, b, N);
+
+  cudaDeviceSynchronize();
+
+  checkElementsAre(7, c, N);
+
+  cudaFree(a);
+  cudaFree(b);
+  cudaFree(c);
+}
+```
+In case you need to setup the environment, issue the same interactive reservation as before:
+
+```bash
+> srun -n1 -c1 --gres=gpu:1 -pgpu --pty bash -i
+$ module r cuda  # restores our saved 'cuda' modules
+```
+
+### Profiling
+
+We'll be using `nvprof` for this tutorial.
+To profile your application simply:
+```bash
+$ nvprof ./a.out  # you can also add --log-file prof
+```
+The default output includes 2 sections:
+
+- one related to kernel and API calls
+- another related to memory
+
+### Execution configuration
+
+First, we look at the 1st part of the profiling output, related to function calls.
+
+After profiling the application, answer the following questions using information displayed in the profiling output:
+
+- What was the name of the only CUDA kernel called in this application?
+- How many times did this kernel run?
+- How long did it take this kernel to run? Record this time somewhere: you will be optimizing this application and will want to know how much faster you can make it.
+
+Experiment with different values for the number of threads, keeping only 1 block. 
+Note your findings.
+
+Experiment with different values for both the number of threads and number of blocks. 
+Note your findings.
+
+The GPUs that CUDA applications run on have processing units called streaming multiprocessors, or SMs. 
+During kernel execution, blocks of threads are given to SMs to execute. 
+In order to support the GPU's ability to perform as many parallel operations as possible, performance gains can often be had by choosing a grid size that has a number of blocks that is a multiple of the number of SMs on a given GPU.
+
+Additionally, SMs create, manage, schedule, and execute groupings of 32 threads from within a block called warps. i
+A more in depth coverage of SMs and warps is beyond the scope of this course, however, it is important to know that performance gains can also be had by choosing a block size that has a number of threads that is a multiple of 32.
+
+### Unified Memory details
+
+Now, we turn to the memory related performance counters.
+
+You have been allocating memory intended for use either by host or device code with cudaMallocManaged and up until now have enjoyed the benefits of this method - automatic memory migration, ease of programming - without diving into the details of how the Unified Memory (UM) allocated by cudaMallocManaged actual works. 
+`nvprof` provides details about UM management in accelerated applications, and using this information, in conjunction with a more-detailed understanding of how UM works, provides additional opportunities to optimize accelerated applications.
+
+When Unified Memory is allocated, the memory is not resident yet on either the host or the device. 
+When either the host or device attempts to access the memory, a page fault will occur, at which point the host or device will migrate the needed data in batches. 
+Similarly, at any point when the CPU, or any GPU in the accelerated system, attempts to access memory not yet resident on it, page faults will occur and trigger its migration.
+
+The ability to page fault and migrate memory on demand is tremendously helpful for ease of development in your accelerated applications. 
+Additionally, when working with data that exhibits sparse access patterns, for example when it is impossible to know which data will be required to be worked on until the application actually runs, and for scenarios when data might be accessed by multiple GPU devices in an accelerated system with multiple GPUs, on-demand memory migration is remarkably beneficial.
+There are times - for example when data needs are known prior to runtime, and large contiguous blocks of memory are required - when the overhead of page faulting and migrating data on demand incurs an overhead cost that would be better avoided.
+
+We'll be working with the sample code below (also in `um.cu`):
+
+```
+__global__
+void deviceKernel(int *a, int N)
+{
+  int idx = threadIdx.x + blockIdx.x * blockDim.x;
+  int stride = blockDim.x * gridDim.x;
+
+  for (int i = idx; i < N; i += stride)
+  {
+    a[i] = 1;
+  }
+}
+
+void hostFunction(int *a, int N)
+{
+  for (int i = 0; i < N; ++i)
+  {
+    a[i] = 1;
+  }
+}
+
+int main()
+{
+
+  int N = 2<<24;
+  size_t size = N * sizeof(int);
+  int *a;
+  cudaMallocManaged(&a, size);
+
+  /*
+   * Conduct experiments to learn more about the behavior of
+   * `cudaMallocManaged`.
+   *
+   * What happens when unified memory is accessed only by the GPU?
+   * What happens when unified memory is accessed only by the CPU?
+   * What happens when unified memory is accessed first by the GPU then the CPU?
+   * What happens when unified memory is accessed first by the CPU then the GPU?
+   *
+   * Hypothesize about UM behavior, page faulting specificially, before each
+   * experiement, and then verify by running `nvprof`.
+   */
+
+  cudaFree(a);
+}
+```
+For each of the 4 questions below, first hypothesize about what kind of page faulting should happen, then, edit the program to create a scenario that will allow you to test your hypothesis.
+
+Be sure to record your hypotheses, as well as the results, obtained from `nvprof` output, specifically CPU and GPU page faults, for each of the 4 experiments you are conducting. 
+
+- What happens when unified memory is accessed only by the CPU?
+- What happens when unified memory is accessed only by the GPU?
+- What happens when unified memory is accessed first by the CPU then the GPU?
+- What happens when unified memory is accessed first by the GPU then the CPU?
+
+### GPU-side initialization
+
+With this in mind, refactor your `vectoradd.cu` program to instead be a CUDA kernel, initializing the allocated vector in parallel on the GPU. 
+After successfully compiling and running the refactored application, but before profiling it, hypothesize about the following:
+
+- How do you expect the refactor to affect UM page-fault behavior?
+- How do you expect the refactor to affect the reported run time of addVectorsInto?
+- Once again, record the results. 
+
+File `vectoradd2.cu` contains one implementation.
+
+### Asynchronous memory prefetching
+
+A powerful technique to reduce the overhead of page faulting and on-demand memory migrations, both in host-to-device and device-to-host memory transfers, is called asynchronous memory prefetching. 
+Using this technique allows programmers to asynchronously migrate unified memory (UM) to any CPU or GPU device in the system, in the background, prior to its use by application code. 
+By doing this, GPU kernels and CPU function performance can be increased on account of reduced page fault and on-demand data migration overhead.
+
+Prefetching also tends to migrate data in larger chunks, and therefore fewer trips, than on-demand migration. This makes it an excellent fit when data access needs are known before runtime, and when data access patterns are not sparse.
+
+CUDA Makes asynchronously prefetching managed memory to either a GPU device or the CPU easy with its cudaMemPrefetchAsync function. Here is an example of using it to both prefetch data to the currently active GPU device, and then, to the CPU:
+```
+int deviceId;
+cudaGetDevice(&deviceId);                                         // The ID of the currently active GPU device.
+
+cudaMemPrefetchAsync(pointerToSomeUMData, size, deviceId);        // Prefetch to GPU device.
+cudaMemPrefetchAsync(pointerToSomeUMData, size, cudaCpuDeviceId); // Prefetch to host. `cudaCpuDeviceId` is a
+                                                                  // built-in CUDA variable.
+```
+
+At this point, your `vectoradd.cu` program should not only be launching a CUDA kernel to add 2 vectors into a third solution vector, all which are allocated with cudaMallocManaged, but should also initializing each of the 3 vectors in parallel in a CUDA kernel. 
+If for some reason, your application does not do any of the above, please refer to the following reference application, and update your own codebase to reflect its current functionality.
+
+Conduct 3 experiments using `cudaMemPrefetchAsync` inside of your `vectoradd.cu` application to understand its impact on page-faulting and memory migration.
+
+- What happens when you prefetch one of the initialized vectors to the device?
+- What happens when you prefetch two of the initialized vectors to the device?
+- What happens when you prefetch all three of the initialized vectors to the device?
+
+Hypothesize about UM behavior, page faulting specificially, as well as the impact on the reported run time of the initialization kernel, before each experiement, and then verify by running nvprof. Refer to the solution if you get stuck.
+
