@@ -1,16 +1,13 @@
 #!/bin/bash -l
-#SBATCH --job-name=scoop
-#SBATCH --output=scoop.log
-#SBATCH --open-mode=append
+#SBATCH --job-name=scooplauncher
+#SBATCH --output=scooplauncher.log
 #
-#SBATCH -N 2
-#SBATCH --ntasks=56
+#SBATCH -N 1
+#SBATCH --ntasks=1
 #SBATCH --time=0-00:35:00
 #SBATCH -p batch
 #SBATCH --qos=qos-batch
 #
-#SBATCH --array=1-56%1
-#SBATCH -d singleton
-#SBATCH --exclusive
+#SBATCH --array=2-56
 
-python -m scoop -n $SLURM_ARRAY_TASK_ID pi_calc.py $SLURM_ARRAY_TASK_ID
+sbatch --ntasks=$SLURM_ARRAY_TASK_ID scoop_launcher.sh

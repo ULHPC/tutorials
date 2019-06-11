@@ -2,7 +2,7 @@
 
 # UL HPC Tutorial: Prototyping with Python
 
-      Copyright (c) 2017-2018 UL HPC Team <hpc-sysadmins@uni.lu>
+      Copyright (c) 2018-2019 UL HPC Team <hpc-sysadmins@uni.lu>
 
 [![](https://github.com/ULHPC/tutorials/raw/devel/python/basics/cover_slides.png)](https://github.com/ULHPC/tutorials/raw/devel/python/basics/tutorial_python.pdf)
 
@@ -121,7 +121,7 @@ Here are the steps to compare 2 codes:
   * logfile under `example2.out`
 * Load Python version 2.7
 * Execute the script a first time with this version of Python
-* Load Python version 3
+* Load Python version 3.6
 * Execute the script a second time with this Python version.
 * Check the content of the file `example2.out` and identify the 2 executions and the module load.
 
@@ -152,27 +152,23 @@ Try to execute the script on iris cluster in **interactive** mode.
 
 * Why did the execution fail ? What is the problem ?
 
-We need to install the numpy library. Hopefully, numpy is available as a module on iris cluster. Use the commands from `example2` to:
+We need to install the numpy library. We can install it ourselves in our home directory. For that we will use the `pip` tool.
 
-* Load `numpy` module
-* Execute your script on the node
-
-```
-(access)$> si
-(iris-001)$> module spider numpy
-(iris-001)$> module load math/numpy
-(iris-001)$> python example3.py
-```
-
-As you can see, there is only one version of numpy available with module. If we want to use a more recent or older version of numpy, we can install it ourselves in our home directory. For that we will use the `pip` tool.
-
-`pip` is a package manager for Python. With this tool you can manage Python packages easily: install, uninstall, list, search packages or upgrade them. If you specify the `--user` parameter, the package will be installed under **your home directory** and will be available on all the compute nodes. Let's install numpy using `pip`.
+`pip` is a package manager for Python. With this tool you can manage Python packages easily: install, uninstall, list, search packages or upgrade them. If you specify the `--user` parameter, the package will be installed under **your home directory** and will be available on all the compute nodes. You should also use `--no-cache` to prevent pip from searching in the cache directory which can be wrongly populated if you deal with several version of Python. Let's install numpy using `pip`.
 
 ```
 (access)$> si
-(iris-001)$> pip install --user numpy==1.13.0
-(iris-001)$> python -c "import numpy as np; print np.__version__"
+(iris-001)$> python -m pip install --no-cache --user numpy==1.16.4
+(iris-001)$> python -m pip show numpy
+(iris-001)$> python -c "import numpy as np; print(np.__version__)"
+(iris-001)$> python -m pip install --no-cache --user numpy==1.13
+(iris-001)$> python -m pip show numpy
+(iris-001)$> python -c "import numpy as np; print(np.__version__)"
 ```
+
+Notice that with pip you can only have 1 version of numpy installed at a time. In the next section, we will see how to easily switch between several versions of numpy by using **vitualenv**.
+
+You can now run **example3.py** code and check its execution time.
 
 **QUESTIONS**
 
@@ -181,56 +177,80 @@ As you can see, there is only one version of numpy available with module. If we 
 
 ## Create virtual environment to switch between several versions of a package
 
-Here comes a very specific case. Sometimes you have to use tools which depend on a specific version of a package. You probably don't want to uninstall and reinstall the package with `pip` each time you want to use one tool or the other.
+Here comes a very specific case. Sometimes you have to use tools which depends on a specific version of a package. You probably don't want to uninstall and reinstall the package with `pip` each time you want to use one tool or the other.
 
-Virtualenv allows you to create several environments which will contain their own list of Python packages. The basic usage is to **create one virtual environment per project**.
+**Virtualenv** allows you to create several environments which will contain their own list of Python packages. The basic usage is to **create one virtual environment per project**.
 
 In this tutorial we will create a new virtual environment for the previous code in order to install a different version of numpy and check the performances of our code with it.
 
+**WARNING: Python2 and Python3 syntax differs for the following commands! Both will be described below**
+
 First of all, install `virtualenv` package using pip:
 
+**PYTHON2** (default on iris cluster):
 ```
 (access)$> si
-(iris-001)$> pip install --user virtualenv
+(iris-001)$> python2 -m pip install --no-cache --user virtualenv
+```
+**PYTHON3**:
+```
+(access)$> si
+(iris-001)$> # You don't need to install virtualenv for Python 3
 ```
 
-Now you can create your environment for this project. Name it `numpy12`.
+Now you can create 2 virtual environment for your project. They will contain 2 different version of numpy (1.13 and 1.16). Name it respectively `numpy13` and `numpy16`.
 
+**PYTHON2** (default on iris cluster):
 ```
 (iris-001)$> cd ~/tutorials/advanced/Python/example3/
-(iris-001)$> virtualenv numpy12
+(iris-001)$> python2 -m virtualenv numpy13
+(iris-001)$> python2 -m virtualenv numpy16
+```
+**PYTHON3**:
+```
+(iris-001)$> cd ~/tutorials/advanced/Python/example3/
+(iris-001)$> python3 -m venv numpy13
+(iris-001)$> python3 -m venv numpy16
 ```
 
-So now you should be able to active this environment with this `source` command. Please notice the `(numpy12)` present in your prompt that indicates that the `numpy12` environment is active.
+So now you should be able to active this environment with this `source` command. Please notice the `(numpy13)` present in your prompt that indicates that the `numpy13` environment is active. You can use `deactivate` command to exit the virtual environment.
 
 ```
-(iris-001)$> source numpy12/bin/activate
-(numpy12)(iris-001)$>
+(iris-001)$> source numpy13/bin/activate
+(numpy13)(iris-001)$> # You are now inside numpy13 virtual environment
+(numpy13)(iris-001)$> deactivate
+(iris-001)$> source numpy16/bin/activate
+(numpy16)(iris-001)$> # You are now inside numpy16 virtual environment
 ```
 
 **QUESTIONS**
 
-* Using `pip freeze`, what are the modules available before the activation of your virtual environment ?
+* Using `python -m pip freeze`, what are the modules available before the activation of your virtual environment ?
 * What are the module available after ?
 * What version of python is used inside the virtual environment ? Where is it located ? (You can use `which` command.)
 
 To exit a virtual environment run the `deactivate` command.
 
-So now, we can install a different numpy version inside our virtual environment. Check that the version installed corresponds to numpy 1.12.
+So now, we can install a different numpy version inside your virtual environments. Check that the version installed corresponds to numpy 1.13 for *numpy13* and numpy 1.16 in *numpy16*.
 
 ```
-(iris-001)$> source numpy12/bin/activate
-(numpy12)(iris-001)$> pip install numpy==1.12
-(numpy12)(iris-001)$> python -c "import numpy as np; print np.__version__"
-(numpy12)(iris-001)$> deactivate
-(iris-001) python -c "import numpy as np; print np.__version__"
+(iris-001)$> # Go inside numpy13 environment and install numpy 1.13
+(iris-001)$> source numpy13/bin/activate
+(numpy13)(iris-001)$> python -m pip install numpy==1.13
+(numpy13)(iris-001)$> python -c "import numpy as np; print(np.__version__)"
+(numpy13)(iris-001)$> deactivate
+(iris-001)$> # Go inside numpy16 environment and install numpy 1.16
+(iris-001)$> source numpy16/bin/activate
+(numpy16)(iris-001)$> python -m pip install numpy==1.16
+(numpy16)(iris-001)$> python -c "import numpy as np; print(np.__version__)"
+(numpy16)(iris-001)$> deactivate
 ```
 
 Now you can adapt your script to load the right virtualenv and compare the performance of different versions of numpy.
 
 **QUESTIONS**
 
-* Check the size of numpy12 folder. Why is it so big ? What does it contain ?
+* Check the size of numpy13 folder. Why is it so big ? What does it contain ?
 
 ## Compile your code in C language
 
@@ -252,10 +272,11 @@ The code can be found under `tutorials/advanced/Python/example4/example4.py`.
 def standard_dev(lst):
 ```
 
-* Be sure to have `pythran` installed! If not, use `pip install --user pythran` command (within a job) to install it in your home directory.
+* Be sure to have `pythran` installed! If not, use `python -m pip install --no-cache --user pythran` command (within a job) to install it in your home directory.
 * Compile your code using pythran:
 
 ```
+(iris-001)$> pythran example4.py -e -o std.cpp # NEVER COMPILE ON ACCESS
 (iris-001)$> pythran example4.py -o std.so # NEVER COMPILE ON ACCESS
 (iris-001)$> python -c "import std" # this imports the newly generated module with C implementation
 ```
@@ -270,7 +291,7 @@ def standard_dev(lst):
 * What is the fastest execution ? Why ?
 * Where can I find the code that has been generated from my Python script ?
 
-**HINT:** If you run `pythran example4.py -e -o std.c` it will generate the C code. Have a look at the `*.c` files in your directory.
+**HINT:** If you run `pythran example4.py -e -o std.cpp` it will generate the C code. Have a look at the `*.cpp` files in your directory.
 
 ### Overview graph of runtimes
 
@@ -280,32 +301,35 @@ def standard_dev(lst):
 
 In this part, we will use Scoop library to parallelize our Python code and execute it on iris cluster. This example uses the Monte-Carlo algorithm to compute the value of pi. Please have a look at the top of this page to check how it works.
 
-**Attention:** Scoop only works with the system python and neither with modules nor virtual environments. Make sure you start with a clean environment by starting a new job.
+**WARNING:** We will need to create a wrapper around SCOOP to manage the loading of modules and virtualenv before calling SCOOP module. It is a tricky part that will need some additional steps to be performed before running your script.
 
 We will first have to install the scoop library using `pip`:
 
 ```
 (access)$> si
-(iris-001)$> pip install --user filelock
-(iris-001)$> pip install --user https://github.com/soravux/scoop/archive/master.zip
+(iris-001)$> python -m pip install --no-cache --user filelock
+(iris-001)$> python -m pip install --no-cache --user https://github.com/soravux/scoop/archive/master.zip
 ```
 
 Scoop comes with direct Slurm bindings. If you run your code on a single node, it will try to use the most cores that it can. If you have reserved several nodes, it will use all the nodes of your reservation and distribute work on it.
 
 You can specify the number of cores to use with the `-n` option in scoop.
 
-We will write a batch script to execute our python script. We want to compare time of execution to the number of workers used in scoop. We want to go from 1 worker (single core) to 50 workers, increasing the worker number 1 by 1. As you can see, our script takes 1 parameter `x` in input which corresponds to the number of workers.
+We will write a batch script to execute our python script. We want to compare time of execution to the number of workers used in scoop. We want to go from 1 worker (single core) to 55 workers, increasing the worker number 1 by 1. As you can see, our script takes 1 parameter `x` in input which corresponds to the number of workers.
 
-The batch script should contain:
+There will be 2 batch scripts. The first one named `scoop` should contain:
 
-* 50 tasks reserved
+* 1 task per cpu
 * maximum execution time of 35m
 * name of the job should be `scoop`
-* a job array which goes from 1 to 56 (maximal number of core on 2 nodes)
+* a job array which goes from 2 to 56 (maximal number of core on 2 nodes)
+* will call for each value in the job array a secondary script named `scoop_launcher.sh` with `--nb-tasks` corresponding to the value of the array.
+
+It will launch a second submission script name `scoop_launcher.sh` that will run scoop with a dedicated number of workers depending on "nb-tasks" specified.
+
 * a minimum number of 2 nodes reserved
-* a call to `python -m scoop [...]` to call the script with increasing number of cores reserved (`$SLURM_ARRAY_TASK_ID`)
-* a command to disable concurrent run of this job
-* be the only user to use those ressources to avoid conflicting with other scoop users (see `--exclusive` option of sbatch)
+* a call to `python -m scoop [...]` to call the script with increasing number of cores reserved (`$SLURM_NBTASKS`)
+* be the only user to use those resources to avoid conflicting with other scoop users (see `--exclusive` option of sbatch)
 * output file should go to `scoop.log`
 
 **HINT** Have a look at `tutorials/advanced/Python/example5/scoop.sh` for the batch script example
