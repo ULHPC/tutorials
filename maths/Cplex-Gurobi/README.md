@@ -47,7 +47,7 @@ module load math/CPLEX/12.8-foss-2018a
 
 The Gurobi optimizer can be accessed throught the module command once ressources have been requested through the SLURM scheduler. 
 ```bash
-module load math/Gurobi/8.1.0-intel-2018a-Python-3.6.4
+module load math/Gurobi/8.1.1-intel-2018a-Python-3.6.4
 ``` 
 
 The resolution of optmization problem can be either done using the command line interface (CLI) or by using the different APis (e.g. C/C++, Python, Java). In this tutorial, we only consider the CLI for each optimizer.
@@ -99,7 +99,7 @@ rm ${CPLEX_COMMAND_SCRIPT}
 ```
 
 
-Copy and paste the previous script into a file ```cplex_mtt.slurm ``` and launch a batch job using the ```sbatch``` command as follows ``` sbatch cplex_mtt.slurm```.
+Copy and paste the previous script into a file ```cplex_mtt.slurm ``` and launch a batch job using the ```sbatch``` command as follows ``` sbatch cplex_mtt.slurm ex10.mps.gz cplex_mtt```.
 
 
 
@@ -114,7 +114,8 @@ The below launcher is an example showing how to reserve ressources on multiple n
 #!/bin/bash -l
 #SBATCH -J Distrbuted_cplex
 #SBATCH --nodes=2
-#SBATCH --tasks=31
+#SBATCH --tasks=14
+#SBACTH --cpus-per-task=2
 #SBATCH --time=0-01:00:00
 #SBATCH -p batch
 #SBATCH --qos=qos-batch
@@ -144,7 +145,7 @@ mpirun -np 1 cplex -f ${CPLEX_COMMAND_SCRIPT} -mpi : -np $((SLURM_NTASKS - 1)) c
 rm ${CPLEX_COMMAND_SCRIPT}
 ```
 
-Copy and paste the previous script into a file ```cplex_dist.slurm ``` and launch a batch job using the ```sbatch``` command as follows ``` sbatch cplex_dist.slurm```.
+Copy and paste the previous script into a file ```cplex_dist.slurm ``` and launch a batch job using the ```sbatch``` command as follows ``` sbatch cplex_dist.slurm ex10.mps.gz cplex_dist```.
 
 ## Gurobi
 
@@ -163,7 +164,7 @@ The script below allows you to start multi-threaded MIP optimization with Gurobi
 #SBATCH --qos=qos-batch
 
 # Load Gurobi 
-module load math/Gurobi/8.1.0-intel-2018a-Python-3.6.4
+module load math/Gurobi/8.1.1-intel-2018a-Python-3.6.4
 
 # Some variable
 MPS_FILE=$1
@@ -173,11 +174,10 @@ RES_FILE=$2
 gurobi_cl Threads=${SLURM_CPUS_PER_TASK} ResultFile="${RES_FILE}.sol" ${MPS_FILE}
 ```
 
-Copy and paste the previous script into a file ```gurobi_mtt.slurm ``` and launch a batch job using the ```sbatch``` command as follows ``` sbatch gurobi_mtt.slurm```.
+Copy and paste the previous script into a file ```gurobi_mtt.slurm ``` and launch a batch job using the ```sbatch``` command as follows ``` sbatch gurobi_mtt.slurm ex10.mps.gz gurobi_mtt```.
 
 ### Distributed optimization with Gurobi 
 
-In order to use Gurobi in Distributed MIP mode, you will have to load the version 8.1.1: ```module load math/Gurobi/8.1.1-intel-2018a-Python-3.6.4```. 
 
 
 ```bash
@@ -240,7 +240,7 @@ rm ${GUROBI_INNER_LAUNCHER}
 ```
 
 
-Copy and paste the previous script into a file ```gurobi_dist.slurm ``` and launch a batch job using the ```sbatch``` command as follows ``` sbatch gurobi_dist.slurm```.
+Copy and paste the previous script into a file ```gurobi_dist.slurm ``` and launch a batch job using the ```sbatch``` command as follows ``` sbatch gurobi_dist.slurm ex10.mps.gz gurobi_dist```.
 
 ## Next 
 
