@@ -60,17 +60,16 @@ To optimise this continuous function, we are going to rely on the Covariance Mat
 ## Setup
 
 We are going to setup a python virtual environment in order to install all required python libraries. 
-
+Please create a separate folder (ex. scoop-deap) and cd into it. Apply the following commands to setup your
+environment.
 
 ```bash
 # Ask an interactive job
 si
 # Load python3 module (load by default Python3)
 module load lang/Python
-
-mkdir scoop-deap
 python -m venv test_env
-cd test_env 
+source test_env/bin/activate
 pip install numpy deap scoop
 ```
 
@@ -85,6 +84,7 @@ import random
 import timeit
 import json
 import collections
+import os
 from deap.algorithms import *
 from deap import base
 from deap import creator
@@ -155,7 +155,7 @@ if __name__ == "__main__":
 
 ```
 Copy and paste this script into the python file ```evolution.py ``` and start the interactive optimisation using the following command ```python evolution.py [size]``` with ```[size]``` the number of variables to be considered. 
-For example, you can run ```python evolution.py 10```. While the optimisation the rastrigin function is ongoing, you can see the evolution log for every evolutionary generation appearing on your terminal.
+For example, you can run ```python evolution.py 10```. While the optimisation of the rastrigin function is ongoing, you can see the evolution log for every evolutionary generations displayed on your terminal.
 
 ## Distributed evolution with scoop
 
@@ -163,10 +163,7 @@ If you increase ```[size]```, you will notice how it can be time-consuming to op
 
 To cope with this issue, we can evaluate candidates in a distributed manner. To do this, you need to overload the map function of the algorithm using the [toolbox class](https://deap.readthedocs.io/en/master/api/base.html) provided by Deap and replace the default ```map``` function with ```futures.map``` from the scoop library.
 
-
-
 Modify the ```evolution.py``` script to include the scoop library and overload the map function using the Deap [documentation](https://deap.readthedocs.io/en/master/). Please try yourself before looking at the solution below. 
-
 
 ### Solution: 
 
@@ -177,6 +174,7 @@ import random
 import timeit
 import json
 import collections
+import os
 from deap.algorithms import *
 from deap import base
 from deap import creator
@@ -297,7 +295,7 @@ INPUTFILE=$(pwd)/evolution.py
 python -m scoop --hostfile $HOSTFILE -n ${SLURM_NTASKS} --python-interpreter=$SCOOP_WRAPPER $INPUTFILE $@
 ```
 
-Finally in order to execute this script on multiple cores and nodes, you can use the ```sbatch``` command. For example, ```sbatch --ntasks=31 --time=00:02:00 -p batch scoop_deap.slurm 50``` will start the script with 31 cores allocated during 2 minutes to solve the rastrigin benchmark having 50 variables.
+Finally in order to execute this script (```launcher.sh```) on multiple cores and nodes, you can use the ```sbatch``` command. For example, ```sbatch --ntasks=31 --time=00:02:00 -p batch launcher.sh 50``` will start the script with 31 cores allocated during 2 minutes to solve the rastrigin benchmark having 50 variables.
 
 
 ## Next
