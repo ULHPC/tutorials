@@ -11,7 +11,7 @@ This tutorial will guide through the following activities:
 - Access memory on both GPU and CPU.
 - Profile and improve the performance of your application.
 
-Solutions to some of the exercises are in the [samples sub-directory][3].
+Solutions to some of the exercises can be found in the [samples sub-directory][3].
 
 The tutorial is based on the Nvidia course "Fundamentals of accelerated computing with CUDA C/C++".
 
@@ -886,7 +886,7 @@ After successfully compiling and running the refactored application, but before 
 - How do you expect the refactor to affect the reported run time of addVectorsInto?
 - Once again, record the results. 
 
-File `vectoradd2.cu` contains one implementation.
+File `vectoradd2.cu` is one implementation.
 
 ### Asynchronous memory prefetching
 
@@ -894,26 +894,27 @@ A powerful technique to reduce the overhead of page faulting and on-demand memor
 Using this technique allows programmers to asynchronously migrate unified memory (UM) to any CPU or GPU device in the system, in the background, prior to its use by application code. 
 By doing this, GPU kernels and CPU function performance can be increased on account of reduced page fault and on-demand data migration overhead.
 
-Prefetching also tends to migrate data in larger chunks, and therefore fewer trips, than on-demand migration. This makes it an excellent fit when data access needs are known before runtime, and when data access patterns are not sparse.
+Prefetching also tends to migrate data in larger chunks, and therefore fewer trips, than on-demand migration. 
+This makes it an excellent fit when data access needs are known before runtime, and when data access patterns are not sparse.
 
-CUDA Makes asynchronously prefetching managed memory to either a GPU device or the CPU easy with its cudaMemPrefetchAsync function. Here is an example of using it to both prefetch data to the currently active GPU device, and then, to the CPU:
+CUDA Makes asynchronously prefetching managed memory to either a GPU device or the CPU easy with its `cudaMemPrefetchAsync` function. 
+Here is an example of using it to both prefetch data to the currently active GPU device, and then, to the CPU:
 ```
 int deviceId;
 cudaGetDevice(&deviceId);                                         // The ID of the currently active GPU device.
 
 cudaMemPrefetchAsync(pointerToSomeUMData, size, deviceId);        // Prefetch to GPU device.
-cudaMemPrefetchAsync(pointerToSomeUMData, size, cudaCpuDeviceId); // Prefetch to host. `cudaCpuDeviceId` is a
+cudaMemPrefetchAsync(pointerToSomeUMData, size, cudaCpuDeviceId); // Prefetch to host. 'cudaCpuDeviceId' is a
                                                                   // built-in CUDA variable.
 ```
 
-At this point, your `vectoradd.cu` program should not only be launching a CUDA kernel to add 2 vectors into a third solution vector, all which are allocated with cudaMallocManaged, but should also initializing each of the 3 vectors in parallel in a CUDA kernel. 
-If for some reason, your application does not do any of the above, please refer to the following reference application, and update your own codebase to reflect its current functionality.
+At this point, your `vectoradd.cu` program should be (a) launching a CUDA kernel to add 2 vectors into a third solution vector, all which are allocated with cudaMallocManaged, and (b) initializing each of the 3 vectors in parallel in a CUDA kernel. 
 
-Conduct 3 experiments using `cudaMemPrefetchAsync` inside of your `vectoradd.cu` application to understand its impact on page-faulting and memory migration.
+Conduct 3 (or 4) experiments using `cudaMemPrefetchAsync` inside of your `vectoradd.cu` application to understand its impact on page-faulting and memory migration.
 
 - What happens when you prefetch one of the initialized vectors to the device?
 - What happens when you prefetch two of the initialized vectors to the device?
 - What happens when you prefetch all three of the initialized vectors to the device?
 
-Hypothesize about UM behavior, page faulting specificially, as well as the impact on the reported run time of the initialization kernel, before each experiement, and then verify by running nvprof. Refer to the solution if you get stuck.
+Hypothesize about UM behavior, page faulting specificially, as well as the impact on the reported run time of the initialization kernel, before each experiement, and then verify by running `nvprof`.
 
