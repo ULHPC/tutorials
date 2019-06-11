@@ -109,6 +109,8 @@ Hereafter, we are going to use the very simple K-means clustering algorithm. We 
 
 ### Defining some useful function to be parallelised
 
+Please name this python script ```some_funcs.py``` since we will need to import it later in the main script
+
 ```python
 import os
 import datetime
@@ -258,11 +260,13 @@ with parallel_backend('ipyparallel'):
 
 
 #write down the number of clusters and the total inertia in a file.
-with open('scores_rbf_digits.csv', 'w') as f:
+with open(os.path.join(FILE_DIR,'scores_kmeans.csv'), 'w') as f:
     f.write('nbClusters,inertia,\n')
     f.write("\n".join(','.join(str(c) for c in l) for l in inertia))
     f.write('\n')
 ```
+
+
 
 ![](./images/clusterings.png)
 
@@ -389,7 +393,7 @@ plt.colorbar()
 plt.xticks(np.arange(len(param_space['gamma'])), map(lambda x : "%.2E"%(x),param_space['gamma']), fontsize=8, rotation=45)
 plt.yticks(np.arange(len(param_space['C'])), map(lambda x : "%.2E"%(x),param_space['C']), fontsize=8, rotation=45)
 plt.title('Validation accuracy')
-plt.savefig("validation.png")
+plt.savefig(os.path.join(FILE_DIR,"validation.png"))
 ```
 
 ![Scores heatmap](./images/validation.png)
