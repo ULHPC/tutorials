@@ -83,7 +83,7 @@ We will use conda on two levels in this tutorial. First we use a conda environme
 5. Make sure Python does not pick up packages in your home directory:
 
    ```bash
-   export PYTHONNOUSERSITE=True
+   (node)$> export PYTHONNOUSERSITE=True
    ```
 
 6. Install snakemake:
