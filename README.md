@@ -80,7 +80,13 @@ We will use conda on two levels in this tutorial. First we use a conda environme
    ```
    You can see that your prompt will now be prefixed with `(bioinfo_tutorial)` to show which environment is active. For the rest of the tutorial make sure that you always have this environment active.
 
-5. Install snakemake:
+5. Make sure Python does not pick up packages in your home directory:
+
+   ```bash
+   export PYTHONNOUSERSITE=True
+   ```
+
+6. Install snakemake:
 
    ```bash
    (node)$> conda install -c bioconda -c conda-forge snakemake-minimal
