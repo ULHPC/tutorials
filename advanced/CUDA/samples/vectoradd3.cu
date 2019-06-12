@@ -92,13 +92,13 @@ int main()
   initWithKernel<<<numberOfBlocks, threadsPerBlock>>>(3, a, N);
   initWithKernel<<<numberOfBlocks, threadsPerBlock>>>(4, b, N);
   initWithKernel<<<numberOfBlocks, threadsPerBlock>>>(0, c, N);
-  cudaDeviceSynchronize();
 
   addVectorsInto<<<numberOfBlocks, threadsPerBlock>>>(c, a, b, N);
+
+  cudaMemPrefetchAsync(c, size, cudaCpuDeviceId);
+  
   cudaDeviceSynchronize();
   
-  cudaMemPrefetchAsync(c, size, cudaCpuDeviceId);
-
   checkElementsAre(7, c, N);
 
   cudaFree(a);

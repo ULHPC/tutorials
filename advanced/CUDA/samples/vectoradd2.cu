@@ -84,9 +84,9 @@ int main()
   initWithKernel<<<numberOfBlocks, threadsPerBlock>>>(3, a, N);
   initWithKernel<<<numberOfBlocks, threadsPerBlock>>>(4, b, N);
   initWithKernel<<<numberOfBlocks, threadsPerBlock>>>(0, c, N);
-  cudaDeviceSynchronize();
 
   addVectorsInto<<<numberOfBlocks, threadsPerBlock>>>(c, a, b, N);
+
   cudaDeviceSynchronize();
 
   checkElementsAre(7, c, N);
