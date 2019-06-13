@@ -6,6 +6,14 @@ In this tutorial you will learn how to run a [ChIP-seq](https://en.wikipedia.org
 
 **Disclaimer:** In order to keep this tutorial simple, we use default parameters for the different tools as much as possible. However, for a real analysis you should always adapt the parameters to your dataset. Also, be aware that the results of some steps might be skewed, because we only work on data from one chromosome.
 
+**Note:** To make it clear where you should execute a certain command, the prompt is prefixed with the location, i.e.
+
+* `(access)$>` for commands on the cluster access nodes
+* `(node)$>` for commands on a cluster node inside a job
+* `(laptop)$>` for commands locally on your machine
+
+The actual command comes only after this prefix.
+
 ## Table of contents
 
 1. [Setup the environment](#env)
@@ -83,7 +91,7 @@ We will use conda on two levels in this tutorial. First we use a conda environme
 5. Make sure Python does not pick up packages in your home directory:
 
    ```bash
-   (node)$> export PYTHONNOUSERSITE=True
+   (bioinfo_tutorial) (node)$> export PYTHONNOUSERSITE=True
    ```
 
 6. Install snakemake:
