@@ -78,7 +78,7 @@ We will use conda on two levels in this tutorial. First we use a conda environme
    (node)$> conda create -n bioinfo_tutorial
    (node)$> conda activate bioinfo_tutorial
    ```
-   After validation of the creation step, once activation you can see that your prompt will now be prefixed with `(bioinfo_tutorial)` to show which environment is active. For the rest of the tutorial make sure that you always have this environment active.
+   After validation of the creation step and once activated, you can see that your prompt will now be prefixed with `(bioinfo_tutorial)` to show which environment is active. For the rest of the tutorial make sure that you always have this environment active.
 
 5. Install snakemake:
 
