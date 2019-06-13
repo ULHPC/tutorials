@@ -32,9 +32,47 @@ $ module load compiler/LLVM system/CUDA
 $ nvidia-smi
 $ module save cuda
 ```
-
 In fact, you can compile CUDA applications on a node without GPU, using the same modules.
-Only the code will not execute properly.
+So, in case there is not enough GPU cards available, you can submit passive jobs, using `sbatch`.
+Below is an example `sbatch` file, that can be tailored to the various steps of the tutorial:
+
+```bash
+#!/bin/bash -l
+#SBATCH --job-name="GPU build"
+#SBATCH --ntasks=1
+#SBATCH --ntasks-per-core=1
+#SBATCH --time=0-00:10:00
+#SBATCH --partition=gpu
+#SBATCH --gres=gpu:1
+#SBATCH --qos=qos-gpu
+
+if [ -z "$1" ]
+then 
+	echo "Missing required source (.cu), and optional execution arguments."
+	exit
+fi
+
+src=${1}
+exe=$(basename ${1/cu/out})
+ptx=$(basename ${1/cu/ptx})
+prf=$(basename ${1/cu/prof})
+shift
+args=$*
+
+# after the module profile is saved (see above)
+module restore cuda
+
+# compile
+srun nvcc -arch=compute_70 -o ./$exe $src
+# save ptx
+srun nvcc -ptx -arch=compute_70 -o ./$ptx $src
+# execute
+srun ./$exe $args
+# profile
+srun nvprof --log-file ./$prf ./$exe $args
+echo "file: $prf"
+cat ./$prf
+```
 
 ## Writing application code for the GPU
 
@@ -127,7 +165,7 @@ After completing the lab, For anyone interested in a deeper dive into `nvcc`, st
 
 Compiling and executing `some-CUDA.cu` source file:
 ```bash
-$ nvcc -arch=sm_70 -o out some-CUDA.cu -run
+$nvcc -arch=sm_70 -o out some-CUDA.cu -run
 ```
 
 `nvcc` is the command line command for using the nvcc compiler.
@@ -318,7 +356,7 @@ Currently, the loop function runs a for loop that will serially print the number
 Modify the loop function to be a CUDA kernel which will launch to execute N iterations in parallel. 
 After successfully refactoring, the numbers 0 through 9 should still be printed.
 ```
-/*
+/* FIXME
  * Correct, and refactor 'loop' to be a CUDA Kernel. 
  * The new kernel should only do the work 
  * of 1 iteration of the original loop.
@@ -360,7 +398,7 @@ Make further modifications to the previous exercise, but with a execution config
 After successfully refactoring, the numbers 0 through 9 should still be printed.
 
 ```
-/*
+/* FIXME
  * Fix and refactor 'loop' to be a CUDA Kernel. 
  * The new kernel should only do the work 
  * of 1 iteration of the original loop.
@@ -522,7 +560,7 @@ A solution can be found in the next exercise.
 
 ### Handling block configuration mismatches to number of needed threads
 
-It may be the case that an execution configuration cannot be expressed that will create the exact number of threads needed for parallelizing a loop. 
+It may be the case that an execution configuration cannot be expressed to create the exact number of threads needed for parallelizing a loop. 
 
 A common example has to do with the desire to choose optimal block sizes. 
 For example, due to GPU hardware traits, blocks that contain a number of threads that are a multiple of 32 are often desirable for performance benefits. 
@@ -670,9 +708,6 @@ One solution is in file `array.cu`.
 
 In this section, we will investigate how to improve the performance (runtime) of a CUDA application.
 
-Chart of GPU hardware: blocks, warps, threads, memory transfers.
-Provide specifications for the GPU on iris.
-
 We'll be looking at:
 
 - Measuring the performance.
@@ -770,10 +805,14 @@ In case you need to setup the environment, issue the same interactive reservatio
 > srun -n1 -c1 --gres=gpu:1 -pgpu --pty bash -i
 $ module r cuda  # restores our saved 'cuda' modules
 ```
+Or use the `sbatch` script presented at the beginning of this tutorial.
 
 ### Profiling
 
-We'll be using `nvprof` for this tutorial.
+We'll be using `nvprof` for this tutorial ([documentation][4]).
+
+[4]: https://docs.nvidia.com/cuda/profiler-users-guide/index.html#nvprof-overview "nvprof documentation"
+
 To profile your application simply:
 ```bash
 $ nvprof ./a.out  # you can also add --log-file prof
@@ -785,7 +824,7 @@ The default output includes 2 sections:
 
 ### Execution configuration
 
-First, we look at the 1st part of the profiling output, related to function calls.
+First, we look at the top part of the profiling result, related to function calls.
 
 After profiling the application, answer the following questions using information displayed in the profiling output:
 
@@ -917,4 +956,6 @@ Conduct 3 (or 4) experiments using `cudaMemPrefetchAsync` inside of your `vector
 - What happens when you prefetch all three of the initialized vectors to the device?
 
 Hypothesize about UM behavior, page faulting specificially, as well as the impact on the reported run time of the initialization kernel, before each experiement, and then verify by running `nvprof`.
+
+See file `vectoradd3.cu` for an implementation.
 
