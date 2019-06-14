@@ -70,8 +70,8 @@ int main()
    * is updated.
    */
 
-  threadsPerBlock = 80;
-  numberOfBlocks = 512;
+  threadsPerBlock = 512;
+  numberOfBlocks = 80;
 
   addVectorsInto<<<numberOfBlocks, threadsPerBlock>>>(c, a, b, N);
 

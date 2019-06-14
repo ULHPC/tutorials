@@ -78,8 +78,8 @@ int main()
   size_t threadsPerBlock;
   size_t numberOfBlocks;
 
-  threadsPerBlock = 80;
-  numberOfBlocks = 512;
+  threadsPerBlock = 512;
+  numberOfBlocks = 80;
 
   initWithKernel<<<numberOfBlocks, threadsPerBlock>>>(3, a, N);
   initWithKernel<<<numberOfBlocks, threadsPerBlock>>>(4, b, N);
