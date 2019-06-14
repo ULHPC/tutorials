@@ -4,7 +4,7 @@
 
      Copyright (c) 2013-2019 UL HPC Team <hpc-sysadmins@uni.lu>
 
-[![](https://github.com/ULHPC/tutorials/raw/devel/advanced/CUDA/cover.png)](https://github.com/ULHPC/tutorials/raw/devel/advanced/CUDA/slides.pdf)
+[![](https://github.com/ULHPC/tutorials/raw/devel/advanced/CUDA/cover_slides.png)](https://github.com/ULHPC/tutorials/raw/devel/advanced/CUDA/slides.pdf)
 
 
 ## CUDA
