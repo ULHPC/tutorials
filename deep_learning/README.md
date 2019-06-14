@@ -13,16 +13,6 @@ The scope of this tutorial is *single* node execution, multi-CPU and multi-GPU.
 Another tutorial covers multi-node execution.
 
 --------------------
-## Outline ##
-
-* Developing deep learning model with Tensorflow Keras on the HPC
-	- develop, interactively, on a CPU (or GPU) node
-	- run on a GPU node (still interactive)
-* Batch execution on a single node
-	- CPU only
-	- GPU accelerated
-
---------------------
 ## Pre-requisites ##
 
 Ensure you are able to [connect to the UL HPC clusters](https://hpc.uni.lu/users/docs/access.html)
