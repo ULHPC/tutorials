@@ -93,7 +93,7 @@ We will use conda on two levels in this tutorial. First we use a conda environme
     ```bash
    (bioinfo_tutorial) (node)$> cat << EOF >> ~/.bashrc
    
-   # Stop Python from pick up packages in $HOME/.local
+   # Stop Python from picking up packages in $HOME/.local
    export PYTHONNOUSERSITE=True
    EOF
    ```
@@ -717,6 +717,7 @@ With `squeue -u <your_username>` you can check the status of the submitted jobs 
 
 * To avoid too much overhead in the number of jobs submitted to Slurm, use the`group` directive to group rules that can run together in a single job.
 * If your workflow runs for longer than just a few minutes, run snakemake inside`screen` or prefix it with `nohup`. This prevents the workflow from stopping when your SSH session get's disconnected.
+* If `PYTHONNOUSERSITE` is set, Python won’t add the [`user site-packages directory`](https://docs.python.org/3/library/site.html#site.USER_SITE) to [`sys.path`](https://docs.python.org/3/library/sys.html#sys.path). If it's not set, Python will pick up packages from the user site-packages before packages from conda environments. This can lead to errors if package versions are incompatible and you cannot be sure anymore which version of a software/package you are using.
 
 <a name="references"></a>
 
