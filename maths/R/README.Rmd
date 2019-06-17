@@ -201,13 +201,14 @@ The `mark()` function performs x times the calls of several expressions, grabbin
 library(data.table)
 library(bench)
 set.seed(123)
-m <- bench::mark(LAPPLY   = as.data.frame(cbind(cut = as.character(unique(diamonds$cut)),
-                                                price = lapply(unique(diamonds$cut), function(x) mean(diamonds$price[which(diamonds$cut == x)])))),
+m <- bench::mark(LAPPLY    = as.data.frame(cbind(cut = as.character(unique(diamonds$cut)),
+                                                 price = lapply(unique(diamonds$cut), function(x) mean(diamonds$price[which(diamonds$cut == x)])))),
                  AGGREGATE = aggregate(price ~ cut, FUN = mean, data = diamonds),
                  DPLYR     = group_by(diamonds, cut) %>% summarise(price = mean(price)),
+                 NOPLYR    = noplyr::group_by(diamonds, cut) %>% noplyr::summarize(price = mean(price)),
                  DATATABLE = DT[, list(price = mean(price)), by = cut],
                  iterations = 300, check = FALSE)
-m
+summary(m)
 ```
 
 - makes comparison easier to read using **relative** values. 1 for the fastest.
@@ -343,6 +344,11 @@ tictoc::tic()
 nothingness <- future_map(c(2, 2, 2), ~Sys.sleep(.x), .progress = TRUE)
 tictoc::toc()
 ```
+
+
+fetch env variables in R
+
+`as.integer(Sys.getenv("SLURM_CPUS_PER_TASK"))`
 
 
 ### t-SNE example
