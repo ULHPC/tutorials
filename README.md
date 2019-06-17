@@ -90,9 +90,14 @@ We will use conda on two levels in this tutorial. First we use a conda environme
 
 5. Make sure Python does not pick up packages in your home directory:
 
-   ```bash
-   (bioinfo_tutorial) (node)$> export PYTHONNOUSERSITE=True
+    ```bash
+   (bioinfo_tutorial) (node)$> cat << EOF >> ~/.bashrc
+   
+   # Stop Python from pick up packages in $HOME/.local
+   export PYTHONNOUSERSITE=True
+   EOF
    ```
+   For the later parts of this tutorial to work, we need to make this setting permanent by adding it to `~/.basrhc`. However, **make sure to delete those lines** after the tutorial, so your manually installed python packages are found again.
 
 6. Install snakemake:
 
