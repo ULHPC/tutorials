@@ -51,7 +51,51 @@ In the next part, we are going to install a few mandatory software required to i
 ----------------------------------
 ## 1. Preliminary installations ##
 
-As this involves Java (something more probably HPC users don't like), and that Java needs to be treated specifically within Easybuild do to the licences involved, we will now cover it.
+### SOCKS 5 Proxy plugin
+
+Many Big Data framework involves a web interface (at the level of the master and/or the workers) you probably want to access in a relative transparent way.
+
+For that, a convenient way is to rely on a SOCKS proxy, which is basically an SSH tunnel in which specific applications forward their traffic down the tunnel to the server, and then on the server end, the proxy forwards the traffic out to the general Internet. Unlike a VPN, a SOCKS proxy has to be configured on an app by app basis on the client machine, but can be set up without any specialty client agents.
+
+__Setting Up the Tunnel__
+
+To initiate such a SOCKS proxy using SSH (listening on `localhost:1080` for instance), you simply need to use the `-D 1080` command line option when connecting to the cluster:
+
+```
+(laptop)$> ssh -D 1080 -C iris-cluster
+```
+
+* `-D`: Tells SSH that we want a SOCKS tunnel on the specified port number (you can choose a number between 1025-65536)
+* `-C`: Compresses the data before sending it
+
+__Configuring Firefox to Use the Tunnel__
+
+Now that you have an SSH tunnel, it's time to configure your web browser (in this case, Firefox) to use that tunnel.
+In particular, install the [Foxy Proxy](https://getfoxyproxy.org/order/?src=FoxyProxyForFirefox)
+extension for Firefox and configure it to use your SOCKS proxy:
+
+* Right click on the fox icon
+* Options
+* **Add a new proxy** button
+* Name: `ULHPC proxy`
+* Informations > **Manual configuration**
+  * Host IP: `127.0.0.1`
+  * Port: `1080`
+  * Check the **Proxy SOCKS** Option
+* Click on **OK**
+* Close
+* Open a new tab
+* Right click on the Fox
+* Choose the **ULHPC proxy**
+
+We will see later on (in the section dedicated to Spark) how to effectively use this configuration.
+
+### Java
+
+Hadoop and Spark depends on Java (something more probably HPC users don't like), and that Java needs to be treated specifically within Easybuild due to the licences involved, we will now cover it.
+
+This part cna be skipped if you're only interested to go to the spark section.
+Otherwise, to build Hadoop, we will need to prepare specific versions of Java and Maven as pre-requisites.
 
 For these builds, reserve an interactive job on one full node (for 3 hours)
 
@@ -63,7 +107,7 @@ For these builds, reserve an interactive job on one full node (for 3 hours)
 (access-{gaia|chaos})$> oarsub -I -l nodes=1,walltime=3
 ```
 
-### Step 1.a. Java 7u80 and 8u152
+#### Step 1.a. Java 7u80 and 8u152
 
 We'll need several version of the [JDK](http://www.oracle.com/technetwork/java/javase/overview/index.html) (in Linux x64 source mode i.e. `jdk-<version>-linux-x64.tar.gz`), more specifically 1.7.0_80 (aka `7u80` in Oracle's naming convention) and 1.8.0_152 (aka `8u152`).
 
@@ -148,7 +192,7 @@ $> module av java
 $> module show lang/Java/1.7.0_80
 ```
 
-### Step 1.b. Maven 3.5.2
+#### Step 1.b. Maven 3.5.2
 
 We will also need an updated version of [Maven](https://maven.apache.org/) (3.5.2).
 
@@ -181,7 +225,7 @@ module av Maven
 
 A few other elements need to be installed.
 
-### Step 1.c CMake, snappy, protobuf
+#### Step 1.c CMake, snappy, protobuf
 
 Let's repeat the process globally for:
 
@@ -235,7 +279,7 @@ $> eb -S Hadoop-2.6.0-cdh5.12.0-native.eb
 CFGS1=$HOME/.local/easybuild/software/tools/EasyBuild/3.6.1/lib/python2.7/site-packages/easybuild_easyconfigs-3.6.1-py2.7.egg/easybuild/easyconfigs/h/Hadoop
  * $CFGS1/Hadoop-2.6.0-cdh5.12.0-native.eb
 
-# Copy the recipy -- you need thus to define the CDGS1 variable
+# Copy the recipy -- you need thus to define the CFGS1 variable
 $> CFGS1=$HOME/.local/easybuild/software/tools/EasyBuild/3.6.1/lib/python2.7/site-packages/easybuild_easyconfigs-3.6.1-py2.7.egg/easybuild/easyconfigs/h/Hadoop
 $> echo $CFGS1
 $> cd /tmp     # Work in a temporary directory
@@ -377,18 +421,64 @@ As for Hadoop, we are first going to build Spark using Easybuild before performi
 
 ### 4.1 Building Spark
 
-Spark 2.1.1 is available by default.
+Spark 2.3.0 is available by default so you can load it.
 
-We are still going to use a more recent version:
+``` bash
+$> module av spark
+------------- /opt/apps/resif/data/stable/default/modules/all -------------
+   devel/Spark/2.3.0-intel-2018a-Hadoop-2.7-Java-1.8.0_162-Python-3.6.4
+
+$> module load devel/Spark
+```
+
+You might wish to build and use the most recent version of [Spark](https://spark.apache.org/downloads.html) (_i.e._ at the time of writing 2.4.0 (Nov. 2nd, 2018) with Pre-built for Apache Hadoop 2.7 or later).
+You can simply expand the available Easybuild recipY for Spark 2.3.0:
 
 ```bash
-$> eb -S Spark
-[...]
- * $CFGS2/Spark-2.2.0-Hadoop-2.6-Java-1.8.0_152.eb
+$> eb -S Spark-2.3
+CFGS1=/opt/apps/resif/data/easyconfigs/ulhpc/default/easybuild/easyconfigs/s/Spark
+CFGS2=$HOME/.local/easybuild/software/tools/EasyBuild/3.7.1/lib/python2.7/site-packages/easybuild_easyconfigs-3.7.1-py2.7.egg/easybuild/easyconfigs/s/Spark
+ * $CFGS1/Spark-2.3.0-intel-2018a-Hadoop-2.7-Java-1.8.0_162-Python-3.6.4.eb
+ * $CFGS2/Spark-2.3.0-Hadoop-2.7-Java-1.8.0_162.eb
 
-# Try to install one of the most recent version
-$> eb Spark-2.2.0-Hadoop-2.6-Java-1.8.0_152.eb -Dr
-$> time eb Spark-2.2.0-Hadoop-2.6-Java-1.8.0_152.eb -r
+$> cd /dev/shm
+# Copy the recipy -- you need thus to define the CFGS2 variable
+# simply copy/paste from above result to declare the CFGS2 variable
+$> CFGS2=$HOME/.local/easybuild/software/tools/EasyBuild/3.7.1/lib/python2.7/site-packages/easybuild_easyconfigs-3.7.1-py2.7.egg/easybuild/easyconfigs/s/Spark
+$> cp $CFGS2/Spark-2.3.0-Hadoop-2.7-Java-1.8.0_162.eb Spark-2.4.0-Hadoop-2.7-Java-1.8.0_162.eb
+```
+
+You can now edit and adapt the custom `Spark-2.4.0-Hadoop-2.7-Java-1.8.0_162.eb` as follows:
+
+```diff
+--- Spark-2.3.0-Hadoop-2.7-Java-1.8.0_162.eb    2018-08-16 18:22:49.703386000 +0200
++++ Spark-2.4.0-Hadoop-2.7-Java-1.8.0_162.eb    2018-12-04 11:06:35.148845000 +0100
+@@ -1,7 +1,7 @@
+ easyblock = 'Tarball'
+
+ name = 'Spark'
+-version = '2.3.0'
++version = '2.4.0'
+ versionsuffix = '-Hadoop-2.7-Java-%(javaver)s'
+
+ homepage = 'http://spark.apache.org'
+@@ -15,7 +15,7 @@
+     'http://www.eu.apache.org/dist/%(namelower)s/%(namelower)s-%(version)s/',
+     'http://www.us.apache.org/dist/%(namelower)s/%(namelower)s-%(version)s/',
+ ]
+-checksums = ['5cfbc77d140454c895f2d8125c0a751465f53cbe12720da763b1785d25c63f05']
++checksums = ['c93c096c8d64062345b26b34c85127a6848cff95a4bb829333a06b83222a5cfa']
+
+ dependencies = [('Java', '1.8.0_162')]
+```
+
+_Note_: the resulting Easyconfigs is provided to you in `src/Spark-2.4.0-Hadoop-2.7-Java-1.8.0_162.eb`
+
+Let's install it:
+
+```
+$> eb ./Spark-2.4.0-Hadoop-2.7-Java-1.8.0_162.eb -Dr   # Dry run
+$> time eb ./Spark-2.4.0-Hadoop-2.7-Java-1.8.0_162.eb -r
 [...]
 real    0m9.940s
 user    0m5.167s
@@ -406,12 +496,12 @@ $> mu
 $> module av Spark
 
 ---------- /home/users/svarrette/.local/easybuild/modules/all ----------
-   devel/Spark/2.2.0-Hadoop-2.6-Java-1.8.0_152 (D)
+   devel/Spark/2.4.0-Hadoop-2.7-Java-1.8.0_162 (D)
 
 ------------ /opt/apps/resif/data/stable/default/modules/all -----------
-   devel/Spark/2.1.1
+   devel/Spark/2.3.0-intel-2018a-Hadoop-2.7-Java-1.8.0_162-Python-3.6.4
 
-$> module load devel/Spark
+$> module load devel/Spark/2.4.0
 ```
 
 #### 4.2.a. Pyspark
@@ -419,22 +509,18 @@ $> module load devel/Spark
 PySpark is the Spark Python API and exposes Spark Contexts to the Python programming environment.
 
 ```bash
-pyspark
+$> pyspark
 Python 2.7.5 (default, Aug  4 2017, 00:39:18)
 [GCC 4.8.5 20150623 (Red Hat 4.8.5-16)] on linux2
 Type "help", "copyright", "credits" or "license" for more information.
-Using Spark's default log4j profile: org/apache/spark/log4j-defaults.properties
+2018-12-04 13:57:55 WARN  NativeCodeLoader:62 - Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
 Setting default log level to "WARN".
 To adjust logging level use sc.setLogLevel(newLevel). For SparkR, use setLogLevel(newLevel).
-18/06/13 00:51:28 WARN NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
-18/06/13 00:51:33 WARN ObjectStore: Version information not found in metastore. hive.metastore.schema.verification is not enabled so recording the schema version 1.2.0
-18/06/13 00:51:33 WARN ObjectStore: Failed to get database default, returning NoSuchObjectException
-18/06/13 00:51:34 WARN ObjectStore: Failed to get database global_temp, returning NoSuchObjectException
 Welcome to
       ____              __
      / __/__  ___ _____/ /__
     _\ \/ _ \/ _ `/ __/  '_/
-   /__ / .__/\_,_/_/ /_/\_\   version 2.2.0
+   /__ / .__/\_,_/_/ /_/\_\   version 2.4.0
       /_/
 
 Using Python version 2.7.5 (default, Aug  4 2017 00:39:18)
@@ -451,20 +537,20 @@ Instead of running `pyspark` above, run the `spark-shell` command:
 
 ```bash
 $> spark-shell
-Using Spark's default log4j profile: org/apache/spark/log4j-defaults.properties
+2018-12-04 13:58:43 WARN  NativeCodeLoader:62 - Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
 Setting default log level to "WARN".
-[...]
-Spark context Web UI available at http://172.17.6.1:4040
-Spark context available as 'sc' (master = local[*], app id = local-1528844025861).
+To adjust logging level use sc.setLogLevel(newLevel). For SparkR, use setLogLevel(newLevel).
+Spark context Web UI available at http://node-1.iris-cluster.uni.lux:4040
+Spark context available as 'sc' (master = local[*], app id = local-1543928329271).
 Spark session available as 'spark'.
 Welcome to
       ____              __
      / __/__  ___ _____/ /__
     _\ \/ _ \/ _ `/ __/  '_/
-   /___/ .__/\_,_/_/ /_/\_\   version 2.2.0
+   /___/ .__/\_,_/_/ /_/\_\   version 2.4.0
       /_/
 
-Using Scala version 2.11.8 (Java HotSpot(TM) 64-Bit Server VM, Java 1.8.0_152)
+Using Scala version 2.11.12 (Java HotSpot(TM) 64-Bit Server VM, Java 1.8.0_162)
 Type in expressions to have them evaluated.
 Type :help for more information.
 
@@ -521,21 +607,30 @@ To facilitate these steps, Spark comes with a couple of scripts you can use to l
 | `sbin/stop-slaves.sh`  | Stops all slave instances on the machines specified in the conf/slaves file. |
 | `sbin/stop-all.sh`     | Stops both the master and the slaves as described above.                     |
 
-Exit (if needed) the previous session, and make a new reservation:
+Exit (if needed) the previous session.
+Ensure that you have connected by SSH to the cluster by opening an SOCKS proxy (see above instructions):
+
+```
+(laptop)$> ssh -D 1080 -C iris-cluster
+```
+
+Then make a new reservation across multiple nodes:
 
 ```bash
-``bash
+# If not yet done, go to the appropriate directory
+$> cd ~/git/github.com/ULHPC/tutorials/bigdata
+
 $> srun -p interactive -n 4 -c 7 --exclusive --pty bash
 $> mu
 $> module av Spark
 
 ---------- /home/users/svarrette/.local/easybuild/modules/all ----------
-   devel/Spark/2.2.0-Hadoop-2.6-Java-1.8.0_152 (D)
+   devel/Spark/2.4.0-Hadoop-2.7-Java-1.8.0_162 (D)
 
 ------------ /opt/apps/resif/data/stable/default/modules/all -----------
-   devel/Spark/2.1.1
+   devel/Spark/2.3.0-intel-2018a-Hadoop-2.7-Java-1.8.0_162-Python-3.6.4
 
-$> module load devel/Spark
+$> module load devel/Spark/2.4.0
 ```
 
 ### Creation of a master
@@ -604,8 +699,8 @@ on your browser.
 
 ```bash
 $> export SPARK_HOME=$EBROOTSPARK           # Required
-$> export MASTER=spark://$(hostname):7077   # Helpful
-$> echo $MASTER
+$> export MASTER_URL=spark://$(hostname -s):7077   # Helpful
+$> echo $MASTER_URL
 ```
 Now we can start a worker:
 
@@ -630,7 +725,7 @@ Options:
   --properties-file FILE   Path to a custom Spark properties file.
                            Default is conf/spark-defaults.conf.
 
-$> start-slave.sh -c ${SLURM_CPUS_PER_TASK} $MASTER
+$> start-slave.sh -c ${SLURM_CPUS_PER_TASK} $MASTER_URL
 ```
 
 Check the result on the master website `http://<IP>:8082`.
@@ -640,7 +735,7 @@ Now we can submit an example python Pi estimation script to the Spark cluster wi
 _Note_: partitions in this context refers of course to Spark's Resilient Distributed Dataset (RDD) and how the dataset is distributed across the nodes in the Spark cluster.
 
 ```bash
-$> spark-submit --master $MASTER  $SPARK_HOME/examples/src/main/python/pi.py 100
+$> spark-submit --master $MASTER_URL  $SPARK_HOME/examples/src/main/python/pi.py 100
 [...]
 18/06/13 02:03:43 INFO DAGScheduler: Job 0 finished: reduce at /home/users/svarrette/.local/easybuild/software/devel/Spark/2.2.0-Hadoop-2.6-Java-1.8.0_152/examples/src/main/python/pi.py:43, took 3.738313 s
 Pi is roughly 3.140860
@@ -653,5 +748,90 @@ Finally, at the end, clean your environment and
 $SPARK_HOME/sbin/stop-all.sh
 ```
 
-Prepare a launcher.
-See also [Spark launcher example](https://hpc.uni.lu/users/docs/slurm_launchers.html#apache-spark).
+Prepare a launcher (use your favorite editor) to setup a spark cluster and submit a task to this cluster in batch mode.
+Kindly pay attention to the fact that:
+
+* the master is expected to use **1 core** (and 4GiB of RAM) on the first allocated node
+    - in particular, the first worker running on the master node will use **1 less core** than  the allocated ones, _i.e._ `$((${SLURM_CPUS_PER_TASK}-1))`
+    - once set, the master URL can be obtained with
+
+             MASTER_URL="spark://$(scontrol show hostname $SLURM_NODELIST | head -n 1):7077"
+
+* the workers can use `$SLURM_CPUS_PER_TASK` cores (and a minimum of 1 core)
+
+        export SPARK_WORKER_CORES=${SLURM_CPUS_PER_TASK:-1}
+
+* you can afford 4 GiB per core to the workers, but take into account that Spark master and worker daemons themselves will need 4GiB to run
+
+```bash
+  export DAEMON_MEM=${SLURM_MEM_PER_CPU:=4096}
+  # Memory to allocate to the Spark master and worker daemons themselves
+  export SPARK_DAEMON_MEMORY=${DAEMON_MEM}m
+  export SPARK_MEM=$(( ${DAEMON_MEM}*(${SPARK_WORKER_CORES} -1) ))
+  # Total amount of memory to allow Spark applications to use on the machine,
+  # note that each application's individual memory is configured using its
+  # spark.executor.memory property.
+  export SPARK_WORKER_MEMORY=${SPARK_MEM}m
+  # Options read in YARN client mode
+  export SPARK_EXECUTOR_MEMORY=${SPARK_MEM}m
+```
+
+_Note_: if you are lazy (or late), you can use the provided launcher script [`runs/launcher.Spark.sh`](https://github.com/ULHPC/tutorials/blob/devel/bigdata/runs/launcher.Spark.sh).
+
+```bash
+$> cd runs
+$> ./launcher.Spark.sh -h
+NAME
+  ./launcher.Spark.sh -- Spark Standalone Mode launcher
+
+  This launcher will setup a Spark cluster composed of 1 master and <N> workers,
+  where <N> is the number of (full) nodes reserved (i.e. $SLURM_NNODES).
+  Then a spark application is submitted (using spark-submit) to the cluster
+  By default, $EBROOTSPARK/examples/src/main/python/pi.py is executed.
+
+SYNOPSIS
+  ./launcher.Spark.sh -h
+  ./launcher.Spark.sh [-i] [path/to/spark_app]
+
+OPTIONS
+  -i --interactive
+    Interactive mode: setup the cluster and give back the hand
+    Only mean with interactive jobs
+  -m --master
+    Setup a spark master (only)
+  -c --client
+    Setup spark worker(s)/slave(s). This assumes a master is running
+  -n --no-setup
+    Do not bootstrap the spark cluster
+
+AUTHOR
+  UL HPC Team <hpc-sysadmins@uni.lu>
+COPYRIGHT
+  This is free software; see the source for copying conditions.  There is
+  NO warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+```
+
+Passive jobs examples:
+
+```bash
+############### iris cluster (slurm) ###############
+$> sbatch ./launcher.Spark.sh
+[...]
+```
+
+Once finished, you can check the result of the default application submitted (in `result_${SLURM_JOB_NAME}-${SLURM_JOB_ID}.out`).
+
+```bash
+$> cat result_${SLURM_JOB_NAME}-${SLURM_JOB_ID}.out
+Pi is roughly 3.141420
+```
+
+In case of problems, you can check the logs of the daemons in `~/.spark/logs/`
+
+__Further Reading__
+
+You can find on the Internet many resources for expanding your HPC experience
+with Spark. Here are some links you might find useful to go further:
+
+* [Using Spark with GPFS on the ACCRE Cluster](https://bigdata-vandy.github.io/using-spark-with-gpfs/)
+* [ARIS notes on Spark](http://doc.aris.grnet.gr/software/spark/)

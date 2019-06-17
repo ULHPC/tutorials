@@ -19,10 +19,8 @@ So far, the following tutorials are proposed:
 | :----------:            | ----------------------------------------------------------------------------                | -------------- |
 | _Basic_                 | [Getting Started on the UL HPC platform](beginners/)                                        | beginners      |
 |                         | [HPC workflow with sequential jobs](basic/sequential_jobs/)                                 | beginners      |
-|                         | [Prototyping with Python](python/basics/)                                                   | beginners      |
-|                         | [Advanced prototyping with Python](python/advanced/)                                        | intermediate   |
 | _Scheduling_            | [Advanced scheduling with SLURM](scheduling/advanced)                                       | intermediate   |
-| _Software Management_   | [Building [custom] software with EasyBuild](tools/easyBuild/)                               | beginners      |
+| _Software Management_   | [Building [custom] software with EasyBuild](tools/easybuild/)                               | beginners      |
 | _Debuging & Profiling_  | [Know Your Bugs: Weapons for Efficient Debugging](debugging/basics/)                        | intermediate   |
 |                         | [Advanced debugging on the UL HPC platform](debugging/advanced/)                            | intermediate   |
 |                         | (OLD) [Unified profiling and debugging with Allinea](advanced/Allinea/)                     | intermediate   |
@@ -31,9 +29,14 @@ So far, the following tutorials are proposed:
 |                         | [UL HPC MPI Tutorial: OSU Micro-Benchmarks](parallel/mpi/OSU_MicroBenchmarks/)              | intermediate   |
 |                         | [High-Performance Linpack (HPL) benchmarking on UL HPC platform](parallel/mpi/HPL/)         | intermediate   |
 |                         | [HPCG benchmarking on UL HPC platform](parallel/hybrid/HPCG/)                               | intermediate   |
+| _Python_                | [Prototyping with Python](python/basics/)                                                   | beginners      |
+|                         | [Advanced prototyping with Python](python/advanced/jupyter-celery)                          | intermediate   |
+|                         | [Parallel machine learning with scikit-learn](python/advanced/scikit-learn)                 | intermediate   |
+|                         | [Parallel evolutionary computing](python/advanced/scoop-deap)                		| intermediate   |
 | _Mathematics_           | [MATLAB (interactive, passive and sequential jobs)](maths/matlab/basics/)                   | intermediate   |
 |                         | [Advanced MATLAB execution: checkpointing and parallel jobs](maths/matlab/advanced/)        | advanced       |
 |                         | [R / Statictical Computing](maths/R/)                                                       | intermediate   |
+|                         | [Cplex / Gurobi](maths/Cplex-Gurobi/)                                                       | intermediate   |
 | _Bioinformatics_        | [Bioinformatics software on the UL HPC platform](bio/basics/)                               | intermediate   |
 |                         | [Galaxy Introduction Exercise: From Peaks to Genes](bio/galaxy/)                            | intermediate   |
 | _CFD/MD/Chemistry_      | [Running parallel software: test cases on CFD / MD / Chemistry applications](multiphysics/) | advanced       |

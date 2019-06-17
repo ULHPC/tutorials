@@ -1,5 +1,5 @@
 #! /bin/bash -l
-# Time-stamp: <Sun 2018-06-10 14:33 svarrette>
+# Time-stamp: <Fri 2018-11-23 14:29 svarrette>
 ######## OAR directives ########
 #OAR -n MPI
 #OAR -l nodes=2/core=3,walltime=0:05:00
@@ -14,7 +14,8 @@
 #SBATCH --time=0-00:05:00
 #SBATCH -p batch
 #SBATCH --qos=qos-batch
-
+#SBATCH -o %x-%j.out
+#
 # Usage:
 # $0 intel     [app]
 # $0 openmpi   [app]

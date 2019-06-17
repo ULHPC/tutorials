@@ -1,7 +1,7 @@
 ##################################################################################
 # Makefile - Configuration file for GNU make (http://www.gnu.org/software/make/)
 # Creation : 07 Nov 2013
-# Time-stamp: <Thu 2017-11-09 14:09 svarrette>
+# Time-stamp: <Fri 2018-11-23 16:17 svarrette>
 #
 # Copyright (c) 2013 Sebastien Varrette <Sebastien.Varrette@uni.lu>
 #               http://varrette.gforge.uni.lu
@@ -22,9 +22,9 @@ SCRIPT_DIR  = scripts
 PLOT_DIR    = plots
 
 ### Benchmark info
-BENCH_SHORTNAME = "OSU"
+BENCH_SHORTNAME = OSU
 BENCH_DESC      = "OSU Micro-Benchmarks"
-BENCH_VERSION   = 5.4
+BENCH_VERSION   = 5.5
 BENCH_URL       = "http://mvapich.cse.ohio-state.edu/download/mvapich/osu-micro-benchmarks-$(BENCH_VERSION).tar.gz"
 BENCH_TARBALL   = $(shell basename $(BENCH_URL) )
 BENCH_SRCDIR    = $(SRC_DIR)/$(shell basename $(BENCH_TARBALL) .tar.gz)
@@ -63,7 +63,7 @@ build: uncompress __build.intel __build.openmpi # __build.mvapich2
 
 __build.%:
 	@echo "=> building $(BENCH_DESC) with $*"
-	$(BUILD_SCRIPT)  $*
+	$(BUILD_SCRIPT) --srcdir $(PWD)/src/osu-micro-benchmarks-$(BENCH_VERSION)  $*
 	@echo "=> building complete - see build.*"
 
 plot:

@@ -14,18 +14,9 @@ You can work in groups for this training, yet individual work is encouraged to e
 
 In all cases, ensure you are able to [connect to the UL HPC  clusters](https://hpc.uni.lu/users/docs/access.html).
 
-
-```bash
-# /!\ FOR ALL YOUR COMPILING BUSINESS, ENSURE YOU WORK ON A COMPUTING NODE
-# Have an interactive job
-(access)$> si -N 2 --ntasks-per-node=1                    # iris
-(access)$> srun -p interactive --qos qos-iteractive -N 2 --ntasks-per-node=1 --pty bash  # iris (long version)
-(access)$> oarsub -I -l enclosure=1/nodes=2,walltime=4   # chaos / gaia
-```
-
 **Advanced users only**: rely on `screen` (see  [tutorial](http://support.suso.com/supki/Screen_tutorial) or the [UL HPC tutorial](https://hpc.uni.lu/users/docs/ScreenSessions.html) on the  frontend prior to running any `oarsub` or `srun/sbatch` command to be more resilient to disconnection.
 
-The latest version of this tutorial is available on [Github](https://github.com/ULHPC/tutorials/tree/devel/advanced/OSU_MicroBenchmarks).
+The latest version of this tutorial is available on [Github](https://github.com/ULHPC/tutorials/tree/devel/parallel/mpi/OSU_MicroBenchmarks).
 Finally, advanced MPI users might be interested to take a look at the [Intel Math Kernel Library Link Line Advisor](https://software.intel.com/en-us/articles/intel-mkl-link-line-advisor).
 
 ## Objectives
@@ -37,7 +28,7 @@ The [OSU micro-benchmarks](http://mvapich.cse.ohio-state.edu/benchmarks/) featur
 * __One-sided MPI Benchmarks__: one-sided put latency (active/passive), one-sided put bandwidth (active/passive), one-sided put bidirectional bandwidth, one-sided get latency (active/passive), one-sided get bandwidth (active/passive), one-sided accumulate latency (active/passive), compare and swap latency (passive), and fetch and operate (passive) for MVAPICH2 (MPI-2 and MPI-3).
 * Since the 4.3 version, the [OSU micro-benchmarks](http://mvapich.cse.ohio-state.edu/benchmarks/) also features OpenSHMEM benchmarks, a 1-sided communications library.
 
-In this tutorial, we will build **version 5.4 of the [OSU micro-benchmarks](http://mvapich.cse.ohio-state.edu/benchmarks/)** (the latest at the time of writing), and focus on two of the available tests:
+In this tutorial, we will build **version 5.5 of the [OSU micro-benchmarks](http://mvapich.cse.ohio-state.edu/benchmarks/)** (the latest at the time of writing), and focus on two of the available tests:
 
 * `osu_get_latency` - Latency Test
 * `osu_get_bw` - Bandwidth Test
@@ -59,13 +50,20 @@ For the sake of time and simplicity, we will focus on the first two suits. Event
 
 ## Pre-requisites
 
-On the **access** and a **computing** node of the cluster you're working on, clone the [ULHPC/tutorials](https://github.com/ULHPC/tutorials)  and [ULHPC/launcher-scripts](https://github.com/ULHPC/launcher-scripts) repositories
+If not yet done, clone the [ULHPC/tutorials](https://github.com/ULHPC/tutorials)  and [ULHPC/launcher-scripts](https://github.com/ULHPC/launcher-scripts) repositories once connected to the cluster:
 
-```bash
-$> cd
-$> mkdir -p git/ULHPC && cd  git/ULHPC
+``` bash
+### ONLY if not yet done: setup the tutorials repo
+# See http://ulhpc-tutorials.rtfd.io/en/latest/setup/install/
+$> mkdir -p ~/git/github.com/ULHPC
+$> cd ~/git/github.com/ULHPC
+# Clone the tutorial repository
+$> git clone https://github.com/ULHPC/tutorials.git
+$> cd tutorials
+$> make setup          # Initiate git submodules etc...
+# Clone the launcher-scripts repository
+$> cd ~/git/github.com/ULHPC
 $> git clone https://github.com/ULHPC/launcher-scripts.git
-$> git clone https://github.com/ULHPC/tutorials.git         # If not yet done
 ```
 
 Prepare your working directory
@@ -73,8 +71,20 @@ Prepare your working directory
 ```bash
 $> mkdir -p ~/tutorials/OSU-MicroBenchmarks
 $> cd ~/tutorials/OSU-MicroBenchmarks
-$> ln -s ~/git/ULHPC/tutorials/advanced/OSU_MicroBenchmarks ref.ulhpc.d   # Keep a symlink to the reference tutorial
+$> ln -s ~/git/github.com/ULHPC/tutorials/parallel/mpi/OSU_MicroBenchmarks/ ref.ulhpc.d   # Keep a symlink to the reference tutorial
 $> ln -s ref.ulhpc.d/Makefile .     # symlink to the root Makefile
+$> ln -s ref.ulhpc.d/scripts  .     # symlinkls to launcher/build scripts
+```
+
+Now you can reserve an interactive job on 2 nodes and 1 task per node (for 30 minutes)
+
+```bash
+############### iris cluster (slurm) ###############
+(access-iris)$> srun -p interactive -N 2 --ntasks-per-node=1 -t 0:30:00 --pty bash
+$> echo $SLURM_NTASKS
+
+############### gaia/chaos clusters (OAR) ###############
+(access-{gaia|chaos})$> oarsub -I -l nodes=2/core=1,walltime=0:30:00
 ```
 
 Fetch and uncompress the latest version of the [OSU micro-benchmarks](http://mvapich.cse.ohio-state.edu/benchmarks/)
@@ -84,7 +94,7 @@ $> cd ~/tutorials/OSU-MicroBenchmarks
 $> mkdir src
 $> cd src
 # Download the latest version
-$> export OSU_VERSION=5.4     # Just to abstract from the version to download
+$> export OSU_VERSION=5.5     # Just to abstract from the version to download
 $> wget --no-check-certificate http://mvapich.cse.ohio-state.edu/download/mvapich/osu-micro-benchmarks-${OSU_VERSION}.tar.gz
 $> tar xvzf osu-micro-benchmarks-${OSU_VERSION}.tar.gz
 $> cd osu-micro-benchmarks-${OSU_VERSION}
@@ -121,7 +131,7 @@ Currently Loaded Modules:
   3) compiler/icc/2017.1.132-GCC-6.3.0-2.27   6) mpi/impi/2017.1.132-iccifort-2017.1.132-GCC-6.3.0-2.27   9) toolchain/intel/2017a
 
 # Configure the Intel MPI-based build for installation in the current directory
-$> ../src/osu-micro-benchmarks-5.4/configure CC=mpiicc CXX=mpiicpc CFLAGS=-I$(pwd)/../src/osu-micro-benchmarks-5.4/util --prefix=$(pwd)
+$> ../src/osu-micro-benchmarks-${OSU_VERSION}/configure CC=mpiicc CXX=mpiicpc CFLAGS=-I$(pwd)/../src/osu-micro-benchmarks-${OSU_VERSION}/util --prefix=$(pwd)
 $> make && make install
 ```
 
@@ -167,7 +177,7 @@ Currently Loaded Modules:
   2) tools/binutils/2.28-GCCcore-6.3.0   4) tools/numactl/2.0.11-GCCcore-6.3.0   6) mpi/OpenMPI/2.1.1-GCC-6.3.0-2.28
 
 # Configure the OpenMPI-based build for installation in the current directory
-$> ../src/osu-micro-benchmarks-5.4/configure CC=mpicc CFLAGS=-I$(pwd)/../src/osu-micro-benchmarks-5.4/util --prefix=$(pwd)
+$> ../src/osu-micro-benchmarks-${OSU_VERSION}/configure CC=mpicc CFLAGS=-I$(pwd)/../src/osu-micro-benchmarks-${OSU_VERSION}/util --prefix=$(pwd)
 $> make && make install
 ```
 
