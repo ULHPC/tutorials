@@ -1,10 +1,10 @@
 [![By ULHPC](https://img.shields.io/badge/by-ULHPC-blue.svg)](https://hpc.uni.lu) [![Licence](https://img.shields.io/badge/license-GPL--3.0-blue.svg)](http://www.gnu.org/licenses/gpl-3.0.html) [![GitHub issues](https://img.shields.io/github/issues/ULHPC/tutorials.svg)](https://github.com/ULHPC/tutorials/issues/) [![Github](https://img.shields.io/badge/sources-github-green.svg)](https://github.com/ULHPC/tutorials/tree/devel/advanced/MultiPhysics) [![Documentation Status](http://readthedocs.org/projects/ulhpc-tutorials/badge/?version=latest)](http://ulhpc-tutorials.readthedocs.io/en/latest/advanced/MultiPhysics/) [![GitHub forks](https://img.shields.io/github/stars/ULHPC/tutorials.svg?style=social&label=Star)](https://github.com/ULHPC/tutorials)
 
-# Multi-Physics workflows: test cases on CFD / MD / Chemistry applications
+# Scalable Science - Computational Physics, Chemistry & Engineering applications
 
-     Copyright (c) 2015-2018 UL HPC Team  <hpc-sysadmins@uni.lu>
+     Copyright (c) 2015-2019 UL HPC Team  <hpc-sysadmins@uni.lu>
 
-The objective of this session is to exemplify the execution of several common, parallel, Computational Fluid Dynamics, Molecular Dynamics and Chemistry software on the [UL HPC](http://hpc.uni.lu) platform.
+The objective of this session is to exemplify the execution of several common, parallel, Computational Physics, Chemistry & Engineering software on the [UL HPC](http://hpc.uni.lu) platform.
 
 Targeted applications include:
 
@@ -17,7 +17,7 @@ Targeted applications include:
 
 The tutorial will cover:
 
-1. Basics for parallel execution with OAR and SLURM
+1. Basics for parallel execution under the SLURM scheduler
 2. different MPI suites available on UL HPC
 3. running simple test cases in parallel
 4. running QuantumEspresso in parallel over a single node and over multiple nodes
@@ -32,41 +32,19 @@ before following the instructions in the next sections:
 
 Or simply clone the full tutorials repository and make a link to this tutorial
 
-        (gaia-frontend)$> git clone https://github.com/ULHPC/tutorials.git
-        (gaia-frontend)$> ln -s tutorials/advanced/MultiPhysics/ ~/multiphysics-tutorial
+        (access-iris)$> git clone https://github.com/ULHPC/tutorials.git
+        (access-iris)$> ln -s tutorials/advanced/MultiPhysics/ ~/multiphysics-tutorial
 
 ## Basics
 
 Note: you can check out either the instructions for the OAR scheduler (gaia and chaos clusters) or SLURM (for iris).
 
-### OAR basics for parallel execution
-
-First of all, we will submit a job with 2 cores on each of 2 compute nodes for 1 hour.
-Please note that the Gaia cluster can be replaced at any point in this tutorial with the Chaos cluster if not enough resources are immediately available.
-
-       (gaia-frontend)$> oarsub -I -l nodes=2/core=2,walltime=1
-       (node)$>
-
-The OAR scheduler provides several environment variables once we are inside a job, check them out with
-
-       (node)$> env | grep OAR_
-
-We are interested especially in the environment variable which points to the file containing the list of hostnames reserved for the job.
-This variable is OAR\_NODEFILE, yet there are several others pointing to the same (OAR\_NODE\_FILE, OAR\_FILE\_NODES and OAR_RESOURCE_FILE).
-Let's check its content:
-
-       (node)$> cat $OAR_NODEFILE
-
-To get the number of cores available in the job, we can use the wordcount `wc` utility, in line counting mode:
-
-       (node)$> cat $OAR_NODEFILE | wc -l
-
 -----------------
-### SLURM basics for parallel execution
+### Preliminaries with SLURM for parallel execution
 
 First of all, we will submit on the iris cluster an interactive job with 2 tasks on each of 2 compute nodes for 1 hour.
 
-       (iris-frontend)$> srun -p interactive --qos qos-interactive -N 2 --ntasks-per-node 2 --pty bash -i
+       (iris-frontend)$> srun -p interactive -N 2 --ntasks-per-node 2 --pty bash -i
        (node)$>
 
 The SLURM scheduler provides several environment variables once we are inside a job, check them out with
@@ -86,28 +64,24 @@ To get the number of cores available on the current compute node:
 
        (node)$> echo $SLURM_CPUS_ON_NODE
 
+Some questions to think about:
+- How many cores are available for the job?
+- What's the difference between `-N` (nodes), `-n` (tasks) and `-c` (cores per task) when launching a job?
+- What allocations can we get if we specify `-n` but not `-N`?
 
 -----------------
-### MPI suites available on the platform
-
-#### On Gaia:
+### MPI suites available on the Iris cluster
 
 Now, let's check for the environment modules (available through Lmod) which match MPI (Message Passing Interface) the libraries that provide inter-process communication over a network:
 
        (node)$> module avail mpi/
 
 
-     --------------- /opt/apps/resif/data/production/v0.3/default/modules/all -----------------------------
-     mpi/MVAPICH2/2.3a-GCC-6.3.0-2.28        mpi/impi/2017.1.132-iccifort-2017.1.132-GCC-6.3.0-2.27        toolchain/iimpi/2017a
-     mpi/OpenMPI/2.1.1-GCC-6.3.0-2.27        mpi/impi/2017.3.196-iccifort-2017.1.132-GCC-6.3.0-2.27 (D)
-     mpi/OpenMPI/2.1.1-GCC-6.3.0-2.28 (D)    toolchain/gompi/2017a
-
-         Where:
-          (D):  Default Module
+       ------------------------ /opt/apps/resif/data/stable/default/modules/all ------------------------
+          mpi/OpenMPI/2.1.3-GCC-6.4.0-2.28    mpi/impi/2018.1.163-iccifort-2018.1.163-GCC-6.4.0-2.28    toolchain/gompi/2018a    toolchain/iimpi/2018a
 
        Use "module spider" to find all possible modules.
        Use "module keyword key1 key2 ..." to search for all possible modules matching any of the "keys".
-
 
 Perform the same search for the toolchains:
 
@@ -116,54 +90,29 @@ Perform the same search for the toolchains:
 Toolchains represent sets of compilers together with libraries commonly required to build software, such as MPI, BLAS/LAPACK (linear algebra) and FFT (Fast Fourier Transforms).
 For more details, see [the EasyBuild page on toolchains](https://github.com/hpcugent/easybuild/wiki/Compiler-toolchains).
 
-For our initial tests we will use the __foss__ toolchain which includes GCC, OpenMPI, OpenBLAS/LAPACK, ScaLAPACK(/BLACS) and FFTW:
+For our initial tests we will use the __foss__ toolchain which includes GCC, __OpenMPI__, OpenBLAS/LAPACK, ScaLAPACK(/BLACS) and FFTW:
 
        (node)$> module load toolchain/foss
        (node)$> module list
 
-The main alternative to this toolchain is __intel__ (toolchain/intel) that includes the Intel tools icc, ifort, impi and imkl.
+The main alternative to this toolchain is __intel__ (toolchain/intel) that includes the Intel tools icc (C/C++ Compiler), ifort (Fortran compiler), impi (__IntelMPI__) and imkl (Math Kernel Library).
 
-#### On Iris:
+Both toolchains provide an MPI implementation, that are set up to integrate with the SLURM scheduler.
+One particularity of the tight integration between the MPI libraries and SLURM is that applications can be directly started in parallel with the `srun` command, instead of the (traditional) `mpirun` or `mpiexec`.
+Note that `srun` takes different parameters than either OpenMPI or IntelMPI's `mpirun`.
 
-       (node)$> module avail mpi/
-
-       ----------------------------- /opt/apps/resif/data/stable/default/modules/all ----------------------------------------------------
-          mpi/MVAPICH2/2.2b-GCC-4.9.3-2.25    mpi/OpenMPI/2.1.1-GCC-6.3.0-2.28                       (D)    toolchain/gompi/2017a
-          mpi/OpenMPI/2.1.1-GCC-6.3.0-2.27    mpi/impi/2017.1.132-iccifort-2017.1.132-GCC-6.3.0-2.27        toolchain/iimpi/2017a
-
-         Where:
-          D:  Default Module
-
-       Use "module spider" to find all possible modules.
-       Use "module keyword key1 key2 ..." to search for all possible modules matching any of the "keys".
-
-
-      (node)$> module avail toolchain/
-
-As of June 2018 we are testing a new set of global software with updated versions for our major applications, libraries and their dependencies.  
-To try them out, you'll need first to `module use /opt/apps/resif/data/devel/default/modules/all`
+As of June 2019 we are testing a new set of global software with updated versions for our major applications, libraries and their dependencies.
+To try them out, you'll need first to switch the software set from the production one loaded by default to the development (experimental/testing) one:
 
 Test now:
 
-      (node)$> module use /opt/apps/resif/data/devel/default/modules/all
+      (node)$> module load swenv/default-env/devel
       (node)$> module avail toolchain/
 
-### Simple test cases on Gaia
+To go back to the production software set:
+      (node)$> module load swenv/default-env/latest
 
-We will now try to run the `hostname` application, which simply shows a system's host name.
-Check out the differences (if any) between the following executions:
-
-       (node)$> hostname
-       (node)$> mpirun hostname
-       (node)$> mpirun -n 2 hostname
-       (node)$> mpirun -np 2 hostname
-       (node)$> mpirun -n 4 hostname
-       (node)$> mpirun -hostfile $OAR_NODEFILE hostname
-       (node)$> mpirun -hostfile $OAR_NODEFILE -n 2 hostname
-       (node)$> mpirun -hostfile $OAR_NODEFILE -n 3 hostname
-       (node)$> mpirun -hostfile $OAR_NODEFILE -npernode 1 hostname
-
-Note that the `hostname` application is _not_ a parallel application, with MPI we are simply launching it on the different nodes available in the job.
+### Simple test case on iris
 
 Now, we will compile and run a simple `hellompi` MPI application. Save the following source code in /tmp/hellompi.c :
 
@@ -183,56 +132,23 @@ Now, we will compile and run a simple `hellompi` MPI application. Save the follo
          MPI_Finalize();
        }
 
-Compile it:
+Load a toolchain, which will bring in a C compiler and MPI implementation and compile the above code:
 
        (node)$> cd /tmp
        (node)$> mpicc -o hellompi hellompi.c
 
 Run it:
 
-       (node)$> mpirun -hostfile $OAR_NODEFILE ./hellompi
+       (node)$> srun ./hellompi
 
 Why didn't it work? Remember we stored this application on a compute node's /tmp directory, which is local to each node, not shared.
-Thus the application couldn't be found (more on this later) on the remote nodes.
+Thus the application couldn't be found (more on this later) on the _remote_ nodes.
 
 Let's move it to the `$HOME` directory which is common across the cluster, and try again:
 
        (node)$> mv /tmp/hellompi ~/multiphysics-tutorial
        (node)$> cd ~/multiphysics-tutorial
-       (node)$> mpirun -hostfile $OAR_NODEFILE ./hellompi
-
-Now some different error messages are shown, about loading shared libraries, and the execution hangs (stop it with Ctrl-C). Why?
-Remember that on the current node we have loaded the goolf toolchain module, which has populated the environment with important details such as the paths  to applications and libraries. This environment is not magically synchronized across the multiple nodes in our OAR job, thus when the hellompi process is started remotely, some libraries are not found.
-
-We will explicitly tell mpirun to export two important environment variables to the remote nodes:
-
-       (node)$> mpirun -x PATH -x LD_LIBRARY_PATH -hostfile $OAR_NODEFILE ./hellompi
-
-Now it (should have) worked and we can try different executions:
-
-       (node)$> mpirun -x PATH -x LD_LIBRARY_PATH ./hellompi
-       (node)$> mpirun -x PATH -x LD_LIBRARY_PATH -n 2 ./hellompi
-       (node)$> mpirun -x PATH -x LD_LIBRARY_PATH -np 2 ./hellompi
-       (node)$> mpirun -x PATH -x LD_LIBRARY_PATH -n 4 ./hellompi
-       (node)$> mpirun -x PATH -x LD_LIBRARY_PATH -hostfile $OAR_NODEFILE ./hellompi
-       (node)$> mpirun -x PATH -x LD_LIBRARY_PATH -hostfile $OAR_NODEFILE -n 2 ./hellompi
-       (node)$> mpirun -x PATH -x LD_LIBRARY_PATH -hostfile $OAR_NODEFILE -n 3 ./hellompi
-       (node)$> mpirun -x PATH -x LD_LIBRARY_PATH -hostfile $OAR_NODEFILE -npernode 1 ./hellompi
-
-At the end of these tests, we clean the environment by running `module purge`:
-
-       (node)$> module purge
-       (node)$> module list
-
-
-### Simple test cases on iris
-
-We will use the same `hellompi.c` code from above, so transfer it to the Iris cluster,
-get an interactive job and let's compile it:
-
-       (iris-frontend)$> srun -p interactive --qos qos-interactive -N 2 --ntasks-per-node 2 --pty bash -i
-       (node)$> module load toolchain/intel
-       (node)$> mpiicc -o hellompi hellompi.c
+       (node)$> srun ./hellompi
 
 Now we will run it in different ways and see what happens:
 
@@ -244,26 +160,92 @@ Now we will run it in different ways and see what happens:
 
 Note that SLURM's `srun` knows the environment of your job and this will drive parallel execution, if you do not override it explicitly!
 
+### Simple batch launchers for parallel code
+
+Below follow example launchers that you may use for your MPI, MPI+OpenMP, or CUDA code:
+
+* MPI only application
+
+```bash
+#!/bin/bash -l
+#SBATCH -J ParallelJob
+#SBATCH -n 128
+#SBATCH -c 1
+#SBATCH --time=0-01:00:00
+#SBATCH -p batch
+
+module load toolchain/intel
+srun /path/to/your/intel-toolchain-compiled-application
+```
+
+* OpenMPI only application
+
+```bash
+#!/bin/bash -l
+#SBATCH -J ThreadedJob
+#SBATCH -N 1
+#SBATCH --ntasks-per-node=1
+#SBATCH -c 28
+#SBATCH --time=0-01:00:00
+#SBATCH -p batch
+
+export OMP_NUM_THREADS=${SLURM_CPUS_PER_TASK}
+srun /path/to/your/threaded.app
+```
+
+* Multi-node hybrid application MPI+OpenMP
+
+```bash
+#!/bin/bash -l
+#SBATCH -J HybridParallelJob
+#SBATCH -N 10
+#SBATCH --ntasks-per-node=1
+#SBATCH -c 28
+#SBATCH --time=0-01:00:00
+#SBATCH -p batch
+
+module load toolchain/intel
+export OMP_NUM_THREADS=${SLURM_CPUS_PER_TASK}
+srun -n $SLURM_NTASKS /path/to/your/parallel-hybrid-app
+```
+
+* Multi-node multi-GPU MPI application
+
+```bash
+#!/bin/bash -l
+#SBATCH -J GPUJob
+#SBATCH -N 4
+#SBATCH --ntasks-per-socket=4
+#SBATCH -c 7
+#SBATCH --gres=gpu:4
+#SBATCH --time=0-01:00:00
+#SBATCH -p gpu
+
+module load toolchain/intel
+module load system/CUDA
+
+export OMP_NUM_THREADS=${SLURM_CPUS_PER_TASK}
+srun /path/to/your/gpu-app
+```
+
 ## QuantumESPRESSO
 
-Check for the available versions of QuantumESPRESSO (QE in short), as of June 2018 this shows on the Gaia cluster:
+Check for the available versions of QuantumESPRESSO (QE in short), as of June 2019 this shows on the Iris cluster:
 
-       (node)$> module spider quantum
+       (node)$> module avail quantumespresso
+       -------------------- /opt/apps/resif/data/stable/default/modules/all --------------------
+          chem/QuantumESPRESSO/6.1-intel-2018a-maxter500                        phys/Yambo/4.2.2-intel-2018a-QuantumESPRESSO-6.2.1-qexml
+          chem/QuantumESPRESSO/6.1-intel-2018a                                  phys/Yambo/4.2.2-intel-2018a-QuantumESPRESSO-6.2.1-qexsd_hdf5
+          chem/QuantumESPRESSO/6.2.1-intel-2018a                         (D)    phys/Yambo/4.2.2-intel-2018a-QuantumESPRESSO-6.2.1-qexsd
+          phys/Yambo/r15234-intel-2018a-QuantumESPRESSO-6.2.1-qexml             phys/Yambo/4.2.2-intel-2018a-QuantumESPRESSO-6.2.1
+          phys/Yambo/r15234-intel-2018a-QuantumESPRESSO-6.2.1-qexsd_hdf5        phys/Yambo/4.2.4-intel-2018a-QuantumESPRESSO-6.1
+          phys/Yambo/r15234-intel-2018a-QuantumESPRESSO-6.2.1-qexsd             phys/Yambo/4.3.1-r132-intel-2018aQuantumESPRESSO-6.1          (D)
 
-       ------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-         chem/QuantumESPRESSO: chem/QuantumESPRESSO/6.1-intel-2017a
-       ------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-           Description:
-             Quantum ESPRESSO is an integrated suite of computer codes for electronic-structure calculations and materials modeling at the nanoscale. It is based on
-             density-functional theory, plane waves, and pseudopotentials (both norm-conserving and ultrasoft).
-       
-           This module can be loaded directly: module load chem/QuantumESPRESSO/6.1-intel-2017a
+See that various versions are available, and also other applications (Yambo) that are linked to specific versions of QE are found.
 
+One thing we note is that all versions of QE are built with support for both MPI and OpenMP. In this combination QE can give better performance than the pure MPI versions, by running only one MPI process per node (instead of one MPI process for each core in the job) that creates (OpenMP) threads which run in parallel locally and communicate over shared memory.
 
-One thing we note is that some versions may have a _-hybrid_ suffix. These versions are hybrid MPI+OpenMP builds of QE.
-MPI+OpenMP QE can give better performance than the pure MPI versions, by running only one MPI process per node (instead of one MPI process for each core in the job) that creates (OpenMP) threads which run in parallel locally.
-
-Load the latest QE version:
+Load the latest QE version available in the production software environment:
 
        (node)$> module load chem/QuantumESPRESSO
 
@@ -271,17 +253,17 @@ We will use the PWscf (Plane-Wave Self-Consistent Field) package of QE for our t
 Run it in sequential mode, it will wait for your input. You should see a "Parallel version (MPI), running on     1 processors" message, and can stop it with CTRL-C:
 
        (node)$> pw.x
-       (node)$> mpirun -n 1 pw.x
+       (node)$> srun -n 1 pw.x
 
 Now try the parallel run over all the nodes/cores in the job:
 
-       (node)$> mpirun -hostfile $OAR_NODEFILE pw.x
+       (node)$> srun pw.x
 
 Before stopping it, check that pw.x processes are created on the remote node. You will need to:
 
 1. open a second connection to the cluster, or a second window if you're using `screen` or `tmux`
-2. connect to the job with `oarsub -C $JOBID`
-3. connect from the head node of the job to the remote job with `oarsh $hostname`
+2. check which nodes the job is using, with `squeue -j $JOBID`
+3. connect to the job on the second node from the set of nodes from the step above with `sjoin $JOBID $NODENAME` (e.g. `sjoin 456123 iris-123`)
 4. use `htop` to show the processes, filter the shown list to see only your user with `u` and then selecting your username
 
 Note that this check procedure can be invaluable when you are running an application for the first time, or with new options.
@@ -298,69 +280,48 @@ For reference, many examples are given in the installation directory of QE, see 
 
        (node)$> cd ~/multiphysics-tutorial
        (node)$> cd inputs/qe
-       (node)$> pw.x < si.scf.efield2.in
+       (node)$> srun -n 1 pw.x < si.scf.efield2.in
 
-We will see the calculation progress, this serial execution should take around 2 minutes.
+We will see the calculation progress, this serial execution (we forced `srun` to only use a single task) should take around 2 minutes.
 
 Next, we will clean up the directory holding output files, and re-run the example in parallel:
 
        (node)$> rm -rf out
-       (node)$> mpirun -hostfile $OAR_NODEFILE pw.x < si.scf.efield2.in > si.scf.efield2.out
+       (node)$> srun pw.x < si.scf.efield2.in > si.scf.efield2.out
 
 When the execution ends, we can take a look at the last 10 lines of output and check the execution time:
 
        (node)$> tail si.scf.efield2.out
 
-You can now try to run the same examples but with the `chem/QuantumESPRESSO/5.0.2-goolf-1.4.10-hybrid` module.
-Things to test:
+You can now try to run the same example but testing some different things:
 
-- basic execution vs usage of the `npernode` parameter of OpenMPI's mpirun
-- explicitly setting the number of OpenMP threads
-- increasing the number of OpenMP threads
+- using all cores in a single node, with one core per MPI process (28 tasks with 1 core per task)
+- explicitly setting the number of OpenMP threads and running 1 MPI process and 28 threads (1 task with 28 cores per task)
+- running across several nodes and e.g. compare execution on the _broadwell_ nodes vs _skylake_ based nodes (use `sbatch -C broadwell` to limit your jobs to nodes with this feature, idem for skylake)
 
 Finally, we clean the environment by running `module purge`:
 
        (node)$> module purge
        (node)$> module list
 
-#### On Iris
-
-As of June 2018, the Iris cluster has a newer QuantumESPRESSO available for testing, let us find it:
-
-       (node)$> module use /opt/apps/resif/data/devel/default/modules/all
-       (node)$> module avail quantum
-
-       --------------------------- /opt/apps/resif/data/devel/default/modules/all ----------------------------
-          chem/QuantumESPRESSO/6.2.1-intel-2018a (D)    phys/Yambo/4.2.2-intel-2018a-QuantumESPRESSO-6.2.1 (D)
-       
-       --------------------------- /opt/apps/resif/data/stable/default/modules/all ---------------------------
-          chem/QuantumESPRESSO/6.1-intel-2017a    phys/Yambo/4.1.4-intel-2017a-QuantumESPRESSO-6.1
-
-You can see that in addition to QuantumESPRESSO, Yambo versions that are linked with QE are found by `module avail`.
-
-Using the same input data as above (transfer the input file to Iris) let's run QE in parallel:
-
-       (node)$> module load chem/QuantumESPRESSO
-       (node)$> module list
-       (node)$> srun pw.x < si.scf.efield2.in > si.scf.efield2.out
 
 ### References
 
-  - [QE: user's guide](www.quantum-espresso.org/wp-content/uploads/Doc/user_guide.pdf)
-  - [QE: understanding parallelism](http://www.quantum-espresso.org/wp-content/uploads/Doc/user_guide/node16.html)
-  - [QE: running on parallel machines](http://www.quantum-espresso.org/wp-content/uploads/Doc/user_guide/node17.html)
-  - [QE: parallelization levels](http://www.quantum-espresso.org/wp-content/uploads/Doc/user_guide/node18.html)
+  - [QE: user's manual](http://www.quantum-espresso.org/resources/users-manual)
+  - [QE: understanding parallelism](http://www.quantum-espresso.org/Doc/user_guide/node16.html)
+  - [QE: running on parallel machines](http://www.quantum-espresso.org/Doc/user_guide/node17.html)
+  - [QE: parallelization levels](http://www.quantum-espresso.org/Doc/user_guide/node18.html)
 
 
 ## OpenFOAM
 
-Check for the available versions of OpenFOAM on Gaia or Iris:
+Check for the available versions of OpenFOAM on Iris:
 
-       (node)$> module spider openfoam
+       (node)$> module avail openfoam
 
-We will use the `cae/OpenFOAM/4.1-intel-2017a` version on Gaia:
+We will use the `cae/OpenFOAM/v1712-intel-2018a` version:
 
-        (node)$> module load cae/OpenFOAM/4.1-intel-2017a
+        (node)$> module load cae/OpenFOAM/v1712-intel-2018a
 
 We load OpenFOAM's startup file:
 
@@ -389,8 +350,7 @@ Before the main execution, some pre-processing steps:
 
 Solver execution, note the environment variables we need to export:
 
-       (gaia_node)$> mpirun -x MPI_BUFFER_SIZE -x WM_PROJECT_DIR -x PATH -x LD_LIBRARY_PATH -hostfile $OAR_NODEFILE reactingParcelFilmFoam -parallel
-       (on iris nodes you'd do)$> srun --export MPI_BUFFER_SIZE,WM_PROJECT_DIR reactingParcelFilmFoam -parallel
+       (node)$> srun --export MPI_BUFFER_SIZE,WM_PROJECT_DIR reactingParcelFilmFoam -parallel
 
 Note that the solver execution will take a long time - you can interrupt and/or test in a larger job, which would require:
 
@@ -399,11 +359,9 @@ Note that the solver execution will take a long time - you can interrupt and/or 
 
 Parenthesis: how can you achieve the best (fastest) execution time? Some questions to think about:
 
-- is just increasing the number of cores (oarsub -l core=XYZ) optimal? (no, but why not?)
-- is it better if you check the network hierarchy on the Gaia cluster and target nodes 'closer together'? (yes)
-- would it be fastest if you run on the fastest (most XYZ GHz) nodes? (not exactly, why?)
-- will using OAR properties to target the most recent nodes be the best? (yes but not yet optimal, why not?)
-- can you get an additional speedup if you recompile OpenFOAM on the most recent nodes to take advantage of the newer instruction set available in their CPUs? (yes!)
+- is just increasing the number of cores optimal? (why not?)
+- how can you increase processing speed on Iris?
+- would you get an additional speedup if you compile OpenFOAM on the most recent architecture Iris nodes to take advantage of the newer instruction set available in their CPUs? (yes!)
 
 After the main execution, post-processing steps:
 
@@ -433,7 +391,7 @@ Finally, we clean the environment:
 
 Check for the available versions of ABINIT and load the latest:
 
-       (node)$> module spider abinit
+       (node)$> module load abinit
        (node)$> module load chem/ABINIT
 
 
@@ -441,8 +399,7 @@ We will use one of ABINIT's parallel test cases to exemplify parallel execution.
 For reference, many examples are given in the installation directory of ABINIT, see `$EBROOTABINIT/share/abinit-test`.
 
        (node)$> cd ~/multiphysics-tutorial/inputs/abinit
-       (gaia_node)$> mpirun -hostfile $OAR_NODEFILE abinit < si_kpt_band_fft.files
-       (iris_node)$> srun abinit < si_kpt_band_fft.files
+       (node)$> srun abinit < si_kpt_band_fft.files
 
 After some initial processing and messages, we will see:
 
@@ -496,12 +453,14 @@ Finally, we clean the environment:
 
 [NAMD](http://www.ks.uiuc.edu/Research/namd/), recipient of a 2002 Gordon Bell Award and a 2012 Sidney Fernbach Award, is a parallel molecular dynamics code designed for high-performance simulation of large biomolecular systems. Based on Charm++ parallel objects, NAMD scales to hundreds of cores for typical simulations and beyond 500,000 cores for the largest simulations.
 
-The latest NAMD 2.12 is available on the `iris` cluster as of June 2017, and on Debian 8 nodes of `gaia` as of August 2017, let's check for it:
+The latest NAMD 2.13 is available on the `iris` cluster as of June 2019 in the development, and on Debian 8 nodes of `gaia` as of August 2017, let's check for it:
 
-        (node)$> module avail NAMD
+        (node)$> module avail namd
+        (node)$> module load swenv/default-env/devel
+        (node)$> module avail namd
 
-        --------------------- /opt/apps/resif/data/production/v0.3/default/modules/all -----------------
-           chem/NAMD/2.12-intel-2017a-mpi
+        --------------------------- /opt/apps/resif/data/devel/default/modules/all ---------------------------
+           chem/NAMD/2.13-foss-2019a-mpi
 
 We will use one of the benchmark inputs of NAMD to test it, specifically the [reference](http://www.ks.uiuc.edu/Research/namd/utilities/)
 _STMV (virus) benchmark (1,066,628 atoms, periodic, PME)_.
@@ -518,12 +477,6 @@ Now, we will need to set the `outputName` parameter within the input file to the
 
 Next we will perform the parallel execution of NAMD, showing its runtime output both on console and storing it to file using `tee`:
 
-#### On Gaia
-
-        (node)$> mpirun -hostfile $OAR_NODEFILE namd2 stmv.namd | tee out
-
-#### On Iris
-
         (node)$> srun namd2 stmv.namd | tee out
 
 ## ASE
@@ -535,7 +488,7 @@ ASE can interface with many external codes as `calculators`: Asap, GPAW, Hotbit,
 Let us run the official short example _structure optimization of hydrogen molecule_ on the Iris cluster. Note that parallel executions of the external codes require specific environment variables to be set up, e.g. for NWChem it's `ASE_NWCHEM_COMMAND` which needs to include the `srun` parallel job launcher of Iris, which integrates with the MPI suites.
 
       (node)$> module avail NWChem ASE
-      (node)$> module load chem/NWChem chem/ASE
+      (node)$> module load chem/ASE/3.17.0-intel-2019a-Python-2.7.15 chem/NWChem/6.8.revision47-intel-2019a-Python-2.7.15
       (node)$> export ASE_NWCHEM_COMMAND='srun nwchem PREFIX.nw > PREFIX.out'
       (node)$> python
              >>> from ase import Atoms
@@ -556,7 +509,17 @@ Let us run the official short example _structure optimization of hydrogen molecu
              >>> h2.get_potential_energy()
              -31.49283665375563
 
+Note that the (very) important part here was to let ASE know how it can run NWChem in parallel, by explicitly setting the environment variable `ASE_NWCHEM_COMMAND` to the parallel execution commands for NWChem.
+
 ### References
 
   - [ASE: tutorials](https://wiki.fysik.dtu.dk/ase/tutorials/tutorials.html)
   - [ASE: calculators](https://wiki.fysik.dtu.dk/ase/ase/calculators/calculators.html)
+
+## Now practice!
+
+The main objective of this session was to get you accustomed to running scalable applications in parallel.
+
+Remember that the benefit of running in a HPC/supercomputing environment comes only if your application can take advantage of parallel processing.
+
+Now it's up to you to run your own test-cases, and discover how to optimize your executions on the UL HPC platform.
