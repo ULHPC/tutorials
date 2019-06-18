@@ -34,14 +34,14 @@ The actual command comes only after this prefix.
 
 <a name="env"></a>
 
-## Setup the environment 
+## Setup the environment
 
-For this tutorial we will use the [`conda` package manager](https://www.anaconda.com/) to install the required tools. 
+For this tutorial we will use the [`conda` package manager](https://www.anaconda.com/) to install the required tools.
 
 > Conda is an open source package management system and environment management system that runs on Windows, macOS and Linux. Conda quickly installs, runs and updates packages and their dependencies. Conda easily creates, saves, loads and switches between environments on your local computer. It was created for Python programs, but it can package and distribute software for any language.
 >
 > Conda as a package manager helps you find and install packages. If you need a package that requires a different version of Python, you do not need to switch to a different environment manager, because conda is also an environment manager. With just a few commands, you can set up a totally separate environment to run that different version of Python, while continuing to run your usual version of Python in your normal environment.
-> 
+>
 > &mdash; <cite>[Conda  manual](https://docs.conda.io/en/latest/index.html)</cite>
 
 It can encapsulate software and packages in environments, so you can have multiple different versions of a software installed at the same time and avoid incompatibilities between different tools. It also has functionality to easily port and replicate environments, which is important to ensure reproducibility of analyses.
@@ -54,68 +54,70 @@ We will use conda on two levels in this tutorial. First we use a conda environme
 
 2. Start an interactive job:
 
-   ```bash
-   (access)$> si
-   ```
-   
+  ```bash
+  (access)$> si
+  ```
+
 3. Install conda:
 
-   ```bash
-   (node)$> mkdir -p $SCRATCH/downloads
-   (node)$> cd $SCRATCH/downloads
-   (node)$> wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
-   (node)$> chmod u+x Miniconda3-latest-Linux-x86_64.sh
-   (node)$> ./Miniconda3-latest-Linux-x86_64.sh 
-   ```
-   You need to specify your installation destination, e.g. `/home/users/<your_username>/tools/miniconda3`. You must use the **full** path and can**not** use `$HOME/tools/miniconda3`. Answer `yes` to initialize Miniconda3. 
+  ```bash
+  (node)$> mkdir -p $SCRATCH/downloads
+  (node)$> cd $SCRATCH/downloads
+  (node)$> wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
+  (node)$> chmod u+x Miniconda3-latest-Linux-x86_64.sh
+  (node)$> ./Miniconda3-latest-Linux-x86_64.sh
+  ```
 
-   The installation will modify your `.bashrc` to make conda directly available after each login. To activate the changes now, run
+    You need to specify your installation destination, e.g. `/home/users/<your_username>/tools/miniconda3`. You must use the **full** path and can**not** use `$HOME/tools/miniconda3`. Answer `yes` to initialize Miniconda3.
 
-   ```bash
-   (node)$> source ~/.bashrc
-   ```
+    The installation will modify your `.bashrc` to make conda directly available after each login. To activate the changes now, run
 
-   Update conda to the latest version:
-   ```bash
-   (node)$> conda update conda 
-   ```
+  ```bash
+  (node)$> source ~/.bashrc
+  ```
+
+    Update conda to the latest version:
+
+  ```bash
+  (node)$> conda update conda
+  ```
 
 4. Create a new conda environment and activate it:
 
-   ```bash
-   (node)$> conda create -n bioinfo_tutorial
-   (node)$> conda activate bioinfo_tutorial
-   ```
+  ```bash
+  (node)$> conda create -n bioinfo_tutorial
+  (node)$> conda activate bioinfo_tutorial
+  ```
    After validation of the creation step and once activated, you can see that your prompt will now be prefixed with `(bioinfo_tutorial)` to show which environment is active. For the rest of the tutorial make sure that you always have this environment active.
 
 5. Make sure Python does not pick up packages in your home directory:
 
-    ```bash
-   (bioinfo_tutorial) (node)$> cat << EOF >> ~/.bashrc
-   
-   # Stop Python from picking up packages in $HOME/.local
-   export PYTHONNOUSERSITE=True
-   EOF
-   ```
+  ```bash
+  (bioinfo_tutorial) (node)$> cat << EOF >> ~/.bashrc
+
+  # Stop Python from picking up packages in $HOME/.local
+  export PYTHONNOUSERSITE=True
+  EOF
+  ```
+
    For the later parts of this tutorial to work, we need to make this setting permanent by adding it to `~/.basrhc`. However, **make sure to delete those lines** after the tutorial, so your manually installed python packages are found again.
 
 6. Install snakemake:
 
-   ```bash
-   (bioinfo_tutorial) (node)$> conda install -c bioconda -c conda-forge snakemake-minimal
-   ```
+  ```bash
+  (bioinfo_tutorial) (node)$> conda install -c bioconda -c conda-forge snakemake-minimal
+  ```
 
-   
 
 <a name="snakemake"></a>
 
 ## Create snakemake workflow
 
 > The Snakemake workflow management system is a tool to create **reproducible and scalable** data analyses. Workflows are described via a human readable, Python based language. They can be seamlessly scaled to server, cluster, grid and cloud environments, without the need to modify the workflow definition. Finally, Snakemake workflows can entail a description of required software, which will be automatically deployed to any execution environment.
-> 
+>
 > &mdash; <cite>[Snakemake manual](https://snakemake.readthedocs.io/en/stable/index.html)</cite>
 
-Snakemake is a very useful tool if you need to combine multiple steps using different software into a coherent workflow. It comes with many features desired for running workflows, like 
+Snakemake is a very useful tool if you need to combine multiple steps using different software into a coherent workflow. It comes with many features desired for running workflows, like
 
 * ensuring all input and result files are present
 * restarting at a failed step
@@ -154,10 +156,10 @@ Create a working directory and link the necessary data:
 ### Mapping
 
 > In Snakemake, workflows are specified as Snakefiles. Inspired by GNU Make, a Snakefile contains rules that denote how to create output files from input files. Dependencies between rules are handled implicitly, by matching filenames of input files against output files. Thereby wildcards can be used to write general rules.
-> 
+>
 > &mdash; <cite>[Snakemake manual - Writing Workflows](https://snakemake.readthedocs.io/en/stable/snakefiles/writing_snakefiles.html)</cite>
 
-> Most importantly, a rule can consist of a name (the name is optional and can be left out, creating an anonymous rule), input files, output files, and a shell command to generate the output from the input, i.e. 
+> Most importantly, a rule can consist of a name (the name is optional and can be left out, creating an anonymous rule), input files, output files, and a shell command to generate the output from the input, i.e.
 > ```python
 > rule NAME:
 >     input: "path/to/inputfile", "path/to/other/inputfile"
@@ -196,7 +198,7 @@ rule mapping:
     """
 ```
 
-Now we need to tell snakemake to use a conda environment with bowtie2 and [samtools](http://www.htslib.org/) inside to run this rule. For this purpose there is a specific `conda` directive that can be added to the rule. It accepts a [yaml](https://yaml.org/spec/1.2/spec.html) file that defines the conda environment. 
+Now we need to tell snakemake to use a conda environment with bowtie2 and [samtools](http://www.htslib.org/) inside to run this rule. For this purpose there is a specific `conda` directive that can be added to the rule. It accepts a [yaml](https://yaml.org/spec/1.2/spec.html) file that defines the conda environment.
 
 ```python
 conda: "envs/bowtie2.yaml"
@@ -294,7 +296,7 @@ After this step your working directory should contain the following files (using
 
 ### Peak calling
 
-The next step in the workflow is to call peaks with [`MACS2`](https://github.com/taoliu/MACS). This tells us where there is enrichment of the ChIP versus the input (control). 
+The next step in the workflow is to call peaks with [`MACS2`](https://github.com/taoliu/MACS). This tells us where there is enrichment of the ChIP versus the input (control).
 
 You should always choose the peak caller based on how you expect your enriched regions to look like, e.g. narrow or broad peaks.
 
@@ -470,7 +472,7 @@ In this workflow only bowtie2 has the option to run on multiple threads.
 
 ### Adjust mapping step to run on multiple threads
 
-We add the `thread` directive to the snakemake rule for the mapping step, to tell snakemake that this step can use multiple threads. 
+We add the `thread` directive to the snakemake rule for the mapping step, to tell snakemake that this step can use multiple threads.
 
 > The specified threads have to be seen as a maximum. When Snakemake is executed with fewer cores, the number of threads will be adjusted, i.e. `threads = min(threads, cores)` with `cores` being the number of cores specified at the command line (option `-j`).
 >
@@ -598,9 +600,9 @@ The meaning of the option `-j` changes when running in cluster mode to denote th
 (access)$> cd $SCRATCH/bioinfo_tutorial
 (access)$> conda activate bioinfo_tutorial
 (access)$> snakemake clean
- 
+
 (access)$> SLURM_ARGS="-p {cluster.partition} -N {cluster.nodes} -n {cluster.ntasks} -c {cluster.ncpus} -t {cluster.time} -J {cluster.job-name} -o {cluster.output} -e {cluster.error}"
- 
+
 (access)$> snakemake -j 10 -pr --use-conda --cluster-config cluster.yaml --cluster "sbatch $SLURM_ARGS"
 ```
 
