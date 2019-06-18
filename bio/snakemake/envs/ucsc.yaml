@@ -1,0 +1,6 @@
+name: ucsc
+channels:
+  - bioconda
+dependencies:
+  - ucsc-bedgraphtobigwig
+

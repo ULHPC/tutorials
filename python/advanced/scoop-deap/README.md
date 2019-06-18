@@ -247,7 +247,7 @@ if __name__ == "__main__":
 
 ```
 
-## Starting the scoop-deap with Slurm
+## Starting scoop-deap with Slurm
 
 The following script may look complex but remains very general. Feel free to use it for any other python project where you need distributed computations with scoop.
 Starting distributed computation with Slurm requires a small trick (Thx to V. Plugaru for it). 

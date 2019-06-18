@@ -35,6 +35,7 @@ pages:
   - Cplex - Gurobi: 'maths/Cplex-Gurobi/index.md'
 - Bioinformatics:
   - Running bioinformatics software: 'bio/basics/index.md'
+  - Bioinformatics workflows with snakemake and conda: 'bio/snakemake/index.md'
   - Galaxy: 'bio/galaxy/index.md'
 - CFD/MD/Chemistry:
    - Advanced Parallel execution: 'multiphysics/index.md'
