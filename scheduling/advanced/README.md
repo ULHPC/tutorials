@@ -247,8 +247,8 @@ sacct -p -j $jobid1,$jobid2 --format=account,user,jobid,jobname,partition,state,
 * Show statistics for all personal jobs started since a particular date, then without job steps:
 
 ```
-sacct --starttime 2018-11-23 -u $USER
-sacct -X --starttime 2018-11-23 -u $USER
+sacct --starttime 2019-06-19 -u $USER
+sacct -X --starttime 2019-06-19 -u $USER
 ```
 
 #### Pausing, resuming and cancelling jobs
