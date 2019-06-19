@@ -1,8 +1,8 @@
 ---
-title: "PS12: introduction to R"
-subtitle: "HPC School 2018"
-author: "Aurélien Ginolhac (aurelien.ginolhac@uni.lu) - Life Sciences Research Unit"
-date: "2018-06-13"
+title: "PS11: introduction to R"
+subtitle: "HPC School"
+author: "Aurélien Ginolhac (aurelien.ginolhac@uni.lu) - _Life Sciences Research Unit_"
+date: "2019-06-21"
 output:
   iosp::ioslides_plus:
     keep_md: no
@@ -26,15 +26,12 @@ library(tidyverse)
 
 ![](https://rworkshop.uni.lu/lectures/img/00/kt.png)
 
-- install and run R and Rstudio on your machine
-- use R on the clusters
-- explore `ggplot2` and `dplyr` on the _dataSaurus_
+- quick intro to R
+- focus on the tidyverse dialect
+- explore `ggplot2` and `dplyr` on _dataSaurus_ (beginner only)
 - summarise a dataset using different packages and benchmark them
-- demonstrate why packages are better than R base
+- use R on the clusters
 - perform single node parallelisation on `iris`
-
-
-
 
 ## What is R? {.vs2}
 
@@ -51,7 +48,7 @@ is shorthand for ["GNU R"](https://www.r-project.org):
 - An **interactive** programming language derived from **S** (**J. Chambers**, Bell Lab, 1976)
 - Appeared in 1993, created by **R. Ihaka** and **R. Gentleman**, University of Auckland, NZ
 - Focus on data analysis and plotting
-- `r icon::fa("r-project")` is also shorthand for the ecosystem around this language
+- **R** is also shorthand for the ecosystem around this language
     + Book authors
     + Package developers
     + Ordinary useRs
@@ -64,24 +61,12 @@ Learning to use **R** will make you **more efficient** and **facilitate the use*
 - easy to install / maintain
 - multi-platform (Windows, macOS, GNU/Linux)
 - can process big files and analyse huge amounts of data (db tools)
-- integrated data visualization tools, *even dynamic*
+- integrated data visualization tools, *even dynamic* [`shiny`](https://shiny.rstudio.com/)
 - fast, and even faster with *C++* integration via [Rcpp](http://dirk.eddelbuettel.com/code/rcpp/Rcpp-attributes.pdf).
 - easy to get help
     + [huge R community in the web](https://support.rstudio.com/hc/en-us/articles/200552336-Getting-Help-with-R)
     + [stackoverflow](http://stackoverflow.com/questions/tagged/r) with a lot of tags like **r**, **ggplot2** etc.
     + [rbloggers](http://www.r-bloggers.com)
-    
-
-
-## Twitter R community    
-
-[`#rstats`](https://twitter.com/search?q=%23rstats) on twitter
-
-![](https://rworkshop.uni.lu/lectures/img/01/r_community.jpg)
-
-
-
-
 
 
 ## Constant trend {.vs1}
@@ -99,11 +84,8 @@ Learning to use **R** will make you **more efficient** and **facilitate the use*
 
 <span class = "small">Source: [D. Robinson, StackOverflow blog](https://stackoverflow.blog/2017/10/10/impressive-growth-r/)</span>
 
+## Packages | +16,000 in Feb 2019
 
-
-
-
-## Packages | +12,000 in Feb 2018
 
 ### [CRAN](https://cran.r-project.org/web/packages/available_packages_by_date.html) {.box-4 .intro .stretch .outline}
 
@@ -117,17 +99,17 @@ dedicated to biology. [status](https://www.bioconductor.org/packages/release/bio
 
 typical install:
 ```{r, eval=FALSE}
-source("https://bioconductor.org/biocLite.R")
-biocLite("limma")
+# install.packages("BiocManager")
+BiocManager::install("limma")
 ```
 
 ### [GitHub](https://github.com/) {.box-4 .warning .stretch .outline}
 
-easy install thanks to [devtools](https://github.com/hadley/devtools). [status](https://github.com/hadley/readr)
+easy install thanks to [remotes](https://remotes.r-lib.org/).
 
 ```{r, eval=FALSE}
-# install.packages("devtools")
-devtools::install_github("tidyverse/readr")
+# install.packages("remotes")
+remotes::install_github("tidyverse/readr")
 ```
 
 could be a security issue
@@ -141,6 +123,12 @@ could be a security issue
 ![](https://rworkshop.uni.lu/lectures/img/01/packages_install_devtools.jpg)
 
 more in the article from [David Smith](http://blog.revolutionanalytics.com/2017/01/cran-10000.html)
+
+## R ambiguity | Roger D. Peng {.center-img .vs2}
+
+![](figures/S_ambiguity.png)
+
+<span class = "small">source: [Teaching R to New Users: From tapply to Tidyverse](https://www.youtube.com/watch?v=5033jBHFiHE) by Roger D. Peng</span>
 
 ## R is hard to learn {.vs1}
 
@@ -164,6 +152,7 @@ more in the article from [David Smith](http://blog.revolutionanalytics.com/2017/
 %end%
 
 ### {.col-12 .build}
+
 > Navigating the balance between base R and the tidyverse is a challenge to learn | Robert A. Muenchen {.advice}
 
 ## Tidyverse | creator {.vs2}
@@ -179,7 +168,7 @@ We think the [**tidyverse**](http://tidyverse.org/) is better, especially for be
 - unified
 - consistent, one way to do things
 - give strength to learn base R
-- criticisms will come later (yes, many)
+- criticisms exist
 
 ### Hadley Wickham {.box-8 .intro .outline}
 
@@ -188,21 +177,131 @@ We think the [**tidyverse**](http://tidyverse.org/) is better, especially for be
 - coined the _tidyverse_ at [userR meeting in 2016](https://twitter.com/drob/status/748196885307920385)
 - developed and maintains most of the core _tidyverse_ packages
 
-### {.col-4}
+### {.col-4 .icon}
 
-```{r, echo = FALSE, out.width = "75%"}
-knitr::include_graphics("https://pbs.twimg.com/profile_images/905186381995147264/7zKAG5sY_400x400.jpg")
+![](https://pbs.twimg.com/profile_images/905186381995147264/7zKAG5sY_200x200.jpg)
+
+## Tidy data {.vs2}
+
+### Definition {.box-8 .intro .outline}
+
+1. Each variable forms a column.
+2. Each observation forms a row.
+3. Each type of observational unit forms a table.
+
+![](https://rworkshop.uni.lu/lectures/img/02/tidy_data.png)
+
+###  {.col-4 .middle .center-img}
+
+![](https://biostat2.uni.lu/lectures/img/02/tidy_dataset.png)
+
+## Tidyverse  | trends
+
+![](https://rworkshop.uni.lu/lectures/img/01/r_documentation_trends_20190219.png)
+
+
+### {.offset-4 .col-6 }
+
+<span class="small">source: [rdocumentation](https://www.rdocumentation.org/trends) (2019-02-19)</span>
+
+
+## Tidyverse | trends 
+
+![](https://rworkshop.uni.lu/lectures/img/01/r_documentation_trends_20190219_tv.png)
+
+### {.col-6 .offset-4} 
+
+<span class="small">source: [rdocumentation](https://www.rdocumentation.org/trends) (2019-02-19)</span>
+
+## Tidyverse | packages in processes {.center-img}
+
+![](https://rworkshop.uni.lu/lectures/img/01/tidyverse_data_science.png)
+
+
+## Tidyverse components  | core / extended {.build .vs1}
+
+### Core {.box-6 .intro .outline .show}
+
+- `ggplot2`, for data visualization
+- `dplyr`, for data manipulation
+- `tidyr`, for data tidying
+- `readr`, for data import
+- `purrr`, for functional programming
+- `tibble`, for tibbles, a modern re-imagining of data frames
+- `stringr`, for strings
+- `forcats`, for factors
+
+
+<span class = "small"> source: http://tidyverse.tidyverse.org/. H.Wickham</span> 
+
+### Extended {.box-6 .advice .outline .middle}
+
+- Modelling
+    + `modelr`, for modelling within a pipeline
+    + `broom`, for models -> tidy data
+
+- Programming
+    + `rlang`, low-level API
+    + `glue`, alternative to paste
+
+## Reproducibility with RMarkdown reports {.vs1}
+
+### Why using `rmarkdown`? {.box-10 .offset-1 .intro .outline .icon}
+
+![](https://rworkshop.uni.lu/lectures/img/04/rmarkdown_output.png)
+
+- write detailed reports
+- ensure reproducibility
+- keep track of your analyses
+- comment/describe each step of your analysis
+- export a single (Rmd) document to various formats (Pdf, Html...)
+- text file that can be managed by a version control system (like [git](https://git-scm.com/))
+
+## Including _R_ code
+
+```{css, echo = FALSE}
+.right {
+  display: block;
+  width: 100%;
+  text-align: right;
+}
 ```
 
-# RStudio
+### Rmarkdown document {.box-8 .offset-2 .intro .outline}
 
-![](https://rworkshop.uni.lu/lectures/img/00/logo_rstudio.png)
+![](https://rworkshop.uni.lu/lectures/img/04/rmd_pipeline.png)
 
-## Rstudio | makes working with R easier {.build}
+<span class = "x-small right">_from the [Rmarkdown cheatsheet](https://www.rstudio.org/links/r_markdown_cheat_sheet)_</span>
+
+### Rmarkdown {.box-4 .intro .outline .icon-small}
+
+![](https://rworkshop.uni.lu/lectures/img/00/logo_rmarkdown.png)
+
+- extends markdown
+- place **R code** in **chunks**
+- **chunks** will be **evaluated**
+- can also handle bash; python; css; ...
+
+### Knitr {.box-4 .intro .outline .icon-small}
+
+![](https://rworkshop.uni.lu/lectures/img/00/logo_knitr.png)
+
+- extracts R chunks
+- interprets them
+- formats results as markdown
+- reintegrates them into the main document (md)
+
+### Pandoc {.box-4 .intro .outline .icon-small}
+
+- [pandoc](http://pandoc.org/) converts markdown to the desired document (Pdf, Html, ...)
+
+
+
+## Rstudio | makes working with R easier 
 
 [RStudio is an Integrated Development Environment](https://www.rstudio.com/products/RStudio/) .  
 
-### Features {.box-8 .intro .outline}
+### Features {.box-8 .intro .outline .show}
 
 - _Console_ to run **R**, with syntax highlighter
 - _Editor_ to work with scripts
@@ -225,33 +324,6 @@ Don't mix up **R** and **RStudio**.
 
 ![](https://rworkshop.uni.lu/lectures/img/01/rstudio_layout.jpg)
 
-## Four panels {.vs2}
-
-### scripting {.box-6 .practical .stretch .outline}
-
-- could be your main window
-- should be a **Rmarkdown** doc
-- tabs are great
-
-### Environment {.box-6 .intro .stretch .outline}
-
-- Environment, display loaded objects and their `str()`
-- History is useless IMO
-- nice `git` integration
-- database **connections** interface
-
-### Console {.box-6 .code .stretch .outline}
-
-- could be hidden with **inline** outputs
-- embed a nice `terminal` tab
-- `Rmarkdown` logs
-
-### Files / Plots / Help {.box-6 .intro .stretch .outline}
-
-- necessary package management tab
-- unnecessary plots tabs with **inline** outputs
-- help tab
-
 ## For reproducibility | options to activate / deactivate
 
 
@@ -269,79 +341,35 @@ Don't mix up **R** and **RStudio**.
 
 <span class = "small">[source: Jenny Bryan article](https://www.tidyverse.org/articles/2017/12/workflow-vs-script/)</span>
 
+## Organising files | Use projects {.column .build}
 
-## Code diagnostics | highly recommended
-
-using  `Global Options -> Code -> Diagnostics` editing pane:
-
-### {.col-6}
-
-![](https://rworkshop.uni.lu/lectures/img/01/diag_RStudio.png)
-<span class = "small">source: [Kevin Ushey' article](https://support.rstudio.com/hc/en-us/articles/205753617-Code-Diagnostics?version=1.1.133&mode=desktop)</span> 
-
-### {.col-6}
-
-- check argument calls
-
-![](https://support.rstudio.com/hc/en-us/article_attachments/201712378/Screen_Shot_2015-04-30_at_2.01.17_PM.png)
-
-- missing arguments
-
-![](https://support.rstudio.com/hc/en-us/article_attachments/201712398/Screen_Shot_2015-04-30_at_2.03.06_PM.png)
-
-- variable definitions
-
-![](https://support.rstudio.com/hc/en-us/article_attachments/201712428/Screen_Shot_2015-04-30_at_2.06.54_PM.png)
-
-+ unused variables & style recommendations
-
-
-
-# Data types and structures | R base
-
-## Necessary R base {.build}
-
-### We could let **base** down, but the **tidyverse** is wrapping around it {.intro .box-12 .outline .show}
-
-Some functions need to be known. And in R, everything is a function.
-
-
-### Advices from David Robinson {.box-6 .icon-small .stretch .advice .outline}
-
-![](https://rworkshop.uni.lu/lectures/img/01/drobinson2.png)
-
-- [Teach tidyverse to beginners](http://varianceexplained.org/r/teach-tidyverse/)
-    + base: summary functions
-    + vectorized operations
-    + stat modeling
-    + matrices
-- [Don't teach the hard way](http://varianceexplained.org/r/teach-hard-way/)
-
-> _I teach them X just to show them how much easier Y is_ {.warning}
-
-> teaching programming is hard, don’t make it harder
-
-### {.col-6}
-
-
-<blockquote class="twitter-tweet" data-lang="fr"><p lang="en" dir="ltr">When you start writing a loop then turn it into dplyr<a href="https://twitter.com/hashtag/rstats?src=hash&amp;ref_src=twsrc%5Etfw">#rstats</a> <a href="https://t.co/M0gXUXuYCP">pic.twitter.com/M0gXUXuYCP</a></p>&mdash; David Robinson (@drob) <a href="https://twitter.com/drob/status/701790246111825925?ref_src=twsrc%5Etfw">22 Feb 2016</a></blockquote>
-<script async src="http://platform.twitter.com/widgets.js" charset="utf-8"></script>
-
-
-## Getting started {.vs3}
-
-Let's get ready to use **R** and **RStudio**
-
-### Do the following {.practical .box-8 .offset-2}
-
-- Open up RStudio
-- Maximize the RStudio window
-- Click the Console pane, at the prompt (`>`) type in `3 + 2` and hit enter
-
-```{r, eval = FALSE, prompt = TRUE}
-3 + 2
+```{css, echo = FALSE}
+#jbadv ul li ul li {
+  line-height: 0.5em;
+}
 ```
 
+### {.box-6 .show .intro .outline}
+
+<blockquote class="twitter-tweet" data-lang="en"><p lang="en" dir="ltr">The only two things that make <a href="https://twitter.com/JennyBryan?ref_src=twsrc%5Etfw">@JennyBryan</a> 😤😠🤯. Instead use projects + here::here() <a href="https://twitter.com/hashtag/rstats?src=hash&amp;ref_src=twsrc%5Etfw">#rstats</a> <a href="https://t.co/GwxnHePL4n">pic.twitter.com/GwxnHePL4n</a></p>&mdash; Hadley Wickham (@hadleywickham) <a href="https://twitter.com/hadleywickham/status/940021008764846080?ref_src=twsrc%5Etfw">December 11, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+### Rstudio projects {.box .col-6 .intro .outline .center-img}
+
+![](https://rworkshop.uni.lu/lectures/img/01/rstudio_project.jpg)
+
+### Jennifer Bryan's advice {#jbadv .advice .box-6 .outline}
+
+Use [`here` package](https://cran.r-project.org/web/packages/here/index.html) to build paths
+
+- gets the root path of your project:
+    + detects Rstudio projects (`.Rproj`)
+    + git repository (`.git`)
+    + `.here` file 
+
+<span class = "small">source: [Jennifer Bryan's article](https://www.tidyverse.org/articles/2017/12/workflow-vs-script/) and [test repo](https://github.com/jennybc/here_here)</span>
+
+# Data types and structures | R base
 
 ## 4 main types | `mode()` {.vs1 .build}
 
@@ -382,8 +410,6 @@ NULL # empty
 NaN # Not a Number
 ```
 
-
-
 ## Structures {.vs1 .build}
 
 ### Vectors {.box-5 .stretch .intro .outline .show}
@@ -422,7 +448,7 @@ list(f = factor(c("AA", "AA")),
 
 ## Data frames are special lists
 
-###  `data.frame`{} {.box-5 .intro .outline .stretch}
+###  `data.frame` {.box-5 .intro .outline .stretch}
 
 same as list **but** where all objects _must_ have the **same** length
 
@@ -435,30 +461,8 @@ data.frame(
   s = rep(4, 3))
 ```
 
-### Example, missing one element in `v` {.box-7 .bg-red .offset-5}
-
-```{r, row = F, collapse = TRUE, error=TRUE}
-data.frame(
-  f = factor(c("AA", "AA", "BB")),
-  v = c(43, 5.6),
-  s = rep(4, 3))
-```
 
 
-
-## Concatenate atomic elements | i.e build a vector {.vs1}
-
-
-### collection of simple _things_ {.box-6 .intro .outline}
-
-- _things_ are the smallest elements: **atomic**
-- **must** be of same **mode**: automatic coercion
-- indexed, from **1** to `length(vector)`
-- created with the **`c()`** function
-
-```{r}
-c(2, TRUE, "a string")
-```
 
 ### assignment operator, create object {.box-6 .intro .outline}
 
@@ -493,44 +497,6 @@ is.atomic(list(a = 1))
 is.data.frame(list(a = 1))
 ```
 
-## Vectors | subsetting {.build}
-
-### important {.box-8 .offset-2 .warning .show .outline}
-
-Unlike **python** or **Perl**, vectors use **1-based** index!!
-
-%end%
-
-### `:` operator  {.box-6 .practical}
-
-generate integer sequence
-
-```{r}
-3:10
-```
-
-### How to extract > 1 element {.box-6 .practical}
-
-select elements from position **3** to **10**:
-
-```{r}
-LETTERS[3:10]
-```
-
-
-### break in sequence {.box-6 .practical}
-
-```{r}
-LETTERS[c(2:5, 7)]
-```
-
-
-### negative selection {.box-6 .practical}
-
-```{r}
-LETTERS[-c(2:21)]
-```
-
 ## Vectorized operation {.vs1 .build}
 
 
@@ -551,7 +517,7 @@ my_vec + 2
 1:10 + c(1, 2)
 ```
 
-### avoid writing loops {.box-8 .offset-2 .advice .outline}
+### avoid writing loops, someone else already did (`purrr`, `lapply`) {.box-8 .offset-2 .advice .outline}
 
 (still remember not to grow a vector)
 
@@ -565,74 +531,84 @@ res
 ```
 
 
+## For loops are fine {.build}
 
 
-## Tidyverse | packages in processes
+### {.box-6 .code .outline .show}
+
+```{r, title = "growing", eval = FALSE}
+for_loop <- function(x) {
+  res <- c()
+  for (i in seq_len(x)) {
+    res[i] <- i
+  }
+}
+```
 
 
-![](https://rworkshop.uni.lu/lectures/img/01/tidyverse_data_science.png)
+```{r, title = "alloc", eval = FALSE}
+for_loop <- function(x) {
+  res <- vector(mode = "integer", 
+                length = x)
+  for (i in seq_len(x)) {
+    res[i] <- i
+  }
+}
+```
+
+```{r, title = "Rcpp", eval = FALSE}
+library(Rcpp)
+cppFunction("NumericVector rcpp(int x) {
+  NumericVector res(x);
+  for (int i=0; i < x; i++) {
+    res[i] = i;
+  }
+}")
+```
+
+### {.col-6}
+
+![](https://rworkshop.uni.lu/lectures/img/08/for_loops.png)
 
 
+## `purrr::map()` example | type stable {.build}
 
-## Tidyverse criticism  | jobs {.vs2}
+### For 3 `cyl` groups on `mtcars` {.box-6 .intro .outline .show}
 
-### {.box-6}
+- fit a linear model (miles per gallon explained by the weight)
+    + the equation is then: $mpg = \beta_0 + \beta_1 \times wt$, 
+    + formula in _R_: `mpg ~ wt`
 
-<blockquote class="twitter-tweet" data-lang="fr"><p lang="en" dir="ltr">Realized today: <a href="https://twitter.com/hashtag/tidyverse?src=hash">#tidyverse</a> R and base <a href="https://twitter.com/hashtag/rstats?src=hash">#rstats</a> have little in common. Beware when looking for  job which requires knowledge of R.</p>&mdash; Yeedle N. (@Yeedle) <a href="https://twitter.com/Yeedle/status/837448170963668992">2 mars 2017</a></blockquote>
-<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+### map the linear model {.box-6 .practical .outline .stretch .show}
 
-### Personal complains {.box-6 .warning .outline}
-
-- still young so change quickly and drastically
-- Backward compatibility is not always maintained.
-- `tibbles` are nice but a lot of non-tidyverse packages require `matrices`. `rownames` still an issue.
-
-
-### No need for opposition base / tidyverse {.box-8 .offset-2 .advice .outline}
-
-Learning the _tidyverse_ does not prevent to learn _R base_, it helps to get things done early in the process
-
-
-## Community complains {.vs2 .center-img}
-
-![](https://rworkshop.uni.lu/lectures/img/01/r_SO_chat_room.png)
-<span class = "small">source: [SO, R chat room, 29 Nov 2017](https://chat.stackoverflow.com/rooms/106/r)</span>
-
-
-
-
-4 days workshop at the [doctoral school@Uni](https://rworkshop.uni.lu/) last Feb 2018, probably again March 2019
-
-
-# Practical Session | dataSaurus & furrr
-
-
-
-## Wrap up {.vs1}
-
-### You learned to: {.box-8 .offset-2 .intro .icon}
-
-![](https://rworkshop.uni.lu/lectures/img/00/kt.png)
-
-- Introduction
-    + R
-    + Rstudio
-    + tidyverse rationale
-- data types
-    + main categories
-    + coerce
-- data structures
-    + main categories
-    + sub-setting
-    + vectorization
+- `map(YOUR_LIST, YOUR_FUNCTION)`
+- `YOUR_LIST` = `spl_mtcars`
+- `YOUR_FUNCTION` can be an anonymous function (declared on the fly)
 
 %end%
 
+```{r, title = "", class = "compact-output", width = 6}
+spl_mtcars <- group_split(mtcars, cyl)
+spl_mtcars %>% 
+  map(~lm(mpg ~ wt, data = .x)) %>%
+  map(summary) %>%
+  map_dbl("r.squared") %>% 
+  str()
+```
 
+### one step per line {.box-6 .advice .outline}
+
+- generate 3 tibbles (list)
+- run the linear model on each (list)
+    + `~` shortcut to foronymous function
+- summarised 3 linear models  (list)
+    + even better with `broom::glance()`
+- extract $R^2$ (doubles)
+    + `_dbl()` force a num vector. Error is coercion fails
 
 ## Acknowledgements {.vs3}
 
-### {.intro .box-12 .icon .small-pic}
+### {.intro .box-12 .icon-small .outline}
 
 ![](https://rworkshop.uni.lu/img/uni-logo.png)
 
@@ -650,3 +626,6 @@ Learning the _tidyverse_ does not prevent to learn _R base_, it helps to get thi
 - Slides (html): https://github.com/ULHPC/tutorials/raw/devel/advanced/R/Intro_PS.html
 
 - Slides (pdf): https://github.com/ULHPC/tutorials/raw/devel/advanced/R/Intro_PS.pdf
+
+# Practical Session | dataSaurus & furrr
+
