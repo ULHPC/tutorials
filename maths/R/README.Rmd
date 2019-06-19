@@ -28,7 +28,41 @@ Warning: this tutorial does not focus on the learning of R language but aims at 
 If you're also looking for a good tutorial on R's data structures you can take a look at: [Hadley Wickham's page](http://adv-r.had.co.nz/Data-structures.html).
 Another [bookdown](https://bookdown.org/)'s book  is available for free: [R for Data Science](http://r4ds.had.co.nz/index.html) by Garrett Grolemund & Hadley Wickham
 
+
+
+## Table of contents
+
+1. [Pre-requisites](#prereq)
+2. [Beginner session -- dataSaurus](#datasaurus)
+3. [Comparing methods for aggregating data -- diamonds](#aggreg)
+    1. [Speed comparison](#aggreg_speed)
+    2. [using dplyr](#aggreg_dplyr)
+    3. [using base](#aggreg_base)
+    4. [using data.table](#aggreg_dt)
+    5. [benchmarking](#aggreg_bench)
+4. [Parallel computing using HPC](#hpc)
+    1. [mandatory packages](#hpc_pkg) 
+    2. [toy example](#hpc_toy) 
+    3. [t-SNE example](#hpc_tsne) 
+    3. [reading data](#hpc_read) 
+5. [Useful links](#links)
  
+## Parallel computing using HPC
+#### iris
+### mandatory packages
+### toy example
+### t-SNE example
+#### R script
+#### launcher for 10 minutes on one full node (28 cores)
+#### Run the job
+##### trying the sequential version
+#### Conclusion
+#### Animation
+### Reading data
+### Enclosed R packages environment
+## Useful links 
+ 
+<a name="prereq"></a> 
  
 --------------------
 ## Pre-requisites ##
@@ -39,8 +73,6 @@ Ensure you are able to [connect to the UL HPC clusters](https://hpc.uni.lu/users
 
 ~~~bash
 # /!\ FOR ALL YOUR COMPILING BUSINESS, ENSURE YOU WORK ON A COMPUTING NODE
-# Have an interactive job
-############### iris cluster (slurm) ###############
 (access-iris)$> si -n 2 -t 2:00:00        # 2h interactive reservation
 # OR (long version)
 (access-iris)$> srun -p interactive -n 2 -t 2:00:00 --pty bash
@@ -57,8 +89,6 @@ Once installed, to use R interactive session interface, simply open a terminal a
 You will also find handy to use the [R-Studio](https://www.rstudio.com/) graphical IDE. R-Studio embeds a R shell where you can call R functions as in the interactive session interface.
 Thus you can use whether R interactive shell or R-Studio embedded shell.
 
-
-
 ### Installing R Packages
 
 To install libraries you can use the `install.packages()` function. _e.g_
@@ -74,9 +104,9 @@ Now, to load packages with a `library()` call:
 
 `library(ggplot2)`
 
-A call to `sessionInfo()` function will return `ggplot2` version as it is now attached to the current session.
+A call to `sessionInfo()` function will display the `ggplot2` version as it is now attached to the current session.
 
-
+<a name="datasaurus"></a>
 
 ## Beginner session -- dataSaurus
 
@@ -84,7 +114,7 @@ in R or Rstudio do `install.packages("tidyverse")` (takes some time)
 
 instructions: [in this tutorial](https://rworkshop.uni.lu/practicals/practical01_datasauRus.html)
 
-
+<a name="aggreg"></a> 
 
 ## Comparing methods for aggregating data -- diamonds
 
@@ -120,7 +150,9 @@ ggplot(diamonds) +
 #ggsave(file = "diamonds_plot.pdf", last_plot(), width = 8, height = 4)
 ```
 
-## Speed comparison of different tools for aggregating data
+<a name="aggreg_speed"></a> 
+
+### Speed comparison of different tools for aggregating data
 
 We could do a for loop to aggregate the data per cuts and manually compute the average price, 
 but in R loops are generally a bad idea ([if you avoid growing vectors there are fine](https://privefl.github.io/blog/why-loops-are-slow-in-r/)). It is better to concentrate on actions and not on programming, so the looping can be efficiently done internally.
@@ -128,7 +160,9 @@ but in R loops are generally a bad idea ([if you avoid growing vectors there are
 
 Thus instead of looping around the dataset, we will use a function from the `dplyr` package part of the [tidyverse](http://tidyverse.org) idiom
 
-### `dplyr` from the tidyverse
+<a name="aggreg_dplyr"></a> 
+
+#### `dplyr` from the tidyverse
 
 	  
 First of all, we chain the commands using the **pipe** _%>%_. That avoids many parenthesis and keep the natural reading from left to right.
@@ -148,8 +182,9 @@ diamonds %>%
 Note: `summarise()` from the `dplyr` package is similar to `aggregate()` from base package, 
 `dplyr` functions simply provide a more consistent naming convention together with better performance
 
+<a name="aggreg_base"></a> 
 
-### `aggregate` from base
+#### `aggregate` from base
 
 ```{r}
 aggregate(price ~ cut,
@@ -166,8 +201,9 @@ In the previous example we used `aggregate` for the **aggregation**, we could al
 as.data.frame(cbind(cut = as.character(unique(diamonds$cut)), avg_price = lapply(unique(diamonds$cut), function(x) mean(diamonds$price[which(diamonds$cut == x)]))))
 ```
 
+<a name="aggreg_dt"></a> 
 
-### `data.table`
+#### `data.table`
 
 [**data.table**](https://github.com/Rdatatable/data.table/wiki/Getting-started) is a package without dependencies that is super fast.
 Although the syntax is harder to learn compared to `dplyr`, if speed is your concern, it is your go-to package. See this long thread [at stackoverflow](https://stackoverflow.com/questions/21435339/data-table-vs-dplyr-can-one-do-something-well-the-other-cant-or-does-poorly) for a comparison of both tools.
@@ -179,6 +215,9 @@ DT <- data.table(diamonds)
 DT[, mean(price), by = cut] 
 ```
 
+<a name="aggreg_bench"></a> 
+
+#### benchmarks
 
 So, we want to know which one of the two versions is the most efficient, for that purpose, the package `bench` is handy.
 
@@ -208,9 +247,7 @@ m
 summary(m, relative = TRUE)
 ```
 
-
-
-### Plotting the benchmark 
+- plotting the benchmark 
 
 You can use `ggplot2` via the `autoplot()` function
 
@@ -230,7 +267,7 @@ m %>%
   theme_minimal(14)
 ```
 
-
+<a name="hpc"></a> 
 
 ## Parallel computing using HPC
 
@@ -285,6 +322,7 @@ Now you should be able to invoke R and see something like this:
     loaded via a namespace (and not attached):
     [1] compiler_3.4.4
 
+<a name="hpc_pkg"></a> 
 
 ### mandatory packages
 
@@ -314,6 +352,8 @@ quit by typing `quit()` and `n` do not save workspace image (actually, this shou
 
 The [`furrr` package](https://davisvaughan.github.io/furrr/) by David Vaughan is a nice wrapper around `future` and `purrr`, the functional programming idiom of the tidyverse. 
 
+<a name="hpc_toy"></a> 
+
 ### toy example
 
 Run a dumb loop on 3 times **2** that wait for those values
@@ -342,6 +382,7 @@ fetch env variables in R
 
 `as.integer(Sys.getenv("SLURM_CPUS_PER_TASK"))`
 
+<a name="hpc_tsne"></a> 
 
 ### t-SNE example
 
@@ -537,6 +578,8 @@ tib_gif
 anim_save("tsne_200.gif", tib_gif)
 ```
 
+<a name="hpc_read"></a> 
+
 ### Reading data
 
 For the t-SNE example, we cheated a bit by loading a R compressed object I prepared in advance (`.rds`).
@@ -621,7 +664,7 @@ ggsave("csv_benchmarks.pdf", p, width = 8)
 #   time <list>, gc <list>
 ```
 
-![](csv_benchmarks.png)
+![](figures/csv_benchmarks.png)
 
 By default the `ALTREP` framework for `vroom` is used only for **characters**. `vroom` is multi-threaded and will use the 4 cores we have (on `iris` we need to set it up manually) and performed similarly as `data.table` which was designed to be efficient for **numeric** data. By activating the option for all data types (altrep_opts = TRUE), `vroom` becomes even faster than `data.table`. But it means that after materialization, it will be slower. However, for **characters**, `vroom` is faster even after materialization, see the [benchmarks](http://vroom.r-lib.org/articles/benchmarks.html) done by the author [Jim Hester](https://github.com/jimhester) (also maintainer of `readr`).
 
@@ -637,8 +680,9 @@ Here is some instructions extracted from the [overview vignette](https://rstudio
 remotes::install_github("rstudio/renv")
 ```
 
+<a name="links"></a> 
 
-### Useful links
+## Useful links
 
 * [CRAN Archive](https://cran.r-project.org/)
 * [CRAN HPC Packages](https://cran.r-project.org/web/views/HighPerformanceComputing.html)
