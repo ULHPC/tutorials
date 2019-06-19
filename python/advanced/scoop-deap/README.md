@@ -44,7 +44,7 @@ Scoop can be used on [HPC platform](https://scoop.readthedocs.io/en/0.7/install.
 
 ## Deap
 
-For this tutorial, we are going to find the global minimum of the rastigin function (see below for 2 variables x and y). This function is used generally as benchmark to test evolutionary algorithms. The global optima ```f(x)=**0**``` with ```x=[0....0]```.
+For this tutorial, we are going to find the global minimum of the rastigin function (see below for 2 variables x and y). This function is used generally as benchmark to test evolutionary algorithms. The global optima ```f(x)=0``` with ```x=[0....0]```.
 <center>
 ![](https://deap.readthedocs.io/en/master/_images/rastrigin.png)
 </center>
@@ -63,7 +63,17 @@ We are going to setup a python virtual environment in order to install all requi
 Please create a separate folder (ex. scoop-deap) and cd into it. Apply the following commands to setup your
 environment.
 
+Be sure to start with a bare environment:
+
+* No interactive job running and thus no loaded modules
+* No python virtualenv already loaded
+
 ```bash
+# If you did not already clone the tutorial repository
+cd $HOME
+git clone https://github.com/ULHPC/tutorials.git
+# cd into the scripts folder
+cd tutorials/python/advanced/scoop-deap/scripts
 # Ask an interactive job
 si
 # Load python3 module (load by default Python3)
@@ -76,6 +86,8 @@ pip install numpy deap scoop
 
 ## The CMA-ES optimisation script
 
+The code of the following python script can be found in the file ```evolution.py``` located in the 
+```scripts``` folder. Actually, your current folder if you did not cd into another one. 
 
 ```python
 import sys
@@ -154,8 +166,10 @@ if __name__ == "__main__":
         json.dump(solutions, json_file,indent=True)
 
 ```
-Copy and paste this script into the python file ```evolution.py ``` and start the interactive optimisation using the following command ```python evolution.py [size]``` with ```[size]``` the number of variables to be considered. 
+Since you are still in the interactive job, start an interactive optimisation using the following command ```python evolution.py [size]``` with ```[size]``` the number of variables to be considered. 
 For example, you can run ```python evolution.py 10```. While the optimisation of the rastrigin function is ongoing, you can see the evolution log for every evolutionary generations displayed on your terminal.
+
+Note that if your interactive job ended, please start a new one and source again the python virtual environment.
 
 ## Distributed evolution with scoop
 

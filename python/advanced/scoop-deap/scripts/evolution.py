@@ -12,7 +12,6 @@ from deap import tools
 from deap import benchmarks
 from deap import algorithms
 from deap import cma
-from scoop import futures
 
 # Create new type dynalically
 creator.create("FitnessMin", base.Fitness, weights=(-1.0,))
@@ -21,7 +20,6 @@ creator.create("Individual", list, fitness=creator.FitnessMin)
 # Create a toolbox and overload existing functions
 toolbox = base.Toolbox()
 toolbox.register("evaluate", benchmarks.rastrigin)
-toolbox.register("map",futures.map)
 
 def tree():
     ''' 
