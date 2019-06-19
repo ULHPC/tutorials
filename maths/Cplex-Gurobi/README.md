@@ -53,10 +53,18 @@ module load math/Gurobi/8.1.1-intel-2018a-Python-3.6.4
 The resolution of optmization problem can be either done using the command line interface (CLI) or by using the different APis (e.g. C/C++, Python, Java). In this tutorial, we only consider the CLI for each optimizer.
 
 
-## Ressources for this turorial
+## Ressources for this tutorial
 
 In order to test cplex and gurobi, we need an optimization instance. Hereafter, we are going to rely on instances from the [miplib](http://miplib2017.zib.de). For example, let us the following instance [ex10.mps.gz](http://miplib2017.zib.de/WebData/instances/ex10.mps.gz) described in details [here](http://miplib2017.zib.de/instance_details_ex10.html) for the interested readers.
 
+If you did not already clone the tutorial repository, enter the following commands in your ```HOME``` directory:
+
+```bash
+cd $HOME
+git clone https://github.com/ULHPC/tutorials.git
+# cd into the scripts folder
+cd tutorials/maths/Cplex-Gurobi/scripts
+```
 
 ## Cplex
 
@@ -99,7 +107,7 @@ rm ${CPLEX_COMMAND_SCRIPT}
 ```
 
 
-Copy and paste the previous script into a file ```cplex_mtt.slurm ``` and launch a batch job using the ```sbatch``` command as follows ``` sbatch cplex_mtt.slurm ex10.mps.gz cplex_mtt```.
+Use the script ```cplex_mtt.slurm ``` and launch a batch job using the ```sbatch``` command as follows ``` sbatch cplex_mtt.slurm ex10.mps.gz cplex_mtt```.
 
 
 
@@ -145,7 +153,7 @@ mpirun -np 1 cplex -f ${CPLEX_COMMAND_SCRIPT} -mpi : -np $((SLURM_NTASKS - 1)) c
 rm ${CPLEX_COMMAND_SCRIPT}
 ```
 
-Copy and paste the previous script into a file ```cplex_dist.slurm ``` and launch a batch job using the ```sbatch``` command as follows ``` sbatch cplex_dist.slurm ex10.mps.gz cplex_dist```.
+Use the script ```cplex_dist.slurm ``` and launch a batch job using the ```sbatch``` command as follows ``` sbatch cplex_dist.slurm ex10.mps.gz cplex_dist```.
 
 ## Gurobi
 
@@ -174,7 +182,7 @@ RES_FILE=$2
 gurobi_cl Threads=${SLURM_CPUS_PER_TASK} ResultFile="${RES_FILE}.sol" ${MPS_FILE}
 ```
 
-Copy and paste the previous script into a file ```gurobi_mtt.slurm ``` and launch a batch job using the ```sbatch``` command as follows ``` sbatch gurobi_mtt.slurm ex10.mps.gz gurobi_mtt```.
+Use the script ```gurobi_mtt.slurm ``` and launch a batch job using the ```sbatch``` command as follows ``` sbatch gurobi_mtt.slurm ex10.mps.gz gurobi_mtt```.
 
 ### Distributed optimization with Gurobi 
 
@@ -240,7 +248,7 @@ rm ${GUROBI_INNER_LAUNCHER}
 ```
 
 
-Copy and paste the previous script into a file ```gurobi_dist.slurm ``` and launch a batch job using the ```sbatch``` command as follows ``` sbatch gurobi_dist.slurm ex10.mps.gz gurobi_dist```.
+Use the script ```gurobi_dist.slurm ``` and launch a batch job using the ```sbatch``` command as follows ``` sbatch gurobi_dist.slurm ex10.mps.gz gurobi_dist```.
 
 ## Next 
 
