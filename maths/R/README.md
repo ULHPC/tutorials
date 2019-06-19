@@ -6,7 +6,7 @@ ULHPC](https://img.shields.io/badge/by-ULHPC-blue.svg)](https://hpc.uni.lu)
 [![Licence](https://img.shields.io/badge/license-GPL--3.0-blue.svg)](http://www.gnu.org/licenses/gpl-3.0.html)
 [![GitHub
 issues](https://img.shields.io/github/issues/ULHPC/tutorials.svg)](https://github.com/ULHPC/tutorials/issues/)
-[![](https://img.shields.io/badge/slides-PDF-red.svg)](https://github.com/ULHPC/tutorials/raw/devel/maths/R/PS12-introduction_to_R.pdf)
+[![](https://img.shields.io/badge/slides-PDF-red.svg)](https://github.com/ULHPC/tutorials/raw/devel/maths/R/PS11-introduction_to_R.pdf)
 [![Github](https://img.shields.io/badge/sources-github-green.svg)](https://github.com/ULHPC/tutorials/tree/devel/maths/R/)
 [![Documentation
 Status](http://readthedocs.org/projects/ulhpc-tutorials/badge/?version=latest)](http://ulhpc-tutorials.readthedocs.io/en/latest/maths/R/)
@@ -18,10 +18,10 @@ forks](https://img.shields.io/github/stars/ULHPC/tutorials.svg?style=social&labe
 # R Tutorial
 
 ``` 
-  Copyright (c) 2013-2018 Aurelien Ginolhac, UL HPC Team  <hpc-sysadmins@uni.lu>
+  Copyright (c) 2013-2019 Aurelien Ginolhac, UL HPC Team  <hpc-sysadmins@uni.lu>
 ```
 
-[![](https://github.com/ULHPC/tutorials/raw/devel/maths/R/figures/cover_slides.png)](https://github.com/ULHPC/tutorials/raw/devel/maths/R/PS12-introduction_to_R.pdf)
+[![](https://github.com/ULHPC/tutorials/raw/devel/maths/R/figures/cover_slides.png)](https://github.com/ULHPC/tutorials/raw/devel/maths/R/PS11-introduction_to_R.pdf)
 
   - [slides as dynamic
     html](https://cdn.rawgit.com/ULHPC/tutorials/devel/maths/R/Intro_PS.html)
@@ -33,7 +33,7 @@ will illustrate how R can benefit from multicore and cluster
 parallelization.
 
 Warning: this tutorial does not focus on the learning of R language but
-aims at showing you nice startup tips.  
+aims at showing you nice start-up tips.  
 If you’re also looking for a good tutorial on R’s data structures you
 can take a look at: [Hadley Wickham’s
 page](http://adv-r.had.co.nz/Data-structures.html). Another
@@ -46,8 +46,8 @@ Hadley Wickham
 ## Pre-requisites
 
 Ensure you are able to [connect to the UL HPC
-clusters](https://hpc.uni.lu/users/docs/access.html) **For all tests and
-compilation with Easybuild, you MUST work on a computing
+clusters](https://hpc.uni.lu/users/docs/access.html) **you MUST work on
+a computing
 node**
 
 ``` bash
@@ -57,9 +57,6 @@ node**
 (access-iris)$> si -n 2 -t 2:00:00        # 2h interactive reservation
 # OR (long version)
 (access-iris)$> srun -p interactive -n 2 -t 2:00:00 --pty bash
-
-############### gaia/chaos clusters (OAR) ###############
-(access-{gaia|chaos})$> oarsub -I -l nodes=1/core=2,walltime=2
 ```
 
 ### Optional: On your local machine
@@ -98,14 +95,14 @@ Now, to load packages with a `library()` call:
 A call to `sessionInfo()` function will return `ggplot2` version as it
 is now attached to the current session.
 
-## Warm-up Session – dataSaurus
+## Beginner session – dataSaurus
 
 in R or Rstudio do `install.packages("tidyverse")` (takes some time)
 
-see [the
-tutorial](https://cdn.rawgit.com/ULHPC/tutorials/devel/maths/R/practical_datasaurus.html)
+instructions: [in this
+tutorial](https://rworkshop.uni.lu/practicals/practical01_datasauRus.html)
 
-## Comparing methods for aggregating data
+## Comparing methods for aggregating data – diamonds
 
 Let’s say we are working with the full `diamonds` dataset (suppplied by
 the `ggplot2` package) and we want to compute the **average** price for
@@ -128,7 +125,7 @@ idea of where the majority of dots are with a chosen lost of precision
 From previous plots, we know the relationship between carat and price is
 linear in the log-space. All those computation can be done by `ggplot2`
 
-Of note: we may need to install the package `hexbin`
+Of note: you may need to install the package `hexbin`
 
 ``` r
 ggplot(diamonds) + 
@@ -142,7 +139,7 @@ ggplot(diamonds) +
   # add logsticks to bottom and left
   annotation_logticks(side = "bl") +
   # viridis is so much better than the default blue gradient
-  viridis::scale_fill_viridis() +
+  scale_fill_viridis_c() +
   theme_minimal(14)
 ```
 
@@ -165,12 +162,6 @@ Thus instead of looping around the dataset, we will use a function from
 the `dplyr` package part of the [tidyverse](http://tidyverse.org) idiom
 
 ### `dplyr` from the tidyverse
-
-Of note, all core packages of the *tidyverse* could be installed at once
-
-``` r
-install.packages("tidyverse")
-```
 
 First of all, we chain the commands using the **pipe** *%\>%*. That
 avoids many parenthesis and keep the natural reading from left to right.
@@ -275,29 +266,27 @@ The `mark()` function performs x times the calls of several expressions,
 grabbing its performance (time and ressources used)
 
 ``` r
-library(data.table)
 library(bench)
 set.seed(123)
-m <- bench::mark(LAPPLY   = as.data.frame(cbind(cut = as.character(unique(diamonds$cut)),
-                                                price = lapply(unique(diamonds$cut), function(x) mean(diamonds$price[which(diamonds$cut == x)])))),
+m <- bench::mark(LAPPLY    = as.data.frame(cbind(cut = as.character(unique(diamonds$cut)),
+                                                 price = lapply(unique(diamonds$cut), function(x) mean(diamonds$price[which(diamonds$cut == x)])))),
                  AGGREGATE = aggregate(price ~ cut, FUN = mean, data = diamonds),
                  DPLYR     = group_by(diamonds, cut) %>% summarise(price = mean(price)),
                  DATATABLE = DT[, list(price = mean(price)), by = cut],
-                 iterations = 300, check = FALSE)
+                 iterations = 100, check = FALSE)
 m
 ```
 
-    ## # A tibble: 4 x 10
-    ##   expression      min     mean   median      max `itr/sec` mem_alloc  n_gc
-    ##   <chr>      <bch:tm> <bch:tm> <bch:tm> <bch:tm>     <dbl> <bch:byt> <dbl>
-    ## 1 LAPPLY       9.91ms  13.95ms  11.54ms   56.9ms      71.7    8.04MB    67
-    ## 2 AGGREGATE   38.38ms  53.09ms  49.63ms  192.3ms      18.8   13.09MB   135
-    ## 3 DPLYR       11.12ms  13.78ms  12.09ms   25.3ms      72.6    1.53MB    15
-    ## 4 DATATABLE    1.19ms   2.08ms   1.56ms   11.1ms     481.   623.85KB     6
-    ## # ... with 2 more variables: n_itr <int>, total_time <bch:tm>
+    ## # A tibble: 4 x 6
+    ##   expression      min   median `itr/sec` mem_alloc `gc/sec`
+    ##   <bch:expr> <bch:tm> <bch:tm>     <dbl> <bch:byt>    <dbl>
+    ## 1 LAPPLY      10.12ms  10.92ms      90.6    8.04MB    27.1 
+    ## 2 AGGREGATE   39.34ms  41.27ms      24.0   11.85MB    18.1 
+    ## 3 DPLYR        2.03ms    2.2ms     445.   211.22KB     0   
+    ## 4 DATATABLE    3.26ms   3.94ms     253.     1.24MB     7.82
 
-  - makes comparison easier to read using **relative** values. 1 for the
-    fastest.
+  - makes comparison easier to read using **relative** values. `1`Â for
+    the fastest.
 
 <!-- end list -->
 
@@ -305,25 +294,23 @@ m
 summary(m, relative = TRUE)
 ```
 
-    ## # A tibble: 4 x 10
-    ##   expression   min  mean median   max `itr/sec` mem_alloc  n_gc n_itr
-    ##   <chr>      <dbl> <dbl>  <dbl> <dbl>     <dbl>     <dbl> <dbl> <dbl>
-    ## 1 LAPPLY      8.34  6.71   7.39  5.14      3.81     13.2   11.2  1.41
-    ## 2 AGGREGATE  32.3  25.5   31.8  17.4       1        21.5   22.5  1   
-    ## 3 DPLYR       9.36  6.63   7.74  2.28      3.85      2.51   2.5  1.73
-    ## 4 DATATABLE   1     1      1     1        25.5       1      1    1.78
-    ## # ... with 1 more variable: total_time <dbl>
+    ## # A tibble: 4 x 6
+    ##   expression   min median `itr/sec` mem_alloc `gc/sec`
+    ##   <bch:expr> <dbl>  <dbl>     <dbl>     <dbl>    <dbl>
+    ## 1 LAPPLY      4.98   4.96      3.77     39.0       Inf
+    ## 2 AGGREGATE  19.4   18.7       1        57.5       Inf
+    ## 3 DPLYR       1      1        18.5       1         NaN
+    ## 4 DATATABLE   1.61   1.79     10.5       6.02      Inf
 
 ### Plotting the benchmark
 
 You can use `ggplot2` via the `autoplot()` function
 
 ``` r
-autoplot(m) +
-  theme_minimal(14)
+autoplot(m)
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-11-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
 
   - plot the memory allocation
 
@@ -333,21 +320,23 @@ autoplot(m) +
 m %>%
   unnest() %>%
   filter(gc == "none") %>%
+  mutate(expression = as.character(expression)) %>%
   ggplot(aes(x = mem_alloc, y = time, color = expression)) +
   geom_point() +
-  annotation_logticks(sides = "l") +
   theme_minimal(14)
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-12-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-11-1.png)<!-- -->
 
 ## Parallel computing using HPC
 
-R is already available in `chaos`, `gaia` and `iris` clusters as a
-module. Only `iris` has the latest version `3.4.4`. The first step is
-the reservation of a resource. Connect to your favorite cluster frontend
-(here: `iris`). We assume you have already configured your
-`.ssh/config`.
+R is already available on `iris` clusters as a module. The current
+production version `3.4.4`, but you can get the uptodate `3.6.0` by
+fetching the **development** version of the module lists Valentin
+Plugaru prepared. They will soon by be released as the default
+production environment. The first step is the reservation of a resource.
+Connect to your favorite cluster frontend (here: `iris`). We assume you
+have already configured your `.ssh/config`.
 
 #### iris
 
@@ -357,7 +346,8 @@ Once connected to the user frontend, book **4** cores for half an hour
 
     [jdoe@access2 ~]$ srun -p interactive  --time=0:30:0 -c 4 --pty bash
 
-When the job is running and you are connected load *R* module.
+When the job is running and you are connected load *R* module (so
+version `3.4.4`).
 
     [jdoe@access2 ~]$ module load lang/R
 
@@ -400,8 +390,8 @@ libraries etc.
 ### mandatory packages
 
 The core package we are going to use is
-[`future`](https://github.com/HenrikBengtsson/future) by Henrik
-Bengtsson.
+[`future`](https://github.com/HenrikBengtsson/future) by [Henrik
+Bengtsson](https://github.com/HenrikBengtsson).
 
 The main idea is to run expressions **asynchronously**. Future
 expressions are run according to *plan* defined by the user.
@@ -410,19 +400,23 @@ for the last section, you need to install the following packages,
 `future`, `furrr` and `Rstne`
 
 On `iris`, in an interactive session, load the module to get R version
-3.4.4
+3.6.0, still **not** in *production*
 
-    module use /opt/apps/resif/data/devel/default/modules/all
-    module load lang/R/3.4.4-foss-2018a-X11-20180131-bare
+    module load swenv/default-env/devel
+    module load lang/R/3.6.0-foss-2019a-bare
 
-After entering R using the `R` command, install both
-packages
+you will a warning because it hasn’t been fully tested yet.
+
+After entering R using the `R` command, install both packages. Don’t
+forget to use multi-threading for the
+compilations.
 
 ``` r
-install.packages(c("future", "furrr", "purrr", "dplyr", "dbscan", "tictoc", "Rtsne"), repos = "https://cran.rstudio.com")
+install.packages(c("future", "furrr", "purrr", "dplyr", "dbscan", "tictoc", "Rtsne"), repos = "https://cran.rstudio.com", Ncpus = 4)
 ```
 
-quit by typing `quit()` and `n` do not save workspace image.
+quit by typing `quit()` and `n` do not save workspace image (actually,
+this should be your default).
 
 The [`furrr` package](https://davisvaughan.github.io/furrr/) by David
 Vaughan is a nice wrapper around `future` and `purrr`, the functional
@@ -449,7 +443,7 @@ nothingness <- future_map(c(2, 2, 2), ~Sys.sleep(.x), .progress = TRUE)
 tictoc::toc()
 ```
 
-    ## 6.249 sec elapsed
+    ## 6.046 sec elapsed
 
   - second in parallel
 
@@ -462,94 +456,103 @@ nothingness <- future_map(c(2, 2, 2), ~Sys.sleep(.x), .progress = TRUE)
 ```
 
     ## 
-     Progress:                                                                                                                                        100%
-     Progress:                                                                                                                                        100%
-     Progress: ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── 100%
+     Progress:                                                                                                                                                                            100%
+     Progress:                                                                                                                                                                            100%
+     Progress: ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── 100%
 
 ``` r
 tictoc::toc()
 ```
 
-    ## 2.098 sec elapsed
+    ## 2.234 sec elapsed
+
+fetch env variables in R
+
+`as.integer(Sys.getenv("SLURM_CPUS_PER_TASK"))`
 
 ### t-SNE example
 
 Now, let’s try with a real example. Using some data supplied as a R
 object.
 
-Create both the R and bash script in a folder on the `iris` cluster.
+Create both the `R` and `bash` script in a folder (likely your `scratch`
+partition).
 
 #### R script
 
-    library(dplyr)
-    library(purrr)
-    library(furrr)
-    library(Rtsne)
-    
-    # check the path of pkgs
-    .libPaths()
-    # see how many cores are going to be used
-    availableCores()
-    # load data
-    tSNEdata <- readRDS("/home/users/aginolhac/future/tSNEdata.rds")
-    # create a partial function with filled arguments 
-    short_tsne <- purrr::partial(Rtsne, X = tSNEdata, pca_center = TRUE, 
-                                theta = 0.5, pca_scale = TRUE, verbose = TRUE, max_iter = 300)
-    
-    plan(multiprocess)
-    
-    tictoc::tic(msg = "tsne")
-    tsne_future <- tibble(perplexities = seq(10, 110, by = 5)) %>%
-                     # quietly captures outputs
-                     mutate(model = future_map(perplexities, ~quietly(short_tsne)(perplexity = .x), .progress = FALSE))
-    tictoc::toc()
-    
-    
-    tictoc::tic("finding clusters")
-    res_tib <- mutate(tsne_future,
-                      # unlist and extract the 2D matrix 
-                      Y = map(model, pluck, "result", "Y"),
-                      # convert to a dataframe
-                      Y_df = map(Y, as.data.frame),
-                      # for clustering, parallelise since expensive step
-                      cluster = future_map(Y_df, dbscan::hdbscan, minPts = 200),
-                      # extract from hdbscan object only the cluster info
-                      c = map(cluster, pluck, 1),
-                      # iterate though the 2D coordinates and cluster info to merge them
-                      tsne = map2(Y_df, c, ~ bind_cols(.x, tibble(c = .y))),
-                      # extract the output of tsne runs if needed to be parsed
-                      output = map_chr(model, pluck, "output"))
-    tictoc::toc()
-    
-    saveRDS(res_tib, "tsne_future.rds")
+``` r
+library(dplyr)
+library(purrr)
+library(furrr)
+library(Rtsne)
+
+# check the path of pkgs
+.libPaths()
+# see how many cores are going to be used
+availableCores()
+# load data
+tSNEdata <- readRDS("/scratch/users/aginolhac/renv/tSNEdata.rds")
+# create a partial function with filled arguments 
+short_tsne <- purrr::partial(Rtsne, X = tSNEdata, pca_center = TRUE, 
+                            theta = 0.5, pca_scale = TRUE, verbose = TRUE, max_iter = 300)
+
+plan(multiprocess)
+
+tictoc::tic(msg = "tsne")
+tsne_future <- tibble(perplexities = seq(10, 110, by = 5)) %>%
+                 # quietly captures outputs
+                 mutate(model = future_map(perplexities, ~quietly(short_tsne)(perplexity = .x), .progress = FALSE))
+tictoc::toc()
+
+
+tictoc::tic("finding clusters")
+res_tib <- mutate(tsne_future,
+                  # unlist and extract the 2D matrix 
+                  Y = map(model, pluck, "result", "Y"),
+                  # convert to a dataframe
+                  Y_df = map(Y, as.data.frame),
+                  # for clustering, parallelise since expensive step
+                  cluster = future_map(Y_df, dbscan::hdbscan, minPts = 200),
+                  # extract from hdbscan object only the cluster info
+                  c = map(cluster, pluck, 1),
+                  # iterate though the 2D coordinates and cluster info to merge them
+                  tsne = map2(Y_df, c, ~ bind_cols(.x, tibble(c = .y))),
+                  # extract the output of tsne runs if needed to be parsed
+                  output = map_chr(model, pluck, "output"))
+tictoc::toc()
+
+saveRDS(res_tib, "tsne_future.rds")
+```
 
 save as file named **tsne.R**
 
 #### launcher for 10 minutes on one full node (28 cores)
 
-    #!/bin/bash -l
-    #SBATCH -J tsne_hpc
-    #SBATCH -N 1
-    #SBATCH -c 28
-    #SBATCH --ntasks-per-node=1
-    #SBATCH --time=0-00:10:00
-    #SBATCH -p batch
-    #SBATCH --qos=qos-batch
-    
-    echo "== Starting run at $(date)"
-    echo "== Job ID: ${SLURM_JOBID}"
-    echo "== Node list: ${SLURM_NODELIST}"
-    echo "== Submit dir. : ${SLURM_SUBMIT_DIR}"
-    
-    # use version 3.4.4 and load the GNU toolchain
-    module use /opt/apps/resif/data/devel/default/modules/all
-    module load lang/R/3.4.4-foss-2018a-X11-20180131-bare
-    
-    # prevent sub-spawn, 28 cores -> 28 processes
-    export OMP_NUM_THREADS=1
-    export MKL_NUM_THREADS=1
-    
-    Rscript tsne.R > job_${SLURM_JOB_NAME}.out 2>&1
+``` bash
+#!/bin/bash -l
+#SBATCH -J tsne_hpc
+#SBATCH -N 1
+#SBATCH -c 28
+#SBATCH --ntasks-per-node=1
+#SBATCH --time=0-00:10:00
+#SBATCH -p batch
+#SBATCH --qos=qos-batch
+
+echo "== Starting run at $(date)"
+echo "== Job ID: ${SLURM_JOBID}"
+echo "== Node list: ${SLURM_NODELIST}"
+echo "== Submit dir. : ${SLURM_SUBMIT_DIR}"
+
+# use version 3.6.0 and load the GNU toolchain
+module load swenv/default-env/devel
+module load lang/R/3.6.0-foss-2019a-bare
+
+# prevent sub-spawn, 28 cores -> 28 processes
+export OMP_NUM_THREADS=1
+export MKL_NUM_THREADS=1
+
+Rscript tsne.R > job_${SLURM_JOB_NAME}.out 2>&1
+```
 
 save as file named **launcher.sh**. It requests a full node of **28**
 cores
@@ -582,6 +585,33 @@ and that they are dully full processes
 to run in parallel. `future` takes in charge all the spawning and
 fetching of the processes.
 
+it should give the following timing, looking at the `job_tsne_hpc.out`
+file:
+
+    tsne: 16.103 sec elapsed
+    finding clusters: 2.395 sec elapsed
+
+##### trying the sequential version
+
+  - remove the `future` calls
+
+`sed 's/future_map/map/' tsne.R > tsne_nofuture.R`
+
+  - adapt launcher script
+
+`sed 's/tsne.R/tsne_nofuture.R/' launcher.sh > launcher_nofuture.sh`
+
+  - submit the job
+
+`sbatch launcher_nofuture.sh`
+
+  - new timing, same `job_tsne_hpc.out` file:
+
+<!-- end list -->
+
+    tsne: 214.913 sec elapsed
+    finding clusters: 28.043 sec elapsed
+
 #### Conclusion
 
 see below the benefit of using more cores on the elapsed time for
@@ -598,13 +628,63 @@ the t-SNE evolves with increased perplexities
 
 ![](figures/tsne_110_component.gif)
 
+If of interest, the code it as follows (install required for
+`gganimate`, `gifski`):
+
+Beware, the animating takes ~ 4 minutes to complete.
+
+``` r
+library(gganimate)
+
+res <- read_rds("tsne_future.rds")
+
+res %>%
+  rename(cdbl = c) %>%
+  filter(perplexities %in% seq(10, 110, 20)) %>% 
+  unnest(tsne) %>%
+  select(-output) %>%
+  group_by(perplexities) %>%
+  mutate(n = row_number()) -> tib_light
+
+tictoc::tic("tweening")
+tib_light %>%
+  ggplot(aes(x = V1, y = V2, group = n, colour = factor(c))) +
+  geom_point(data = function(x) filter(x, c == 0), colour = "grey50", alpha = 0.2) +
+  geom_point(data = function(x) filter(x, c != 0), alpha = 0.6) +
+  transition_states(perplexities, transition_length = 5, state_length = 1) +
+  ease_aes('cubic-in-out') +
+  labs(title = "perplexities: {closest_state}") +
+  labs(colour = "cluster") +
+  coord_equal() +
+  theme_minimal(14) +
+  theme(legend.position = "bottom") -> tib_anim
+tictoc::toc()
+tictoc::tic("animate")
+tib_gif <- animate(tib_anim, nframes = 200, fps = 10)
+tictoc::toc()
+tib_gif
+anim_save("tsne_200.gif", tib_gif)
+```
+
+### Enclosed R packages environment
+
+this package is still under development but is the promising replacement
+for `packrat`. Here is some instructions extracted from the [overview
+vignette](https://rstudio.github.io/renv/articles/renv.html)
+
+  - installation (`install.packages("remotes")` if you miss `remotes`)
+
+<!-- end list -->
+
+``` r
+remotes::install_github("rstudio/renv")
+```
+
 ### Useful links
 
   - [CRAN Archive](https://cran.r-project.org/)
-
   - [CRAN HPC
     Packages](https://cran.r-project.org/web/views/HighPerformanceComputing.html)
-
   - [tidyverse Documentation](https://tidyverse.org/)
-
+  - \[4-days tidyverse workshop @uni.lu\](<https://rworkshop.uni.lu/>)
   - [Advanced R programming by Hadley Wickham](http://adv-r.had.co.nz/)
