@@ -1,0 +1,11 @@
+__default__:
+  time: "0-00:01:00"
+  partition: "batch"
+  nodes: 1
+  ntasks: 1
+  ncpus: 1
+  job-name: "{rule}"
+  output: "slurm-%j-%x.out"
+  error: "slurm-%j-%x.err"
+mapping:
+  ncpus: 4
