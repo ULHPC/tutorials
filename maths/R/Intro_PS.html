@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>PS12: introduction to R</title>
+  <title>PS11: introduction to R</title>
 
   <meta charset="utf-8">
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -10,7 +10,7 @@
 
 
 
-  <meta name="date" content="2018-06-13" />
+  <meta name="date" content="2019-06-21" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -21,8 +21,8 @@
     var SLIDE_CONFIG = {
       // Slide settings
       settings: {
-                title: 'PS12: introduction to R',
-                        subtitle: 'HPC School 2018',
+                title: 'PS11: introduction to R',
+                        subtitle: 'HPC School',
                 useBuilds: true,
         usePrettify: true,
         enableSlideAreas: true,
@@ -33,7 +33,7 @@
       // Author information
       presenters: [
             {
-        name:  'Aurélien Ginolhac (<a href="mailto:aurelien.ginolhac@uni.lu">aurelien.ginolhac@uni.lu</a>) - Life Sciences Research Unit' ,
+        name:  'Aurélien Ginolhac (<a href="mailto:aurelien.ginolhac@uni.lu" class="email">aurelien.ginolhac@uni.lu</a>) - <em>Life Sciences Research Unit</em>' ,
         company: '',
         gplus: '',
         twitter: '',
@@ -85,12 +85,12 @@
   <link href="Intro_PS_files/iosp-0.1.1.9000/css/iosp.css" rel="stylesheet" />
   <script src="Intro_PS_files/iosp-0.1.1.9000/js/lang-r.js"></script>
   <script src="Intro_PS_files/iosp-0.1.1.9000/js/slide-deck_oride.js"></script>
-  <link href="Intro_PS_files/font-awesome-5.0.12/css/fontawesome-all.min.css" rel="stylesheet" />
+  <link href="Intro_PS_files/font-awesome-5.3.1/css/fontawesome-all.min.css" rel="stylesheet" />
   <style type="text/css">
   /* bg-red colour */
   
   .slide-bg-red {
-    background-color: #FFAD99;
+    background: none #FFAD99;
   }
   
   .bg-red a {
@@ -166,7 +166,7 @@
   /* bg-green colour */
   
   .slide-bg-green {
-    background-color: #ADEBAD;
+    background: none #ADEBAD;
   }
   
   .bg-green a {
@@ -242,7 +242,7 @@
   /* bg-blue colour */
   
   .slide-bg-blue {
-    background-color: #99D6FF;
+    background: none #99D6FF;
   }
   
   .bg-blue a {
@@ -318,7 +318,7 @@
   /* bg-yellow colour */
   
   .slide-bg-yellow {
-    background-color: #FFEC8B;
+    background: none #FFEC8B;
   }
   
   .bg-yellow a {
@@ -394,7 +394,7 @@
   /* bg-gray colour */
   
   .slide-bg-gray {
-    background-color: #FAFAFA;
+    background: none #FAFAFA;
   }
   
   .bg-gray a {
@@ -470,7 +470,7 @@
   /* bg-white colour */
   
   .slide-bg-white {
-    background-color: #FFFFFF;
+    background: none #FFFFFF;
   }
   
   .bg-white a {
@@ -546,7 +546,7 @@
   /* bg-cobalt colour */
   
   .slide-bg-cobalt {
-    background-color: #2B557A;
+    background: none #2B557A;
   }
   
   .bg-cobalt a {
@@ -634,7 +634,7 @@
       <h1 data-config-title><!-- populated from slide_config.json --></h1>
       <h2 data-config-subtitle><!-- populated from slide_config.json --></h2>
       <p data-config-presenter><!-- populated from slide_config.json --></p>
-            <p style="margin-top: 6px; margin-left: -2px;">2018-06-13</p>
+            <p style="margin-top: 6px; margin-left: -2px;">2019-06-21</p>
           </hgroup>
   </slide>
 
@@ -645,11 +645,11 @@
 <img src='https://rworkshop.uni.lu/lectures/img/00/kt.png' title=''/>
 
 <ul>
-<li>install and run R and Rstudio on your machine</li>
-<li>use R on the clusters</li>
-<li>explore <code>ggplot2</code> and <code>dplyr</code> on the <em>dataSaurus</em></li>
+<li>quick intro to R</li>
+<li>focus on the tidyverse dialect</li>
+<li>explore <code>ggplot2</code> and <code>dplyr</code> on <em>dataSaurus</em> (beginner only)</li>
 <li>summarise a dataset using different packages and benchmark them</li>
-<li>demonstrate why packages are better than R base</li>
+<li>use R on the clusters</li>
 <li>perform single node parallelisation on <code>iris</code></li>
 </ul>
 
@@ -668,7 +668,7 @@
 <li>An <strong>interactive</strong> programming language derived from <strong>S</strong> (<strong>J. Chambers</strong>, Bell Lab, 1976)</li>
 <li>Appeared in 1993, created by <strong>R. Ihaka</strong> and <strong>R. Gentleman</strong>, University of Auckland, NZ</li>
 <li>Focus on data analysis and plotting</li>
-<li><i class="fab  fa-r-project "></i> is also shorthand for the ecosystem around this language
+<li><strong>R</strong> is also shorthand for the ecosystem around this language
 
 <ul>
 <li>Book authors</li>
@@ -686,7 +686,7 @@
 <li>easy to install / maintain</li>
 <li>multi-platform (Windows, macOS, GNU/Linux)</li>
 <li>can process big files and analyse huge amounts of data (db tools)</li>
-<li>integrated data visualization tools, <em>even dynamic</em></li>
+<li>integrated data visualization tools, <em>even dynamic</em> <a href='https://shiny.rstudio.com/' title=''><code>shiny</code></a></li>
 <li>fast, and even faster with <em>C++</em> integration via <a href='http://dirk.eddelbuettel.com/code/rcpp/Rcpp-attributes.pdf' title=''>Rcpp</a>.</li>
 <li>easy to get help
 
@@ -696,12 +696,6 @@
 <li><a href='http://www.r-bloggers.com' title=''>rbloggers</a></li>
 </ul></li>
 </ul>
-
-</article><div class = "footer"><img src="Intro_PS_files/logo.png"><a href='http://ulhpc-tutorials.readthedocs.io/en/latest/maths/R/'>R practical session</a></div></slide><slide class=""><hgroup class = 'title-bar'><h2>Twitter R community</h2></hgroup><article  id="twitter-r-community" class="smaller ">
-
-<p><a href='https://twitter.com/search?q=%23rstats' title=''><code>#rstats</code></a> on twitter</p>
-
-<img src='https://rworkshop.uni.lu/lectures/img/01/r_community.jpg' title=''/>
 
 </article><div class = "footer"><img src="Intro_PS_files/logo.png"><a href='http://ulhpc-tutorials.readthedocs.io/en/latest/maths/R/'>R practical session</a></div></slide><slide class=""><hgroup class = 'title-bar'><h2>Constant trend</h2></hgroup><article  id="constant-trend" class="smaller vs1">
 
@@ -719,7 +713,7 @@ Source: <a href='http://onlinelibrary.wiley.com/doi/10.1002/ecs2.1394/full' titl
 <p><span class="small">
 Source: <a href='https://stackoverflow.blog/2017/10/10/impressive-growth-r/' title=''>D. Robinson, StackOverflow blog</a></span></p>
 
-</div></article><div class = "footer"><img src="Intro_PS_files/logo.png"><a href='http://ulhpc-tutorials.readthedocs.io/en/latest/maths/R/'>R practical session</a></div></slide><slide class=""><hgroup class = 'title-bar'><h2>Packages </h2><h3> +12,000 in Feb 2018</h3></hgroup><article  id="packages-12000-in-feb-2018" class="smaller ">
+</div></article><div class = "footer"><img src="Intro_PS_files/logo.png"><a href='http://ulhpc-tutorials.readthedocs.io/en/latest/maths/R/'>R practical session</a></div></slide><slide class=""><hgroup class = 'title-bar'><h2>Packages </h2><h3> +16,000 in Feb 2019</h3></hgroup><article  id="packages-16000-in-feb-2019" class="smaller ">
 
 <div id="cran" class = 'box col col-4 intro stretch outline'><h3><a href='https://cran.r-project.org/web/packages/available_packages_by_date.html' title=''>CRAN</a></h3><div class = 'box-body'>
 
@@ -734,16 +728,16 @@ Source: <a href='https://stackoverflow.blog/2017/10/10/impressive-growth-r/' tit
 <p>typical install:</p>
 
 <div id="unnamed-chunk-2" class="col col-12 box chunk bg-cobalt">
-<pre class = 'prettyprint lang-r'>source(&quot;https://bioconductor.org/biocLite.R&quot;)
-biocLite(&quot;limma&quot;)</pre></div>
+<pre class = 'prettyprint lang-r'># install.packages(&quot;BiocManager&quot;)
+BiocManager::install(&quot;limma&quot;)</pre></div>
 
 </div></div><div id="github" class = 'box col col-4 warning stretch outline'><h3><a href='https://github.com/' title=''>GitHub</a></h3><div class = 'box-body'>
 
-<p>easy install thanks to <a href='https://github.com/hadley/devtools' title=''>devtools</a>. <a href='https://github.com/hadley/readr' title=''>status</a></p>
+<p>easy install thanks to <a href='https://remotes.r-lib.org/' title=''>remotes</a>.</p>
 
 <div id="unnamed-chunk-3" class="col col-12 box chunk bg-cobalt">
-<pre class = 'prettyprint lang-r'># install.packages(&quot;devtools&quot;)
-devtools::install_github(&quot;tidyverse/readr&quot;)</pre></div>
+<pre class = 'prettyprint lang-r'># install.packages(&quot;remotes&quot;)
+remotes::install_github(&quot;tidyverse/readr&quot;)</pre></div>
 
 <p>could be a security issue</p>
 
@@ -757,7 +751,14 @@ devtools::install_github(&quot;tidyverse/readr&quot;)</pre></div>
 
 <p>more in the article from <a href='http://blog.revolutionanalytics.com/2017/01/cran-10000.html' title=''>David Smith</a></p>
 
-</div></article><div class = "footer"><img src="Intro_PS_files/logo.png"><a href='http://ulhpc-tutorials.readthedocs.io/en/latest/maths/R/'>R practical session</a></div></slide><slide class=""><hgroup class = 'title-bar'><h2>R is hard to learn</h2></hgroup><article  id="r-is-hard-to-learn" class="smaller vs1">
+</div></article><div class = "footer"><img src="Intro_PS_files/logo.png"><a href='http://ulhpc-tutorials.readthedocs.io/en/latest/maths/R/'>R practical session</a></div></slide><slide class=""><hgroup class = 'title-bar'><h2>R ambiguity </h2><h3> Roger D. Peng</h3></hgroup><article  id="r-ambiguity-roger-d.-peng" class="smaller center-img vs2">
+
+<img src='figures/S_ambiguity.png' title=''/>
+
+<p><span class="small">
+source: <a href='https://www.youtube.com/watch?v=5033jBHFiHE' title=''>Teaching R to New Users: From tapply to Tidyverse</a> by Roger D. Peng</span></p>
+
+</article><div class = "footer"><img src="Intro_PS_files/logo.png"><a href='http://ulhpc-tutorials.readthedocs.io/en/latest/maths/R/'>R practical session</a></div></slide><slide class=""><hgroup class = 'title-bar'><h2>R is hard to learn</h2></hgroup><article  id="r-is-hard-to-learn" class="smaller vs1">
 
 <p><strong>R base</strong> is complex, has a long history and many contributors</p>
 
@@ -801,7 +802,7 @@ source: <a href='http://r4stats.com/articles/why-r-is-hard-to-learn/' title=''>R
 <li>unified</li>
 <li>consistent, one way to do things</li>
 <li>give strength to learn base R</li>
-<li>criticisms will come later (yes, many)</li>
+<li>criticisms exist</li>
 </ul>
 
 </div><div id="hadley-wickham" class = 'box col col-8 intro outline'><h3>Hadley Wickham</h3><div class = 'box-body'>
@@ -813,20 +814,148 @@ source: <a href='http://r4stats.com/articles/why-r-is-hard-to-learn/' title=''>R
 <li>developed and maintains most of the core <em>tidyverse</em> packages</li>
 </ul>
 
-</div></div><div id="section-6" class = 'col col-4'>
+</div></div><div id="section-6" class = 'col col-4 icon'>
 
-<div id="unnamed-chunk-4">
-<p><img src="https://pbs.twimg.com/profile_images/905186381995147264/7zKAG5sY_400x400.jpg" width="75%" /></p></div>
+<img src='https://pbs.twimg.com/profile_images/905186381995147264/7zKAG5sY_200x200.jpg' title=''/>
 
-</div></article><div class = "footer"><img src="Intro_PS_files/logo.png"><a href='http://ulhpc-tutorials.readthedocs.io/en/latest/maths/R/'>R practical session</a></div></slide><slide class="segue dark nobackground level1"><hgroup class = 'auto-fadein'><h2>RStudio</h2></hgroup><article  id="rstudio" class="smaller ">
+</div></article><div class = "footer"><img src="Intro_PS_files/logo.png"><a href='http://ulhpc-tutorials.readthedocs.io/en/latest/maths/R/'>R practical session</a></div></slide><slide class=""><hgroup class = 'title-bar'><h2>Tidy data</h2></hgroup><article  id="tidy-data" class="smaller vs2">
 
-<img src='https://rworkshop.uni.lu/lectures/img/00/logo_rstudio.png' title=''/>
+<div id="definition" class = 'box col col-8 intro outline'><h3>Definition</h3><div class = 'box-body'>
 
-</article><div class = "footer"><img src="Intro_PS_files/logo.png"><a href='http://ulhpc-tutorials.readthedocs.io/en/latest/maths/R/'>R practical session</a></div></slide><slide class=""><hgroup class = 'title-bar'><h2>Rstudio </h2><h3> makes working with R easier</h3></hgroup><article  id="rstudio-makes-working-with-r-easier" class="smaller build">
+<ol>
+<li>Each variable forms a column.</li>
+<li>Each observation forms a row.</li>
+<li>Each type of observational unit forms a table.</li>
+</ol>
+
+<img src='https://rworkshop.uni.lu/lectures/img/02/tidy_data.png' title=''/>
+
+</div></div><div id="section-7" class = 'col col-4 middle center-img'>
+
+<img src='https://biostat2.uni.lu/lectures/img/02/tidy_dataset.png' title=''/>
+
+</div></article><div class = "footer"><img src="Intro_PS_files/logo.png"><a href='http://ulhpc-tutorials.readthedocs.io/en/latest/maths/R/'>R practical session</a></div></slide><slide class=""><hgroup class = 'title-bar'><h2>Tidyverse </h2><h3> trends</h3></hgroup><article  id="tidyverse-trends" class="smaller ">
+
+<img src='https://rworkshop.uni.lu/lectures/img/01/r_documentation_trends_20190219.png' title=''/>
+
+<div id="section-8" class = 'offset-4 col col-6'>
+
+<p><span class="small">
+source: <a href='https://www.rdocumentation.org/trends' title=''>rdocumentation</a> (2019-02-19)</span></p>
+
+</div></article><div class = "footer"><img src="Intro_PS_files/logo.png"><a href='http://ulhpc-tutorials.readthedocs.io/en/latest/maths/R/'>R practical session</a></div></slide><slide class=""><hgroup class = 'title-bar'><h2>Tidyverse </h2><h3> trends</h3></hgroup><article  id="tidyverse-trends-1" class="smaller ">
+
+<img src='https://rworkshop.uni.lu/lectures/img/01/r_documentation_trends_20190219_tv.png' title=''/>
+
+<div id="section-9" class = 'col col-6 offset-4'>
+
+<p><span class="small">
+source: <a href='https://www.rdocumentation.org/trends' title=''>rdocumentation</a> (2019-02-19)</span></p>
+
+</div></article><div class = "footer"><img src="Intro_PS_files/logo.png"><a href='http://ulhpc-tutorials.readthedocs.io/en/latest/maths/R/'>R practical session</a></div></slide><slide class=""><hgroup class = 'title-bar'><h2>Tidyverse </h2><h3> packages in processes</h3></hgroup><article  id="tidyverse-packages-in-processes" class="smaller center-img">
+
+<img src='https://rworkshop.uni.lu/lectures/img/01/tidyverse_data_science.png' title=''/>
+
+</article><div class = "footer"><img src="Intro_PS_files/logo.png"><a href='http://ulhpc-tutorials.readthedocs.io/en/latest/maths/R/'>R practical session</a></div></slide><slide class=""><hgroup class = 'title-bar'><h2>Tidyverse components </h2><h3> core / extended</h3></hgroup><article  id="tidyverse-components-core-extended" class="smaller build vs1">
+
+<div id="core" class = 'box col col-6 intro outline show'><h3>Core</h3><div class = 'box-body'>
+
+<ul>
+<li><code>ggplot2</code>, for data visualization</li>
+<li><code>dplyr</code>, for data manipulation</li>
+<li><code>tidyr</code>, for data tidying</li>
+<li><code>readr</code>, for data import</li>
+<li><code>purrr</code>, for functional programming</li>
+<li><code>tibble</code>, for tibbles, a modern re-imagining of data frames</li>
+<li><code>stringr</code>, for strings</li>
+<li><code>forcats</code>, for factors</li>
+</ul>
+
+<p><span class="small">
+ source: <a href='http://tidyverse.tidyverse.org/' title=''>http://tidyverse.tidyverse.org/</a>. H.Wickham</span></p>
+
+</div></div><div id="extended" class = 'box col col-6 advice outline middle'><h3>Extended</h3><div class = 'box-body'>
+
+<ul>
+<li>Modelling
+
+<ul>
+<li><code>modelr</code>, for modelling within a pipeline</li>
+<li><code>broom</code>, for models -&gt; tidy data</li>
+</ul></li>
+<li>Programming
+
+<ul>
+<li><code>rlang</code>, low-level API</li>
+<li><code>glue</code>, alternative to paste</li>
+</ul></li>
+</ul>
+
+</div></div></article><div class = "footer"><img src="Intro_PS_files/logo.png"><a href='http://ulhpc-tutorials.readthedocs.io/en/latest/maths/R/'>R practical session</a></div></slide><slide class=""><hgroup class = 'title-bar'><h2>Reproducibility with RMarkdown reports</h2></hgroup><article  id="reproducibility-with-rmarkdown-reports" class="smaller vs1">
+
+<div id="why-using-rmarkdown" class = 'box col col-10 offset-1 intro outline icon'><h3>Why using <code>rmarkdown</code>?</h3><div class = 'box-body'>
+
+<img src='https://rworkshop.uni.lu/lectures/img/04/rmarkdown_output.png' title=''/>
+
+<ul>
+<li>write detailed reports</li>
+<li>ensure reproducibility</li>
+<li>keep track of your analyses</li>
+<li>comment/describe each step of your analysis</li>
+<li>export a single (Rmd) document to various formats (Pdf, Html…)</li>
+<li>text file that can be managed by a version control system (like <a href='https://git-scm.com/' title=''>git</a>)</li>
+</ul>
+
+</div></div></article><div class = "footer"><img src="Intro_PS_files/logo.png"><a href='http://ulhpc-tutorials.readthedocs.io/en/latest/maths/R/'>R practical session</a></div></slide><slide class=""><hgroup class = 'title-bar'><h2>Including <em>R</em> code</h2></hgroup><article  id="including-r-code" class="smaller ">
+
+<style type="text/css">
+.right {
+  display: block;
+  width: 100%;
+  text-align: right;
+}
+</style>
+
+<div id="rmarkdown-document" class = 'box col col-8 offset-2 intro outline'><h3>Rmarkdown document</h3><div class = 'box-body'>
+
+<img src='https://rworkshop.uni.lu/lectures/img/04/rmd_pipeline.png' title=''/>
+
+<p><span class="x-small right">
+<em>from the <a href='https://www.rstudio.org/links/r_markdown_cheat_sheet' title=''>Rmarkdown cheatsheet</a></em></span></p>
+
+</div></div><div id="rmarkdown" class = 'box col col-4 intro outline icon-small'><h3>Rmarkdown</h3><div class = 'box-body'>
+
+<img src='https://rworkshop.uni.lu/lectures/img/00/logo_rmarkdown.png' title=''/>
+
+<ul>
+<li>extends markdown</li>
+<li>place <strong>R code</strong> in <strong>chunks</strong></li>
+<li><strong>chunks</strong> will be <strong>evaluated</strong></li>
+<li>can also handle bash; python; css; …</li>
+</ul>
+
+</div></div><div id="knitr" class = 'box col col-4 intro outline icon-small'><h3>Knitr</h3><div class = 'box-body'>
+
+<img src='https://rworkshop.uni.lu/lectures/img/00/logo_knitr.png' title=''/>
+
+<ul>
+<li>extracts R chunks</li>
+<li>interprets them</li>
+<li>formats results as markdown</li>
+<li>reintegrates them into the main document (md)</li>
+</ul>
+
+</div></div><div id="pandoc" class = 'box col col-4 intro outline icon-small'><h3>Pandoc</h3><div class = 'box-body'>
+
+<ul>
+<li><a href='http://pandoc.org/' title=''>pandoc</a> converts markdown to the desired document (Pdf, Html, …)</li>
+</ul>
+
+</div></div></article><div class = "footer"><img src="Intro_PS_files/logo.png"><a href='http://ulhpc-tutorials.readthedocs.io/en/latest/maths/R/'>R practical session</a></div></slide><slide class=""><hgroup class = 'title-bar'><h2>Rstudio </h2><h3> makes working with R easier</h3></hgroup><article  id="rstudio-makes-working-with-r-easier" class="smaller ">
 
 <p><a href='https://www.rstudio.com/products/RStudio/' title=''>RStudio is an Integrated Development Environment</a> .</p>
 
-<div id="features" class = 'box col col-8 intro outline'><h3>Features</h3><div class = 'box-body'>
+<div id="features" class = 'box col col-8 intro outline show'><h3>Features</h3><div class = 'box-body'>
 
 <ul>
 <li><em>Console</em> to run <strong>R</strong>, with syntax highlighter</li>
@@ -850,44 +979,9 @@ source: <a href='http://r4stats.com/articles/why-r-is-hard-to-learn/' title=''>R
 
 <img src='https://rworkshop.uni.lu/lectures/img/01/rstudio_layout.jpg' title=''/>
 
-</article><div class = "footer"><img src="Intro_PS_files/logo.png"><a href='http://ulhpc-tutorials.readthedocs.io/en/latest/maths/R/'>R practical session</a></div></slide><slide class=""><hgroup class = 'title-bar'><h2>Four panels</h2></hgroup><article  id="four-panels" class="smaller vs2">
+</article><div class = "footer"><img src="Intro_PS_files/logo.png"><a href='http://ulhpc-tutorials.readthedocs.io/en/latest/maths/R/'>R practical session</a></div></slide><slide class=""><hgroup class = 'title-bar'><h2>For reproducibility </h2><h3> options to activate / deactivate</h3></hgroup><article  id="for-reproducibility-options-to-activate-deactivate" class="smaller ">
 
-<div id="scripting" class = 'box col col-6 practical stretch outline'><h3>scripting</h3><div class = 'box-body'>
-
-<ul>
-<li>could be your main window</li>
-<li>should be a <strong>Rmarkdown</strong> doc</li>
-<li>tabs are great</li>
-</ul>
-
-</div></div><div id="environment" class = 'box col col-6 intro stretch outline'><h3>Environment</h3><div class = 'box-body'>
-
-<ul>
-<li>Environment, display loaded objects and their <code>str()</code></li>
-<li>History is useless IMO</li>
-<li>nice <code>git</code> integration</li>
-<li>database <strong>connections</strong> interface</li>
-</ul>
-
-</div></div><div id="console" class = 'box col col-6 code stretch outline'><h3>Console</h3><div class = 'box-body'>
-
-<ul>
-<li>could be hidden with <strong>inline</strong> outputs</li>
-<li>embed a nice <code>terminal</code> tab</li>
-<li><code>Rmarkdown</code> logs</li>
-</ul>
-
-</div></div><div id="files-plots-help" class = 'box col col-6 intro stretch outline'><h3>Files / Plots / Help</h3><div class = 'box-body'>
-
-<ul>
-<li>necessary package management tab</li>
-<li>unnecessary plots tabs with <strong>inline</strong> outputs</li>
-<li>help tab</li>
-</ul>
-
-</div></div></article><div class = "footer"><img src="Intro_PS_files/logo.png"><a href='http://ulhpc-tutorials.readthedocs.io/en/latest/maths/R/'>R practical session</a></div></slide><slide class=""><hgroup class = 'title-bar'><h2>For reproducibility </h2><h3> options to activate / deactivate</h3></hgroup><article  id="for-reproducibility-options-to-activate-deactivate" class="smaller ">
-
-<div id="section-7" class = 'col col-6'>
+<div id="section-10" class = 'col col-6'>
 
 <img src='https://rworkshop.uni.lu/lectures/img/01/rstudio_settings.png' title=''/>
 
@@ -907,105 +1001,56 @@ source: <a href='http://r4stats.com/articles/why-r-is-hard-to-learn/' title=''>R
 <p><span class="small">
 <a href='https://www.tidyverse.org/articles/2017/12/workflow-vs-script/' title=''>source: Jenny Bryan article</a></span></p>
 
-</div></div></article><div class = "footer"><img src="Intro_PS_files/logo.png"><a href='http://ulhpc-tutorials.readthedocs.io/en/latest/maths/R/'>R practical session</a></div></slide><slide class=""><hgroup class = 'title-bar'><h2>Code diagnostics </h2><h3> highly recommended</h3></hgroup><article  id="code-diagnostics-highly-recommended" class="smaller ">
+</div></div></article><div class = "footer"><img src="Intro_PS_files/logo.png"><a href='http://ulhpc-tutorials.readthedocs.io/en/latest/maths/R/'>R practical session</a></div></slide><slide class=""><hgroup class = 'title-bar'><h2>Organising files </h2><h3> Use projects</h3></hgroup><article  id="organising-files-use-projects" class="smaller column build">
 
-<p>using <code>Global Options -&gt; Code -&gt; Diagnostics</code> editing pane:</p>
+<style type="text/css">
+#jbadv ul li ul li {
+  line-height: 0.5em;
+}
+</style>
 
-<div id="section-8" class = 'col col-6'>
+<div id="section-11" class = 'box col col-6 show intro outline'><div class = 'box-body'>
 
-<p><img src='https://rworkshop.uni.lu/lectures/img/01/diag_RStudio.png' title=''/> <span class="small">
-source: <a href='https://support.rstudio.com/hc/en-us/articles/205753617-Code-Diagnostics?version=1.1.133&amp;mode=desktop' title=''>Kevin Ushey’ article</a></span></p>
-
-</div><div id="section-9" class = 'col col-6'>
-
-<ul>
-<li>check argument calls</li>
-</ul>
-
-<img src='https://support.rstudio.com/hc/en-us/article_attachments/201712378/Screen_Shot_2015-04-30_at_2.01.17_PM.png' title=''/>
-
-<ul>
-<li>missing arguments</li>
-</ul>
-
-<img src='https://support.rstudio.com/hc/en-us/article_attachments/201712398/Screen_Shot_2015-04-30_at_2.03.06_PM.png' title=''/>
-
-<ul>
-<li>variable definitions</li>
-</ul>
-
-<img src='https://support.rstudio.com/hc/en-us/article_attachments/201712428/Screen_Shot_2015-04-30_at_2.06.54_PM.png' title=''/>
-
-<ul>
-<li>unused variables &amp; style recommendations</li>
-</ul>
-
-</div></article><div class = "footer"><img src="Intro_PS_files/logo.png"><a href='http://ulhpc-tutorials.readthedocs.io/en/latest/maths/R/'>R practical session</a></div></slide><slide class="segue dark nobackground level1"><hgroup class = 'auto-fadein'><h2>Data types and structures </h2><h3> R base</h3></hgroup><article  id="data-types-and-structures-r-base" class="smaller ">
-
-</article><div class = "footer"><img src="Intro_PS_files/logo.png"><a href='http://ulhpc-tutorials.readthedocs.io/en/latest/maths/R/'>R practical session</a></div></slide><slide class=""><hgroup class = 'title-bar'><h2>Necessary R base</h2></hgroup><article  id="necessary-r-base" class="smaller build">
-
-<div id="we-could-let-base-down-but-the-tidyverse-is-wrapping-around-it" class = 'intro box col col-12 outline show'><h3>We could let <strong>base</strong> down, but the <strong>tidyverse</strong> is wrapping around it</h3><div class = 'box-body'>
-
-<p>Some functions need to be known. And in R, everything is a function.</p>
-
-</div></div><div id="advices-from-david-robinson" class = 'box col col-6 icon-small stretch advice outline'><h3>Advices from David Robinson</h3><div class = 'box-body'>
-
-<img src='https://rworkshop.uni.lu/lectures/img/01/drobinson2.png' title=''/>
-
-<ul>
-<li><a href='http://varianceexplained.org/r/teach-tidyverse/' title=''>Teach tidyverse to beginners</a>
-
-<ul>
-<li>base: summary functions</li>
-<li>vectorized operations</li>
-<li>stat modeling</li>
-<li>matrices</li>
-</ul></li>
-<li><a href='http://varianceexplained.org/r/teach-hard-way/' title=''>Don’t teach the hard way</a></li>
-</ul>
-
-<blockquote class = "warning">
-<p><em>I teach them X just to show them how much easier Y is</em> </p>
-</blockquote>
-
-<blockquote>
-<p>teaching programming is hard, don’t make it harder</p>
-</blockquote>
-
-</div></div><div id="section-10" class = 'col col-6'>
-
-<blockquote class="twitter-tweet" data-lang="fr">
+<blockquote class="twitter-tweet" data-lang="en">
 
 <p lang="en" dir="ltr">
 
-When you start writing a loop then turn it into dplyr<a href="https://twitter.com/hashtag/rstats?src=hash&amp;ref_src=twsrc%5Etfw">#rstats</a> <a href="https://t.co/M0gXUXuYCP">pic.twitter.com/M0gXUXuYCP</a>
+The only two things that make <a href="https://twitter.com/JennyBryan?ref_src=twsrc%5Etfw"><span class="cite">@JennyBryan</span></a> 😤😠🤯. Instead use projects + here::here() <a href="https://twitter.com/hashtag/rstats?src=hash&amp;ref_src=twsrc%5Etfw">#rstats</a> <a href="https://t.co/GwxnHePL4n">pic.twitter.com/GwxnHePL4n</a>
 
 </p>
 
-— David Robinson (<span class="cite">@drob</span>) <a href="https://twitter.com/drob/status/701790246111825925?ref_src=twsrc%5Etfw">22 Feb 2016</a>
+— Hadley Wickham (<span class="cite">@hadleywickham</span>) <a href="https://twitter.com/hadleywickham/status/940021008764846080?ref_src=twsrc%5Etfw">December 11, 2017</a>
 
 </blockquote>
 
-<script async src="http://platform.twitter.com/widgets.js" charset="utf-8"></script>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
 
-</div></article><div class = "footer"><img src="Intro_PS_files/logo.png"><a href='http://ulhpc-tutorials.readthedocs.io/en/latest/maths/R/'>R practical session</a></div></slide><slide class=""><hgroup class = 'title-bar'><h2>Getting started</h2></hgroup><article  id="getting-started" class="smaller vs3">
+</div></div><div id="rstudio-projects" class = 'box col col-6 intro outline center-img'><h3>Rstudio projects</h3><div class = 'box-body'>
 
-<p>Let’s get ready to use <strong>R</strong> and <strong>RStudio</strong></p>
+<img src='https://rworkshop.uni.lu/lectures/img/01/rstudio_project.jpg' title=''/>
 
-<div id="do-the-following" class = 'practical box col col-8 offset-2'><h3>Do the following</h3><div class = 'box-body'>
+</div></div><div id="jbadv" class = 'advice box col col-6 outline'><h3>Jennifer Bryan’s advice</h3><div class = 'box-body'>
+
+<p>Use <a href='https://cran.r-project.org/web/packages/here/index.html' title=''><code>here</code> package</a> to build paths</p>
 
 <ul>
-<li>Open up RStudio</li>
-<li>Maximize the RStudio window</li>
-<li>Click the Console pane, at the prompt (<code>&gt;</code>) type in <code>3 + 2</code> and hit enter</li>
+<li>gets the root path of your project:
+
+<ul>
+<li>detects Rstudio projects (<code>.Rproj</code>)</li>
+<li>git repository (<code>.git</code>)</li>
+<li><code>.here</code> file</li>
+</ul></li>
 </ul>
 
-<div id="unnamed-chunk-5" class="col col-12 box chunk bg-cobalt">
-<pre class = 'prettyprint lang-r'>&gt; 3 + 2</pre></div>
+<p><span class="small">
+source: <a href='https://www.tidyverse.org/articles/2017/12/workflow-vs-script/' title=''>Jennifer Bryan’s article</a> and <a href='https://github.com/jennybc/here_here' title=''>test repo</a></span></p>
 
-</div></div></article><div class = "footer"><img src="Intro_PS_files/logo.png"><a href='http://ulhpc-tutorials.readthedocs.io/en/latest/maths/R/'>R practical session</a></div></slide><slide class=""><hgroup class = 'title-bar'><h2>4 main types </h2><h3> <code>mode()</code></h3></hgroup><article  id="main-types-mode" class="smaller vs1 build">
+</div></div></article><div class = "footer"><img src="Intro_PS_files/logo.png"><a href='http://ulhpc-tutorials.readthedocs.io/en/latest/maths/R/'>R practical session</a></div></slide><slide class="segue dark nobackground level1"><hgroup class = 'auto-fadein'><h2>Data types and structures </h2><h3> R base</h3></hgroup><article  id="data-types-and-structures-r-base" class="smaller ">
 
-<div id="section-11" class = 'col col-6 compact-table show'>
+</article><div class = "footer"><img src="Intro_PS_files/logo.png"><a href='http://ulhpc-tutorials.readthedocs.io/en/latest/maths/R/'>R practical session</a></div></slide><slide class=""><hgroup class = 'title-bar'><h2>4 main types </h2><h3> <code>mode()</code></h3></hgroup><article  id="main-types-mode" class="smaller vs1 build">
+
+<div id="section-12" class = 'col col-6 compact-table show'>
 
 <table class = 'table'>
 <thead><tr>
@@ -1030,7 +1075,7 @@ When you start writing a loop then turn it into dplyr<a href="https://twitter.co
 </tr>
 </table>
 
-</div><div id="section-12" class = 'col col-6'>
+</div><div id="section-13" class = 'col col-6'>
 
 <div id="unnamed-chunk-6" class="col col-12 box chunk bg-cobalt">
 <h3>
@@ -1087,7 +1132,7 @@ in the console
 <div class="col col-6 r-output">
 <pre >[1] 2+0i</pre></div></div>
 
-</div><div id="section-13" class = 'col col-6 offset-3'>
+</div><div id="section-14" class = 'col col-6 offset-3'>
 
 <div id="unnamed-chunk-7" class="col col-12 box chunk bg-cobalt">
 <h3>
@@ -1111,7 +1156,7 @@ NaN # Not a Number</pre></div>
 
 <p><code>c()</code> is the function for <strong>concatenate</strong></p>
 
-</div></div><div id="section-14" class = 'col col-7 middle'>
+</div></div><div id="section-15" class = 'col col-7 middle'>
 
 <div id="unnamed-chunk-8" class="col col-12 box chunk bg-cobalt">
 <div class="col col-6 r-source">
@@ -1126,7 +1171,7 @@ c(43, 5.6, 2.90)</pre></div>
 
 <p>convert strings to factors, <code>levels</code> is the dictionary</p>
 
-</div></div><div id="section-15" class = 'col col-8 stretch'>
+</div></div><div id="section-16" class = 'col col-8 stretch'>
 
 <div id="unnamed-chunk-9" class="col col-12 box chunk bg-cobalt">
 <div class="col col-6 r-source">
@@ -1140,7 +1185,7 @@ Levels: AA BB CC</pre></div></div>
 
 <p>very important as it can contain anything</p>
 
-</div></div><div id="section-16" class = 'col col-8 compact-output'>
+</div></div><div id="section-17" class = 'col col-8 compact-output'>
 
 <div id="unnamed-chunk-10" class="col col-12 box chunk bg-cobalt">
 <div class="col col-6 r-source">
@@ -1165,7 +1210,7 @@ $s
 
 <p>same as list <strong>but</strong> where all objects <em>must</em> have the <strong>same</strong> length</p>
 
-</div></div><div id="section-17" class = 'col col-7 stretch'>
+</div></div><div id="section-18" class = 'col col-7 stretch'>
 
 <div id="unnamed-chunk-11" class="col col-12 box chunk bg-cobalt">
 <h3>
@@ -1186,37 +1231,11 @@ Example, 3 elements of same size
 2 AA  5.6 4
 3 BB  2.9 4</pre></div></div>
 
-</div><div id="example-missing-one-element-in-v" class = 'box col col-7 bg-red offset-5'><h3>Example, missing one element in <code>v</code></h3><div class = 'box-body'>
-
-<div id="unnamed-chunk-12" class="col col-12 box chunk bg-cobalt">
-<pre class = 'prettyprint lang-r'>data.frame(
-  f = factor(c(&quot;AA&quot;, &quot;AA&quot;, &quot;BB&quot;)),
-  v = c(43, 5.6),
-  s = rep(4, 3))</pre>
-
-<pre >Error in data.frame(f = factor(c(&quot;AA&quot;, &quot;AA&quot;, &quot;BB&quot;)), v = c(43, 5.6), s = rep(4, : arguments imply differing number of rows: 3, 2</pre></div>
-
-</div></div></article><div class = "footer"><img src="Intro_PS_files/logo.png"><a href='http://ulhpc-tutorials.readthedocs.io/en/latest/maths/R/'>R practical session</a></div></slide><slide class=""><hgroup class = 'title-bar'><h2>Concatenate atomic elements </h2><h3> i.e build a vector</h3></hgroup><article  id="concatenate-atomic-elements-i.e-build-a-vector" class="smaller vs1">
-
-<div id="collection-of-simple-things" class = 'box col col-6 intro outline'><h3>collection of simple <em>things</em></h3><div class = 'box-body'>
-
-<ul>
-<li><em>things</em> are the smallest elements: <strong>atomic</strong></li>
-<li><strong>must</strong> be of same <strong>mode</strong>: automatic coercion</li>
-<li>indexed, from <strong>1</strong> to <code>length(vector)</code></li>
-<li>created with the <strong><code>c()</code></strong> function</li>
-</ul>
-
-<div id="unnamed-chunk-13" class="col col-12 box chunk bg-cobalt">
-<pre class = 'prettyprint lang-r'>c(2, TRUE, &quot;a string&quot;)</pre>
-
-<pre >[1] &quot;2&quot;        &quot;TRUE&quot;     &quot;a string&quot;</pre></div>
-
-</div></div><div id="assignment-operator-create-object" class = 'box col col-6 intro outline'><h3>assignment operator, create object</h3><div class = 'box-body'>
+</div><div id="assignment-operator-create-object" class = 'box col col-6 intro outline'><h3>assignment operator, create object</h3><div class = 'box-body'>
 
 <p>operator is <code>&lt;-</code>, associate a <em>name</em> to an object</p>
 
-<div id="unnamed-chunk-14" class="col col-12 box chunk bg-cobalt">
+<div id="unnamed-chunk-12" class="col col-12 box chunk bg-cobalt">
 <pre class = 'prettyprint lang-r'>my_vec &lt;- c(3, 4, 1:3)
 my_vec</pre>
 
@@ -1228,7 +1247,7 @@ my_vec</pre>
 
 </div></div></article><div class = "footer"><img src="Intro_PS_files/logo.png"><a href='http://ulhpc-tutorials.readthedocs.io/en/latest/maths/R/'>R practical session</a></div></slide><slide class=""><hgroup class = 'title-bar'><h2></h2><h3> hierarchy</h3></hgroup><article  id="hierarchy" class="smaller ">
 
-<div id="section-18" class = 'box col col-8'><div class = 'box-body'>
+<div id="section-19" class = 'box col col-8'><div class = 'box-body'>
 
 <img src='https://rworkshop.uni.lu/lectures/img/01/data-structures-overview.png' title=''/>
 
@@ -1237,7 +1256,7 @@ source: <strong>H. Wickham</strong> - <a href='http://r4ds.had.co.nz/vectors.htm
 
 </div></div><div id="in-console" class = 'box col col-4 middle code outline'><h3>in console</h3><div class = 'box-body'>
 
-<div id="unnamed-chunk-15" class="col col-12 box chunk bg-cobalt">
+<div id="unnamed-chunk-13" class="col col-12 box chunk bg-cobalt">
 <pre class = 'prettyprint lang-r'>is.vector(c(&quot;a&quot;, &quot;c&quot;))</pre>
 
 <pre >[1] TRUE</pre>
@@ -1258,51 +1277,11 @@ source: <strong>H. Wickham</strong> - <a href='http://r4ds.had.co.nz/vectors.htm
 
 <pre >[1] FALSE</pre></div>
 
-</div></div></article><div class = "footer"><img src="Intro_PS_files/logo.png"><a href='http://ulhpc-tutorials.readthedocs.io/en/latest/maths/R/'>R practical session</a></div></slide><slide class=""><hgroup class = 'title-bar'><h2>Vectors </h2><h3> subsetting</h3></hgroup><article  id="vectors-subsetting" class="smaller build">
-
-<div id="important" class = 'box col col-8 offset-2 warning show outline'><h3>important</h3><div class = 'box-body'>
-
-<p>Unlike <strong>python</strong> or <strong>Perl</strong>, vectors use <strong>1-based</strong> index!!</p>
-
-</div></div>
-
-<div id="operator" class = 'box col col-6 practical'><h3><code>:</code> operator</h3><div class = 'box-body'>
-
-<p>generate integer sequence</p>
-
-<div id="unnamed-chunk-16" class="col col-12 box chunk bg-cobalt">
-<pre class = 'prettyprint lang-r'>3:10</pre>
-
-<pre >[1]  3  4  5  6  7  8  9 10</pre></div>
-
-</div></div><div id="how-to-extract-1-element" class = 'box col col-6 practical'><h3>How to extract &gt; 1 element</h3><div class = 'box-body'>
-
-<p>select elements from position <strong>3</strong> to <strong>10</strong>:</p>
-
-<div id="unnamed-chunk-17" class="col col-12 box chunk bg-cobalt">
-<pre class = 'prettyprint lang-r'>LETTERS[3:10]</pre>
-
-<pre >[1] &quot;C&quot; &quot;D&quot; &quot;E&quot; &quot;F&quot; &quot;G&quot; &quot;H&quot; &quot;I&quot; &quot;J&quot;</pre></div>
-
-</div></div><div id="break-in-sequence" class = 'box col col-6 practical'><h3>break in sequence</h3><div class = 'box-body'>
-
-<div id="unnamed-chunk-18" class="col col-12 box chunk bg-cobalt">
-<pre class = 'prettyprint lang-r'>LETTERS[c(2:5, 7)]</pre>
-
-<pre >[1] &quot;B&quot; &quot;C&quot; &quot;D&quot; &quot;E&quot; &quot;G&quot;</pre></div>
-
-</div></div><div id="negative-selection" class = 'box col col-6 practical'><h3>negative selection</h3><div class = 'box-body'>
-
-<div id="unnamed-chunk-19" class="col col-12 box chunk bg-cobalt">
-<pre class = 'prettyprint lang-r'>LETTERS[-c(2:21)]</pre>
-
-<pre >[1] &quot;A&quot; &quot;V&quot; &quot;W&quot; &quot;X&quot; &quot;Y&quot; &quot;Z&quot;</pre></div>
-
 </div></div></article><div class = "footer"><img src="Intro_PS_files/logo.png"><a href='http://ulhpc-tutorials.readthedocs.io/en/latest/maths/R/'>R practical session</a></div></slide><slide class=""><hgroup class = 'title-bar'><h2>Vectorized operation</h2></hgroup><article  id="vectorized-operation" class="smaller vs1 build">
 
 <div id="one-of-the-best-r-feature" class = 'box col col-6 show intro middle outline'><h3>one of the best R feature</h3><div class = 'box-body'>
 
-<div id="unnamed-chunk-20" class="col col-12 box chunk bg-cobalt">
+<div id="unnamed-chunk-14" class="col col-12 box chunk bg-cobalt">
 <pre class = 'prettyprint lang-r'>my_vec &lt;- 10:18
 my_vec</pre>
 
@@ -1319,16 +1298,16 @@ my_vec</pre>
 <li>without any warnings:</li>
 </ul>
 
-<div id="unnamed-chunk-21" class="col col-12 box chunk bg-cobalt">
+<div id="unnamed-chunk-15" class="col col-12 box chunk bg-cobalt">
 <pre class = 'prettyprint lang-r'>1:10 + c(1, 2)</pre>
 
 <pre > [1]  2  4  4  6  6  8  8 10 10 12</pre></div>
 
-</div></div><div id="avoid-writing-loops" class = 'box col col-8 offset-2 advice outline'><h3>avoid writing loops</h3><div class = 'box-body'>
+</div></div><div id="avoid-writing-loops-someone-else-already-did-purrr-lapply" class = 'box col col-8 offset-2 advice outline'><h3>avoid writing loops, someone else already did (<code>purrr</code>, <code>lapply</code>)</h3><div class = 'box-body'>
 
 <p>(still remember not to grow a vector)</p>
 
-<div id="unnamed-chunk-22" class="col col-12 box chunk bg-cobalt">
+<div id="unnamed-chunk-16" class="col col-12 box chunk bg-cobalt">
 <pre class = 'prettyprint lang-r'>res &lt;- vector(mode = &quot;numeric&quot;, length = length(my_vec))
 for (i in seq_along(my_vec)) {
   res[i] &lt;- my_vec[i] + 2
@@ -1337,83 +1316,119 @@ res</pre>
 
 <pre >[1] 12 13 14 15 16 17 18 19 20</pre></div>
 
-</div></div></article><div class = "footer"><img src="Intro_PS_files/logo.png"><a href='http://ulhpc-tutorials.readthedocs.io/en/latest/maths/R/'>R practical session</a></div></slide><slide class=""><hgroup class = 'title-bar'><h2>Tidyverse </h2><h3> packages in processes</h3></hgroup><article  id="tidyverse-packages-in-processes" class="smaller ">
+</div></div></article><div class = "footer"><img src="Intro_PS_files/logo.png"><a href='http://ulhpc-tutorials.readthedocs.io/en/latest/maths/R/'>R practical session</a></div></slide><slide class=""><hgroup class = 'title-bar'><h2>For loops are fine</h2></hgroup><article  id="for-loops-are-fine" class="smaller build">
 
-<img src='https://rworkshop.uni.lu/lectures/img/01/tidyverse_data_science.png' title=''/>
+<div id="section-20" class = 'box col col-6 code outline show'><div class = 'box-body'>
 
-</article><div class = "footer"><img src="Intro_PS_files/logo.png"><a href='http://ulhpc-tutorials.readthedocs.io/en/latest/maths/R/'>R practical session</a></div></slide><slide class=""><hgroup class = 'title-bar'><h2>Tidyverse criticism </h2><h3> jobs</h3></hgroup><article  id="tidyverse-criticism-jobs" class="smaller vs2">
+<div id="unnamed-chunk-17" class="col col-12 box chunk bg-cobalt">
+<h3>
 
-<div id="section-19" class = 'box col col-6'><div class = 'box-body'>
+growing
 
-<blockquote class="twitter-tweet" data-lang="fr">
+</h3>
 
-<p lang="en" dir="ltr">
+<pre class = 'prettyprint lang-r'>for_loop &lt;- function(x) {
+  res &lt;- c()
+  for (i in seq_len(x)) {
+    res[i] &lt;- i
+  }
+}</pre></div>
 
-Realized today: <a href="https://twitter.com/hashtag/tidyverse?src=hash">#tidyverse</a> R and base <a href="https://twitter.com/hashtag/rstats?src=hash">#rstats</a> have little in common. Beware when looking for job which requires knowledge of R.
+<div id="unnamed-chunk-18" class="col col-12 box chunk bg-cobalt">
+<h3>
 
-</p>
+alloc
 
-— Yeedle N. (<span class="cite">@Yeedle</span>) <a href="https://twitter.com/Yeedle/status/837448170963668992">2 mars 2017</a>
+</h3>
 
-</blockquote>
+<pre class = 'prettyprint lang-r'>for_loop &lt;- function(x) {
+  res &lt;- vector(mode = &quot;integer&quot;, 
+                length = x)
+  for (i in seq_len(x)) {
+    res[i] &lt;- i
+  }
+}</pre></div>
 
-<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+<div id="unnamed-chunk-19" class="col col-12 box chunk bg-cobalt">
+<h3>
 
-</div></div><div id="personal-complains" class = 'box col col-6 warning outline'><h3>Personal complains</h3><div class = 'box-body'>
+Rcpp
+
+</h3>
+
+<pre class = 'prettyprint lang-r'>library(Rcpp)
+cppFunction(&quot;NumericVector rcpp(int x) {
+  NumericVector res(x);
+  for (int i=0; i &lt; x; i++) {
+    res[i] = i;
+  }
+}&quot;)</pre></div>
+
+</div></div><div id="section-21" class = 'col col-6'>
+
+<img src='https://rworkshop.uni.lu/lectures/img/08/for_loops.png' title=''/>
+
+</div></article><div class = "footer"><img src="Intro_PS_files/logo.png"><a href='http://ulhpc-tutorials.readthedocs.io/en/latest/maths/R/'>R practical session</a></div></slide><slide class=""><hgroup class = 'title-bar'><h2><code>purrr::map()</code> example </h2><h3> type stable</h3></hgroup><article  id="purrrmap-example-type-stable" class="smaller build">
+
+<div id="for-3-cyl-groups-on-mtcars" class = 'box col col-6 intro outline show'><h3>For 3 <code>cyl</code> groups on <code>mtcars</code></h3><div class = 'box-body'>
 
 <ul>
-<li>still young so change quickly and drastically</li>
-<li>Backward compatibility is not always maintained.</li>
-<li><code>tibbles</code> are nice but a lot of non-tidyverse packages require <code>matrices</code>. <code>rownames</code> still an issue.</li>
+<li>fit a linear model (miles per gallon explained by the weight)
+
+<ul>
+<li>the equation is then: \(mpg = \beta_0 + \beta_1 \times wt\),</li>
+<li>formula in <em>R</em>: <code>mpg ~ wt</code></li>
+</ul></li>
 </ul>
 
-</div></div><div id="no-need-for-opposition-base-tidyverse" class = 'box col col-8 offset-2 advice outline'><h3>No need for opposition base / tidyverse</h3><div class = 'box-body'>
-
-<p>Learning the <em>tidyverse</em> does not prevent to learn <em>R base</em>, it helps to get things done early in the process</p>
-
-</div></div></article><div class = "footer"><img src="Intro_PS_files/logo.png"><a href='http://ulhpc-tutorials.readthedocs.io/en/latest/maths/R/'>R practical session</a></div></slide><slide class=""><hgroup class = 'title-bar'><h2>Community complains</h2></hgroup><article  id="community-complains" class="smaller vs2 center-img">
-
-<p><img src='https://rworkshop.uni.lu/lectures/img/01/r_SO_chat_room.png' title=''/> <span class="small">
-source: <a href='https://chat.stackoverflow.com/rooms/106/r' title=''>SO, R chat room, 29 Nov 2017</a></span></p>
-
-<p>4 days workshop at the <a href='https://rworkshop.uni.lu/' title=''>doctoral school@Uni</a> last Feb 2018, probably again March 2019</p>
-
-</article><div class = "footer"><img src="Intro_PS_files/logo.png"><a href='http://ulhpc-tutorials.readthedocs.io/en/latest/maths/R/'>R practical session</a></div></slide><slide class="segue dark nobackground level1"><hgroup class = 'auto-fadein'><h2>Practical Session </h2><h3> dataSaurus &amp; furrr</h3></hgroup><article  id="practical-session-datasaurus-furrr" class="smaller ">
-
-</article><div class = "footer"><img src="Intro_PS_files/logo.png"><a href='http://ulhpc-tutorials.readthedocs.io/en/latest/maths/R/'>R practical session</a></div></slide><slide class=""><hgroup class = 'title-bar'><h2>Wrap up</h2></hgroup><article  id="wrap-up" class="smaller vs1">
-
-<div id="you-learned-to" class = 'box col col-8 offset-2 intro icon'><h3>You learned to:</h3><div class = 'box-body'>
-
-<img src='https://rworkshop.uni.lu/lectures/img/00/kt.png' title=''/>
+</div></div><div id="map-the-linear-model" class = 'box col col-6 practical outline stretch show'><h3>map the linear model</h3><div class = 'box-body'>
 
 <ul>
-<li>Introduction
-
-<ul>
-<li>R</li>
-<li>Rstudio</li>
-<li>tidyverse rationale</li>
-</ul></li>
-<li>data types
-
-<ul>
-<li>main categories</li>
-<li>coerce</li>
-</ul></li>
-<li>data structures
-
-<ul>
-<li>main categories</li>
-<li>sub-setting</li>
-<li>vectorization</li>
-</ul></li>
+<li><code>map(YOUR_LIST, YOUR_FUNCTION)</code></li>
+<li><code>YOUR_LIST</code> = <code>spl_mtcars</code></li>
+<li><code>YOUR_FUNCTION</code> can be an anonymous function (declared on the fly)</li>
 </ul>
 
 </div></div>
 
-</article><div class = "footer"><img src="Intro_PS_files/logo.png"><a href='http://ulhpc-tutorials.readthedocs.io/en/latest/maths/R/'>R practical session</a></div></slide><slide class=""><hgroup class = 'title-bar'><h2>Acknowledgements</h2></hgroup><article  id="acknowledgements" class="smaller vs3">
+<div id="unnamed-chunk-20" class="col col-6 box chunk bg-cobalt compact-output">
+<h3>
 
-<div id="section-20" class = 'intro box col col-12 icon small-pic'><div class = 'box-body'>
+</h3>
+
+<pre class = 'prettyprint lang-r'>spl_mtcars &lt;- group_split(mtcars, cyl)
+spl_mtcars %&gt;% 
+  map(~lm(mpg ~ wt, data = .x)) %&gt;%
+  map(summary) %&gt;%
+  map_dbl(&quot;r.squared&quot;) %&gt;% 
+  str()</pre>
+
+<pre > num [1:3] 0.509 0.465 0.423</pre></div>
+
+<div id="one-step-per-line" class = 'box col col-6 advice outline'><h3>one step per line</h3><div class = 'box-body'>
+
+<ul>
+<li>generate 3 tibbles (list)</li>
+<li>run the linear model on each (list)
+
+<ul>
+<li><code>~</code> shortcut to foronymous function</li>
+</ul></li>
+<li>summarised 3 linear models (list)
+
+<ul>
+<li>even better with <code>broom::glance()</code></li>
+</ul></li>
+<li>extract \(R^2\) (doubles)
+
+<ul>
+<li><code>_dbl()</code> force a num vector. Error is coercion fails</li>
+</ul></li>
+</ul>
+
+</div></div></article><div class = "footer"><img src="Intro_PS_files/logo.png"><a href='http://ulhpc-tutorials.readthedocs.io/en/latest/maths/R/'>R practical session</a></div></slide><slide class=""><hgroup class = 'title-bar'><h2>Acknowledgements</h2></hgroup><article  id="acknowledgements" class="smaller vs3">
+
+<div id="section-22" class = 'intro box col col-12 icon-small outline'><div class = 'box-body'>
 
 <img src='https://rworkshop.uni.lu/img/uni-logo.png' title=''/>
 
@@ -1432,7 +1447,9 @@ source: <a href='https://chat.stackoverflow.com/rooms/106/r' title=''>SO, R chat
 <li><p>Practical here: <a href='https://github.com/ULHPC/tutorials/tree/devel/maths/R' title=''>https://github.com/ULHPC/tutorials/tree/devel/maths/R</a></p></li>
 <li><p>Slides (html): <a href='https://github.com/ULHPC/tutorials/raw/devel/advanced/R/Intro_PS.html' title=''>https://github.com/ULHPC/tutorials/raw/devel/advanced/R/Intro_PS.html</a></p></li>
 <li><p>Slides (pdf): <a href='https://github.com/ULHPC/tutorials/raw/devel/advanced/R/Intro_PS.pdf' title=''>https://github.com/ULHPC/tutorials/raw/devel/advanced/R/Intro_PS.pdf</a></p></li>
-</ul></article><div class = "footer"><img src="Intro_PS_files/logo.png"><a href='http://ulhpc-tutorials.readthedocs.io/en/latest/maths/R/'>R practical session</a></div></slide>
+</ul>
+
+</article><div class = "footer"><img src="Intro_PS_files/logo.png"><a href='http://ulhpc-tutorials.readthedocs.io/en/latest/maths/R/'>R practical session</a></div></slide><slide class="segue dark nobackground level1"><hgroup class = 'auto-fadein'><h2>Practical Session </h2><h3> dataSaurus &amp; furrr</h3></hgroup><article  id="practical-session-datasaurus-furrr" class="smaller "></article><div class = "footer"><img src="Intro_PS_files/logo.png"><a href='http://ulhpc-tutorials.readthedocs.io/en/latest/maths/R/'>R practical session</a></div></slide>
 
 
   <slide class="backdrop"></slide>
