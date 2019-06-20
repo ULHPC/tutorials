@@ -17,7 +17,7 @@ CC      = gcc
 CFLAGS  = -g -Wall -Wextra -pedantic --std=c99 -O2
 # intel compiler flags -- see also
 #  https://software.intel.com/en-us/articles/step-by-step-optimizing-with-intel-c-compiler
-ICFLAGS = -Wall -xhost -O2
+ICFLAGS = -g -Wall -xhost -O2
 
 SRC_DIR     = src
 BUILD_DIR   = bin
@@ -73,7 +73,7 @@ fetch:
 		echo "=> $(DATARACEBENCH_DIR) has already been cloned in $(SRC_DIR)/"; \
 	fi
 
-build: __build.omp __build.openmpi __build.intel 
+build: __build.omp __build.openmpi __build.intel
 # __build.mvapich2
 mpi:    $(filter-out %hybrid,  $(TARGET_MPI))
 hybrid: $(filter-out %mpi,     $(TARGET_MPI))
