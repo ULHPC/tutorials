@@ -1,5 +1,5 @@
 #! /bin/bash -l
-# Time-stamp: <Fri 2018-11-23 14:28 svarrette>
+# Time-stamp: <Thu 2019-06-20 14:25 svarrette>
 ######## OAR directives ########
 #OAR -n OpenMP
 #OAR -l nodes=1/core=4,walltime=0:05:00
@@ -71,6 +71,7 @@ echo "#    OMP_NUM_THREADS=${OMP_NUM_THREADS}"
 echo "# =============================================================="
 
 module purge || print_error_and_exit "Unable to find the module command"
+# module load swenv/default-env/devel
 module load ${MODULE}
 module list
 
