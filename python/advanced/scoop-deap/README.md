@@ -339,7 +339,7 @@ INPUTFILE=$(pwd)/evolution.py
 python -m scoop --hostfile $HOSTFILE -n ${SLURM_NTASKS} --python-interpreter=$SCOOP_WRAPPER $INPUTFILE $@
 ```
 
-Finally in order to execute this script (```launcher.sh```) on multiple cores and nodes, you can use the ```sbatch``` command. For example, ```sbatch --ntasks=31 --ntasks-per-core=1 --time=00:10:00 -p batch launcher.sh 50``` will start the script with 31 cores allocated during 10 minutes to solve the rastrigin benchmark having 50 variables.
+Finally in order to execute this script (```launcher.sh```) on multiple cores and nodes, you can use the ```sbatch``` command. For example, ```sbatch --ntasks=31 --cpus-per-task=1 --time=00:10:00 -p batch launcher.sh 50``` will start the script with 31 cores allocated during 10 minutes to solve the rastrigin benchmark having 50 variables.
 
 After job completion, use [scp or rsync](https://hpc.uni.lu/users/docs/filetransfer.html) to retrieve your results on your laptop.
 
