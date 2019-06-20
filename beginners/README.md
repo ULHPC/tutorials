@@ -54,7 +54,7 @@ The way SSH handles the keys and the configuration files is illustrated in the f
 In order to be able to login to the clusters, you have sent us through the Account request form the **public key** (i.e. `id_rsa.pub` or the **public key** as saved by MobaXterm/PuttY) you initially generated, enabling us to configure the `~/.ssh/authorized_keys` file of your account.
 
 
-### Connect to UL HPC (Linux / Mac OS / Unix)
+### Step 1a - Connect to UL HPC (Linux / Mac OS / Unix)
 
 Run the following commands in a terminal (substituting *yourlogin* with the login name you received from us):
 
@@ -74,7 +74,7 @@ Now you shall be able to issue the following (simpler) command to connect to the
 
 In the following sections, we assume these aliases to be defined.
 
-### Optional - using SSH proxycommand setup to access the clusters despite port filtering (Linux / Mac OS / Unix)
+### Step 1b - Optional - using SSH proxycommand setup to access the clusters despite port filtering (Linux / Mac OS / Unix)
 
 It might happen that the port 8022 is filtered from your working place. You can easily bypass this firewall rule using an SSH proxycommand to setup transparently multi-hop connexions *through* one host (a gateway) to get to the access frontend of the cluster, as depited below:
 
@@ -107,7 +107,7 @@ The `.ulhpc` suffix we mentioned in the previous configuration is an arbitrary s
     (laptop)$> ssh iris.ulhpc
 
 
-### Connect to UL HPC (Windows)
+### Step 1c - Connect to UL HPC (Windows)
 
 * Download [MobaXterm Installer edition](http://mobaxterm.mobatek.net/)
 * Install MobaXterm
@@ -126,7 +126,7 @@ The `.ulhpc` suffix we mentioned in the previous configuration is an arbitrary s
   * Click on **Save**
 
 
-### Hands-on/ Transferring files
+### Step 2 - Hands-on/ Transferring files
 
 Directories such as `$HOME`, `$WORK` or `$SCRATCH` are shared among the nodes of the cluster that you are using (including the front-end) via shared filesystems (NFS, Lustre) meaning that:
 
@@ -134,7 +134,7 @@ Directories such as `$HOME`, `$WORK` or `$SCRATCH` are shared among the nodes of
 * every file/directory pushed or created on the computing nodes is available on the front-end
 
 
-#### Linux / OS X / Unix command line tools
+#### Step 2a - Linux / OS X / Unix command line tools
 
 The two most common tools you can use for data transfers over SSH:
 
@@ -176,7 +176,7 @@ Of both, normally the second approach should be preferred, as more generic; note
 You can get more information about these transfer methods in the [file transfer documentation](https://hpc.uni.lu/users/docs/filetransfer.html).
 
 
-#### Windows MobaXterm file transfer
+#### Step 2b - Windows MobaXterm file transfer
 
 If you are on Windows, you can directly use MobaXterm to transfer files. Connect to your session (see below on how to configure it). On the right panel you should see an **SFTP** panel opened.
 
@@ -788,7 +788,7 @@ This way, we will not pollute the home directory with the python modules install
 
 
 
-#### Step 1: Naive sequential workflow
+### Step 1: Naive sequential workflow
 
 We will create a new "launcher script", which is basically a loop over all the files listed 
 
@@ -860,7 +860,7 @@ During the execution, you can see the job in the queue with the command `squeue`
 Using the [system monitoring tool ganglia](https://hpc.uni.lu/iris/ganglia/), check the activity on your node.
 
 
-#### Step 2: Optimal method using GNU parallel (GNU Parallel)
+### Step 2: Optimal method using GNU parallel (GNU Parallel)
 
 We will create a new "launcher script", which uses GNU Parallel to execute 10 processes in parallel
 
