@@ -35,15 +35,23 @@ In this tutorial, we are going to code in python 3 and use the following librari
 
 ## Creating the virtual environment
 
-```python
+Be sure to start with a bare environment:
+
+* No interactive job running and thus no loaded modules
+* No python virtualenv already loaded
+
+```bash
+# If you did not already clone the tutorial repository
+cd $HOME
+git clone https://github.com/ULHPC/tutorials.git
+# cd into the scripts folder
+cd tutorials/python/advanced/scikit-learn/scripts
 # First ask for an interactive SLURM job
 si
 # Load python 3.6 module
 module load lang/Python/3.6.4-foss-2018a-bare 
 # Create your virtual environment
 python3 -m venv scikit
-# git clone tuto hpc and cd to scikit tuto
-# ...
 # Activate your env
 source ./scikit/bin/activate
 # Now install required packages
@@ -59,10 +67,12 @@ pip install joblib
 pip install scikit-learn
 # pandas
 pip install pandas
+# Exit interactive job (setup completed)
+exit
 ```
 ## Using ipyparrallel with SLURM (generic slurm script)
 
-Clement Parisot in the tutorial **Python : Use Jupyter notebook on UL HPC** gives a very good description and application of **ipyparallel** package. A general script for using ipyparrallel with the SLURM scheduler is provided. We are going to use it in the remaining part of this tutorial.
+Hereafter, a general script for using ipyparrallel with the SLURM scheduler is provided. We are going to use it in the remaining part of this tutorial. This is the file ```launcher.sh``` that you can find in the scripts directory. 
 
 
 ```bash
@@ -107,7 +117,15 @@ Some existing approaches (DBSCAN, OPTICS) are now able to detect this number aut
 
 Hereafter, we are going to use the very simple K-means clustering algorithm. We will start multiple K-means instances in parrallel with different number of clusters to be detected. 
 
-### Defining some useful function to be parallelised
+In the ```unsupervized``` folder, you can find two scripts:
+
+* ```some_funcs.py``` wrapping the Kmeans procedure of the scikit-learn library 
+
+* ```main.py``` which is the main script calling our wrapper
+
+
+### ```some_funcs.py```: add some logs to kmeans procedure
+
 
 ```python
 import os
@@ -198,7 +216,7 @@ def kmeans(nbClusters,X,profile):
 
 ```
 
-### Create the main python script
+### ```main.py```: our main python script to parallelize clustering
 
 ```python
 
@@ -258,11 +276,17 @@ with parallel_backend('ipyparallel'):
 
 
 #write down the number of clusters and the total inertia in a file.
-with open('scores_rbf_digits.csv', 'w') as f:
+with open(os.path.join(FILE_DIR,'scores_kmeans.csv'), 'w') as f:
     f.write('nbClusters,inertia,\n')
     f.write("\n".join(','.join(str(c) for c in l) for l in inertia))
     f.write('\n')
 ```
+
+### Start parallel clustering
+
+You only need to start the following command from the ```scripts``` directory:
+```sbatch launcher.sh unsupervized/main.py```
+
 
 ![](./images/clusterings.png)
 
@@ -298,7 +322,9 @@ The training data will be loaded from scikit-learn [digits library](https://scik
 
 ![source: https://towardsdatascience.com/understanding-hyperparameters-and-its-optimisation-techniques-f0debba07568](./images/digits.png)
 
-The SLURM launcher script remains the same than before. It has been especially designed to be as general as possible. We only need to write a script calling the Grid search procedure with the SVC model.
+The SLURM launcher script remains the same than before. It has been especially designed to be as general as possible. We only need to write a script calling the Grid search procedure with the SVC model. Here we will not wrap the existing SVC algorithm. The script is located in the ```supervized``` folder.
+
+### ```main.py```: using Grid search in parallel
 
 ```python
 import argparse
@@ -389,14 +415,18 @@ plt.colorbar()
 plt.xticks(np.arange(len(param_space['gamma'])), map(lambda x : "%.2E"%(x),param_space['gamma']), fontsize=8, rotation=45)
 plt.yticks(np.arange(len(param_space['C'])), map(lambda x : "%.2E"%(x),param_space['C']), fontsize=8, rotation=45)
 plt.title('Validation accuracy')
-plt.savefig("validation.png")
+plt.savefig(os.path.join(FILE_DIR,"validation.png"))
 ```
+### Start parallel supervized learning
+
+In the ```scripts``` folder, enter the following command ```sbatch launcher.sh supervized/main.py```.
+
 
 ![Scores heatmap](./images/validation.png)
 
 ## Next 
 
-1. (Part 1.) Adapt the script for another unsupervised algorithms  
+1. (Part 1.) Adapt the script for another clustering algorithm  
 2. (Part 2.) Increase the number of parameters to be searched by the GridSearchCV approach
 
 

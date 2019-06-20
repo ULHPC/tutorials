@@ -2,7 +2,7 @@
 
 # UL HPC Tutorial: Advanced scheduling with SLURM
 
-     Copyright (c) 2013-2018 UL HPC Team <hpc-sysadmins@uni.lu>
+     Copyright (c) 2013-2019 UL HPC Team <hpc-sysadmins@uni.lu>
 
 
 [![](cover_slides.png)](slides.pdf)
@@ -131,20 +131,19 @@ srun -p interactive --qos qos-interactive --time=0:03:0 -N 2 --ntasks-per-node=4
 __Question__: can you ssh between the nodes part of this job? what happens if you try to ssh to a different node (not from your job/jobs)? if you are still connected to the job after 3 minutes, what happens?
 
 * Start an interactive job with _X11 forwarding_ such that GUI applications (running in the cluster) will be shown on your workstation:
-    - note that your initial connection to the iris cluster needs to have X11 Forwarding enabled, e.g. `ssh -X iris-cluster`
+    - note that your initial connection to the iris cluster needs to have X11 Forwarding enabled, e.g. `ssh -Y iris-cluster`
 
-Note: as of 2017-11-09, direct X11 (--x11) support with srun (`srun -p interactive --qos qos-interactive --pty --x11 bash -i`) is being patched, and the below workaround is needed.
+Note: as of 2017-11-09, direct X11 (--x11) support with srun (`srun -p interactive --qos qos-interactive --pty --x11 bash -i`) is being patched, and the below workaround is needed. You can have a look at the [FAQ about X11 forwarding on our website](https://hpc.uni.lu/blog/2018/faq-x11-forwarding-not-working-with-slurm/)
 
-1. create a file `~/bin/slurm-x11` with the below content and make it executable (`chmod +x ~/bin/slurm-x11`):
+1. Connect to iris using the X11 forwarding `ssh -Y iris-cluster`
+2. Launch a job with X11 by doing an interactive reservation: `salloc -p interactive --qos qos-interactive bash -c 'ssh -Y $(scontrol show hostnames | head -n 1)'`
 
-```
-#!/bin/bash
-headNode=$(scontrol show hostname $SLURM_NODELIST | head -n1)
-slurmEnv=$(printenv | grep SLURM_ | sed -rn "s/=(.*)/='\1'/p" | paste -d ' ' -s)
-exec ssh -X $headNode -t "$slurmEnv bash"
-```
+Here are some explanation of what the command do:
 
-2. launch a job with X11: `salloc -p interactive --qos qos-interactive slurm-x11`
+* Request node allocation in interactive partition with qos-interactive
+* When the ressource is allocated, spawn a bash process that will run a command
+* The command permits to connect to the first node of the reservation directly by using ssh with forwarding enable (`-Y` option)
+* You can give extra options at salloc (before the `bash -c` command) like the number of cores.
 
 __Question__: what happens if you launch a graphical application (e.g. `xterm`)? did it appear on your own machine? if not, what went wrong?
 
@@ -248,8 +247,8 @@ sacct -p -j $jobid1,$jobid2 --format=account,user,jobid,jobname,partition,state,
 * Show statistics for all personal jobs started since a particular date, then without job steps:
 
 ```
-sacct --starttime 2018-11-23 -u $USER
-sacct -X --starttime 2018-11-23 -u $USER
+sacct --starttime 2019-06-19 -u $USER
+sacct -X --starttime 2019-06-19 -u $USER
 ```
 
 #### Pausing, resuming and cancelling jobs
@@ -332,7 +331,7 @@ You should now:
 * adapt the most appropriate one (sequential, parallel, etc.) for your most commonly used HPC application
 * launch your own (short execution time) test case, on a single core for sequential code or two distributed cores for parallel code
     - take note of your fair-share and usage values (e.g. with `sshare -A $(sacctmgr -n show user $USER format=defaultaccount%30s)`)
-    - alternative: compile and use HPCG from the [ULHPC HPCG tutorial](https://github.com/ULHPC/tutorials/tree/devel/advanced/HPCG)
+    - alternative: compile and use HPCG from the [ULHPC HPCG tutorial](https://github.com/ULHPC/tutorials/tree/production/parallel/hybrid/HPCG)
 * monitor job progression:
     - with `sprio` / `sprio -l` to see its priority in the queue
     - using `sstat` once it starts, to get running metrics
