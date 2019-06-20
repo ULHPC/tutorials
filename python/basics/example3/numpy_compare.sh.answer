@@ -7,9 +7,14 @@
 #SBATCH -p batch
 #SBATCH --qos=qos-batch
 
+# Without Numpy
 python example1.py
-source numpy12/bin/activate
+# With numpy 1.13
+source numpy13/bin/activate
 python numpy_compare.py
 deactivate
+# With numpy 1.16
+source numpy16/bin/activate
 python numpy_compare.py
+deactivate
 gnuplot gnuplot/numpy_compare.gpi

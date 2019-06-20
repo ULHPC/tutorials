@@ -2,7 +2,7 @@
 
 # Getting Started on the UL HPC platform
 
-     Copyright (c) 2013-2018 UL HPC Team <hpc-sysadmins@uni.lu>
+     Copyright (c) 2013-2019 UL HPC Team <hpc-sysadmins@uni.lu>
 
 [![](https://github.com/ULHPC/tutorials/raw/devel/beginners/cover_slides.png)](https://github.com/ULHPC/tutorials/raw/devel/beginners/slides.pdf)
 
@@ -14,14 +14,14 @@ Before proceeding:
 
 * make sure you have an account (if not, follow [this procedure](https://hpc.uni.lu/get_an_account)), and an SSH client.
 * take a look at the [quickstart guide](https://hpc.uni.lu/users/quickstart.html)
-* ensure you operate from a Linux / Mac environment. Most commands below assumes running in a Terminal in this context. If you're running Windows, you can use MobaXterm, Putty tools etc. as described [on this page](https://hpc.uni.lu/users/docs/access/access_windows.html) yet it's probably better that you familiarize "natively" with Linux-based environment by having a Linux Virtual Machine (consider for that [VirtualBox](https://www.virtualbox.org/)).
+* ensure you operate from a Linux / Mac environment. Most commands below assumes running in a Terminal in this context. If you're running Windows, you can use MobaXterm, Putty tools etc. as described [on this page](https://hpc.uni.lu/users/docs/access/access_windows.html) yet it's probably better that you familiarize "natively" with Linux-based environment by having a Linux Virtual Machine (consider for that [VirtualBox](https://www.virtualbox.org/)) or [Windows Subsystem for Linux](https://docs.microsoft.com/en-us/windows/wsl/install-win10).
 
 From a general perspective, the [Support page](https://hpc.uni.lu/users/docs/report_pbs.html) describes how to get help during your UL HPC usage.
 
 **Convention**
 
 In the below tutorial, you'll proposed terminal commands where the prompt is denoted by `$>`.
-M
+
 In general, we will prefix to precise the execution context (_i.e._ your laptop, a cluster frontend or a node). Remember that `#` character is a comment. Example:
 
 		# This is a comment
@@ -54,28 +54,16 @@ The way SSH handles the keys and the configuration files is illustrated in the f
 In order to be able to login to the clusters, you have sent us through the Account request form the **public key** (i.e. `id_rsa.pub` or the **public key** as saved by MobaXterm/PuttY) you initially generated, enabling us to configure the `~/.ssh/authorized_keys` file of your account.
 
 
-### Step 1a: Connect to UL HPC (Linux / Mac OS / Unix)
+### Connect to UL HPC (Linux / Mac OS / Unix)
 
 Run the following commands in a terminal (substituting *yourlogin* with the login name you received from us):
 
         (laptop)$> ssh -p 8022 yourlogin@access-iris.uni.lu
 
-If you want to connect to the gaia cluster,
-
-        (laptop)$> ssh -p 8022 yourlogin@access-gaia.uni.lu
-
 Now you probably want to avoid taping this long command to connect to the platform. You can customize SSH aliases for that. Edit the file `~/.ssh/config` (create it if it does not already exist) and adding the following entries:
-
-        Host chaos-cluster
-            Hostname access-chaos.uni.lu
-
-        Host gaia-cluster
-            Hostname access-gaia.uni.lu
 
         Host iris-cluster
             Hostname access-iris.uni.lu
-
-        Host *-cluster
             User yourlogin
             Port 8022
             ForwardAgent no
@@ -84,11 +72,42 @@ Now you shall be able to issue the following (simpler) command to connect to the
 
 		(laptop)$> ssh iris-cluster
 
-		(laptop)$> ssh gaia-cluster
+In the following sections, we assume these aliases to be defined.
 
-In the sequel, we assume these aliases to be defined.
+### Optional - using SSH proxycommand setup to access the clusters despite port filtering (Linux / Mac OS / Unix)
 
-### Step 1b: Connect to UL HPC (Windows)
+It might happen that the port 8022 is filtered from your working place. You can easily bypass this firewall rule using an SSH proxycommand to setup transparently multi-hop connexions *through* one host (a gateway) to get to the access frontend of the cluster, as depited below:
+
+    [laptop] -----||--------> 22 [SSH gateway] ---------> 8022 [access-{iris,gaia,chaos}]
+               firewall
+
+The gateway can be any SSH server which have access to the access frontend of the cluster. The [Gforge @ UL](http://gforge.uni.lu) is typically used in this context but you can prefer any other alternative (your personal NAS @ home etc.). Then alter the SSH config on your laptop (in `~/.ssh/config` typically) as follows:
+
+* create an entry to be able to connect to the gateway:
+
+#### Alias for the gateway (not really needed, but convenient), below instantiated
+
+    Host gw
+      User anotherlogin
+      Hostname host.domain.org
+      ForwardAgent no
+
+#### Automatic connection to UL HPC from the outside via the gateway
+
+    Host *.ulhpc
+      ProxyCommand ssh -q -x gw -W `basename %h .ulhpc`:%p
+
+Ensure you can connect to the gateway:
+
+    (laptop)$> ssh gw
+    (gateway)$> exit # or CTRL-D
+
+The `.ulhpc` suffix we mentioned in the previous configuration is an arbitrary suffix you will now specify in your command lines in order to access the UL HPC platform via the gateway as follows:
+
+    (laptop)$> ssh iris.ulhpc
+
+
+### Connect to UL HPC (Windows)
 
 * Download [MobaXterm Installer edition](http://mobaxterm.mobatek.net/)
 * Install MobaXterm
@@ -105,25 +124,7 @@ In the sequel, we assume these aliases to be defined.
 	  * Check `Use private key` box
 		* Select your previously generated `id_rsa.ppk`
   * Click on **Save**
-	* Do the same thing for the other clusters (chaos, gaia) by changing the **Remote host** field.
 
-
-### Step 2: Connect from one cluster to the other
-
-The SSH key you provided us secure your connection __from__ your laptop (or personal workstation) __to__ the cluster frontends. It is thus important to protect them by a passphrase.
-
-You shall have also a new key pair configured in your account to permit a bi-directional transparent connection from one cluster to the other (you can check that in your `~/.ssh/authorized_keys` and by successfully running:
-
-		(access-iris)$> ssh gaia-cluster
-
-or
-
-		(access-gaia)$> ssh iris-cluster
-
-If that's the case, you can ignore the rest of this section.
-**Otherwise**, you will now have to configure a passphrase-free SSH key pair to permit a transparent connection from one cluster to another. Have a look at this [FAQ](https://hpc.uni.lu/blog/2017/faq-how-to-permit-bi-directional-connection/)
-
-> If you have some issue to connect to the clusters (for example `Connection closed by remote host` error message), you should check the section on how to [use SSH proxycommand setup to access the clusters despite port filtering](#using-ssh-proxycommand-setup-to-access-the-clusters-despite-port-filtering)
 
 ### Hands-on/ Transferring files
 
@@ -133,7 +134,7 @@ Directories such as `$HOME`, `$WORK` or `$SCRATCH` are shared among the nodes of
 * every file/directory pushed or created on the computing nodes is available on the front-end
 
 
-### Step 3a: Linux / OS X / Unix command line tools
+#### Linux / OS X / Unix command line tools
 
 The two most common tools you can use for data transfers over SSH:
 
@@ -175,48 +176,7 @@ Of both, normally the second approach should be preferred, as more generic; note
 You can get more information about these transfer methods in the [file transfer documentation](https://hpc.uni.lu/users/docs/filetransfer.html).
 
 
-
-### Step 3b: Windows / Linux / OS X / Unix GUI tools
-
-* Download the FileZilla client application from [filezilla-project.org](https://filezilla-project.org/download.php?type=client) and install it.
-* First we need to tell FileZilla about our ssh key:
-	* Start the application.
-	* Go to the `Settings` (either under `Edit` or `FileZilla` depending on the OS).
-	* In the category `Connection` select `SFTP`.
-	* Click on the button `Add keyfile...` and select your private keyfile (you may need to convert it).
-	* Finally click `OK` to save and close the settings.
-
-![Add ssh key](https://github.com/ULHPC/tutorials/raw/devel/beginners/images/filezilla_key.jpg)
-
-* Back in the main window click on the `Site Manager` button on the top left or select `Site Manager` from the `File` menu.
-* Click on the `New Site` button and enter/select the following:
-  * Host: `access-iris.uni.lu`
-	* Port: 8022
-  * Protocol: `SFTP - SSH File Transfer Protocol`
-  * Logon Type: `Interactive`
-  * User: your login
-
-![Connection settings](https://github.com/ULHPC/tutorials/raw/devel/beginners/images/site_manager.jpg)
-
-* Click on the `Connect` button.
-* Accept the certificate.
-
-You should now see something similar to the following window:
-
-![Connection settings](https://github.com/ULHPC/tutorials/raw/devel/beginners/images/filezilla.jpg)
-
-On the very top, beneath the quick connect, you see the message log. Below you have the directory tree and the contents of the current directory for you local computer on the left and the remote location on the right.
-
-To transfer a file, simply drag and drop it from the directory listing on the left side to destination directory on the right (to transfer from local to remote) or vice versa (to transfer from remote to local). You can also select a file by left clicking on it once and then right click on it to get the context menu and select "Upload" or "Download" to transfer it.
-
-If you skipped step 3a, you may download the following file (50 MB) for testing: <br />
-[ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM409nnn/GSM409307/suppl/GSM409307_UCSD.H1.H3K4me1.LL228.bed.gz](ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM409nnn/GSM409307/suppl/GSM409307_UCSD.H1.H3K4me1.LL228.bed.gz) (next-gen sequencing data from the NIH Roadmap Epigenomics Project)
-
-When you click the fifth icon on the top with the two green arrows to toggle the transfer queue, you can see the status of ongoing transfers on the very bottom of the window.
-
-![Connection settings](https://github.com/ULHPC/tutorials/raw/devel/beginners/images/transfer.jpg)
-
-### Step 3c: Windows MobaXterm file transfer
+#### Windows MobaXterm file transfer
 
 If you are on Windows, you can directly use MobaXterm to transfer files. Connect to your session (see below on how to configure it). On the right panel you should see an **SFTP** panel opened.
 
@@ -226,17 +186,19 @@ You have just to drag and drop your files to this panel to transfer files to the
 
 To retrieve a file from the cluster, you can right click on it and choose the **Download** option. Please refers to MobaXterm documentation for more informations on the available features.
 
+
+
 ## Discovering, visualizing and reserving UL HPC resources
 
-In the sequel, replace `<login>` in the proposed commands with you login on the platform (ex: `svarrette`).
+In the following sections, replace `<login>` in the proposed commands with you login on the platform (ex: `svarrette`).
 
 ### Step 1: the working environment
 
 * [reference documentation](http://hpc.uni.lu/users/docs/env.html)
 
-After a successful login onto one of the access node (see [Cluster Access](https://hpc.uni.lu/users/docs/access.html)), you end into your personal homedir `$HOME` which is shared over NFS between the access node and the computing nodes.
+After a successful login onto one of the access node (see [Cluster Access](https://hpc.uni.lu/users/docs/access.html)), you end into your personal homedir `$HOME` which is shared over GPFS between the access node and the computing nodes.
 
-Again, remember that your homedir is placed on __separate__ NFS servers on each site, which __ARE NOT SYNCHRONIZED__: data synchronization between each of them remain at your own responsibility. We will see below that the UL HPC team prepared for you a script to facilitate the transfer of data between each site.
+Again, remember that your homedir is placed on __separate__ storage servers on each site (Iris, Gaia, Chaos, Grid5000), which __ARE NOT SYNCHRONIZED__: data synchronization between each of them remain at your own responsibility. We will see below that the UL HPC team prepared for you a script to facilitate the transfer of data between each site.
 
 Otherwise, you have to be aware of at least two directories:
 
@@ -249,23 +211,21 @@ Your homedir is under a regular backup policy. Therefore you are asked to pay at
 
 		(access)$> ncdu
 
-* You shall also pay attention to the number of files in your home directory. You can count them as follows:
-
-		(access)$> find . -type f | wc -l
-
 * You can get an overview of the quotas and your current disk usage with the following command:
 
 		(access)$> df-ulhpc
+
+* You shall also pay attention to the number of files in your home directory. You can count them as follows:
+
+		(access)$> df-ulhpc -i
 
 
 ### Step 2: web monitoring interfaces
 
 Each cluster offers a set of web services to monitor the platform usage:
 
-* A [pie-chart overview of the platform usage](https://hpc.uni.lu/status/overview.html)
-* [Monika](https://hpc.uni.lu/status/monika.html), the visualization interface of the OAR scheduler, which  display the status of the clusters as regards the jobs running on the platform.
-* [DrawGantt](https://hpc.uni.lu/status/drawgantt.html), the Gantt visualization of jobs scheduled on OAR
-* [Ganglia](https://hpc.uni.lu/status/ganglia.html), a scalable distributed monitoring system for high-performance computing systems such as clusters and Grids.
+* [Ganglia](https://hpc.uni.lu/iris/ganglia/), a scalable distributed monitoring system for high-performance computing systems such as clusters and Grids.
+* [SLURM Web](https://access-iris.uni.lu/slurm/), a website that show the status of jobs and nodes with a nice graphical interface.
 
 ### Step 3: Reserving resources with Slurm
 
@@ -278,11 +238,11 @@ Each cluster offers a set of web services to monitor the platform usage:
 * It allocates exclusive or non-exclusive access to the resources (compute nodes) to users during a limited amount of time so that they can perform they work
 * It provides a framework for starting, executing and monitoring work
 * It arbitrates contention for resources by managing a queue of pending work.
-* it permits to schedule jobs for users on the cluster resource
+* It permits to schedule jobs for users on the cluster resource
 
 There are two types of jobs:
 
-  * _interactive_: you get a shell on the first reserve node
+  * _interactive_: you get a shell on the first reserved node
   * _passive_: classical batch job where the script passed as argument to `sbatch` is executed
 
 We will now see the basic commands of Slurm.
@@ -348,15 +308,15 @@ Normally, the previously run job is still running.
 
 * You can check the status of your running jobs using `squeue` command:
 
-		(access)$> squeue      # access all jobs
-		(access)$> squeue -u cparisot  # access all your jobs
+		(access)$> squeue             # list all jobs
+		(access)$> squeue -u cparisot # list all your jobs
 
   Then you can delete your job by running `scancel` command:
 
 		(access)$> scancel 390
 
 
-* you can see your system-level utilization (memory, I/O, energy) of a running job using `sstat $jobid`:
+* You can see your system-level utilization (memory, I/O, energy) of a running job using `sstat $jobid`:
 
 		(access)$> sstat 390
 
@@ -364,23 +324,23 @@ In all remaining examples of reservation in this section, remember to delete the
 
 You probably want to use more than one core, and you might want them for a different duration than one hour.
 
-* Reserve interactively 4 tasks with 2 nodes for 30 minutes (delete the job afterwards)
+* Reserve interactively 4 cores in one task on one node, for 30 minutes (delete the job afterwards)
 
-		(access)$> srun -p interactive --qos qos-interactive --time=0:30:0 -N 2 --ntasks-per-node=4 --pty bash
+		(access)$> srun -p interactive --qos qos-interactive --time=0:30:0 -N 1 --ntasks-per-node=1 --cpus-per-task=4 --pty bash
+
+* Reserve interactively 4 tasks (system processes) with 2 nodes for 30 minutes (delete the job afterwards)
+
+		(access)$> srun -p interactive --qos qos-interactive --time=0:30:0 -N 2 --ntasks-per-node=4 --cpus-per-task=4 --pty bash
+
+This command can also be written in a more compact way
+
+        (access)$> si --time=0:30:0 -N2 -n4 -c2
 
 
-##### Pausing, resuming jobs
-
-
-To stop a waiting job from being scheduled and later to allow it to be scheduled:
+* You can stop a waiting job from being scheduled and later, allow it to be scheduled:
 
 		(access)$> scontrol hold $SLURM_JOB_ID
 		(access)$> scontrol release $SLURM_JOB_ID
-
-To pause a running job and then resume it:
-
-		(access)$> scontrol suspend $SLURM_JOB_ID
-		(access)$> scontrol resume $SLURM_JOB_ID
 
 
 ## Hands-on/Using modules
@@ -399,7 +359,7 @@ We will have multiple occasion to use modules in the other tutorials so there is
 [GNU Screen](http://www.gnu.org/software/screen/) is a tool to manage persistent terminal sessions.
 It becomes interesting since you will probably end at some moment with the following  scenario:
 
-> you frequently program and run computations on the UL HPC platform _i.e_ on a remote Linux/Unix computer, typically working in six different terminal logins to the access server from your office workstation, cranking up long-running computations that are still not finished and are outputting important information (calculation status or results), when you have not 2 interactive jobs running... But it's time to catch the bus and/or the train to go back home.
+> you frequently program and run computations on the UL HPC platform _i.e_ on a remote Linux/Unix computer, typically working in six different terminal logins to the access server from your office workstation, cranking up long-running computations that are still not finished and are outputting important information (calculation status or results), when you have 2 interactive jobs running... But it's time to catch the bus and/or the train to go back home.
 
 Probably what you do in the above scenario is to
 
@@ -414,7 +374,7 @@ Enter the long-existing and very simple, but totally indispensable [GNU screen](
 ### Pre-requisite: screen configuration file `~/.screenrc`
 
 While not mandatory, we advise you to rely on our customized configuration file for screen [`.screenrc`](https://github.com/ULHPC/dotfiles/blob/master/screen/.screenrc) available on [Github](https://github.com/ULHPC/dotfiles/blob/master/screen/.screenrc).
-Normally, you have nothing to do since we already setup this file for you in your homedir.
+
 Otherwise, simply clone the [ULHPC dotfile repository](https://github.com/ULHPC/dotfiles/) and make a symbolic link `~/.screenrc` targeting the file `screen/screenrc` of the repository.
 
 ### Basic commands
@@ -448,15 +408,11 @@ We will illustrate the usage of GNU screen by performing a compilation of a rece
         (access)$> screen
 
 * rename the screen window "Frontend" (using `CTRL+a A`)
-* create the directory to host the files
-
-		(access)$> mkdir -p PS1/src
-		(access)$> cd PS1/src
 
 * create a new window and rename it "Compile"
-* within this new window, start a new interactive job over 1 nodes for 4 hours
+* within this new window, start a new interactive job over 1 node and 2 cores for 4 hours
 
-		(access)$> srun -p interactive --qos qos-interactive --time 4:00:0 -N 1 --pty bash
+		(access)$> srun -p interactive --qos qos-interactive --time 4:00:0 -N 1 -c 2 --pty bash
 
 * detach from this screen (using `CTRL+a d`)
 * kill your current SSH connection and your terminal
@@ -472,17 +428,17 @@ We will illustrate the usage of GNU screen by performing a compilation of a rece
 
 		(access)$> screen -r      # OR screen -r 9143.pts-0.access (see above socket name)
 
-* in the "Compile" windows, go to the working directory and download the Linux kernel sources
+* in the "Compile" windows, go to the temporary directory and download the Linux kernel sources
 
-		(node)$> cd PS1/src
-		(node)$> curl -O https://www.kernel.org/pub/linux/kernel/v3.x/linux-3.13.6.tar.gz
+		(node)$> cd /tmp/
+		(node)$> curl -O https://cdn.kernel.org/pub/linux/kernel/v4.x/linux-4.19.50.tar.xz
 
    **IMPORTANT** to ovoid overloading the **shared** file system with the many small files involves in the kernel compilation (_i.e._ NFS and/or Lustre), we will perform the compilation in the **local** file system, _i.e._ either in `/tmp` or (probably more efficient) in `/dev/shm` (_i.e_ in the RAM):
 
 		(node)$> mkdir /dev/shm/PS1
 		(node)$> cd /dev/shm/PS1
-		(node)$> tar xzf PS1/src/linux-3.13.6.tar.gz
-		(node)$> cd linux-3.13.6
+		(node)$> tar xf /tmp/linux-4.19.50.tar.xz
+		(node)$> cd linux-4.19.50
 		(node)$> make mrproper
 		(node)$> make alldefconfig
 		(node)$> make 2>&1 | tee /dev/shm/PS1/kernel_compile.log
@@ -502,10 +458,10 @@ The last compilation command make use of `tee`, a nice tool which read from stan
 		[...]
 		Kernel: arch/x86/boot/bzImage is ready  (#2)
 
-* Restart the compilation, this time using parallel jobs within the Makefile invocation (`-j` option of make)
+* Restart the compilation, this time using multiple cores and parallel jobs within the Makefile invocation (`-j` option of make)
 
 		(node)$> make clean
-		(node)$> time make -j `echo $SLURM_NPROCS` 2>&1 | tee /dev/shm/PS1/kernel_compile.2.log
+		(node)$> time make -j $SLURM_CPUS_ON_NODE 2>&1 | tee /dev/shm/PS1/kernel_compile.2.log
 
 The table below should convince you to always run `make` with the `-j` option whenever you can...
 
@@ -516,7 +472,7 @@ The table below should convince you to always run `make` with the `-j` option wh
 | Compilation in `/dev/shm` (RAM)    | 3m11.649s     | 0m17.990s           |
 
 
-* Use the [Ganglia](https://hpc.uni.lu/status/ganglia.html) interface to monitor the impact of the compilation process on the node your job is running on.
+* Use the [Ganglia](https://hpc.uni.lu/iris/ganglia/) interface to monitor the impact of the compilation process on the node your job is running on.
 * Use the following system commands on the node during the compilation:
 
   * `htop`
@@ -744,249 +700,210 @@ In your home directory, create a file `mpi_broadcast.c` and copy the following s
                return 0;
         }
 
-Reserve 2 cores on two distinct node with OAR
+Reserve 2 tasks of 1 core on two distinct nodes with Slurm
 
-        (access-iris)$> srun -p interactive --qos qos-interactive --time 1:00:0 -N 2 -n 2 --pty bash
-
-or on Gaia/Chaos
-
-        (access-gaia)$> oarsub -I -l nodes=2/core=1
+        (access-iris)$> srun -p interactive --qos qos-interactive --time 1:00:0 -N 2 -n 2 -c 1 --pty bash
 
 Load a toolchain and compile the code using `mpicc`
 
         (node)$> mpicc mpi_broadcast.c -o mpi_broadcast -lpthread
 
-If you use Slurm, you can use the `srun` command. Create an interactive job, with 2 nodes (`-N 2`), and at least 2 tasks (`-n 2`).
+With Slurm, you can use the `srun` command. Create an interactive job, with 2 nodes (`-N 2`), and at least 2 tasks (`-n 2`).
 
         (node)$> srun -n $SLURM_NTASKS ~/mpi_broadcast
 
-If you use OAR, execute your mpi program using `mpirun`.
-Note that the `-n` parameter of mpirun is the number of processes, which should be equal to the number of reserved cpu cores most of the time.
 
-        (node)$> OAR_NTASKS=$(cat $OAR_NODEFILE | wc)
-        (node)$> mpirun -n $OAR_NTASKS -hostfile $OAR_NODEFILE ~/mpi_broadcast
+## Application - Object recognition with Tensorflow and Python Imageai (an embarassingly parralel case)
 
+### Introduction
 
+For many users, the typical usage of the HPC facilities is to execute a single program with various parameters, 
+which translates into executing sequentially a big number of independent tasks.
 
-### Using SSH proxycommand setup to access the clusters despite port filtering
+On your local machine, you can just start your program 1000 times sequentially.
+However, you will obtain better results if you parallelize the executions on a HPC Cluster.
 
-It might happen that the port 8022 is filtered from your working place. You can easily bypass this firewall rule using an SSH proxycommand to setup transparently multi-hop connexions *through* one host (a gateway) to get to the access frontend of the cluster, as depited below:
+In this section, we will apply an object recognition script to random images from a dataset, first sequentially, then in parallel, and we will compare the execution time.
 
-    [laptop] -----||--------> 22 [SSH gateway] ---------> 8022 [access-{iris,gaia,chaos}]
-               firewall
+* [ULHPC/launcher-scripts](https://github.com/ULHPC/launcher-scripts)
+* [ULHPC/tutorials](https://github.com/ULHPC/tutorials)
 
-The gateway can be any SSH server which have access to the access frontend of the cluster. The [Gforge @ UL](http://gforge.uni.lu) is typically used in this context but you can prefer any other alternative (your personal NAS @ home etc.). Then alter the SSH config on your laptop (in `~/.ssh/config` typically) as follows:
 
-* create an entry to be able to connect to the gateway:
+### Connect to the cluster access node, and set-up the environment for this tutorial
 
-#### Alias for the gateway (not really needed, but convenient), below instantiated
+Create a sub directory $SCRATCH/PS2, and work inside it
 
-    Host gw
-    User anotherlogin
-    Hostname host.domain.org
-    ForwardAgent no
+```bash
+(access)$> mkdir $SCRATCH/PS2
+(access)$> cd $SCRATCH/PS2
+```
 
-#### Automatic connection to UL HPC from the outside via the gateway
+At the end of the tutorial, please remember to remove this directory.
 
-    Host *.ulhpc
-    ProxyCommand ssh gw "nc -q 0 `basename %h .ulhpc` %p"
+### Step 0: Prepare the environment
 
-Ensure you can connect to the gateway:
+In the following parts, we will assume that you are working in this directory.
 
-    (laptop)$> ssh gw
-    (gateway)$> exit # or CTRL-D
+Clone the repositories `ULHPC/tutorials`
 
-The `.ulhpc` suffix we mentioned in the previous configuration is an arbitrary suffix you will now specify in your command lines in order to access the UL HPC platform via the gateway as follows:
+    (access)$> git clone https://github.com/ULHPC/tutorials.git
 
-    (laptop)$> ssh iris.ulhpc
 
-## Getting started with OAR scheduling (Chaos and Gaia only)
+In this exercise, we will process some images from the OpenImages V4 data set with an object recognition tools.
 
-**This section is only usefull for reserving resources on Chaos and Gaia clusters. For reserving resources on Iris, please have a look at [the Getting Started doc on how to discover and reserve UL HPC resources](#discovering-visualizing-and-reserving-ul-hpc-resources)**
+Create a file which contains the list of parameters (random list of images):
 
-### Reserving resources with OAR
+    (access)$> find /work/projects/bigdata_sets/OpenImages_V4/train/ -print | head -n 10000 | sort -R | head -n 50 | tail -n +2 > $SCRATCH/PS2/param_file
 
-#### The basics
+Download a pre-trained model for image recognition
 
-* [reference documentation](https://hpc.uni.lu/users/docs/oar.html)
+    (access)$> cd $SCRATCH/PS2
+    (access)$> wget https://github.com/OlafenwaMoses/ImageAI/releases/download/1.0/resnet50_coco_best_v2.0.1.h5
 
-[OAR](http://oar.imag.fr/) is an open-source batch scheduler which provides simple yet flexible facilities for the exploitation of the UL HPC clusters.
+We will now prepare the software environment
 
-* it permits to schedule jobs for users on the cluster resource
-* a _OAR resource_ corresponds to a node or part of it (CPU/core)
-* a _OAR job_ is characterized by an execution time (walltime) on a set of resources.
-  There exists two types of jobs:
-  * _interactive_: you get a shell on the first reserve node
-  * _passive_: classical batch job where the script passed as argument to `oarsub` is executed **on the first reserved node**
+    (access)$> srun -p interactive -N 1 --qos qos-interactive --pty bash -i
 
-We will now see the basic commands of OAR.
+Load the default Python module
 
-* Connect to one of the UL HPC  frontend. You can request resources in interactive mode:
+    (node) module load lang/Python
 
-		(access)$> oarsub -I
+    (node) module list
 
-  Notice that with no parameters, oarsub gave you one resource (one core) for two hours. You were also directly connected to the node you reserved with an interactive shell.
-  Now exit the reservation:
+Create a new python virtual env
 
-        (node)$> exit      # or CTRL-D
+    (node) cd $SCRATCH/PS2
+    (node) virtualenv venv
 
-  When you run exit, you are disconnected and your reservation is terminated.
+Enable your newly created virtual env, and install the required modules inside.
+This way, we will not pollute the home directory with the python modules installed in this exercise.
 
-To avoid anticipated termination of your jobs in case of errors (terminal closed by mistake),
-you can reserve and connect in two steps using the job id associated to your reservation.
+    (node) source venv/bin/activate
 
-* First run a passive job _i.e._ run a predefined command -- here `sleep 10d` to delay the execution for 10 days -- on the first reserved node:
+    (node) pip install tensorflow scipy opencv-python pillow matplotlib keras
+    (node) pip install https://github.com/OlafenwaMoses/ImageAI/releases/download/2.0.3/imageai-2.0.3-py3-none-any.whl
 
-		(access)$> oarsub "sleep 10d"
-		[ADMISSION RULE] Set default walltime to 7200.
-		[ADMISSION RULE] Modify resource description with type constraints
-		OAR_JOB_ID=919309
+    (node) exit
 
-  You noticed that you received a job ID (in the above example: `919309`), which you can later use to connect to the reserved resource(s):
 
-        (access)$> oarsub -C 919309        # adapt the job ID accordingly ;)
-        Connect to OAR job 919309 via the node e-cluster1-13
-		[OAR] OAR_JOB_ID=919309
-		[OAR] Your nodes are:
-      		e-cluster1-13*1
 
-		(e-cluster1-13)$> java -version
-		(e-cluster1-13)$> hostname -f
-		(e-cluster1-13)$> whoami
-		(e-cluster1-13)$> env | grep OAR   # discover environment variables set by OAR
-		(e-cluster1-13)$> exit             # or CTRL-D
 
-**Question: At which moment the job `919309` will end?**
+#### Step 1: Naive sequential workflow
 
-a. after 10 days
+We will create a new "launcher script", which is basically a loop over all the files listed 
 
-b. after 2 hours
+        (node)$> nano $SCRATCH/PS2/launcher_sequential.sh
 
-c. never, only when I'll delete the job
+```bash
+#!/bin/bash -l
 
-**Question: manipulate the `$OAR_NODEFILE` variable over the command-line to extract the following information, once connected to your job**
+#SBATCH --time=0-00:30:00 # 30 minutes
+#SBATCH --partition=batch # Use the batch partition reserved for passive jobs
+#SBATCH --qos=qos-batch
+#SBATCH -J BADSerial      # Set the job name
+#SBATCH -N 1              # 1 computing node
+#SBATCH -c 1              # 1 core
 
-a. the list of hostnames where a core is reserved (one per line)
-   * _hint_: `man cat`
+module load lang/Python
 
-b. number of reserved cores (one per line)
-   * _hint_: `man wc` --  use `wc -l` over the pipe `|` command
+cd $SCRATCH/PS2
+source venv/bin/activate
 
-c. number of reserved nodes (one per line)
-   * _hint_: `man uniq` -- use `uniq` over the pipe `|` command
+OUTPUT_DIR=$SCRATCH/PS2/object_recognition_$SLURM_JOBID
+mkdir -p $OUTPUT_DIR
 
-d. number of cores reserved per node together with the node name (one per line)
-   * Example of output:
+for SRC_FILE in $(cat $SCRATCH/PS2/param_file) ; do
+    python $SCRATCH/PS2/beginners/scripts/FirstDetection.py $SRC_FILE $OUTPUT_DIR
+done
+```
 
-    	    12 gaia-11
-    	    12 gaia-15
 
-   * _hint_: `man uniq` -- use `uniq -c` over the pipe `|` command
+Submit the job in passive mode with `sbatch`
 
-e. **(for geeks)** output the number of reserved nodes times number of cores per node
-   * Example of output:
+    (access)$> sbatch $SCRATCH/PS2/launcher_sequential.sh
 
-	        gaia-11*12
-	        gaia-15*12
 
-   * _hint_: `man awk` -- use `printf` command of `awk` over the pipe command, for instance `awk '{ printf "%s*%d\n",$2,$1 }'`. You might prefer `sed` or any other advanced geek command.
+You can use the command `scontrol show job <JOBID>` to read all the details about your job:
 
-#### Job management
+    (access)$> scontrol show job 207001
+    JobId=207001 JobName=BADSerial
+       UserId=hcartiaux(5079) GroupId=clusterusers(666) MCS_label=N/A
+       Priority=8791 Nice=0 Account=ulhpc QOS=qos-batch
+       JobState=RUNNING Reason=None Dependency=(null)
+       Requeue=0 Restarts=0 BatchFlag=1 Reboot=0 ExitCode=0:0
+       RunTime=00:00:23 TimeLimit=01:00:00 TimeMin=N/A
+       SubmitTime=2018-11-23T10:01:04 EligibleTime=2018-11-23T10:01:04
+       StartTime=2018-11-23T10:01:05 EndTime=2018-11-23T11:01:05 Deadline=N/A
 
-Normally, the previously run job is still running.
 
-* You can check the status of your running jobs using `oarstat` command:
+And the command `sacct` to see the start and end date
 
-		(access)$> oarstat      # access all jobs
-		(access)$> oarstat -u   # access all your jobs
 
-  Then you can delete your job by running `oardel` command:
+    (access)$> sacct --format=start,end --j 207004
+                  Start                 End
+    ------------------- -------------------
+    2018-11-23T10:01:20 2018-11-23T10:02:31
+    2018-11-23T10:01:20 2018-11-23T10:02:31
 
-		(access)$> oardel 919309
+In all cases, you can connect to a reserved node using the command `srun`
+and check the status of the system using standard linux command (`free`, `top`, `htop`, etc)
 
+    (access)$> srun -p interactive --qos qos-interactive --jobid <JOBID> --pty bash
 
-* you can see your consumption (in an historical computational measure named _CPU hour_ i.e. the work done by a CPU in one hour of wall clock time) over a given time period using `oarstat --accounting "YYYY-MM-DD, YYYY-MM-DD" -u <youlogin>`:
+During the execution, you can see the job in the queue with the command `squeue`:
 
-		(access)$> oarstat --accounting "2016-01-01, 2016-12-31" -u <login>
+    (access)$> squeue
+             JOBID PARTITION     NAME             USER ST       TIME  NODES NODELIST(REASON)
+            207001     batch BADSeria        hcartiaux  R       2:27      1 iris-110
 
-  In particular, take a look at the difference between the **asked** resources and the **used** ones
 
-In all remaining examples of reservation in this section, remember to delete the reserved jobs afterwards (using `oardel` or `CTRL-D`)
+Using the [system monitoring tool ganglia](https://hpc.uni.lu/iris/ganglia/), check the activity on your node.
 
-You probably want to use more than one core, and you might want them for a different duration than two hours.
-The `-l` switch allows you to pass a comma-separated list of parameters specifying the needed resources for the job.
 
-* Reserve interactively 4 cores for 6 hours (delete the job afterwards)
+#### Step 2: Optimal method using GNU parallel (GNU Parallel)
 
-		(access)$> oarsub -I -l core=6,walltime=6
+We will create a new "launcher script", which uses GNU Parallel to execute 10 processes in parallel
 
+        (node)$> nano $SCRATCH/PS2/launcher_parallel.sh
 
-* Reserve interactively 2 nodes for 3h15 (delete the job afterwards):
+```bash
+#!/bin/bash -l
+#SBATCH --time=0-00:30:00 # 30 minutes
+#SBATCH --partition=batch # Use the batch partition reserved for passive jobs
+#SBATCH --qos=qos-batch
+#SBATCH -J ParallelExec   # Set the job name
+#SBATCH -N 2              # 2 computing nodes
+#SBATCH -n 10             # 10 tasks
+#SBATCH -c 1              # 1 core per task
 
-		(access)$> oarsub -I -l nodes=3,walltime=3:15
+set -x
+module load lang/Python
 
-#### Hierarchical filtering of resources
+cd $SCRATCH/PS2
+source venv/bin/activate
 
-OAR features a very powerful resource filtering/matching engine able to specify resources in a **hierarchical**  way using the `/` delimiter. The resource property hierarchy is as follows:
+OUTPUT_DIR=$SCRATCH/PS2/object_recognition_$SLURM_JOBID
+mkdir -p $OUTPUT_DIR
 
-		enclosure -> nodes -> cpu -> core
+srun="srun --exclusive -N1 -n1"
 
+parallel="parallel -j $SLURM_NTASKS --joblog runtask_$SLURM_JOBID.log --resume"
 
-*  Reserve interactively 2 cores on 3 different nodes belonging to the same enclosure (**total: 6 cores**) for 3h15:
+cat $SCRATCH/PS2/param_file | $parallel "$srun python $SCRATCH/PS2/tutorials/beginners/scripts/FirstDetection.py {} $OUTPUT_DIR"
+```
 
-		(access)$> oarsub -I -l /enclosure=1/nodes=3/core=2,walltime=3:15
+Submit the job in passive mode with `sbatch`
 
+    (access)$> sbatch $SCRATCH/PS2/launcher_parallel.sh
 
-* Reserve interactively two full nodes belonging to the different enclosure for 6 hours:
 
-		(access)$> oarsub -I -l /enclosure=2/nodes=1,walltime=6
+**Question**: compare and explain the execution time with both launchers:
 
-**Question: reserve interactively 2 cpus on 2 nodes belonging to the same enclosure for 4 hours**
 
-**Question: in the following statements, explain the advantage and drawback (in terms of latency/bandwidth etc.) of each of the proposed approaches**
+* Naive workflow: time = ?
+  ![CPU usage for the sequential workflow](https://github.com/ULHPC/tutorials/raw/devel/basic/sequential_jobs/images/chaos_ganglia_seq.png)
 
-a. `oarsub -I -l /nodes=2/cpu=1` vs `oarsub -I -l cpu=2` vs `oarsub -I -l /nodes=1/cpu=2`
+* Parallel workflow: time = ?
+  ![CPU usage for the parallel workflow](https://github.com/ULHPC/tutorials/raw/devel/basic/sequential_jobs/images/chaos_ganglia_parallel.png)
 
-b. `oarsub -I -l /enclosure=1/nodes=2` vs `oarsub -I -l nodes=2` vs `oarsub -I -l /enclosure=2/nodes=1`
-
-#### Using OAR properties
-
-You might have notice on [Monika](https://hpc.uni.lu/status/monika.html) for each site a list of properties assigned to each resource.
-
-The `-p` switch allows you to specialize (as an SQL syntax) the property you wish to use when selecting the resources. The syntax is as follows: `oarsub -p "< property >='< value >'"`
-
-You can find the available OAR properties on the [UL HPC documentation](https://hpc.uni.lu/users/docs/oar.html#select-nodes-precisely-with-properties). The main ones are described below
-
-|Property        | Description                            | Example                                         |
-|----------------|----------------------------------------|-------------------------------------------------|
-|host            | Full hostname of the resource          | -p "host='h-cluster1-14.chaos-cluster.uni.lux'" |
-|network_address | Short hostname of the resource         | -p "network_address='h-cluster1-14'"            |
-|gpu             | GPU availability (gaia only)           | -p "gpu='YES'"                                  |
-
-* reserve interactively 4 cores on a GPU node for 8 hours (_this holds only on the `gaia` cluster_) (**total: 4 cores**)
-
-		(access-gaia)$> oarsub -I -l nodes=1/core=4,walltime=8 -p "gpu='YES'"
-
-* reserve interactively 4 cores on the GPU node `gaia-65` for 8 hours (_this holds only on the `gaia` cluster_) (**total: 4 cores**)
-
-		(access-gaia)$> oarsub -I -l nodes=1/core=4,walltime=8 -p "gpu='yes'" -p "network_address='gaia-65'"
-
-
-#### Reserving specific resources `bigsmp`and `bigmem`
-
-Some nodes are very specific (for instance the nodes with 1TB of memory or the BCS subsystem of Gaia composed of 4 motherboards of 4 processors with a total of 160 cores aggregated in a ccNUMA architecture).
-**Due to this specificity, they are NOT scheduled by default**  and can only be reserved with an explicit oarsub parameter: `-t bigmem` or `-t bigsmp`
-
-* reserve interactively 2 cpu on the bigsmp node belonging to the same board for 3 hours: (**total: 32 cores**)
-
-		(access-gaia)$> oarsub -t bigsmp -I -l /board=1/cpu=2,walltime=3
-
-
-**Question: why are these resources not scheduled by default?**
-
-
-#### Reservation at a given period of time
-
-You can use the `-r "YYYY-MM-DD HH:MM:SS"` option of `oarsub` to specify the date you wish the reservation to be issued. This is of particular interest for you to book in advance resources out of the working hours (at night and/or over week ends)
-
-
+**Bonus question**: transfer the generated files in `$SCRATCH/PS2/object_recognition_$SLURM_JOBID` to your laptop and visualize them

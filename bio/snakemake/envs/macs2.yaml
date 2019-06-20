@@ -1,0 +1,5 @@
+name: macs2
+channels:
+  - bioconda
+dependencies:
+  - macs2

@@ -27,7 +27,7 @@ clean:
 	rm -f $(DATA)
 
 
-$(GRAPH): scoop.gpi
+$(GRAPH): gnuplot/scoop.gpi
 	make sort
 	make compute_speedup
 	gnuplot gnuplot/scoop.gpi
@@ -41,4 +41,3 @@ $(SPEEDUP_DATA): $(SORTED_DATA)
 $(DATA): ./scoop.sh ./pi_calc.py
 	make clean
 	sbatch -W scoop.sh
-

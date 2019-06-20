@@ -8,6 +8,8 @@
 #SBATCH --qos=qos-batch
 
 python example1.py
-module load math/numpy
+# Activate virtualenv that contains numpy
+source numpy16/bin/activate
 python example3.py
+deactivate
 gnuplot gnuplot/time_vs_array_size.gpi

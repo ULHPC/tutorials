@@ -25,13 +25,17 @@ pages:
   - High Perf. Conjugate Gradient (HPCG): 'parallel/hybrid/HPCG/index.md'
 - Python:
   - Prototyping with Python: 'python/basics/index.md'
-  - Jupyter and Celery: 'python/advanced/index.md'
+  - Jupyter and Celery: 'python/advanced/jupyter-celery/index.md'
+  - Ipyparallel-Scikit-learn: 'python/advanced/scikit-learn/index.md'
+  - Scoop-Deap: 'python/advanced/scoop-deap/index.md'
 - Mathematics:
   - MATLAB: 'maths/matlab/basics/index.md'
   - MATLAB (advanced): 'maths/matlab/advanced/index.md'
   - R - statistical computing: 'maths/R/index.md'
+  - Cplex - Gurobi: 'maths/Cplex-Gurobi/index.md'
 - Bioinformatics:
   - Running bioinformatics software: 'bio/basics/index.md'
+  - Bioinformatics workflows with snakemake and conda: 'bio/snakemake/index.md'
   - Galaxy: 'bio/galaxy/index.md'
 - CFD/MD/Chemistry:
    - Advanced Parallel execution: 'multiphysics/index.md'
