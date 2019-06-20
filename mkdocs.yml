@@ -47,7 +47,6 @@ pages:
   - Singularity: 'containers/singularity/index.md'
 - Virtualization:
    - Vagrant: 'virtualization/vagrant/index.md'
-   - Grid5000 - Automatic VM deployment with VM5K: 'virtualization/vm5k/index.md'
 - Misc:
   - Reproducible Research: 'misc/reproducible-research/index.md'
 # - Advanced topics:
