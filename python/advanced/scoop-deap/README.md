@@ -72,6 +72,8 @@ Be sure to start with a bare environment:
 # If you did not already clone the tutorial repository
 cd $HOME
 git clone https://github.com/ULHPC/tutorials.git
+# Else update it
+cd tutorials && git pull && cd ..
 # cd into the scripts folder
 cd tutorials/python/advanced/scoop-deap/scripts
 # Ask an interactive job
@@ -80,7 +82,7 @@ si
 module load lang/Python
 python -m venv test_env
 source test_env/bin/activate
-pip install numpy deap scoop
+pip install numpy deap scoop matplotlib
 ```
 
 
@@ -97,6 +99,11 @@ import timeit
 import json
 import collections
 import os
+# Library to generate plots                                                                         
+import matplotlib as mpl                                                                            
+# Define Agg as Backend for matplotlib when no X server is running                                  
+mpl.use('Agg')                                                                                      
+import matplotlib.pyplot as plt 
 from deap.algorithms import *
 from deap import base
 from deap import creator
@@ -146,11 +153,20 @@ def main(N,out_sol_dict):
     stats.register("max", numpy.max)
    
     # Start the generation and update the population of solutions:w
-    algorithms.eaGenerateUpdate(toolbox, ngen=250, stats=stats, halloffame=hof)
+    _,logbook=algorithms.eaGenerateUpdate(toolbox, ngen=250, stats=stats, halloffame=hof)
     # Get best solution and save it
     best_sol=tools.selBest(hof,1)[0]
     out_sol_dict["solution"]=list(best_sol)
     out_sol_dict["fit"]=float(best_sol.fitness.values[0])
+    # Plot convergence
+    gen, avg = logbook.select("gen", "avg")
+    plt.figure()
+    plt.title("Convergence curve")
+    plt.xlabel("Generations")
+    plt.ylabel("Best obtained Fitness value at gen N")
+    plt.grid(True)
+    plt.plot(gen,avg,"r--")
+    plt.savefig("conv.pdf",dpi=600)
 
 if __name__ == "__main__":
     # Check number of parameters
@@ -189,6 +205,11 @@ import timeit
 import json
 import collections
 import os
+# Library to generate plots                                                                         
+import matplotlib as mpl                                                                            
+# Define Agg as Backend for matplotlib when no X server is running                                  
+mpl.use('Agg')                                                                                      
+import matplotlib.pyplot as plt 
 from deap.algorithms import *
 from deap import base
 from deap import creator
@@ -240,11 +261,20 @@ def main(N,out_sol_dict):
     stats.register("max", numpy.max)
    
     # Start the generation and update the population of solutions:w
-    algorithms.eaGenerateUpdate(toolbox, ngen=250, stats=stats, halloffame=hof)
+    _,logbook=algorithms.eaGenerateUpdate(toolbox, ngen=250, stats=stats, halloffame=hof)
     # Get best solution and save it
     best_sol=tools.selBest(hof,1)[0]
     out_sol_dict["solution"]=list(best_sol)
     out_sol_dict["fit"]=float(best_sol.fitness.values[0])
+    # Plot convergence
+    gen, avg = logbook.select("gen", "avg")
+    plt.figure()
+    plt.title("Convergence curve")
+    plt.xlabel("Generations")
+    plt.ylabel("Best obtained Fitness value at gen N")
+    plt.grid(True)
+    plt.plot(gen,avg,"r--")
+    plt.savefig("conv.pdf",dpi=600)
 
 if __name__ == "__main__":
     # Check number of parameters
@@ -309,8 +339,9 @@ INPUTFILE=$(pwd)/evolution.py
 python -m scoop --hostfile $HOSTFILE -n ${SLURM_NTASKS} --python-interpreter=$SCOOP_WRAPPER $INPUTFILE $@
 ```
 
-Finally in order to execute this script (```launcher.sh```) on multiple cores and nodes, you can use the ```sbatch``` command. For example, ```sbatch --ntasks=31 --time=00:02:00 -p batch launcher.sh 50``` will start the script with 31 cores allocated during 2 minutes to solve the rastrigin benchmark having 50 variables.
+Finally in order to execute this script (```launcher.sh```) on multiple cores and nodes, you can use the ```sbatch``` command. For example, ```sbatch --ntasks=31 --ntasks-per-core=1 --time=00:10:00 -p batch launcher.sh 50``` will start the script with 31 cores allocated during 10 minutes to solve the rastrigin benchmark having 50 variables.
 
+After job completion, use [scp or rsync](https://hpc.uni.lu/users/docs/filetransfer.html) to retrieve your results on your laptop.
 
 ## Next
 
@@ -328,7 +359,7 @@ See the following books to know all about python parallel programming.
 
 
 <center>
-![](https://books.google.lu/books/content?id=Aht1CgAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&imgtk=AFLRE72vWMXyOSaMskI0_sf5DeB7ihiLbyKwwR2XuTzUgG8RW-R1zeT_HYQOgB7cLJzHISLSNnDJbiFOnHBSlKbiIf4vqPEveKi5fle22hnXB32EQGYmluTDCgyyw7SZRBYUPQtclx1A)
-![](https://books.google.lu/books/content?id=VQDgDAAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&imgtk=AFLRE72bAKvQFTHad239xCDVRI_SVuA7MsLyGI-Kjv8hcEelMXlXkfiL3KCFuDVfU5X-ucXh8HQ0P77am_9Tsi0c8xE9Z7xgHAz7yEC5fMsNp96XeE1J2PHTJbv2zLUg3ATEp_e43jKw)
-![](https://books.google.lu/books/content?id=tyfJBQAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&imgtk=AFLRE73VaVDmXxCPJuh-xl0gVq-cy62z_emWyovesSXEuyv7pdQmOKJ_T22AVsGxZi0D2kdCCiguXqkgM-on8iKgMN00OXKFV3NhCJz1AqGeqJ1Gvv2C12G8IYDHmFi-eAJAZz_EjfHd)
+[![](https://books.google.lu/books/content?id=Aht1CgAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&imgtk=AFLRE72vWMXyOSaMskI0_sf5DeB7ihiLbyKwwR2XuTzUgG8RW-R1zeT_HYQOgB7cLJzHISLSNnDJbiFOnHBSlKbiIf4vqPEveKi5fle22hnXB32EQGYmluTDCgyyw7SZRBYUPQtclx1A)](https://books.google.fr/books/about/Python_Parallel_Programming_Cookbook.html?id=Aht1CgAAQBAJ&source=kp_book_description&redir_esc=y)
+[![](https://books.google.lu/books/content?id=VQDgDAAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&imgtk=AFLRE72bAKvQFTHad239xCDVRI_SVuA7MsLyGI-Kjv8hcEelMXlXkfiL3KCFuDVfU5X-ucXh8HQ0P77am_9Tsi0c8xE9Z7xgHAz7yEC5fMsNp96XeE1J2PHTJbv2zLUg3ATEp_e43jKw)](https://books.google.fr/books?id=VQDgDAAAQBAJ&printsec=frontcover&dq=Mastering+python&hl=en&sa=X&ved=0ahUKEwiG6dG13fjiAhWkxoUKHcu-DZoQ6AEIKDAA#v=onepage&q=Mastering%20python&f=false)
+[![](https://books.google.lu/books/content?id=tyfJBQAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&imgtk=AFLRE73VaVDmXxCPJuh-xl0gVq-cy62z_emWyovesSXEuyv7pdQmOKJ_T22AVsGxZi0D2kdCCiguXqkgM-on8iKgMN00OXKFV3NhCJz1AqGeqJ1Gvv2C12G8IYDHmFi-eAJAZz_EjfHd)](https://books.google.fr/books/about/High_Performance_Python.html?id=bIZaBAAAQBAJ&redir_esc=y)
 </center> 

@@ -62,6 +62,8 @@ If you did not already clone the tutorial repository, enter the following comman
 ```bash
 cd $HOME
 git clone https://github.com/ULHPC/tutorials.git
+# Else update it
+cd tutorials && git pull && cd ..
 # cd into the scripts folder
 cd tutorials/maths/Cplex-Gurobi/scripts
 ```
