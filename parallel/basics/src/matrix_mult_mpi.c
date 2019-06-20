@@ -13,7 +13,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define MATSIZE 2000
+#define MATSIZE 500
 #define NRA MATSIZE            /* number of rows in matrix A */
 #define NCA MATSIZE            /* number of columns in matrix A */
 #define NCB MATSIZE            /* number of columns in matrix B */
