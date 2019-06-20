@@ -316,9 +316,10 @@ Finally in order to execute this script (```launcher.sh```) on multiple cores an
 
 
 1. Restart the script with different size (number of variables)
-2. Restart teh script with different core allocation
+2. Restart thie script with different core allocation
 3. All results are saved in json file. You can use the results to compute speedup, etc ...
-4. Read scoop [documentation](https://scoop.readthedocs.io/en/0.7/usage.html) and adapt it for your research problem  
+4. Try to optimize another multivariate function (e.g. [shaffer function](https://deap.readthedocs.io/en/master/api/benchmarks.html#deap.benchmarks.schaffer))
+5. Read scoop [documentation](https://scoop.readthedocs.io/en/0.7/usage.html) and adapt it for your research problem  
 
 
 ## References
