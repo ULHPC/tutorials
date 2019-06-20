@@ -36,7 +36,6 @@ esac
 SCRIPTFILENAME=$(basename $0)
 SCRIPTDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 if [ -n "${SLURM_SUBMIT_DIR}" ]; then
-    echo "toto SCRIPTDIR=${SCRIPTDIR}"
     [[ "${SCRIPTDIR}" == *"slurmd"* ]] && RUNDIR=${SLURM_SUBMIT_DIR} || RUNDIR=${SCRIPTDIR}
 else
     RUNDIR=${SCRIPTDIR}

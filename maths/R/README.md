@@ -41,19 +41,65 @@ page](http://adv-r.had.co.nz/Data-structures.html). Another
 Data Science](http://r4ds.had.co.nz/index.html) by Garrett Grolemund &
 Hadley Wickham
 
+## Table of contents
+
+1.  [Pre-requisites](#prereq)
+2.  [Beginner session – dataSaurus](#datasaurus)
+3.  [Comparing methods for aggregating data – diamonds](#aggreg)
+    1.  [Speed comparison](#aggreg_speed)
+    2.  [using dplyr](#aggreg_dplyr)
+    3.  [using base](#aggreg_base)
+    4.  [using data.table](#aggreg_dt)
+    5.  [benchmarking](#aggreg_bench)
+4.  [Parallel computing using HPC](#hpc)
+    1.  [mandatory packages](#hpc_pkg)
+    2.  [toy example](#hpc_toy)
+    3.  [t-SNE example](#hpc_tsne)
+    4.  [reading data](#hpc_read)
+5.  [Useful links](#links)
+
+## Parallel computing using HPC
+
+#### iris
+
+### mandatory packages
+
+### toy example
+
+### t-SNE example
+
+#### R script
+
+#### launcher for 10 minutes on one full node (28 cores)
+
+#### Run the job
+
+##### trying the sequential version
+
+#### Conclusion
+
+#### Animation
+
+### Reading data
+
+### Enclosed R packages environment
+
+## Useful links
+
+<a name="prereq"></a>
+
 -----
 
 ## Pre-requisites
 
 Ensure you are able to [connect to the UL HPC
-clusters](https://hpc.uni.lu/users/docs/access.html) **you MUST work on
-a computing
+clusters](https://hpc.uni.lu/users/docs/access.html)
+
+**you MUST work on a computing
 node**
 
 ``` bash
 # /!\ FOR ALL YOUR COMPILING BUSINESS, ENSURE YOU WORK ON A COMPUTING NODE
-# Have an interactive job
-############### iris cluster (slurm) ###############
 (access-iris)$> si -n 2 -t 2:00:00        # 2h interactive reservation
 # OR (long version)
 (access-iris)$> srun -p interactive -n 2 -t 2:00:00 --pty bash
@@ -92,8 +138,10 @@ Now, to load packages with a `library()` call:
 
 `library(ggplot2)`
 
-A call to `sessionInfo()` function will return `ggplot2` version as it
-is now attached to the current session.
+A call to `sessionInfo()` function will display the `ggplot2` version as
+it is now attached to the current session.
+
+<a name="datasaurus"></a>
 
 ## Beginner session – dataSaurus
 
@@ -101,6 +149,8 @@ in R or Rstudio do `install.packages("tidyverse")` (takes some time)
 
 instructions: [in this
 tutorial](https://rworkshop.uni.lu/practicals/practical01_datasauRus.html)
+
+<a name="aggreg"></a>
 
 ## Comparing methods for aggregating data – diamonds
 
@@ -149,7 +199,9 @@ ggplot(diamonds) +
 #ggsave(file = "diamonds_plot.pdf", last_plot(), width = 8, height = 4)
 ```
 
-## Speed comparison of different tools for aggregating data
+<a name="aggreg_speed"></a>
+
+### Speed comparison of different tools for aggregating data
 
 We could do a for loop to aggregate the data per cuts and manually
 compute the average price, but in R loops are generally a bad idea ([if
@@ -161,7 +213,9 @@ can be efficiently done internally.
 Thus instead of looping around the dataset, we will use a function from
 the `dplyr` package part of the [tidyverse](http://tidyverse.org) idiom
 
-### `dplyr` from the tidyverse
+<a name="aggreg_dplyr"></a>
+
+#### `dplyr` from the tidyverse
 
 First of all, we chain the commands using the **pipe** *%\>%*. That
 avoids many parenthesis and keep the natural reading from left to right.
@@ -191,7 +245,9 @@ Note: `summarise()` from the `dplyr` package is similar to `aggregate()`
 from base package, `dplyr` functions simply provide a more consistent
 naming convention together with better performance
 
-### `aggregate` from base
+<a name="aggreg_base"></a>
+
+#### `aggregate` from base
 
 ``` r
 aggregate(price ~ cut,
@@ -223,7 +279,9 @@ as.data.frame(cbind(cut = as.character(unique(diamonds$cut)), avg_price = lapply
     ## 4 Very Good   3981.76
     ## 5      Fair  4358.758
 
-### `data.table`
+<a name="aggreg_dt"></a>
+
+#### `data.table`
 
 [**data.table**](https://github.com/Rdatatable/data.table/wiki/Getting-started)
 is a package without dependencies that is super fast. Although the
@@ -234,26 +292,21 @@ for a comparison of both tools.
 
 ``` r
 # install.package("data.table")
-library(data.table)
-```
-
-    ## 
-    ## Attaching package: 'data.table'
-
-    ## The following objects are masked from 'package:dplyr':
-    ## 
-    ##     between, first, last
-
-    ## The following object is masked from 'package:purrr':
-    ## 
-    ##     transpose
-
-``` r
+suppressPackageStartupMessages(library(data.table))
 DT <- data.table(diamonds)
-DT[, mean(price), by = cut] %>% class()
+DT[, mean(price), by = cut] 
 ```
 
-    ## [1] "data.table" "data.frame"
+    ##          cut       V1
+    ## 1:     Ideal 3457.542
+    ## 2:   Premium 4584.258
+    ## 3:      Good 3928.864
+    ## 4: Very Good 3981.760
+    ## 5:      Fair 4358.758
+
+<a name="aggreg_bench"></a>
+
+#### benchmarks
 
 So, we want to know which one of the two versions is the most efficient,
 for that purpose, the package `bench` is handy.
@@ -280,12 +333,12 @@ m
     ## # A tibble: 4 x 6
     ##   expression      min   median `itr/sec` mem_alloc `gc/sec`
     ##   <bch:expr> <bch:tm> <bch:tm>     <dbl> <bch:byt>    <dbl>
-    ## 1 LAPPLY      10.12ms  10.92ms      90.6    8.04MB    27.1 
-    ## 2 AGGREGATE   39.34ms  41.27ms      24.0   11.85MB    18.1 
-    ## 3 DPLYR        2.03ms    2.2ms     445.   211.22KB     0   
-    ## 4 DATATABLE    3.26ms   3.94ms     253.     1.24MB     7.82
+    ## 1 LAPPLY       9.65ms  11.03ms      78.8    8.04MB    23.6 
+    ## 2 AGGREGATE   39.42ms  47.82ms      21.2   11.85MB    16.0 
+    ## 3 DPLYR        2.01ms   2.26ms     365.   211.22KB     3.68
+    ## 4 DATATABLE    3.26ms   3.87ms     227.     1.24MB     9.46
 
-  - makes comparison easier to read using **relative** values. `1`Â for
+  - makes comparison easier to read using **relative** values. `1` for
     the fastest.
 
 <!-- end list -->
@@ -297,12 +350,12 @@ summary(m, relative = TRUE)
     ## # A tibble: 4 x 6
     ##   expression   min median `itr/sec` mem_alloc `gc/sec`
     ##   <bch:expr> <dbl>  <dbl>     <dbl>     <dbl>    <dbl>
-    ## 1 LAPPLY      4.98   4.96      3.77     39.0       Inf
-    ## 2 AGGREGATE  19.4   18.7       1        57.5       Inf
-    ## 3 DPLYR       1      1        18.5       1         NaN
-    ## 4 DATATABLE   1.61   1.79     10.5       6.02      Inf
+    ## 1 LAPPLY      4.79   4.88      3.71     39.0      6.39
+    ## 2 AGGREGATE  19.6   21.2       1        57.5      4.35
+    ## 3 DPLYR       1      1        17.2       1        1   
+    ## 4 DATATABLE   1.62   1.71     10.7       6.02     2.57
 
-### Plotting the benchmark
+  - plotting the benchmark
 
 You can use `ggplot2` via the `autoplot()` function
 
@@ -327,6 +380,8 @@ m %>%
 ```
 
 ![](README_files/figure-gfm/unnamed-chunk-11-1.png)<!-- -->
+
+<a name="hpc"></a>
 
 ## Parallel computing using HPC
 
@@ -387,6 +442,8 @@ libraries etc.
     loaded via a namespace (and not attached):
     [1] compiler_3.4.4
 
+<a name="hpc_pkg"></a>
+
 ### mandatory packages
 
 The core package we are going to use is
@@ -422,6 +479,8 @@ The [`furrr` package](https://davisvaughan.github.io/furrr/) by David
 Vaughan is a nice wrapper around `future` and `purrr`, the functional
 programming idiom of the tidyverse.
 
+<a name="hpc_toy"></a>
+
 ### toy example
 
 Run a dumb loop on 3 times **2** that wait for those values
@@ -443,7 +502,7 @@ nothingness <- future_map(c(2, 2, 2), ~Sys.sleep(.x), .progress = TRUE)
 tictoc::toc()
 ```
 
-    ## 6.046 sec elapsed
+    ## 6.044 sec elapsed
 
   - second in parallel
 
@@ -456,19 +515,21 @@ nothingness <- future_map(c(2, 2, 2), ~Sys.sleep(.x), .progress = TRUE)
 ```
 
     ## 
-     Progress:                                                                                                                                                                            100%
-     Progress:                                                                                                                                                                            100%
-     Progress: ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── 100%
+     Progress:                                                                                                                     100%
+     Progress:                                                                                                                     100%
+     Progress: ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────── 100%
 
 ``` r
 tictoc::toc()
 ```
 
-    ## 2.234 sec elapsed
+    ## 2.334 sec elapsed
 
 fetch env variables in R
 
 `as.integer(Sys.getenv("SLURM_CPUS_PER_TASK"))`
+
+<a name="hpc_tsne"></a>
 
 ### t-SNE example
 
@@ -622,9 +683,9 @@ computationally intensive tasks such as t-SNE (code in
 
 #### Animation
 
-just for the fun of it, using the [experimental
-gganimate](https://github.com/thomasp85/gganimate), we can visualise how
-the t-SNE evolves with increased perplexities
+just for the fun of it, using the
+[gganimate](https://github.com/thomasp85/gganimate) package, we can
+visualise how the t-SNE evolves with increasing perplexities
 
 ![](figures/tsne_110_component.gif)
 
@@ -666,6 +727,122 @@ tib_gif
 anim_save("tsne_200.gif", tib_gif)
 ```
 
+<a name="hpc_read"></a>
+
+### Reading data
+
+For the t-SNE example, we cheated a bit by loading a R compressed object
+I prepared in advance (`.rds`). It was convenient because loading was
+fast and the columns and numbers were correctly read.
+
+In real life though, most dataset come as text files with some
+delimiters. Now we can load the equivalent of the t-SNE data as a `.csv`
+file and benchmarks the main tools for this step.
+
+  - `read.csv()` is the base function. Turns out to be slow for large
+    files.
+  - [`fread()`](https://www.rdocumentation.org/packages/data.table/versions/1.12.2/topics/fread)
+    is the fantastic and fast import function from
+    `data.table`
+  - [`read_csv()`](https://readr.tidyverse.org/reference/read_delim.html)
+    is the tidyverse way of reading a csv. Fast than base, slower than
+    `data.table`.
+  - \[`vroom()`\] is the recent
+    [package](http://vroom.r-lib.org/articles/vroom.html) that could be
+    the next standard for reading files in the tidyverse dialect. Check
+    the [benchmarks](http://vroom.r-lib.org/articles/benchmarks.html)
+    for a detailed comparison. It uses the
+    [ALTREP](https://purrple.cat/blog/2018/10/14/altrep-and-cpp/)
+    introduced in R `3.5.0` that allows to delay actual reading data,
+    making it super fast. Materialization of data comes when you need
+    the exact column and rows.
+
+Here we will benchmark reading only numbers since it is a matrix of
+doubles.
+
+In your session on `iris`, in the R console,
+
+  - first install required
+packages
+
+<!-- end list -->
+
+``` r
+install.packages(c("vroom", "ggplot2", "cowplot", "data.table", "readr", "bench", "ggbeeswarm"), Ncpus = 4)
+```
+
+paste the following code:
+
+``` r
+library(dplyr)
+library(ggplot2)
+library(readr)
+
+# must set thread by hand since parallel::detectCores() will detect 28.
+# overhead will be bad for the performance
+Sys.setenv(VROOM_THREADS = as.integer(Sys.getenv("SLURM_CPUS_PER_TASK")))
+# must be 4
+as.integer(Sys.getenv("VROOM_THREADS"))
+
+tSNEdata_location <- "tSNEdata.csv"
+bench::mark(base = read.csv(tSNEdata_location),
+            readr = readr::read_csv(tSNEdata_location, col_types = cols(), progress = FALSE),
+            data.table = data.table::fread(tSNEdata_location),
+            dat_vroom = vroom::vroom(tSNEdata_location, col_types = cols(), progress = FALSE),
+            dat_vroom_altrep = vroom::vroom(tSNEdata_location, altrep_opts = TRUE, col_types = cols(), progress = FALSE),
+            check = FALSE, iterations = 50) -> m
+# show tables, absolute and relative
+m
+summary(m, relative = TRUE)
+# create a plot of both speed and memory allocations, align the vertical lines
+p <- cowplot::plot_grid(autoplot(m),
+                        m %>%
+                          tidyr::unnest() %>%
+                          filter(gc == "none") %>%
+                          mutate(expression = as.character(expression)) %>%
+                          ggplot(aes(x = mem_alloc, y = time, color = expression)) +
+                          geom_point() +
+                          theme_minimal(14), ncol = 1, align = "v")
+# save as pdf
+ggsave("csv_benchmarks.pdf", p, width = 8)
+```
+
+    # A tibble: 5 x 13
+      expression           min  median `itr/sec` mem_alloc `gc/sec` n_itr  n_gc
+      <bch:expr>       <bch:t> <bch:t>     <dbl> <bch:byt>    <dbl> <int> <dbl>
+    1 base             205.7ms 210.1ms      4.70        0B    2.35     34    17
+    2 readr            171.7ms 172.9ms      5.77        0B    0.641    45     5
+    3 data.table        80.9ms  86.3ms     11.6         0B    1.01     46     4
+    4 dat_vroom         61.8ms  65.3ms     14.3         0B    1.25     46     4
+    5 dat_vroom_altrep  42.7ms  47.5ms     21.2         0B    1.84     46     4
+    # … with 5 more variables: total_time <bch:tm>, result <list>, memory <list>,
+    #   time <list>, gc <list>
+
+    # A tibble: 5 x 13
+      expression         min median `itr/sec` mem_alloc `gc/sec` n_itr  n_gc
+      <bch:expr>       <dbl>  <dbl>     <dbl>     <dbl>    <dbl> <int> <dbl>
+    1 base              4.82   4.43      1          NaN     3.67    34    17
+    2 readr             4.03   3.64      1.23       NaN     1       45     5
+    3 data.table        1.90   1.82      2.46       NaN     1.57    46     4
+    4 dat_vroom         1.45   1.38      3.05       NaN     1.94    46     4
+    5 dat_vroom_altrep  1      1         4.51       NaN     2.88    46     4
+    # … with 5 more variables: total_time <bch:tm>, result <list>, memory <list>,
+    #   time <list>, gc <list>
+
+![](figures/csv_benchmarks.png)
+
+By default the `ALTREP` framework for `vroom` is used only for
+**characters**. `vroom` is multi-threaded and will use the 4 cores we
+have (on `iris` we need to set it up manually) and performed similarly
+as `data.table` which was designed to be efficient for **numeric** data.
+By activating the option for all data types (altrep\_opts = TRUE),
+`vroom` becomes even faster than `data.table`. But it means that after
+materialization, it will be slower. However, for **characters**, `vroom`
+is faster even after materialization, see the
+[benchmarks](http://vroom.r-lib.org/articles/benchmarks.html) done by
+the author [Jim Hester](https://github.com/jimhester) (also maintainer
+of `readr`).
+
 ### Enclosed R packages environment
 
 this package is still under development but is the promising replacement
@@ -680,11 +857,13 @@ vignette](https://rstudio.github.io/renv/articles/renv.html)
 remotes::install_github("rstudio/renv")
 ```
 
-### Useful links
+<a name="links"></a>
+
+## Useful links
 
   - [CRAN Archive](https://cran.r-project.org/)
   - [CRAN HPC
     Packages](https://cran.r-project.org/web/views/HighPerformanceComputing.html)
   - [tidyverse Documentation](https://tidyverse.org/)
-  - \[4-days tidyverse workshop @uni.lu\](<https://rworkshop.uni.lu/>)
+  - [4-days tidyverse workshop.uni.lu](https://rworkshop.uni.lu/)
   - [Advanced R programming by Hadley Wickham](http://adv-r.had.co.nz/)
