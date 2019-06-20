@@ -193,7 +193,7 @@ $> module load toolchain/intel
 $> icc -qopenmp -xhost -Wall -O2 src/hello_openmp.c -o bin/hello_openmp
 ```
 
-* (__only__ if you have trouble to compile): `make openmp`
+* (__only__ if you have trouble to compile): `make omp`
 
 * Execute the generated binaries multiple times. What do you notice?
 * Exit your interactive session (`exit` or `CTRL-D`)
