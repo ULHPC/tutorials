@@ -44,6 +44,8 @@ Be sure to start with a bare environment:
 # If you did not already clone the tutorial repository
 cd $HOME
 git clone https://github.com/ULHPC/tutorials.git
+# Else update it
+cd tutorials && git pull && cd ..
 # cd into the scripts folder
 cd tutorials/python/advanced/scikit-learn/scripts
 # First ask for an interactive SLURM job
@@ -70,6 +72,7 @@ pip install pandas
 # Exit interactive job (setup completed)
 exit
 ```
+
 ## Using ipyparrallel with SLURM (generic slurm script)
 
 Hereafter, a general script for using ipyparrallel with the SLURM scheduler is provided. We are going to use it in the remaining part of this tutorial. This is the file ```launcher.sh``` that you can find in the scripts directory. 
@@ -288,6 +291,8 @@ You only need to start the following command from the ```scripts``` directory:
 ```sbatch launcher.sh unsupervized/main.py```
 
 
+After job completion, use [scp or rsync](https://hpc.uni.lu/users/docs/filetransfer.html) to retrieve your results on your laptop.
+
 ![](./images/clusterings.png)
 
 
@@ -421,6 +426,7 @@ plt.savefig(os.path.join(FILE_DIR,"validation.png"))
 
 In the ```scripts``` folder, enter the following command ```sbatch launcher.sh supervized/main.py```.
 
+After job completion, use [scp or rsync](https://hpc.uni.lu/users/docs/filetransfer.html) to retrieve your results on your laptop.
 
 ![Scores heatmap](./images/validation.png)
 
@@ -436,7 +442,7 @@ See the following books to know all about python parallel programming.
 
 
 <center>
-![](https://books.google.lu/books/content?id=Aht1CgAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&imgtk=AFLRE72vWMXyOSaMskI0_sf5DeB7ihiLbyKwwR2XuTzUgG8RW-R1zeT_HYQOgB7cLJzHISLSNnDJbiFOnHBSlKbiIf4vqPEveKi5fle22hnXB32EQGYmluTDCgyyw7SZRBYUPQtclx1A)
-![](https://books.google.lu/books/content?id=VQDgDAAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&imgtk=AFLRE72bAKvQFTHad239xCDVRI_SVuA7MsLyGI-Kjv8hcEelMXlXkfiL3KCFuDVfU5X-ucXh8HQ0P77am_9Tsi0c8xE9Z7xgHAz7yEC5fMsNp96XeE1J2PHTJbv2zLUg3ATEp_e43jKw)
-![](https://books.google.lu/books/content?id=tyfJBQAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&imgtk=AFLRE73VaVDmXxCPJuh-xl0gVq-cy62z_emWyovesSXEuyv7pdQmOKJ_T22AVsGxZi0D2kdCCiguXqkgM-on8iKgMN00OXKFV3NhCJz1AqGeqJ1Gvv2C12G8IYDHmFi-eAJAZz_EjfHd)
+[![](https://books.google.lu/books/content?id=Aht1CgAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&imgtk=AFLRE72vWMXyOSaMskI0_sf5DeB7ihiLbyKwwR2XuTzUgG8RW-R1zeT_HYQOgB7cLJzHISLSNnDJbiFOnHBSlKbiIf4vqPEveKi5fle22hnXB32EQGYmluTDCgyyw7SZRBYUPQtclx1A)](https://books.google.fr/books/about/Python_Parallel_Programming_Cookbook.html?id=Aht1CgAAQBAJ&source=kp_book_description&redir_esc=y)
+[![](https://books.google.lu/books/content?id=VQDgDAAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&imgtk=AFLRE72bAKvQFTHad239xCDVRI_SVuA7MsLyGI-Kjv8hcEelMXlXkfiL3KCFuDVfU5X-ucXh8HQ0P77am_9Tsi0c8xE9Z7xgHAz7yEC5fMsNp96XeE1J2PHTJbv2zLUg3ATEp_e43jKw)](https://books.google.fr/books?id=VQDgDAAAQBAJ&printsec=frontcover&dq=Mastering+python&hl=en&sa=X&ved=0ahUKEwiG6dG13fjiAhWkxoUKHcu-DZoQ6AEIKDAA#v=onepage&q=Mastering%20python&f=false)
+[![](https://books.google.lu/books/content?id=tyfJBQAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&imgtk=AFLRE73VaVDmXxCPJuh-xl0gVq-cy62z_emWyovesSXEuyv7pdQmOKJ_T22AVsGxZi0D2kdCCiguXqkgM-on8iKgMN00OXKFV3NhCJz1AqGeqJ1Gvv2C12G8IYDHmFi-eAJAZz_EjfHd)](https://books.google.fr/books/about/High_Performance_Python.html?id=bIZaBAAAQBAJ&redir_esc=y)
 </center> 
