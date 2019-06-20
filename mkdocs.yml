@@ -50,6 +50,7 @@ pages:
    - Grid5000 - Automatic VM deployment with VM5K: 'virtualization/vm5k/index.md'
 - Misc:
   - Reproducible Research: 'misc/reproducible-research/index.md'
+  - CUDA Programming: 'advanced/CUDA/README.md'
 # - Advanced topics:
 #   - Advanced workflows on sequential jobs management: 'advanced/advanced_workflows/README.md'
 - Documentation (RTFD): 'rtfd.md'
