@@ -315,26 +315,21 @@ Scoop comes with direct Slurm bindings. If you run your code on a single node, i
 
 You can specify the number of cores to use with the `-n` option in scoop.
 
-We will write a batch script to execute our python script. We want to compare time of execution to the number of workers used in scoop. We want to go from 1 worker (single core) to 55 workers, increasing the worker number 1 by 1. As you can see, our script takes 1 parameter `x` in input which corresponds to the number of workers.
+We will write a batch script to execute our python script. We want to compare time of execution to the number of workers used in scoop. We want to go from 1 worker (`-n 1` for Scoop option) to 55 workers, increasing the worker number 1 by 1. As you can see, our script takes 1 parameter `x` in input which corresponds to the number of workers.
 
-There will be 2 batch scripts. The first one named `scoop` should contain:
+There will be 1 batch script. It should contain:
 
 * 1 task per cpu
 * maximum execution time of 35m
 * name of the job should be `scoop`
-* a job array which goes from 2 to 56 (maximal number of core on 2 nodes)
-* will call for each value in the job array a secondary script named `scoop_launcher.sh` with `--nb-tasks` corresponding to the value of the array.
-
-It will launch a second submission script name `scoop_launcher.sh` that will run scoop with a dedicated number of workers depending on "nb-tasks" specified.
-
-* a minimum number of 2 nodes reserved
-* a call to `python -m scoop [...]` to call the script with increasing number of cores reserved (`$SLURM_NBTASKS`)
+* a job array which goes from 1 to 55 (maximal number of core on 2 nodes is 56)
+* will give, as an option to scoop script, each value in the job array. For each sub-job we will ask a number of workers equals to "$SLURM_ARRAY_TASK_ID" and also pass this as an option to the script.
 * be the only user to use those resources to avoid conflicting with other scoop users (see `--exclusive` option of sbatch)
-* output file should go to `scoop.log`
+* only execute the script on skylake CPU nodes.
 
-**HINT** Have a look at `tutorials/advanced/Python/example5/scoop.sh` for the batch script example
+**HINT** Have a look at `tutorials/advanced/Python/example5/scoop_launcher.sh` for the batch script example
 
-Run this script with `sbatch` command. Check the content of `scoop.log` using `tail scoop.log` to see if everything is going well.
+Run this script with `sbatch` command. Check the content of `scoop_*.log` to see if everything is going well. Also use `squeue -u $USER` to see the pending array jobs.
 
 When your job is over, you can use `make graph` command to generate the graph.
 
