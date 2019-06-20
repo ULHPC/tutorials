@@ -94,8 +94,20 @@ First install for the *CPU environment* (that matches the current reservation re
 ```
 
 At the time of writing, recent versions of numpy broke a tensorflow tutorial source file.
-In case of exception when unpickling the training data, apply a patch [`imdb.patch`](./imdb.patch). 
-
+In case of exception when unpickling the training data, apply a patch [`imdb.patch`](./imdb.patch), listed below:
+```
+--- lib/python3.6/site-packages/tensorflow/python/keras/datasets/imdb_.py	2019-05-16 14:51:36.074289000 +0200
++++ lib/python3.6/site-packages/tensorflow/python/keras/datasets/imdb.py	2019-05-16 14:52:12.984972000 +0200
+@@ -82,7 +82,7 @@
+       path,
+       origin=origin_folder + 'imdb.npz',
+       file_hash='599dadb1135973df5b59232a0e9a887c')
+-  with np.load(path) as f:
++  with np.load(path, allow_pickle=True) as f:
+     x_train, labels_train = f['x_train'], f['y_train']
+     x_test, labels_test = f['x_test'], f['y_test']
+```
+Apply the patch:
 ```bash
 (tfcpu) []$ cp imdb.patch $VIRTUAL_ENV  
 (tfcpu) []$ cd $VIRTUAL_ENV
