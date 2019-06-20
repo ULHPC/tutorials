@@ -813,7 +813,7 @@ OUTPUT_DIR=$SCRATCH/PS2/object_recognition_$SLURM_JOBID
 mkdir -p $OUTPUT_DIR
 
 for SRC_FILE in $(cat $SCRATCH/PS2/param_file) ; do
-    python $SCRATCH/PS2/beginners/scripts/FirstDetection.py $SRC_FILE $OUTPUT_DIR
+    python $SCRATCH/PS2/tutorials/beginners/scripts/FirstDetection.py $SRC_FILE $OUTPUT_DIR
 done
 ```
 
