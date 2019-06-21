@@ -111,7 +111,7 @@ export PYTHONNOUSERSITE=True
 EOF
 ```
 
-For the later parts of this tutorial to work, we need to make this setting permanent by adding it to `.basrhc`. However, **make sure to delete those lines** after the tutorial, so your manually installed python packages are found again.
+For the later parts of this tutorial to work, we need to make this setting permanent by adding it to `.bashrc`. However, **make sure to delete those lines** after the tutorial, so your manually installed python packages are found again.
 
 #### 6. Install snakemake
 
