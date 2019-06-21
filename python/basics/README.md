@@ -52,7 +52,7 @@ Clone the UL HPC python tutorial under your home directory on the **Iris** clust
 (access)$> git stash && git pull -r && git stash pop
 ```
 
-All the scripts used in this tutorial can be found under `tutorials/advanced/Python/`.
+All the scripts used in this tutorial can be found under `tutorials/python/basics`.
 
 ### Execute your first python script on the cluster (Example 1)
 
@@ -60,7 +60,7 @@ First, connect to `iris-cluster` and go to example 1:
 
 ```
 (laptop)$> ssh iris-cluster
-(access)$> cd tutorials/advanced/Python/example1/
+(access)$> cd tutorials/python/basics/example1/
 ```
 
 To run your script **interactively** on the cluster, you should do:
@@ -91,7 +91,7 @@ Now run the script using
 
 Now, check that the content of `example1.out` corresponds to the expected output (in interactive mode).
 
-**HINT:** You can find the answer under `tutorials/advanced/Python/example1/answer/example1.sh.answer`.
+**HINT:** You can find the answer under `tutorials/python/basics/example1/answer/example1.sh.answer`.
 
 ## Compare version of Python
 
@@ -110,7 +110,7 @@ Here we will compare the performance of Python 2.7 and Python 3.
 
 Here are the steps to compare 2 codes:
 
-* Go to `tutorials/advanced/Python/example2`
+* Go to `tutorials/python/basics/example2`
 * Create a batch script named `example2.sh`
 * Edit it with your favorite editor (`vim`, `nano`, `emacs`...)
 * Add a shebang at the beginning (`#!/bin/bash`)
@@ -133,13 +133,13 @@ Here are the steps to compare 2 codes:
 **HINT**
 
 * You can use `module load` command to load a specific version of Python.
-* An example of a BATCH script can be found under `tutorials/advanced/Python/example2/answer/example2.sh.answer`
+* An example of a BATCH script can be found under `tutorials/python/basics/example2/answer/example2.sh.answer`
 
 ## Use a library to optimize your code
 
 In this part we will try to use [Numpy](https://docs.scipy.org/doc/numpy-dev/user/quickstart.html), a Python library, to optimize our code.
 
-In `tutorials/advanced/Python/example3/example3.py` you should see a version of the previous script using Numpy.
+In `tutorials/python/basics/example3/example3.py` you should see a version of the previous script using Numpy.
 
 Try to execute the script on iris cluster in **interactive** mode.
 
@@ -201,13 +201,13 @@ Now you can create 2 virtual environment for your project. They will contain 2 d
 
 **PYTHON2** (default on iris cluster):
 ```
-(iris-001)$> cd ~/tutorials/advanced/Python/example3/
+(iris-001)$> cd ~/tutorials/python/basics/example3/
 (iris-001)$> python2 -m virtualenv numpy13
 (iris-001)$> python2 -m virtualenv numpy16
 ```
 **PYTHON3**:
 ```
-(iris-001)$> cd ~/tutorials/advanced/Python/example3/
+(iris-001)$> cd ~/tutorials/python/basics/example3/
 (iris-001)$> module load lang/Python/3.6.4-foss-2018a-bare
 (iris-001)$> python3 -m virtualenv numpy13
 (iris-001)$> python3 -m virtualenv numpy16
@@ -259,7 +259,7 @@ C language is known to be very powerful and to execute faster. It has to be comp
 
 The goal of this part is to adapt our naïve code and use the **Pythran** tool to convert it to C code. This code will then be imported as a standard Python module and executed.
 
-The code can be found under `tutorials/advanced/Python/example4/example4.py`.
+The code can be found under `tutorials/python/basics/example4/example4.py`.
 
 * Open the `example4.py` file
 * Referring to [Pythran documentation](https://github.com/serge-sans-paille/pythran), add a comment before the `standard_deviation` function to help pythran to convert your python function into a C one.
@@ -296,7 +296,7 @@ def standard_dev(lst):
 
 ### Overview graph of runtimes
 
-![alt-text](https://github.com/ULHPC/tutorials/raw/devel/advanced/Python/time_vs_array_size.jpg)
+![alt-text](https://github.com/ULHPC/tutorials/raw/devel/python/basics/time_vs_array_size.jpg)
 
 ## Use Scoop to parallelize execution of your Python code with Slurm
 
@@ -328,7 +328,7 @@ There will be 1 batch script. It should contain:
 * be the only user to use those resources to avoid conflicting with other scoop users (see `--exclusive` option of sbatch)
 * only execute the script on skylake CPU nodes.
 
-**HINT** Have a look at `tutorials/advanced/Python/example5/scoop_launcher.sh` for the batch script example
+**HINT** Have a look at `tutorials/python/basics/example5/scoop_launcher.sh` for the batch script example
 
 Run this script with `sbatch` command. Check the content of `scoop_*.log` to see if everything is going well. Also use `squeue -u $USER` to see the pending array jobs.
 
