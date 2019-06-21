@@ -62,6 +62,8 @@ If you did not already clone the tutorial repository, enter the following comman
 ```bash
 cd $HOME
 git clone https://github.com/ULHPC/tutorials.git
+# Else update it
+cd tutorials && git pull && cd ..
 # cd into the scripts folder
 cd tutorials/maths/Cplex-Gurobi/scripts
 ```
@@ -75,7 +77,7 @@ In order to solve mathematical programs, cplex allows users to define a command 
 ```bash
 #!/bin/bash -l
 #SBATCH -J Multi-threaded_cplex
-#SBATCH --tasks=1
+#SBATCH --ntasks=1
 #SBATCH --cpus-per-task=28
 #SBATCH --time=0-01:00:00
 #SBATCH -p batch
@@ -122,7 +124,7 @@ The below launcher is an example showing how to reserve ressources on multiple n
 #!/bin/bash -l
 #SBATCH -J Distrbuted_cplex
 #SBATCH --nodes=2
-#SBATCH --tasks=14
+#SBATCH --ntasks=14
 #SBACTH --cpus-per-task=2
 #SBATCH --time=0-01:00:00
 #SBATCH -p batch
@@ -165,7 +167,7 @@ The script below allows you to start multi-threaded MIP optimization with Gurobi
 ```bash
 #!/bin/bash -l
 #SBATCH -J Multi-threaded_gurobi
-#SBATCH --tasks=1
+#SBATCH --ntasks=1
 #SBATCH --cpus-per-task=28
 #SBATCH --time=0-01:00:00
 #SBATCH -p batch
@@ -191,7 +193,7 @@ Use the script ```gurobi_mtt.slurm ``` and launch a batch job using the ```sbatc
 ```bash
 #!/bin/bash -l
 #SBATCH -J Distrbuted_gurobi
-#SBATCH --nodes=3
+#SBATCH --ntasks=3
 #SBATCH --ntasks-per-node=1
 #SBATCH --cpus-per-task=5
 #SBATCH --time=00:15:00

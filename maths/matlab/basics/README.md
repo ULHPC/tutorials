@@ -26,19 +26,19 @@ For the tutorial we will use the UL HPC [Iris](http://hpc.uni.lu/systems/iris/) 
 As part of this tutorial two Matlab example scripts have been developed and you will need to download them,
 along with their dependencies, before following the instructions in the next sections:
 
-        (gaia-frontend)$> mkdir -p ~/matlab-tutorial/code
-        (gaia-frontend)$> cd ~/matlab-tutorial/code
-        (gaia-frontend)$> wget --no-check-certificate https://raw.github.com/ULHPC/tutorials/devel/maths/matlab/basics/code/example1.m
-        (gaia-frontend)$> wget --no-check-certificate https://raw.github.com/ULHPC/tutorials/devel/maths/matlab/basics/code/example2.m
-        (gaia-frontend)$> wget --no-check-certificate https://raw.github.com/ULHPC/tutorials/devel/maths/matlab/basics/code/google_finance_data.m
-        (gaia-frontend)$> wget --no-check-certificate https://raw.github.com/ULHPC/tutorials/devel/maths/matlab/basics/code/file_data_source.m
-        (gaia-frontend)$> wget --no-check-certificate https://raw.github.com/ULHPC/tutorials/devel/maths/matlab/basics/code/AAPL.csv
+        (access-iris)$> mkdir -p ~/matlab-tutorial/code
+        (access-iris)$> cd ~/matlab-tutorial/code
+        (access-iris)$> wget --no-check-certificate https://raw.github.com/ULHPC/tutorials/devel/maths/matlab/basics/code/example1.m
+        (access-iris)$> wget --no-check-certificate https://raw.github.com/ULHPC/tutorials/devel/maths/matlab/basics/code/example2.m
+        (access-iris)$> wget --no-check-certificate https://raw.github.com/ULHPC/tutorials/devel/maths/matlab/basics/code/google_finance_data.m
+        (access-iris)$> wget --no-check-certificate https://raw.github.com/ULHPC/tutorials/devel/maths/matlab/basics/code/file_data_source.m
+        (access-iris)$> wget --no-check-certificate https://raw.github.com/ULHPC/tutorials/devel/maths/matlab/basics/code/AAPL.csv
 
 
 Or simply clone the full tutorials repository and make a link to this part of the MATLAB tutorial:
 
-        (gaia-frontend)$> git clone https://github.com/ULHPC/tutorials.git
-        (gaia-frontend)$> ln -s tutorials/maths/matlab/basics ~/matlab-tutorial
+        (access-iris)$> git clone https://github.com/ULHPC/tutorials.git
+        (access-iris)$> ln -s tutorials/maths/matlab/basics ~/matlab-tutorial
 
 ## Matlab execution in interactive mode
 

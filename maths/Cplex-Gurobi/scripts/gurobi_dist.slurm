@@ -1,6 +1,6 @@
 #!/bin/bash -l
 #SBATCH -J Distrbuted_gurobi
-#SBATCH --nodes=3
+#SBATCH --ntasks=3
 #SBATCH --ntasks-per-node=1
 #SBATCH --cpus-per-task=5
 #SBATCH --time=00:15:00

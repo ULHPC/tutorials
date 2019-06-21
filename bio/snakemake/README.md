@@ -65,13 +65,13 @@ We will use conda on two levels in this tutorial. First we use a conda environme
         (node)$> ./Miniconda3-latest-Linux-x86_64.sh
 
     You need to specify your installation destination, e.g. `/home/users/<your_username>/tools/miniconda3`. You must use the **full** path and can**not** use `$HOME/tools/miniconda3`. Answer `yes` to initialize Miniconda3.
-	
+   
     The installation will modify your `.bashrc` to make conda directly available after each login. To activate the changes now, run
-	
+   
         (node)$> source ~/.bashrc
-	
+
     Update conda to the latest version:
-	
+   
         (node)$> conda update conda
 
 4. Create a new conda environment and activate it:
@@ -572,7 +572,17 @@ mapping:
   ncpus: 4
 ```
 
-**Attention:** Be aware that `ncpus` should match the `threads` directive in the respective rule. If `ncpus` is less than `threads` snakemake will reserve only  `ncpus` cores, but run the rule on the number of threads specified with `threads` .
+The only settings you may need to change per rule are:
+
+*  `time`, to adjust to the runtime of the rule,
+
+*  `ncpus`, to adjust to the number of threads specified in the rule,
+
+* maybe `partition`, to go to `bigmem` nodes, for example,
+
+as long as the software you use only does multithreading or doesn't scale at all. With multithreading you cannot run across multiple nodes, so `nodes` needs to be `1` , and snakemake always just runs one task per job, so `ntasks` also stays at `1`.
+
+**Attention:** Be aware that `ncpus` should match the `threads` directive in the respective rule. If `ncpus` is less than `threads` snakemake will reserve only  `ncpus` cores, but run the rule on the number of threads specified with `threads` . When running on the Iris cluster, the value for both should not exceed 28, the number of cores on a regular node.
 
 <a name="cluster_config"></a>
 
