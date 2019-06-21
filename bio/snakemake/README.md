@@ -52,55 +52,72 @@ It can encapsulate software and packages in environments, so you can have multip
 
 We will use conda on two levels in this tutorial. First, we use a conda environment to install and run snakemake. Second, inside the snakemake workflow we will define separate conda environments for each step.
 
-1. Connect to the cluster
+#### 1. Connect to the cluster
 
-2. Start an interactive job:
+#### 2. Start an interactive job
 
-        (access)$> si
+```bash
+(access)$> si
+```
 
-3. Install conda:
+#### 3. Install conda
 
-        (node)$> mkdir -p $SCRATCH/downloads
-        (node)$> cd $SCRATCH/downloads
-        (node)$> wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
-        (node)$> chmod u+x Miniconda3-latest-Linux-x86_64.sh
-        (node)$> ./Miniconda3-latest-Linux-x86_64.sh
+```bash
+(node)$> mkdir -p $SCRATCH/downloads
+(node)$> cd $SCRATCH/downloads
+(node)$> wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
+(node)$> chmod u+x Miniconda3-latest-Linux-x86_64.sh
+(node)$> ./Miniconda3-latest-Linux-x86_64.sh
+```
 
-    You need to specify your installation destination, e.g. `/home/users/<your_username>/tools/miniconda3`. You must use the **full** path and can**not** use `$HOME/tools/miniconda3`. Answer `yes` to initialize Miniconda3.
-   
-    The installation will modify your `.bashrc` to make conda directly available after each login. To activate the changes now, run
-   
-        (node)$> source ~/.bashrc
+You need to specify your installation destination, e.g. `/home/users/<your_username>/tools/miniconda3`. You must use the **full** path and can**not** use `$HOME/tools/miniconda3`. Answer `yes` to initialize Miniconda3.
 
-    Update conda to the latest version:
-   
-        (node)$> conda update conda
+The installation will modify your `.bashrc` to make conda directly available after each login. To activate the changes now, run
 
-4. Create a new conda environment and activate it:
+```bash
+(node)$> source ~/.bashrc
+```
 
-        (node)$> conda create -n bioinfo_tutorial
-        (node)$> conda activate bioinfo_tutorial
-   
-    After validation of the creation step and once activated, you can see that your prompt will now be prefixed with `(bioinfo_tutorial)` to show which environment is active. For the rest of the tutorial make sure that you always have this environment active.
+Update conda to the latest version:
 
-5. Make sure Python does not pick up packages in your home directory.
-   First we do a backup of our `.bashrc` before we modify it:
+```bash
+(node)$> conda update conda
+```
 
-         (bioinfo_tutorial) (node)$> cp ~/.bashrc ~/.bashrc-$(date +%Y%m%d).bak
+#### 4. Create a new conda environment and activate it
 
-    Then we add `export PYTHONNOUSERSITE=True` to the `.bashrc`:
+```bash
+(node)$> conda create -n bioinfo_tutorial
+(node)$> conda activate bioinfo_tutorial
+```
 
-        (bioinfo_tutorial) (node)$> cat << EOF >> ~/.bashrc
-        
-        # Stop Python from picking up packages in $HOME/.local
-        export PYTHONNOUSERSITE=True
-        EOF
+After validation of the creation step and once activated, you can see that your prompt will now be prefixed with `(bioinfo_tutorial)` to show which environment is active. For the rest of the tutorial make sure that you always have this environment active.
 
-    For the later parts of this tutorial to work, we need to make this setting permanent by adding it to `.basrhc`. However, **make sure to delete those lines** after the tutorial, so your manually installed python packages are found again.
+#### 5. Make sure Python does not pick up packages in your home directory
 
-6. Install snakemake:
+First we do a backup of the `.bashrc` before we modify it:
 
-        (bioinfo_tutorial) (node)$> conda install -c bioconda -c conda-forge snakemake-minimal
+```bash
+(bioinfo_tutorial) (node)$> cp ~/.bashrc ~/.bashrc-$(date +%Y%m%d).bak
+```
+
+Then we add `export PYTHONNOUSERSITE=True` :
+
+```bash
+(bioinfo_tutorial) (node)$> cat << EOF >> ~/.bashrc
+
+# Stop Python from picking up packages in $HOME/.local
+export PYTHONNOUSERSITE=True
+EOF
+```
+
+For the later parts of this tutorial to work, we need to make this setting permanent by adding it to `.basrhc`. However, **make sure to delete those lines** after the tutorial, so your manually installed python packages are found again.
+
+#### 6. Install snakemake
+
+```bash
+(bioinfo_tutorial) (node)$> conda install -c bioconda -c conda-forge snakemake-minimal
+```
 
 
 <a name="snakemake"></a>
