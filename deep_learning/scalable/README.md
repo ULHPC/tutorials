@@ -22,7 +22,7 @@ It's important that you read the [slides](https://github.com/ULHPC/tutorials/blo
 #SBATCH -J HorovodTFGPU
 #SBATCH -o %x_%j.out
 #SBATCH -N 2
-#SBATCH -n 4
+#SBATCH --ntasks-per-node=4
 #SBATCH --gres=gpu:4
 #SBATCH -t 1:0:0
 #SBATCH -p gpu
@@ -37,6 +37,8 @@ module load tools/Horovod/0.16.3-fosscuda-2019a-Python-3.7.2
 ## Create tests directory and clone the TF benchmarks inside
 mkdir $SCRATCH/tests-horovod && cd $SCRATCH/tests-horovod
 git clone https://github.com/tensorflow/benchmarks
+cd benchmarks
+git checkout cnn_tf_v1.13_compatible
 
 ## Horovod execution
 horovodrun -np $SLURM_NTASKS \
