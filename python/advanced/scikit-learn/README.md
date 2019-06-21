@@ -28,10 +28,10 @@ In this tutorial, we are going to show how to perform parrallel machine learning
 
 In this tutorial, we are going to code in python 3 and use the following libraries:
 
-* numpy
-* scikit-learn
-* ipyparallel
-* joblib
+* [numpy](https://www.numpy.org/)
+* [scikit-learn](https://scikit-learn.org/stable/)
+* [ipyparallel](http://ipython.org/ipython-doc/stable/parallel/parallel_intro.html)
+* [joblib](https://joblib.readthedocs.io/en/latest/)
 
 ## Creating the virtual environment
 
