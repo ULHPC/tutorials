@@ -1,0 +1,23 @@
+description: 'Hello world'
+output_dir: $SCRATCH/scalable_deep_learning/hello-world
+
+data:
+    name: dummy
+    input_shape: [64, 64, 3]
+    n_train: 1024
+    n_valid: 1024
+
+model:
+    name: cnn
+    input_shape: [64, 64, 3]
+    n_classes: 1
+
+optimizer:
+    name: Adam
+    lr: 0.001
+
+training:
+    batch_size: 32
+    n_epochs: 1
+    loss: binary_crossentropy
+    metrics: [accuracy]
