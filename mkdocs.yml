@@ -44,7 +44,8 @@ pages:
 - Big Data:
   - Big Data Application Over Hadoop and Spark: 'bigdata/index.md'
 - Machine and Deep Learning:
-  - Machine and Deep learning workflows: 'deep_learning/index.md'
+  - Machine and Deep Learning workflows: 'deep_learning/basics/index.md'
+  - Scalable Deep Learning: 'deep_learning/scalable/index.md'
 - Containers:
   - Singularity: 'containers/singularity/index.md'
 - Virtualization:
