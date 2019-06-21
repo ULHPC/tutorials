@@ -83,7 +83,12 @@ We will use conda on two levels in this tutorial. First, we use a conda environm
    
     After validation of the creation step and once activated, you can see that your prompt will now be prefixed with `(bioinfo_tutorial)` to show which environment is active. For the rest of the tutorial make sure that you always have this environment active.
 
-5. Make sure Python does not pick up packages in your home directory:
+5. Make sure Python does not pick up packages in your home directory.
+   First we do a backup of our `.bashrc` before we modify it:
+
+         (bioinfo_tutorial) (node)$> cp ~/.bashrc ~/.bashrc-$(date +%Y%m%d).bak
+
+    Then we add `export PYTHONNOUSERSITE=True` to the `.bashrc`:
 
         (bioinfo_tutorial) (node)$> cat << EOF >> ~/.bashrc
         
@@ -91,7 +96,7 @@ We will use conda on two levels in this tutorial. First, we use a conda environm
         export PYTHONNOUSERSITE=True
         EOF
 
-    For the later parts of this tutorial to work, we need to make this setting permanent by adding it to `~/.basrhc`. However, **make sure to delete those lines** after the tutorial, so your manually installed python packages are found again.
+    For the later parts of this tutorial to work, we need to make this setting permanent by adding it to `.basrhc`. However, **make sure to delete those lines** after the tutorial, so your manually installed python packages are found again.
 
 6. Install snakemake:
 
@@ -503,7 +508,7 @@ rule mapping:
     """
 ```
 
-If we want to rerun the workflow to compare different options, we need to delete the output files, otherwise snakemake will not run the steps again. Since we want to do a bit of testing, let's define a rule that removes all the output:
+If we want to rerun the workflow to compare different options, we need to delete the output files, otherwise snakemake will not run the steps again. Since we want to do a bit of testing, let's define a rule that removes all the output. Add the following to the end of your `Snakefile`:
 
 ```python
 rule clean:
