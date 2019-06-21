@@ -41,11 +41,9 @@ Be sure to start with a bare environment:
 * No python virtualenv already loaded
 
 ```bash
-# If you did not already clone the tutorial repository
-cd $HOME
+# cd into scratch and clone tutorial repository
+cd $SCRATCH
 git clone https://github.com/ULHPC/tutorials.git
-# Else update it
-cd tutorials && git pull && cd ..
 # cd into the scripts folder
 cd tutorials/python/advanced/scikit-learn/scripts
 # First ask for an interactive SLURM job

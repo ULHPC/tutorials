@@ -60,10 +60,9 @@ In order to test cplex and gurobi, we need an optimization instance. Hereafter, 
 If you did not already clone the tutorial repository, enter the following commands in your ```HOME``` directory:
 
 ```bash
-cd $HOME
+# cd into scratch and clone tutorial repository
+cd $SCRATCH
 git clone https://github.com/ULHPC/tutorials.git
-# Else update it
-cd tutorials && git pull && cd ..
 # cd into the scripts folder
 cd tutorials/maths/Cplex-Gurobi/scripts
 ```
