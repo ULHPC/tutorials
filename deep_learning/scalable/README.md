@@ -5,7 +5,7 @@
 
      Copyright (c) 2013-2019 UL HPC Team  <hpc-sysadmins@uni.lu>
 
-[![](https://github.com/ULHPC/tutorials/raw/devel/deep_learning/basics/cover_slides.png)](https://github.com/ULHPC/tutorials/raw/devel/deep_learning/basics/slides.pdf)
+[![](https://github.com/ULHPC/tutorials/raw/devel/deep_learning/scalable/cover_slides.png)](https://github.com/ULHPC/tutorials/raw/devel/deep_learning/scalable/slides.pdf)
 
 The objective of this tutorial is to practice running Horovod (and Keras/TensorFlow) on the UL HPC [iris cluster](https://hpc.uni.lu/systems/iris/).
 
