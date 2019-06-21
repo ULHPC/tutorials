@@ -23,17 +23,19 @@ They review:
 
 ### Part 1 - using existing containers
 
-1. Connect to the Iris cluster, load the Singularity module.
-2. Download using Singularity the official [Docker](https://hub.docker.com/r/tensorflow/tensorflow/) image of Tensorflow (CPU version)
+1. Connect to the Iris cluster, reserve a GPU node with 2 GPUs, load the Singularity module.
+2. Download using Singularity the official [Docker](https://hub.docker.com/r/tensorflow/tensorflow/) image of Tensorflow (GPU version)
 3. Download the Git repository of [Tensorflow models and examples](https://github.com/tensorflow/models.git)
 4. Run the _LeNet-5-like convolutional MNIST model example_ `tutorials/image/mnist/convolutional.py` with Singularity
+  - note the usage of the `--nv` flag to enable support for Nvidia GPUs
 
+        (access-iris)$> srun -p gpu -N 1 -n 1 -c 14 --gres=gpu:2 -t 1:0:0 --pty bash -i
         (node)$> mkdir singularity-tests
         (node)$> git clone https://github.com/tensorflow/models.git
-        (node)$> module use /opt/apps/resif/data/devel/default/modules/all
+        (node)$> module load swenv/default-env/devel
         (node)$> module load tools/Singularity 
-        (node)$> singularity pull docker://tensorflow/tensorflow
-        (node)$> singularity exec tensorflow.simg python models/tutorials/image/mnist/convolutional.py
+        (node)$> singularity pull docker://tensorflow/tensorflow:latest-gpu-py3-jupyter
+        (node)$> singularity exec --nv tensorflow_latest-gpu-py3-jupyter.sif python models/tutorials/image/mnist/convolutional.py
 
 
 ### Part 2 - building a container
@@ -41,7 +43,7 @@ They review:
 1. Set up Singularity on your workstation or laptop
 2. Create a definition file to create a CentOS 7 container
 3. Customize the definition file to install Python, NumPy, SciPy and Seaborn
-4. Build the container as _production_ SquashFS image
+4. Build the container as _production_ SIF image
 5. Transfer the image to the Iris cluster
 6. Use the container's embedded python and libraries to run a [Seaborn plot example](https://seaborn.pydata.org/examples/large_distributions.html)
 
@@ -49,9 +51,9 @@ They review:
 
 1. On your workstation or laptop set up a new definition file for a CentOS 7 container
 2. Build the container as a sandbox directory 
-3. Install OpenMPI 2.1.3 within the sandbox
+3. Install OpenMPI 3.1.3 within the sandbox
 4. Install the OSU Microbenchmarks in the sandbox, see instructions within the dedicated [UL HPC tutorial](http://ulhpc-tutorials.readthedocs.io/en/latest/parallel/mpi/OSU_MicroBenchmarks/) 
-5. Build the sandbox into a _production_ SquashFS image
+5. Build the sandbox into a _production_ SIF image
 6. Transfer the image to the Iris cluster
 7. Run the `mpi/one-sided/osu_get_bw` benchmark within the container on 2 MPI processes in parallel
 
