@@ -485,7 +485,7 @@ We also need to add the option `-p {threads}` to the bowtie2 command-line call, 
 
 such that the complete mapping rule now is the following:
 
-```python {highlight=[8,11]}
+```python
 rule mapping:
   input: "chip-seq/{sample}.fastq.gz"
   output: "bowtie2/{sample}.bam"
