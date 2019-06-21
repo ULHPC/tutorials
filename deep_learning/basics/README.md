@@ -165,7 +165,7 @@ Here, we will execute the functioning program developed above on a GPU node, int
 Request such resource from the iris-cluster:
 ```bash
 []$ ssh iris-cluster
-[]$ srun -n1 -c1 --gres:gpu:1 -pgpu --pty bash -i
+[]$ srun -n1 -c1 --gres=gpu:1 -pgpu --pty bash -i
 ```
 Load the modules, and the choose the proper python environment:
 ```bash
