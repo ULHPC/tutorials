@@ -183,9 +183,7 @@ Here comes a very specific case. Sometimes you have to use tools which depends o
 
 In this tutorial we will create a new virtual environment for the previous code in order to install a different version of numpy and check the performances of our code with it.
 
-**WARNING: Python2 and Python3 syntax differs for the following commands! Both will be described below**
-
-First of all, install `virtualenv` package using pip:
+First of all, if you use bare/system version of Python, install `virtualenv` package using pip:
 
 **PYTHON2** (default on iris cluster):
 ```
@@ -195,7 +193,8 @@ First of all, install `virtualenv` package using pip:
 **PYTHON3**:
 ```
 (access)$> si
-(iris-001)$> # You don't need to install virtualenv for Python 3
+(iris-001)$> module load lang/Python/3.6.4-foss-2018a-bare
+(iris-001)$> python3 -m pip install --no-cache --user virtualenv
 ```
 
 Now you can create 2 virtual environment for your project. They will contain 2 different version of numpy (1.13 and 1.16). Name it respectively `numpy13` and `numpy16`.
@@ -209,8 +208,9 @@ Now you can create 2 virtual environment for your project. They will contain 2 d
 **PYTHON3**:
 ```
 (iris-001)$> cd ~/tutorials/advanced/Python/example3/
-(iris-001)$> python3 -m venv numpy13
-(iris-001)$> python3 -m venv numpy16
+(iris-001)$> module load lang/Python/3.6.4-foss-2018a-bare
+(iris-001)$> python3 -m virtualenv numpy13
+(iris-001)$> python3 -m virtualenv numpy16
 ```
 
 So now you should be able to active this environment with this `source` command. Please notice the `(numpy13)` present in your prompt that indicates that the `numpy13` environment is active. You can use `deactivate` command to exit the virtual environment.
@@ -235,6 +235,7 @@ So now, we can install a different numpy version inside your virtual environment
 
 ```
 (iris-001)$> # Go inside numpy13 environment and install numpy 1.13
+(iris-001)$> # Eventually load your Python version with `module load`
 (iris-001)$> source numpy13/bin/activate
 (numpy13)(iris-001)$> python -m pip install numpy==1.13
 (numpy13)(iris-001)$> python -c "import numpy as np; print(np.__version__)"
