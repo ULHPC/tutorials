@@ -30,9 +30,10 @@ The actual command comes only after this prefix.
     3. [Run snakemake with cluster configuration](#cluster_config)
 4. [Inspect results in IGV](#igv)
 5. [(Optional) Immediately submit all jobs](#immediate_submit)
-6. [Useful stuff](#useful)
-7. [References](#references)
-8. [Acknowledgements](#acknowledgements)
+6. [(Optional) Revert the changes to your environment](#revert)
+7. [Useful stuff](#useful)
+8. [References](#references)
+9. [Acknowledgements](#acknowledgements)
 
 <a name="env"></a>
 
@@ -735,6 +736,32 @@ Run snakemake with the following command and replace `<your_username>` with your
 ```
 
 With `squeue -u <your_username>` you can check the status of the submitted jobs and see when they all have finished.
+
+
+
+<a name="revert"></a>
+
+## (Optional) Revert the changes to your environment
+
+### Unset `PYTHONNOUSERSITE`
+
+Remove `PYTHONNOUSERSITE=True`, so python finds the packages in your `$HOME/.local` again:
+
+* Open `~/.bashrc` in your favourite editor (e.g. `nano` or `vim`).
+* Scroll to the very end of the file.
+* Remove the line containing `export PYTHONNOUSERSITE=True`.
+
+### Remove conda
+
+If you want to stop conda from always being active:
+
+```bash
+(access)$> conda init --reverse
+```
+
+In case you want to get rid of conda completely, you can now also delete the directory where you installed it (default is `$HOME/miniconda3`).
+
+
 
 <a name="useful"></a>
 
