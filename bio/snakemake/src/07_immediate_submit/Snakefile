@@ -45,9 +45,3 @@ rule bigwig:
     """
     bedGraphToBigWig {input} {params.idx} {output}
     """
-
-rule clean:
-  shell:  
-    """
-    rm -rf bowtie2/ macs2/ output/
-    """

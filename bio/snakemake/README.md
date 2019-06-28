@@ -526,22 +526,10 @@ rule mapping:
     """
 ```
 
-If we want to rerun the workflow to compare different options, we need to delete the output files, otherwise snakemake will not run the steps again. Since we want to do a bit of testing, let's define a rule that removes all the output. Add the following to the end of your `Snakefile`:
-
-```python
-rule clean:
-  shell:  
-    """
-    rm -rf bowtie2/ macs2/ output/
-    """
-```
-
-**Warning:** Be careful with `rm -rf` and double-check you're deleting the right directories, since it will remove everything without asking.
-
-Run the clean-up rule:
+If we want to rerun the workflow to compare different options, we need to delete the output files, otherwise snakemake will not run the steps again. Fortunately snakemake has a dedicated option for this:
 
 ```bash
-(node)$> snakemake clean
+(node)$> snakemake all --delete-all-output
 ```
 
 Quit your current job and start a new one with more cores to test the multithreading:
@@ -623,7 +611,7 @@ The meaning of the option `-j` changes when running in cluster mode to denote th
 (node)$> exit
 (access)$> cd $SCRATCH/bioinfo_tutorial
 (access)$> conda activate bioinfo_tutorial
-(access)$> snakemake clean
+(access)$> snakemake all --delete-all-output
 
 (access)$> SLURM_ARGS="-p {cluster.partition} -N {cluster.nodes} -n {cluster.ntasks} -c {cluster.ncpus} -t {cluster.time} -J {cluster.job-name} -o {cluster.output} -e {cluster.error}"
 
@@ -731,7 +719,7 @@ Make the script executable:
 Run snakemake with the following command and replace `<your_username>` with your ULHPC user login:
 
 ```bash
-(access)$> snakemake clean
+(access)$> snakemake all --delete-all-output
 (access)$> snakemake --cluster-config cluster.yaml -j 50 -pr --use-conda --immediate-submit --notemp --cluster "/scratch/users/<your_username>/bioinfo_tutorial/immediate_submit.py {dependencies}"
 ```
 
