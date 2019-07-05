@@ -6,7 +6,7 @@
 
 Author: Sarah Peter
 
-![cover_slides](cover_slides.png)
+[![](cover_slides.png)](slides.pdf)
 
 In this tutorial you will learn how to run a [ChIP-seq](https://en.wikipedia.org/wiki/ChIP-sequencing) analysis with the [snakemake workflow engine](https://snakemake.readthedocs.io/en/stable/)  on the cluster.
 
