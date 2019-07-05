@@ -18,6 +18,7 @@ So far, the following tutorials are proposed:
 | **Category**            | **Description**                                                                                       | **Level**      |
 | :----------:            | ----------------------------------------------------------------------------                          | -------------- |
 | _Basic_                 | [Getting Started on the UL HPC platform](beginners/)                                                  | beginners      |
+|                         | [Monitoring & Profiling I: why, what, how, where to look](basic/monitoring/)                          | beginners      |
 |                         | [HPC workflow with sequential jobs](basic/sequential_jobs/)                                           | beginners      |
 | _Scheduling_            | [Advanced scheduling with SLURM](scheduling/advanced)                                                 | intermediate   |
 | _Software Management_   | [Building [custom] software with EasyBuild](tools/easybuild/)                                         | beginners      |

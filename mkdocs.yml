@@ -8,6 +8,7 @@ pages:
   - Installation:   'setup/install.md'
 - Basic Tutorials:
   - Getting Started: 'beginners/index.md'
+  - Monitoring & Profiling: 'basic/monitoring/index.md'
   - HPC workflow with sequential jobs: 'basic/sequential_jobs/index.md'
   - Prototyping with Python: 'python/basics/index.md'
 - Scheduling:
