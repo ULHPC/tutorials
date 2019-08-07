@@ -20,7 +20,7 @@ Evolutionary computing is a class of global optimisation algorithms designed to 
 * [**Deap**](https://deap.readthedocs.io/en/master/)  
 * [**Pygmo**](https://esa.github.io/pagmo2/)
 * [**Pyvolution**](https://pyvolution.readthedocs.io/en/latest/)
-* [**pySTEP**](https://github.com/pySTEPS/pysteps)
+* [**pySTEP**](https://pypi.org/project/pySTEP/)
 * [**Pyevolve**](http://pyevolve.sourceforge.net/)
 * [**PyRobot**](https://github.com/chriskiehl/pyrobot)
 * [**Inspyred**](https://pythonhosted.org/inspyred/)
