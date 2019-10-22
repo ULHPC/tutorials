@@ -1,0 +1,32 @@
+# This configuration should match what is implemented in the horovod example:
+# https://github.com/uber/horovod/blob/master/examples/keras_imagenet_resnet50.py
+
+description: 'ResNet ImageNet'
+output_dir: $SCRATCH/scalable_deep_learning/imagenet-resnet-N${SLURM_JOB_NUM_NODES}-${SLURM_JOB_ID}
+
+data:
+    name: imagenet
+    train_dir: /work/projects/bigdata_sets/ImageNet/tiny-imagenet-200/train
+    valid_dir: /work/projects/bigdata_sets/ImageNet/tiny-imagenet-200/validation
+
+model:
+    name: resnet50
+    input_shape: [224, 224, 3]
+    n_classes: 100
+
+optimizer:
+    name: SGD
+    lr: 0.0125
+    momentum: 0.9
+
+training:
+    batch_size: 32
+    n_epochs: 100
+    lr_warmup_epochs: 5
+    loss: categorical_crossentropy
+    metrics: [accuracy, top_k_categorical_accuracy]
+    lr_schedule:
+        - {start_epoch: 5, end_epoch: 30, multiplier: 1.}
+        - {start_epoch: 30, end_epoch: 60, multiplier: 1.e-1}
+        - {start_epoch: 60, end_epoch: 80, multiplier: 1.e-2}
+        - {start_epoch: 80, multiplier: 1.e-3}

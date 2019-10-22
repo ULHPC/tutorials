@@ -28,10 +28,10 @@ In this tutorial, we are going to show how to perform parrallel machine learning
 
 In this tutorial, we are going to code in python 3 and use the following libraries:
 
-* numpy
-* scikit-learn
-* ipyparallel
-* joblib
+* [numpy](https://www.numpy.org/)
+* [scikit-learn](https://scikit-learn.org/stable/)
+* [ipyparallel](http://ipython.org/ipython-doc/stable/parallel/parallel_intro.html)
+* [joblib](https://joblib.readthedocs.io/en/latest/)
 
 ## Creating the virtual environment
 
@@ -41,8 +41,8 @@ Be sure to start with a bare environment:
 * No python virtualenv already loaded
 
 ```bash
-# If you did not already clone the tutorial repository
-cd $HOME
+# cd into scratch and clone tutorial repository
+cd $SCRATCH
 git clone https://github.com/ULHPC/tutorials.git
 # cd into the scripts folder
 cd tutorials/python/advanced/scikit-learn/scripts
@@ -70,6 +70,7 @@ pip install pandas
 # Exit interactive job (setup completed)
 exit
 ```
+
 ## Using ipyparrallel with SLURM (generic slurm script)
 
 Hereafter, a general script for using ipyparrallel with the SLURM scheduler is provided. We are going to use it in the remaining part of this tutorial. This is the file ```launcher.sh``` that you can find in the scripts directory. 
@@ -106,6 +107,9 @@ echo "Launching job for script $1"
 python $1 -p ${profile}
 
 ```
+__________
+--ip=* instructs ZeroMQ to listen on all interfaces, but it does not contain the IP needed for engines / clients to know where the controller is. This can be specified with the --location argument, such as --location=10.0.0.1, or --location=server.local, the specific IP address or hostname of the controller, as seen from engines and/or clients. IPython uses socket.gethostname() for this value by default, but it may not always be the right value. Check the location field in your connection files if you are having connection trouble.
+__________
 
 Now, we are going to show how to apply **ipyparallel** with machine learning algorithms implemented in **scikit-learn**. First, we will cluster some random generated data in parrallel and then we use parallel hyperparameter optimisation to find the best parameters for a SVM classification model.
 
@@ -288,6 +292,8 @@ You only need to start the following command from the ```scripts``` directory:
 ```sbatch launcher.sh unsupervized/main.py```
 
 
+After job completion, use [scp or rsync](https://hpc.uni.lu/users/docs/filetransfer.html) to retrieve your results on your laptop.
+
 ![](./images/clusterings.png)
 
 
@@ -421,6 +427,7 @@ plt.savefig(os.path.join(FILE_DIR,"validation.png"))
 
 In the ```scripts``` folder, enter the following command ```sbatch launcher.sh supervized/main.py```.
 
+After job completion, use [scp or rsync](https://hpc.uni.lu/users/docs/filetransfer.html) to retrieve your results on your laptop.
 
 ![Scores heatmap](./images/validation.png)
 
@@ -436,7 +443,7 @@ See the following books to know all about python parallel programming.
 
 
 <center>
-![](https://books.google.lu/books/content?id=Aht1CgAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&imgtk=AFLRE72vWMXyOSaMskI0_sf5DeB7ihiLbyKwwR2XuTzUgG8RW-R1zeT_HYQOgB7cLJzHISLSNnDJbiFOnHBSlKbiIf4vqPEveKi5fle22hnXB32EQGYmluTDCgyyw7SZRBYUPQtclx1A)
-![](https://books.google.lu/books/content?id=VQDgDAAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&imgtk=AFLRE72bAKvQFTHad239xCDVRI_SVuA7MsLyGI-Kjv8hcEelMXlXkfiL3KCFuDVfU5X-ucXh8HQ0P77am_9Tsi0c8xE9Z7xgHAz7yEC5fMsNp96XeE1J2PHTJbv2zLUg3ATEp_e43jKw)
-![](https://books.google.lu/books/content?id=tyfJBQAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&imgtk=AFLRE73VaVDmXxCPJuh-xl0gVq-cy62z_emWyovesSXEuyv7pdQmOKJ_T22AVsGxZi0D2kdCCiguXqkgM-on8iKgMN00OXKFV3NhCJz1AqGeqJ1Gvv2C12G8IYDHmFi-eAJAZz_EjfHd)
+[![](https://books.google.lu/books/content?id=Aht1CgAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&imgtk=AFLRE72vWMXyOSaMskI0_sf5DeB7ihiLbyKwwR2XuTzUgG8RW-R1zeT_HYQOgB7cLJzHISLSNnDJbiFOnHBSlKbiIf4vqPEveKi5fle22hnXB32EQGYmluTDCgyyw7SZRBYUPQtclx1A)](https://books.google.fr/books/about/Python_Parallel_Programming_Cookbook.html?id=Aht1CgAAQBAJ&source=kp_book_description&redir_esc=y)
+[![](https://books.google.lu/books/content?id=VQDgDAAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&imgtk=AFLRE72bAKvQFTHad239xCDVRI_SVuA7MsLyGI-Kjv8hcEelMXlXkfiL3KCFuDVfU5X-ucXh8HQ0P77am_9Tsi0c8xE9Z7xgHAz7yEC5fMsNp96XeE1J2PHTJbv2zLUg3ATEp_e43jKw)](https://books.google.fr/books?id=VQDgDAAAQBAJ&printsec=frontcover&dq=Mastering+python&hl=en&sa=X&ved=0ahUKEwiG6dG13fjiAhWkxoUKHcu-DZoQ6AEIKDAA#v=onepage&q=Mastering%20python&f=false)
+[![](https://books.google.lu/books/content?id=tyfJBQAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&imgtk=AFLRE73VaVDmXxCPJuh-xl0gVq-cy62z_emWyovesSXEuyv7pdQmOKJ_T22AVsGxZi0D2kdCCiguXqkgM-on8iKgMN00OXKFV3NhCJz1AqGeqJ1Gvv2C12G8IYDHmFi-eAJAZz_EjfHd)](https://books.google.fr/books/about/High_Performance_Python.html?id=bIZaBAAAQBAJ&redir_esc=y)
 </center> 

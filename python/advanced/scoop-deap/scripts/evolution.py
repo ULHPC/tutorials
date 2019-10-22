@@ -5,6 +5,11 @@ import timeit
 import json
 import collections
 import os
+# Library to generate plots                                                                         
+import matplotlib as mpl                                                                            
+# Define Agg as Backend for matplotlib when no X server is running                                  
+mpl.use('Agg')                                                                                      
+import matplotlib.pyplot as plt 
 from deap.algorithms import *
 from deap import base
 from deap import creator
@@ -12,6 +17,7 @@ from deap import tools
 from deap import benchmarks
 from deap import algorithms
 from deap import cma
+#from scoop import futures 
 
 # Create new type dynalically
 creator.create("FitnessMin", base.Fitness, weights=(-1.0,))
@@ -20,6 +26,7 @@ creator.create("Individual", list, fitness=creator.FitnessMin)
 # Create a toolbox and overload existing functions
 toolbox = base.Toolbox()
 toolbox.register("evaluate", benchmarks.rastrigin)
+#toolbox.register("map",futures.map)
 
 def tree():
     ''' 
@@ -54,11 +61,20 @@ def main(N,out_sol_dict):
     stats.register("max", numpy.max)
 
     # Start the generation and update the population of solutions:w
-    algorithms.eaGenerateUpdate(toolbox, ngen=250, stats=stats, halloffame=hof)
+    _,logbook=algorithms.eaGenerateUpdate(toolbox, ngen=250, stats=stats, halloffame=hof)
     # Get best solution and save it
     best_sol=tools.selBest(hof,1)[0]
     out_sol_dict["solution"]=list(best_sol)
     out_sol_dict["fit"]=float(best_sol.fitness.values[0])
+    # Plot convergence
+    gen, avg = logbook.select("gen", "avg")
+    plt.figure()
+    plt.title("Convergence curve")
+    plt.xlabel("Generations")
+    plt.ylabel("Best obtained Fitness value at gen N")
+    plt.grid(True)
+    plt.plot(gen,avg,"r--")
+    plt.savefig("conv.pdf",dpi=600)
 
 if __name__ == "__main__":
     # Check number of parameters

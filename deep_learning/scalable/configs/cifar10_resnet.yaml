@@ -1,0 +1,26 @@
+description: 'ResNet CIFAR10'
+output_dir: $SCRATCH/scalable_deep_learning/cifar10-resnet-N${SLURM_JOB_NUM_NODES}-${SLURM_JOB_ID}
+
+data:
+    name: cifar10
+
+model:
+    name: resnet_small
+    input_shape: [32, 32, 3]
+    n_classes: 10
+
+optimizer:
+    name: Adam
+    lr: 0.0001
+    lr_scaling: linear
+
+training:
+    batch_size: 64
+    n_epochs: 32
+    lr_warmup_epochs: 5
+    loss: categorical_crossentropy
+    metrics: [accuracy]
+
+device:
+    intra_threads: 32
+    blocktime: 0

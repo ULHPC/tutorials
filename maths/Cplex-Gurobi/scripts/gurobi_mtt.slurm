@@ -1,6 +1,6 @@
 #!/bin/bash -l
 #SBATCH -J Multi-threaded_gurobi
-#SBATCH --tasks=1
+#SBATCH --ntasks=1
 #SBATCH --cpus-per-task=28
 #SBATCH --time=0-01:00:00
 #SBATCH -p batch

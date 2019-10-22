@@ -1,6 +1,12 @@
+[![By ULHPC](https://img.shields.io/badge/by-ULHPC-blue.svg)](https://hpc.uni.lu) [![Licence](https://img.shields.io/badge/license-GPL--3.0-blue.svg)](http://www.gnu.org/licenses/gpl-3.0.html) [![GitHub issues](https://img.shields.io/github/issues/ULHPC/tutorials.svg)](https://github.com/ULHPC/tutorials/issues/) [![](https://img.shields.io/badge/slides-PDF-red.svg)](https://github.com/ULHPC/tutorials/raw/devel/bio/snakemake/slides.pdf) [![Github](https://img.shields.io/badge/sources-github-green.svg)](https://github.com/ULHPC/tutorials/tree/devel/bio/snakemake/) [![Documentation Status](http://readthedocs.org/projects/ulhpc-tutorials/badge/?version=latest)](http://ulhpc-tutorials.readthedocs.io/en/latest/bio/snakemake/) [![GitHub forks](https://img.shields.io/github/stars/ULHPC/tutorials.svg?style=social&label=Star)](https://github.com/ULHPC/tutorials)
+
 # Bioinformatics workflows with snakemake and conda
 
+     Copyright (c) 2019 UL HPC Team  <hpc-sysadmins@uni.lu>
+
 Author: Sarah Peter
+
+[![](cover_slides.png)](slides.pdf)
 
 In this tutorial you will learn how to run a [ChIP-seq](https://en.wikipedia.org/wiki/ChIP-sequencing) analysis with the [snakemake workflow engine](https://snakemake.readthedocs.io/en/stable/)  on the cluster.
 
@@ -28,9 +34,10 @@ The actual command comes only after this prefix.
     3. [Run snakemake with cluster configuration](#cluster_config)
 4. [Inspect results in IGV](#igv)
 5. [(Optional) Immediately submit all jobs](#immediate_submit)
-6. [Useful stuff](#useful)
-7. [References](#references)
-8. [Acknowledgements](#acknowledgements)
+6. [(Optional) Revert the changes to your environment](#revert)
+7. [Useful stuff](#useful)
+8. [References](#references)
+9. [Acknowledgements](#acknowledgements)
 
 <a name="env"></a>
 
@@ -48,52 +55,74 @@ It can encapsulate software and packages in environments, so you can have multip
 
 **Attention when dealing with sensitive data:** Everyone can very easily contribute installation recipies to the bioconda channel, without verified identity or double-checking from the community. Therefore it's possible to insert malicious software. If you use bioconda when processing sensitive data, you should check the recipes to verify that they install software from the official sources.
 
-We will use conda on two levels in this tutorial. First we use a conda environment to install and run snakemake. Second, inside the snakemake workflow we will define separate conda environments for each step.
+We will use conda on two levels in this tutorial. First, we use a conda environment to install and run snakemake. Second, inside the snakemake workflow we will define separate conda environments for each step.
 
-1. Connect to the cluster
+#### 1. Connect to the cluster
 
-2. Start an interactive job:
+#### 2. Start an interactive job
 
-        (access)$> si
+```bash
+(access)$> si
+```
 
-3. Install conda:
+#### 3. Install conda
 
-        (node)$> mkdir -p $SCRATCH/downloads
-        (node)$> cd $SCRATCH/downloads
-        (node)$> wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
-        (node)$> chmod u+x Miniconda3-latest-Linux-x86_64.sh
-        (node)$> ./Miniconda3-latest-Linux-x86_64.sh
+```bash
+(node)$> mkdir -p $SCRATCH/downloads
+(node)$> cd $SCRATCH/downloads
+(node)$> wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
+(node)$> chmod u+x Miniconda3-latest-Linux-x86_64.sh
+(node)$> ./Miniconda3-latest-Linux-x86_64.sh
+```
 
-    You need to specify your installation destination, e.g. `/home/users/<your_username>/tools/miniconda3`. You must use the **full** path and can**not** use `$HOME/tools/miniconda3`. Answer `yes` to initialize Miniconda3.
-	
-    The installation will modify your `.bashrc` to make conda directly available after each login. To activate the changes now, run
-	
-        (node)$> source ~/.bashrc
-	
-    Update conda to the latest version:
-	
-        (node)$> conda update conda
+You need to specify your installation destination, e.g. `/home/users/<your_username>/tools/miniconda3`. You must use the **full** path and can**not** use `$HOME/tools/miniconda3`. Answer `yes` to initialize Miniconda3.
 
-4. Create a new conda environment and activate it:
+The installation will modify your `.bashrc` to make conda directly available after each login. To activate the changes now, run
 
-        (node)$> conda create -n bioinfo_tutorial
-        (node)$> conda activate bioinfo_tutorial
-   
-    After validation of the creation step and once activated, you can see that your prompt will now be prefixed with `(bioinfo_tutorial)` to show which environment is active. For the rest of the tutorial make sure that you always have this environment active.
+```bash
+(node)$> source ~/.bashrc
+```
 
-5. Make sure Python does not pick up packages in your home directory:
+Update conda to the latest version:
 
-        (bioinfo_tutorial) (node)$> cat << EOF >> ~/.bashrc
-        
-        # Stop Python from picking up packages in $HOME/.local
-        export PYTHONNOUSERSITE=True
-        EOF
+```bash
+(node)$> conda update conda
+```
 
-    For the later parts of this tutorial to work, we need to make this setting permanent by adding it to `~/.basrhc`. However, **make sure to delete those lines** after the tutorial, so your manually installed python packages are found again.
+#### 4. Create a new conda environment and activate it
 
-6. Install snakemake:
+```bash
+(node)$> conda create -n bioinfo_tutorial
+(node)$> conda activate bioinfo_tutorial
+```
 
-        (bioinfo_tutorial) (node)$> conda install -c bioconda -c conda-forge snakemake-minimal
+After validation of the creation step and once activated, you can see that your prompt will now be prefixed with `(bioinfo_tutorial)` to show which environment is active. For the rest of the tutorial make sure that you always have this environment active.
+
+#### 5. Make sure Python does not pick up packages in your home directory
+
+First we do a backup of the `.bashrc` before we modify it:
+
+```bash
+(bioinfo_tutorial) (node)$> cp ~/.bashrc ~/.bashrc-$(date +%Y%m%d).bak
+```
+
+Then we add `export PYTHONNOUSERSITE=True` :
+
+```bash
+(bioinfo_tutorial) (node)$> cat << EOF >> ~/.bashrc
+
+# Stop Python from picking up packages in $HOME/.local
+export PYTHONNOUSERSITE=True
+EOF
+```
+
+For the later parts of this tutorial to work, we need to make this setting permanent by adding it to `.bashrc`. However, **make sure to delete those lines** after the tutorial, so your manually installed python packages are found again.
+
+#### 6. Install snakemake
+
+```bash
+(bioinfo_tutorial) (node)$> conda install -c bioconda -c conda-forge snakemake-minimal
+```
 
 
 <a name="snakemake"></a>
@@ -483,7 +512,7 @@ We also need to add the option `-p {threads}` to the bowtie2 command-line call, 
 
 such that the complete mapping rule now is the following:
 
-```python {highlight=[8,11]}
+```python
 rule mapping:
   input: "chip-seq/{sample}.fastq.gz"
   output: "bowtie2/{sample}.bam"
@@ -501,22 +530,10 @@ rule mapping:
     """
 ```
 
-If we want to rerun the workflow to compare different options, we need to delete the output files, otherwise snakemake will not run the steps again. Since we want to do a bit of testing, let's define a rule that removes all the output:
-
-```python
-rule clean:
-  shell:  
-    """
-    rm -rf bowtie2/ macs2/ output/
-    """
-```
-
-**Warning:** Be careful with `rm -rf` and double-check you're deleting the right directories, since it will remove everything without asking.
-
-Run the clean-up rule:
+If we want to rerun the workflow to compare different options, we need to delete the output files, otherwise snakemake will not run the steps again. Fortunately snakemake has a dedicated option for this:
 
 ```bash
-(node)$> snakemake clean
+(node)$> snakemake all --delete-all-output
 ```
 
 Quit your current job and start a new one with more cores to test the multithreading:
@@ -572,7 +589,17 @@ mapping:
   ncpus: 4
 ```
 
-**Attention:** Be aware that `ncpus` should match the `threads` directive in the respective rule. If `ncpus` is less than `threads` snakemake will reserve only  `ncpus` cores, but run the rule on the number of threads specified with `threads` .
+The only settings you may need to change per rule are:
+
+*  `time`, to adjust to the runtime of the rule,
+
+*  `ncpus`, to adjust to the number of threads specified in the rule,
+
+* maybe `partition`, to go to `bigmem` nodes, for example,
+
+as long as the software you use only does multithreading or doesn't scale at all. With multithreading you cannot run across multiple nodes, so `nodes` needs to be `1` , and snakemake always just runs one task per job, so `ntasks` also stays at `1`.
+
+**Attention:** Be aware that `ncpus` should match the `threads` directive in the respective rule. If `ncpus` is less than `threads` snakemake will reserve only  `ncpus` cores, but run the rule on the number of threads specified with `threads` . When running on the Iris cluster, the value for both should not exceed 28, the number of cores on a regular node.
 
 <a name="cluster_config"></a>
 
@@ -588,7 +615,7 @@ The meaning of the option `-j` changes when running in cluster mode to denote th
 (node)$> exit
 (access)$> cd $SCRATCH/bioinfo_tutorial
 (access)$> conda activate bioinfo_tutorial
-(access)$> snakemake clean
+(access)$> snakemake all --delete-all-output
 
 (access)$> SLURM_ARGS="-p {cluster.partition} -N {cluster.nodes} -n {cluster.ntasks} -c {cluster.ncpus} -t {cluster.time} -J {cluster.job-name} -o {cluster.output} -e {cluster.error}"
 
@@ -696,11 +723,37 @@ Make the script executable:
 Run snakemake with the following command and replace `<your_username>` with your ULHPC user login:
 
 ```bash
-(access)$> snakemake clean
+(access)$> snakemake all --delete-all-output
 (access)$> snakemake --cluster-config cluster.yaml -j 50 -pr --use-conda --immediate-submit --notemp --cluster "/scratch/users/<your_username>/bioinfo_tutorial/immediate_submit.py {dependencies}"
 ```
 
 With `squeue -u <your_username>` you can check the status of the submitted jobs and see when they all have finished.
+
+
+
+<a name="revert"></a>
+
+## (Optional) Revert the changes to your environment
+
+### Unset `PYTHONNOUSERSITE`
+
+Remove `PYTHONNOUSERSITE=True`, so python finds the packages in your `$HOME/.local` again:
+
+* Open `~/.bashrc` in your favourite editor (e.g. `nano` or `vim`).
+* Scroll to the very end of the file.
+* Remove the line containing `export PYTHONNOUSERSITE=True`.
+
+### Remove conda
+
+If you want to stop conda from always being active:
+
+```bash
+(access)$> conda init --reverse
+```
+
+In case you want to get rid of conda completely, you can now also delete the directory where you installed it (default is `$HOME/miniconda3`).
+
+
 
 <a name="useful"></a>
 
