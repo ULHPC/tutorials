@@ -2,7 +2,7 @@
 
 # High-Performance Linpack (HPL) benchmarking on UL HPC platform
 
-     Copyright (c) 2013-2017 UL HPC Team  <hpc-sysadmins@uni.lu>
+     Copyright (c) 2013-2019 UL HPC Team  <hpc-sysadmins@uni.lu>
 
 [![](https://github.com/ULHPC/tutorials/raw/devel/advanced/OSU_MicroBenchmarks/cover_slides.png)](https://github.com/ULHPC/tutorials/raw/devel/advanced/OSU_MicroBenchmarks/slides.pdf)
 
@@ -19,7 +19,6 @@ In all cases, ensure you are able to [connect to the UL HPC  clusters](https://h
 # Have an interactive job
 (access)$> si -n 14                                      # iris
 (access)$> srun -p interactive --qos qos-iteractive -n 14 --pty bash  # iris (long version)
-(access)$> oarsub -I -l enclosure=1/nodes=1,walltime=4   # chaos / gaia
 ```
 
 
@@ -64,18 +63,18 @@ Prepare your working directory
 ```bash
 $> mkdir -p ~/tutorials/HPL
 $> cd ~/tutorials/HPL
-$> ln -s ~/git/ULHPC/tutorials/advanced/HPL ref.ulhpc.d   # Keep a symlink to the reference tutorial
+$> ln -s ~/git/ULHPC/tutorials/parallel/mpi/HPL ref.ulhpc.d   # Keep a symlink to the reference tutorial
 $> ln -s ref.ulhpc.d/Makefile .     # symlink to the root Makefile
 ```
 
-Fetch and uncompress the latest version of the [HPL](http://www.netlib.org/benchmark/hpl/) benchmark (_i.e._ **version 2.2** at the time of writing).
+Fetch and uncompress the latest version of the [HPL](http://www.netlib.org/benchmark/hpl/) benchmark (_i.e._ **version 2.3** at the time of writing).
 
 ```bash
 $> cd ~/tutorials/HPL
 $> mkdir src
 $> cd src
 # Download the latest version
-$> export HPL_VERSION=2.2
+$> export HPL_VERSION=2.3
 $> wget --no-check-certificate http://www.netlib.org/benchmark/hpl/hpl-${HPL_VERSION}.tar.gz
 $> tar xvzf hpl-${HPL_VERSION}.tar.gz
 $> cd  hpl-${HPL_VERSION}
@@ -280,6 +279,23 @@ $> grep WR slurm-<jobid>.out    # /!\ ADAPT <jobid> appropriately.
 ```
 
 Of course, we made here a small test and optimizing the HPL parameters to get the best performances and efficiency out of a given HPC platform is not easy.
+
+As mentionned before, running HPL depends on the file `HPL.dat` -- see table \ref{tab:peak-params} to get a brief description of those variables.  See also <http://www.netlib.org/benchmark/hpl/tuning.html> for a description of the files.
+The main parameters to play with for optimizing the runs are:
+
+* `NB`: depends on the CPU architecture, use the recommended blocking sizes (`NB` in HPL.dat) listed after loading the `toolchains/intel` module `$EBROOTIMKL/compilers_and_libraries/linux/mkl/benchmarks/mp_linpack/readme.txt`
+   - NB=192 on braodwell
+   - NB=384 on skylake
+* `P x Q` is equal to the number of MPI processes
+* `N` can be derived from a simple dimensional analysis based on the involved volatile memory:
+
+\begin{equation*}
+  N \simeq \alpha\sqrt{\text{Total Memory Size in bytes}\times\frac{\mathtt{sizeof(double)}}{8}}
+\end{equation*}
+
+
+
+
 Below are some plots obtained when benchmarking the `iris` cluster and seeking the best set of parameters across increasing number of nodes (see [this blog post](https://hpc.uni.lu/blog/2017/preliminary-performance-results-of-the-iris-cluster/))
 
 ![](https://hpc.uni.lu/images/benchs/benchmark_HPL-iris_25N.png)
