@@ -284,15 +284,14 @@ As mentionned before, running HPL depends on the file `HPL.dat` -- see table \re
 The main parameters to play with for optimizing the runs are:
 
 * `NB`: depends on the CPU architecture, use the recommended blocking sizes (`NB` in HPL.dat) listed after loading the `toolchains/intel` module `$EBROOTIMKL/compilers_and_libraries/linux/mkl/benchmarks/mp_linpack/readme.txt`
-   - NB=192 on braodwell
+   - NB=192 on broadwell
    - NB=384 on skylake
 * `P x Q` is equal to the number of MPI processes
 * `N` can be derived from a simple dimensional analysis based on the involved volatile memory:
 
-\begin{equation*}
-  N \simeq \alpha\sqrt{\text{Total Memory Size in bytes}\times\frac{\mathtt{sizeof(double)}}{8}}
-\end{equation*}
-
+$$
+N \simeq \alpha\sqrt{\text{Total Memory Size in bytes}\times\frac{\mathtt{sizeof(double)}}{8}}
+$$
 
 
 
