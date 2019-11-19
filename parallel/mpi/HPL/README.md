@@ -165,17 +165,17 @@ Here is for instance a suggested difference for intel MPI:
  # the Fortran internals used in the BLAS library.
 ```
 
-If you don't succeed by yourself, use the following [makefile](https://raw.githubusercontent.com/ULHPC/tutorials/devel/advanced/HPL/src/hpl-2.2/Make.intel64):
+If you don't succeed by yourself, use the following [makefile](https://raw.githubusercontent.com/ULHPC/tutorials/devel/advanced/HPL/src/hpl-2.3Make.intel64):
 
 ```
 $> cd ~/tutorials/HPL
-$> cp ref.ulhpc.d/src/hpl-2.2/Make.intel64 src/hpl-2.2/Make.intel64
+$> cp ref.ulhpc.d/src/hpl-2.3/Make.intel64 src/hpl-2.3/Make.intel64
 ```
 
 Once compiled, ensure you are able to run it:
 
 ```bash
-$> cd ~/tutorials/HPL/src/hpl-2.2/bin/intel64
+$> cd ~/tutorials/HPL/src/hpl-2.3/bin/intel64
 $> cat HPL.dat      # Default (dummy) HPL.dat  input file
 
 # On Slurm cluster (iris)
@@ -234,7 +234,7 @@ Here is for instance a suggested difference for intel MPI:
 
  # Directory holding your built applications
 -APPDIR="$HOME"
-+APPDIR="$HOME/tutorials/HPL/src/hpl-2.2/bin/intel64"
++APPDIR="$HOME/tutorials/HPL/src/hpl-2.3/bin/intel64"
  # The task to be executed i.E. your favorite Java/C/C++/Ruby/Perl/Python/R/whatever program
  # to be invoked in parallel
 -TASK="${APPDIR}/app.exe"
