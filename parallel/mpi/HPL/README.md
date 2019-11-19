@@ -157,7 +157,8 @@ Here is for instance a suggested difference for intel MPI:
 @@ -178,7 +178,7 @@
  CC       = mpiicc
  CCNOOPT  = $(HPL_DEFS)
- OMP_DEFS = -openmp
+-OMP_DEFS = -openmp
++OMP_DEFS = -qopenmp
 -CCFLAGS  = $(HPL_DEFS) -O3 -w -ansi-alias -i-static -z noexecstack -z relro -z now -nocompchk -Wall
 +CCFLAGS  = $(HPL_DEFS) -O3 -w -ansi-alias -i-static -z noexecstack -z relro -z now -nocompchk -Wall -xHost
  #
