@@ -489,7 +489,7 @@ $> cp ~/git/github.com/ULHPC/launcher-scripts/slurm/launcher.default.sh launcher
 
 Take your favorite editor (`vim`, `nano`, etc.) to modify it according to your needs.
 
-Here is for instance a suggested difference for intel MPI:
+Here is for instance a suggested difference for intel MPI (adapt accordingly):
 
 ```diff
 --- ~/git/ULHPC/launcher-scripts/slurm/launcher.default.sh  2017-06-11 23:40:34.007152000 +0200
@@ -525,7 +525,7 @@ Here is for instance a suggested difference for intel MPI:
  #CMD="mpirun -np $SLURM_NTASKS --mca btl openib,self,sm ${TASK}"
 ```
 
-Now you should create an input `HPL.dat` file within the `runs/`.
+Now you should create an input `HPL.dat` file within the `runs/<arch>/<N>N/<mode>`.
 
 ```bash
 $> cd ~/tutorials/HPL/runs
@@ -554,20 +554,6 @@ $> grep WR slurm-<jobid>.out    # /!\ ADAPT <jobid> appropriately.
 ```
 
 Of course, we made here a small test and optimizing the HPL parameters to get the best performances and efficiency out of a given HPC platform is not easy.
-
-As mentionned before, running HPL depends on the file `HPL.dat` -- see table \ref{tab:peak-params} to get a brief description of those variables.  See also <http://www.netlib.org/benchmark/hpl/tuning.html> for a description of the files.
-The main parameters to play with for optimizing the runs are:
-
-* `NB`: depends on the CPU architecture, use the recommended blocking sizes (`NB` in HPL.dat) listed after loading the `toolchains/intel` module `$EBROOTIMKL/compilers_and_libraries/linux/mkl/benchmarks/mp_linpack/readme.txt`
-   - NB=192 on broadwell
-   - NB=384 on skylake
-* `P x Q` is equal to the number of MPI processes
-* `N` can be derived from a simple dimensional analysis based on the involved volatile memory:
-
-$$
-N \simeq \alpha\sqrt{\text{Total Memory Size in bytes}\times\frac{\mathtt{sizeof(double)}}{8}}
-$$
-
 
 
 Below are some plots obtained when benchmarking the `iris` cluster and seeking the best set of parameters across increasing number of nodes (see [this blog post](https://hpc.uni.lu/blog/2017/preliminary-performance-results-of-the-iris-cluster/))
