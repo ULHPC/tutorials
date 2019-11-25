@@ -415,7 +415,7 @@ and expected performances
 The main parameters to play with for optimizing the HPL runs are:
 
 * `NB`: depends on the CPU architecture, use the recommended blocking sizes (`NB` in HPL.dat) listed after loading the `toolchain/intel` module under  `$EBROOTIMKL/compilers_and_libraries/linux/mkl/benchmarks/mp_linpack/readme.txt`, i.e
-     - `NB=192` for the **braodwell** processors available on `iris`
+     - `NB=192` for the **broadwell** processors available on `iris`
      - `NB=384` on the **skylake** processors available on `iris`
 * `P` and `Q`, knowing that the product  `P x Q` **SHOULD** typically be equal to the number of MPI processes.
 * Of course `N` the problem size.
