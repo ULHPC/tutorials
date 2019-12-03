@@ -60,3 +60,17 @@ pages:
 - Contributing: 'contributing.md'
 - Contacts: 'contacts.md'
 theme: readthedocs
+# See https://github.com/mkdocs/mkdocs/issues/253
+markdown_extensions:
+  - pymdownx.arithmatex:
+  - pymdownx.snippets:
+  - markdown.extensions.abbr:
+  - markdown.extensions.toc:
+  - markdown.extensions.tables:
+  - markdown.extensions.attr_list:
+   # - markdown_include.include:
+   #      base_path: docs
+extra_javascript:
+  # other extra java script
+  - mathjax-config.js
+  - https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML
