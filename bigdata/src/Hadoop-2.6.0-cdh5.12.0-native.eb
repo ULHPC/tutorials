@@ -14,7 +14,7 @@ checksums = ['6eb2ff649ae1c5d1271732ca766b4e03728190ac4274ab00748ef8c44aa6e8d5']
 patches = ['Hadoop-TeraSort-on-local-filesystem.patch']
 
 builddependencies = [
-    ('Maven', '3.5.2'),
+    ('Maven', '3.6.0'),
     ('protobuf', '2.5.0'),  # *must* be this version
     ('CMake', '3.9.1'),
     ('snappy', '1.1.6'),
