@@ -2,7 +2,7 @@
 
 # HPC workflow with sequential jobs
 
-     Copyright (c) 2013-2018 UL HPC Team <hpc-sysadmins@uni.lu>
+     Copyright (c) 2013-2019 UL HPC Team <hpc-sysadmins@uni.lu>
 
 [![](https://github.com/ULHPC/tutorials/raw/devel/basic/sequential_jobs/cover_slides.png)](https://github.com/ULHPC/tutorials/raw/devel/basic/sequential_jobs/slides.pdf)
 
@@ -21,6 +21,7 @@ During this session, we will see 3 use cases:
 * _Exercise 1_: Use the serial launcher (1 node, in sequential and parallel mode);
 * _Exercise 2_: Use the generic launcher, distribute your executions on several nodes (python script);
 * _Exercise 3_: Advanced use case, using a Java program: "JCell".
+* _Exercise 4_: Advanced use case, distributing embarrassingly parallel tasks with GNU Parallel within a slurm job
 
 We will use the following github repositories:
 
@@ -91,6 +92,7 @@ With nano, you will only have to learn a few shortcuts to get started:
 * Paste: `CTRL+u`
 
 
+--------------------------------------------------------------------
 ## Exercise 1: Object recognition with Tensorflow and Python Imageai
 
 In this exercise, we will process some images from the OpenImages V4 data set with an object recognition tools.
@@ -221,6 +223,7 @@ Submit the (passive) job with `sbatch`
 
 
 
+---------------------------------------------------------------
 ## Exercise 2: Watermarking images in Python
 
 
@@ -302,9 +305,10 @@ Use one of these commands according to the cluster you have used:
     (yourmachine)$> rsync -avz iris-cluster:/scratch/users/<LOGIN>/PS2/images .
 
 
-**Question**: which nodes are you using, identify your nodes with the command `sacct` or Slurmweb 
+**Question**: which nodes are you using, identify your nodes with the command `sacct` or Slurmweb
 
 
+---------------------------------------------------------------
 ## Exercise 3: Advanced use case, using a Java program: "JCell"
 
 Let's use [JCell](https://jcell.gforge.uni.lu/), a framework for working with genetic algorithms, programmed in Java.
@@ -372,6 +376,177 @@ Use one of these commands according to the cluster you have used:
 **Question**: check the system load and memory usage with [Ganglia](https://hpc.uni.lu/iris/ganglia)
 
 
+---------------------------------------------------------------
+## Exercise 4: Advanced use case, distributing embarrassingly parallel tasks with GNU Parallel
+
+[GNU Parallel](http://www.gnu.org/software/parallel/)) is a tool for executing tasks in parallel, typically on a single machine. When coupled with the Slurm command `srun`, parallel becomes a powerful way of distributing a set of tasks amongst a number of workers. This is particularly useful when the number of tasks is significantly larger than the number of available workers (i.e. `$SLURM_NTASKS`), and each tasks is independent of the others.
+
+To illustrate the advantages of this approach, a sample launcher script is proposed under `scripts/launcher.parallel.sh`.
+It will invoke the command [`stress`](https://linux.die.net/man/1/stress) to impose a CPU load during 60s 8 times (with an increasing hang time, i.e. 1 to 8s).
+__We have thus 8 tasks, and we will create a single job handling this execution__
+
+More precisely, each task consists of the following command:
+
+``` bash
+stress --cpu 1 --timeout 60s --vm-hang <n>
+```
+
+* If run __sequentially__, this workflow would take at least 8x60 = 480s i.e. __8 min__
+* we will invoke the proposed launcher which will bundle the execution using __NO MORE THAN__ `$SLURM_NTASKS` (4 in the below tests), i.e. in approximately 2 minutes
+
+``` bash
+# Go to the appropriate directory
+$> cd  $SCRATCH/PS2/tutorials/basic/sequential_jobs
+$> ./scripts/launcher.parallel.sh -h
+NAME
+    launcher.parallel.sh [-n] [TASK]
+
+    Using GNU parallel within a single node to run embarrasingly parallel
+    problems, i.e. execute multiple times the command '${TASK}' within a
+    'tunnel' set to run NO MORE THAN ${SLURM_NTASKS} tasks in parallel.
+
+    State of the execution is stored in logs/state.parallel.log and is used to
+    resume the execution later on, from where it stoppped (either due to the
+    fact that the slurm job has been stopped by failure or by hitting a walltime
+    limit) next time you invoke this script.
+    In particular, if you need to rerun this GNU Parallel job, be sure to delete
+    the logfile logs/state*.parallel.log or it will think it has already
+    finished!
+
+    By default, the 'stress --cpu 1 --timeout 60s --vm-hang <arg>' command is executed
+    with the arguments {1..8}
+
+OPTIONS
+  -n --noop --dry-run:   dry run mode
+
+EXAMPLES
+  Within an interactive job (use --exclusive for some reason in that case)
+      (access)$> si --exclusive --ntasks-per-node 4
+      (node)$> ./scripts/launcher.parallel.sh -n    # dry-run
+      (node)$> ./scripts/launcher.parallel.sh
+  Within a passive job
+      (access)$> sbatch --ntasks-per-node 4 ./scripts/launcher.parallel.sh
+  Within a passive job, using several cores (6) per tasks
+      (access)$> sbatch --ntasks-per-socket 2 --ntasks-per-node 4 -c 6 ./scripts/launcher.parallel.sh
+
+  Get the most interesting usage statistics of your jobs <JOBID> (in particular
+  for each job step) with:
+     sacct -j <JOBID> --format User,JobID,Jobname,partition,state,time,elapsed,MaxRss,MaxVMSize,nnodes,ncpus,nodelist,ConsumedEnergyRaw
+```
+
+#### Step 1: dry-run tests in an interactive jobs
+
+For some reason, if you intend to really execute this script within the `interactive` partition, you will need to use the `--exclusive` flag.
+By default, we will only make a dry-run tests in this case
+
+``` bash
+# Get an interactive job -- use '--exclusive' (but everybody cannot be serve in
+# this case) if you really intend to run the commands
+(access)$> srun -p interactive --exclusive --ntasks-per-node 4 --pty bash
+# OR, simplier: 'si --exclusive --ntasks-per-node 4'
+(node)$> echo $SLURM_NTASKS
+4
+(node)$> ./scripts/launcher.parallel.sh -n
+### Starting timestamp (s): 1576074072
+parallel --delay .2 -j 4 --joblog logs/state.parallel.log --resume srun  --exclusive -n1 -c 1 --cpu-bind=cores stress --cpu 1 --timeout 60s --vm-hang {1} ::: 1 2 3 4 5 6 7 8
+### Ending timestamp (s): 1576074072"
+# Elapsed time (s): 0
+
+Beware that the GNU parallel option --resume makes it read the log file set by
+--joblog (i.e. logs/state*.log) to figure out the last unfinished task (due to the
+fact that the slurm job has been stopped due to failure or by hitting a walltime
+limit) and continue from there.
+In particular, if you need to rerun this GNU Parallel job, be sure to delete the
+logfile logs/state*.parallel.log or it will think it has already finished!
+
+# Release your job
+(node)$> exit    # OR 'CTRL+D'
+```
+
+#### Step 2: real test in passive job
+
+Submit this job using `sbatch`
+
+``` bash
+(access)$> sbatch ./scripts/launcher.parallel.sh
+```
+
+Check that you have a single job in the queue, assigned as many nodes/cores as
+was requested:
+
+``` bash
+(access)$> sq    # OR 'squeue -u $(whoami)'  OR 'sqs'
+             JOBID PARTITION                           NAME     USER ST       TIME  TIME_LEFT  NODES NODELIST(REASON)
+           1359477     batch                    GnuParallel svarrett  R       0:00    1:00:00      1 iris-093
+```
+
+In this launcher script, GNU Parallel maintains a log of the work that has already been done (under `logs/state.parallel.log`), along with the exit value of each step (useful for determining any failed steps).
+
+``` bash
+(access)$> tail logs/state.parallel.log
+Seq     Host    Starttime       JobRuntime      Send    Receive Exitval Signal  Command
+1       :       1576074282.818      60.116      0       121     0       0       srun  --exclusive -n1 -c 1 --cpu-bind=cores stress --cpu 1 --timeout 60s --vm-hang 1
+2       :       1576074283.041      60.127      0       121     0       0       srun  --exclusive -n1 -c 1 --cpu-bind=cores stress --cpu 1 --timeout 60s --vm-hang 2
+3       :       1576074283.244      60.134      0       121     0       0       srun  --exclusive -n1 -c 1 --cpu-bind=cores stress --cpu 1 --timeout 60s --vm-hang 3
+4       :       1576074283.457      60.128      0       121     0       0       srun  --exclusive -n1 -c 1 --cpu-bind=cores stress --cpu 1 --timeout 60s --vm-hang 4
+```
+
+As indicated in the help message, the state of the execution is stored in the joblog file `logs/state.parallel.log` which is used to resume the execution later on from `--resume`, in case your job is stopped, either due to the fact that the slurm job has been stopped (by failure) or by hitting the walltime limit).
+To resume from a past execution, you simply need to re-run the script.
+
+**`/!\ IMPORTANT`** In particular, if you need to rerun this GNU Parallel job, be sure to delete the joblog file `logs/state.parallel.log` or it will think it has already finished!
+
+``` bash
+rm logs/state.parallel.log
+```
+
+You can notice the slurm logfile set to `GnuParallel-<JOBID>.out`
+
+``` bash
+(access)$> cat GnuParallel-*.out
+
+```
+
+#### Step 3: get the usage statistics of your job
+
+You can extract from the slurm database the usage statistics of this job, in particilar with regards the CPU and energy consumption for each job step corresponding to a GNU parallel task.
+
+``` bash
+# /!\ ADAPT <JOBID> with the appropriate Job ID. Ex: 1359477
+$> sacct -j 1359477 --format User,JobID,Jobname,partition,state,time,elapsed,MaxRss,MaxVMSize,nnodes,ncpus,nodelist,ConsumedEnergyRaw
+     User        JobID    JobName  Partition      State  Timelimit    Elapsed     MaxRSS  MaxVMSize   NNodes      NCPUS        NodeList ConsumedEnergyRaw
+--------- ------------ ---------- ---------- ---------- ---------- ---------- ---------- ---------- -------- ---------- --------------- -----------------
+svarrette 1359477      GnuParall+      batch  COMPLETED   01:00:00   00:02:01                              1          4        iris-093             26766
+          1359477.bat+      batch             COMPLETED              00:02:01     23948K    178784K        1          4        iris-093             26747
+          1359477.ext+     extern             COMPLETED              00:02:01          0    107956K        1          4        iris-093             26766
+          1359477.0        stress             COMPLETED              00:01:00       124K    248536K        1          1        iris-093             13380
+          1359477.1        stress             COMPLETED              00:01:01       124K    248536K        1          1        iris-093             13391
+          1359477.2        stress             COMPLETED              00:01:00       124K    248536K        1          1        iris-093             13402
+          1359477.3        stress             COMPLETED              00:01:00       124K    248536K        1          1        iris-093             13408
+          1359477.4        stress             COMPLETED              00:01:00       124K    248536K        1          1        iris-093             13121
+          1359477.5        stress             COMPLETED              00:01:00       124K    248536K        1          1        iris-093             13118
+          1359477.6        stress             COMPLETED              00:01:00       124K    248536K        1          1        iris-093             13117
+          1359477.7        stress             COMPLETED              00:01:00       124K    248536K        1          1        iris-093             13118
+
+# Another nice slurm utility is 'seff <JOBID>'
+$> seff 1359477
+Job ID: 1359477
+Cluster: iris
+User/Group: svarrette/clusterusers
+State: COMPLETED (exit code 0)
+Nodes: 1
+Cores per node: 4
+CPU Utilized: 00:08:00
+CPU Efficiency: 99.17% of 00:08:04 core-walltime
+Job Wall-clock time: 00:02:01
+Memory Utilized: 23.39 MB
+Memory Efficiency: 0.14% of 16.00 GB
+```
+
+As can be seen, the jobs was using quite efficiently the allocated CPUs, but not the memory.
+
+
+--------------
 ## Conclusion
 
 __At the end, please clean up your home and scratch directories :)__
@@ -383,5 +558,7 @@ __At the end, please clean up your home and scratch directories :)__
 
 For going further:
 
-* [Checkpoint / restart with BLCR](http://hpc.uni.lu/users/docs/oar.html#checkpointing)
-* [OAR array jobs (fr)](http://crimson.oca.eu/spip.php?article157)
+* [Distributing Tasks with SLURM and GNU Parallel](https://www.marcc.jhu.edu/getting-started/additional-resources/distributing-tasks-with-slurm-and-gnu-parallel/)
+* [Automating large numbers of tasks](https://rcc.uchicago.edu/docs/tutorials/kicp-tutorials/running-jobs.html)
+* (old) [Checkpoint / restart with BLCR](http://hpc.uni.lu/users/docs/oar.html#checkpointing)
+* (old) [OAR array jobs (fr)](http://crimson.oca.eu/spip.php?article157)
