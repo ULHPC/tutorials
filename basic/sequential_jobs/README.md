@@ -381,7 +381,8 @@ Use one of these commands according to the cluster you have used:
 
 [GNU Parallel](http://www.gnu.org/software/parallel/)) is a tool for executing tasks in parallel, typically on a single machine. When coupled with the Slurm command `srun`, parallel becomes a powerful way of distributing a set of tasks amongst a number of workers. This is particularly useful when the number of tasks is significantly larger than the number of available workers (i.e. `$SLURM_NTASKS`), and each tasks is independent of the others.
 
-To illustrate the advantages of this approach, a sample launcher script is proposed under `scripts/launcher.parallel.sh`.
+To illustrate the advantages of this approach, a sample launcher script is proposed under **[`scripts/launcher.parallel.sh`](https://github.com/ULHPC/tutorials/blob/devel/basic/sequential_jobs/scripts/launcher.parallel.sh)**.
+
 It will invoke the command [`stress`](https://linux.die.net/man/1/stress) to impose a CPU load during 60s 8 times (with an increasing hang time, i.e. 1 to 8s).
 __We have thus 8 tasks, and we will create a single job handling this execution__
 
