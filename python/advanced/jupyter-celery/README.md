@@ -31,10 +31,11 @@ If you have never used virtualenv before, please have a look at [Python1 tutoria
 
 ```bash
 # Load your prefered version of Python
-module load lang/Python/3.6.0-foss-2017a-bare
+module load lang/Python/3.7.2-GCCcore-8.2.0
+module load mpi/OpenMPI/3.1.4-GCC-8.2.0-2.31.1 # Needed for mpi4py later
 # Create a new virtualenv
 git clone https://github.com/ULHPC/tutorials
-cd tutorials/python/advanced/jupyter/
+cd tutorials/python/advanced/jupyter-celery/
 pip install --user virtualenv
 PATH=$PATH:$HOME/.local/bin
 virtualenv venv
@@ -64,6 +65,23 @@ pip install -r requirements.txt
 
 Now everything is installed properly.
 
+# Install required modules using conda - An alternative to using virtualenv
+
+This assumes you already have a working `conda` installation, e.g., via [Miniconda](https://docs.conda.io/en/latest/miniconda.html).
+
+```bash
+# The following lines are similar to the ones from the virtualenv-based instructions above
+# There is no need for environment module loading, except if you want to include mpi4py
+git clone https://github.com/jbornschein/srun.x11.git
+./srun.x11/srun.x11 -p interactive
+module load mpi/OpenMPI/3.1.4-GCC-8.2.0-2.31.1 # Needed for mpi4py later
+git clone https://github.com/ULHPC/tutorials
+cd tutorials/python/advanced/jupyter-celery/
+# Here comes the new part
+conda create -n jupyter_env jupyter matplotlib ipyparallel mpi4py ipykernel
+conda activate jupyter_env
+```
+
 # Create your own kernel and launch your Notebook
 
 In order to access to all the modules we have installed inside your Notebook, we will need to create a new Kernel and use it inside Jupyter.
@@ -71,8 +89,15 @@ In order to access to all the modules we have installed inside your Notebook, we
 To do so, let's use `ipykernel`.
 
 ```bash
-python -m ipykernel install --user --name=venv
+python -m ipykernel install --user --name=venv # The "venv" name here is to give your kernel a name and it will install it in your $HOME path. If a similarly named kernel exists, it will be overwritten.
+# In case you would like your kernel to be installed into your active conda environment (<YOURCONDAPATH-PREFIX>/miniconda3/envs/jupyter_env/share/jupyter/kernels/), use the command below. This may be preferred as it encapsulates everything into a single environment, but would deviate from the virtualenv-based configuration above more than necessary for this tutorial.
+#python -m ipykernel install --sys-prefix --name 'mylocalkernel'
+# A completely custom specification of the path is *discouraged* as the resulting warning about the path not being in the "default" places and might hence not be found is very real. This means that the kernel can not be selected from the "New" dialog in the Jupyter interface. S. a. https://scipy-ipython.readthedocs.io/en/latest/install/kernel_install.html#kernels-for-different-environments for further information.
+# Use only if you know what you do!!!
+#python -m ipykernel install --prefix=./ --name 'myhyperlocalkernel'
 ```
+
+Now everything is installed properly using conda.
 
 Now we will have to start our first notebook. To have access to it from the outside, we will need to run it on the correct IP of the node. This simple command permits to start a new notebook with the correct IP. Please ensure that you are running the command inside the correct directory!
 
@@ -81,7 +106,7 @@ The `--no-browser` command is used to disable the openning of the browser after 
 To make things easier, we will protect our Notebook with a password. You have just to choose a password after typing the `jupyter notebook password` command. A hash of your password will be stored in the jupyter config file.
 
 ```bash
-cd tutorials/python/advanced/jupyter
+#cd tutorials/python/advanced/jupyter-celery # Only needed if you do not follow from above
 jupyter notebook --generate-config
 jupyter notebook password
 jupyter notebook --ip $(ip addr show em1 | grep 'inet ' | awk '{print $2}' | cut -d/ -f1) --no-browser
