@@ -5,10 +5,10 @@
 #SBATCH --time=0-00:10:00
 #SBATCH --partition=gpu
 #SBATCH --gres=gpu:1
-#SBATCH --qos=qos-gpu
+#SBATCH --qos=normal
 
 if [ -z "$1" ]
-then 
+then
 	echo "Missing required source (.cu), and optional execution arguments."
 	exit
 fi

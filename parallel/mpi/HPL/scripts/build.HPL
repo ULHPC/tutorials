@@ -6,7 +6,7 @@
 # set -x
 #SBATCH -J HPL-build
 #SBATCH --partition=batch
-#SBATCH --qos qos-batch
+#SBATCH --qos normal
 #SBATCH --time=00:20:00
 #SBATCH -N 1
 #SBATCH -o logs/%x-%j.out

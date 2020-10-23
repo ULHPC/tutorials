@@ -80,7 +80,7 @@ In order to solve mathematical programs, cplex allows users to define a command 
 #SBATCH --cpus-per-task=28
 #SBATCH --time=0-01:00:00
 #SBATCH -p batch
-#SBATCH --qos=qos-batch
+#SBATCH --qos=normal
 
 # Load cplex 
 module load math/CPLEX/12.8-foss-2018a
@@ -127,7 +127,7 @@ The below launcher is an example showing how to reserve ressources on multiple n
 #SBACTH --cpus-per-task=2
 #SBATCH --time=0-01:00:00
 #SBATCH -p batch
-#SBATCH --qos=qos-batch
+#SBATCH --qos=normal
 module load math/CPLEX/12.8-foss-2018a
 
 # Some variables
@@ -170,7 +170,7 @@ The script below allows you to start multi-threaded MIP optimization with Gurobi
 #SBATCH --cpus-per-task=28
 #SBATCH --time=0-01:00:00
 #SBATCH -p batch
-#SBATCH --qos=qos-batch
+#SBATCH --qos=normal
 
 # Load Gurobi 
 module load math/Gurobi/8.1.1-intel-2018a-Python-3.6.4
@@ -197,7 +197,7 @@ Use the script ```gurobi_mtt.slurm ``` and launch a batch job using the ```sbatc
 #SBATCH --cpus-per-task=5
 #SBATCH --time=00:15:00
 #SBATCH -p batch
-#SBATCH --qos qos-batch
+#SBATCH --qos normal
 #SBATCH -o %x-%j.log
 
 # Load personal modules

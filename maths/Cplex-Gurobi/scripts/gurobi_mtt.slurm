@@ -4,7 +4,7 @@
 #SBATCH --cpus-per-task=28
 #SBATCH --time=0-01:00:00
 #SBATCH -p batch
-#SBATCH --qos=qos-batch
+#SBATCH --qos=normal
 
 # Load Gurobi 
 module load math/Gurobi/8.1.1-intel-2018a-Python-3.6.4

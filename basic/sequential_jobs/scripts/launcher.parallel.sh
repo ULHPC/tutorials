@@ -15,7 +15,7 @@
 #SBATCH -J GnuParallel
 #SBATCH --time=0-01:00:00     # 1 hour
 #SBATCH --partition=batch
-#SBATCH --qos qos-batch
+#SBATCH --qos normal
 #SBATCH -N 1                  # Stick to a single node
 #SBATCH --ntasks-per-node 28
 ### -c, --cpus-per-task=<ncpus>

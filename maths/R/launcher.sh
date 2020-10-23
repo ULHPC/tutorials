@@ -5,7 +5,7 @@
 #SBATCH --ntasks-per-node=1
 #SBATCH --time=0-00:10:00
 #SBATCH -p batch
-#SBATCH --qos=qos-batch
+#SBATCH --qos=normal
 
 echo "== Starting run at $(date)"
 echo "== Job ID: ${SLURM_JOBID}"

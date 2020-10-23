@@ -195,7 +195,7 @@ If you get stuck, here is an initial version for the CPU node:
 #SBATCH --cpus-per-task=1
 #SBATCH --time=0-00:10:00
 #SBATCH --partition=batch
-#SBATCH --qos=qos-batch
+#SBATCH --qos=normal
 
 module restore tf
 source ~/venv/tfcpu/bin/activate

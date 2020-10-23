@@ -5,7 +5,7 @@
 #SBATCH --cpus-per-task=5
 #SBATCH --time=00:15:00
 #SBATCH -p batch
-#SBATCH --qos qos-batch
+#SBATCH --qos normal
 #SBATCH -o %x-%j.log
 
 # Load personal modules

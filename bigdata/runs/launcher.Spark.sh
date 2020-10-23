@@ -10,7 +10,7 @@
 #SBATCH -J Spark
 #SBATCH --time=0-01:00:00   # 1 hour
 #SBATCH --partition=batch
-#SBATCH --qos qos-batch
+#SBATCH --qos normal
 #
 #SBATCH -N 3
 #SBATCH --ntasks-per-node=1

@@ -5,7 +5,7 @@
 #SBATCH --ntasks=1
 #SBATCH --time=0-00:10:00
 #SBATCH -p batch
-#SBATCH --qos=qos-batch
+#SBATCH --qos=normal
 
 pythran example4.py -o std.so
 python c_compare.py

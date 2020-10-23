@@ -103,7 +103,7 @@ Create a file which contains the list of parameters (random list of images):
 
 #### Step 0: Prepare the environment
 
-    (access)$> srun -p interactive -N 1 --qos qos-interactive --pty bash -i
+    (access)$> srun -p interactive -N 1 --qos debug --pty bash -i
 
 Load the default Python module
 
@@ -147,7 +147,7 @@ Edit the following variables:
 
 Launch the job, in interactive mode and execute the launcher:
 
-    (access)$> srun -p interactive -N 1 --qos qos-interactive --pty bash -i
+    (access)$> srun -p interactive -N 1 --qos debug --pty bash -i
 
     (node)$> source venv/bin/activate
     (node)$> $SCRATCH/PS2/launcher-scripts/bash/serial/NAIVE_AKA_BAD_launcher_serial.sh
@@ -162,7 +162,7 @@ You can use the command `scontrol show job <JOBID>` to read all the details abou
     (access)$> scontrol show job 207001
     JobId=207001 JobName=BADSerial
        UserId=hcartiaux(5079) GroupId=clusterusers(666) MCS_label=N/A
-       Priority=8791 Nice=0 Account=ulhpc QOS=qos-batch
+       Priority=8791 Nice=0 Account=ulhpc QOS=normal
        JobState=RUNNING Reason=None Dependency=(null)
        Requeue=0 Restarts=0 BatchFlag=1 Reboot=0 ExitCode=0:0
        RunTime=00:00:23 TimeLimit=01:00:00 TimeMin=N/A
@@ -182,7 +182,7 @@ And the command `sacct` to see the start and end date
 In all cases, you can connect to a reserved node using the command `srun`
 and check the status of the system using standard linux command (`free`, `top`, `htop`, etc)
 
-    (access)$> srun -p interactive --qos qos-interactive --jobid <JOBID> --pty bash
+    (access)$> srun -p interactive --qos debug --jobid <JOBID> --pty bash
 
 During the execution, you can see the job in the queue with the command `squeue`:
 
@@ -248,7 +248,7 @@ We will work with 2 files:
 In an interactive job, install `pillow` in your home directory using this command:
 
 
-    (access IRIS)>$ srun -p interactive -N 1 --qos qos-interactive --pty bash -i
+    (access IRIS)>$ srun -p interactive -N 1 --qos debug --pty bash -i
 
 
     (node)>$ pip install --user pillow

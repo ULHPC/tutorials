@@ -249,7 +249,7 @@ We will now see the basic commands of Slurm.
 
 * Connect to **iris-cluster**. You can request resources in interactive mode:
 
-		(access)$> srun -p interactive --qos qos-interactive --pty bash
+		(access)$> srun -p interactive --qos debug --pty bash
 
   Notice that with no other parameters, srun gave you one resource for 1 hour. You were also directly connected to the node you reserved with an interactive shell.
   Now exit the reservation:
@@ -263,12 +263,12 @@ you can reserve and connect in two steps using the job id associated to your res
 
 * First run a passive job _i.e._ run a predefined command -- here `sleep 10d` to delay the execution for 10 days -- on the first reserved node:
 
-		(access)$> sbatch --qos qos-batch --wrap "sleep 10d"
+		(access)$> sbatch --qos normal --wrap "sleep 10d"
 		Submitted batch job 390
 
   You noticed that you received a job ID (in the above example: `390`), which you can later use to connect to the reserved resource(s):
 
-        (access)$> srun -p interactive --qos qos-interactive --jobid 390 --pty bash # adapt the job ID accordingly ;)
+        (access)$> srun -p interactive --qos debug --jobid 390 --pty bash # adapt the job ID accordingly ;)
 		(node)$> ps aux | grep sleep
 		cparisot 186342  0.0  0.0 107896   604 ?        S    17:58   0:00 sleep 1h
 		cparisot 187197  0.0  0.0 112656   968 pts/0    S+   18:04   0:00 grep --color=auto sleep
@@ -326,11 +326,11 @@ You probably want to use more than one core, and you might want them for a diffe
 
 * Reserve interactively 4 cores in one task on one node, for 30 minutes (delete the job afterwards)
 
-		(access)$> srun -p interactive --qos qos-interactive --time=0:30:0 -N 1 --ntasks-per-node=1 --cpus-per-task=4 --pty bash
+		(access)$> srun -p interactive --qos debug --time=0:30:0 -N 1 --ntasks-per-node=1 --cpus-per-task=4 --pty bash
 
 * Reserve interactively 4 tasks (system processes) with 2 nodes for 30 minutes (delete the job afterwards)
 
-		(access)$> srun -p interactive --qos qos-interactive --time=0:30:0 -N 2 --ntasks-per-node=4 --cpus-per-task=4 --pty bash
+		(access)$> srun -p interactive --qos debug --time=0:30:0 -N 2 --ntasks-per-node=4 --cpus-per-task=4 --pty bash
 
 This command can also be written in a more compact way
 
@@ -412,7 +412,7 @@ We will illustrate the usage of GNU screen by performing a compilation of a rece
 * create a new window and rename it "Compile"
 * within this new window, start a new interactive job over 1 node and 2 cores for 4 hours
 
-		(access)$> srun -p interactive --qos qos-interactive --time 4:00:0 -N 1 -c 2 --pty bash
+		(access)$> srun -p interactive --qos debug --time 4:00:0 -N 1 -c 2 --pty bash
 
 * detach from this screen (using `CTRL+a d`)
 * kill your current SSH connection and your terminal
@@ -702,7 +702,7 @@ In your home directory, create a file `mpi_broadcast.c` and copy the following s
 
 Reserve 2 tasks of 1 core on two distinct nodes with Slurm
 
-        (access-iris)$> srun -p interactive --qos qos-interactive --time 1:00:0 -N 2 -n 2 -c 1 --pty bash
+        (access-iris)$> srun -p interactive --qos debug --time 1:00:0 -N 2 -n 2 -c 1 --pty bash
 
 Load a toolchain and compile the code using `mpicc`
 
@@ -762,7 +762,7 @@ Download a pre-trained model for image recognition
 
 We will now prepare the software environment
 
-    (access)$> srun -p interactive -N 1 --qos qos-interactive --pty bash -i
+    (access)$> srun -p interactive -N 1 --qos debug --pty bash -i
 
 Load the default Python module
 
@@ -799,7 +799,7 @@ We will create a new "launcher script", which is basically a loop over all the f
 
 #SBATCH --time=0-00:30:00 # 30 minutes
 #SBATCH --partition=batch # Use the batch partition reserved for passive jobs
-#SBATCH --qos=qos-batch
+#SBATCH --qos=normal
 #SBATCH -J BADSerial      # Set the job name
 #SBATCH -N 1              # 1 computing node
 #SBATCH -c 1              # 1 core
@@ -828,7 +828,7 @@ You can use the command `scontrol show job <JOBID>` to read all the details abou
     (access)$> scontrol show job 207001
     JobId=207001 JobName=BADSerial
        UserId=hcartiaux(5079) GroupId=clusterusers(666) MCS_label=N/A
-       Priority=8791 Nice=0 Account=ulhpc QOS=qos-batch
+       Priority=8791 Nice=0 Account=ulhpc QOS=normal
        JobState=RUNNING Reason=None Dependency=(null)
        Requeue=0 Restarts=0 BatchFlag=1 Reboot=0 ExitCode=0:0
        RunTime=00:00:23 TimeLimit=01:00:00 TimeMin=N/A
@@ -848,7 +848,7 @@ And the command `sacct` to see the start and end date
 In all cases, you can connect to a reserved node using the command `srun`
 and check the status of the system using standard linux command (`free`, `top`, `htop`, etc)
 
-    (access)$> srun -p interactive --qos qos-interactive --jobid <JOBID> --pty bash
+    (access)$> srun -p interactive --qos debug --jobid <JOBID> --pty bash
 
 During the execution, you can see the job in the queue with the command `squeue`:
 
@@ -870,7 +870,7 @@ We will create a new "launcher script", which uses GNU Parallel to execute 10 pr
 #!/bin/bash -l
 #SBATCH --time=0-00:30:00 # 30 minutes
 #SBATCH --partition=batch # Use the batch partition reserved for passive jobs
-#SBATCH --qos=qos-batch
+#SBATCH --qos=normal
 #SBATCH -J ParallelExec   # Set the job name
 #SBATCH -N 2              # 2 computing nodes
 #SBATCH -n 10             # 10 tasks

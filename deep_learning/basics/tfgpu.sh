@@ -6,7 +6,7 @@
 #SBATCH --time=0-00:10:00
 #SBATCH --partition=gpu
 #SBATCH --gres=gpu:1
-#SBATCH --qos=qos-gpu
+#SBATCH --qos=normal
 
 module restore tf
 source ~/venv/tfgpu/bin/activate

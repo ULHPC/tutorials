@@ -4,7 +4,7 @@
 #SBATCH --cpus-per-task=28
 #SBATCH --time=0-01:00:00
 #SBATCH -p batch
-#SBATCH --qos=qos-batch
+#SBATCH --qos=normal
 
 # Load cplex 
 module load math/CPLEX/12.8-foss-2018a

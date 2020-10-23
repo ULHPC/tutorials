@@ -24,7 +24,7 @@ library(tidyverse)
 Through this tutorial you will learn how to use R from your local machine or from one of the [UL HPC platform](http://hpc.uni.lu) clusters.
 Then, we will see how to organize and group data. Finally we will illustrate how R can benefit from multicore and cluster parallelization.
 
-Warning: this tutorial does not focus on the learning of R language but aims at showing you nice start-up tips.  
+Warning: this tutorial does not focus on the learning of R language but aims at showing you nice start-up tips.
 If you're also looking for a good tutorial on R's data structures you can take a look at: [Hadley Wickham's page](http://adv-r.had.co.nz/Data-structures.html).
 Another [bookdown](https://bookdown.org/)'s book  is available for free: [R for Data Science](http://r4ds.had.co.nz/index.html) by Garrett Grolemund & Hadley Wickham
 
@@ -41,12 +41,12 @@ Another [bookdown](https://bookdown.org/)'s book  is available for free: [R for 
     4. [using data.table](#aggreg_dt)
     5. [benchmarking](#aggreg_bench)
 4. [Parallel computing using HPC](#hpc)
-    1. [mandatory packages](#hpc_pkg) 
-    2. [toy example](#hpc_toy) 
-    3. [t-SNE example](#hpc_tsne) 
-    3. [reading data](#hpc_read) 
+    1. [mandatory packages](#hpc_pkg)
+    2. [toy example](#hpc_toy)
+    3. [t-SNE example](#hpc_tsne)
+    3. [reading data](#hpc_read)
 5. [Useful links](#links)
- 
+
 ## Parallel computing using HPC
 #### iris
 ### mandatory packages
@@ -60,10 +60,10 @@ Another [bookdown](https://bookdown.org/)'s book  is available for free: [R for 
 #### Animation
 ### Reading data
 ### Enclosed R packages environment
-## Useful links 
- 
-<a name="prereq"></a> 
- 
+## Useful links
+
+<a name="prereq"></a>
+
 --------------------
 ## Pre-requisites ##
 
@@ -114,11 +114,11 @@ in R or Rstudio do `install.packages("tidyverse")` (takes some time)
 
 instructions: [in this tutorial](https://rworkshop.uni.lu/practicals/practical01_datasauRus.html)
 
-<a name="aggreg"></a> 
+<a name="aggreg"></a>
 
 ## Comparing methods for aggregating data -- diamonds
 
-Let's say we are working with the full `diamonds` dataset (suppplied by the `ggplot2` package) and we want to compute the **average** price for a given diamond **cut**. 
+Let's say we are working with the full `diamonds` dataset (suppplied by the `ggplot2` package) and we want to compute the **average** price for a given diamond **cut**.
 
 This dataset is not small:
 
@@ -126,7 +126,7 @@ This dataset is not small:
 dim(diamonds)
 ```
 
-before computing the average price per **cut**, we should explore the dataset. We won't use the ggplot's function `geom_point()` as there are too many dots. 
+before computing the average price per **cut**, we should explore the dataset. We won't use the ggplot's function `geom_point()` as there are too many dots.
 However, bining the data is fast and still provide an idea of where the majority of dots are with a chosen lost of precision (number of **bins**, set to 30 by default).
 
 From previous plots, we know the relationship between carat and price is linear in the log-space. All those computation can be done by `ggplot2`
@@ -134,7 +134,7 @@ From previous plots, we know the relationship between carat and price is linear 
 Of note: you may need to install the package `hexbin`
 
 ```{r}
-ggplot(diamonds) + 
+ggplot(diamonds) +
   # bin data into 30 sets
   geom_hex(aes(x = carat, y = price), bins = 30) +
   # split per cut
@@ -150,24 +150,24 @@ ggplot(diamonds) +
 #ggsave(file = "diamonds_plot.pdf", last_plot(), width = 8, height = 4)
 ```
 
-<a name="aggreg_speed"></a> 
+<a name="aggreg_speed"></a>
 
 ### Speed comparison of different tools for aggregating data
 
-We could do a for loop to aggregate the data per cuts and manually compute the average price, 
+We could do a for loop to aggregate the data per cuts and manually compute the average price,
 but in R loops are generally a bad idea ([if you avoid growing vectors there are fine](https://privefl.github.io/blog/why-loops-are-slow-in-r/)). It is better to concentrate on actions and not on programming, so the looping can be efficiently done internally.
 
 
 Thus instead of looping around the dataset, we will use a function from the `dplyr` package part of the [tidyverse](http://tidyverse.org) idiom
 
-<a name="aggreg_dplyr"></a> 
+<a name="aggreg_dplyr"></a>
 
 #### `dplyr` from the tidyverse
 
-	  
+
 First of all, we chain the commands using the **pipe** _%>%_. That avoids many parenthesis and keep the natural reading from left to right.
 
-The first parameter will be the dataset, the second will be the column of the dataset we want to group the results on, 
+The first parameter will be the dataset, the second will be the column of the dataset we want to group the results on,
 third parameter will be the call to the `summarise()` function that will enable to aggregate data on the `cut` column.
 
 
@@ -179,10 +179,10 @@ diamonds %>%
 ```
 
 
-Note: `summarise()` from the `dplyr` package is similar to `aggregate()` from base package, 
+Note: `summarise()` from the `dplyr` package is similar to `aggregate()` from base package,
 `dplyr` functions simply provide a more consistent naming convention together with better performance
 
-<a name="aggreg_base"></a> 
+<a name="aggreg_base"></a>
 
 #### `aggregate` from base
 
@@ -201,7 +201,7 @@ In the previous example we used `aggregate` for the **aggregation**, we could al
 as.data.frame(cbind(cut = as.character(unique(diamonds$cut)), avg_price = lapply(unique(diamonds$cut), function(x) mean(diamonds$price[which(diamonds$cut == x)]))))
 ```
 
-<a name="aggreg_dt"></a> 
+<a name="aggreg_dt"></a>
 
 #### `data.table`
 
@@ -212,10 +212,10 @@ Although the syntax is harder to learn compared to `dplyr`, if speed is your con
 # install.package("data.table")
 suppressPackageStartupMessages(library(data.table))
 DT <- data.table(diamonds)
-DT[, mean(price), by = cut] 
+DT[, mean(price), by = cut]
 ```
 
-<a name="aggreg_bench"></a> 
+<a name="aggreg_bench"></a>
 
 #### benchmarks
 
@@ -224,7 +224,7 @@ So, we want to know which one of the two versions is the most efficient, for tha
 ```{r, eval = FALSE}
 install.packages("bench")
 ```
-	
+
 
 The `mark()` function performs x times the calls of several expressions, grabbing its performance (time and ressources used)
 
@@ -247,7 +247,7 @@ m
 summary(m, relative = TRUE)
 ```
 
-- plotting the benchmark 
+- plotting the benchmark
 
 You can use `ggplot2` via the `autoplot()` function
 
@@ -267,7 +267,7 @@ m %>%
   theme_minimal(14)
 ```
 
-<a name="hpc"></a> 
+<a name="hpc"></a>
 
 ## Parallel computing using HPC
 
@@ -290,7 +290,7 @@ When the job is running and you are connected load _R_ module (so version `3.4.4
 Now you should be able to invoke R and see something like this:
 
     [jdoe@iris-081 ~]$  R
-    
+
     R version 3.4.4 (2018-03-15) -- "Someone to Lean On"
     Copyright (C) 2018 The R Foundation for Statistical Computing
     Platform: x86_64-pc-linux-gnu (64-bit)
@@ -304,25 +304,25 @@ Now you should be able to invoke R and see something like this:
     R version 3.4.4 (2018-03-15)
     Platform: x86_64-pc-linux-gnu (64-bit)
     Running under: CentOS Linux 7 (Core)
-    
+
     Matrix products: default
     BLAS/LAPACK: /mnt/irisgpfs/apps/resif/data/devel/default/software/numlib/OpenBLAS/0.2.20-GCC-6.4.0-2.28/lib/libopenblas_haswellp-r0.2.20.so
-    
+
     locale:
-     [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              
-     [3] LC_TIME=en_US.UTF-8        LC_COLLATE=en_US.UTF-8    
-     [5] LC_MONETARY=en_US.UTF-8    LC_MESSAGES=en_US.UTF-8   
-     [7] LC_PAPER=en_US.UTF-8       LC_NAME=C                 
-     [9] LC_ADDRESS=C               LC_TELEPHONE=C            
-    [11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       
-    
+     [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C
+     [3] LC_TIME=en_US.UTF-8        LC_COLLATE=en_US.UTF-8
+     [5] LC_MONETARY=en_US.UTF-8    LC_MESSAGES=en_US.UTF-8
+     [7] LC_PAPER=en_US.UTF-8       LC_NAME=C
+     [9] LC_ADDRESS=C               LC_TELEPHONE=C
+    [11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C
+
     attached base packages:
-    [1] stats     graphics  grDevices utils     datasets  methods   base     
-    
+    [1] stats     graphics  grDevices utils     datasets  methods   base
+
     loaded via a namespace (and not attached):
     [1] compiler_3.4.4
 
-<a name="hpc_pkg"></a> 
+<a name="hpc_pkg"></a>
 
 ### mandatory packages
 
@@ -348,11 +348,11 @@ After entering R using the `R` command, install both packages. Don't forget to u
 install.packages(c("future", "furrr", "purrr", "dplyr", "dbscan", "tictoc", "Rtsne"), repos = "https://cran.rstudio.com", Ncpus = 4)
 ```
 
-quit by typing `quit()` and `n` do not save workspace image (actually, this should be your default). 
+quit by typing `quit()` and `n` do not save workspace image (actually, this should be your default).
 
-The [`furrr` package](https://davisvaughan.github.io/furrr/) by David Vaughan is a nice wrapper around `future` and `purrr`, the functional programming idiom of the tidyverse. 
+The [`furrr` package](https://davisvaughan.github.io/furrr/) by David Vaughan is a nice wrapper around `future` and `purrr`, the functional programming idiom of the tidyverse.
 
-<a name="hpc_toy"></a> 
+<a name="hpc_toy"></a>
 
 ### toy example
 
@@ -382,7 +382,7 @@ fetch env variables in R
 
 `as.integer(Sys.getenv("SLURM_CPUS_PER_TASK"))`
 
-<a name="hpc_tsne"></a> 
+<a name="hpc_tsne"></a>
 
 ### t-SNE example
 
@@ -404,8 +404,8 @@ library(Rtsne)
 availableCores()
 # load data
 tSNEdata <- readRDS("/scratch/users/aginolhac/renv/tSNEdata.rds")
-# create a partial function with filled arguments 
-short_tsne <- purrr::partial(Rtsne, X = tSNEdata, pca_center = TRUE, 
+# create a partial function with filled arguments
+short_tsne <- purrr::partial(Rtsne, X = tSNEdata, pca_center = TRUE,
                             theta = 0.5, pca_scale = TRUE, verbose = TRUE, max_iter = 300)
 
 plan(multiprocess)
@@ -419,7 +419,7 @@ tictoc::toc()
 
 tictoc::tic("finding clusters")
 res_tib <- mutate(tsne_future,
-                  # unlist and extract the 2D matrix 
+                  # unlist and extract the 2D matrix
                   Y = map(model, pluck, "result", "Y"),
                   # convert to a dataframe
                   Y_df = map(Y, as.data.frame),
@@ -449,7 +449,7 @@ save as file named **tsne.R**
 #SBATCH --ntasks-per-node=1
 #SBATCH --time=0-00:10:00
 #SBATCH -p batch
-#SBATCH --qos=qos-batch
+#SBATCH --qos=normal
 
 echo "== Starting run at $(date)"
 echo "== Job ID: ${SLURM_JOBID}"
@@ -467,7 +467,7 @@ export MKL_NUM_THREADS=1
 Rscript tsne.R > job_${SLURM_JOB_NAME}.out 2>&1
 ```
 
-save as file named **launcher.sh**. It requests a full node of **28** cores 
+save as file named **launcher.sh**. It requests a full node of **28** cores
 
 #### Run the job
 
@@ -552,7 +552,7 @@ res <- read_rds("tsne_future.rds")
 
 res %>%
   rename(cdbl = c) %>%
-  filter(perplexities %in% seq(10, 110, 20)) %>% 
+  filter(perplexities %in% seq(10, 110, 20)) %>%
   unnest(tsne) %>%
   select(-output) %>%
   group_by(perplexities) %>%
@@ -578,7 +578,7 @@ tib_gif
 anim_save("tsne_200.gif", tib_gif)
 ```
 
-<a name="hpc_read"></a> 
+<a name="hpc_read"></a>
 
 ### Reading data
 
@@ -588,13 +588,13 @@ It was convenient because loading was fast and the columns and numbers were corr
 In real life though, most dataset come as text files with some delimiters. Now we can load the equivalent of the t-SNE data as a `.csv` file and benchmarks the main tools for this step.
 
 - `read.csv()` is the base function. Turns out to be slow for large files.
-- [`fread()`](https://www.rdocumentation.org/packages/data.table/versions/1.12.2/topics/fread) is the fantastic and fast import function from `data.table` 
+- [`fread()`](https://www.rdocumentation.org/packages/data.table/versions/1.12.2/topics/fread) is the fantastic and fast import function from `data.table`
 - [`read_csv()`](https://readr.tidyverse.org/reference/read_delim.html) is the tidyverse way of reading a csv. Fast than base, slower than `data.table`.
 - [`vroom()`] is the recent [package](http://vroom.r-lib.org/articles/vroom.html) that could be the next standard for reading files in the tidyverse dialect. Check the [benchmarks](http://vroom.r-lib.org/articles/benchmarks.html) for a detailed comparison. It uses the [ALTREP](https://purrple.cat/blog/2018/10/14/altrep-and-cpp/) introduced in R `3.5.0` that allows to delay actual reading data, making it super fast. Materialization of data comes when you need the exact column and rows.
 
 Here we will benchmark reading only numbers since it is a matrix of doubles.
 
-In your session on `iris`, in the R console, 
+In your session on `iris`, in the R console,
 
 - first install required packages
 
@@ -680,7 +680,7 @@ Here is some instructions extracted from the [overview vignette](https://rstudio
 remotes::install_github("rstudio/renv")
 ```
 
-<a name="links"></a> 
+<a name="links"></a>
 
 ## Useful links
 

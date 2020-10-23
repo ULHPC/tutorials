@@ -8,7 +8,7 @@
 #SBATCH --time=0-00:35:00
 #
 #SBATCH -p batch
-#SBATCH --qos=qos-batch
+#SBATCH --qos=normal
 #
 #SBATCH --exclusive
 #SBATCH -d singleton

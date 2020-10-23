@@ -31,7 +31,7 @@ ln -s Mus_musculus.GRCm38.dna_sm.toplevel.fa Mus_musculus.GRCm38.dna_sm.toplevel
 ## BWA index
 
 ```bash
-srun -p batch --qos qos-batch -t 0-8:00:0 -N 1 -c 1 --ntasks-per-node=14 --pty bash
+srun -p batch --qos normal -t 0-8:00:0 -N 1 -c 1 --ntasks-per-node=14 --pty bash
 bwa index Mus_musculus.GRCm38.dna_sm.toplevel.fa
 ```
 

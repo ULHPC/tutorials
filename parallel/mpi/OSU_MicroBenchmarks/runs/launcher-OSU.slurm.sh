@@ -13,7 +13,7 @@
 #SBATCH --partition=batch
 #SBATCH --time=00:10:00
 #SBATCH --job-name=OSU-Microbenchmark
-#SBATCH --qos qos-batch
+#SBATCH --qos normal
 
 ### General SLURM Parameters
 echo "SLURM_JOBID="$SLURM_JOBID
