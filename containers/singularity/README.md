@@ -2,10 +2,9 @@
 
 # UL HPC Tutorial: HPC Containers with Singularity
 
-     Copyright (c) 2018- UL HPC Team <hpc-sysadmins@uni.lu>
+     Copyright (c) 2018- UL HPC Team <hpc-team@uni.lu>
 
 
-[![](cover_slides.png)](slides.pdf)
 
 <p align="center">
 <img src="./images/sing.png" width="300px" >
