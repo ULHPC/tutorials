@@ -437,11 +437,68 @@ To start the container job: `sbatch <launcher_name>.sh`
 ### Step 2:  Jupyter + custom Kernels
 
 * One can wonder **WHY** we want to work with venv in a singularity image:
-    - if you want to install **mpi4py**, it is better to do on the cluster to link to the offcial module
-    - Since you can't build container on the ULHPC, you can only use a venv
+    - You do not need to rebuild the container evreytime you want to install a new package
 
 
-* We are going to use the same jupyter.sif image created before
+* We will first apply some changes in our singularity definition file to activate the virtual environement 
+automatically when calling a command. For this purpose, we will use the `%runscript` header now.
+
+* We built a new sif image: jupyter_venv.if with the following definition:
+
+```bash
+Bootstrap: library
+From: ubuntu:18.04
+Stage: build
+
+%setup
+    touch /file_on_host
+    touch ${SINGULARITY_ROOTFS}/file_on_guest
+
+%files
+    /file_on_host /opt
+
+%environment
+    export PORT=8889
+    export LC_ALL=C
+
+%post
+    apt-get install -y software-properties-common
+    add-apt-repository multiverse
+    apt-get update
+    apt-get install -y python3 python3-pip python3-venv
+    python3 -m pip install jupyter cgroup-utils
+
+%runscript
+    VENV=$1
+    echo "Sourcing $VENV"
+    shift
+    exec bash -c "source $VENV/bin/activate;$@"
+
+%startscript
+    echo "Started new instance on $(date)"
+
+%test
+    grep -q NAME=\"Ubuntu\" /etc/os-release
+    if [ $? -eq 0 ]; then
+        echo "Container base is Ubuntu as expected."
+    else
+        echo "Container base is not Ubuntu."
+    fi
+    python3 -m pip show jupyter
+
+
+%labels
+    Author ekieffer
+    Version v0.0.1
+
+%help
+    This is a demo container used to illustrate a def file that uses all
+    supported sections.
+```
+
+* On your laptop: `sudo singularity build jupyter_venv.sif jupter_venv.def`
+
+
 
 ```bash
 #!/bin/bash -l
@@ -455,6 +512,8 @@ To start the container job: `sbatch <launcher_name>.sh`
 #SBATCH --mail-user=<firstname>.<lastname>@uni.lu
 #SBATCH --mail-type=BEGIN,END
 
+
+
 module load tools/Singularity
 export VENV="$HOME/.envs/venv"
 export JUPYTER_CONFIG_DIR="$HOME/jupyter_sing/$SLURM_JOBID/"
@@ -462,33 +521,319 @@ export JUPYTER_PATH="$VENV/share/jupyter":"$HOME/jupyter_sing/$SLURM_JOBID/jupyt
 export JUPYTER_DATA_DIR="$HOME/jupyter_sing/$SLURM_JOBID/jupyter_data"
 export JUPYTER_RUNTIME_DIR="$HOME/jupyter_sing/$SLURM_JOBID/jupyter_runtime"
 export IPYTHONDIR="$HOME/ipython_sing/$SLURM_JOBID"
+
 mkdir -p $JUPYTER_CONFIG_DIR
 mkdir -p $IPYTHONDIR
 
+
 echo "On your laptop: ssh -p 8022 -NL 8889:$(facter ipaddress):8889 ${USER}@access-iris.uni.lu " 
 
-singularity instance start jupyter.sif jupyter
+singularity instance start jupyter_venv.sif jupyter
 
 if [ ! -d "$VENV" ];then
     singularity exec instance://jupyter python3 -m venv $VENV --system-site-packages
-    singularity exec instance://jupyter bash -c "source $VENV/bin/activate && python3 -m ipykernel install --sys-prefix --name HPC_SCHOOL_ENV --display-name HPC_SCHOOL_ENV"
+    # singularity run instance://jupyter $VENV "python3 -m pip install <your_packages>"
+    singularity run instance://jupyter $VENV "python3 -m ipykernel install --sys-prefix --name HPC_SCHOOL_ENV --display-name HPC_SCHOOL_ENV"
+
 fi
 
-singularity exec instance://jupyter bash -c "source $VENV/bin/activate && jupyter \
-    notebook --ip $(facter ipaddress) --no-browser --port 8889" &
+
+
+singularity run instance://jupyter  $VENV "jupyter notebook --ip $(facter ipaddress) --no-browser --port 8889" &
 pid=$!
 sleep 5s
-singularity exec instance://jupyter bash -c "source $VENV/bin/activate &&  jupyter notebook list"
-singularity exec instance://jupyter bash -c "source $VENV/bin/activate &&  jupyter --paths"
-singularity exec instance://jupyter bash -c "source $VENV/bin/activate &&  jupyter kernelspec list"
-
+singularity run instance://jupyter $VENV "jupyter notebook list"
+singularity run instance://jupyter $VENV "jupyter --paths"
+singularity run instance://jupyter $VENV "jupyter kernelspec list"
 wait $pid
 echo "Stopping instance"
 singularity instance stop jupyter
 ```
 
 
+### Step 3:  Jupyter + custom Kernels + IPyParallel
+
+
+* The installation of the IPyParallel package should be done during the image generation
+* Copy-paste the jupyter_venv.def to jupyter_parallel.def 
+* Add in the `%post` section, `python3 -m pip install ipyparallel`
 
 
 
+```bash
+#!/bin/bash -l
+#SBATCH -J Singularity_Jupyter
+#SBATCH -N 2 # Nodes
+#SBATCH -n 2 # Tasks
+#SBATCH -c 2 # Cores assigned to each tasks
+#SBATCH --time=0-01:00:00
+#SBATCH -p batch
+#SBATCH --qos=normal
+#SBATCH --mail-user=<firstname>.<lastname>@uni.lu
+#SBATCH --mail-type=BEGIN,END
 
+
+
+module load tools/Singularity
+
+export VENV="$HOME/.envs/venv_parallel"
+export JUPYTER_CONFIG_DIR="$HOME/jupyter_sing/$SLURM_JOBID/"
+export JUPYTER_PATH="$VENV/share/jupyter":"$HOME/jupyter_sing/$SLURM_JOBID/jupyter_path"
+export JUPYTER_DATA_DIR="$HOME/jupyter_sing/$SLURM_JOBID/jupyter_data"
+export JUPYTER_RUNTIME_DIR="$HOME/jupyter_sing/$SLURM_JOBID/jupyter_runtime"
+export IPYTHONDIR="$HOME/ipython_sing/$SLURM_JOBID"
+
+mkdir -p $JUPYTER_CONFIG_DIR
+mkdir -p $IPYTHONDIR
+
+
+echo "On your laptop: ssh -p 8022 -NL 8889:$(facter ipaddress):8889 ${USER}@access-iris.uni.lu "
+
+
+singularity instance start jupyter_parallel.sif jupyter
+
+if [ ! -d "$VENV" ];then
+    singularity exec instance://jupyter python3 -m venv $VENV --system-site-packages
+    # singularity run instance://jupyter $VENV "python3 -m pip install <your_packages>"
+    singularity run instance://jupyter $VENV "python3 -m ipykernel install --sys-prefix --name HPC_SCHOOL_ENV_IPYPARALLEL --display-name HPC_SCHOOL_ENV_IPYPARALLEL"
+
+fi
+
+#create a new ipython profile appended with the job id number
+profile=job_${SLURM_JOB_ID}
+singularity run instance://jupyter $VENV "ipython profile create --parallel ${profile}"
+
+# Enable IPython clusters tab in Jupyter notebook
+singularity run instance://jupyter $VENV "jupyter nbextension enable --py ipyparallel"
+
+## Start Controller and Engines
+#
+singularity run instance://jupyter $VENV "ipcontroller --ip="*" --profile=${profile}" &
+sleep 10
+
+##srun: runs ipengine on each available core
+srun singularity run jupyter_parallel.sif $VENV "ipengine --profile=${profile} --location=$(hostname)" &
+sleep 25
+export XDG_RUNTIME_DIR=""
+
+singularity run instance://jupyter $VENV "jupyter notebook --ip $(facter ipaddress) --no-browser --port 8889" &
+pid=$!
+sleep 5s
+singularity run instance://jupyter $VENV "jupyter notebook list"
+singularity run instance://jupyter $VENV "jupyter --paths"
+singularity run instance://jupyter $VENV "jupyter kernelspec list"
+
+wait $pid
+echo "Stopping instance"
+singularity instance stop jupyter
+```
+
+* When opening the job log (slurm-job_number.out), you should see when the engines start:
+
+```bash
+On your laptop: ssh -p 8022 -NL 8889:172.17.6.57:8889 ekieffer@access-iris.uni.lu
+INFO:    instance started successfully
+Sourcing /home/users/ekieffer/.envs/venv_parallel
+Installed kernelspec HPC_SCHOOL_ENV_IPYPARALLEL in /home/users/ekieffer/.envs/venv_parallel/share/jupyter/kernels/hpc_school_env_ipyparallel
+Sourcing /home/users/ekieffer/.envs/venv_parallel
+[ProfileCreate] Generating default config file: &apos;/home/users/ekieffer/ipython_sing/2134685/profile_job_2134685/ipython_config.py&apos;
+[ProfileCreate] Generating default config file: &apos;/home/users/ekieffer/ipython_sing/2134685/profile_job_2134685/ipython_kernel_config.py&apos;
+[ProfileCreate] Generating default config file: &apos;/home/users/ekieffer/ipython_sing/2134685/profile_job_2134685/ipcontroller_config.py&apos;
+[ProfileCreate] Generating default config file: &apos;/home/users/ekieffer/ipython_sing/2134685/profile_job_2134685/ipengine_config.py&apos;
+[ProfileCreate] Generating default config file: &apos;/home/users/ekieffer/ipython_sing/2134685/profile_job_2134685/ipcluster_config.py&apos;
+Sourcing /home/users/ekieffer/.envs/venv_parallel
+Enabling tree extension ipyparallel/main...
+      - Validating: <font color="#4E9A06">OK</font>
+Sourcing /home/users/ekieffer/.envs/venv_parallel
+2020-11-13 15:29:52.292 [IPControllerApp] Hub listening on tcp://*:49933 for registration.
+2020-11-13 15:29:52.294 [IPControllerApp] Hub using DB backend: &apos;DictDB&apos;
+2020-11-13 15:29:52.574 [IPControllerApp] hub::created hub
+2020-11-13 15:29:52.575 [IPControllerApp] writing connection info to /home/users/ekieffer/ipython_sing/2134685/profile_job_2134685/security/ipcontroller-client.json
+2020-11-13 15:29:52.576 [IPControllerApp] writing connection info to /home/users/ekieffer/ipython_sing/2134685/profile_job_2134685/security/ipcontroller-engine.json
+2020-11-13 15:29:52.578 [IPControllerApp] task::using Python leastload Task scheduler
+2020-11-13 15:29:52.578 [IPControllerApp] Heartmonitor started
+2020-11-13 15:29:52.590 [IPControllerApp] Creating pid file: /home/users/ekieffer/ipython_sing/2134685/profile_job_2134685/pid/ipcontroller.pid
+2020-11-13 15:29:52.601 [scheduler] Scheduler started [leastload]
+2020-11-13 15:29:52.604 [IPControllerApp] client::client b&apos;\x00k\x8bEg&apos; requested &apos;connection_request&apos;
+2020-11-13 15:29:52.604 [IPControllerApp] client::client [b&apos;\x00k\x8bEg&apos;] connected
+Sourcing /home/users/ekieffer/.envs/venv_parallel
+Sourcing /home/users/ekieffer/.envs/venv_parallel
+2020-11-13 15:30:02.960 [IPEngineApp] Loading url_file &apos;/home/users/ekieffer/ipython_sing/2134685/profile_job_2134685/security/ipcontroller-engine.json&apos;
+2020-11-13 15:30:02.980 [IPEngineApp] Registering with controller at tcp://127.0.0.1:49933
+2020-11-13 15:30:02.989 [IPControllerApp] client::client b&apos;2ac54d70-5ec5cb4f47a0ff21c199b7e9&apos; requested &apos;registration_request&apos;
+2020-11-13 15:30:03.082 [IPEngineApp] Starting to monitor the heartbeat signal from the hub every 3010 ms.
+2020-11-13 15:30:03.088 [IPEngineApp] Completed registration with id 0
+2020-11-13 15:30:04.160 [IPEngineApp] Loading url_file &apos;/home/users/ekieffer/ipython_sing/2134685/profile_job_2134685/security/ipcontroller-engine.json&apos;
+2020-11-13 15:30:04.188 [IPEngineApp] Registering with controller at tcp://172.17.6.57:49933
+2020-11-13 15:30:04.199 [IPControllerApp] client::client b&apos;e7a7b917-dd93682af4c3649148a0b60c&apos; requested &apos;registration_request&apos;
+2020-11-13 15:30:04.295 [IPEngineApp] Starting to monitor the heartbeat signal from the hub every 3010 ms.
+2020-11-13 15:30:04.301 [IPEngineApp] Completed registration with id 1
+2020-11-13 15:30:07.582 [IPControllerApp] registration::finished registering engine 1:e7a7b917-dd93682af4c3649148a0b60c
+2020-11-13 15:30:07.583 [IPControllerApp] engine::Engine Connected: 1
+2020-11-13 15:30:07.586 [IPControllerApp] registration::finished registering engine 0:2ac54d70-5ec5cb4f47a0ff21c199b7e9
+2020-11-13 15:30:07.587 [IPControllerApp] engine::Engine Connected: 0
+Sourcing /home/users/ekieffer/.envs/venv_parallel
+[I 15:30:27.510 NotebookApp] Writing notebook server cookie secret to /home/users/ekieffer/jupyter_sing/2134685/jupyter_runtime/notebook_cookie_secret
+[I 15:30:27.772 NotebookApp] Loading IPython parallel extension
+[I 15:30:27.773 NotebookApp] Serving notebooks from local directory: /home/users/ekieffer/singularity_tests
+[I 15:30:27.773 NotebookApp] Jupyter Notebook 6.1.5 is running at:
+[I 15:30:27.774 NotebookApp] http://172.17.6.57:8889/?token=15c128acd6eee2d4f8e1d1561fe11ab8dc6f6d2b730a7cfe
+[I 15:30:27.774 NotebookApp]  or http://127.0.0.1:8889/?token=15c128acd6eee2d4f8e1d1561fe11ab8dc6f6d2b730a7cfe
+[I 15:30:27.774 NotebookApp] Use Control-C to stop this server and shut down all kernels (twice to skip confirmation).
+[C 15:30:27.780 NotebookApp]
+
+    To access the notebook, open this file in a browser:
+        file:///home/users/ekieffer/jupyter_sing/2134685/jupyter_runtime/nbserver-100-open.html
+    Or copy and paste one of these URLs:
+        http://172.17.6.57:8889/?token=15c128acd6eee2d4f8e1d1561fe11ab8dc6f6d2b730a7cfe
+     or http://127.0.0.1:8889/?token=15c128acd6eee2d4f8e1d1561fe11ab8dc6f6d2b730a7cfe
+Sourcing /home/users/ekieffer/.envs/venv_parallel
+Currently running servers:
+http://172.17.6.57:8889/?token=15c128acd6eee2d4f8e1d1561fe11ab8dc6f6d2b730a7cfe :: /home/users/ekieffer/singularity_tests
+Sourcing /home/users/ekieffer/.envs/venv_parallel
+config:
+    /home/users/ekieffer/jupyter_sing/2134685/
+    /usr/etc/jupyter
+    /usr/local/etc/jupyter
+    /etc/jupyter
+data:
+    /home/users/ekieffer/.envs/venv_parallel/share/jupyter
+    /home/users/ekieffer/jupyter_sing/2134685/jupyter_path
+    /home/users/ekieffer/jupyter_sing/2134685/jupyter_data
+    /usr/local/share/jupyter
+    /usr/share/jupyter
+runtime:
+    /home/users/ekieffer/jupyter_sing/2134685/jupyter_runtime
+Sourcing /home/users/ekieffer/.envs/venv_parallel
+Available kernels:
+  hpc_school_env_ipyparallel    /home/users/ekieffer/.envs/venv_parallel/share/jupyter/kernels/hpc_school_env_ipyparallel
+  python3                       /usr/local/share/jupyter/kernels/python3
+```
+
+<p align="center">
+<img src="./images/ipyparallel.png" width="1024px" >
+</p>
+
+### Step 4:  Jupyter + custom Kernels + IPyParallel + CUDA
+
+```bash
+Bootstrap: docker
+From: nvcr.io/nvidia/tensorflow:20.10-tf2-py3
+Stage: build
+
+%setup
+    touch /file_on_host
+    touch ${SINGULARITY_ROOTFS}/file_on_guest
+
+%files
+    /file_on_host /opt
+
+%environment
+    export PORT=8889
+    export LC_ALL=C
+
+%post
+    apt-get update
+    apt-get install -y python3-pip python3-venv
+    python3 -m pip install jupyter ipyparallel cgroup-utils
+
+%runscript
+    VENV=$1
+    echo "Sourcing $VENV"
+    shift
+    exec bash -c "source $VENV/bin/activate;$@"
+
+%startscript
+    echo "Started new instance on $(date)"
+
+%test
+    grep -q NAME=\"Ubuntu\" /etc/os-release
+    if [ $? -eq 0 ]; then
+        echo "Container base is Ubuntu as expected."
+    else
+        echo "Container base is not Ubuntu."
+    fi
+    python3 -m pip show jupyter
+
+%labels
+    Author ekieffer
+    Version v0.0.1
+
+%help
+    This is a demo container used to illustrate a def file that uses all
+    supported sections.
+```
+
+
+```bash
+#!/bin/bash -l
+#SBATCH -J Singularity_Jupyter
+#SBATCH -N 1 # Nodes
+#SBATCH -n 1 # Tasks
+#SBATCH -c 1 # Cores assigned to each tasks
+#SBATCH --time=0-01:00:00
+#SBATCH -p gpu
+#SBATCH -G 1
+#SBATCH --qos=normal
+#SBATCH --mail-user=<firstname>.<lastname>@uni.lu
+#SBATCH --mail-type=BEGIN,END
+
+
+
+module load tools/Singularity
+
+export VENV="$HOME/.envs/venv_parallel_cuda"
+export JUPYTER_CONFIG_DIR="$HOME/jupyter_sing/$SLURM_JOBID/"
+export JUPYTER_PATH="$VENV/share/jupyter":"$HOME/jupyter_sing/$SLURM_JOBID/jupyter_path"
+export JUPYTER_DATA_DIR="$HOME/jupyter_sing/$SLURM_JOBID/jupyter_data"
+export JUPYTER_RUNTIME_DIR="$HOME/jupyter_sing/$SLURM_JOBID/jupyter_runtime"
+export IPYTHONDIR="$HOME/ipython_sing/$SLURM_JOBID"
+
+mkdir -p $JUPYTER_CONFIG_DIR
+mkdir -p $IPYTHONDIR
+
+
+echo "On your laptop: ssh -p 8022 -NL 8889:$(facter ipaddress):8889 ${USER}@access-iris.uni.lu " 
+
+
+singularity instance start --nv jupyter_parallel_cuda.sif jupyter
+
+if [ ! -d "$VENV" ];then
+    singularity exec --nv instance://jupyter python3 -m venv $VENV --system-site-packages
+    singularity run --nv instance://jupyter $VENV "python3 -m pip install --upgrade pip" 
+    # singularity run --nv instance://jupyter $VENV "python3 -m pip install <your_packages>"
+    singularity run --nv instance://jupyter $VENV "python3 -m ipykernel install --sys-prefix --name HPC_SCHOOL_ENV_IPYPARALLEL_CUDA --display-name HPC_SCHOOL_ENV_IPYPARALLEL_CUDA"
+
+fi
+
+#create a new ipython profile appended with the job id number
+profile=job_${SLURM_JOB_ID}
+singularity run --nv instance://jupyter $VENV "ipython profile create --parallel ${profile}"
+
+# Enable IPython clusters tab in Jupyter notebook
+singularity run --nv instance://jupyter $VENV "jupyter nbextension enable --py ipyparallel"
+
+## Start Controller and Engines
+#
+singularity run --nv instance://jupyter $VENV "ipcontroller --ip="*" --profile=${profile}" &
+sleep 10
+
+##srun: runs ipengine on each available core
+srun singularity run --nv jupyter_parallel.sif $VENV "ipengine --profile=${profile} --location=$(hostname)" &
+sleep 25
+
+export XDG_RUNTIME_DIR=""
+
+singularity run --nv instance://jupyter $VENV "jupyter notebook --ip $(facter ipaddress) --no-browser --port 8889" &
+pid=$!
+sleep 5s
+singularity run --nv instance://jupyter $VENV "jupyter notebook list"
+singularity run --nv instance://jupyter $VENV "jupyter --paths"
+singularity run --nv instance://jupyter $VENV "jupyter kernelspec list"
+wait $pid
+echo "Stopping instance"
+singularity instance stop jupyter
+```
+<p align="center">
+<img src="./images/tf_jupyter.png" width="1024px" >
+</p>
