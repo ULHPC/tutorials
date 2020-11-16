@@ -717,6 +717,12 @@ Available kernels:
 
 ### Step 4:  Jupyter + custom Kernels + IPyParallel + CUDA
 
+* In this last section, we will use a GPU-enabled container from NVIDIA:
+    - Only need to change the `Boostrap` and `From` sections
+    - NVIDIA containers can be obtained from DockerHub
+    - For more details, please have a look at [NVIDIA](https://ngc.nvidia.com/catalog/containers)
+    - [Tensorflow GPU-enabled container](https://ngc.nvidia.com/catalog/containers/nvidia:tensorflow) will be consider hereafter
+
 ```bash
 Bootstrap: docker
 From: nvcr.io/nvidia/tensorflow:20.10-tf2-py3
@@ -838,3 +844,5 @@ singularity instance stop jupyter
 <p align="center">
 <img src="./images/tf_jupyter.png" width="1024px" >
 </p>
+
+* The notebook has now access to `nvidia-smi` command and the tensorflow library confirms that we have access to the GPU device 0
