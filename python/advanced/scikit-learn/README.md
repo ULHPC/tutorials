@@ -49,7 +49,7 @@ cd tutorials/python/advanced/scikit-learn/scripts
 # First ask for an interactive SLURM job
 si
 # Load python 3.6 module
-module load lang/Python/3.6.4-foss-2018a-bare 
+module load lang/Python 
 # Create your virtual environment
 python3 -m venv scikit
 # Activate your env
@@ -86,7 +86,7 @@ Hereafter, a general script for using ipyparrallel with the SLURM scheduler is p
 #SBATCH -N 2                # 2 node, you can increase it
 #SBATCH -t 1:00:00         # Job is killed after 1h
 
-module load lang/Python/3.6.4-foss-2018a-bare 
+module load lang/Python 
 
 source scikit/bin/activate
 
