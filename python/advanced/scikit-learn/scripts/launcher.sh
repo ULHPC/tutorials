@@ -6,7 +6,7 @@
 #SBATCH -N 2                # 2 node, you can increase it
 #SBATCH -t 1:00:00         # Job is killed after 1h
 
-module load lang/Python/3.6.4-foss-2018a-bare 
+module load lang/Python 
 
 source scikit/bin/activate
 
