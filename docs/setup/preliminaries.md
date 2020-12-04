@@ -221,19 +221,25 @@ $> wsl -l -v    # OR wsl --list --verbose
 ```
 
 
-#### Mac OS X
+### Mac OS X
 
+* Resources:
+    - [Configuring Mac OS](https://varrette.gforge.uni.lu/blog/2017/01/17/configuring-mac-os-on-your-brand-new-laptop/)
+
+Install [iterm2](https://iterm2.com/) and [Homebrew](https://brew.sh/)
 Once you have [Homebrew](http://brew.sh/) installed:
 
 ~~~bash
 $> brew install git-core git-flow    # (newer) Git stuff
 $> brew install mkdocs               # (optional) install mkdocs
 $> brew install pyenv pyenv-virtualenv direnv # see https://varrette.gforge.uni.lu/tutorials/pyenv.html
-$> brew tap caskroom/cask            # install brew cask  -- see https://caskroom.github.io/
-$> brew cask install virtualbox      # install virtualbox -- see https://www.virtualbox.org/
-$> brew cask install vagrant         # install Vagrant    -- see https://www.vagrantup.com/downloads.html
-$> brew cask install vagrant-manager # see http://vagrantmanager.com/
-$> brew cask install docker          # install Docker -- https://docs.docker.com/engine/installation/mac/
+$> brew install virtualbox      # install virtualbox -- see https://www.virtualbox.org/
+$> brew install vagrant         # install Vagrant    -- see https://www.vagrantup.com/downloads.html
+$> brew install vagrant-manager # see http://vagrantmanager.com/
+$> brew install docker          # install Docker -- https://docs.docker.com/engine/installation/mac/
+# Note that you probably want to install Firefox, Chrome etc. with brew
+$> brew install firefox
+$> brew install google-chrome
 ~~~
 
 _Note_: later on, you might wish to use the following shell function to update the software installed using [Homebrew](http://brew.sh/).
@@ -249,7 +255,7 @@ bup () {
 }
 ```
 
-#### Linux (Debian / Ubuntu)
+### Linux (Debian / Ubuntu)
 
 ~~~bash
 # Adapt the package names (and package manager) in case you are using another Linux distribution.
@@ -267,39 +273,24 @@ Here are detailed instuctions per OS:
 * [Debian](https://docs.docker.com/engine/installation/linux/docker-ce/debian/)
 * [CentOS](https://docs.docker.com/engine/installation/linux/docker-ce/centos/)
 
+You may want to install Sublime Text:
 
-#### Windows
+```bash
+wget -qO - https://download.sublimetext.com/sublimehq-pub.gpg | sudo apt-key add -
+sudo apt-get install apt-transport-https
+echo "deb https://download.sublimetext.com/ apt/stable/" | sudo tee /etc/apt/sources.list.d/sublime-text.list
+sudo apt-get update
+sudo apt-get install sublime-text
+```
 
-On Windows (10, 7/8 should also be OK) you should download and install the following tools:
+Check out [this Sublime Text 3 package configuration](https://github.com/nickjj/sublime-text-3-packages):
 
-* [MobaXterm](http://mobaxterm.mobatek.net). You can also check out the [MobaXterm demo](http://mobaxterm.mobatek.net/demo.html) which shows an overview of its features.
-    - See also [official ULHPC SSH access instructions](https://hpc.uni.lu/users/docs/access/access_windows.html)
+```bash
+git clone https://github.com/nickjj/sublime-text-3-packages.git ~/.config/sublime-text-3
+```
 
-* [VirtualBox](https://www.virtualbox.org/wiki/Downloads), download the latest [VirtualBox 'Windows hosts' installer](https://www.virtualbox.org/wiki/Downloads)  and [VirtualBox Extension Pack](https://www.virtualbox.org/wiki/Downloads) .
-    - First, install VirtualBox with the default settings. Note that a warning will be issued that your network connections will be temporarily impacted, you should continue.
-    - Then, run the downloaded extension pack (.vbox-extpack file), it will open within the VirtualBox Manager and you should let it install normally.
+Then test the configuration with `subl .`
 
-* [Vagrant](https://www.vagrantup.com/downloads.html), download the latest [Windows (64 bit) Vagrant installer](https://www.vagrantup.com/downloads.html)
-    - Proceed with the installation, no changes are required to the default setup.
-
-* [Git](https://git-scm.com/downloads), download the latest [Git installer](https://git-scm.com/download/win)
-
-The Git installation requires a few changes to the defaults, make sure the following are selected in the installer:
-
-   - Select Components: _Use a TrueType font in all console windows)_
-   - Adjusting your PATH environment: _Use Git and optional Unix tools from the Windows Command Prompt_
-   - Configuring the line ending conversions: _Checkout Windows-style, commit Unix-style line endings)_
-   - Configuring the terminal emulator to use with Git Bash: _Use MinTTY (the default terminal of MSYS2)_
-   - Configuring extra options: _Enable symbolic links_
-
-Please note that to clone a Git repository which contains symbolic links (symlinks), you **must start a shell** (Microsoft PowerShell in this example, but a Command Prompt - cmd.exe - or Git Bash shell should work out fine) **with elevated (Administrator) privileges**. This is required in order for git to be able to create symlinks on Windows:
-
-* Start Powershell:
-    1. In the Windows Start menu, type PowerShell
-    2. Normally PowerShell will appear as the first option on the top as **Best match**
-    3. Right click on it and select "Run as administrator"
-
-See also the instructions and screenshots provided on this [tutorial](http://rr-tutorials.readthedocs.io/en/latest/setup/#windows).
 
 ## Post-Installations checks
 
@@ -327,7 +318,7 @@ Ensure that vagrant is running and has the appropriate plugins from the command 
 
 ```bash
 $> vagrant --version
-Vagrant 2.1.1
+Vagrant 2.2.13
 ```
 
 __Docker (only required for containers tutorials)__
