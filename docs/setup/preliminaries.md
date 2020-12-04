@@ -301,16 +301,15 @@ __Git__:
 ~~~bash
 $> git config –-global user.name  "Firstname LastName"              # Adapt accordingly
 $> git config –-global user.email "Firstname.LastName@domain.org"   # Adapt with your mail
+# Eventually, if you have a GPG key, use the public key to sign your commits/tags
+$> git config --global user.helper osxkeychain       # Only on Mac OS
+$> git config --global user.signingkey <fingerprint> # Ex: git config --global user.signingkey 5D08BCDD4F156AD7
+# you can get your key fingerprint (prefixed by 0x) with 'gpg -K --fingerprint | grep sec'
 ~~~
 
-Clone the [tutorial repository on Github](https://github.com/ULHPC/tutorials) from a Terminal (Powershell as `administrator` under windows):
 
-~~~bash
-$> mkdir -p ~/git/github.com/ULHPC
-# Clone reference git
-$> cd ~/git/github.com/ULHPC
-$> git clone https://github.com/ULHPC/tutorials.git
-~~~
+To clone and install this repository, follow the [installation instructions](install.md).
+
 
 __Vagrant__
 
