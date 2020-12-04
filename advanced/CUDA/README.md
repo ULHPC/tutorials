@@ -1,17 +1,17 @@
 [![By ULHPC](https://img.shields.io/badge/by-ULHPC-blue.svg)](https://hpc.uni.lu) [![Licence](https://img.shields.io/badge/license-GPL--3.0-blue.svg)](http://www.gnu.org/licenses/gpl-3.0.html) [![GitHub issues](https://img.shields.io/github/issues/ULHPC/tutorials.svg)](https://github.com/ULHPC/tutorials/issues/) [![](https://img.shields.io/badge/slides-PDF-red.svg)](https://github.com/ULHPC/tutorials/raw/devel/advanced/CUDA/slides.pdf) [![Github](https://img.shields.io/badge/sources-github-green.svg)](https://github.com/ULHPC/tutorials/tree/devel/advanced/CUDA/) [![Documentation Status](http://readthedocs.org/projects/ulhpc-tutorials/badge/?version=latest)](http://ulhpc-tutorials.readthedocs.io/en/latest/cuda/) [![GitHub forks](https://img.shields.io/github/stars/ULHPC/tutorials.svg?style=social&label=Star)](https://github.com/ULHPC/tutorials)
 
-# Accelerating Applications with CUDA C/C++
+# Introduction to GPU programming with CUDA (C/C++)
 
-     Copyright (c) 2013-2019 UL HPC Team <hpc-sysadmins@uni.lu>
+     Copyright (c) 2013-2020 UL HPC Team <hpc-sysadmins@uni.lu>
 
 [![](https://github.com/ULHPC/tutorials/raw/devel/advanced/CUDA/cover_slides.png)](https://github.com/ULHPC/tutorials/raw/devel/advanced/CUDA/slides.pdf)
 
 
 ## CUDA
 
-This tutorial will guide through the following activities:
+This tutorial will cover the following aspects of CUDA programming:
 
-- Write, compile, and run C/C++ programs that both call CPU functions and launch GPU kernels.
+- Write, compile and run C/C++ programs that both call CPU functions and launch GPU kernels.
 - Control parallel thread hierarchy using execution configuration.
 - Allocate and free memory available to both CPUs and GPUs.
 - Access memory on both GPU and CPU.
@@ -19,7 +19,7 @@ This tutorial will guide through the following activities:
 
 Solutions to some of the exercises can be found in the [samples sub-directory][3].
 
-The tutorial is based on the Nvidia course "Fundamentals of accelerated computing with CUDA C/C++".
+The tutorial is based on the Nvidia DLI course "Fundamentals of accelerated computing with CUDA C/C++".
 
 More information can be obtained from [the guide][1].
 
@@ -27,20 +27,61 @@ More information can be obtained from [the guide][1].
 [2]: https://docs.nvidia.com/cuda/cuda-runtime-api/index.html "Runtime API"
 [3]: ./samples "samples"
 
-## Access to a GPU node of the Iris cluster
+## Access to a GPU-equipped node of the Iris cluster
 
 Reserve a node with one GPU for interactive development, load the necessary modules, and save them for a quick restore.
 
+As usual, more information can be found in the [documentation][4].
+
+[4]: https://hpc.uni.lu/users/docs/gpu.html
+
 ```bash
-> srun -p gpu  -n1 -c1 --gres=gpu:1 --pty bash -i
-$ module av cuda compiler/gcc
-$ module load compiler/LLVM system/CUDA
+> srun -p gpu -G 1 --pty bash -i
 $ nvidia-smi
-$ module save cuda
+$ nvcc  # ?
 ```
+
+Driver is ready, but we need to load the CUDA development kit.
+
+```bash
+$ module av cuda  # av versus spider
+----------------------------------------------------------- /opt/apps/resif/data/stable/default/modules/all ------------------------------------------------------------
+   bio/GROMACS/2019.2-fosscuda-2019a                    mpi/impi/2018.4.274-iccifortcuda-2019a
+   bio/GROMACS/2019.2-intelcuda-2019a                   numlib/FFTW/3.3.8-intelcuda-2019a
+   compiler/Clang/8.0.0-GCCcore-8.2.0-CUDA-10.1.105     numlib/cuDNN/7.4.2.24-gcccuda-2019a
+   data/h5py/2.9.0-fosscuda-2019a                       numlib/cuDNN/7.6.4.38-gcccuda-2019a                       (D)
+   data/h5py/2.9.0-intelcuda-2019a                      system/CUDA/9.2.148.1
+   devel/PyTorch/1.2.0-fosscuda-2019a-Python-3.7.2      system/CUDA/10.0.130
+   lang/SciPy-bundle/2019.03-fosscuda-2019a             system/CUDA/10.1.105-GCC-8.2.0-2.31.1
+   lang/SciPy-bundle/2019.03-intelcuda-2019a            system/CUDA/10.1.105-iccifort-2019.1.144-GCC-8.2.0-2.31.1
+   lib/NCCL/2.4.7-gcccuda-2019a                         system/CUDA/10.1.105
+   lib/TensorFlow/1.13.1-fosscuda-2019a-Python-3.7.2    system/CUDA/10.1.243                                      (D)
+   lib/TensorRT/6.0.1.5-fosscuda-2019a-Python-3.7.2     system/CUDA/10.2.89
+   lib/libgpuarray/0.7.6-fosscuda-2019a                 toolchain/fosscuda/2019a
+   math/Keras/2.2.4-fosscuda-2019a-Python-3.7.2         toolchain/gcccuda/2019a
+   math/Theano/1.0.4-fosscuda-2019a                     toolchain/iccifortcuda/2019a
+   math/magma/2.5.1-fosscuda-2019a                      toolchain/intelcuda/2019a
+   mpi/OpenMPI/3.1.4-gcccuda-2019a                      tools/Horovod/0.16.3-fosscuda-2019a-Python-3.7.2
+
+  Where:
+   D:  Default Module
+
+Use "module spider" to find all possible modules.
+Use "module keyword key1 key2 ..." to search for all possible modules matching any of the "keys".
+
+$ module av gcc cuda
+$ module load compiler/GCC system/CUDA  # defaults are fine
+$ ml
+$ module save cuda  # save our environment
+$ module purge
+$ module restore cuda
+```
+
 In fact, you can compile CUDA applications on a node without GPU, using the same modules.
-So, in case there is not enough GPU cards available, you can submit passive jobs, using `sbatch`.
-Below is an example `sbatch` file, that can be tailored to the various steps of the tutorial:
+You will not however be able to execute them.
+
+In case there is not enough GPU cards available, you can submit passive jobs, using `sbatch`.
+Below is an example `sbatch` file, to remote compile, run and profile a source file:
 
 ```bash
 #!/bin/bash -l
@@ -50,7 +91,6 @@ Below is an example `sbatch` file, that can be tailored to the various steps of 
 #SBATCH --time=0-00:10:00
 #SBATCH --partition=gpu
 #SBATCH --gres=gpu:1
-#SBATCH --qos=normal
 
 if [ -z "$1" ]
 then
@@ -80,16 +120,16 @@ echo "file: $prf"
 cat ./$prf
 ```
 
-## Writing application code for the GPU
+## Writing application for the GPU
 
 CUDA provides extensions for many common programming languages, in the case of this tutorial, C/C++.
 There are several API available for GPU programming, with either specialization, or abstraction.
 The main API is the *CUDA Runtime*.
-The other, lower level, is the *CUDA Driver*, which also offers more customization options.
-Other APIs are Thrust, NCCL.
+Another, lower level API, is *CUDA Driver*, which also offers more customization options.
+Example of other APIs, built on top of the CUDA Runtime, are Thrust, NCCL.
 
 Many programming environments are available.
-In fact, here is an overview from an upcoming workshop on GPU programming (PPAM 2019):
+In fact, here is an overview from a workshop on GPU programming (PPAM 2019):
 
 > GPU programming has evolved into a full ecosystem that includes
 > programming languages (CUDA, OpenCL), libraries (e.g., cuBLAS, cuSPARSE,
@@ -102,7 +142,7 @@ In fact, here is an overview from an upcoming workshop on GPU programming (PPAM 
 
 ### Hello World
 
-Below is a example `.cu` program (`.cu` is the file extension for CUDA-accelerated programs).
+Below is a example CUDA `.cu` program (`.cu` is the required file extension for CUDA-accelerated programs).
 It contains two functions, the first which will run on the CPU, the second which will run on the GPU.
 
 ```cpp
@@ -111,13 +151,13 @@ It contains two functions, the first which will run on the CPU, the second which
 
 void CPUFunction()
 {
-  printf("Runs on the CPU.\n");
+  printf("hello from the Cpu.\n");
 }
 
 __global__
 void GPUFunction()
 {
-  printf("Runs on the GPU.\n");
+  printf("hello from the Gpu.\n");
 }
 
 int main()
@@ -139,7 +179,7 @@ void GPUFunction()
 ```
 
 The `__global__` keyword indicates that the following function will run on the GPU, and can be invoked globally, which means either by the CPU or GPU.
-Often, code executed on the CPU is referred to as host code, and code running on the GPU is referred to as device code.
+Often, code executed on the CPU is referred to as *host* code, and code running on the GPU is referred to as *device* code.
 Notice the return type `void`.
 It is required that functions defined with the `__global__` keyword return type `void`.
 
@@ -153,11 +193,13 @@ At a high level, execution configuration allows programmers to specify the threa
 
 The execution configuration allows programmers to specify details about launching the kernel to run in parallel on multiple GPU threads.
 More precisely, the execution configuration allows programmers to specifiy how many groups of threads - called thread blocks, or just blocks - and how many threads they would like each thread block to contain.
-The syntax for this is:
+The simplest syntax for this is: (there are other parameters available)
 ```cpp
 <<< NUMBER_OF_BLOCKS, NUMBER_OF_THREADS_PER_BLOCK>>>
 ```
 The kernel code is executed by every thread in every thread block configured when the kernel is launched.
+
+This illustrates the data parallel model of CUDA. The same function is executed on all threads.
 
 ```cpp
 cudaDeviceSynchronize();
@@ -165,7 +207,7 @@ cudaDeviceSynchronize();
 Unlike much C/C++ code, launching kernels is asynchronous: the CPU code will continue to execute without waiting for the kernel launch to complete.
 A call to ``cudaDeviceSynchronize`, a function provided by the CUDA runtime, will cause the host (CPU) code to wait until the device (GPU) code completes, and only then resume execution on the CPU.
 
-### Compiling and Running Accelerated CUDA Code
+### Compiling and running CUDA code
 
 This section contains details about the *nvcc* command you issue to compile and run your `.cu` program.
 
@@ -183,11 +225,11 @@ The `o` flag is used to specify the output file for the compiled program.
 The `arch` flag indicates for which architecture the files must be compiled.
 For the present case `sm_70` will serve to compile specifically for the Volta GPUs.
 This will be further explained in a following section.
-As a matter of convenience, providing the `run` flag will execute the successfully compiled binary.
+As a matter of convenience, providing the `-run` flag will execute the successfully compiled binary.
 
 `nvcc` parses the C++ language (it used to be C).
 
-### Exercise: Launch Parallel Kernels
+### Practice: Launch parallel kernels
 
 The following program currently makes a very basic function call that prints a message.
 
@@ -198,12 +240,12 @@ The following program currently makes a very basic function call that prints a m
 
 void helloCPU()
 {
-  std::cout<<"Hello from CPU.\n";
+  std::cout<<"Hello from Cpu.\n";
 }
 
 void helloGPU()
 {
-  printf("Hello also from GPU.\n");
+  printf("Hello also from Gpu.\n");
 }
 
 int main()
@@ -223,12 +265,13 @@ You should see the output message printed 5 times after compiling and running th
 Refactor the `helloGPU` kernel again, this time to execute in parallel inside 5 thread blocks, each containing 5 threads.
 You should see the output message printed 25 times now after compiling and running.
 
-### Compiling and Running Accelerated CUDA Code, part 2
+### Compiling and running CUDA code, continued
+
 The following compilation command works:
 ```bash
 $ nvcc -o out some-CUDA.cu
 ```
-However, there is problem with this code.
+However, there is a potential problem with this code.
 Cuda uses a two stage compilation process, to PTX, and to binary.
 
 To produce the PTX for the cuda kernel, use:
@@ -240,11 +283,11 @@ Brief inspection of the generated PTX file reports a *target* real platform of `
 // Based on LLVM 3.4svn
 //
 
-.version 6.3
+.version 6.4
 .target sm_30
 .address_size 64
 ```
-The Volta GPU implements `sm_70` or `sm_72`. So, we could be missing some features from the GPU.
+The Volta GPU implements `sm_70` or `sm_75`. So, we could be missing some features from the GPU.
 
 To specify an instruction set, use the `-arch` option:
 ```bash
@@ -713,6 +756,9 @@ int main()
 ```
 One solution is in file `array.cu`.
 
+## Shared memory
+TODO
+
 ## Performance considerations
 
 In this section, we will investigate how to improve the performance (runtime) of a CUDA application.
@@ -966,4 +1012,4 @@ Conduct 3 (or 4) experiments using `cudaMemPrefetchAsync` inside of your `vector
 
 Hypothesize about UM behavior, page faulting specificially, as well as the impact on the reported run time of the initialization kernel, before each experiement, and then verify by running `nvprof`.
 
-See file `vectoradd3.cu` for an implementation.
+
