@@ -6,6 +6,7 @@ pages:
   - Overview:       'setup/index.md'
   - Pre-Requisites: 'setup/preliminaries.md'
   - Installation:   'setup/install.md'
+- Preliminaries: 'preliminaries/index.md'
 - Basic Tutorials:
   - Getting Started: 'beginners/index.md'
   - Monitoring & Profiling: 'basic/monitoring/index.md'
