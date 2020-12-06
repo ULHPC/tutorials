@@ -196,6 +196,9 @@ Host *
 Host iris-cluster
     Hostname access-iris.uni.lu
 
+Host aion-cluster
+    Hostname access-aion.uni.lu
+
 # /!\ ADAPT 'yourlogin' accordingly
 Host *-cluster
     User yourlogin
@@ -206,15 +209,15 @@ Host *-cluster
 Now you can test the configuration with: `ssh iris-cluster`:
 
 ``` bash
-ssh iris-cluster
+$ ssh iris-cluster
 ==================================================================================
- Welcome to access2.iris-cluster.uni.lux
+ Welcome to access1.iris-cluster.uni.lux
 ==================================================================================
-                          _                         ____
-                         / \   ___ ___ ___  ___ ___|___ \
-                        / _ \ / __/ __/ _ \/ __/ __| __) |
-                       / ___ \ (_| (_|  __/\__ \__ \/ __/
-                      /_/   \_\___\___\___||___/___/_____|
+                            _                         _
+                           / \   ___ ___ ___  ___ ___/ |
+                          / _ \ / __/ __/ _ \/ __/ __| |
+                         / ___ \ (_| (_|  __/\__ \__ \ |
+                        /_/   \_\___\___\___||___/___/_|
                _____      _        ____ _           _          __
               / /_ _|_ __(_)___   / ___| |_   _ ___| |_ ___ _ _\ \
              | | | || '__| / __| | |   | | | | / __| __/ _ \ '__| |
@@ -243,12 +246,13 @@ ssh iris-cluster
    - Mailing-list .... hpc-users@uni.lu
    - Bug reports .NEW. https://hpc.uni.lu/support (Service Now)
    - Admins .......... hpc-team@uni.lu (OPEN TICKETS)
+
+    ULHPC user guide 2020 available on hpc.uni.lu:
+          https://hpc.uni.lu/blog/2020/ulhpc-user-guide-2020/
 ==================================================================================
  /!\ NEVER COMPILE OR RUN YOUR PROGRAMS FROM THIS FRONTEND !
      First reserve your nodes (using srun/sbatch(1))
-Linux access2.iris-cluster.uni.lux 3.10.0-957.21.3.el7.x86_64 x86_64
- 15:51:56 up 6 days,  2:32, 39 users,  load average: 0.59, 0.68, 0.54
-[yourlogin@access2 ~]$
+[yourlogin@access1 ~]$
 ```
 
 ### SSH Agent
