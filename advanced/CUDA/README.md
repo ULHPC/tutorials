@@ -41,7 +41,7 @@ $ nvidia-smi
 $ nvcc  # ?
 ```
 
-Driver is ready, but we need to load the CUDA development kit.
+Driver is loaded, but we still need to load the CUDA development kit.
 
 ```bash
 $ module av cuda  # av versus spider
@@ -77,7 +77,7 @@ $ module purge
 $ module restore cuda
 ```
 
-In fact, you can compile CUDA applications on a node without GPU, using the same modules.
+Note: you can compile CUDA applications on a node without GPU, using the same modules.
 You will not however be able to execute them.
 
 In case there is not enough GPU cards available, you can submit passive jobs, using `sbatch`.
@@ -287,7 +287,7 @@ Brief inspection of the generated PTX file reports a *target* real platform of `
 .target sm_30
 .address_size 64
 ```
-The Volta GPU implements `sm_70` or `sm_75`. So, we could be missing some features from the GPU.
+The Volta GPU implements `sm_70`. So, we could be missing some features from the GPU.
 
 To specify an instruction set, use the `-arch` option:
 ```bash
@@ -325,9 +325,10 @@ is a shorthand for the full command:
 ```bash
 $ nvcc -o out -arch=compute_70 -code=sm_70,compute_70 some-CUDA.cu
 ```
-You may want to package the PTX to allow for JIT compilation across different real GPU.
+
+In summary, if you want to package the PTX to allow for JIT compilation across different real GPU:
 ```bash
-$ nvcc -o out -arch=compute_70 some-CUDA.cu
+$ nvcc -o out -arch=compute_70 some-CUDA.cu  # or sm_70
 ```
 
 ## CUDA thread hierarchy
@@ -482,7 +483,9 @@ int main()
 }
 ```
 
-## Allocating memory to be accessed on the GPU and the CPU
+## Memory allocation
+
+### Allocating memory to be accessed on the GPU and the CPU
 
 For any meaningful work to be done, we need to access memory.
 The GPU has a distinct memory from the CPU, which requires data transfers to and from CPU.
@@ -610,7 +613,7 @@ int main()
 
 A solution can be found in the next exercise.
 
-### Handling block configuration mismatches to number of needed threads
+### Handling block configuration mismatches to number of needed threads (minor)
 
 It may be the case that an execution configuration cannot be expressed to create the exact number of threads needed for parallelizing a loop.
 
@@ -652,7 +655,7 @@ some_kernel(int N)
 }
 ```
 
-### Data sets larger then the grid
+### Data sets larger then the grid (important)
 
 Either by choice, often to create the most performant execution configuration, or out of necessity, the number of threads in a grid may be smaller than the size of a data set.
 Consider an array with 1000 elements, and a grid with 250 threads (using trivial sizes here for ease of explanation).
@@ -756,8 +759,48 @@ int main()
 ```
 One solution is in file `array.cu`.
 
-## Shared memory
-TODO
+
+### Shared memory
+
+As a first approximation, there are 3 memories available to your kernel code:
+
+- global memory
+- block shared memory
+- registers.
+
+Within a kernel code:
+
+- automatic variable are stored in registers
+- `__shared__` specifier indicates the block memory, faster than global memory (limited, 96KB).
+
+Shared memory can be declared outside the kernel code with:
+```cpp
+extern __shared__ float shared[];
+```
+However, then the size of the shared memory must be declared in the kernel configuration:
+```cpp
+kernel<<<2, 32, 16*sizeof(int)>>>();
+```
+
+```cpp
+extern __shared__ int a_blk[];
+
+__global__ void doubleElements(int *a, int N) {
+  int i = blockIdx.x * blockDim.x + threadIdx.x;
+  if (i<N) {
+          a_blk[threadIdx.x] = a[i];
+          a_blk[threadIdx.x] *= 2;  // or something more complex
+          a[i] = a_blk[threadIdx.x];
+  }
+}
+// ...
+doubleElements<<<10, 16, 16*sizeof(*a)>>>(a, N);
+cudaDeviceSynchronize();
+// ...
+```
+
+Note: `__syncthreads()` can be used to synchronize threads of a thread block: waits for all shared and global access to be visible from all threads (in a block).
+
 
 ## Performance considerations
 
@@ -857,7 +900,7 @@ int main()
 In case you need to setup the environment, issue the same interactive reservation as before:
 
 ```bash
-> srun -n1 -c1 --gres=gpu:1 -pgpu --pty bash -i
+> srun -p gpu -G 1 --pty bash -i
 $ module r cuda  # restores our saved 'cuda' modules
 ```
 Or use the `sbatch` script presented at the beginning of this tutorial.
