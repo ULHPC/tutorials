@@ -589,10 +589,10 @@ Of course, you can have _hybrid_ code mixing MPI and OpenMP primitives.
     - You need to compute accurately the number of MPI processes per node `<PPN>` (in addition to the number of MPI processes) and pass it to `mpirun`
         * OpenMPI:   `mpirun -npernode <PPN> -np <N>`
         * Intel MPI: `mpirun -perhost <PPN>  -np <N>`
-        * MVAPICH2:  `mpirun -ppn <PPN>      -np <N>`
+      <!--  * MVAPICH2:  `mpirun -ppn <PPN>      -np <N>` -->
     - You need to ensure the environment variable `OMP_NUM_THREADS` is shared across the nodes
     - (_Intel MPI only_) you probably want to set [`I_MPI_PIN_DOMAIN=omp`](https://software.intel.com/en-us/mpi-developer-reference-linux-interoperability-with-openmp-api)
-    - (_MVAPICH2 only_) you probably want to set `MV2_ENABLE_AFFINITY=0`
+   <!-- - (_MVAPICH2 only_) you probably want to set `MV2_ENABLE_AFFINITY=0` -->
 
 ### Slurm launcher for OpenMP+MPI programs
 
