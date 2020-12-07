@@ -128,21 +128,9 @@ The main API is the *CUDA Runtime*.
 Another, lower level API, is *CUDA Driver*, which also offers more customization options.
 Example of other APIs, built on top of the CUDA Runtime, are Thrust, NCCL.
 
-Many programming environments are available.
-In fact, here is an overview from a workshop on GPU programming (PPAM 2019):
-
-> GPU programming has evolved into a full ecosystem that includes
-> programming languages (CUDA, OpenCL), libraries (e.g., cuBLAS, cuSPARSE,
-> cuFFT, cuSOLVER, AmgX, MAGMA), high level interfaces (e.g., thrust,
-> OCCA, RAJA, Kokkos), annotation-based programming models (e.g., OpenACC,
-> OpenMP), GPU support in mathematical software (e.g., Parallel Computing
-> Toolbox in Matlab, CUDALink in Mathematica), GPU script languages (e.g.,
-> PyOpenCL, Bohrium), and new data parallel languages (e.g., Copperhead).
-
-
 ### Hello World
 
-Below is a example CUDA `.cu` program (`.cu` is the required file extension for CUDA-accelerated programs).
+Below is a example CUDA `.cu` program (`.cu` is the *required* file extension for CUDA-accelerated programs).
 It contains two functions, the first which will run on the CPU, the second which will run on the GPU.
 
 ```cpp
@@ -193,7 +181,7 @@ At a high level, execution configuration allows programmers to specify the threa
 
 The execution configuration allows programmers to specify details about launching the kernel to run in parallel on multiple GPU threads.
 More precisely, the execution configuration allows programmers to specifiy how many groups of threads - called thread blocks, or just blocks - and how many threads they would like each thread block to contain.
-The simplest syntax for this is: (there are other parameters available)
+The simplest syntax for this is: (there are 2 othe parameters available)
 ```cpp
 <<< NUMBER_OF_BLOCKS, NUMBER_OF_THREADS_PER_BLOCK>>>
 ```
@@ -276,7 +264,7 @@ Cuda uses a two stage compilation process, to PTX, and to binary.
 
 To produce the PTX for the cuda kernel, use:
 ```bash
-$ nvcc -ptx -o out.ptx some-CUDA.cu  # -o is optional
+$ nvcc -ptx -o out.ptx some-CUDA.cu
 ```
 Brief inspection of the generated PTX file reports a *target* real platform of `sm_30`.
 ```
@@ -452,9 +440,8 @@ After successfully refactoring, the numbers 0 through 9 should still be printed.
 
 ```cpp
 /* FIXME
- * Fix and refactor 'loop' to be a CUDA Kernel.
- * The new kernel should only do the work
- * of 1 iteration of the original loop.
+ * Fix and refactor 'loop' to be a CUDA Kernel, launched with 2 or more blocks
+ * The new kernel should only do the work of 1 iteration of the original loop.
  */
 
 #include <cstdio>
@@ -519,6 +506,20 @@ cudaMallocManaged(&a, size);
 // Use 'a' on the CPU and/or on any GPU in the accelerated system.
 
 cudaFree(a);
+```
+
+For completeness, the alternative to unified memory is to:
+
+- manually allocate memory on a device
+- copy data from host to device memory.
+
+This can be done with:
+```cpp
+float* d_C;
+cudaMalloc(&d_C, size);
+// Copy vectors from host memory to device memory
+cudaMemcpy(d_C, h_C, size, cudaMemcpyHostToDevice);  // to mimick d_C = h_C;
+cudaFree(d_C);
 ```
 
 ### Exercise: array manipulation on both the host and device
