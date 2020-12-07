@@ -16,7 +16,7 @@ Thus you will be able to run:
 
 The objective of this tutorial is to show you how to run your MPI and/or OpenMP applications on top of the [UL HPC](https://hpc.uni.lu) platform.
 
-For all the executions we are going to perform in this tutorial, you probably want to monitor the parallel execution on one of the allocated nodes. To do that, and **assuming** you have reserved computing resources (see the `srun / oarsub` commands of each section):
+For all the executions we are going to perform in this tutorial, you probably want to monitor the parallel execution on one of the allocated nodes. To do that, and **assuming** you have reserved computing resources (see the `srun` <!-- / oarsub`--> commands of each section):
 
 * open **another** terminal (or another `screen` window) as you'll want to monitor the execution.
 * Connect to the allocated node:
@@ -25,11 +25,13 @@ For all the executions we are going to perform in this tutorial, you probably wa
 ############### iris cluster (slurm)
 (access-iris)$> sq     # Check the allocated node
 (access-iris)$> ssh iris-XXX       # ADAPT accordingly
-
+```
+<!--
 ############## gaia/chaos clusters (OAR)
 (access-{gaia|chaos})$> oarstat -u     # Collect the job ID
 (access-{gaia|chaos})$> oarsub -C <jobid>
-```
+-->
+
 
 * **For this new terminal/window**
     - run `htop`
@@ -79,7 +81,7 @@ $> cd basics
 * A __thread__ of execution is the smallest unit of processing that can be scheduled by an operating system.
     - Threads exist within the resources of a _single_ process. Without the process, they cease to exist.
 * Typically, the number of threads match the number of machine processors/cores.
-    - _Reminder_: **[iris](https://hpc.uni.lu/systems/iris/#computing-capacity)**: 2x14 cores; **[gaia](https://hpc.uni.lu/systems/gaia/#computing-capacity)**: depends, but typically 2x6 cores
+    - _Reminder_: **[iris](https://hpc.uni.lu/systems/iris/#computing-capacity)**: 2x14 cores. <!-- **[gaia](https://hpc.uni.lu/systems/gaia/#computing-capacity)**: depends, but typically 2x6 cores -->
     - However, the actual _use_ of threads is up to the application.
     - `OMP_NUM_THREADS` (if present) specifies _initially_ the _max_ number of threads;
         * you can use `omp_set_num_threads()` to override the value of `OMP_NUM_THREADS`;
@@ -123,7 +125,7 @@ module load toolchain/intel    # or toolchain/foss
 
 srun /path/to/your/openmp_program
 ```
-
+<!--
 ### OAR reservations for OpenMP programs
 
 You have to setup the reservation to match the required number of OpenMP threads with the number of cores **within** the same node _i.e._
@@ -148,7 +150,7 @@ module load toolchain/intel    # or toolchain/foss
 
 path/to/your/openmp_program
 ```
-
+-->
 ### OpenMP Compilation
 
 | Toolchain         | Compilation command  |
@@ -166,11 +168,12 @@ You can find in `src/hello_openmp.c` the traditional OpenMP "Helloworld" example
 ############### iris cluster (slurm) ###############
 (access-iris)$> srun -p interactive --ntasks-per-node=1 -c 4 -t 0:30:00 --pty bash
 $> export OMP_NUM_THREADS=${SLURM_CPUS_PER_TASK}
-
+```
+<!--
 ############### gaia/chaos clusters (OAR) ###############
 (access-{gaia|chaos})$> oarsub -I -l nodes=1/core=4,walltime=0:30:00
 $> export OMP_NUM_THREADS=$(cat $OAR_NODEFILE| wc -l)
-```
+-->
 
 * Check the set variable `$OMP_NUM_THREADS`. Which value do you expect?
 
@@ -202,10 +205,11 @@ $> icc -qopenmp -xhost -Wall -O2 src/hello_openmp.c -o bin/hello_openmp
 ```bash
 ############### iris cluster (slurm) ###############
 $> sbatch ./launcher.OpenMP.sh
-
+```
+<!--
 ############### gaia/chaos clusters (OAR) ###############
 $> oarsub -S ./launcher.OpenMP.sh
-```
+-->
 
 Repeat the above procedure on a more serious computation: a naive matrix multiplication  using OpenMP, those source code is located in `src/matrix_mult_openmp.c`
 
@@ -237,7 +241,8 @@ Passive jobs examples:
 ############### iris cluster (slurm) ###############
 $> sbatch ./launcher.OpenMP.sh foss  matrix_mult_openmp
 $> sbatch ./launcher.OpenMP.sh intel matrix_mult_openmp
-
+```
+<!--
 ############### gaia/chaos clusters (OAR) ###############
 # Arguments of the launcher script to tests
 $> cat > openmp-args.txt <<EOF
@@ -255,7 +260,7 @@ OAR_JOB_ID=4357647
 OAR_JOB_ID=4357648
 OAR_JOB_ID=4357649
 OAR_ARRAY_ID=4357646
-```
+-->
 
 Check the elapsed time: what do you notice ?
 
@@ -279,11 +284,12 @@ Now you can reserve the nodes and set `OMP_NUM_THREADS`:
 ############### iris cluster (slurm) ###############
 (access-iris)$> srun -p interactive --ntasks-per-node=1 -c 12 -t 1:00:00 --pty bash
 $> export OMP_NUM_THREADS=${SLURM_CPUS_PER_TASK}
-
+```
+<--
 ############### gaia/chaos clusters (OAR) ###############
 (access-{gaia|chaos})$> oarsub -I -l nodes=1/core=12,walltime=1:00:00
 $> export OMP_NUM_THREADS=$(cat $OAR_NODEFILE| wc -l)
-```
+-->
 
 * Open **another** terminal (or another `screen` window) to monitor the execution (see intructions on top).
 
