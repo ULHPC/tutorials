@@ -41,7 +41,7 @@ $ nvidia-smi
 $ nvcc  # ?
 ```
 
-Driver is ready, but we need to load the CUDA development kit.
+Driver is loaded, but we still need to load the CUDA development kit.
 
 ```bash
 $ module av cuda  # av versus spider
@@ -77,7 +77,7 @@ $ module purge
 $ module restore cuda
 ```
 
-In fact, you can compile CUDA applications on a node without GPU, using the same modules.
+Note: you can compile CUDA applications on a node without GPU, using the same modules.
 You will not however be able to execute them.
 
 In case there is not enough GPU cards available, you can submit passive jobs, using `sbatch`.
@@ -128,21 +128,9 @@ The main API is the *CUDA Runtime*.
 Another, lower level API, is *CUDA Driver*, which also offers more customization options.
 Example of other APIs, built on top of the CUDA Runtime, are Thrust, NCCL.
 
-Many programming environments are available.
-In fact, here is an overview from a workshop on GPU programming (PPAM 2019):
-
-> GPU programming has evolved into a full ecosystem that includes
-> programming languages (CUDA, OpenCL), libraries (e.g., cuBLAS, cuSPARSE,
-> cuFFT, cuSOLVER, AmgX, MAGMA), high level interfaces (e.g., thrust,
-> OCCA, RAJA, Kokkos), annotation-based programming models (e.g., OpenACC,
-> OpenMP), GPU support in mathematical software (e.g., Parallel Computing
-> Toolbox in Matlab, CUDALink in Mathematica), GPU script languages (e.g.,
-> PyOpenCL, Bohrium), and new data parallel languages (e.g., Copperhead).
-
-
 ### Hello World
 
-Below is a example CUDA `.cu` program (`.cu` is the required file extension for CUDA-accelerated programs).
+Below is a example CUDA `.cu` program (`.cu` is the *required* file extension for CUDA-accelerated programs).
 It contains two functions, the first which will run on the CPU, the second which will run on the GPU.
 
 ```cpp
@@ -193,7 +181,7 @@ At a high level, execution configuration allows programmers to specify the threa
 
 The execution configuration allows programmers to specify details about launching the kernel to run in parallel on multiple GPU threads.
 More precisely, the execution configuration allows programmers to specifiy how many groups of threads - called thread blocks, or just blocks - and how many threads they would like each thread block to contain.
-The simplest syntax for this is: (there are other parameters available)
+The simplest syntax for this is: (there are 2 othe parameters available)
 ```cpp
 <<< NUMBER_OF_BLOCKS, NUMBER_OF_THREADS_PER_BLOCK>>>
 ```
@@ -276,7 +264,7 @@ Cuda uses a two stage compilation process, to PTX, and to binary.
 
 To produce the PTX for the cuda kernel, use:
 ```bash
-$ nvcc -ptx -o out.ptx some-CUDA.cu  # -o is optional
+$ nvcc -ptx -o out.ptx some-CUDA.cu
 ```
 Brief inspection of the generated PTX file reports a *target* real platform of `sm_30`.
 ```
@@ -287,7 +275,7 @@ Brief inspection of the generated PTX file reports a *target* real platform of `
 .target sm_30
 .address_size 64
 ```
-The Volta GPU implements `sm_70` or `sm_75`. So, we could be missing some features from the GPU.
+The Volta GPU implements `sm_70`. So, we could be missing some features from the GPU.
 
 To specify an instruction set, use the `-arch` option:
 ```bash
@@ -325,9 +313,10 @@ is a shorthand for the full command:
 ```bash
 $ nvcc -o out -arch=compute_70 -code=sm_70,compute_70 some-CUDA.cu
 ```
-You may want to package the PTX to allow for JIT compilation across different real GPU.
+
+In summary, if you want to package the PTX to allow for JIT compilation across different real GPU:
 ```bash
-$ nvcc -o out -arch=compute_70 some-CUDA.cu
+$ nvcc -o out -arch=compute_70 some-CUDA.cu  # or sm_70
 ```
 
 ## CUDA thread hierarchy
@@ -451,9 +440,8 @@ After successfully refactoring, the numbers 0 through 9 should still be printed.
 
 ```cpp
 /* FIXME
- * Fix and refactor 'loop' to be a CUDA Kernel.
- * The new kernel should only do the work
- * of 1 iteration of the original loop.
+ * Fix and refactor 'loop' to be a CUDA Kernel, launched with 2 or more blocks
+ * The new kernel should only do the work of 1 iteration of the original loop.
  */
 
 #include <cstdio>
@@ -482,7 +470,9 @@ int main()
 }
 ```
 
-## Allocating memory to be accessed on the GPU and the CPU
+## Memory allocation
+
+### Allocating memory to be accessed on the GPU and the CPU
 
 For any meaningful work to be done, we need to access memory.
 The GPU has a distinct memory from the CPU, which requires data transfers to and from CPU.
@@ -516,6 +506,20 @@ cudaMallocManaged(&a, size);
 // Use 'a' on the CPU and/or on any GPU in the accelerated system.
 
 cudaFree(a);
+```
+
+For completeness, the alternative to unified memory is to:
+
+- manually allocate memory on a device
+- copy data from host to device memory.
+
+This can be done with:
+```cpp
+float* d_C;
+cudaMalloc(&d_C, size);
+// Copy vectors from host memory to device memory
+cudaMemcpy(d_C, h_C, size, cudaMemcpyHostToDevice);  // to mimick d_C = h_C;
+cudaFree(d_C);
 ```
 
 ### Exercise: array manipulation on both the host and device
@@ -610,7 +614,7 @@ int main()
 
 A solution can be found in the next exercise.
 
-### Handling block configuration mismatches to number of needed threads
+### Handling block configuration mismatches to number of needed threads (minor)
 
 It may be the case that an execution configuration cannot be expressed to create the exact number of threads needed for parallelizing a loop.
 
@@ -652,7 +656,7 @@ some_kernel(int N)
 }
 ```
 
-### Data sets larger then the grid
+### Data sets larger then the grid (important)
 
 Either by choice, often to create the most performant execution configuration, or out of necessity, the number of threads in a grid may be smaller than the size of a data set.
 Consider an array with 1000 elements, and a grid with 250 threads (using trivial sizes here for ease of explanation).
@@ -756,8 +760,48 @@ int main()
 ```
 One solution is in file `array.cu`.
 
-## Shared memory
-TODO
+
+### Shared memory
+
+As a first approximation, there are 3 memories available to your kernel code:
+
+- global memory
+- block shared memory
+- registers.
+
+Within a kernel code:
+
+- automatic variable are stored in registers
+- `__shared__` specifier indicates the block memory, faster than global memory (limited, 96KB).
+
+Shared memory can be declared outside the kernel code with:
+```cpp
+extern __shared__ float shared[];
+```
+However, then the size of the shared memory must be declared in the kernel configuration:
+```cpp
+kernel<<<2, 32, 16*sizeof(int)>>>();
+```
+
+```cpp
+extern __shared__ int a_blk[];
+
+__global__ void doubleElements(int *a, int N) {
+  int i = blockIdx.x * blockDim.x + threadIdx.x;
+  if (i<N) {
+          a_blk[threadIdx.x] = a[i];
+          a_blk[threadIdx.x] *= 2;  // or something more complex
+          a[i] = a_blk[threadIdx.x];
+  }
+}
+// ...
+doubleElements<<<10, 16, 16*sizeof(*a)>>>(a, N);
+cudaDeviceSynchronize();
+// ...
+```
+
+Note: `__syncthreads()` can be used to synchronize threads of a thread block: waits for all shared and global access to be visible from all threads (in a block).
+
 
 ## Performance considerations
 
@@ -857,7 +901,7 @@ int main()
 In case you need to setup the environment, issue the same interactive reservation as before:
 
 ```bash
-> srun -n1 -c1 --gres=gpu:1 -pgpu --pty bash -i
+> srun -p gpu -G 1 --pty bash -i
 $ module r cuda  # restores our saved 'cuda' modules
 ```
 Or use the `sbatch` script presented at the beginning of this tutorial.
