@@ -62,13 +62,13 @@ We can create the MD5 checksum with the following command:
 05babfa77d503a60561ceab31d767b34  message.txt
 ```
 
-Save checksum to file:
+Since we want to store the checksum, we should save to a file:
 
 ```bash
 (node)$> md5sum message.txt > message.md5
 ```
 
-Given a data file and its checksum, you can **verify** the file against the checksum with the following command>
+Given a data file and its checksum, you can **verify** the file against the checksum with the following command:
 
 ```bash
 (node)$> md5sum -c message.md5
@@ -177,7 +177,7 @@ You can list the contents of your keyring with
 (node)$> gpg --list-keys
 ```
 
-If you are going to transfer the data to someone else, you want to encrypt the data with the public key of the recipient though, and not your own key. You can upload (the public) keys to public repositories for easier sharing. 
+If you are going to transfer the data to someone else, you want to encrypt the data with the public key of the recipient, though, and not your own key. You can upload (the public) keys to public repositories for easier sharing. 
 
 You can export your key to a file with:
 
@@ -218,9 +218,9 @@ To use gocryptfs on the HPC platform you need to do the following steps:
 (node)$> module load tools/gocryptfs
 ```
 
-#### 2. Create two folders:    
-   - one which will act as the storage for the encrypted files (let’s call it *crypt*)
-   - the other will present (on demand) the unencrypted view (let’s call it *view*)
+#### 2. Create two folders 
+   - `dir.crypt`, which will act as the storage for the encrypted files (let’s call it *crypt*)
+   - `dir`, which will present (on demand) the unencrypted view (let’s call it *view*)
 
 ```bash
 (node)$> cd $SCRATCH/data_management
@@ -300,7 +300,7 @@ message.txt
 
 At the end of our processing, we are using `fusermount` explicitly to unmount the encrypted overlay, such that the unencrypted view of your data is closed and data is flushed to the regular filesystem.
 
-Note that you should always ensure that this happens before your job reservation expires
+Note that you should always ensure that this happens before your job reservation expires.
 
 ```bash
 (node)$> fusermount -u dir
@@ -311,43 +311,35 @@ Note that you should always ensure that this happens before your job reservation
 
 #### Other important details
 
-- Data stored in a *crypt* store should not be used concurrently (e.g. by multiple users at the same time)    
+- Data stored in a *crypt* store should not be used concurrently (e.g. by multiple users at the same time). The [special option](https://github.com/rfjakob/gocryptfs/blob/master/Documentation/MANPAGE.md#-sharedstorage) `-sharedstorage` exists for this use-case, but is not guaranteed to work for all applications.
 
-  - the [special option](https://github.com/rfjakob/gocryptfs/blob/master/Documentation/MANPAGE.md#-sharedstorage) `-sharedstorage` exists for this use-case, but is not guaranteed to work for all applications;
+- (Parallel) Applications ran through `srun`  on the Iris cluster cannot "see" the unencrypted *view* folder as they are run in a different context.   
 
-- (Parallel) Applications ran through 
-
-  ```
-  srun
-  ```
-
-   on the Iris cluster cannot "see" the unencrypted *view* folder as they are run in a different context;    
-
-  - this is also the case if you use `sjoin` or `srun --jobid` to attach your terminal to a running job;
+  This is also the case if you use `sjoin` or `srun --jobid` to attach your terminal to a running job.
 
 #### Gocryptfs store password management
 
 You can change the password of an existing *crypt* store with the `-passwd` option:
 
 ```
-  gocryptfs -passwd dir.crypt/
-  Password: [your current password here]
-  Decrypting master key
-  Please enter your new password.
-  Password: [your new password here]
-  Repeat: [your new password here]
-  Password changed.
+(node)$> gocryptfs -passwd dir.crypt/
+Password: [your current password here]
+Decrypting master key
+Please enter your new password.
+Password: [your new password here]
+Repeat: [your new password here]
+Password changed.
 ```
 
 Note that the master key *does not change*.
 
-For running batch processing on a gocryptfs-based, you can  provide the decryption password through an external application with the `-extpass` option:
+For running batch processing on a gocryptfs-based folder, you can provide the decryption password through an external application with the `-extpass` option:
 
 ```
-  gocryptfs -extpass "echo foobar" dir.crypt dir
-  Reading password from extpass program
-  Decrypting master key
-  Filesystem mounted and ready.
+(node)$> gocryptfs -extpass "echo foobar" dir.crypt dir
+Reading password from extpass program
+Decrypting master key
+Filesystem mounted and ready.
 ```
 
 Note that this means that another application stores/has access to the password - this is then a security risk!
