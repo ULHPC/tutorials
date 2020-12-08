@@ -22,7 +22,7 @@ The actual command comes only after this prefix.
 
 #### 2. Start an interactive job
 
-```
+```bash
 (access)$> si
 ```
 
@@ -125,7 +125,7 @@ Note that any use of user-level encryption remains under the responsability of t
 
 We can encrypt our test file using GPG with the following command:
 
-```
+```bash
 (node)$> gpg -c message.txt
 ```
 
@@ -141,7 +141,7 @@ This will create the encrypted file `message.txt.gpg` next to the unencrypted fi
 
 You can decrypt the file  with the following command:
 
-```
+```bash
 (node)$> gpg message.txt.gpg
 gpg: CAST5 encrypted data
 gpg: encrypted with 1 passphrase
@@ -321,7 +321,7 @@ Note that you should always ensure that this happens before your job reservation
 
 You can change the password of an existing *crypt* store with the `-passwd` option:
 
-```
+```bash
 (node)$> gocryptfs -passwd dir.crypt/
 Password: [your current password here]
 Decrypting master key
@@ -335,7 +335,7 @@ Note that the master key *does not change*.
 
 For running batch processing on a gocryptfs-based folder, you can provide the decryption password through an external application with the `-extpass` option:
 
-```
+```bash
 (node)$> gocryptfs -extpass "echo foobar" dir.crypt dir
 Reading password from extpass program
 Decrypting master key
