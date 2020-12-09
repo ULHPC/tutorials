@@ -432,7 +432,7 @@ You should be now able to reach your notebook.
 
 __MobaXterm users__:
 
-MobaXterm has tunneling feature allowing to setup ssh forwarding. Click on the "Tuneling".
+MobaXterm has tunneling a feature to setup ssh forwarding. Click on the "Tuneling".
 
 <p align="center">
 <img src="./images/tunneling.png" width="900px" >
