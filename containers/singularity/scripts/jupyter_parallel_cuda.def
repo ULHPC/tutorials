@@ -1,0 +1,45 @@
+Bootstrap: docker
+From: nvcr.io/nvidia/tensorflow:20.10-tf2-py3
+Stage: build
+
+%setup
+    touch /file_on_host
+    touch ${SINGULARITY_ROOTFS}/file_on_guest
+
+%files
+    /file_on_host /opt
+
+%environment
+    export PORT=8889
+    export LC_ALL=C
+
+%post
+    apt-get update
+    apt-get install -y python3-pip python3-venv
+    python3 -m pip install jupyter ipyparallel cgroup-utils 
+
+%runscript
+    VENV=$1
+    echo "Sourcing $VENV"
+    shift
+    exec bash -c "source $VENV/bin/activate;$@"
+
+%startscript
+    echo "Started new instance on $(date)"
+
+%test
+    grep -q NAME=\"Ubuntu\" /etc/os-release
+    if [ $? -eq 0 ]; then
+        echo "Container base is Ubuntu as expected."
+    else
+        echo "Container base is not Ubuntu."
+    fi
+    python3 -m pip show jupyter
+
+%labels
+    Author ekieffer
+    Version v0.0.1
+
+%help
+    This is a demo container used to illustrate a def file that uses all
+    supported sections.
