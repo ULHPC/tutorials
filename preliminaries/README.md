@@ -28,7 +28,7 @@ Open a Terminal.
 SSH is installed natively on your machine and the `ssh` command should be accessible from the command line:
 
 ```bash
-$> ssh -V
+(laptop)$> ssh -V
 OpenSSH_7.9p1, LibreSSL 2.7.3
 ```
 
@@ -139,7 +139,139 @@ Paste in the Base 64-encoded public key string, and click **Set**.
 Click **Save** at the top of the page.
 
 
+### Step 1a - Connect to UL HPC (Linux / Mac OS / Unix)
 
+Run the following commands in a terminal (substituting *yourlogin* with the login name you received from us):
+
+        (laptop)$> ssh -p 8022 yourlogin@access-iris.uni.lu
+
+Now you probably want to avoid taping this long command to connect to the platform. You can customize SSH aliases for that. Edit the file `~/.ssh/config` (create it if it does not already exist) and adding the following entries:
+
+        Host iris-cluster
+            Hostname access-iris.uni.lu
+            User yourlogin
+            Port 8022
+            ForwardAgent no
+
+Now you shall be able to issue the following (simpler) command to connect to the cluster and obtain the welcome banner:
+
+        (laptop)$> ssh iris-cluster
+
+
+In the following sections, we assume these aliases to be defined.
+
+
+### Step 1b - Optional - using SSH proxycommand setup to access the clusters despite port filtering (Linux / Mac OS / Unix)
+
+It might happen that the port 8022 is filtered from your working place. You can easily bypass this firewall rule using an SSH proxycommand to setup transparently multi-hop connexions *through* one host (a gateway) to get to the access frontend of the cluster, as depited below:
+
+    [laptop] -----||--------> 22 [SSH gateway] ---------> 8022 [access-{iris,gaia,chaos}]
+               firewall
+
+The gateway can be any SSH server which have access to the access frontend of the cluster. The [Gforge @ UL](http://gforge.uni.lu) is typically used in this context but you can prefer any other alternative (your personal NAS @ home etc.). Then alter the SSH config on your laptop (in `~/.ssh/config` typically) as follows:
+
+* create an entry to be able to connect to the gateway:
+
+#### Alias for the gateway (not really needed, but convenient), below instantiated
+
+    Host gw
+      User anotherlogin
+      Hostname host.domain.org
+      ForwardAgent no
+
+#### Automatic connection to UL HPC from the outside via the gateway
+
+    Host *.ulhpc
+      ProxyCommand ssh -q -x gw -W `basename %h .ulhpc`:%p
+
+Ensure you can connect to the gateway:
+
+    (laptop)$> ssh gw
+    (gateway)$> exit # or CTRL-D
+
+The `.ulhpc` suffix we mentioned in the previous configuration is an arbitrary suffix you will now specify in your command lines in order to access the UL HPC platform via the gateway as follows:
+
+    (laptop)$> ssh iris.ulhpc
+
+
+### Step 1c - Connect to UL HPC (Windows)
+
+* Download [MobaXterm Installer edition](http://mobaxterm.mobatek.net/)
+* Install MobaXterm
+* Open the application **Start** > **Program Files** > **MobaXterm**
+* Change the default home directory for a persistent home directory instead of the default Temp directory. Go onto **Settings** > **Configuration** > **General** > **Persistent home directory**. Choose a location for your home directory.
+* load your private SSH key. **Tools** > **Network** > **MobaKeyGen (SSH key generator)** and choose Load (or create a new RSA key).
+* click on **Session**
+  * In **SSH Session**:
+    * Remote host: `access-iris.uni.lu`
+		* Check the **Specify username** box
+		* Username: `yourlogin`
+    * Port: 8022
+  * In **Advanced SSH Settings**
+	  * Check `Use private key` box
+		* Select your previously generated `id_rsa.ppk`
+  * Click on **Save**
+
+
+### Step 2 - Hands-on/ Transferring files
+
+Directories such as `$HOME`, `$WORK` or `$SCRATCH` are shared among the nodes of the cluster that you are using (including the front-end) via shared filesystems (NFS, Lustre) meaning that:
+
+* every file/directory pushed or created on the front-end is available on the computing nodes
+* every file/directory pushed or created on the computing nodes is available on the front-end
+
+
+#### Step 2a - Linux / OS X / Unix command line tools
+
+The two most common tools you can use for data transfers over SSH:
+
+* `scp`: for the full transfer of files and directories (only works fine for single files or directories of small/trivial size)
+* `rsync`: a software application which synchronizes files and directories from one location to another while minimizing data transfer as only the outdated or inexistent elements are transferred (practically required for lengthy complex transfers, which are more likely to be interrupted in the middle).
+
+Of both, normally the second approach should be preferred, as more generic; note that, both ensure a secure transfer of the data, within an encrypted tunnel.
+
+* Create a new directory on your local machine and download a file to transfer (next-gen sequencing data from the NIH Roadmap Epigenomics Project):
+
+		(laptop)$> mkdir file_transfer
+		(laptop)$> cd file_transfer
+		(laptop)$> wget "ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM409nnn/GSM409307/suppl/GSM409307_UCSD.H1.H3K4me1.LL228.bed.gz"
+
+* Transfer the file with scp:
+
+		(laptop)$> scp GSM409307_UCSD.H1.H3K4me1.LL228.bed.gz iris-cluster:
+
+* Connect to the cluster, check if the file is there and delete it.
+
+		(laptop)$> ssh iris-cluster
+		(access-iris)$> ls
+		(access-iris)$> rm GSM409307_UCSD.H1.H3K4me1.LL228.bed.gz
+		rm: remove regular file `GSM409307_UCSD.H1.H3K4me1.LL228.bed.gz'? y
+		(access-iris)$> exit
+
+* Transfer the directory with rsync:
+
+		(laptop)$> cd ..
+		(laptop)$> rsync -avzu file_transfer iris-cluster:
+
+* Delete the file and retrieve it from the cluster:
+
+		(laptop)$> rm file_transfer/GSM409307_UCSD.H1.H3K4me1.LL228.bed.gz
+		(laptop)$> rsync -avzu iris-cluster:file_transfer .
+
+* **Bonus**: Check where the file is located on the cluster after the rsync.
+
+You can get more information about these transfer methods in the [file transfer documentation](https://hpc.uni.lu/users/docs/filetransfer.html).
+
+
+#### Step 2b - Windows MobaXterm file transfer
+
+If you are on Windows, you can directly use MobaXterm to transfer files. Connect to your session (see below on how to configure it). On the right panel you should see an **SFTP** panel opened.
+
+![SFTP on MobaXterm](https://github.com/ULHPC/tutorials/raw/devel/beginners/images/moba_sftp.png)
+
+You have just to drag and drop your files to this panel to transfer files to the cluster. You can try to upload this file [ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM409nnn/GSM409307/suppl/GSM409307_UCSD.H1.H3K4me1.LL228.bed.gz](ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM409nnn/GSM409307/suppl/GSM409307_UCSD.H1.H3K4me1.LL228.bed.gz) (next-gen sequencing data from the NIH Roadmap Epigenomics Project)
+
+To retrieve a file from the cluster, you can right click on it and choose the **Download** option. Please refers to MobaXterm documentation for more informations on the available features.
 
 ### SSH agent
 
