@@ -87,7 +87,7 @@ Below is an example `sbatch` file, to remote compile, run and profile a source f
 #!/bin/bash -l
 #SBATCH --job-name="GPU build"
 #SBATCH --ntasks=1
-#SBATCH --ntasks-per-core=1
+#SBATCH -c 1
 #SBATCH --time=0-00:10:00
 #SBATCH --partition=gpu
 #SBATCH --gres=gpu:1
@@ -224,6 +224,7 @@ The following program currently makes a very basic function call that prints a m
 ```cpp
 /*
  * FIXME
+ * (hello.cu)
  */
 
 void helloCPU()
@@ -351,6 +352,7 @@ Edit the source code to update the execution configuration so that the success m
 ```cpp
 /*
  * FIXME
+ * (indices.cu)
  */
 
 #include <cstdio>
@@ -397,7 +399,9 @@ Currently, the loop function runs a for loop that will serially print the number
 Modify the loop function to be a CUDA kernel which will launch to execute N iterations in parallel.
 After successfully refactoring, the numbers 0 through 9 should still be printed.
 ```cpp
-/* FIXME
+/* 
+ * FIXME
+ * (loop.cu)
  * Correct, and refactor 'loop' to be a CUDA Kernel.
  * The new kernel should only do the work
  * of 1 iteration of the original loop.
@@ -439,7 +443,9 @@ Make further modifications to the previous exercise, but with a execution config
 After successfully refactoring, the numbers 0 through 9 should still be printed.
 
 ```cpp
-/* FIXME
+/* 
+ * FIXME
+ * (loop2.cu)
  * Fix and refactor 'loop' to be a CUDA Kernel, launched with 2 or more blocks
  * The new kernel should only do the work of 1 iteration of the original loop.
  */
@@ -533,6 +539,11 @@ Refactor the application to meet the following conditions:
 
 
 ```cpp
+/*
+ * FIXME
+ * (alloc.cu)
+ */
+
 #include <cstdio>
 
 /*
@@ -694,6 +705,12 @@ void kernel(int *a, int N)
 Refactor the previous code to use a grid-stride loop in the `doubleElements` kernel, in order that the grid, which is smaller than N, can reuse threads to cover every element in the array.
 The program will print whether or not every element in the array has been doubled, currently the program accurately prints `FALSE`.
 ```cpp
+/* 
+ * FIXME
+ * (loop-stride.cu)
+ * using strides
+ */
+
 #include <cstdio>
 
 void init(int *a, int N)
@@ -758,7 +775,7 @@ int main()
   cudaFree(a);
 }
 ```
-One solution is in file `array.cu`.
+One solution is in file `sol-array-stride.cu`.
 
 
 ### Shared memory
