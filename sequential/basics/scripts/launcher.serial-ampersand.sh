@@ -1,67 +1,65 @@
 #! /bin/bash -l
 # Time-stamp: <Fri 2020-12-11 00:22 svarrette>
 ############################################################################
-# Default launcher for serial (one core) tasks
+# (Not Recommended) Sample launcher for aggregating serial (one core) tasks
+# within one node using the Bash & (ampersand), a builtin control operator
+# used to fork processes, and the wait command.
 ############################################################################
-###SBATCH -J Serial-jobname
-###SBATCH --dependency singleton
-###SBATCH --mail-type=FAIL     # Mail events (NONE, BEGIN, END, FAIL, ALL)
-###SBATCH --mail-user=<email>
+#SBATCH -J StressMe-ampersand
 #SBATCH --time=0-01:00:00      # 1 hour
 #SBATCH --partition=batch
 #__________________________
 #SBATCH -N 1
-#SBATCH --ntasks-per-node 1
+#SBATCH --ntasks-per-node 28   # <-- match number of cores per node
 #SBATCH -c 1                   # multithreading per task : -c --cpus-per-task <n> request
 #__________________________
 #SBATCH -o logs/%x-%j.out      # log goes into logs/<jobname>-<jobid>.out
 mkdir -p logs
 
-##############################
-### Guess the run directory
-# - either the script directory upon interactive jobs
-# - OR the submission directory upon passive/batch jobs
-SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-if [ -n "${SLURM_SUBMIT_DIR}" ]; then
-    [[ "${SCRIPT_DIR}" == *"slurmd"* ]] && TOP_DIR=${SLURM_SUBMIT_DIR} || TOP_DIR=$(realpath -es "${SCRIPT_DIR}")
-else
-    TOP_DIR="${SCRIPT_DIR}"
-fi
 CMD_PREFIX=
+# the --exclusive to srun makes srun use distinct CPUs for each job step
+# -N1 -n1 allocates a single core to each task - Adapt accordingly
+SRUN="srun -n1 --exclusive -c ${SLURM_CPUS_PER_TASK:=1} --cpu-bind=cores"
 
 # /!\ ADAPT TASK variable accordingly
 # Absolute path to the (serial) task to be executed i.e. your favorite
 # Java/C/C++/Ruby/Perl/Python/R/whatever program to be run
 TASK=${TASK:=${HOME}/bin/app.exe}
+MIN=1
+MAX=30
 
 ################################################################################
 print_error_and_exit() { echo "*** ERROR *** $*"; exit 1; }
 usage() {
     cat <<EOF
 NAME
-  $(basename $0): Generic launcher for the serial application
-     Default TASK: ${TASK}
+  $(basename $0): Sample launcher for aggregating serial
+    (one core) tasks within one node using the Bash & (ampersand), a builtin
+    control operator used to fork processes, and the wait command.
+  Default TASK: ${TASK}
 USAGE
-  [sbatch] $0 [-n]
-  TASK=/path/to/app.exe [sbatch] $0 [-n]
+  [sbatch] $0 [-n]  [--min MIN] [--max MAX]
+  TASK=/path/to/app.exe [sbatch] $0 [-n] [--min MIN] [--max MAX]
+
+  This will run the following command:
+  for i in {${MIN}..${MAX}}; do
+     ${SRUN} \${TASK} \$i &
+  done
+  wait
+
 OPTIONS:
   -n --dry-run: Dry run mode
+  --min|--max N: set min/max parameter value
 EOF
-}
-print_debug_info(){
-cat <<EOF
- TOP_DIR    = ${TOP_DIR}
- TASK       = ${TASK}
-EOF
-[ -n "${SLURM_JOBID}" ] && echo "$(scontrol show job ${SLURM_JOBID})"
 }
 ################################################################################
 # Check for options
 while [ $# -ge 1 ]; do
     case $1 in
         -h | --help) usage; exit 0;;
-        -d | --debug) print_debug_info;;
         -n | --noop | --dry-run) CMD_PREFIX=echo;;
+        --min) shift; MIN=$1;;
+        --max) shift; MAX=$1;;
         *) OPTS=$*; break;;
     esac
     shift
@@ -74,9 +72,12 @@ module purge || print_error_and_exit "Unable to find the 'module' command"
 
 start=$(date +%s)
 echo "### Starting timestamp (s): ${start}"
-
-${CMD_PREFIX} ${TASK} ${OPTS} ${SLURM_ARRAY_TASK_ID}
-
+#################################
+for i in $(seq ${MIN} ${MAX}); do
+    ${CMD_PREFIX} ${SRUN} ${TASK} ${OPTS} $i  &
+done
+wait
+##################
 end=$(date +%s)
 cat <<EOF
 ### Ending timestamp (s): ${end}"
