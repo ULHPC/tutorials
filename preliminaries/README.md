@@ -435,15 +435,15 @@ You are encouraged to **ALWAYS** simplify the SSH connections by embedding them 
 
 ```bash
 # Now you can connect transparently to both instances
-(laptop)$> ssh -F ~/.ssh/AWS/config instance-1.aws
-Welcome to Ubuntu 20.04.1 LTS (GNU/Linux 5.4.0-1021-aws x86_64)
+(laptop)$> ssh -F ~/.ssh/config iris-cluster
+Welcome to access1.iris-cluster.uni.lux
 [...]
-ubuntu@ip-172-31-47-105:~$ logout    # OR CTRL-D
+[yourlogin@access1 ~]$ logout    # OR CTRL-D
 
-(laptop)$> ssh -F ~/.ssh/AWS/config instance-2.aws
-Welcome to Ubuntu 20.04.1 LTS (GNU/Linux 5.4.0-1021-aws x86_64)
+(laptop)$> ssh -F ~/.ssh/config aion-cluster
+Welcome to access1.aion-cluster.uni.lux
 [...]
-ubuntu@ip-172-31-44-210:~$  logout    # OR CTRL-D
+[yourlogin@access1 ~]$ logout    # OR CTRL-D
 ```
 
 ## SOCKS 5 Proxy plugin - Optional
