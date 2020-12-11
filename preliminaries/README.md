@@ -12,7 +12,21 @@ Welcome to the High Performance Computing (HPC) Facility of the University of Lu
 To take the best out of the different tutorials and practical sessions proposed in the training sessions organised by the University of Luxembourg, you have to follow several steps to configure your working environments.
 In particular, ensure you have followed the [preliminary setup instructions](setup/preliminaries.md) for your laptop.
 
-## Installation Git
+**Convention**
+
+In the below tutorial, you'll proposed terminal commands where the prompt is denoted by `$>`.
+
+In general, we will prefix to precise the execution context (_i.e._ your laptop, a cluster frontend or a node). Remember that `#` character is a comment. Example:
+
+                # This is a comment
+                $> hostname
+
+                (laptop)$> hostname         # executed from your personal laptop / workstation
+
+                (access-iris)$> hostname    # executed from access server of the Iris cluster
+
+
+## Git Installation
 
 ```bash
 # Mac OS X, using Homebrew - https://brew.sh
@@ -23,12 +37,28 @@ brew install git git-gui git-flow gitk tig kdiff3
 $> choco.exe install git gitflow-avh
 ```
 
-### Initial setup Git
+### Git Initial Setup
 
 ```bash
+# /!\ To add to your bash/zsh profile (~/.profile)
+# XDG Base Directory Specification
+# See https://specifications.freedesktop.org/basedir-spec/latest/
+export XDG_CONFIG_HOME=$HOME/.config
+export XDG_CACHE_HOME=$HOME/.cache
+export XDG_DATA_HOME=$HOME/.local/share
 
+# Create the directories
+mkdir -p ~/.config/git $XDG_CACHE_HOME $XDG_DATA_HOME
+
+# Basic Git defaults
+git config --global user.name "Firstname LastName"
+git config --global user.email "<email>@<domain>"
+git config --global user.signingkey <gpg-keyID>     # <-- Leave this part if you don't have a gpg-keyID
+git config --global color.ui true
+
+# Set your default editor -- vim in this case
+git config ---global core.editor vim
 ```
-
 
 ## Secure SHell (SSH)
 
