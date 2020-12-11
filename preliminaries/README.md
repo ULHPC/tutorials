@@ -64,6 +64,16 @@ mkdir -p ~/.config/git $XDG_CACHE_HOME $XDG_DATA_HOME
 
 ## Secure SHell (SSH)
 
+### Hands-On/SSH & UL HPC access
+
+
+* [Access / SSH Tutorial](https://hpc.uni.lu/users/docs/access.html)
+
+The way SSH handles the keys and the configuration files is illustrated in the following figure:
+
+![SSH key management](https://hpc.uni.lu/images/docssh/schema.png)
+
+
 Developed by [SSH Communications Security Ltd.](http://www.ssh.com), Secure Shell is a program to log into another computer over a network, to execute commands in a remote machine, and to move files from one machine to another in a secure way.
 
 It provides strong authentication and secure communications over insecure channels. To use SSH, you have to generate a pair of keys, one **public** and the other **private**.
@@ -482,7 +492,7 @@ extension for Firefox and configure it to use your SOCKS proxy:
 * Click on **OK**
 * Close
 * Open a new tab
-* Right click on the Fox
+* Click on the Fox
 * Choose the **ULHPC proxy**
 
 You can now access any web interface deployed on any service reachable from the SSH jump host _i.e._ the ULHPC login node.
