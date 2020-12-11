@@ -80,26 +80,26 @@ Now **configure a dedicated directory `tutorials/sequential` for this session**
 
 In this sample scenario, we will first mimic serial usage for tasks lasting different amount time (here, ranging from 1 to 30s). This is very typical: your serial application is likely to take more or less time depending on its execution context (typically controlled by command line arguments).
 
-You will use a script, `scripts/stressme`, to reproduce a configurable amount of  stress on the system set for a certain amount of time (by default: 20s) passed as parameter using the '[stress](https://linux.die.net/man/1/stress)' command.
+You will use a script, `scripts/run_stressme`, to reproduce a configurable amount of  stress on the system set for a certain amount of time (by default: 20s) passed as parameter using the '[stress](https://linux.die.net/man/1/stress)' command.
 We would like thus to conduct the following executions:
 
 ``` bash
-stressme 1     # execution time: 1s
-stressme 2     # execution time: 2s
-stressme 3     # execution time: 3s
-stressme 4     # execution time: 4s
-stressme 5     # execution time: 5s
-stressme 6     # execution time: 6s
-stressme 7     # execution time: 7s
+run_stressme 1     # execution time: 1s
+run_stressme 2     # execution time: 2s
+run_stressme 3     # execution time: 3s
+run_stressme 4     # execution time: 4s
+run_stressme 5     # execution time: 5s
+run_stressme 6     # execution time: 6s
+run_stressme 7     # execution time: 7s
 [...]
-stressme 27    # execution time: 27s
-stressme 28    # execution time: 28s
-stressme 29    # execution time: 29s
-stressme 30    # execution time: 30s
+run_stressme 27    # execution time: 27s
+run_stressme 28    # execution time: 28s
+run_stressme 29    # execution time: 29s
+run_stressme 30    # execution time: 30s
 ```
 
 Running this job campaign **sequentially** (one after the other on the same core) would take approximatively **465s**.
-The below table wrap up the sequential times required for the completion of the job campaign depending on the number of `stressme` tasks, and the _theoretical_ optimal time corresponding to the _slowest_ task to complete.
+The below table wrap up the sequential times required for the completion of the job campaign depending on the number of `run_stressme` tasks, and the _theoretical_ optimal time corresponding to the _slowest_ task to complete.
 
 | Number of consecutive tasks | Expected Seq. time to complete | Optimal time |
 |-----------------------------|--------------------------------|--------------|
@@ -144,11 +144,11 @@ In another terminal (or another screen tab/windows), connect to that job and run
 ```
 Note that you have **only one core** reserved by default in a interactive job: you may thus see activities on the other cores via `htop`, they are corresponding to processes run by the other users. Note that you can use the `--exclusive`  flag upon reservation to request en exclusive access to a full node.
 
-Now execute the `stressme` command in the first terminal/windows to see its effect on the processor load:
+Now execute the `run_stressme` command in the first terminal/windows to see its effect on the processor load:
 
 ``` bash
 # Run directly
-(node)$> ~/git/github.com/ULHPC/tutorials/sequential/basics/scripts/stressme
+(node)$> ~/git/github.com/ULHPC/tutorials/sequential/basics/scripts/run_stressme
 #  /usr/bin/stress -c 1 -t 20
 stress: info: [59918] dispatching hogs: 1 cpu, 0 io, 0 vm, 0 hdd
 stress: info: [59918] successful run completed in 20s
@@ -158,9 +158,9 @@ stress: info: [59918] successful run completed in 20s
 (node)$> cd ~/tutorials/sequential
 # create a symbolic link to the script directory
 (node)$> ln -s ref.d/scripts .    # <-- don't forget the trailing '.'  means 'here'
-(node)$> ls scripts/stressme      # should not fail
-scripts/stressme
-(node)$> ./scripts/stressme
+(node)$> ls scripts/run_stressme      # should not fail
+scripts/run_stressme
+(node)$> ./scripts/run_stressme
 stress: info: [59918] dispatching hogs: 1 cpu, 0 io, 0 vm, 0 hdd
 stress: info: [59918] successful run completed in 20s
 # Exit the job
@@ -199,7 +199,7 @@ Use your favorite editor (`nano`, `vim` etc) to edit it as follows:
  # Absolute path to the (serial) task to be executed i.e. your favorite
  # Java/C/C++/Ruby/Perl/Python/R/whatever program to be run
 -TASK=${TASK:=${HOME}/bin/app.exe}
-+TASK=${TASK:=${HOME}/tutorials/sequential/scripts/stressme}
++TASK=${TASK:=${HOME}/tutorials/sequential/scripts/run_stressme}
 ```
 
 Let's test it in an interactive job:
@@ -215,7 +215,7 @@ Let's test it in an interactive job:
 (node)$> ./launcher.stressme-serial.sh -h
 NAME
   launcher.stressme-serial.sh: Generic launcher for the serial application
-     Default TASK: $HOME/tutorials/sequential/scripts/stressme
+     Default TASK: $HOME/tutorials/sequential/scripts/run_stressme
 USAGE
   [sbatch] ./launcher.stressme-serial.sh [-n]
   TASK=/path/to/app.exe [sbatch] ./launcher.stressme-serial.sh [-n]
@@ -225,7 +225,7 @@ OPTIONS:
 # dry-run
 (node)$> ./launcher.stressme-serial.sh -n
 ### Starting timestamp (s): 1607616148
-/home/users/<login>/tutorials/sequential/scripts/stressme
+/home/users/<login>/tutorials/sequential/scripts/run_stressme
 ### Ending timestamp (s): 1607616148"
 # Elapsed time (s): 0
 
@@ -242,13 +242,13 @@ stress: info: [64361] successful run completed in 20s
 _Hint_: for the lazy persons, you can define on the fly the `TASK` variable as follows:
 
 ```bash
-(node)$> TASK=$(pwd)/scripts/stressme ./scripts/launcher.serial.sh -n
+(node)$> TASK=$(pwd)/scripts/run_stressme ./scripts/launcher.serial.sh -n
 ### Starting timestamp (s): 1607616148
-/home/users/<login>/tutorials/sequential/scripts/stressme
+/home/users/<login>/tutorials/sequential/scripts/run_stressme
 ### Ending timestamp (s): 1607616148"
 # Elapsed time (s): 0
 
-(node)$> TASK=$(pwd)/scripts/stressme ./scripts/launcher.serial.sh
+(node)$> TASK=$(pwd)/scripts/run_stressme ./scripts/launcher.serial.sh
 ### Starting timestamp (s): 1607616500
 #  /usr/bin/stress -c 1 -t 20
 stress: info: [103707] dispatching hogs: 1 cpu, 0 io, 0 vm, 0 hdd
@@ -260,13 +260,17 @@ stress: info: [103707] successful run completed in 20s
 Quit your interactive job (exit or `CTRL+D`) and submit it as a passive job:
 
 ``` bash
+# Note: you may want/need to run it under the dedicated reservation set for the training event
+# using sbatch --reservation=[...]
 (access)$> sbatch ./launcher.stressme-serial.sh
 ```
 
 _Hint_: for the lazy persons, just run:
 
 ``` bash
-(access)$> TASK=$(pwd)/scripts/stressme sbatch ./scripts/launcher.serial.sh
+# Note: you may want/need to run it under the dedicated reservation set for the training event
+# using [...] sbatch --reservation=[...]
+(access)$> TASK=$(pwd)/scripts/run_stressme sbatch ./scripts/launcher.serial.sh
 ```
 
 ### StressMe Job Campaign: For loop on  `sbatch` (VERY BAD)
@@ -274,6 +278,8 @@ _Hint_: for the lazy persons, just run:
 **Now the job campaign for N tasks (N=30) can be obtained by submitting N=30 jobs**:
 
 ``` bash
+# Note: you may want/need to run it under the dedicated reservation set for the training event
+# using sbatch --reservation=[...]
 # /!\ ALWAYS echo your commands in a for loop before going real
 (access)$> for i in $(seq 1 30); do echo sbatch ./launcher.stressme-serial.sh $i; done
 sbatch ./launcher.stressme-serial.sh 1
@@ -433,7 +439,7 @@ Use your favorite editor (`nano`, `vim` etc) to edit it as follows:
  #__________________________
 -#SBATCH -o logs/%x-%j.out      # log goes into logs/<jobname>-<jobid>.out
 +#SBATCH --array 1-9%5
-+#SBATCH -o logs/%x-%A_%a.out   # log goes into logs/<jobname>-<masterID>_<taskID>_<jobid>.out
++#SBATCH -o logs/%x-%A_%a.out   # log goes into logs/<jobname>-<masterID>_<taskID>.out
 @@ -75,7 +74,7 @@
  start=$(date +%s)
  echo "### Starting timestamp (s): ${start}"
@@ -463,7 +469,7 @@ _In short_, **Don't use job arrays!!!**: you can do better with [GNU Parallel](h
 Of course, you can aggregate the number of tasks within a single slurm launcher, start them in the background (i.e. as child processes by using the ampersand `&` after a Bash command, and the `wait` command:
 
 ``` bash
-TASK=stressme
+TASK=run_stressme
 for i in {1..30}; do
     srun -n1 --exclusive -c 1 --cpu-bind=cores ${TASK} $i &
 done
@@ -473,7 +479,7 @@ The ampersand `&` spawns the command `srun -n1 --exclusive -c 1 --cpu-bind=cores
 This approach is dangerous and the location of the `wait` command can be optimized to match the number of tasks per nodes, i.e. when `${SLURM_NTASKS_PER_NODE}` (if set) or `${SLURM_CPUS_ON_NODE}` (28 on iris) process have been forked. The code would be as follows:
 
 ``` bash
-TASK=stressme
+TASK=run_stressme
 ncores=${SLURM_NTASKS_PER_NODE:-${SLURM_CPUS_ON_NODE:-28}}
 For i in {1..30}; do
     srun -n1 --exclusive -c 1 --cpu-bind=cores ${TASK} $i &
@@ -488,7 +494,9 @@ You can test it from the sample launcher [`launcher.serial-ampersand.sh`](script
 (access)$> cd ~/tutorials/sequential # if not yet done
 (access)$> cp ~/git/github.com/ULHPC/tutorials/sequential/basics/scripts/launcher.serial-ampersand.sh .   # <- trailing '.' means 'here
 (access)$> mv launcher.serial-ampersand.sh launcher.stressme-serial-ampersand.sh
-(access)$> TASK=$(pwd)/scripts/stressme sbatch ./launcher.stressme-serial-ampersand.sh
+# Note: you may want/need to run it under the dedicated reservation set for the training event
+# using sbatch --reservation=[...]
+(access)$> TASK=$(pwd)/scripts/run_stressme sbatch ./launcher.stressme-serial-ampersand.sh
 Submitted batch job 2172531
 ```
 
@@ -503,36 +511,36 @@ Check the duration of the job afterward:
 svarrette 2172531                  StressMe-ampersand      batch  COMPLETED   01:00:00   00:00:34                              1         28        iris-061                         5859
           2172531.bat+                          batch             COMPLETED              00:00:34      3976K    178800K        1         28        iris-061   00:00:00              5625
           2172531.ext+                         extern             COMPLETED              00:00:36          0    108056K        1         28        iris-061   00:00:00              5859
-          2172531.0                          stressme             COMPLETED              00:00:04          0    248548K        1          1        iris-061   00:00:00               666
-          2172531.1                          stressme             COMPLETED              00:00:09          0    248548K        1          1        iris-061   00:00:00              1790
-          2172531.2                          stressme             COMPLETED              00:00:08          0    248548K        1          1        iris-061   00:00:00              1582
-          2172531.3                          stressme             COMPLETED              00:00:10          0    248548K        1          1        iris-061   00:00:00              2013
-          2172531.4                          stressme             COMPLETED              00:00:07          0    248548K        1          1        iris-061   00:00:00              1364
-          2172531.5                          stressme             COMPLETED              00:00:05          0    248548K        1          1        iris-061   00:00:00               914
-          2172531.6                          stressme             COMPLETED              00:00:11          0    248548K        1          1        iris-061   00:00:00              2210
-          2172531.7                          stressme             COMPLETED              00:00:14          0    248548K        1          1        iris-061   00:00:00              2807
-          2172531.8                          stressme             COMPLETED              00:00:03          0    248548K        1          1        iris-061   00:00:00               465
-          2172531.9                          stressme             COMPLETED              00:00:13          0    248548K        1          1        iris-061   00:00:00              2620
-          2172531.10                         stressme             COMPLETED              00:00:19          0    248548K        1          1        iris-061   00:00:00              3704
-          2172531.11                         stressme             COMPLETED              00:00:17          0    248548K        1          1        iris-061   00:00:00              3361
-          2172531.12                         stressme             COMPLETED              00:00:28          0    248548K        1          1        iris-061   00:00:00              5047
-          2172531.13                         stressme             COMPLETED              00:00:02          0    248548K        1          1        iris-061   00:00:00               226
-          2172531.14                         stressme             COMPLETED              00:00:23          0    248548K        1          1        iris-061   00:00:00              4342
-          2172531.15                         stressme             COMPLETED              00:00:16          0    248548K        1          1        iris-061   00:00:00              3183
-          2172531.16                         stressme             COMPLETED              00:00:15          0    248548K        1          1        iris-061   00:00:00              3001
-          2172531.17                         stressme             COMPLETED              00:00:24          0    248548K        1          1        iris-061   00:00:00              4480
-          2172531.18                         stressme             COMPLETED              00:00:12          0    248548K        1          1        iris-061   00:00:00              2427
-          2172531.19                         stressme             COMPLETED              00:00:18          0    248548K        1          1        iris-061   00:00:00              3534
-          2172531.20                         stressme             COMPLETED              00:00:06          0    248548K        1          1        iris-061   00:00:00              1167
-          2172531.21                         stressme             COMPLETED              00:00:31          0    248548K        1          1        iris-061   00:00:00              5285
-          2172531.22                         stressme             COMPLETED              00:00:27          0    248548K        1          1        iris-061   00:00:00              4900
-          2172531.23                         stressme             COMPLETED              00:00:21          0    248548K        1          1        iris-061   00:00:00              4021
-          2172531.24                         stressme             COMPLETED              00:00:22          0    248548K        1          1        iris-061   00:00:00              4177
-          2172531.25                         stressme             COMPLETED              00:00:31          0    248548K        1          1        iris-061   00:00:00              5155
-          2172531.26                         stressme             COMPLETED              00:00:25          0    248548K        1          1        iris-061   00:00:00              4611
-          2172531.27                         stressme             COMPLETED              00:00:20          0    248548K        1          1        iris-061   00:00:00              3861
-          2172531.28                         stressme             COMPLETED              00:00:32       392K    248548K        1          1        iris-061   00:00:29              5298
-          2172531.29                         stressme             COMPLETED              00:00:25          0    248548K        1          1        iris-061   00:00:00              4575
+          2172531.0                          run_stressme             COMPLETED              00:00:04          0    248548K        1          1        iris-061   00:00:00               666
+          2172531.1                          run_stressme             COMPLETED              00:00:09          0    248548K        1          1        iris-061   00:00:00              1790
+          2172531.2                          run_stressme             COMPLETED              00:00:08          0    248548K        1          1        iris-061   00:00:00              1582
+          2172531.3                          run_stressme             COMPLETED              00:00:10          0    248548K        1          1        iris-061   00:00:00              2013
+          2172531.4                          run_stressme             COMPLETED              00:00:07          0    248548K        1          1        iris-061   00:00:00              1364
+          2172531.5                          run_stressme             COMPLETED              00:00:05          0    248548K        1          1        iris-061   00:00:00               914
+          2172531.6                          run_stressme             COMPLETED              00:00:11          0    248548K        1          1        iris-061   00:00:00              2210
+          2172531.7                          run_stressme             COMPLETED              00:00:14          0    248548K        1          1        iris-061   00:00:00              2807
+          2172531.8                          run_stressme             COMPLETED              00:00:03          0    248548K        1          1        iris-061   00:00:00               465
+          2172531.9                          run_stressme             COMPLETED              00:00:13          0    248548K        1          1        iris-061   00:00:00              2620
+          2172531.10                         run_stressme             COMPLETED              00:00:19          0    248548K        1          1        iris-061   00:00:00              3704
+          2172531.11                         run_stressme             COMPLETED              00:00:17          0    248548K        1          1        iris-061   00:00:00              3361
+          2172531.12                         run_stressme             COMPLETED              00:00:28          0    248548K        1          1        iris-061   00:00:00              5047
+          2172531.13                         run_stressme             COMPLETED              00:00:02          0    248548K        1          1        iris-061   00:00:00               226
+          2172531.14                         run_stressme             COMPLETED              00:00:23          0    248548K        1          1        iris-061   00:00:00              4342
+          2172531.15                         run_stressme             COMPLETED              00:00:16          0    248548K        1          1        iris-061   00:00:00              3183
+          2172531.16                         run_stressme             COMPLETED              00:00:15          0    248548K        1          1        iris-061   00:00:00              3001
+          2172531.17                         run_stressme             COMPLETED              00:00:24          0    248548K        1          1        iris-061   00:00:00              4480
+          2172531.18                         run_stressme             COMPLETED              00:00:12          0    248548K        1          1        iris-061   00:00:00              2427
+          2172531.19                         run_stressme             COMPLETED              00:00:18          0    248548K        1          1        iris-061   00:00:00              3534
+          2172531.20                         run_stressme             COMPLETED              00:00:06          0    248548K        1          1        iris-061   00:00:00              1167
+          2172531.21                         run_stressme             COMPLETED              00:00:31          0    248548K        1          1        iris-061   00:00:00              5285
+          2172531.22                         run_stressme             COMPLETED              00:00:27          0    248548K        1          1        iris-061   00:00:00              4900
+          2172531.23                         run_stressme             COMPLETED              00:00:21          0    248548K        1          1        iris-061   00:00:00              4021
+          2172531.24                         run_stressme             COMPLETED              00:00:22          0    248548K        1          1        iris-061   00:00:00              4177
+          2172531.25                         run_stressme             COMPLETED              00:00:31          0    248548K        1          1        iris-061   00:00:00              5155
+          2172531.26                         run_stressme             COMPLETED              00:00:25          0    248548K        1          1        iris-061   00:00:00              4611
+          2172531.27                         run_stressme             COMPLETED              00:00:20          0    248548K        1          1        iris-061   00:00:00              3861
+          2172531.28                         run_stressme             COMPLETED              00:00:32       392K    248548K        1          1        iris-061   00:00:29              5298
+          2172531.29                         run_stressme             COMPLETED              00:00:25          0    248548K        1          1        iris-061   00:00:00              4575
 #
 # seff 2172531
 #
@@ -563,16 +571,247 @@ svarrette 2172531                  StressMe-ampersand      batch  COMPLETED   01
 Repeat with 100 tasks (aggreated within a single job):
 
 ``` bash
+# Note: you may want/need to run it under the dedicated reservation set for the training event
+# using sbatch --reservation=[...]
 (access)$> TASK=$(pwd)/scripts/stressme sbatch ./launcher.stressme-serial-ampersand.sh --max 100
 Submitted batch job 2172535
 (access)$> TASK=$(pwd)/scripts/stressme sbatch ./launcher.stressme-serial-ampersand.sh --max 10
 Submitted batch job 2172537
 # sq [...]
 # Once completed:
-(access)$> slist 2172535 -X
+(access)$> slist 2172535 -X     # /!\ ADAPT JobID accordingly
+# sacct -j 2172534,2172535,2172537 --format User,JobID,Jobname%30,partition,state,time,elapsed,MaxRss,MaxVMSize,nnodes,ncpus,nodelist,AveCPU,ConsumedEnergyRaw -X
+     User        JobID                        JobName  Partition      State  Timelimit    Elapsed     MaxRSS  MaxVMSize   NNodes      NCPUS        NodeList     AveCPU ConsumedEnergyRaw
+--------- ------------ ------------------------------ ---------- ---------- ---------- ---------- ---------- ---------- -------- ---------- --------------- ---------- -----------------
+svarrette 2172535                  StressMe-ampersand      batch  COMPLETED   01:00:00   00:03:42                              1         28        iris-084                        46449
 
-(access)$> slist 2172537 -X
+
+(access)$> slist 2172537 -X    # /!\ ADAPT JobID accordingly
+# sacct -j 2172534,2172535,2172537 --format User,JobID,Jobname%30,partition,state,time,elapsed,MaxRss,MaxVMSize,nnodes,ncpus,nodelist,AveCPU,ConsumedEnergyRaw -X
+     User        JobID                        JobName  Partition      State  Timelimit    Elapsed     MaxRSS  MaxVMSize   NNodes      NCPUS        NodeList     AveCPU ConsumedEnergyRaw
+--------- ------------ ------------------------------ ---------- ---------- ---------- ---------- ---------- ---------- -------- ---------- --------------- ---------- -----------------
+svarrette 2172537                  StressMe-ampersand      batch  COMPLETED   01:00:00   00:00:13                              1         28        iris-120                         2016
+```
+
+Compared to the (**VERY BAD**) "for loop of sbatch" approach, we have thus:
+
+1. __improved__ the wall-time to complete the __30 tasks job campaign by 26,1%__ (34s vs 46s)
+2. optimized the resources allocation (a single node allocated, when 10 and up to 100 were required for the bigger campaign (100 tasks)) at the price of a affordable time penalty (+25% i.e. 222s vs 177), still demonstrating a 95,6% improvement compared to the sequential run.
+
+Nevertheless, we had to revisit the logic of the launcher script and enforce several customization.
+On the contrary, [GNU Parallel](http://www.gnu.org/software/parallel/) allow flexibility and adaptability while minimizing the customization: it makes the pallalelization happen automagically based on the slurm constraits (`--ntasks-per-node`, `-c`).
+
+We will focus on a **single node run**
+
+## The best launcher for distributing embarrassingly [GNU] parallel tasks
+
+![](https://www.gnu.org/software/parallel/logo-gray+black300.png)
+
+[GNU Parallel](http://www.gnu.org/software/parallel/)) is a tool for executing tasks in parallel, typically on a single machine. When coupled with the Slurm command `srun`, parallel becomes a powerful way of distributing a set of tasks amongst a number of workers. This is particularly useful when the number of tasks is significantly larger than the number of available workers (i.e. `$SLURM_NTASKS`), and each tasks is independent of the others.
+
+**Follow now our [GNU Parallel tutorial](../gnu-parallel/) to become more accustomed with the special (complex) syntax of this tool.**
+
+To illustrate the advantages of this approach, we will use the generic GNU parallel launcher script designed by the UL HPC Team **[`scripts/launcher.parallel.sh`](https://github.com/ULHPC/tutorials/blob/devel/sequential/basics/scripts/launcher.parallel.sh)**.
+First copy this script template and **make it your FINAL launcher for stressme**:
+
+```bash
+(access)$> cd ~/tutorials/sequential # if not yet done
+(access)$> cp ~/git/github.com/ULHPC/tutorials/sequential/basics/scripts/launcher.parallel.sh .   # <- trailing '.' means 'here
+(access)$> mv launcher.parallel.sh launcher.stressme.sh
+```
+
+Use your favorite editor (`nano`, `vim` etc) to edit it as follows:
+
+```diff
+--- scripts/launcher.parallel.sh        2020-12-11 15:00:41.131917000 +0100
++++ launcher.stressme.sh        2020-12-11 15:01:39.504427000 +0100
+@@ -54,8 +54,8 @@
+ # /!\ ADAPT TASK and TASKLIST variables accordingly
+ # Absolute path to the (serial) task to be executed i.e. your favorite
+ # Java/C/C++/Ruby/Perl/Python/R/whatever program to be run
+-TASK=${TASK:=${HOME}/bin/app.exe}
+-TASKLIST="{1..8}"
++TASK=${TASK:=${HOME}/tutorials/sequential/scripts/run_stressme}
++TASKLIST="{1..30}"
+
+ ############################################################
+ print_error_and_exit() { echo "*** ERROR *** $*"; exit 1; }
+```
+
+So not far from what you did form the basic first launcher.
+
+You can test this launcher within an **exclusive** interactive job (otherwise the internal calls to `srun --exclusive` will conflict with the default settings of interactive jobs)
+
+``` bash
+### Have an interactive job for 4 (embarrassingly parallel) tasks
+# ... either directly
+(access)$> si --ntasks-per-node 4 --interactive
+# ... or using the HPC School reservation 'hpcschool'if needed  - use 'sinfo -T' to check if active and its name
+# (access)$> srun --reservation=hpcschool --pty bash
+```
+
+As before, in another terminal (or another screen tab/windows), connect to that job and run `htop`.
+Now you can make some tests:
+
+```bash
+# check usage
+(node)$> ./launcher.stressme.sh -h
+NAME
+    launcher.stressme.sh: Generic launcher using GNU parallel
+    within a single node to run embarrasingly parallel problems, i.e. execute
+    multiple times the command '${TASK}' within a 'tunnel' set to run NO MORE
+    THAN ${SLURM_NTASKS} tasks in parallel.
+    State of the execution is stored in logs/state.parallel.log and is used to
+    resume the execution later on, from where it stoppped (either due to the
+    fact that the slurm job has been stopped by failure or by hitting a walltime
+    limit) next time you invoke this script.
+    In particular, if you need to rerun this GNU Parallel job, be sure to delete
+    the logfile logs/state*.parallel.log or it will think it has already
+    finished!
+    By default, '$HOME/tutorials/sequential/scripts/run_stressme' command is
+    executed with arguments {1..30}
+
+USAGE
+   [sbatch] ./launcher.stressme.sh [-n] [TASKLIST]
+   TASK=/path/to/app.exe [sbatch] ./launcher.stressme.sh [-n] [TASKLIST]
+
+OPTIONS
+  -n --dry-run:      dry run mode (echo full parallel command)
+  -t --test --noop:  no-operation mode: echo run commands
+
+EXAMPLES
+  Within an interactive job (use --exclusive for some reason in that case)
+      (access)$> si --ntasks-per-node 28 --exclusive
+      (node)$> ./launcher.stressme.sh -n    # dry-run
+      (node)$> ./launcher.stressme.sh
+  Within a passive job
+      (access)$> sbatch ./launcher.stressme.sh
+  Within a passive job, using several cores (2) per tasks
+      (access)$> sbatch --ntasks-per-socket 7 --ntasks-per-node 14 -c 2 ./launcher.stressme.sh
+
+  Get the most interesting usage statistics of your jobs <JOBID> (in particular
+  for each job step) with:
+     slist <JOBID> [-X]
+
+### DRY-RUN
+(node)$> ./launcher.stressme.sh -n
+### Starting timestamp (s): 1607707840
+parallel --delay .2 -j 4 --joblog logs/state.parallel.log --resume  srun  --exclusive -n1 -c 1 --cpu-bind=cores /home/users/svarrette/tutorials/sequential/scripts/run_stressme {1} ::: 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30
+### Ending timestamp (s): 1607707840"
+# Elapsed time (s): 0
+
+Beware that the GNU parallel option --resume makes it read the log file set by
+--joblog (i.e. logs/state*.log) to figure out the last unfinished task (due to the
+fact that the slurm job has been stopped due to failure or by hitting a walltime
+limit) and continue from there.
+In particular, if you need to rerun this GNU Parallel job, be sure to delete the
+logfile logs/state*.parallel.log or it will think it has already finished!
+
+### TEST mode - parallel echo mode (always important to do before running effectively the commands)
+(node)$> ./launcher.stressme.sh -t
+### Starting timestamp (s): 1607708018
+srun --exclusive -n1 -c 1 --cpu-bind=cores /home/users/svarrette/tutorials/sequential/scripts/run_stressme 1
+srun --exclusive -n1 -c 1 --cpu-bind=cores /home/users/svarrette/tutorials/sequential/scripts/run_stressme 2
+srun --exclusive -n1 -c 1 --cpu-bind=cores /home/users/svarrette/tutorials/sequential/scripts/run_stressme 3
+[...]
+srun --exclusive -n1 -c 1 --cpu-bind=cores /home/users/svarrette/tutorials/sequential/scripts/run_stressme 27
+srun --exclusive -n1 -c 1 --cpu-bind=cores /home/users/svarrette/tutorials/sequential/scripts/run_stressme 28
+srun --exclusive -n1 -c 1 --cpu-bind=cores /home/users/svarrette/tutorials/sequential/scripts/run_stressme 29
+srun --exclusive -n1 -c 1 --cpu-bind=cores /home/users/svarrette/tutorials/sequential/scripts/run_stressme 30
+### Ending timestamp (s): 1607708024"
+# Elapsed time (s): 6
+
+Beware that the GNU parallel option --resume makes it read the log file set by
+--joblog (i.e. logs/state*.log) to figure out the last unfinished task (due to the
+fact that the slurm job has been stopped due to failure or by hitting a walltime
+limit) and continue from there.
+In particular, if you need to rerun this GNU Parallel job, be sure to delete the
+logfile logs/state*.parallel.log or it will think it has already finished!
+/!\ WARNING: Test mode - removing sate file
+
+### Real run
+(node)$> ./launcher.stressme.sh
+### Starting timestamp (s): 1607708111
+#  /usr/bin/stress -c 1 -t 1
+stress: info: [127447] dispatching hogs: 1 cpu, 0 io, 0 vm, 0 hdd
+stress: info: [127447] successful run completed in 1s
+#  /usr/bin/stress -c 1 -t 2
+stress: info: [127439] dispatching hogs: 1 cpu, 0 io, 0 vm, 0 hdd
+stress: info: [127439] successful run completed in 2s
+[...]
+#  /usr/bin/stress -c 1 -t 29
+stress: info: [128239] dispatching hogs: 1 cpu, 0 io, 0 vm, 0 hdd
+stress: info: [128239] successful run completed in 29s
+#  /usr/bin/stress -c 1 -t 30
+stress: info: [128276] dispatching hogs: 1 cpu, 0 io, 0 vm, 0 hdd
+stress: info: [128276] successful run completed in 30s
+### Ending timestamp (s): 1607708243"
+# Elapsed time (s): 132
+
+Beware that the GNU parallel option --resume makes it read the log file set by
+--joblog (i.e. logs/state*.log) to figure out the last unfinished task (due to the
+fact that the slurm job has been stopped due to failure or by hitting a walltime
+limit) and continue from there.
+In particular, if you need to rerun this GNU Parallel job, be sure to delete the
+logfile logs/state*.parallel.log or it will think it has already finished!
+```
+
+A quick look in parallel on `htop` report in the second terminal/screen windows demonstrate the usage of only 4 cores as expressed in the slurm job (`--ntasks-per-node 4`):
+
+![](images/screenshot_htop_gnu_parallel_j4_interactive.png)
+
+**IMPORTANT** as highlighted by the ULHPC script: Beware that the GNU parallel option `--resume` makes it read the log file set by `--joblog` (i.e. `logs/state*.log`) to figure out the last unfinished task (due to the fact that the slurm job has been stopped due to failure or by hitting a walltime
+limit) and continue from there.
+In particular, as we now want to rerun the **same** GNU Parallel job, be sure to delete the
+logfile `logs/state*.parallel.log` or your passive job will likely do nothing as it will think it has already finished!
+
+``` bash
+(node)$> rm logs/state.parallel.log
+```
+
+You can even test on another set of parameters without changing your script:
+
+``` bash
+# BEWARE of placing the range within surrounding double quotes!!!
+(node)$> ./launcher.stressme.sh -n "{1..10}"   # Dry-run
+(node)$> ./launcher.stressme.sh -t "{1..10}"   # Test
+(node)$> ./launcher.stressme.sh "{1..10}"      # Real run
+(node)$> rm logs/state.parallel.log
+```
+
+Now that you have validated the expected behavior of the launcher script (you may want to test on higher number of tasks per node: GNU parallel will just adapt without any change to the launcher script), it's time to go for a passive run at full capacity.
 
 
+Exit `htop` in its terminal (press 'q' to exit) and press `CTRL-D` to disconnect to return to the access server.
+Quit your interactive job (exit or `CTRL+D`) and submit it as a passive job:
 
+``` bash
+# Exit the interactive job
+(node)$> exit    # OR CTRL-D
+# Note: you may want/need to run it under the dedicated reservation set for the training event
+# using sbatch --reservation=[...]
+(access)$> sbatch ./launcher.stressme.sh
+# if you have not done it upon submission, you can correct it with (adapt accordingly):
+#     scontrol update jobid=<JOBID> reservationname=<name>
+```
+
+_Hint_: for the lazy persons, you can define on the fly the `TASK` variable as follows:
+
+``` bash
+(access)$> TASK=$(pwd)/scripts/run_stressme sbatch ./scripts/launcher.parallel.sh
+```
+
+A quick look in parallel on `htop` report (`sq` then `sjoin <JOBID>` then `htop`)  in the second terminal/screen windows demonstrate the expected usage optimizing the full node
+
+![](images/screenshot_htop_gnu_parallel_j28.png)
+
+Finally you can repeat the experience for 100 `run_stressme` tasks quite conveniently, **without** changing the launcher script:
+
+``` bash
+# Remove the state log
+(access)$> rm logs/state.parallel.log
+# Note: you may want/need to run it under the dedicated reservation set for the training event
+# using sbatch --reservation=[...]
+# BEWARE of placing the range within surrounding double quotes!!!
+(access)$> sbatch ./launcher.stressme.sh "{1..100}"
 ```
