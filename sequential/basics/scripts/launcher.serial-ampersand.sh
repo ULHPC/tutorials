@@ -1,5 +1,5 @@
 #! /bin/bash -l
-# Time-stamp: <Fri 2020-12-11 00:22 svarrette>
+# Time-stamp: <Fri 2020-12-11 00:43 svarrette>
 ############################################################################
 # (Not Recommended) Sample launcher for aggregating serial (one core) tasks
 # within one node using the Bash & (ampersand), a builtin control operator
@@ -74,9 +74,9 @@ start=$(date +%s)
 echo "### Starting timestamp (s): ${start}"
 #################################
 for i in $(seq ${MIN} ${MAX}); do
-    ${CMD_PREFIX} ${SRUN} ${TASK} ${OPTS} $i  &
+    ${CMD_PREFIX} ${SRUN} ${TASK} ${OPTS} $i &     # <-- Ampersand '&' is key
 done
-wait
+wait  # all the child processes to	finish before terminating	the	parent process; CRUCIAL
 ##################
 end=$(date +%s)
 cat <<EOF
