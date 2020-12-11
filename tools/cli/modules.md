@@ -36,7 +36,7 @@ On a node, using an interactive jobs, you can:
 
 ## Software sets
 
-At this Currently, the ULHPC provides the software sets 2019a (default) and 2019b (devel).
+Currently, the ULHPC provides the software sets 2019a (default) and 2019b (devel).
 We encourage you to use right now 2019b, by redefining the `MODULEPATH` variable as explained in the next section,
 as it will soon be promoted as the next default environment.
 
