@@ -12,6 +12,24 @@ Welcome to the High Performance Computing (HPC) Facility of the University of Lu
 To take the best out of the different tutorials and practical sessions proposed in the training sessions organised by the University of Luxembourg, you have to follow several steps to configure your working environments.
 In particular, ensure you have followed the [preliminary setup instructions](setup/preliminaries.md) for your laptop.
 
+## Installation Git
+
+```bash
+# Mac OS X, using Homebrew - https://brew.sh
+brew install git git-gui git-flow gitk tig kdiff3
+# Ubuntu / WSL / RedHat
+{ sudo apt-get | yum } install git-core git-flow tig gitk kdiff3
+# Windows, using Chocolatey - https://chocolatey.org/
+$> choco.exe install git gitflow-avh
+```
+
+### Initial setup Git
+
+```bash
+
+```
+
+
 ## Secure SHell (SSH)
 
 Developed by [SSH Communications Security Ltd.](http://www.ssh.com), Secure Shell is a program to log into another computer over a network, to execute commands in a remote machine, and to move files from one machine to another in a secure way.
@@ -273,7 +291,7 @@ You have just to drag and drop your files to this panel to transfer files to the
 
 To retrieve a file from the cluster, you can right click on it and choose the **Download** option. Please refers to MobaXterm documentation for more informations on the available features.
 
-### SSH agent
+### SSH agent - Optional
 
 If you are tired of typing your passphrase, use `ssh-agent` to load your private key
 
@@ -285,6 +303,17 @@ Identity added: ~/.ssh/id_rsa (<login>@<hostname>)
 $ ssh-add ~/.ssh/id_ed25519
 Enter passphrase for ~/.ssh/id_ed25519:       # <-- enter your passphrase here
 Identity added: ~/.ssh/id_ed25519 (<login>@<hostname>)
+
+# Now you can connect transparently to both instances
+$> ssh -F ~/.ssh/AWS/config instance-1.aws
+Welcome to Ubuntu 20.04.1 LTS (GNU/Linux 5.4.0-1021-aws x86_64)
+[...]
+ubuntu@ip-172-31-47-105:~$ logout    # OR CTRL-D
+
+$> ssh -F ~/.ssh/AWS/config instance-2.aws
+Welcome to Ubuntu 20.04.1 LTS (GNU/Linux 5.4.0-1021-aws x86_64)
+[...]
+ubuntu@ip-172-31-44-210:~$  logout    # OR CTRL-D
 ```
 
 On **Ubuntu/WSL**, if you experience issues when using `ssh-add`, you should install the `keychain` package and use it as follows (eventually add it to your `~/.profile`):
@@ -387,35 +416,8 @@ $ ssh iris-cluster
 [yourlogin@access1 ~]$
 ```
 
-### SSH Agent
 
-If you are tired of typing your passphrase, use `ssh-agent` to load your private key
-
-```bash
-$ ssh-add ~/.ssh/id_rsa
-Enter passphrase for ~/.ssh/id_rsa:           # <-- enter your passphrase here
-Identity added: ~/.ssh/id_rsa (<login>@<hostname>)
-
-$ ssh-add ~/.ssh/id_ed25519
-Enter passphrase for ~/.ssh/id_ed25519:       # <-- enter your passphrase here
-Identity added: ~/.ssh/id_ed25519 (<login>@<hostname>)
-
-# Now you can connect transparently to both instances
-$> ssh -F ~/.ssh/AWS/config instance-1.aws
-Welcome to Ubuntu 20.04.1 LTS (GNU/Linux 5.4.0-1021-aws x86_64)
-[...]
-ubuntu@ip-172-31-47-105:~$ logout    # OR CTRL-D
-
-$> ssh -F ~/.ssh/AWS/config instance-2.aws
-Welcome to Ubuntu 20.04.1 LTS (GNU/Linux 5.4.0-1021-aws x86_64)
-[...]
-ubuntu@ip-172-31-44-210:~$  logout    # OR CTRL-D
-```
-
-
-## SOCKS 5 Proxy plugin
-
-We have seen how to use a jump host (`instance-1.aws`) typically exposed to the Internet to connect to a (potentially internal) server (`instance-2.aws`).
+## SOCKS 5 Proxy plugin - Optional
 
 Many Data Analytics framework involves a web interface (at the level of the master and/or the workers) you probably want to access in a relative transparent way.
 
