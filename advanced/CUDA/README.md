@@ -17,7 +17,7 @@ This tutorial will cover the following aspects of CUDA programming:
 - Access memory on both GPU and CPU.
 - Profile and improve the performance of your application.
 
-Solutions to some of the exercises can be found in the [samples sub-directory][3].
+Solutions to some of the exercises can be found in the [code sub-directory][3].
 
 The tutorial is based on the Nvidia DLI course "Fundamentals of accelerated computing with CUDA C/C++".
 
@@ -25,7 +25,7 @@ More information can be obtained from [the guide][1].
 
 [1]: https://docs.nvidia.com/cuda/cuda-c-programming-guide/index.html "Programming guide"
 [2]: https://docs.nvidia.com/cuda/cuda-runtime-api/index.html "Runtime API"
-[3]: ./samples "samples"
+[3]: ./code "code"
 
 ## Access to a GPU-equipped node of the Iris cluster
 
