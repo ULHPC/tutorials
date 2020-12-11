@@ -7,15 +7,17 @@ pages:
   - Pre-Requisites: 'setup/preliminaries.md'
   - Installation:   'setup/install.md'
 - Preliminaries: 'preliminaries/index.md'
+- Command line utilities: 'tools/cli/index.md'
 - Getting started:
   - Overview: 'beginners/index.md'
-  - Job scheduling with SLURM: 'scheduling/advanced/index.md'
   - Monitoring and profiling: 'basic/monitoring/index.md'
-  - Command line utilities: 'tools/cli/index.md'
+  - Job scheduling with SLURM: 'basic/scheduling/index.md'
   - Using software modules: 'tools/cli/modules.md'
 - Tools / Software management:
   - Easybuild: 'tools/easybuild/index.md'
 #  - RESIF:     'tools/resif/index.md'
+- Scheduling:
+  - Advanced job scheduling with SLURM: 'scheduling/advanced/index.md'
 - Debugging and Profiling:
   - Efficient Debugging:     'debugging/basics/index.md'
   - Performance engineering: 'debugging/advanced/index.md'
