@@ -6,7 +6,7 @@
        | |_| | |___  |  _  |  __/| |___    | || |_| | || (_) | |  | | (_| | \__ \
         \___/|_____| |_| |_|_|    \____|   |_| \__,_|\__\___/|_|  |_|\__,_|_|___/
 
-               Copyright (c) 2013-2018 UL HPC Team <hpc-sysadmins@uni.lu>
+               Copyright (c) 2013-2020 UL HPC Team <hpc-sysadmins@uni.lu>
 
 This repository holds a set of tutorials to help the users of the [UL HPC](https://hpc.uni.lu) platform to better understand or simply use our platform.
 

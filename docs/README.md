@@ -46,7 +46,7 @@ So far, the following tutorials are proposed:
 | _Containers_            | [HPC Containers with Singularity](containers/singularity/)                                            | advanced       |
 | _Virtualization_        | (OLD) [Create and reproduce work environments using Vagrant](advanced/Vagrant/)                       | intermediate   |
 |                         | [Deploying virtual machines with Vm5k on Grid'5000](advanced/vm5k/)                                   | intermediate   |
-| _GPU_                   | [Scalable Science III: GPU programming](advanced/CUDA/)                                               | intermediate   |
+| _GPU_                   | [Introduction to GPU programming with CUDA (C/C++)](cuda/)                                            | intermediate   |
 | _Misc_                  | [Reproducible Research at the Cloud Era](misc/reproducible-research/)                                 | intermediate   |
 
 __List of contributors__
