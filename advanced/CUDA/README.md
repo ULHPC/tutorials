@@ -7,8 +7,6 @@
 [![](https://github.com/ULHPC/tutorials/raw/devel/advanced/CUDA/cover_slides.png)](https://github.com/ULHPC/tutorials/raw/devel/advanced/CUDA/slides.pdf)
 
 
-## CUDA
-
 This tutorial will cover the following aspects of CUDA programming:
 
 - Write, compile and run C/C++ programs that both call CPU functions and launch GPU kernels.
@@ -27,6 +25,29 @@ More information can be obtained from [the guide][1].
 [2]: https://docs.nvidia.com/cuda/cuda-runtime-api/index.html "Runtime API"
 [3]: ./code "code"
 
+--------------------
+## Pre-requisites ##
+
+Ensure you are able to [connect to the UL HPC clusters](https://hpc.uni.lu/users/docs/access.html).
+In particular, recall that the `module` command **is not** available on the access frontends.
+
+```bash
+### Access to ULHPC cluster - here iris
+(laptop)$> ssh iris-cluster
+# /!\ Advanced (but recommended) best-practice:
+#    always work within an GNU Screen session named with 'screen -S <topic>' (Adapt accordingly)
+# IIF not yet done, copy ULHPC .screenrc in your home
+(access)$> cp /etc/dotfiles.d/screen/.screenrc ~/
+```
+
+Now you'll need to pull the latest changes in your working copy of the [ULHPC/tutorials](https://github.com/ULHPC/tutorials) you should have cloned in `~/git/github.com/ULHPC/tutorials` (see ["preliminaries" tutorial](../../preliminaries/))
+
+``` bash
+(access)$> cd ~/git/github.com/ULHPC/tutorials
+(access)$> git pull
+```
+
+
 ## Access to a GPU-equipped node of the Iris cluster
 
 Reserve a node with one GPU for interactive development, load the necessary modules, and save them for a quick restore.
@@ -36,7 +57,11 @@ As usual, more information can be found in the [documentation][4].
 [4]: https://hpc.uni.lu/users/docs/gpu.html
 
 ```bash
-> srun -p gpu -G 1 --pty bash -i
+### Have an interactive GPU job
+# ... either directly
+(access)$> si-gpu
+# ... or using the HPC School reservation 'hpcschool-gpu' if needed  - use 'sinfo -T' to check if active and its name
+# (access)$> srun -p gpu -G 1 --reservation=hpcschool-gpu --pty bash -i
 $ nvidia-smi
 $ nvcc  # ?
 ```
@@ -399,7 +424,7 @@ Currently, the loop function runs a for loop that will serially print the number
 Modify the loop function to be a CUDA kernel which will launch to execute N iterations in parallel.
 After successfully refactoring, the numbers 0 through 9 should still be printed.
 ```cpp
-/* 
+/*
  * FIXME
  * (loop.cu)
  * Correct, and refactor 'loop' to be a CUDA Kernel.
@@ -443,7 +468,7 @@ Make further modifications to the previous exercise, but with a execution config
 After successfully refactoring, the numbers 0 through 9 should still be printed.
 
 ```cpp
-/* 
+/*
  * FIXME
  * (loop2.cu)
  * Fix and refactor 'loop' to be a CUDA Kernel, launched with 2 or more blocks
@@ -667,7 +692,7 @@ some_kernel(int N)
 }
 ```
 
-### Data sets larger then the grid (important)
+### Data sets larger than the grid (important)
 
 Either by choice, often to create the most performant execution configuration, or out of necessity, the number of threads in a grid may be smaller than the size of a data set.
 Consider an array with 1000 elements, and a grid with 250 threads (using trivial sizes here for ease of explanation).
@@ -705,7 +730,7 @@ void kernel(int *a, int N)
 Refactor the previous code to use a grid-stride loop in the `doubleElements` kernel, in order that the grid, which is smaller than N, can reuse threads to cover every element in the array.
 The program will print whether or not every element in the array has been doubled, currently the program accurately prints `FALSE`.
 ```cpp
-/* 
+/*
  * FIXME
  * (loop-stride.cu)
  * using strides
@@ -1072,5 +1097,3 @@ Conduct 3 (or 4) experiments using `cudaMemPrefetchAsync` inside of your `vector
 - What happens when you prefetch all three of the initialized vectors to the device?
 
 Hypothesize about UM behavior, page faulting specificially, as well as the impact on the reported run time of the initialization kernel, before each experiement, and then verify by running `nvprof`.
-
-
