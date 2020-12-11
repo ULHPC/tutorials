@@ -17,9 +17,6 @@ We will have multiple occasion to use modules in the other tutorials so there is
 
 ## Commands
 
-The UL HPC provides [environment modules](https://hpc.uni.lu/users/docs/modules.html) with the `module` command
-to manage the user environment, e.g. changing the environment variables.
-
 By loading appropriate environment modules, the user can select:
 
 * compilers,
@@ -32,9 +29,48 @@ On a node, using an interactive jobs, you can:
 
 * list all available softwares: `module avail`
 * search for one software: `module spider <search terms>`
-* "load" a software in your environment: `module load <module name>`
+* "load" a software in your environment: `module load <category>/<software>[/<version>]`
 * list the currently loaded modules: `module list`
 * clean your environment, unload everything: `module purge`
+
+
+## Software sets
+
+At this Currently, the ULHPC provides the software sets 2019a (default) and 2019b (devel).
+We encourage you to use right now 2019b, by redefining the `MODULEPATH` variable as explained in the next section,
+as it will soon be promoted as the next default environment.
+
+The ULHPC team updates the software set every year based on the Easybuild releases.
+
+| Name    | Type      | 2019a (prod)       | 2019b (devel)      | 2020a (next) |
+|---------|-----------|--------------------|--------------------|--------------|
+| GCCCore | compiler  | 8.2.0              | 8.3.0              | 9.3.0        |
+| foss    | toolchain | 2019a              | 2019b              | 2020a        |
+| intel   | toolchain | 2019a              | 2019b              | 2020a        |
+| Python  |           | 3.7.2 (and 2.7.15) | 3.7.4 (and 2.7.16) | 3.8.2        |
+
+Each environment provides different versions of softwares. 
+The core of the software environment is the toolchain, a toolchain is a set of tools used to compile and run of the other programs of the software environment.
+
+The ULHPC team provides two toolchain:
+
+* `foss` : based on open source software (`GCC`, `binutils`, `OpenMPI`, `OpenBLAS`, `FFTW`)
+* `intel`: based on the proprietary Intel compiler suite.
+
+## `$MODULEPATH` environment variable
+
+The environment variable `$MODULEPATH` contains the path of the directory containing the modules.
+You can use this variable to change your software environment.
+
+
+In the following command, we use the new environment, which will be officially released very soon.
+
+```
+export MODULEPATH=/opt/apps/resif/iris/2019b/broadwell/modules/all
+```
+
+For backward compatibility reasons and for reproducibility, it is always possible to load the older environments.
+
 
 
 ## Examples
