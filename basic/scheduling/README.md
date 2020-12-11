@@ -26,12 +26,10 @@ We will now see the basic commands of Slurm.
 
 * Connect to **iris-cluster**. You can request resources in interactive mode:
 
-                (access)$> srun -p interactive --qos debug --pty bash
+        (access)$> srun -p interactive --qos debug --pty bash
 
   Notice that with no other parameters, srun gave you one resource for 1 hour. You were also directly connected to the node you reserved with an interactive shell.
-  Now exit the reservation:
-
-        (node)$> exit      # or CTRL-D
+  Now exit the reservation (`exit` command or CTRL-D)
 
   When you run exit, you are disconnected and your reservation is terminated.
 
@@ -40,16 +38,16 @@ you can reserve and connect in two steps using the job id associated to your res
 
 * First run a passive job _i.e._ run a predefined command -- here `sleep 10d` to delay the execution for 10 days -- on the first reserved node:
 
-                (access)$> sbatch --qos normal --wrap "sleep 10d"
-                Submitted batch job 390
+        (access)$> sbatch --qos normal --wrap "sleep 10d"
+        Submitted batch job 390
 
   You noticed that you received a job ID (in the above example: `390`), which you can later use to connect to the reserved resource(s):
 
         (access)$> srun -p interactive --qos debug --jobid 390 --pty bash # adapt the job ID accordingly ;)
-                (node)$> ps aux | grep sleep
-                cparisot 186342  0.0  0.0 107896   604 ?        S    17:58   0:00 sleep 1h
-                cparisot 187197  0.0  0.0 112656   968 pts/0    S+   18:04   0:00 grep --color=auto sleep
-                (node)$> exit             # or CTRL-D
+        (node)$> ps aux | grep sleep
+        cparisot 186342  0.0  0.0 107896   604 ?        S    17:58   0:00 sleep 1h
+        cparisot 187197  0.0  0.0 112656   968 pts/0    S+   18:04   0:00 grep --color=auto sleep
+        (node)$> exit             # or CTRL-D
 
 **Question: At which moment the job `390` will end?**
 
@@ -85,17 +83,17 @@ Normally, the previously run job is still running.
 
 * You can check the status of your running jobs using `squeue` command:
 
-                (access)$> squeue             # list all jobs
-                (access)$> squeue -u cparisot # list all your jobs
+        (access)$> squeue             # list all jobs
+        (access)$> squeue -u cparisot # list all your jobs
 
   Then you can delete your job by running `scancel` command:
 
-                (access)$> scancel 390
+        (access)$> scancel 390
 
 
 * You can see your system-level utilization (memory, I/O, energy) of a running job using `sstat $jobid`:
 
-                (access)$> sstat 390
+        (access)$> sstat 390
 
 In all remaining examples of reservation in this section, remember to delete the reserved jobs afterwards (using `scancel` or `CTRL-D`)
 
@@ -103,11 +101,11 @@ You probably want to use more than one core, and you might want them for a diffe
 
 * Reserve interactively 4 cores in one task on one node, for 30 minutes (delete the job afterwards)
 
-                (access)$> srun -p interactive --qos debug --time=0:30:0 -N 1 --ntasks-per-node=1 --cpus-per-task=4 --pty bash
+        (access)$> srun -p interactive --qos debug --time=0:30:0 -N 1 --ntasks-per-node=1 --cpus-per-task=4 --pty bash
 
 * Reserve interactively 4 tasks (system processes) with 2 nodes for 30 minutes (delete the job afterwards)
 
-                (access)$> srun -p interactive --qos debug --time=0:30:0 -N 2 --ntasks-per-node=4 --cpus-per-task=4 --pty bash
+        (access)$> srun -p interactive --qos debug --time=0:30:0 -N 2 --ntasks-per-node=4 --cpus-per-task=4 --pty bash
 
 This command can also be written in a more compact way
 
