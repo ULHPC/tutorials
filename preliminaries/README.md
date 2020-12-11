@@ -458,11 +458,12 @@ __Setting Up the Tunnel__
 To initiate such a SOCKS proxy using SSH (listening on `localhost:1080` for instance), you simply need to use the `-D 1080` command line option when connecting to a remote server:
 
 ```bash
-$> ssh -D 1080 -C <name>
+(laptop)$> ssh -D 1080 -C <name>
 ```
 
 * `-D`: Tells SSH that we want a SOCKS tunnel on the specified port number (you can choose a number between 1025-65536)
 * `-C`: Compresses the data before sending it
+* `-name`: Server name
 
 __Configuring Firefox to Use the Tunnel__
 
