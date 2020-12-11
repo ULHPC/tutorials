@@ -1,0 +1,151 @@
+#! /bin/bash
+# Time-stamp: <Wed 2020-12-09 23:18 svarrette>
+#
+#        Copyright (c) 2020  S. Varrette and UL HPC Team <hpc-team@uni.lu>
+####################################################################################
+# suggest-easyconfigs - Suggest an easyconfig for a given ULHPC software set release
+####################################################################################
+# cosmetics
+BOLD="\033[1m"
+COLOR_RESET="\033[0m"
+# Local variables
+TOP_DIR="$(cd "$( dirname "${BASH_SOURCE[0]}" )" && git rev-parse --show-toplevel)"
+CMD_PREFIX=
+MODE=
+SUMMARY_MODE=
+TOOLCHAIN_VERSION=2019b
+GCC_VERSION=8.3.0
+
+# Software lists
+MODULES_AVAILABLE=
+SW_AS_MODULE=
+SW_NOT_AS_MODULE=
+
+################################################################################
+info()  { echo -e "${BOLD}$*${COLOR_RESET}"; }
+error() { echo -e "${BOLD}*** ERROR *** $*${COLOR_RESET}"; }
+print_error_and_exit() { error $*; exit 1; }
+usage() {
+    cat <<EOF
+NAME
+  $(basename $0): Suggest easyconfig(s) for a given ULHPC software set
+  release (Default: ${TOOLCHAIN_VERSION})
+
+USAGE
+  $(basename $0) <pattern> # search for <pattern>
+
+OPTIONS
+  -n --dry-run:     Dry run mode
+  -m --module-list  List modules available
+  -s --summary      Summary mode
+  -v <VERSION>      Set version to test (Default: ${TOOLCHAIN_VERSION})
+
+EXAMPLE
+  $(basename $0)  CMake-3
+    [...]
+    Total:       68 entries
+    ... potential exact match for 2019b toolchain
+    CMake-3.15.3-GCCcore-8.3.0.eb
+    --> suggesting 'CMake-3.15.3-GCCcore-8.3.0.eb'
+
+  $(basename $0) -s ncurse zlib
+    ncurse: ncurses-6.1-GCCcore-8.3.0.eb
+    zlib: zlib-1.2.11-GCCcore-8.3.0.eb
+EOF
+}
+
+set_module_list() {
+    MODULES_AVAILABLE=$(module  -t --redirect avail | tail -n +2 | cut -d '/' -f 2 | sort |  uniq )
+}
+###
+# Print a software list (passed as string) in formatted columns
+##
+print_software_list() {
+    [ -z "$1" ] && print_error_and_exit "[$FUNCNAME] missing software list argument"
+    local list="$*"
+    local i=0
+    for sw in ${list}; do
+        printf "%18s" $sw
+        i=$(( i + 1 ))
+        [ $(( i % 5 )) == 0 ] && printf "\n"
+    done
+    printf "\n"
+    info "Total: $(echo ${list} | wc -w) entries"
+}
+###
+# print module list
+##
+print_module_list() {
+    info "=> List of software available as modules"
+    [ -z "${MODULES_AVAILABLE}" ] && set_module_list
+    print_software_list ${MODULES_AVAILABLE}
+}
+###
+# Search for Easyconfigs matching pattern
+# Usage: search_easyconfigs <pattern>
+##
+search_easyconfigs() {
+    [ -z "$1" ] && print_error_and_exit "[$FUNCNAME] missing pattern argument"
+    local pattern=$1
+    eb -S ${pattern} 2>/dev/null | grep '.eb$' | sed 's/.*\///' | grep "^${pattern}" | sort -V | uniq
+}
+search_easyconfigs_for_toolchain() {
+    [ -z "$1" ] && print_error_and_exit "[$FUNCNAME] missing pattern argument"
+    local pattern=$1
+    found=$(search_easyconfigs ${pattern} | egrep "${TOOLCHAIN_VERSION}|${GCC_VERSION}")
+    [ -z "${found}" ] && echo "None found" || echo $found | tr ' ' '\n'
+}
+
+suggest_easyconfig() {
+    [ -z "$1" ] && print_error_and_exit "[$FUNCNAME] missing pattern argument"
+    local pattern=$1
+    exact_match=$(search_easyconfigs_for_toolchain ${pattern})
+    if [[ "${exact_match}" != *'None'* ]]; then
+        echo $exact_match | tr ' ' '\n' | tail -n 1
+    else
+        echo "$(search_easyconfigs ${pattern})" | tr ' ' '\n' | tail -n 1
+    fi
+}
+
+################################################################################
+# Check for options
+while [ $# -ge 1 ]; do
+    case $1 in
+        -h | --help) usage; exit 0;;
+        -n | --noop | --dry-run) CMD_PREFIX=echo;;
+        -m | --module-list) print_module_list; exit 0;;
+        -s | --summary) SUMMARY_MODE=$1;;
+        -v | --version) shift; TOOLCHAIN_VERSION=$1;;
+        *) PATTERN_LIST="$*"; break;;
+    esac
+    shift
+done
+
+if [ -z "${PATTERN_LIST}" ]; then
+    [ -n "${SUMMARY_MODE}" ] && PATTERN_LIST=${OLD_SW_LIST} || \
+            print_error_and_exit "Empty pattern - see '$0 -h' for usage "
+fi
+command -v eb >/dev/null || print_error_and_exit "'eb' command Not Found -- source settings ?"
+
+case $TOOLCHAIN_VERSION in
+    2019a) GCC_VERSION=8.2.0;;
+    2019b) GCC_VERSION=8.3.0;;
+    2020a) GCC_VERSION=9.3.0;;
+    *) print_error_and_exit "Not supported toolchain version '${TOOLCHAIN_VERSION}'"
+esac
+# echo "PATTERN_LIST=${PATTERN_LIST}"
+for pattern in $(echo ${PATTERN_LIST} | xargs echo); do
+    if [ -n "${SUMMARY_MODE}" ]; then
+        printf "%18s: %s\n" ${pattern} $(suggest_easyconfig ${pattern})
+        continue
+    fi
+    info "=> Searching Easyconfigs matching pattern '${pattern}'"
+    easyconfigs=$(search_easyconfigs ${pattern})
+    echo $easyconfigs | tr ' ' '\n'
+    info "Total: $(echo $easyconfigs | wc -w) entries\n"
+
+    info "... potential exact match for ${TOOLCHAIN_VERSION} toolchain"
+    search_easyconfigs_for_toolchain ${pattern}
+
+    info " --> suggesting '$(suggest_easyconfig ${pattern})'"
+done
