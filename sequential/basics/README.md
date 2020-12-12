@@ -865,18 +865,18 @@ Though this allows work to be balance between multiple nodes, past experience su
 For instance, let's assume you wish to explore the parameters `{1..1000}`, you can divide your search space in (for instance) 5 sub domains and dedicated one GnuParallel job (exploiting a full node) for each subdomain as follows:
 
 ``` bash
-(access)$> sbatch ./launcher.stressme.sh "{1..200}"
-(access)$> sbatch ./launcher.stressme.sh "{201..400}"
-(access)$> sbatch ./launcher.stressme.sh "{401..600}"
-(access)$> sbatch ./launcher.stressme.sh "{601..800}"
-(access)$> sbatch ./launcher.stressme.sh "{801..1000}"
+(access)$> sbatch ./launcher.stressme.sh --joblog logs/state.1.parallel.log "{1..200}"
+(access)$> sbatch ./launcher.stressme.sh --joblog logs/state.2.parallel.log "{201..400}"
+(access)$> sbatch ./launcher.stressme.sh --joblog logs/state.3.parallel.log "{401..600}"
+(access)$> sbatch ./launcher.stressme.sh --joblog logs/state.4.parallel.log "{601..800}"
+(access)$> sbatch ./launcher.stressme.sh --joblog logs/state.5.parallel.log "{801..1000}"
 ```
 
 Each of these jobs will cover (independently) the subdomain.
-Note that you may have to play with different joblog files -- you can use the `--joblog` option
+Note that you **MUST** set different joblog files to avoid collusion -- you can use the `--joblog` option supported by our launcher.
 
 Finally, if you would need to scale to more than 5 such jobs, you are encouraged to use the [job dependency mechanism](https://slurm.schedmd.com/sbatch.html) implemented by Slurm to limit the number of concurrent running nodes.
-This can be easily achieved with the `singleton` dependency and carefully selected job names (option `-J` of sbatch):
+This can be easily achieved with the `singleton` dependency (option `-d` of sbatch)  and carefully selected job names (option `-J` of sbatch):
 
 > `-d, --dependency=singleton`: This job can begin execution **after any previously launched jobs sharing the same job name and user have terminated**. In other words, only one job by that name and owned by that user can be running or suspended at any point in time.
 
@@ -889,19 +889,56 @@ min=1
 max=2000
 chunksize=200
 for i in $(seq $min $chunksize $max); do
-    echo sbatch -J JobName_$(($i/$chunksize%4)) --dependency singleton ./launcher.stressme.sh "{$i..$((i+$chunksize))}";
+    ${CMD_PREFIX} sbatch \
+                  -J ${JOBNAME}_$(($i/$chunksize%${MAXNODES})) --dependency singleton \
+                  ${LAUNCHER} --joblog log/state.${i}.parallel.log  "{$i..$((i+$chunksize))}";
 done
 ```
 
-Which would translate into:
+A sample submission script [`scripts/submit_stressme_multinode`](scripts/submit_stressme_multinode) is proposed to illustrate this concept:
 
-``` bash
-min=1
-max=60
-chunksize=20
-for i in $(seq $min $chunksize $max); do
-    echo sbatch -J JobName_$(($i/$chunksize%2)) --dependency singleton ./launcher.stressme.sh "{$i..$((i+$chunksize))}";
-done
+```bash
+(access)$> ./scripts/submit_stressme_multinode -h
+Usage: submit_stressme_multinode [-x] [-N MAXNODES]
+    Sample submision script across multiple nodes
+    Execution won t spread on more than 4 nodes (singleton dependency)
+      -x --execute         really submit the jobs with sbatch
+      -N --nodes MAXNODES  set max. nodes
+
+# Target restriction to 4 running nodes max
+(access)$> ./scripts/submit_stressme_multinode
+sbatch -J StressMe_0 --dependency singleton launcher.stressme.sh --joblog logs/state.1.parallel.log {1..201}
+sbatch -J StressMe_1 --dependency singleton launcher.stressme.sh --joblog logs/state.201.parallel.log {201..401}
+sbatch -J StressMe_2 --dependency singleton launcher.stressme.sh --joblog logs/state.401.parallel.log {401..601}
+sbatch -J StressMe_3 --dependency singleton launcher.stressme.sh --joblog logs/state.601.parallel.log {601..801}
+sbatch -J StressMe_0 --dependency singleton launcher.stressme.sh --joblog logs/state.801.parallel.log {801..1001}
 
 
+# Target restriction to 2 running nodes max
+(access)$> ./scripts/submit_stressme_multinode -N 2
+sbatch -J StressMe_0 --dependency singleton launcher.stressme.sh --joblog logs/state.1.parallel.log {1..201}
+sbatch -J StressMe_1 --dependency singleton launcher.stressme.sh --joblog logs/state.201.parallel.log {201..401}
+sbatch -J StressMe_0 --dependency singleton launcher.stressme.sh --joblog logs/state.401.parallel.log {401..601}
+sbatch -J StressMe_1 --dependency singleton launcher.stressme.sh --joblog logs/state.601.parallel.log {601..801}
+sbatch -J StressMe_0 --dependency singleton launcher.stressme.sh --joblog logs/state.801.parallel.log {801..1001}
+```
+
+Now if you execute it, you will see only two running jobs and thus nodes (the other jobs are waiting for the dependency to be met)
+
+```bash
+(access)$> ./scripts/submit_stressme_multinode -N 2 -x
+Submitted batch job 2175778
+Submitted batch job 2175779
+Submitted batch job 2175780
+Submitted batch job 2175781
+Submitted batch job 2175782
+
+(access)$> sq
+# squeue -u svarrette
+   JOBID PARTIT    QOS        NAME  NODE  CPUS ST  TIME TIME_LEFT NODELIST(REASON)
+ 2175780  batch normal  StressMe_0     1    28 PD  0:00   1:00:00 (Dependency)
+ 2175781  batch normal  StressMe_1     1    28 PD  0:00   1:00:00 (Dependency)
+ 2175782  batch normal  StressMe_0     1    28 PD  0:00   1:00:00 (Dependency)
+ 2175779  batch normal  StressMe_1     1    28  R  0:02     59:58 iris-064
+ 2175778  batch normal  StressMe_0     1    28  R  0:05     59:55 iris-047
 ```

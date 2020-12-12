@@ -1,5 +1,5 @@
 #! /bin/bash
-# Time-stamp: <Sat 2020-12-12 14:24 svarrette>
+# Time-stamp: <Sat 2020-12-12 21:05 svarrette>
 ################################################################################
 # Sample submission script illustrating singleton dependency when exploring
 # a large parameter range divided in subdomains of chuncksize element
@@ -7,7 +7,7 @@
 ############################################################
 CMD_PREFIX=echo
 
-LAUNCHER=launcher.stressme.sh
+LAUNCHER=./launcher.stressme.sh
 JOBNAME=StressMe
 MAXNODES=4
 
@@ -36,9 +36,10 @@ while [ $# -ge 1 ]; do
     esac
     shift;
 done
+mkdir -p logs     # create log directory
 
 for i in $(seq $min $chunksize $max); do
     ${CMD_PREFIX} sbatch \
                   -J ${JOBNAME}_$(($i/$chunksize%${MAXNODES})) --dependency singleton \
-                  ${LAUNCHER} --joblog log/state.${i}.parallel.log  "{$i..$((i+$chunksize))}";
+                  ${LAUNCHER} --joblog logs/state.${i}.parallel.log  "{$i..$((i+$chunksize))}";
 done
