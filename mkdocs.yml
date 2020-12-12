@@ -10,7 +10,6 @@ pages:
 - Command line utilities: 'tools/cli/index.md'
 - Getting started:
   - Overview: 'beginners/index.md'
-  - Monitoring and profiling: 'basic/monitoring/index.md'
   - Job scheduling with SLURM: 'basic/scheduling/index.md'
   - Using software modules: 'tools/cli/modules.md'
 - Tools / Software management:
@@ -19,6 +18,7 @@ pages:
 - Scheduling:
   - Advanced job scheduling with SLURM: 'scheduling/advanced/index.md'
 - Debugging and Profiling:
+  - Monitoring and profiling: 'basic/monitoring/index.md'
   - Efficient Debugging:     'debugging/basics/index.md'
   - Performance engineering: 'debugging/advanced/index.md'
 - Sequential/Embarrassingly parallel jobs:
