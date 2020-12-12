@@ -1,28 +1,27 @@
-[![By ULHPC](https://img.shields.io/badge/by-ULHPC-blue.svg)](https://hpc.uni.lu) [![Licence](https://img.shields.io/badge/license-GPL--3.0-blue.svg)](http://www.gnu.org/licenses/gpl-3.0.html) [![GitHub issues](https://img.shields.io/github/issues/ULHPC/tutorials.svg)](https://github.com/ULHPC/tutorials/issues/) [![](https://img.shields.io/badge/slides-PDF-red.svg)](https://github.com/ULHPC/tutorials/raw/devel/basic/sequential_jobs/slides.pdf) [![Github](https://img.shields.io/badge/sources-github-green.svg)](https://github.com/ULHPC/tutorials/tree/devel/basic/sequential_jobs/) [![Documentation Status](http://readthedocs.org/projects/ulhpc-tutorials/badge/?version=latest)](http://ulhpc-tutorials.readthedocs.io/en/latest/basic/sequential_jobs/) [![GitHub forks](https://img.shields.io/github/stars/ULHPC/tutorials.svg?style=social&label=Star)](https://github.com/ULHPC/tutorials)
+[![By ULHPC](https://img.shields.io/badge/by-ULHPC-blue.svg)](https://hpc.uni.lu) [![Licence](https://img.shields.io/badge/license-GPL--3.0-blue.svg)](http://www.gnu.org/licenses/gpl-3.0.html) [![GitHub issues](https://img.shields.io/github/issues/ULHPC/tutorials.svg)](https://github.com/ULHPC/tutorials/issues/) [![](https://img.shields.io/badge/slides-PDF-red.svg)](https://github.com/ULHPC/tutorials/raw/devel/sequential/basics/slides.pdf) [![Github](https://img.shields.io/badge/sources-github-green.svg)](https://github.com/ULHPC/tutorials/tree/devel/sequential/basics/) [![Documentation Status](http://readthedocs.org/projects/ulhpc-tutorials/badge/?version=latest)](http://ulhpc-tutorials.readthedocs.io/en/latest/sequential/basics/) [![GitHub forks](https://img.shields.io/github/stars/ULHPC/tutorials.svg?style=social&label=Star)](https://github.com/ULHPC/tutorials)
 
 # HPC Management of Sequential and Embarrassingly Parallel Jobs
 
-     Copyright (c) 2013-2019 UL HPC Team <hpc-sysadmins@uni.lu>
-
-[![](https://github.com/ULHPC/tutorials/raw/devel/basic/sequential_jobs/cover_slides.png)](https://github.com/ULHPC/tutorials/raw/devel/basic/sequential_jobs/slides.pdf)
-
+     Copyright (c) 2020 S. Varrette and UL HPC Team <hpc-team@uni.lu>
 
 For many users, the reason to consider (or being encouraged) to offload their computing executions on a (remote) HPC or Cloud facility is tied to the limits reached by their computing devices (laptop or workstation).
 It is generally motivated by time constraints:
 
 > "_My computations take several hours/days to complete. On an HPC, it will last a few minutes, no?_"
 
-or search-space extensions:
+or search-space explorations:
 
 > "_I need to check my application against a **huge** number of input pieces (files) - it worked on a few of them locally but takes ages for a single check. How to proceed on HPC?_"
 
-For several of you, the application required for your research that you traditionally run on your laptop or workstation consists in:
+For a large majority of you, these questions arise when executing programs that you traditionally run on your laptop or workstation and which consists in:
 
 * a (well-known) application installed on your system, iterated over multiple input conditions configured by specific command-line arguments / configuration files
 * a compiled program (C, C++, Java, Go etc.), iterated over multiple input conditions
 * your favorite R or python (custom) development scripts, iterated again over multiple input conditions
 
-**`/!\ IMPORTANT:` **Be aware that in most of the cases, these application are inherently SERIAL**: These are **able to use only one core** when executed.
+**Be aware that in most of the cases, these applications are inherently SERIAL**: These are **able to use only one core** when executed.
+You thus deal with what is often call a _Bag of (independent) tasks_, also referred to as **embarrassingly parallel tasks**.
+The objective of this practical session is to guide you toward the effective management of such tasks in a way that optimize both the resource allocation and the completion time.
 
 
 --------------------
