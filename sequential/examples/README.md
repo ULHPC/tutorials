@@ -8,22 +8,16 @@
 
 **Prerequisites**
 
-Make sure you have followed the tutorial ["Getting started"](../../getting-started/).
+Make sure you have followed the tutorial ["Getting started"](../../getting-started/) and the [HPC Management of Sequential and Embarrassingly Parallel Jobs](../basics/) tutorials.
 
 For many users, the typical usage of the HPC facilities is to execute 1 program with many parameters.
 On your local machine, you can just start your program 100 times sequentially.
 However, you will obtain better results if you parallelize the executions on a HPC Cluster.
 
-During this session, we will see 3 use cases:
+You will see below 3 use cases mentioned in past training events:
 
 * __[Exercise 1](object_recognition.md)__: Use the serial launcher (1 node, in sequential and parallel mode);
     - application to _Object recognition_ with [Tensorflow](https://www.tensorflow.org/) and [Python Imageai](https://github.com/OlafenwaMoses/ImageAI)
 * __[Exercise 2](watermarking.md)__: Use the generic launcher, distribute your executions on several nodes (python script);
     - Illustration on an _Image Watermarking process_ in Python
 * __[Exercise 3](jcell.md)__: Advanced use case, using a Java program: "JCell".
-
-We will use the following github repositories:
-
-* [ULHPC/launcher-scripts](https://github.com/ULHPC/launcher-scripts)
-    - **UPDATE (Dec 2020)** This repository is **deprecated** and kept for archiving purposes only. Consider the up-to-date launchers listed at the root of the ULHPC/tutorials repository, under `launchers/`
-* [ULHPC/tutorials](https://github.com/ULHPC/tutorials)

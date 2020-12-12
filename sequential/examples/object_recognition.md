@@ -2,7 +2,7 @@
 
 # Serial tasks in action: Object recognition with Tensorflow and Python Imageai
 
-    Copyright (c) 2013-2019 UL HPC Team <hpc-sysadmins@uni.lu>
+    Copyright (c) 2013-2019 UL HPC Team <hpc-team@uni.lu>
 
 [![](https://github.com/ULHPC/tutorials/raw/devel/sequential/examples/cover_slides.png)](https://github.com/ULHPC/tutorials/raw/devel/sequential/examples/slides.pdf)
 
