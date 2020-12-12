@@ -79,9 +79,41 @@ Your homedir is under a regular backup policy. Therefore you are asked to pay at
 
 Each cluster offers a set of web services to monitor the platform usage:
 
-* [Ganglia](https://hpc.uni.lu/iris/ganglia/), a scalable distributed monitoring system for high-performance computing systems such as clusters and Grids.
-* [SLURM Web](https://access-iris.uni.lu/slurm/), a website that show the status of jobs and nodes with a nice graphical interface.
+#### [Ganglia](https://hpc.uni.lu/iris/ganglia/)
 
+Ganglia is a scalable distributed monitoring system for high-performance computing systems such as clusters and Grids. Ganglia provides plots the system usage for each individual compute nodes (CPU, memory, I/O and network usage).
+
+These information will help you identify and understand the behavior of your jobs on the cluster.
+
+It is interesting to identify the limiting factor of your job:
+
+* Memory
+
+![Memory bound job on ganglia](images/membound.png)
+
+* CPU
+
+![CPU bound job on ganglia](images/cpubound.png)
+
+* Storage I/O
+
+![I/O bound job on ganglia](images/iobound.png)
+
+* Network bound
+
+![Network bound job on ganglia](images/network-bound.png)
+
+This is covered in the other tutorial [Monitoring and profiling](https://ulhpc-tutorials.readthedocs.io/en/latest/basic/monitoring/)
+
+#### [SLURM Web](https://access-iris.uni.lu/slurm/)
+
+SLURM Web is a website that show the status of jobs and nodes with a nice graphical interface.
+
+You can use the SLURM web interface for a visualization of the job scheduler state (list and gantt chart visualization).
+
+![](images/slurmjoblist.png)
+
+![](images/slurmgantt.png)
 
 ### Sample Usage on the UL HPC platform: Kernel compilation
 
@@ -159,9 +191,9 @@ The table below should convince you to always run `make` with the `-j` option wh
 * Use the [Ganglia](https://hpc.uni.lu/iris/ganglia/) interface to monitor the impact of the compilation process on the node your job is running on.
 * Use the following system commands on the node during the compilation:
 
-  * `htop`
-  * `top`
-  * `free -m`
-  * `uptime`
-  * `ps aux`
+    * `htop`
+    * `top`
+    * `free -m`
+    * `uptime`
+    * `ps aux`
 
