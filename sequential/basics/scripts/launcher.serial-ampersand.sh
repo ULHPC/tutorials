@@ -1,11 +1,11 @@
 #! /bin/bash -l
-# Time-stamp: <Fri 2020-12-11 00:43 svarrette>
+# Time-stamp: <Sat 2020-12-12 17:05 svarrette>
 ############################################################################
 # (Not Recommended) Sample launcher for aggregating serial (one core) tasks
 # within one node using the Bash & (ampersand), a builtin control operator
 # used to fork processes, and the wait command.
 ############################################################################
-#SBATCH -J StressMe-ampersand
+###SBATCH -J Serial-ampersand
 #SBATCH --time=0-01:00:00      # 1 hour
 #SBATCH --partition=batch
 #__________________________
@@ -27,6 +27,7 @@ SRUN="srun -n1 --exclusive -c ${SLURM_CPUS_PER_TASK:=1} --cpu-bind=cores"
 TASK=${TASK:=${HOME}/bin/app.exe}
 MIN=1
 MAX=30
+NCORES=${SLURM_NTASKS_PER_NODE:-$(nproc --all)}
 
 ################################################################################
 print_error_and_exit() { echo "*** ERROR *** $*"; exit 1; }
@@ -75,8 +76,9 @@ echo "### Starting timestamp (s): ${start}"
 #################################
 for i in $(seq ${MIN} ${MAX}); do
     ${CMD_PREFIX} ${SRUN} ${TASK} ${OPTS} $i &     # <-- Ampersand '&' is key
+    [[ $((i%NCORES)) -eq 0 ]] && ${CMD_PREFIX} wait
 done
-wait  # all the child processes to	finish before terminating	the	parent process; CRUCIAL
+${CMD_PREFIX} wait  # all the child processes to	finish before terminating	the	parent process; CRUCIAL
 ##################
 end=$(date +%s)
 cat <<EOF
