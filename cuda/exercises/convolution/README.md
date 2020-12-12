@@ -1,31 +1,54 @@
+[![By ULHPC](https://img.shields.io/badge/by-ULHPC-blue.svg)](https://hpc.uni.lu) [![Licence](https://img.shields.io/badge/license-GPL--3.0-blue.svg)](http://www.gnu.org/licenses/gpl-3.0.html) [![GitHub issues](https://img.shields.io/github/issues/ULHPC/tutorials.svg)](https://github.com/ULHPC/tutorials/issues/) [![](https://img.shields.io/badge/slides-PDF-red.svg)](https://github.com/ULHPC/tutorials/raw/devel/cuda/exercises/convolution/slides.pdf) [![Github](https://img.shields.io/badge/sources-github-green.svg)](https://github.com/ULHPC/tutorials/tree/devel/cuda/exercises/convolution/) [![Documentation Status](http://readthedocs.org/projects/ulhpc-tutorials/badge/?version=latest)](http://ulhpc-tutorials.readthedocs.io/en/latest/cuda/exercises/convolution/) [![GitHub forks](https://img.shields.io/github/stars/ULHPC/tutorials.svg?style=social&label=Star)](https://github.com/ULHPC/tutorials)
+
 # Image Convolution with GPU and CUDA
 
      Copyright (c) 2020 L. Koutsantonis UL HPC Team <hpc-team@uni.lu>
 
-<br />
-<br />
-
-## Objectives of the Session
+[![](https://github.com/ULHPC/tutorials/raw/devel/cuda/exercises/convolution/cover_slides.png)](https://github.com/ULHPC/tutorials/raw/devel/cuda/exercises/convolution/slides.pdf)
 
 This tutorial will cover the following aspects of CUDA programming:
 
- 1. GPU Global Memory Allocation 
+ 1. GPU Global Memory Allocation
  2. Dynamic Shared Memory Allocation
  3. Thread Indexing
- 4. Thread Synchronization 
+ 4. Thread Synchronization
 
 <br />
 <br />
 
-## Laplacian of Gaussian (LoG): A convolution kernel for edge detection 
+--------------------
+## Pre-requisites ##
+
+Ensure you are able to [connect to the UL HPC clusters](https://hpc.uni.lu/users/docs/access.html).
+In particular, recall that the `module` command **is not** available on the access frontends.
+
+```bash
+### Access to ULHPC cluster - here iris
+(laptop)$> ssh iris-cluster
+# /!\ Advanced (but recommended) best-practice:
+#    always work within an GNU Screen session named with 'screen -S <topic>' (Adapt accordingly)
+# IIF not yet done, copy ULHPC .screenrc in your home
+(access)$> cp /etc/dotfiles.d/screen/.screenrc ~/
+```
+
+Now you'll need to pull the latest changes in your working copy of the [ULHPC/tutorials](https://github.com/ULHPC/tutorials) you should have cloned in `~/git/github.com/ULHPC/tutorials` (see ["preliminaries" tutorial](../../preliminaries/))
+
+``` bash
+(access)$> cd ~/git/github.com/ULHPC/tutorials
+(access)$> git pull
+```
+You should have followed the [Introduction to GPU programming with CUDA](../../)
+
+
+## Laplacian of Gaussian (LoG): A convolution kernel for edge detection
 
 
   * Derivative Filter used to find rapid changes in signals and especially images
-  
+
   * Used for edge detection and noise detection
-  
+
   * Mathematical Formula:
-   
+
 $$H(x,y) = \frac{-1}{\pi \sigma ^4}(1-\frac{x^2+y^2}{2\sigma ^2})e^{-\frac{x^2+y^2}{2\sigma^2}}$$
 
  <img src="original_image.png"
@@ -35,7 +58,7 @@ $$H(x,y) = \frac{-1}{\pi \sigma ^4}(1-\frac{x^2+y^2}{2\sigma ^2})e^{-\frac{x^2+y
  <img src="LoG_img.png"
      alt="Convoluted Image"
      width="600;"/>
-  
+
 <br />
 <br />
 
@@ -57,7 +80,7 @@ A serial code implementing the image convolution on a CPU employs two loops to c
 
 ```c
 //CPU function: conv_img_cpu
-//Parameters: float *img, float *kernel, float *imgf, int Nx, int Ny, int kernel_size 
+//Parameters: float *img, float *kernel, float *imgf, int Nx, int Ny, int kernel_size
 //center: center of kernel
   for (int i = center; i<(Ny-center); i++)
     for (int j = center; j<(Nx-center); j++){
@@ -78,7 +101,7 @@ A serial code implementing the image convolution on a CPU employs two loops to c
 
 ## GPU Implementation
 
-The parallel implementation of convolution of GPU is described by the following figure. Multiple threads are used to calculate the convolution operator of multiple pixels simultaneously. The total number of calculated pixels at each step will be equal to the total number of launched threads ($Number of Blocks \times Block Threads$). Each thread having access to the coefficients of the convolution kernel calculates the double sum of the convolution operator. The kernel coefficients being constant during the whole execution can be stored into the shared memory (accessible by the block threads). 
+The parallel implementation of convolution of GPU is described by the following figure. Multiple threads are used to calculate the convolution operator of multiple pixels simultaneously. The total number of calculated pixels at each step will be equal to the total number of launched threads ($Number of Blocks \times Block Threads$). Each thread having access to the coefficients of the convolution kernel calculates the double sum of the convolution operator. The kernel coefficients being constant during the whole execution can be stored into the shared memory (accessible by the block threads).
 
 <img src="block_threads.png"
      alt="Convoluted Image"
@@ -88,16 +111,31 @@ The parallel implementation of convolution of GPU is described by the following 
 <br />
 
 ## Hands On Image Convolution with CUDA
-### Get the source files 
-***Task 1:*** If you do not have yet the UL HPC tutorial repository, clone it under your home directory on the Iris cluster. Update to the latest version.
+### Get the source files
+***Task 1:*** If you do not have yet the UL HPC tutorial repository, clone it. Update to the latest version.
 
 ```bash
 ssh iris-cluster
+mkdir -p ~/git/github.com/ULHPC
+cd  ~/git/github.com/ULHPC
 git clone https://github.com/ULHPC/tutorials.git
-cd tutorials/gpu/exercises/convolution 
+cd tutorials/cuda/exercises/convolution
 git stash && git pull -r && git stash pop
 ```
 <br />
+
+### Get an interactive GPU job
+
+```bash
+### ... either directly - dedicate 1/4 of available cores to the management of GPU card
+$> si-gpu -c7
+# /!\ warning: append -G 1 to really reserve a GPU
+# srun -p interactive --qos debug -C gpu -c7 -G 1 --mem-per-cpu 27000 --pty bash
+
+### ... or using the HPC School reservation 'hpcschool-gpu'
+srun --reservation=lecturers-gpu -p gpu --ntasks-per-node 1 -c7 -G 1 --pty bash
+```
+
 
 ### A CUDA kernel for the Convolution Operator
 ***Task 2:*** Following the steps `1` to `3` provided bellow write a CUDA kernel for the computation of the convolution operator.
@@ -107,7 +145,7 @@ Open the source file `LoG_gpu_exercise.cu` with your favorite editor (e.g. `emac
 ```c
 void conv_img_cpu(float *img, float *kernel, float *imgf, int Nx, int Ny, int kernel_size)
 ```
-where `*img` is a pointer to the original image vector, `*kernel` is a pointer to the convolution kernel vector, `*imgf` is a pointer to the convoluted image, `Nx` and `Ny` are the dimensions of both the original and convoluted image, and `kernel_size` is the dimension of the convolution kernel. 
+where `*img` is a pointer to the original image vector, `*kernel` is a pointer to the convolution kernel vector, `*imgf` is a pointer to the convoluted image, `Nx` and `Ny` are the dimensions of both the original and convoluted image, and `kernel_size` is the dimension of the convolution kernel.
 
 
 
@@ -117,16 +155,16 @@ The CUDA kernel will be executed by each thread. Thus, a mapping mechanism is ne
 CUDA kernels have access to device variables identifying both the thread index  within the block and the block index.
 These variables are `threadIdx.x` and `blockIdx.x` respectively. In this  example, each block of threads will compute a row of the output image and each block thread will compute a single pixel value on this row. Thus, the index of a pixel in the image can be defined throught:
 ```c
-//each block is assigned to a row of an image, iy integer index of y                   
-  int iy = blockIdx.x + (kernel_size - 1)/2;  
-  
-  //each thread is assigned to a pixel of a row, ix integer index of x 
-  int ix = threadIdx.x + (kernel_size - 1)/2; 
+//each block is assigned to a row of an image, iy integer index of y
+  int iy = blockIdx.x + (kernel_size - 1)/2;
+
+  //each thread is assigned to a pixel of a row, ix integer index of x
+  int ix = threadIdx.x + (kernel_size - 1)/2;
 ```
 
 The offset `(kernel_size - 1)/2` is added to the `iy, ix` variables as the convolution will not be computed for the image pixels lying at the boundary layers of the original image (computations are performed only when the discrete filter kernel lies completely within the original image). We can define the center of the convolution kernel as it will be used in differnet calculations:
 ```c
-//center of kernel in both dimensions          
+//center of kernel in both dimensions
   int center = (kernel_size -1)/2;
 ```
 
@@ -134,7 +172,7 @@ It is important to say that the `kernel_size` must be an odd number so that its 
 
 For each block thread, the memory location of the corresponding pixel can be  calculated by:
 ```c
-int idx = iy*Nx +ix; 
+int idx = iy*Nx +ix;
 ```
 
 
@@ -155,7 +193,7 @@ For each block, the block threads are used to copy the coefficients of the convo
 
 ```c
 int tid = threadIdx.x;
-int K2 = kernel_size*kernel_size; 
+int K2 = kernel_size*kernel_size;
 extern __shared__ float sdata[];
 if (tid<K2)
     sdata[tid] = kernel[tid];
@@ -179,7 +217,7 @@ if (idx<Nx*Ny){
 ```
 As you can see the code is exactly the same with the code implementing the convolution on a CPU. What is missing is the double for loop running on the pixels of the output image.
 
-In the above code, the `if (idx<Nx*Ny)` statement is used to ensure that each thread has access to an allocated memory location. 
+In the above code, the `if (idx<Nx*Ny)` statement is used to ensure that each thread has access to an allocated memory location.
 
 <br />
 
@@ -189,7 +227,7 @@ are `float` arrays allocated  in the host memory (CPU). The original image is pr
 ```c
 void load_image(char *fname, int Nx, int Ny, float  *img)
 ```
-The convolution kernel coefficients are calculated for a given sigma value  `sigma` and convolution kernel size `kernel_size` through the host function:  
+The convolution kernel coefficients are calculated for a given sigma value  `sigma` and convolution kernel size `kernel_size` through the host function:
 
 ```c
 void calculate_kernel(int kernel_size, float sigma, float *kernel)
@@ -246,7 +284,7 @@ At the end of main, the host memory is deallocated with ```free(var)```. Similar
 ### Compile and run your code
 
  The NVIDIA CUDA compiler 'nvcc' is used to compile the source code containing both the host and device functions.
-The non CUDA part of the code will be forwarded to a general purpose host compiler (e.g. `gcc`). 
+The non CUDA part of the code will be forwarded to a general purpose host compiler (e.g. `gcc`).
 As you have seen, the GPU functionsare declared using some annotations (e.g. `__global__,` `__device__`) distinguishing them from the host code.
 
 In simple words, you can compile your code using:
@@ -263,11 +301,11 @@ To run your executable file interactively, just use:
 ```bash
 ./$exe $arg1 $arg2 ... $argn
 ```
-where `$arg1`, `$arg2`, `...`, `$argn` are the appropriate arguments (if any). 
+where `$arg1`, `$arg2`, `...`, `$argn` are the appropriate arguments (if any).
 
 <br />
 <br />
- 
+
 ## Additional Exercises
 ### Profiling
 You can use  `nvprof`  ([documentation][4]) to profile your GPU  application.
@@ -283,7 +321,7 @@ nvprof ./$exe  # you can also add --log-file prof
 
 ### Experimentation with convolution parameters
 
-Try to change the parameters `sigma` and `kernel_size` in your main function. Try to use a large enough convolution kernel size. Compile the modified source code and use `nvprof` to profile your application. 
+Try to change the parameters `sigma` and `kernel_size` in your main function. Try to use a large enough convolution kernel size. Compile the modified source code and use `nvprof` to profile your application.
 Do you observe any difference in the execution time of the GPU kernel?
 
 Try to implement the GPU kernel without using the shared memory. In this case the CUDA kernel is implemented as follows:
@@ -301,7 +339,7 @@ if (idx<Nx*Ny){
   }
 ```
 
-Again, recompile your source file and profile your application. 
+Again, recompile your source file and profile your application.
 Can you observe any difference in the execution time of the GPU kernel?
 
 <br />
@@ -309,14 +347,14 @@ Can you observe any difference in the execution time of the GPU kernel?
 ### Plotting your convoluted image
 
 A jupyter notebook `show_images.ipynb` is available for plotting your results. You can access the notebook directly from the iris-cluster by building a virtual environment for the jupyter notebook.
- 
+
 First connect to the iris-cluster with a SOCK proxy opened on port 1080:
 ```bash
 ssh -D 1080 iris-cluster
 ```
  Reserve a single node  interactively:
 ```bash
-srun -p gpu  -n1 -c1 --gres=gpu:1 --pty bash -i
+srun -p gpu -n1 -c1 --gres=gpu:1 --pty bash -i
 ```
 
  Prepare virtual environment for the notebook:
