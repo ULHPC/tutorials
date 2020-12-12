@@ -1,5 +1,5 @@
 #! /bin/bash -l
-# Time-stamp: <Sat 2020-12-12 17:05 svarrette>
+# Time-stamp: <Sat 2020-12-12 17:48 svarrette>
 ############################################################################
 # (Not Recommended) Sample launcher for aggregating serial (one core) tasks
 # within one node using the Bash & (ampersand), a builtin control operator
@@ -39,12 +39,13 @@ NAME
     control operator used to fork processes, and the wait command.
   Default TASK: ${TASK}
 USAGE
-  [sbatch] $0 [-n]  [--min MIN] [--max MAX]
-  TASK=/path/to/app.exe [sbatch] $0 [-n] [--min MIN] [--max MAX]
+  [sbatch] $0 [-n]  [--min MIN] [--max MAX] [-c NCORES]
+  TASK=/path/to/app.exe [sbatch] $0 [-n] [--min MIN] [--max MAX] [-c NCORES]
 
   This will run the following command:
   for i in {${MIN}..${MAX}}; do
      ${SRUN} \${TASK} \$i &
+     # appropriate wait if max core reached
   done
   wait
 
@@ -59,6 +60,7 @@ while [ $# -ge 1 ]; do
     case $1 in
         -h | --help) usage; exit 0;;
         -n | --noop | --dry-run) CMD_PREFIX=echo;;
+        -c)    shift; NCORES=$1;;
         --min) shift; MIN=$1;;
         --max) shift; MAX=$1;;
         *) OPTS=$*; break;;

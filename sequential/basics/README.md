@@ -265,7 +265,7 @@ _Hint_: still for the lazy persons, just run:
 ``` bash
 # Note: you may want/need to run it under the dedicated reservation set for the training event
 # using [...] sbatch --reservation=[...]
-(access)$> TASK=$(pwd)/scripts/run_stressme sbatch ./scripts/launcher.serial.sh
+#    TASK=$(pwd)/scripts/run_stressme  sbatch ./scripts/launcher.serial.sh
 ```
 
 ### A VERY BAD StressMe Job Campaign: For loop on  `sbatch`
@@ -462,8 +462,8 @@ To avoid this behaviour to repeat, **we drastically reduce the capabilities of j
 
 _In short_, **Don't use job arrays!!!**: you can do better with [GNU Parallel](http://www.gnu.org/software/parallel/)
 
-
-## A better launcher (1 job, 28/128 tasks per node)
+----------------------------------------------------
+## A better launcher (1 job, #cores tasks per node)
 
 As advised, you are encouraged to aggregate several serial tasks within a single job to better exploit the many-core configuration of each nodes (28 or 128 cores per node) - this would clearly be beneficial compared to you laptop that probably have "_only_" 4 cores.
 
@@ -533,7 +533,9 @@ Now launch the job campaign as before with a single `sbatch` command:
 # Note: you may want/need to run it under the dedicated reservation set for the training event
 # using sbatch --reservation=[...]
 (access)$> sbatch ./launcher.stressme-serial-ampersand.sh
-Submitted batch job 2172531
+Submitted batch job 2175666
+# if you have not done it upon submission, you can correct it with (adapt accordingly):
+#     scontrol update jobid=<JOBID> reservationname=<name>
 ```
 
 _Hint_: still for the lazy persons afraid of copies/modifications, just run:
@@ -541,117 +543,107 @@ _Hint_: still for the lazy persons afraid of copies/modifications, just run:
 ``` bash
 # Note: you may want/need to run it under the dedicated reservation set for the training event
 # using [...] sbatch --reservation=[...]
-(access)$> TASK=$(pwd)/scripts/run_stressme sbatch ./scripts/launcher.serial-ampersand.sh
+#       TASK=$(pwd)/scripts/run_stressme sbatch ./scripts/launcher.serial-ampersand.sh
 ```
 
 Check the duration of the job afterward:
-
 ``` bash
 # See all job steps with slist <jobID>
-(access)$> slist 2172531
-# sacct -j 2172531 --format User,JobID,Jobname%30,partition,state,time,elapsed,MaxRss,MaxVMSize,nnodes,ncpus,nodelist,AveCPU,ConsumedEnergyRaw
+(access)$> slist 2175666
+# sacct -j 2175666 --format User,JobID,Jobname%30,partition,state,time,elapsed,MaxRss,MaxVMSize,nnodes,ncpus,nodelist,AveCPU,ConsumedEnergyRaw
      User        JobID                        JobName  Partition      State  Timelimit    Elapsed     MaxRSS  MaxVMSize   NNodes      NCPUS        NodeList     AveCPU ConsumedEnergyRaw
 --------- ------------ ------------------------------ ---------- ---------- ---------- ---------- ---------- ---------- -------- ---------- --------------- ---------- -----------------
-svarrette 2172531                  StressMe-ampersand      batch  COMPLETED   01:00:00   00:00:34                              1         28        iris-061                         5859
-          2172531.bat+                          batch             COMPLETED              00:00:34      3976K    178800K        1         28        iris-061   00:00:00              5625
-          2172531.ext+                         extern             COMPLETED              00:00:36          0    108056K        1         28        iris-061   00:00:00              5859
-          2172531.0                          run_stressme             COMPLETED              00:00:04          0    248548K        1          1        iris-061   00:00:00               666
-          2172531.1                          run_stressme             COMPLETED              00:00:09          0    248548K        1          1        iris-061   00:00:00              1790
-          2172531.2                          run_stressme             COMPLETED              00:00:08          0    248548K        1          1        iris-061   00:00:00              1582
-          2172531.3                          run_stressme             COMPLETED              00:00:10          0    248548K        1          1        iris-061   00:00:00              2013
-          2172531.4                          run_stressme             COMPLETED              00:00:07          0    248548K        1          1        iris-061   00:00:00              1364
-          2172531.5                          run_stressme             COMPLETED              00:00:05          0    248548K        1          1        iris-061   00:00:00               914
-          2172531.6                          run_stressme             COMPLETED              00:00:11          0    248548K        1          1        iris-061   00:00:00              2210
-          2172531.7                          run_stressme             COMPLETED              00:00:14          0    248548K        1          1        iris-061   00:00:00              2807
-          2172531.8                          run_stressme             COMPLETED              00:00:03          0    248548K        1          1        iris-061   00:00:00               465
-          2172531.9                          run_stressme             COMPLETED              00:00:13          0    248548K        1          1        iris-061   00:00:00              2620
-          2172531.10                         run_stressme             COMPLETED              00:00:19          0    248548K        1          1        iris-061   00:00:00              3704
-          2172531.11                         run_stressme             COMPLETED              00:00:17          0    248548K        1          1        iris-061   00:00:00              3361
-          2172531.12                         run_stressme             COMPLETED              00:00:28          0    248548K        1          1        iris-061   00:00:00              5047
-          2172531.13                         run_stressme             COMPLETED              00:00:02          0    248548K        1          1        iris-061   00:00:00               226
-          2172531.14                         run_stressme             COMPLETED              00:00:23          0    248548K        1          1        iris-061   00:00:00              4342
-          2172531.15                         run_stressme             COMPLETED              00:00:16          0    248548K        1          1        iris-061   00:00:00              3183
-          2172531.16                         run_stressme             COMPLETED              00:00:15          0    248548K        1          1        iris-061   00:00:00              3001
-          2172531.17                         run_stressme             COMPLETED              00:00:24          0    248548K        1          1        iris-061   00:00:00              4480
-          2172531.18                         run_stressme             COMPLETED              00:00:12          0    248548K        1          1        iris-061   00:00:00              2427
-          2172531.19                         run_stressme             COMPLETED              00:00:18          0    248548K        1          1        iris-061   00:00:00              3534
-          2172531.20                         run_stressme             COMPLETED              00:00:06          0    248548K        1          1        iris-061   00:00:00              1167
-          2172531.21                         run_stressme             COMPLETED              00:00:31          0    248548K        1          1        iris-061   00:00:00              5285
-          2172531.22                         run_stressme             COMPLETED              00:00:27          0    248548K        1          1        iris-061   00:00:00              4900
-          2172531.23                         run_stressme             COMPLETED              00:00:21          0    248548K        1          1        iris-061   00:00:00              4021
-          2172531.24                         run_stressme             COMPLETED              00:00:22          0    248548K        1          1        iris-061   00:00:00              4177
-          2172531.25                         run_stressme             COMPLETED              00:00:31          0    248548K        1          1        iris-061   00:00:00              5155
-          2172531.26                         run_stressme             COMPLETED              00:00:25          0    248548K        1          1        iris-061   00:00:00              4611
-          2172531.27                         run_stressme             COMPLETED              00:00:20          0    248548K        1          1        iris-061   00:00:00              3861
-          2172531.28                         run_stressme             COMPLETED              00:00:32       392K    248548K        1          1        iris-061   00:00:29              5298
-          2172531.29                         run_stressme             COMPLETED              00:00:25          0    248548K        1          1        iris-061   00:00:00              4575
+svarrette 2175666                  StressMe-ampersand      batch  COMPLETED   01:00:00   00:00:59                              1         28        iris-121                        11885
+          2175666.bat+                          batch             COMPLETED              00:00:59      7472K    178788K        1         28        iris-121   00:00:00             11850
+          2175666.ext+                         extern             COMPLETED              00:00:59          0    108056K        1         28        iris-121   00:00:00             11885
+          2175666.0                      run_stressme             COMPLETED              00:00:03          0    248544K        1          1        iris-121   00:00:00               949
+          2175666.1                      run_stressme             COMPLETED              00:00:04          0    248544K        1          1        iris-121   00:00:00              1279
+          2175666.2                      run_stressme             COMPLETED              00:00:01          0    248544K        1          1        iris-121   00:00:00               276
+          2175666.3                      run_stressme             COMPLETED              00:00:07          0    248544K        1          1        iris-121   00:00:00              1952
+          2175666.4                      run_stressme             COMPLETED              00:00:08          0    248544K        1          1        iris-121   00:00:00              2526
+          2175666.5                      run_stressme             COMPLETED              00:00:02          0    248544K        1          1        iris-121   00:00:00               635
+[...]
+          2175666.22                     run_stressme             COMPLETED              00:00:20          0    248544K        1          1        iris-121   00:00:00              5395
+          2175666.23                     run_stressme             COMPLETED              00:00:25          0    248544K        1          1        iris-121   00:00:00              6434
+          2175666.24                     run_stressme             COMPLETED              00:00:18          0    248544K        1          1        iris-121   00:00:00              4930
+          2175666.25                     run_stressme             COMPLETED              00:00:23          0    248544K        1          1        iris-121   00:00:00              6027
+          2175666.26                     run_stressme             COMPLETED              00:00:24          0    248544K        1          1        iris-121   00:00:00              6228
+          2175666.27                     run_stressme             COMPLETED              00:00:28          0    248544K        1          1        iris-121   00:00:00              6944
+          2175666.28                     run_stressme             COMPLETED              00:00:30          0    248544K        1          1        iris-121   00:00:00              4413
+          2175666.29                     run_stressme             COMPLETED              00:00:30       392K    248544K        1          1        iris-121   00:00:29              4554
 #
-# seff 2172531
+# seff 2175666
 #
-Job ID: 2172531
+Job ID: 2175666
 Cluster: iris
 User/Group: svarrette/clusterusers
 State: COMPLETED (exit code 0)
 Nodes: 1
 Cores per node: 28
-CPU Utilized: 00:07:46
-CPU Efficiency: 48.95% of 00:15:52 core-walltime
-Job Wall-clock time: 00:00:34
-Memory Utilized: 3.88 MB
-Memory Efficiency: 0.00% of 112.00 GB
+CPU Utilized: 00:07:45
+CPU Efficiency: 28.15% of 00:27:32 core-walltime
+Job Wall-clock time: 00:00:59
+Memory Utilized: 7.30 MB
+Memory Efficiency: 0.01% of 112.00 GB
 ```
 
 You can get the aggregated statistics with `-X`:
 
 ``` bash
-(access)$> slist 2172531 -X
-# sacct -j 2172531 --format User,JobID,Jobname%30,partition,state,time,elapsed,MaxRss,MaxVMSize,nnodes,ncpus,nodelist,AveCPU,ConsumedEnergyRaw -X
+# See aggregated statictis with slist <jobID> -X
+(access)$> slist 2175666 -X
+# sacct -j 2175666 --format User,JobID,Jobname%30,partition,state,time,elapsed,MaxRss,MaxVMSize,nnodes,ncpus,nodelist,AveCPU,ConsumedEnergyRaw -X
      User        JobID                        JobName  Partition      State  Timelimit    Elapsed     MaxRSS  MaxVMSize   NNodes      NCPUS        NodeList     AveCPU ConsumedEnergyRaw
 --------- ------------ ------------------------------ ---------- ---------- ---------- ---------- ---------- ---------- -------- ---------- --------------- ---------- -----------------
-svarrette 2172531                  StressMe-ampersand      batch  COMPLETED   01:00:00   00:00:34                              1         28        iris-061                         5859
+svarrette 2175666                  StressMe-ampersand      batch  COMPLETED   01:00:00   00:00:59                              1         28        iris-121                        11885
 # [...]
 ```
-
-Repeat with 100 tasks (aggreated within a single job):
+The launcher script supports the option `-c` to limit the number of cores used.
+Check it out it's effect on the `htop` terminal/session:
 
 ``` bash
 # Note: you may want/need to run it under the dedicated reservation set for the training event
 # using sbatch --reservation=[...]
-(access)$> TASK=$(pwd)/scripts/stressme sbatch ./launcher.stressme-serial-ampersand.sh --max 100
-Submitted batch job 2172535
-(access)$> TASK=$(pwd)/scripts/stressme sbatch ./launcher.stressme-serial-ampersand.sh --max 10
-Submitted batch job 2172537
-# sq [...]
-# Once completed:
-(access)$> slist 2172535 -X     # /!\ ADAPT JobID accordingly
-# sacct -j 2172534,2172535,2172537 --format User,JobID,Jobname%30,partition,state,time,elapsed,MaxRss,MaxVMSize,nnodes,ncpus,nodelist,AveCPU,ConsumedEnergyRaw -X
-     User        JobID                        JobName  Partition      State  Timelimit    Elapsed     MaxRSS  MaxVMSize   NNodes      NCPUS        NodeList     AveCPU ConsumedEnergyRaw
---------- ------------ ------------------------------ ---------- ---------- ---------- ---------- ---------- ---------- -------- ---------- --------------- ---------- -----------------
-svarrette 2172535                  StressMe-ampersand      batch  COMPLETED   01:00:00   00:03:42                              1         28        iris-084                        46449
-
-
-(access)$> slist 2172537 -X    # /!\ ADAPT JobID accordingly
-# sacct -j 2172534,2172535,2172537 --format User,JobID,Jobname%30,partition,state,time,elapsed,MaxRss,MaxVMSize,nnodes,ncpus,nodelist,AveCPU,ConsumedEnergyRaw -X
-     User        JobID                        JobName  Partition      State  Timelimit    Elapsed     MaxRSS  MaxVMSize   NNodes      NCPUS        NodeList     AveCPU ConsumedEnergyRaw
---------- ------------ ------------------------------ ---------- ---------- ---------- ---------- ---------- ---------- -------- ---------- --------------- ---------- -----------------
-svarrette 2172537                  StressMe-ampersand      batch  COMPLETED   01:00:00   00:00:13                              1         28        iris-120                         2016
+(access)$> sbatch ./launcher.stressme-serial-ampersand.sh -c 14
 ```
 
-Compared to the (**VERY BAD**) "for loop of sbatch" approach, we have thus:
+Finally, repeat with 100 and 10 tasks (aggreated within a single job):
 
-1. __improved__ the wall-time to complete the __30 tasks job campaign by 26,1%__ (34s vs 46s)
-2. optimized the resources allocation (a single node allocated, when 10 and up to 100 were required for the bigger campaign (100 tasks)) at the price of a affordable time penalty (+25% i.e. 222s vs 177), still demonstrating a 95,6% improvement compared to the sequential run.
+``` bash
+# Note: you may want/need to run it under the dedicated reservation set for the training event
+# using sbatch --reservation=[...]
+(access)$> sbatch ./launcher.stressme-serial-ampersand.sh --max 100
+Submitted batch job 2175664
+(access)$> sbatch ./launcher.stressme-serial-ampersand.sh --max 10
+Submitted batch job 2175665
+# sq [...]
+# Once completed, check all statistics - # /!\ ADAPT JobID accordingly
+(access)$> slist 2175664,2175665,2175666 -X
+# sacct -j 2175664,2175665,2175666 --format User,JobID,Jobname%30,partition,state,time,elapsed,MaxRss,MaxVMSize,nnodes,ncpus,nodelist,AveCPU,ConsumedEnergyRaw -X
+User        JobID                        JobName  Partition      State  Timelimit    Elapsed     MaxRSS  MaxVMSize   NNodes      NCPUS        NodeList     AveCPU ConsumedEnergyRaw
+--------- ------------ ------------------------------ ---------- ---------- ---------- ---------- ---------- ---------- -------- ---------- --------------- ---------- -----------------
+svarrette 2175664                  StressMe-ampersand      batch  COMPLETED   01:00:00   00:04:33                              1         28        iris-117                        76260
+svarrette 2175665                  StressMe-ampersand      batch  COMPLETED   01:00:00   00:00:11                              1         28        iris-121                         1866
+svarrette 2175666                  StressMe-ampersand      batch  COMPLETED   01:00:00   00:00:59                              1         28        iris-121                        11885
+```
+
+Compared to the (**VERY BAD**) "for loop of sbatch" approach, we have thus drastically optimized the resources allocation (a single node allocated, when 10 and up to 100 were required for the bigger campaign (100 tasks)) at the price of a affordable time penalty, still largely beneficial when compared to sequential i.e.:
+
+* for 30 tasks:  28% penalty (59s  vs. 46s), still demonstrating a 87% improvement compared to the sequential run.
+* for 100 tasks: 54% penalty (273s vs 177s), still demonstrating a 95% improvement compared to the sequential run.
 
 Nevertheless, we had to revisit the logic of the launcher script and enforce several customization.
 On the contrary, [GNU Parallel](http://www.gnu.org/software/parallel/) allow flexibility and adaptability while minimizing the customization: it makes the pallalelization happen automagically based on the slurm constraits (`--ntasks-per-node`, `-c`).
 
-We will focus on a **single node run**
+We will focus on a **single node run** for reasons make clear later.
 
-## The best launcher for distributing embarrassingly [GNU] parallel tasks
+
+----------------------------------------------------------------
+## Best launcher based on GNU Parallel (1 job, 1 node, N tasks)
 
 ![](https://www.gnu.org/software/parallel/logo-gray+black300.png)
 
-[GNU Parallel](http://www.gnu.org/software/parallel/) is a tool for executing tasks in parallel, typically on a single machine. When coupled with the Slurm command `srun`, parallel becomes a powerful way of distributing a set of tasks amongst a number of workers. This is particularly useful when the number of tasks is significantly larger than the number of available workers (i.e. `$SLURM_NTASKS`), and each tasks is independent of the others.
+[GNU Parallel](http://www.gnu.org/software/parallel/) is a tool for executing tasks in parallel, typically on a single machine. When coupled with the Slurm command `srun`, parallel becomes a powerful way of distributing a set of embarrassingly parallel tasks amongst a number of workers. This is particularly useful when the number of tasks is significantly larger than the number of available workers (i.e. `$SLURM_NTASKS`), and each tasks is independent of the others.
 
 **Follow now our [GNU Parallel tutorial](../gnu-parallel/) to become more accustomed with the special (complex) syntax of this tool.**
 
@@ -790,11 +782,11 @@ You can even test on another set of parameters without changing your script:
 (node)$> ./launcher.stressme.sh "{1..10}"      # Real run
 (node)$> rm logs/state.parallel.log
 ```
+To avoid cleaning the joblog file, you may want to _exceptionally_ set it to `/dev/null` using the `--joblog` option also supported by our script.
 
 ### Passive job submission
 
 Now that you have validated the expected behavior of the launcher script (you may want to test on higher number of tasks per node: GNU parallel will just adapt without any change to the launcher script), it's time to go for a passive run at full capacity.
-
 
 Exit `htop` in its terminal (press 'q' to exit) and press `CTRL-D` to disconnect to return to the access server.
 Quit your interactive job (exit or `CTRL+D`) and submit it as a passive job:
@@ -804,12 +796,10 @@ Quit your interactive job (exit or `CTRL+D`) and submit it as a passive job:
 (node)$> exit    # OR CTRL-D
 # Note: you may want/need to run it under the dedicated reservation set for the training event
 # using sbatch --reservation=[...]
-(access)$> sbatch ./launcher.stressme.sh
-# if you have not done it upon submission, you can correct it with (adapt accordingly):
-#     scontrol update jobid=<JOBID> reservationname=<name>
+(access)$> sbatch ./launcher.stressme.sh # --joblog /dev/null
 ```
 
-_Hint_: for the lazy persons, you can define on the fly the `TASK` variable as follows:
+_Hint_: for the lazy persons, you can still define on the fly the `TASK` variable as follows:
 
 ``` bash
 (access)$> TASK=$(pwd)/scripts/run_stressme sbatch ./scripts/launcher.parallel.sh
@@ -825,7 +815,8 @@ Yet you can repeat the experience for 100 `run_stressme` tasks quite convenientl
 # Note: you may want/need to run it under the dedicated reservation set for the training event
 # using sbatch --reservation=[...]
 # BEWARE of placing the range within surrounding double quotes!!!
-(access)$> sbatch ./launcher.stressme.sh "{1..100}"
+#    --joblog option used **exceptionnally** to disable resume option
+(access)$> sbatch ./launcher.stressme.sh --joblog /dev/null "{1..100}"
 ```
 
 In this case, you can be reassured on your htop usage:
@@ -833,6 +824,36 @@ In this case, you can be reassured on your htop usage:
 ![](images/screenshot_htop_gnu_parallel_j28.png)
 
 _Note_: if you use the default (old) version of `parallel` (GNU parallel 20160222), you may occasionally witness a single core that seems inactive. This is a bug inherent to that version (tied to the controlling process) corrected in more recent version.
+
+Repeat with 10 tasks
+
+``` bash
+# Note: you may want/need to run it under the dedicated reservation set for the training event
+# using sbatch --reservation=[...]
+# BEWARE of placing the range within surrounding double quotes!!!
+(access)$> sbatch ./launcher.stressme.sh --joblog /dev/null "{1..10}"
+```
+
+And let's collect the aggregated statistics from these 3 jobs (adapt job ID accordingly):
+
+``` bash
+(access)$> slist 2175717,2175719,2175721 -X
+# sacct -j 2175717,2175719,2175721 --format User,JobID,Jobname%30,partition,state,time,elapsed,MaxRss,MaxVMSize,nnodes,ncpus,nodelist,AveCPU,ConsumedEnergyRaw -X
+     User        JobID                        JobName  Partition      State  Timelimit    Elapsed     MaxRSS  MaxVMSize   NNodes      NCPUS        NodeList     AveCPU ConsumedEnergyRaw
+--------- ------------ ------------------------------ ---------- ---------- ---------- ---------- ---------- ---------- -------- ---------- --------------- ---------- -----------------
+svarrette 2175717                         GnuParallel      batch  COMPLETED   01:00:00   00:00:13                              1         28        iris-117                         2430
+svarrette 2175719                         GnuParallel      batch  COMPLETED   01:00:00   00:00:36                              1         28        iris-117                         9311
+svarrette 2175721                         GnuParallel      batch  COMPLETED   01:00:00   00:03:57                              1         28        iris-117                        70702
+[...]
+```
+
+Compared to the serial ampersand approach, we have thus **obtained a significant improvement in time efficiency** for the same node occupancy (1  single node allocated):
+
+* for 30 tasks:  **39% improvement** (36s vs 59s), demonstrating a 92% improvement compared to the sequential run.
+     - it's also 22% better than the VERY BAD `for [...] sbatch` approach (36s vs 46s)
+* for 100 tasks: **13% improvement** (237s vs. 277s), demonstrating a 95% improvement compared to the sequential run.
+
+
 
 
 ## Embarrassingly [GNU] parallel tasks across multiples nodes
