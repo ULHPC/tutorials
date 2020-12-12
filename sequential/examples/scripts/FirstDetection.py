@@ -1,0 +1,1 @@
+../../../getting-started/scripts/FirstDetection.py

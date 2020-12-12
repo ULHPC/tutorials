@@ -48,8 +48,8 @@ In particular, the `module` command **is not** available on the access frontends
 # Have an interactive job
 ############### iris cluster (slurm) ###############
 (access-iris)$> si --ntasks-per-node 1 -c 4 -t 2:00:00
-si --ntasks-per-node 1 -c 4 -t 2:00:00
 # srun -p interactive --qos debug -C batch --ntasks-per-node 1 -c 4 -t 2:00:00 --mem-per-cpu 4096 --pty bash
+(node)$>
 ```
 
 ------------------------------------------
@@ -217,47 +217,55 @@ $> echo $EASYBUILD_PREFIX
 /home/users/<login>/.local/easybuild
 ```
 
-Now let's install Easybuild following the [boostrapping procedure](http://easybuild.readthedocs.io/en/latest/Installation.html#bootstrapping-easybuild):
+Now let's install Easybuild following the [boostrapping procedure](http://easybuild.readthedocs.io/en/latest/Installation.html#bootstrapping-easybuild)
+
+**`/!\ IMPORTANT:`**  Recall that **you should be on a compute node to install [Easybuild]((http://easybuild.readthedocs.io)** (otherwise the checks of the `module` command availability will fail  -- it is normally still the case (Use `si -t 02:00:00 -N 1 --ntasks-per-node 1 -c 28` otherwise)
 
 ```bash
-$> cd
+### Access to ULHPC cluster (if not yet done)
+(laptop)$> ssh iris-cluster
+# Have an interactive job (if not yet done)
+(access-iris)$> si
+(node)$> cd
 # download script
-$> curl -o bootstrap_eb.py  https://raw.githubusercontent.com/easybuilders/easybuild-framework/develop/easybuild/scripts/bootstrap_eb.py
+(node)$> curl -o bootstrap_eb.py  https://raw.githubusercontent.com/easybuilders/easybuild-framework/develop/easybuild/scripts/bootstrap_eb.py
 
 # install Easybuild
-$> python bootstrap_eb.py $EASYBUILD_PREFIX
+(node)$> echo $EASYBUILD_PREFIX
+/home/users/<login>/.local/easybuild
+(node)$> python bootstrap_eb.py $EASYBUILD_PREFIX
 ```
 
 Now you can use your freshly built software. The main EasyBuild command is `eb`:
 
 ```bash
-$> eb --version             # expected ;)
+(node)$> eb --version             # expected ;)
 -bash: eb: command not found
 
 # Load the newly installed Easybuild
-$> echo $MODULEPATH
+(node)$> echo $MODULEPATH
 /opt/apps/resif/iris/2019b/broadwell/modules/all
 
-$> module use $LOCAL_MODULES
-$> echo $MODULEPATH
+(node)$> module use $LOCAL_MODULES
+(node)$> echo $MODULEPATH
 /home/users/<login>/.local/easybuild/modules/all:/opt/apps/resif/iris/2019b/broadwell/modules/all
 
-$> module spider Easybuild
-$> module load tools/EasyBuild       # TAB is your friend...
-$> eb --version
+(node)$> module spider Easybuild
+(node)$> module load tools/EasyBuild       # TAB is your friend...
+(node)$> eb --version
 This is EasyBuild 4.3.1 (framework: 4.3.1, easyblocks: 4.3.1) on host iris-095.
 ```
 
 Since you are going to use quite often the above command to use locally built modules and load easybuild, an alias `mu` is provided and can be used from now on. Use it **now**.
 
 ```
-$> mu
-$> module avail     # OR 'ma'
+(node)$> mu
+(node)$> module avail     # OR 'ma'
 ```
 To get help on the EasyBuild options, use the `-h` or `-H` option flags:
 
-    $> eb -h
-    $> eb -H
+    (node)$> eb -h
+    (node)$> eb -H
 
 ### b. Local vs. global usage
 
@@ -271,13 +279,13 @@ Default usage (with the `eb` command) would install your software and modules in
 Before that, let's explore the basic usage of [EasyBuild](http://easybuild.readthedocs.io/) and the `eb` command.
 
 ```bash
-$> module av Tensorflow
+(node)$> module av Tensorflow
 ----------------- /opt/apps/resif/iris/2019b/broadwell/modules/all -----------------------------
    lib/TensorFlow/2.1.0-foss-2019b-Python-3.7.4
    tools/Horovod/0.19.1-foss-2019b-TensorFlow-2.1.0-Python-3.7.4
 
 # Search for an Easybuild recipy with 'eb -S <pattern>'
-$>  eb -S Tensorflow
+(node)$>  eb -S Tensorflow
 CFGS1=/opt/apps/resif/data/easyconfigs/ulhpc/iris/easybuild/easyconfigs
 CFGS2=/opt/apps/resif/data/easyconfigs/ulhpc/default/easybuild/easyconfigs
 CFGS3=/home/users/svarrette/.local/easybuild/software/EasyBuild/4.3.1/easybuild/easyconfigs
@@ -308,7 +316,7 @@ Pick the corresponding recipy (for instance `TensorFlow-2.3.1-foss-2019b-Python-
 So let's install `Tensorflow` version 2.3.1 and **FIRST** check which dependencies are satisfied with `-Dr`:
 
 ```bash
-$> eb TensorFlow-2.3.1-foss-2019b-Python-3.7.4.eb -Dr
+(node)$> eb TensorFlow-2.3.1-foss-2019b-Python-3.7.4.eb -Dr
 == temporary log file in case of crash /tmp/eb-xlOj8P/easybuild-z4CDzy.log
 == found valid index for /home/users/svarrette/.local/easybuild/software/EasyBuild/4.3.1/easybuild/easyconfigs, so using it...
 Dry run: printing build status of easyconfigs and dependencies
@@ -333,7 +341,7 @@ As can be seen, there was a few elements to install and this has not been done s
 Let's really install the selected software -- you may want to prefix the `eb` command with the `time` to collect the installation time:
 
 ```bash
-$> eb TensorFlow-2.3.1-foss-2019b-Python-3.7.4.eb -r
+(node)$> eb TensorFlow-2.3.1-foss-2019b-Python-3.7.4.eb -r
 == temporary log file in case of crash /tmp/eb-tqZXLe/easybuild-wJX_gs.log
 == found valid index for /home/users/svarrette/.local/easybuild/software/EasyBuild/4.3.1/easybuild/easyconfigs, so using it...
 == resolving dependencies ...
@@ -356,7 +364,7 @@ $> eb TensorFlow-2.3.1-foss-2019b-Python-3.7.4.eb -r
 == creating module...
 == permissions...
 == packaging...
-== COMPLETED: Installation ended successfully (took 6 min 0 sec)
+== COMPLETED: Installation ended successfully (took 3 min 26 sec)
 == Results of the build can be found in the log file(s) /home/users/svarrette/.local/easybuild/software/Bazel/3.4.1-GCCcore-8.3.0/easybuild/easybuild-Bazel-3.4.1-20201209.215735.log
 == processing EasyBuild easyconfig /home/users/svarrette/.local/easybuild/software/EasyBuild/4.3.1/easybuild/easyconfigs/t/TensorFlow/TensorFlow-2.3.1-foss-2019b-Python-3.7.4.eb
 == building and installing lib/TensorFlow/2.3.1-foss-2019b-Python-3.7.4...
@@ -374,12 +382,23 @@ $> eb TensorFlow-2.3.1-foss-2019b-Python-3.7.4.eb -r
 == installing extension pyasn1-modules 0.2.8 (2/23)...
 == installing extension rsa 4.6 (3/23)...
 [...]
+= installing extension Keras-Preprocessing 1.1.2 (22/23)...
+== installing extension TensorFlow 2.3.1 (23/23)...
+== restore after iterating...
+== postprocessing...
+== sanity checking...
+== cleaning up...
+== creating module...
+== permissions...
+== packaging...
+== COMPLETED: Installation ended successfully (took 38 min 47 sec)
+[...]
 ```
 
 Check the installed software:
 
 ```
-$> module av Tensorflow
+(node)$> module av Tensorflow
 
 ------------------------- /home/users/<login>/.local/easybuild/modules/all -------------------------
    lib/TensorFlow/2.3.1-foss-2019b-Python-3.7.4
@@ -399,8 +418,8 @@ Use "module keyword key1 key2 ..." to search for all possible modules matching a
 You can now load the freshly installed module like any other:
 
 ```bash
-$> module load  lib/TensorFlow/2.3.1-foss-2019b-Python-3.7.4
-$> module list
+(node)$> module load  lib/TensorFlow/2.3.1-foss-2019b-Python-3.7.4
+(node)$> module list
 
 Currently Loaded Modules:
   1) tools/EasyBuild/3.6.1                          7) mpi/impi/2017.1.132-iccifort-2017.1.132-GCC-6.3.0-2.27
@@ -411,7 +430,7 @@ Currently Loaded Modules:
   6) toolchain/iccifort/2017.1.132-GCC-6.3.0-2.27
 
 # Check version
-$> python -c 'import tensorflow as tf; print(tf.__version__)'
+(node)$> python -c 'import tensorflow as tf; print(tf.__version__)'
 ```
 
 **Tips**: When you load a module `<NAME>` generated by Easybuild, it is installed within the directory reported by the `$EBROOT<NAME>` variable.
@@ -430,7 +449,7 @@ It is not available as module, so let's build it.
 First let's check for available easyconfigs recipy if one exist for the expected version:
 
 ```
-$> eb -S Cmake-3
+(node)$> eb -S Cmake-3
 [...]
  * $CFGS2/c/CMake/CMake-3.12.1.eb
  * $CFGS2/c/CMake/CMake-3.15.3-GCCcore-8.3.0.eb
@@ -447,14 +466,14 @@ We'll have to make it match the toolchain/compiler available by default in 2019b
 
 ```bash
 # Work in a dedicated directory
-$> mkdir -p ~/software/CMake
-$> cd ~/software/CMake
+(node)$> mkdir -p ~/software/CMake
+(node)$> cd ~/software/CMake
 
-$> eb -S Cmake-3|less   # collect the definition of the CFGS2 variable
-$> CFGS2=/Users/svarrette/git/github.com/ULHPC/easybuild-easyconfigs/easybuild/easyconfigs
-$> cp $CFGS2/c/CMake/CMake-3.18.4-GCCcore-10.2.0.eb .
+(node)$> eb -S Cmake-3|less   # collect the definition of the CFGS2 variable
+(node)$> CFGS2=/Users/svarrette/git/github.com/ULHPC/easybuild-easyconfigs/easybuild/easyconfigs
+(node)$> cp $CFGS2/c/CMake/CMake-3.18.4-GCCcore-10.2.0.eb .
 # Adapt the filename with the target version and your default building environement - here 2019b software set
-$> mv CMake-3.18.4-GCCcore-8.3.0.eb        # Adapt version suffix to the lastest realse
+(node)$> mv CMake-3.18.4-GCCcore-8.3.0.eb        # Adapt version suffix to the lastest realse
 ```
 
 You need to perform the following changes (here: version upgrade, adapted checksum)
@@ -517,15 +536,15 @@ libarchive will have also to be adapted.
 If the checksum is not provided on the [official software page](https://cmake.org/download/), you will need to compute it yourself by downloading the sources and collect the checksum:
 
 ```bash
-$> sha256sum ~/Downloads/cmake-3.19.1.tar.gz
+(laptop)$> sha256sum ~/Downloads/cmake-3.19.1.tar.gz
 1d266ea3a76ef650cdcf16c782a317cb4a7aa461617ee941e389cb48738a3aba  /Users/svarrette/Downloads/cmake-3.19.1.tar.gz
 ```
 
 You can now build it
 
 ```bash
-$> eb ./CMake-3.19.1-GCCcore-8.3.0.eb -Dr
-$> eb ./CMake-3.19.1-GCCcore-8.3.0.eb -r
+(node)$> eb ./CMake-3.19.1-GCCcore-8.3.0.eb -Dr
+(node)$> eb ./CMake-3.19.1-GCCcore-8.3.0.eb -r
 ```
 
 **Note** you can follow the progress of the installation in a separate shell on the node:
@@ -538,7 +557,7 @@ $> eb ./CMake-3.19.1-GCCcore-8.3.0.eb -r
 Check the result:
 
 ```bash
-$> module av CMake
+(node)$> module av CMake
 ```
 
 That's all ;-)
