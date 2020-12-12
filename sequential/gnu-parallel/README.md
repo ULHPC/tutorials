@@ -8,6 +8,98 @@
 
 [GNU Parallel](http://www.gnu.org/software/parallel/)) is a tool for executing tasks in parallel, typically on a single machine. When coupled with the Slurm command `srun`, parallel becomes a powerful way of distributing a set of tasks amongst a number of workers. This is particularly useful when the number of tasks is significantly larger than the number of available workers (i.e. `$SLURM_NTASKS`), and each tasks is independent of the others.
 
+
+## Installation
+
+The `parallel` command is available at the system level across the ULHPC clusters, yet under a relatively old version:
+
+``` bash
+(access)$> parallel --version
+GNU parallel 20160222
+[...]
+```
+
+You may want to build the up-to-date version. The process is quite straight-forward and we will illustrate this process using the  [GNU Stow](https://www.gnu.org/software/stow/) utility which is quite useful for keeping track of system-wide and per-user installations of software built from source, as `parallel` in this case. [GNU Stow manual](https://www.gnu.org/software/stow/manual/stow.html#Introduction) - [tutorial](https://linuxconfig.org/how-to-use-gnu-stow-to-manage-programs-installed-from-source-and-dotfiles)
+
+Prepare the installation directories within your HOME, together with the _stowdir_:
+
+``` bash
+### Access to ULHPC cluster if not yet done - here iris
+(laptop)$> ssh iris-cluster
+(access)$> cd      # go to your HOME
+(access)$> mkdir bin include lib share src
+# create stowdir
+(access)$> mkdir stow
+```
+
+Get the latest stable sources of [GNU Parallel](https://www.gnu.org/software/parallel/) under `src` and compile them within an interactive job:
+
+``` bash
+(access)$> cd ~/src
+# Download the latest sources
+(access)$> wget http://ftp.gnu.org/gnu/parallel/parallel-latest.tar.bz2
+# Not strictly necessary, but help to keep track of time of action
+(access)$> mv parallel-latest.tar.bz2  parallel-latest-$(date +%F).tar.bz2
+# Uncompress
+(access)$> tar xf parallel-latest-$(date +%F).tar.bz2
+(access)$> cd parallel-20201122/
+### Have an interactive job for the compilation process
+# ... either directly
+(access)$> si
+# ... or using the HPC School reservation 'hpcschool' if needed  - use 'sinfo -T' to check if active and its name
+# (access)$> srun --reservation=hpcschool --pty bash
+```
+
+[GNU Parallel](https://www.gnu.org/software/parallel/) is one of the many software that can be build very easily through the [Autotools](https://www.gnu.org/software/automake/manual/html_node/Autotools-Introduction.html) build system _i.e_ `./configure; make; make install`.
+However, this process wants to install _by default_ the built software under `/usr/local` where you have **NO** rights to write files. So if you don't pay attention, the installation step will fail.
+To circumvent the problem:
+
+* we will install `parallel` in `$HOME` (`--prefix` option)
+* more specifically, we will install the built software withing the stow directory, in a specific sub-directory that allow to specify the precise version generated.
+
+Proceed as follows:
+
+``` bash
+(node)$> ./configure --prefix=$HOME/stow/parallel-20201122
+(node)$> make
+(node)$> make install
+```
+
+That's all folk.
+You can now use `stow` to enable this build:
+
+``` bash
+(node)$> cd ~/stow
+(node)$> stow parallel-20201122
+# Check the result:
+(node)$> ll ~/bin/parallel
+lrwxrwxrwx. 1 svarrette clusterusers 38 Dec 12 14:50 /home/users/svarrette/bin/parallel -> ../stow/parallel-20201122/bin/parallel
+# As ~/bin is part of your PATH at one of the first position, now the command
+# 'parallel' is resolved as the newly built version
+(node)$> which parallel
+~/bin/parallel
+(node)$>  parallel --version
+GNU parallel 20201122
+[...]
+```
+
+At any moment of time, you can disable this build as follows:
+
+``` bash
+(node)$> cd ~/stow
+(node)$> stow -D parallel-20201122
+# Now the command 'parallel' is resolved to the system one
+(node)$> ll ~/bin/parallel
+ls: cannot access /home/users/svarrette/bin/parallel: No such file or directory
+(node)$> which parallel
+/usr/bin/parallel
+(node)$> parallel --version     # you may need to source ~/.bashrc
+GNU parallel 20160222
+```
+
+You can quit your interactive job (CTRL-D)
+
+
 ## Discovering the `parallel` command
 
 The [GNU Parallel](http://www.gnu.org/software/parallel/) syntax can be a little distributing, but basically it supports two modes:
@@ -157,3 +249,7 @@ Let's manipulate the file content with parallel (prefer the `-a <filename>` synt
 /work/projects/bigdata_sets/OpenImages_V4/train/7ea06f092abc005e.jpg 9
 /work/projects/bigdata_sets/OpenImages_V4/train/2db694eba4d4bb04.jpg 10
 ```
+
+The ULHPC team has designed a generic launcher for GNU parallel: see [`../basics/scripts/launcher.parallel.sh`](../basics/scripts/launcher.parallel.sh).
+
+Its usage is explicited in the [HPC Management of Sequential and Embarrassingly Parallel Jobs](../basics/) tutorials.
