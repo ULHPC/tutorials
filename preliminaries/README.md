@@ -1,6 +1,7 @@
 [![By ULHPC](https://img.shields.io/badge/by-ULHPC-blue.svg)](https://hpc.uni.lu) [![Licence](https://img.shields.io/badge/license-GPL--3.0-blue.svg)](http://www.gnu.org/licenses/gpl-3.0.html) [![GitHub issues](https://img.shields.io/github/issues/ULHPC/tutorials.svg)](https://github.com/ULHPC/tutorials/issues/) [![](https://img.shields.io/badge/slides-PDF-red.svg)](https://github.com/ULHPC/tutorials/raw/devel/preliminaries/slides.pdf) [![Github](https://img.shields.io/badge/sources-github-green.svg)](https://github.com/ULHPC/tutorials/tree/devel/preliminaries/) [![Documentation Status](http://readthedocs.org/projects/ulhpc-tutorials/badge/?version=latest)](http://ulhpc-tutorials.readthedocs.io/en/latest/preliminaries/) [![GitHub forks](https://img.shields.io/github/stars/ULHPC/tutorials.svg?style=social&label=Star)](https://github.com/ULHPC/tutorials)
 
 
+---------------------------------------
 # Preliminaries to ULHPC facility access
 
      Copyright (c) 2020 UL HPC Team <hpc-team@uni.lu>
@@ -62,9 +63,8 @@ mkdir -p ~/.config/git $XDG_CACHE_HOME $XDG_DATA_HOME
 (laptop)$> git config ---global core.editor vim
 ```
 
+---------------------
 ## Secure SHell (SSH)
-
-### Hands-On/SSH & UL HPC access
 
 
 * [Access / SSH Tutorial](https://hpc.uni.lu/users/docs/access.html)
@@ -198,6 +198,9 @@ Paste in the Base 64-encoded public key string, and click **Set**.
 
 Click **Save** at the top of the page.
 
+
+-------------------------------
+## Hands-On/SSH & UL HPC access
 
 ### Step 1a - Connect to UL HPC (Linux / Mac OS / Unix)
 
@@ -413,7 +416,8 @@ You have just to drag and drop your files to this panel to transfer files to the
 
 To retrieve a file from the cluster, you can right click on it and choose the **Download** option. Please refers to MobaXterm documentation for more informations on the available features.
 
-### SSH agent - Optional
+------------------------
+## SSH agent
 
 If you are tired of typing your passphrase, use `ssh-agent` to load your private key
 
@@ -456,7 +460,8 @@ Welcome to access1.aion-cluster.uni.lux
 [yourlogin@access1 ~]$ logout    # OR CTRL-D
 ```
 
-## SOCKS 5 Proxy plugin - Optional
+-----------------------------------
+## SOCKS 5 Proxy plugin (Optional)
 
 Many Data Analytics framework involves a web interface (at the level of the master and/or the workers) you probably want to access in a relative transparent way.
 
