@@ -228,11 +228,11 @@ import argparse
 import logging
 import os
 import sys
-from sklearn.datasets.samples_generator import make_blobs
-from sklearn.externals.joblib import Parallel, parallel_backend
-from sklearn.externals.joblib import register_parallel_backend
-from sklearn.externals.joblib import delayed
-from sklearn.externals.joblib import cpu_count
+from sklearn.datasets import make_blobs
+from joblib import Parallel, parallel_backend
+from joblib import register_parallel_backend
+from joblib import delayed
+from joblib import cpu_count
 from ipyparallel import Client
 from ipyparallel.joblib import IPythonParallelBackend
 import numpy as np
@@ -341,10 +341,10 @@ import matplotlib as mpl
 mpl.use('Agg')
 import matplotlib.pyplot as plt
 from matplotlib.colors import Normalize
-from sklearn.externals.joblib import Parallel, parallel_backend
-from sklearn.externals.joblib import register_parallel_backend
-from sklearn.externals.joblib import delayed
-from sklearn.externals.joblib import cpu_count
+from joblib import Parallel, parallel_backend
+from joblib import register_parallel_backend
+from joblib import delayed
+from joblib import cpu_count
 from sklearn.datasets import load_digits
 from sklearn.model_selection import train_test_split
 from sklearn.svm import SVC
