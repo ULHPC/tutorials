@@ -1,0 +1,45 @@
+#! /bin/bash
+# Time-stamp: <Sat 2020-12-12 21:05 svarrette>
+################################################################################
+# Sample submission script illustrating singleton dependency when exploring
+# a large parameter range divided in subdomains of chuncksize element
+# Here no more than MAXNODE=4 nodes are used.
+############################################################
+CMD_PREFIX=echo
+
+LAUNCHER=./launcher.stressme.sh
+JOBNAME=StressMe
+MAXNODES=4
+
+min=1
+max=100
+chunksize=20
+
+############################################################
+print_error_and_exit() { echo "*** ERROR *** $*"; exit 1; }
+usage(){
+    cat <<EOF
+Usage: $(basename $0) [-x] [-N MAXNODES]
+    Sample submision script across multiple nodes
+    Execution won't spread on more than ${MAXNODES} nodes (singleton dependency)
+      -x --execute         really submit the jobs with sbatch
+      -N --nodes MAXNODES  set max. nodes
+EOF
+}
+############################################################
+while [ $# -ge 1 ]; do
+    case $1 in
+        -h | --help) usage; exit 0;;
+        -x | --execute) CMD_PREFIX=;;
+        -N | --nodes) shift; MAXNODES=$1;;
+        *) print_error_and_exit "Usage: $0 -h";;
+    esac
+    shift;
+done
+mkdir -p logs     # create log directory
+
+for i in $(seq $min $chunksize $max); do
+    ${CMD_PREFIX} sbatch \
+                  -J ${JOBNAME}_$(($i/$chunksize%${MAXNODES})) --dependency singleton \
+                  ${LAUNCHER} --joblog logs/state.${i}.parallel.log  "{$i..$((i+$chunksize))}";
+done
