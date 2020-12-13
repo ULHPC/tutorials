@@ -6,9 +6,9 @@
 
 This page is part of the Getting started tutorial, and the follow-up of the "Overview" section.
 
-### The basics
-
 * [reference documentation](https://hpc.uni.lu/users/docs/slurm.html)
+
+## The basics
 
 [Slurm](https://slurm.schedmd.com/) Slurm is an open source, fault-tolerant, and highly scalable cluster management and job scheduling system for large and small Linux clusters. It is used on Iris UL HPC cluster.
 
@@ -17,10 +17,23 @@ This page is part of the Getting started tutorial, and the follow-up of the "Ove
 * It arbitrates contention for resources by managing a queue of pending work.
 * It permits to schedule jobs for users on the cluster resource
 
-There are two types of jobs:
+## Vocabulary
 
-  * _interactive_: you get a shell on the first reserved node
-  * _passive_: classical batch job where the script passed as argument to `sbatch` is executed
+* A `user job` is characterized by:
+
+  * the number of nodes
+  * the number of CPU cores
+  * the memory requested
+  * the walltime
+  * the launcher script, which will initiate your tasks
+
+* Partition: group of compute nodes, with specific usage characteristics (time limits and maximum number of nodes per job
+
+* QOS: The quality of service associated with a job affects the way it is scheduled (priority, preemption, limits per user, etc).
+
+* Tasks: processes run in parallel inside the job
+
+## Hands on
 
 We will now see the basic commands of Slurm.
 
@@ -45,8 +58,8 @@ you can reserve and connect in two steps using the job id associated to your res
 
         (access)$> srun -p interactive --qos debug --jobid 390 --pty bash # adapt the job ID accordingly ;)
         (node)$> ps aux | grep sleep
-        cparisot 186342  0.0  0.0 107896   604 ?        S    17:58   0:00 sleep 1h
-        cparisot 187197  0.0  0.0 112656   968 pts/0    S+   18:04   0:00 grep --color=auto sleep
+        <login> 186342  0.0  0.0 107896   604 ?        S    17:58   0:00 sleep 1h
+        <login> 187197  0.0  0.0 112656   968 pts/0    S+   18:04   0:00 grep --color=auto sleep
         (node)$> exit             # or CTRL-D
 
 **Question: At which moment the job `390` will end?**
@@ -77,14 +90,14 @@ d. number of cores reserved per node together with the node name (one per line)
    * _hint_: `NPROCS variable or NODELIST`
 
 
-### Job management
+## Job management with interactive jobs 
 
 Normally, the previously run job is still running.
 
 * You can check the status of your running jobs using `squeue` command:
 
         (access)$> squeue             # list all jobs
-        (access)$> squeue -u cparisot # list all your jobs
+        (access)$> squeue -u <login> # list all your jobs
 
   Then you can delete your job by running `scancel` command:
 
@@ -117,3 +130,31 @@ This command can also be written in a more compact way
         (access)$> scontrol hold $SLURM_JOB_ID
         (access)$> scontrol release $SLURM_JOB_ID
 
+## Passive jobs submission
+
+In the previous section, we have started interactive jobs using the `srun` command.
+When `srun` is used on the access server, it can be used to submit an interactive jobs, meaning that the `srun` will wait for the job to be scheduled before starting a new shell.
+
+The other possibility is to submit a passive job with `sbatch`.
+In this case, resources can be specified on the command line as `srun`, or in the launcher script.
+
+The launcher script first lines can contain headers, in the following case, in this case, the following launcher script will request a single task of one ore for 5 minutes, in the `batch` queue.
+
+        #!/bin/bash -l
+        #SBATCH -N 1
+        #SBATCH --ntasks-per-node=1
+        #SBATCH -c 1
+        #SBATCH --time=0-00:05:00
+        #SBATCH -p batch
+        echo "Hello World!"
+
+Save this content in a file named `launcher.sh` and submit it with `sbatch`
+
+        (access)$> sbatch launcher.sh
+
+Modify this example to:
+
+* request 6 single core tasks equally spread across two nodes for 3 hours
+* Request as many tasks as cores available on a single node in the batch queue for 3 hours
+* Request one sequential task requiring half the memory of a regular iris node for 1 day (use the header `#SBATCH --mem=64GB`)
+* Request one GPU tasks for 4 hours - dedicate 1/4 of available cores for its management (use the gpu partition and the header `#SBATCH -G 1`
