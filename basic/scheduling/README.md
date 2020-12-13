@@ -21,11 +21,12 @@ This page is part of the Getting started tutorial, and the follow-up of the "Ove
 
 * A `user job` is characterized by:
 
-  * the number of nodes
-  * the number of CPU cores
-  * the memory requested
-  * the walltime
-  * the launcher script, which will initiate your tasks
+    * the number of nodes
+    * the number of CPU cores
+    * the memory requested
+    * the walltime
+    * the launcher script, which will initiate your tasks
+
 
 * Partition: group of compute nodes, with specific usage characteristics (time limits and maximum number of nodes per job
 
@@ -41,7 +42,7 @@ We will now see the basic commands of Slurm.
 
         (access)$> srun -p interactive --qos debug --pty bash
 
-  Notice that with no other parameters, srun gave you one resource for 1 hour. You were also directly connected to the node you reserved with an interactive shell.
+  Notice that with no other parameters, srun gave you one resource for 30 minutes. You were also directly connected to the node you reserved with an interactive shell.
   Now exit the reservation (`exit` command or CTRL-D)
 
   When you run exit, you are disconnected and your reservation is terminated.
@@ -49,16 +50,16 @@ We will now see the basic commands of Slurm.
 To avoid anticipated termination of your jobs in case of errors (terminal closed by mistake),
 you can reserve and connect in two steps using the job id associated to your reservation.
 
-* First run a passive job _i.e._ run a predefined command -- here `sleep 10d` to delay the execution for 10 days -- on the first reserved node:
+* First run a passive job _i.e._ run a predefined command -- here `sleep 4h` to delay the execution for 4 hours -- on the first reserved node:
 
-        (access)$> sbatch --qos normal --wrap "sleep 10d"
+        (access)$> sbatch --qos normal --wrap "sleep 4h"
         Submitted batch job 390
 
   You noticed that you received a job ID (in the above example: `390`), which you can later use to connect to the reserved resource(s):
 
         (access)$> srun -p interactive --qos debug --jobid 390 --pty bash # adapt the job ID accordingly ;)
         (node)$> ps aux | grep sleep
-        <login> 186342  0.0  0.0 107896   604 ?        S    17:58   0:00 sleep 1h
+        <login> 186342  0.0  0.0 107896   604 ?        S    17:58   0:00 sleep 4h
         <login> 187197  0.0  0.0 112656   968 pts/0    S+   18:04   0:00 grep --color=auto sleep
         (node)$> exit             # or CTRL-D
 
@@ -66,7 +67,7 @@ you can reserve and connect in two steps using the job id associated to your res
 
 a. after 10 days
 
-b. after 1 hour
+b. after 2 hours
 
 c. never, only when I'll delete the job
 
@@ -157,4 +158,4 @@ Modify this example to:
 * request 6 single core tasks equally spread across two nodes for 3 hours
 * Request as many tasks as cores available on a single node in the batch queue for 3 hours
 * Request one sequential task requiring half the memory of a regular iris node for 1 day (use the header `#SBATCH --mem=64GB`)
-* Request one GPU tasks for 4 hours - dedicate 1/4 of available cores for its management (use the gpu partition and the header `#SBATCH -G 1`
+* Request one GPU tasks for 4 hours - dedicate 1/4 of available cores for its management (use the gpu partition and the header `#SBATCH -G 1`)
