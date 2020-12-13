@@ -53,8 +53,6 @@ In the following sections, replace `<login>` in the proposed commands with you l
 
 After a successful login onto one of the access node (see [Cluster Access](https://hpc.uni.lu/users/docs/access.html)), you end into your personal homedir `$HOME` which is shared over GPFS between the access node and the computing nodes.
 
-Again, remember that your homedir is placed on __separate__ storage servers on each site (Iris, Gaia, Chaos, Grid5000), which __ARE NOT SYNCHRONIZED__: data synchronization between each of them remain at your own responsibility. We will see below that the UL HPC team prepared for you a script to facilitate the transfer of data between each site.
-
 Otherwise, you have to be aware of at least two directories:
 
 * `$HOME`: your home directory under NFS.
@@ -128,7 +126,7 @@ We will illustrate the usage of GNU screen by performing a compilation of a rece
 * create a new window and rename it "Compile"
 * within this new window, start a new interactive job over 1 node and 2 cores for 4 hours
 
-		(access)$> srun -p interactive --qos debug --time 4:00:0 -N 1 -c 2 --pty bash
+		(access)$> srun -p interactive --qos debug --time 2:00:0 -N 1 -c 2 --pty bash
 
 * detach from this screen (using `CTRL+a d`)
 * kill your current SSH connection and your terminal
@@ -147,14 +145,14 @@ We will illustrate the usage of GNU screen by performing a compilation of a rece
 * in the "Compile" windows, go to the temporary directory and download the Linux kernel sources
 
 		(node)$> cd /tmp/
-		(node)$> curl -O https://cdn.kernel.org/pub/linux/kernel/v4.x/linux-4.19.50.tar.xz
+		(node)$> curl -O https://cdn.kernel.org/pub/linux/kernel/v4.x/linux-4.19.163.tar.xz
 
-   **IMPORTANT** to ovoid overloading the **shared** file system with the many small files involves in the kernel compilation (_i.e._ NFS and/or Lustre), we will perform the compilation in the **local** file system, _i.e._ either in `/tmp` or (probably more efficient) in `/dev/shm` (_i.e_ in the RAM):
+   **IMPORTANT** to avoid overloading the **shared** file system with the many small files involves in the kernel compilation (_i.e._ NFS and/or Lustre), we will perform the compilation in the **local** file system, _i.e._ either in `/tmp` or (probably more efficient) in `/dev/shm` (_i.e_ in the RAM):
 
 		(node)$> mkdir /dev/shm/PS1
 		(node)$> cd /dev/shm/PS1
-		(node)$> tar xf /tmp/linux-4.19.50.tar.xz
-		(node)$> cd linux-4.19.50
+		(node)$> tar xf /tmp/linux-4.19.163.tar.xz
+		(node)$> cd linux-4.19.163
 		(node)$> make mrproper
 		(node)$> make alldefconfig
 		(node)$> make 2>&1 | tee /dev/shm/PS1/kernel_compile.log
@@ -189,7 +187,7 @@ The table below should convince you to always run `make` with the `-j` option wh
 
 
 * Use the [Ganglia](https://hpc.uni.lu/iris/ganglia/) interface to monitor the impact of the compilation process on the node your job is running on.
-* Use the following system commands on the node during the compilation:
+* Connect to your interactive job using the command `sjoin <jobid>`. Use the following system commands on the node during the compilation:
 
     * `htop`
     * `top`
