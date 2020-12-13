@@ -25,3 +25,38 @@ tar_load(gp)
 gp
 ```
 
+## Grouping
+
+`tar_group()` will create a new column to match the `dplyr` grouping we did
+
+```{r}
+tar_read(gp_grp)
+```
+
+## Combine results
+
+```{r}
+tar_read(gp_grp) %>% 
+  group_by(continent, country, tar_group) %>% 
+  tidyr::nest() %>% 
+  ungroup() %>%
+  inner_join(tibble(rsq = tar_read(r2),
+                    tar_group = seq_len(length(tar_read(r2))))) -> gp_r2
+gp_r2
+```
+
+
+## Snake plot
+
+```{r}
+gp_r2 %>% 
+  ggplot(aes(x = rsq, y = forcats::fct_reorder(country, rsq))) +
+  geom_point(aes(colour = continent)) +
+  labs(y = NULL,
+       x = "r squared") +
+  theme_classic(18) +
+  theme(legend.position = c(0.2, 0.7),
+        axis.text.y = element_blank(),
+        axis.ticks.y = element_blank())
+```
+

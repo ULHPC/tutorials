@@ -157,18 +157,19 @@ bottom:1em;left:1em;
 .w-33.bg-washed-blue.b--blue.ba.bw2.br3.shadow-5.ph3.mt3.mr1[
 .large[.bbox[For targets]]
 - [targets](XX)
+![](img/gp_dag.png)
 ]
 ]
 
 ---
 
-## If you wonder about `drake`
+# If you wonder about `drake`
 
 
-- [`drake`](https://github.com/ropensci/drake), 1,300 <i class="fas  fa-star "></i> on github is the most used workflow manager for .Large[`R`].
+- [`drake`](https://github.com/ropensci/drake), is the most used workflow manager for .Large[`R`]. 1,300 <i class="fas  fa-star "></i> on Github 
 
 .flex[
-.w-70.bg-washed-blue.b--blue.ba.bw2.br3.shadow-5.ph3.mt3.ml5[
+.w-55.bg-washed-blue.b--blue.ba.bw2.br3.shadow-5.ph3.mt1.mr1[
 .large[.ybox[Rationale for [rewriting from scratch](https://wlandau.github.io/targets/articles/need.html)]]
 
 - drake is still an excellent choice for pipeline management, but it has permanent user-side limitations.
@@ -183,6 +184,19 @@ bottom:1em;left:1em;
 - [Debugging!](https://wlandau.github.io/targets-manual/practice.html#debugging) with [workspaces](https://wlandau.github.io/targets/reference/tar_workspace.html) (wishing this exists in `snakemake`)
 
 .footnote[Source: targets [slides](https://wlandau.github.io/nyhackr2020/#40) W. Landau. NY Meetup hackR]
+]
+.w-45.bg-washed-yellow.b--yellow.ba.bw2.br3.shadow-5.ph3.mt1[
+.large[.bbox[Not on CRAN yet]]
+
+
+```r
+library(remotes)
+# Landau is not using 'master'
+install_github("wlandau/targets@main")
+install_github("wlandau/tarchetypes@main")
+```
+
+
 ]]
 
 ---
@@ -497,7 +511,7 @@ class: inverse, middle, center
 
 .pull-left[
 #### 142 countries, 12 yearly observations of 3 parameters
-<table class="huxtable" style="border-collapse: collapse; border: 0px; margin-bottom: 2em; margin-top: 2em; ; margin-left: auto; margin-right: auto;  " id="tab:unnamed-chunk-19">
+<table class="huxtable" style="border-collapse: collapse; border: 0px; margin-bottom: 2em; margin-top: 2em; ; margin-left: auto; margin-right: auto;  " id="tab:unnamed-chunk-40">
 <col><col><col><col><col><col><tr>
 <th style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0.4pt 0.4pt 0.4pt 0.4pt; border-top-color: rgb(255, 255, 255);  border-right-color: rgb(255, 255, 255);  border-bottom-color: rgb(255, 255, 255);  border-left-color: rgb(255, 255, 255); padding: 6pt 6pt 6pt 6pt; background-color: rgb(229, 229, 229); font-weight: bold;">country</th><th style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0.4pt 0.4pt 0.4pt 0.4pt; border-top-color: rgb(255, 255, 255);  border-right-color: rgb(255, 255, 255);  border-bottom-color: rgb(255, 255, 255);  border-left-color: rgb(255, 255, 255); padding: 6pt 6pt 6pt 6pt; background-color: rgb(229, 229, 229); font-weight: bold;">continent</th><th style="vertical-align: top; text-align: right; white-space: normal; border-style: solid solid solid solid; border-width: 0.4pt 0.4pt 0.4pt 0.4pt; border-top-color: rgb(255, 255, 255);  border-right-color: rgb(255, 255, 255);  border-bottom-color: rgb(255, 255, 255);  border-left-color: rgb(255, 255, 255); padding: 6pt 6pt 6pt 6pt; background-color: rgb(229, 229, 229); font-weight: bold;">year</th><th style="vertical-align: top; text-align: right; white-space: normal; border-style: solid solid solid solid; border-width: 0.4pt 0.4pt 0.4pt 0.4pt; border-top-color: rgb(255, 255, 255);  border-right-color: rgb(255, 255, 255);  border-bottom-color: rgb(255, 255, 255);  border-left-color: rgb(255, 255, 255); padding: 6pt 6pt 6pt 6pt; background-color: rgb(229, 229, 229); font-weight: bold;">lifeExp</th><th style="vertical-align: top; text-align: right; white-space: normal; border-style: solid solid solid solid; border-width: 0.4pt 0.4pt 0.4pt 0.4pt; border-top-color: rgb(255, 255, 255);  border-right-color: rgb(255, 255, 255);  border-bottom-color: rgb(255, 255, 255);  border-left-color: rgb(255, 255, 255); padding: 6pt 6pt 6pt 6pt; background-color: rgb(229, 229, 229); font-weight: bold;">pop</th><th style="vertical-align: top; text-align: right; white-space: normal; border-style: solid solid solid solid; border-width: 0.4pt 0.4pt 0.4pt 0.4pt; border-top-color: rgb(255, 255, 255);  border-right-color: rgb(255, 255, 255);  border-bottom-color: rgb(255, 255, 255);  border-left-color: rgb(255, 255, 255); padding: 6pt 6pt 6pt 6pt; background-color: rgb(229, 229, 229); font-weight: bold;">gdpPercap</th></tr>
 <tr>
@@ -509,7 +523,7 @@ class: inverse, middle, center
 </table>
 
 .center.huge[...]
-<table class="huxtable" style="border-collapse: collapse; border: 0px; margin-bottom: 2em; margin-top: 2em; ; margin-left: auto; margin-right: auto;  " id="tab:unnamed-chunk-20">
+<table class="huxtable" style="border-collapse: collapse; border: 0px; margin-bottom: 2em; margin-top: 2em; ; margin-left: auto; margin-right: auto;  " id="tab:unnamed-chunk-41">
 <col><col><col><col><col><col><tr>
 <th style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0.4pt 0.4pt 0.4pt 0.4pt; border-top-color: rgb(255, 255, 255);  border-right-color: rgb(255, 255, 255);  border-bottom-color: rgb(255, 255, 255);  border-left-color: rgb(255, 255, 255); padding: 6pt 6pt 6pt 6pt; background-color: rgb(229, 229, 229); font-weight: bold;">country</th><th style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0.4pt 0.4pt 0.4pt 0.4pt; border-top-color: rgb(255, 255, 255);  border-right-color: rgb(255, 255, 255);  border-bottom-color: rgb(255, 255, 255);  border-left-color: rgb(255, 255, 255); padding: 6pt 6pt 6pt 6pt; background-color: rgb(229, 229, 229); font-weight: bold;">continent</th><th style="vertical-align: top; text-align: right; white-space: normal; border-style: solid solid solid solid; border-width: 0.4pt 0.4pt 0.4pt 0.4pt; border-top-color: rgb(255, 255, 255);  border-right-color: rgb(255, 255, 255);  border-bottom-color: rgb(255, 255, 255);  border-left-color: rgb(255, 255, 255); padding: 6pt 6pt 6pt 6pt; background-color: rgb(229, 229, 229); font-weight: bold;">year</th><th style="vertical-align: top; text-align: right; white-space: normal; border-style: solid solid solid solid; border-width: 0.4pt 0.4pt 0.4pt 0.4pt; border-top-color: rgb(255, 255, 255);  border-right-color: rgb(255, 255, 255);  border-bottom-color: rgb(255, 255, 255);  border-left-color: rgb(255, 255, 255); padding: 6pt 6pt 6pt 6pt; background-color: rgb(229, 229, 229); font-weight: bold;">lifeExp</th><th style="vertical-align: top; text-align: right; white-space: normal; border-style: solid solid solid solid; border-width: 0.4pt 0.4pt 0.4pt 0.4pt; border-top-color: rgb(255, 255, 255);  border-right-color: rgb(255, 255, 255);  border-bottom-color: rgb(255, 255, 255);  border-left-color: rgb(255, 255, 255); padding: 6pt 6pt 6pt 6pt; background-color: rgb(229, 229, 229); font-weight: bold;">pop</th><th style="vertical-align: top; text-align: right; white-space: normal; border-style: solid solid solid solid; border-width: 0.4pt 0.4pt 0.4pt 0.4pt; border-top-color: rgb(255, 255, 255);  border-right-color: rgb(255, 255, 255);  border-bottom-color: rgb(255, 255, 255);  border-left-color: rgb(255, 255, 255); padding: 6pt 6pt 6pt 6pt; background-color: rgb(229, 229, 229); font-weight: bold;">gdpPercap</th></tr>
 <tr>
@@ -525,8 +539,254 @@ class: inverse, middle, center
 --
 
 .pull-right[
-&lt;img src="PS10_targets_files/figure-html/unnamed-chunk-21-1.png" width="504" /&gt;
+&lt;img src="PS10_targets_files/figure-html/unnamed-chunk-42-1.png" width="504" /&gt;
 
+]
+
+
+---
+class: center, middle
+
+
+.flex[
+.w-50.pv2.ph3.mt2.ml7[
+ .huge[.bbox[<i class="fas  fa-flask fa-3x "></i> Now practical session <i class="fas  fa-keyboard fa-4x "></i>]]] 
+]
+
+---
+
+## Aim: life expectancy explained by time for each country
+
+.left-column[
+- `gapminder` as `tsv` URL (Jenny Bryan)
+- download the file
+- read `tsv` as `tibble`
+- group by `country`
+- run 142 linear models
+- extract 142 `\(r^2\)`
+- bundle results in a `Rmarkdown`
+- snake plots the `\(r^2\)`
+]
+
+.right-column[
+
+![](img/gp_glimpse.png)
+.center[![](img/gp_snake.png)]
+]
+
+.footnote[dependency graph from `tar_glimpse()`]
+
+---
+
+## Step1: set-up and data URL 
+
+.pull-left[
+#### Set-up
+
+- Create an RStudio project
+- install `tidyverse`, `fst`, `rmarkdown`, `visNetwork`
+- install `targets`, `tarchetypes` (slide 6)
+- `run.R` and custom build (slide 13)
+- Create an empty file `R/functions.R`
+- Create a `_targets.R` file with (copy icon on top right corner) <i class="fas  fa-arrow-circle-right fa-2x "></i>
+]
+
+.pull-right[
+
+```r
+library(targets)
+library(tarchetypes)
+source("R/functions.R")
+options(tidyverse.quiet = TRUE)
+# necessary packages to load in isolated R sessions
+tar_option_set(packages = c("tidyverse", "fst"))
+# Define the pipeline
+tar_pipeline(
+  tar_url(gp_url, "https://raw.githubusercontent.com/jennybc/gapminder/master/inst/extdata/gapminder.tsv")
+)
+```
+
+- Build
+- check that the target is correct:
+
+```r
+tar_read(gp_url)
+#&gt; [1] "https://raw.githubusercontent.com/jennybc/gapminder/master/inst/extdata/gapminder.tsv"
+```
+
+
+]
+
+---
+
+## Step 2: download and load the file
+
+.pull-left[
+- `download.file()` does not return anything.
+- we need a filename, so create a wrapper `download_file()`
+    + format is `file`, tsv will be tracked
+- load the file with `readr::read_tsv()`
+    + format is `tibble` via `fst` super fast
+- run the pipeline
+    + `gp_url` should be skipped
+    + `tar_read(gp)` should return a `tibble`
+]
+
+--
+
+.pull-right[
+#### lines for `_targets.R`
+
+```r
+tar_file(gp_file, download_file(gp_url, "gapminder.tsv")),
+tar_fst_tbl(gp, read_tsv(gp_file, col_types = cols())),
+```
+#### lines for `R/functions.R`
+
+```r
+#' wrap download.file to return the filename
+download_file &lt;- function(url, out) {
+  download.file(url, out, quiet = TRUE)
+  out
+}
+```
+
+]
+
+---
+
+## Step 3: Group by country
+
+.pull-left[
+- `dplyr::group_by()` by continent and country
+    + pipe to `tar_group()` which create extra column
+    + specify `iteration = "group"`
+]
+
+--
+
+.pull-right[
+
+```r
+tar_fst_tbl(gp_grp,
+            group_by(gp, continent, country) %&gt;%
+              tar_group(),
+            # tell downstream targets about the grouping
+            iteration = "group")
+```
+
+- don't forget the .bold[comma] between targets. 
+- run the Build
+]
+
+---
+
+## Step 4: run the models
+
+.pull-left[
+- add a function to wrap `lm`
+- add the target `models`
+    + pattern is map over the countries
+    + specify `iteration = "list"`
+]
+
+--
+
+.pull-right[
+#### lines for `R/functions.R`
+
+```r
+#' linear model on country, liefExp explained by year1950
+#' so we get meaningful intercept
+ml_lifeExp &lt;- function(.data) {
+  gp &lt;- mutate(.data, year1950 = year - 1950)
+  lm(lifeExp ~ year1950, data = gp)
+}
+```
+#### lines for `_targets.R`
+
+```r
+tar_target(models,
+           ml_lifeExp(gp_grp),
+           pattern = map(gp_grp),
+           # lm is complex, combine in a list
+           iteration = "list")
+```
+
+- run `tar_visnetwork(labels = "branches")`, 142 expected
+- run the Build, should see 142 branches 
+]
+
+---
+
+## Step 5: extract `\(r^2\)` from models
+
+.pull-left[
+- add a function to extract  `\(r^2\)`
+- add the target `r2``
+    + pattern is map over the models
+    + specify `iteration = "vector"`
+]
+
+--
+
+.pull-right[
+#### lines for `R/functions.R`
+
+```r
+#' extract r.square from lm object
+extract_r2 &lt;- function(model) {
+  summary(model)$r.squared
+}
+```
+#### lines for `_targets.R`
+
+```r
+  tar_target(r2,
+             extract_r2(models),
+             pattern = map(models),
+             # now vector is enough
+             iteration = "vector")
+```
+
+- run `tar_visnetwork(labels = "branches")`, 142 expected
+- run the Build, should see 142 branches for r2
+]
+
+---
+
+## Step 6: add the report
+
+.pull-left[
+- edit the `report.Rmd`
+- add the special target `tar_render()`
+]
+
+--
+
+.pull-right[
+#### lines for `report.Rmd`
+```
+---
+title: "gapminder report"
+author: "your name"
+date: "2020-12-16"
+output: html_document
+---
+
+## Gapminder Data
+
+we used the URL ``` https://raw.githubusercontent.com/jennybc/gapminder/master/inst/extdata/gapminder.tsv ```
+```
+
+#### lines for `_targets.R`
+
+```r
+tar_render(report, "report.Rmd")
+```
+
+- run `tar_visnetwork(labels = "branches")`
+- run the Build
 ]
 
 
@@ -561,11 +821,8 @@ class: inverse, middle, center
 - [`tarchetypes` reference](https://wlandau.github.io/tarchetypes/) by William Landau
 - [NY Open Statistical Meeup, Dec 2020, targets presentation](https://youtu.be/Gqn7Xn4d5NI) by William Landau
 ]
-.w-50.pv2.ph3.mt2.ml1[
+.w-50.pv2.ph3.mt4.ml1[
 .Large[.bbox[Thank you for your attention!]]
-
-
-.huge[.gbox[Now practical session]]]
 ]]
 
 

@@ -185,18 +185,19 @@ htmltools::img(src = "https://rworkshop.uni.lu/lectures/img/09/tidyverse_pkg_in_
 .w-33.bg-washed-blue.b--blue.ba.bw2.br3.shadow-5.ph3.mt3.mr1[
 .large[.bbox[For targets]]
 - [targets](XX)
+![](img/gp_dag.png)
 ]
 ]
 
 ---
 
-## If you wonder about `drake`
+# If you wonder about `drake`
 
 
-- [`drake`](https://github.com/ropensci/drake), 1,300 `r icon::fa_star()` on github is the most used workflow manager for .Large[`R`].
+- [`drake`](https://github.com/ropensci/drake), is the most used workflow manager for .Large[`R`]. 1,300 `r icon::fa_star()` on Github 
 
 .flex[
-.w-70.bg-washed-blue.b--blue.ba.bw2.br3.shadow-5.ph3.mt3.ml5[
+.w-55.bg-washed-blue.b--blue.ba.bw2.br3.shadow-5.ph3.mt1.mr1[
 .large[.ybox[Rationale for [rewriting from scratch](https://wlandau.github.io/targets/articles/need.html)]]
 
 - drake is still an excellent choice for pipeline management, but it has permanent user-side limitations.
@@ -211,15 +212,15 @@ htmltools::img(src = "https://rworkshop.uni.lu/lectures/img/09/tidyverse_pkg_in_
 - [Debugging!](https://wlandau.github.io/targets-manual/practice.html#debugging) with [workspaces](https://wlandau.github.io/targets/reference/tar_workspace.html) (wishing this exists in `snakemake`)
 
 .footnote[Source: targets [slides](https://wlandau.github.io/nyhackr2020/#40) W. Landau. NY Meetup hackR]
-]]
-
-.flex[
-.w-70.bg-washed-yellow.b--yellow.ba.bw2.br3.shadow-5.ph3.mt3.ml5[
-.large[.bbox[Not in CRAN yet]]
+]
+.w-45.bg-washed-yellow.b--yellow.ba.bw2.br3.shadow-5.ph3.mt1[
+.large[.bbox[Not on CRAN yet]]
 
 ```{r, eval=FALSE}
-remotes::install_github("wlandau/targets@main")
-remotes::install_github("wlandau/tarchetypes@main")
+library(remotes)
+# Landau is not using 'master'
+install_github("wlandau/targets@main")
+install_github("wlandau/tarchetypes@main")
 ```
 
 
@@ -574,6 +575,242 @@ gapminder %>%
 
 
 ---
+class: center, middle
+
+
+.flex[
+.w-50.pv2.ph3.mt2.ml7[
+ .huge[.bbox[`r icon::fa("flask", size = 3)` Now practical session `r icon::fa("keyboard", size = 4)`]]] 
+]
+
+---
+
+## Aim: life expectancy explained by time for each country
+
+.left-column[
+- `gapminder` as `tsv` URL (Jenny Bryan)
+- download the file
+- read `tsv` as `tibble`
+- group by `country`
+- run 142 linear models
+- extract 142 $r^2$
+- bundle results in a `Rmarkdown`
+- snake plots the $r^2$
+]
+
+.right-column[
+
+![](img/gp_glimpse.png)
+.center[![](img/gp_snake.png)]
+]
+
+.footnote[dependency graph from `tar_glimpse()`]
+
+---
+
+## Step1: set-up and data URL 
+
+.pull-left[
+#### Set-up
+
+- Create an RStudio project
+- install `tidyverse`, `fst`, `rmarkdown`, `visNetwork`
+- install `targets`, `tarchetypes` (slide 6)
+- `run.R` and custom build (slide 13)
+- Create an empty file `R/functions.R`
+- Create a `_targets.R` file with (copy icon on top right corner) `r icon::fa("arrow-circle-right", size = 2)`
+]
+
+.pull-right[
+```{r, eval = FALSE}
+library(targets)
+library(tarchetypes)
+source("R/functions.R")
+options(tidyverse.quiet = TRUE)
+# necessary packages to load in isolated R sessions
+tar_option_set(packages = c("tidyverse", "fst"))
+# Define the pipeline
+tar_pipeline(
+  tar_url(gp_url, "https://raw.githubusercontent.com/jennybc/gapminder/master/inst/extdata/gapminder.tsv")
+)
+```
+
+- Build
+- check that the target is correct:
+```{r, eval=FALSE}
+tar_read(gp_url)
+#> [1] "https://raw.githubusercontent.com/jennybc/gapminder/master/inst/extdata/gapminder.tsv"
+```
+
+
+]
+
+---
+
+## Step 2: download and load the file
+
+.pull-left[
+- `download.file()` does not return anything.
+- we need a filename, so create a wrapper `download_file()`
+    + format is `file`, tsv will be tracked
+- load the file with `readr::read_tsv()`
+    + format is `tibble` via `fst` super fast
+- run the pipeline
+    + `gp_url` should be skipped
+    + `tar_read(gp)` should return a `tibble`
+]
+
+--
+
+.pull-right[
+#### lines for `_targets.R`
+```{r, eval=FALSE}
+tar_file(gp_file, download_file(gp_url, "gapminder.tsv")),
+tar_fst_tbl(gp, read_tsv(gp_file, col_types = cols())),
+```
+#### lines for `R/functions.R`
+```{r, eval=FALSE}
+#' wrap download.file to return the filename
+download_file <- function(url, out) {
+  download.file(url, out, quiet = TRUE)
+  out
+}
+```
+
+]
+
+---
+
+## Step 3: Group by country
+
+.pull-left[
+- `dplyr::group_by()` by continent and country
+    + pipe to `tar_group()` which create extra column
+    + specify `iteration = "group"`
+]
+
+--
+
+.pull-right[
+```{r, eval=FALSE}
+tar_fst_tbl(gp_grp,
+            group_by(gp, continent, country) %>%
+              tar_group(),
+            # tell downstream targets about the grouping
+            iteration = "group")
+```
+
+- don't forget the .bold[comma] between targets. 
+- run the Build
+]
+
+---
+
+## Step 4: run the models
+
+.pull-left[
+- add a function to wrap `lm`
+- add the target `models`
+    + pattern is map over the countries
+    + specify `iteration = "list"`
+]
+
+--
+
+.pull-right[
+#### lines for `R/functions.R`
+```{r, eval=FALSE}
+#' linear model on country, liefExp explained by year1950
+#' so we get meaningful intercept
+ml_lifeExp <- function(.data) {
+  gp <- mutate(.data, year1950 = year - 1950)
+  lm(lifeExp ~ year1950, data = gp)
+}
+```
+#### lines for `_targets.R`
+```{r, eval=FALSE}
+tar_target(models,
+           ml_lifeExp(gp_grp),
+           pattern = map(gp_grp),
+           # lm is complex, combine in a list
+           iteration = "list")
+```
+
+- run `tar_visnetwork(labels = "branches")`, 142 expected
+- run the Build, should see 142 branches 
+]
+
+---
+
+## Step 5: extract $r^2$ from models
+
+.pull-left[
+- add a function to extract  $r^2$
+- add the target `r2``
+    + pattern is map over the models
+    + specify `iteration = "vector"`
+]
+
+--
+
+.pull-right[
+#### lines for `R/functions.R`
+```{r, eval=FALSE}
+#' extract r.square from lm object
+extract_r2 <- function(model) {
+  summary(model)$r.squared
+}
+```
+#### lines for `_targets.R`
+```{r, eval=FALSE}
+  tar_target(r2,
+             extract_r2(models),
+             pattern = map(models),
+             # now vector is enough
+             iteration = "vector")
+```
+
+- run `tar_visnetwork(labels = "branches")`, 142 expected
+- run the Build, should see 142 branches for r2
+]
+
+---
+
+## Step 6: add the report
+
+.pull-left[
+- edit the `report.Rmd`
+- add the special target `tar_render()`
+]
+
+--
+
+.pull-right[
+#### lines for `report.Rmd`
+```
+---
+title: "gapminder report"
+author: "your name"
+date: "2020-12-16"
+output: html_document
+---
+
+## Gapminder Data
+
+we used the URL ``` `r targets::tar_read(gp_url)` ```
+```
+
+#### lines for `_targets.R`
+```{r, eval=FALSE}
+tar_render(report, "report.Rmd")
+```
+
+- run `tar_visnetwork(labels = "branches")`
+- run the Build
+]
+
+
+---
 
 ## Before we stop
 
@@ -604,11 +841,8 @@ gapminder %>%
 - [`tarchetypes` reference](https://wlandau.github.io/tarchetypes/) by William Landau
 - [NY Open Statistical Meeup, Dec 2020, targets presentation](https://youtu.be/Gqn7Xn4d5NI) by William Landau
 ]
-.w-50.pv2.ph3.mt2.ml1[
+.w-50.pv2.ph3.mt4.ml1[
 .Large[.bbox[Thank you for your attention!]]
-
-
-.huge[.gbox[Now practical session]]]
 ]]
 
 
