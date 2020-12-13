@@ -4,8 +4,6 @@
 
      Copyright (c) 2013-2020 UL HPC Team <hpc-sysadmins@uni.lu>
 
-This page is part of the Getting started tutorial
-
 ## Using a command line text editor
 
 Before the next section, you must learn to use a text editor in command line.
