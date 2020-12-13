@@ -6,7 +6,7 @@
 
      Copyright (c) 2020 UL HPC Team <hpc-team@uni.lu>
 
-<!-- [![](https://github.com/ULHPC/tutorials/raw/devel/preliminaries/cover_slides.png)](https://github.com/ULHPC/tutorials/raw/devel/preliminaries/slides.pdf) -->
+ [![](https://github.com/ULHPC/tutorials/raw/devel/preliminaries/cover_slides.png)](https://github.com/ULHPC/tutorials/raw/devel/preliminaries/slides.pdf)
 
 Welcome to the High Performance Computing (HPC) Facility of the University of Luxembourg (ULHPC)!
 
