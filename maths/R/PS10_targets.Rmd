@@ -213,6 +213,18 @@ htmltools::img(src = "https://rworkshop.uni.lu/lectures/img/09/tidyverse_pkg_in_
 .footnote[Source: targets [slides](https://wlandau.github.io/nyhackr2020/#40) W. Landau. NY Meetup hackR]
 ]]
 
+.flex[
+.w-70.bg-washed-yellow.b--yellow.ba.bw2.br3.shadow-5.ph3.mt3.ml5[
+.large[.bbox[Not in CRAN yet]]
+
+```{r, eval=FALSE}
+remotes::install_github("wlandau/targets@main")
+remotes::install_github("wlandau/tarchetypes@main")
+```
+
+
+]]
+
 ---
 
 ## Folder structure

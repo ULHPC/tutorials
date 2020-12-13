@@ -1,0 +1,27 @@
+---
+title: "gapminder report"
+author: "A. Ginolhac"
+date: "2020-12-16"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(targets)
+```
+
+## Gapminder Data
+
+
+we used:
+
+- the URL `r tar_read(gp_url)`
+- to download the file `r tar_read(gp_file)`
+
+Tibble is then:
+
+```{r}
+tar_load(gp)
+gp
+```
+
