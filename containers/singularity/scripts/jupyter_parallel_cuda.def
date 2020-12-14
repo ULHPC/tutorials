@@ -14,9 +14,7 @@ Stage: build
     export LC_ALL=C
 
 %post
-    apt-get update
-    apt-get install -y python3-pip python3-venv
-    python3 -m pip install jupyter ipyparallel cgroup-utils 
+    python3 -m pip install virtualenv jupyter ipyparallel cgroup-utils 
 
 %runscript
     VENV=$1

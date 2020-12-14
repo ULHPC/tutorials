@@ -258,9 +258,10 @@ Now image can be transferred, e.g. to the Iris cluster and used normally.
   - Other paths need to be explicitly set
 
 ```bash
-# Build the image on your laptop
+## Just an example - do not copy-paste
+# Build 
 sudo singularity build custom.sif python_3.7.3-stretch/
-# Test it on you laptop
+# Execute 
 singularity exec --bind /work/projects/myprj/:/mnt \
             custom.sif python3 /mnt/my_nice_code.py
 singularity exec --bind /work/projects/myprj:/work/projects/myprj \
@@ -799,9 +800,7 @@ Stage: build
     export LC_ALL=C
 
 %post
-    apt-get update
-    apt-get install -y python3-pip python3-venv
-    python3 -m pip install jupyter ipyparallel cgroup-utils
+    python3 -m pip install virtualenv jupyter ipyparallel cgroup-utils
 
 %runscript
     VENV=$1
@@ -865,7 +864,8 @@ echo "On your laptop: ssh -p 8022 -NL 8889:$(facter ipaddress):8889 ${USER}@acce
 singularity instance start --nv jupyter_parallel_cuda.sif jupyter
 
 if [ ! -d "$VENV" ];then
-    singularity exec --nv instance://jupyter python3 -m venv $VENV --system-site-packages
+    # For some reasons, there is an issue with venv -- using virtualenv instead
+    singularity exec --nv instance://jupyter python3 -m virtualenv $VENV --system-site-packages
     singularity run --nv instance://jupyter $VENV "python3 -m pip install --upgrade pip" 
     # singularity run --nv instance://jupyter $VENV "python3 -m pip install <your_packages>"
     singularity run --nv instance://jupyter $VENV "python3 -m ipykernel install --sys-prefix --name HPC_SCHOOL_ENV_IPYPARALLEL_CUDA --display-name HPC_SCHOOL_ENV_IPYPARALLEL_CUDA"

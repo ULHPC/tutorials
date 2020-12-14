@@ -4,6 +4,8 @@
 
      Copyright (c) 2020 S. Varrette and UL HPC Team <hpc-team@uni.lu>
 
+[![](https://github.com/ULHPC/tutorials/raw/devel/sequential/basics/cover_slides.png)](https://github.com/ULHPC/tutorials/raw/devel/sequential/basics/slides.pdf)
+
 For many users, the reason to consider (or being encouraged) to offload their computing executions on a (remote) HPC or Cloud facility is tied to the limits reached by their computing devices (laptop or workstation).
 It is generally motivated by time constraints:
 
@@ -38,24 +40,24 @@ If you have never configured [GNU Screen](http://www.gnu.org/software/screen/) b
 # /!\ Advanced (but recommended) best-practice:
 #    always work within an GNU Screen session named with 'screen -S <topic>' (Adapt accordingly)
 # IIF not yet done, copy ULHPC .screenrc in your home
-(access-iris)$> cp /etc/dotfiles.d/screen/.screenrc ~/
+(access)$> cp /etc/dotfiles.d/screen/.screenrc ~/
 ```
 
 Now you'll need to pull the latest changes in your working copy of the [ULHPC/tutorials](https://github.com/ULHPC/tutorials) you should have cloned in `~/git/github.com/ULHPC/tutorials` (see ["preliminaries" tutorial](../../preliminaries/))
 
 ``` bash
-(access-iris)$> cd ~/git/github.com/ULHPC/tutorials
-(access-iris)$> git pull
+(access)$> cd ~/git/github.com/ULHPC/tutorials
+(access)$> git pull
 ```
 
-Now **configure a dedicated directory `tutorials/sequential` for this session**
+Now **configure a dedicated directory `~/tutorials/sequential` for this session**
 
 ``` bash
 # return to your home
-(access-iris)$> mkdir -p tutorials/sequential
-(access-iris)$> cd tutorials/sequential
+(access)$> mkdir -p ~/tutorials/sequential
+(access)$> cd ~/tutorials/sequential
 # create a symbolic link to the reference material
-(access-iris)$> ln -s ~/git/github.com/ULHPC/tutorials/sequential ref.d
+(access)$> ln -s ~/git/github.com/ULHPC/tutorials/sequential/basics ref.d
 ```
 
 **Advanced users** (_eventually_ yet __strongly__ recommended), create a [GNU Screen](http://www.gnu.org/software/screen/) session you can recover later - see ["Getting Started" tutorial](../../getting-started/)
