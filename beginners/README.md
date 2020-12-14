@@ -42,151 +42,6 @@ The general organization of each cluster is depicted below:
 
 Details on this organization can be found [here](https://hpc.uni.lu/systems/clusters.html#clusters-organization)
 
-## Hands-On/SSH & UL HPC access
-
-
-* [Access / SSH Tutorial](https://hpc.uni.lu/users/docs/access.html)
-
-The way SSH handles the keys and the configuration files is illustrated in the following figure:
-
-![SSH key management](https://hpc.uni.lu/images/docssh/schema.png)
-
-In order to be able to login to the clusters, you have sent us through the Account request form the **public key** (i.e. `id_rsa.pub` or the **public key** as saved by MobaXterm/PuttY) you initially generated, enabling us to configure the `~/.ssh/authorized_keys` file of your account.
-
-
-### Step 1a - Connect to UL HPC (Linux / Mac OS / Unix)
-
-Run the following commands in a terminal (substituting *yourlogin* with the login name you received from us):
-
-        (laptop)$> ssh -p 8022 yourlogin@access-iris.uni.lu
-
-Now you probably want to avoid taping this long command to connect to the platform. You can customize SSH aliases for that. Edit the file `~/.ssh/config` (create it if it does not already exist) and adding the following entries:
-
-        Host iris-cluster
-            Hostname access-iris.uni.lu
-            User yourlogin
-            Port 8022
-            ForwardAgent no
-
-Now you shall be able to issue the following (simpler) command to connect to the cluster and obtain the welcome banner:
-
-		(laptop)$> ssh iris-cluster
-
-In the following sections, we assume these aliases to be defined.
-
-### Step 1b - Optional - using SSH proxycommand setup to access the clusters despite port filtering (Linux / Mac OS / Unix)
-
-It might happen that the port 8022 is filtered from your working place. You can easily bypass this firewall rule using an SSH proxycommand to setup transparently multi-hop connexions *through* one host (a gateway) to get to the access frontend of the cluster, as depited below:
-
-    [laptop] -----||--------> 22 [SSH gateway] ---------> 8022 [access-{iris,gaia,chaos}]
-               firewall
-
-The gateway can be any SSH server which have access to the access frontend of the cluster. The [Gforge @ UL](http://gforge.uni.lu) is typically used in this context but you can prefer any other alternative (your personal NAS @ home etc.). Then alter the SSH config on your laptop (in `~/.ssh/config` typically) as follows:
-
-* create an entry to be able to connect to the gateway:
-
-#### Alias for the gateway (not really needed, but convenient), below instantiated
-
-    Host gw
-      User anotherlogin
-      Hostname host.domain.org
-      ForwardAgent no
-
-#### Automatic connection to UL HPC from the outside via the gateway
-
-    Host *.ulhpc
-      ProxyCommand ssh -q -x gw -W `basename %h .ulhpc`:%p
-
-Ensure you can connect to the gateway:
-
-    (laptop)$> ssh gw
-    (gateway)$> exit # or CTRL-D
-
-The `.ulhpc` suffix we mentioned in the previous configuration is an arbitrary suffix you will now specify in your command lines in order to access the UL HPC platform via the gateway as follows:
-
-    (laptop)$> ssh iris.ulhpc
-
-
-### Step 1c - Connect to UL HPC (Windows)
-
-* Download [MobaXterm Installer edition](http://mobaxterm.mobatek.net/)
-* Install MobaXterm
-* Open the application **Start** > **Program Files** > **MobaXterm**
-* Change the default home directory for a persistent home directory instead of the default Temp directory. Go onto **Settings** > **Configuration** > **General** > **Persistent home directory**. Choose a location for your home directory.
-* load your private SSH key. **Tools** > **Network** > **MobaKeyGen (SSH key generator)** and choose Load (or create a new RSA key).
-* click on **Session**
-  * In **SSH Session**:
-    * Remote host: `access-iris.uni.lu`
-		* Check the **Specify username** box
-		* Username: `yourlogin`
-    * Port: 8022
-  * In **Advanced SSH Settings**
-	  * Check `Use private key` box
-		* Select your previously generated `id_rsa.ppk`
-  * Click on **Save**
-
-
-### Step 2 - Hands-on/ Transferring files
-
-Directories such as `$HOME`, `$WORK` or `$SCRATCH` are shared among the nodes of the cluster that you are using (including the front-end) via shared filesystems (NFS, Lustre) meaning that:
-
-* every file/directory pushed or created on the front-end is available on the computing nodes
-* every file/directory pushed or created on the computing nodes is available on the front-end
-
-
-#### Step 2a - Linux / OS X / Unix command line tools
-
-The two most common tools you can use for data transfers over SSH:
-
-* `scp`: for the full transfer of files and directories (only works fine for single files or directories of small/trivial size)
-* `rsync`: a software application which synchronizes files and directories from one location to another while minimizing data transfer as only the outdated or inexistent elements are transferred (practically required for lengthy complex transfers, which are more likely to be interrupted in the middle).
-
-Of both, normally the second approach should be preferred, as more generic; note that, both ensure a secure transfer of the data, within an encrypted tunnel.
-
-* Create a new directory on your local machine and download a file to transfer (next-gen sequencing data from the NIH Roadmap Epigenomics Project):
-
-		(laptop)$> mkdir file_transfer
-		(laptop)$> cd file_transfer
-		(laptop)$> wget "ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM409nnn/GSM409307/suppl/GSM409307_UCSD.H1.H3K4me1.LL228.bed.gz"
-
-* Transfer the file with scp:
-
-		(laptop)$> scp GSM409307_UCSD.H1.H3K4me1.LL228.bed.gz iris-cluster:
-
-* Connect to the cluster, check if the file is there and delete it.
-
-		(laptop)$> ssh iris-cluster
-		(access-iris)$> ls
-		(access-iris)$> rm GSM409307_UCSD.H1.H3K4me1.LL228.bed.gz
-		rm: remove regular file `GSM409307_UCSD.H1.H3K4me1.LL228.bed.gz'? y
-		(access-iris)$> exit
-
-* Transfer the directory with rsync:
-
-		(laptop)$> cd ..
-		(laptop)$> rsync -avzu file_transfer iris-cluster:
-
-* Delete the file and retrieve it from the cluster:
-
-		(laptop)$> rm file_transfer/GSM409307_UCSD.H1.H3K4me1.LL228.bed.gz
-		(laptop)$> rsync -avzu iris-cluster:file_transfer .
-
-* **Bonus**: Check where the file is located on the cluster after the rsync.
-
-You can get more information about these transfer methods in the [file transfer documentation](https://hpc.uni.lu/users/docs/filetransfer.html).
-
-
-#### Step 2b - Windows MobaXterm file transfer
-
-If you are on Windows, you can directly use MobaXterm to transfer files. Connect to your session (see below on how to configure it). On the right panel you should see an **SFTP** panel opened.
-
-![SFTP on MobaXterm](https://github.com/ULHPC/tutorials/raw/devel/beginners/images/moba_sftp.png)
-
-You have just to drag and drop your files to this panel to transfer files to the cluster. You can try to upload this file [ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM409nnn/GSM409307/suppl/GSM409307_UCSD.H1.H3K4me1.LL228.bed.gz](ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM409nnn/GSM409307/suppl/GSM409307_UCSD.H1.H3K4me1.LL228.bed.gz) (next-gen sequencing data from the NIH Roadmap Epigenomics Project)
-
-To retrieve a file from the cluster, you can right click on it and choose the **Download** option. Please refers to MobaXterm documentation for more informations on the available features.
-
-
 
 ## Discovering, visualizing and reserving UL HPC resources
 
@@ -197,8 +52,6 @@ In the following sections, replace `<login>` in the proposed commands with you l
 * [reference documentation](http://hpc.uni.lu/users/docs/env.html)
 
 After a successful login onto one of the access node (see [Cluster Access](https://hpc.uni.lu/users/docs/access.html)), you end into your personal homedir `$HOME` which is shared over GPFS between the access node and the computing nodes.
-
-Again, remember that your homedir is placed on __separate__ storage servers on each site (Iris, Gaia, Chaos, Grid5000), which __ARE NOT SYNCHRONIZED__: data synchronization between each of them remain at your own responsibility. We will see below that the UL HPC team prepared for you a script to facilitate the transfer of data between each site.
 
 Otherwise, you have to be aware of at least two directories:
 
@@ -224,180 +77,41 @@ Your homedir is under a regular backup policy. Therefore you are asked to pay at
 
 Each cluster offers a set of web services to monitor the platform usage:
 
-* [Ganglia](https://hpc.uni.lu/iris/ganglia/), a scalable distributed monitoring system for high-performance computing systems such as clusters and Grids.
-* [SLURM Web](https://access-iris.uni.lu/slurm/), a website that show the status of jobs and nodes with a nice graphical interface.
+#### [Ganglia](https://hpc.uni.lu/iris/ganglia/)
 
-### Step 3: Reserving resources with Slurm
+Ganglia is a scalable distributed monitoring system for high-performance computing systems such as clusters and Grids. Ganglia provides plots the system usage for each individual compute nodes (CPU, memory, I/O and network usage).
 
-#### The basics
+These information will help you identify and understand the behavior of your jobs on the cluster.
 
-* [reference documentation](https://hpc.uni.lu/users/docs/slurm.html)
+It is interesting to identify the limiting factor of your job:
 
-[Slurm](https://slurm.schedmd.com/) Slurm is an open source, fault-tolerant, and highly scalable cluster management and job scheduling system for large and small Linux clusters. It is used on Iris UL HPC cluster.
+* Memory
 
-* It allocates exclusive or non-exclusive access to the resources (compute nodes) to users during a limited amount of time so that they can perform they work
-* It provides a framework for starting, executing and monitoring work
-* It arbitrates contention for resources by managing a queue of pending work.
-* It permits to schedule jobs for users on the cluster resource
+![Memory bound job on ganglia](images/membound.png)
 
-There are two types of jobs:
+* CPU
 
-  * _interactive_: you get a shell on the first reserved node
-  * _passive_: classical batch job where the script passed as argument to `sbatch` is executed
+![CPU bound job on ganglia](images/cpubound.png)
 
-We will now see the basic commands of Slurm.
+* Storage I/O
 
-* Connect to **iris-cluster**. You can request resources in interactive mode:
+![I/O bound job on ganglia](images/iobound.png)
 
-		(access)$> srun -p interactive --qos debug --pty bash
+* Network bound
 
-  Notice that with no other parameters, srun gave you one resource for 1 hour. You were also directly connected to the node you reserved with an interactive shell.
-  Now exit the reservation:
+![Network bound job on ganglia](images/network-bound.png)
 
-        (node)$> exit      # or CTRL-D
+This is covered in the other tutorial [Monitoring and profiling](https://ulhpc-tutorials.readthedocs.io/en/latest/basic/monitoring/)
 
-  When you run exit, you are disconnected and your reservation is terminated.
+#### [SLURM Web](https://access-iris.uni.lu/slurm/)
 
-To avoid anticipated termination of your jobs in case of errors (terminal closed by mistake),
-you can reserve and connect in two steps using the job id associated to your reservation.
+SLURM Web is a website that show the status of jobs and nodes with a nice graphical interface.
 
-* First run a passive job _i.e._ run a predefined command -- here `sleep 10d` to delay the execution for 10 days -- on the first reserved node:
+You can use the SLURM web interface for a visualization of the job scheduler state (list and gantt chart visualization).
 
-		(access)$> sbatch --qos normal --wrap "sleep 10d"
-		Submitted batch job 390
+![](images/slurmjoblist.png)
 
-  You noticed that you received a job ID (in the above example: `390`), which you can later use to connect to the reserved resource(s):
-
-        (access)$> srun -p interactive --qos debug --jobid 390 --pty bash # adapt the job ID accordingly ;)
-		(node)$> ps aux | grep sleep
-		cparisot 186342  0.0  0.0 107896   604 ?        S    17:58   0:00 sleep 1h
-		cparisot 187197  0.0  0.0 112656   968 pts/0    S+   18:04   0:00 grep --color=auto sleep
-		(node)$> exit             # or CTRL-D
-
-**Question: At which moment the job `390` will end?**
-
-a. after 10 days
-
-b. after 1 hour
-
-c. never, only when I'll delete the job
-
-**Question: manipulate the `$SLURM_*` variables over the command-line to extract the following information, once connected to your job**
-
-a. the list of hostnames where a core is reserved (one per line)
-   * _hint_: `man echo`
-
-b. number of reserved cores
-   * _hint_: `search for the NPROCS variable`
-
-c. number of reserved nodes
-   * _hint_: `search for the NNODES variable`
-
-d. number of cores reserved per node together with the node name (one per line)
-   * Example of output:
-
-            12 iris-11
-            12 iris-15
-
-   * _hint_: `NPROCS variable or NODELIST`
-
-
-#### Job management
-
-Normally, the previously run job is still running.
-
-* You can check the status of your running jobs using `squeue` command:
-
-		(access)$> squeue             # list all jobs
-		(access)$> squeue -u cparisot # list all your jobs
-
-  Then you can delete your job by running `scancel` command:
-
-		(access)$> scancel 390
-
-
-* You can see your system-level utilization (memory, I/O, energy) of a running job using `sstat $jobid`:
-
-		(access)$> sstat 390
-
-In all remaining examples of reservation in this section, remember to delete the reserved jobs afterwards (using `scancel` or `CTRL-D`)
-
-You probably want to use more than one core, and you might want them for a different duration than one hour.
-
-* Reserve interactively 4 cores in one task on one node, for 30 minutes (delete the job afterwards)
-
-		(access)$> srun -p interactive --qos debug --time=0:30:0 -N 1 --ntasks-per-node=1 --cpus-per-task=4 --pty bash
-
-* Reserve interactively 4 tasks (system processes) with 2 nodes for 30 minutes (delete the job afterwards)
-
-		(access)$> srun -p interactive --qos debug --time=0:30:0 -N 2 --ntasks-per-node=4 --cpus-per-task=4 --pty bash
-
-This command can also be written in a more compact way
-
-        (access)$> si --time=0:30:0 -N2 -n4 -c2
-
-
-* You can stop a waiting job from being scheduled and later, allow it to be scheduled:
-
-		(access)$> scontrol hold $SLURM_JOB_ID
-		(access)$> scontrol release $SLURM_JOB_ID
-
-
-## Hands-on/Using modules
-
-[Environment Modules](http://modules.sourceforge.net/) is a software package that allows us to provide a [multitude of applications and libraries in multiple versions](http://hpc.uni.lu/users/software/) on the UL HPC platform. The tool itself is used to manage environment variables such as `PATH`, `LD_LIBRARY_PATH` and `MANPATH`, enabling the easy loading and unloading of application/library profiles and their dependencies.
-
-We will have multiple occasion to use modules in the other tutorials so there is nothing special we foresee here. You are just encouraged to read the following resources:
-
-* [Introduction to Environment Modules by Wolfgang Baumann](https://www.hlrn.de/home/view/System3/ModulesUsage)
-* [Modules tutorial @ NERSC](https://www.nersc.gov/users/software/nersc-user-environment/modules/)
-* [UL HPC documentation on modules](https://hpc.uni.lu/users/docs/modules.html)
-
-
-## Hands-on/Persistent Terminal Sessions using GNU Screen
-
-[GNU Screen](http://www.gnu.org/software/screen/) is a tool to manage persistent terminal sessions.
-It becomes interesting since you will probably end at some moment with the following  scenario:
-
-> you frequently program and run computations on the UL HPC platform _i.e_ on a remote Linux/Unix computer, typically working in six different terminal logins to the access server from your office workstation, cranking up long-running computations that are still not finished and are outputting important information (calculation status or results), when you have 2 interactive jobs running... But it's time to catch the bus and/or the train to go back home.
-
-Probably what you do in the above scenario is to
-
-a. clear and shutdown all running terminal sessions
-
-b. once at home when the kids are in bed, you're logging in again... And have to set up the whole environment again (six logins, 2 interactive jobs etc. )
-
-c. repeat the following morning when you come back to the office.
-
-Enter the long-existing and very simple, but totally indispensable [GNU screen](http://www.gnu.org/software/screen/) command. It has the ability to completely detach running processes from one terminal and reattach it intact (later) from a different terminal login.
-
-### Pre-requisite: screen configuration file `~/.screenrc`
-
-While not mandatory, we advise you to rely on our customized configuration file for screen [`.screenrc`](https://github.com/ULHPC/dotfiles/blob/master/screen/.screenrc) available on [Github](https://github.com/ULHPC/dotfiles/blob/master/screen/.screenrc).
-
-Otherwise, simply clone the [ULHPC dotfile repository](https://github.com/ULHPC/dotfiles/) and make a symbolic link `~/.screenrc` targeting the file `screen/screenrc` of the repository.
-
-### Basic commands
-
-You can start a screen session (_i.e._ creates a single window with a shell in it) with the `screen` command.
-Its main command-lines options are listed below:
-
-* `screen`: start a new screen
-* `screen -ls`: does not start screen, but prints a list of `pid.tty.host` strings identifying your current screen sessions.
-* `screen -r`: resumes a detached screen session
-* `screen -x`: attach to a not detached screen session. (Multi display mode _i.e._ when you and another user are trying to access the same session at the same time)
-
-
-Once within a screen, you can invoke a screen command which consist of a "`CTRL + a`" sequence followed by one other character. The main commands are:
-
-* `CTRL + a c`: (create) creates a new Screen window. The default Screen number is zero.
-* `CTRL + a n`: (next) switches to the next window.
-* `CTRL + a p`: (prev) switches to the previous window.
-* `CTRL + a d`: (detach) detaches from a Screen
-* `CTRL + a A`: (title) rename the current window
-* `CTRL + a 0-9`: switches between windows 0 through 9.
-* `CTRL + a k` or `CTRL + d`: (kill) destroy the current window
-* `CTRL + a ?`: (help) display a list of all the command options available for Screen.
+![](images/slurmgantt.png)
 
 ### Sample Usage on the UL HPC platform: Kernel compilation
 
@@ -412,7 +126,7 @@ We will illustrate the usage of GNU screen by performing a compilation of a rece
 * create a new window and rename it "Compile"
 * within this new window, start a new interactive job over 1 node and 2 cores for 4 hours
 
-		(access)$> srun -p interactive --qos debug --time 4:00:0 -N 1 -c 2 --pty bash
+		(access)$> srun -p interactive --qos debug --time 2:00:0 -N 1 -c 2 --pty bash
 
 * detach from this screen (using `CTRL+a d`)
 * kill your current SSH connection and your terminal
@@ -431,14 +145,14 @@ We will illustrate the usage of GNU screen by performing a compilation of a rece
 * in the "Compile" windows, go to the temporary directory and download the Linux kernel sources
 
 		(node)$> cd /tmp/
-		(node)$> curl -O https://cdn.kernel.org/pub/linux/kernel/v4.x/linux-4.19.50.tar.xz
+		(node)$> curl -O https://cdn.kernel.org/pub/linux/kernel/v4.x/linux-4.19.163.tar.xz
 
-   **IMPORTANT** to ovoid overloading the **shared** file system with the many small files involves in the kernel compilation (_i.e._ NFS and/or Lustre), we will perform the compilation in the **local** file system, _i.e._ either in `/tmp` or (probably more efficient) in `/dev/shm` (_i.e_ in the RAM):
+   **IMPORTANT** to avoid overloading the **shared** file system with the many small files involves in the kernel compilation (_i.e._ NFS and/or Lustre), we will perform the compilation in the **local** file system, _i.e._ either in `/tmp` or (probably more efficient) in `/dev/shm` (_i.e_ in the RAM):
 
 		(node)$> mkdir /dev/shm/PS1
 		(node)$> cd /dev/shm/PS1
-		(node)$> tar xf /tmp/linux-4.19.50.tar.xz
-		(node)$> cd linux-4.19.50
+		(node)$> tar xf /tmp/linux-4.19.163.tar.xz
+		(node)$> cd linux-4.19.163
 		(node)$> make mrproper
 		(node)$> make alldefconfig
 		(node)$> make 2>&1 | tee /dev/shm/PS1/kernel_compile.log
@@ -473,437 +187,11 @@ The table below should convince you to always run `make` with the `-j` option wh
 
 
 * Use the [Ganglia](https://hpc.uni.lu/iris/ganglia/) interface to monitor the impact of the compilation process on the node your job is running on.
-* Use the following system commands on the node during the compilation:
+* Connect to your interactive job using the command `sjoin <jobid>`. Use the following system commands on the node during the compilation:
 
-  * `htop`
-  * `top`
-  * `free -m`
-  * `uptime`
-  * `ps aux`
+    * `htop`
+    * `top`
+    * `free -m`
+    * `uptime`
+    * `ps aux`
 
-## Using a command line text editor
-
-Before the next section, you must learn to use a text editor in command line.
-We can recommend `nano` or `vim`: `nano` is very simple, `vim` is complex but very powerful.
-
-
-### Nano
-
-`$ nano <path/filename>`
-
-* quit and save: `CTRL+x`
-* save: `CTRL+o`
-* highlight text: `Alt-a`
-* Cut the highlighted text: `CTRL+k`
-* Paste: `CTRL+u`
-
-
-### Vim
-
-[`vim <path/filename>`](https://vim.rtorr.com/)
-
-There are 2 main modes:
-
-* Edition mode: press `i` or `insert` once
-* Command mode: press `ESC` once
-
-Here is a short list of useful commands:
-
-* save: `:w`
-* save and quit: `:wq`
-* quit and discard changes: `:q!`
-* search: `/<pattern>`
-* search & replace: `:%s/<pattern>/<replacement>/g`
-* jump to line 100: `:100`
-* highlight text: `CTRL+V`
-* cut the highlighted text: `d`
-* cut one line: `dd`
-* paste: `p`
-* undo: `u`
-
-## Advanced section
-### Using software modules
-
-The UL HPC provides [environment modules](https://hpc.uni.lu/users/docs/modules.html) with the module command
-to manage the user environment, e.g. changing the environment variables.
-
-By loading appropriate environment modules, the user can select:
-
-* compilers,
-* libraries, e.g. the MPI library, or
-* other third party software packages.
-
-An exhaustive list of the available software is proposed [in this page](https://hpc.uni.lu/users/software/).
-
-On a node, using an interactive jobs, you can:
-
-* list all available softwares: `module avail`
-* search for one software: `module spider <search terms>`
-* "load" a software in your environment: `module load <module name>`
-* list the currently loaded modules: `module list`
-* clean your environment, unload everything: `module purge`
-
-
-#### Matlab
-
-1. Create a file named `fibonacci.m` in your home directory, copy-paste the following code in this file.
-   This code will calculate the first N numbers of the Fibonacci sequence
-
-
-        N=1000;
-        fib=zeros(1,N);
-        fib(1)=1;
-        fib(2)=1;
-        k=3;
-        while k <= N
-          fib(k)=fib(k-2)+fib(k-1);
-          fprintf('%d\n',fib(k));
-          pause(1);
-          k=k+1;
-        end
-
-
-2. Create a new interactive job
-
-3. Look for the `matlab` module using the command `module spider`
-
-4. Load the module `base/MATLAB` using the command `module load`
-
-5. Execute the code using matlab
-
-        (node)$> matlab -nojvm -nodisplay -nosplash < path/to/fibonacci.m
-
-
-#### R
-
-1. Create a file named `fibonacci.R` in your home directory, copy-paste the following code in this file.
-   This code will calculate the first N numbers of the Fibonacci sequence
-
-
-        N <- 130
-        fibvals <- numeric(N)
-        fibvals[1] <- 1
-        fibvals[2] <- 1
-        for (i in 3:N) {
-             fibvals[i] <- fibvals[i-1]+fibvals[i-2]
-             print( fibvals[i], digits=22)
-             Sys.sleep(1)
-        }
-
-2. Create a new interactive job
-
-3. Look for the `R` module using the command `module spider`
-
-3. Load the module `lang/R` using the command `module load`
-
-4. Execute the code using R
-
-        (node)$> Rscript path/to/fibonacci.R
-
-
-
-### Compiling your code
-
-In this section, we will learn to compile small "hello world" programs in different languages, using different compilers and toolchains.
-
-#### C
-
-Create a new file called `helloworld.c`, containing the source code of a simple "Hello World" program written in C.
-
-
-        #include<stdio.h>
-
-        int main()
-        {
-            printf("Hello, world!");
-            return 0;
-        }
-
-
-First, compile the program using the "FOSS" toochain, containing the GNU C compiler
-
-        (node)$> module load toolchain/foss
-        (node)$> gcc helloworld.c -o helloworld
-
-Then, compile the program using the Intel toolchain, containing the ICC compiler
-
-        (node)$> module purge
-        (node)$> module load toolchain/intel
-        (node)$> icc helloworld.c -o helloworld
-
-If you use Intel CPUs and ICC is available on the platform, it is advised to use ICC in order to produce optimized binaries and achieve better performance.
-
-
-#### C++
-
-**Question:** create a new file `helloworld.cpp` containing the following C++ source code,
-compile the following program, using GNU C++ compiler (`g++` command), and the Intel compiler (`icpc` command).
-
-
-        #include <iostream>
-
-        int main() {
-            std::cout << "Hello, world!" << std::endl;
-        }
-
-
-
-#### Fortran
-
-**Question:** create a new file `helloworld.f` containing the following source code,
-compile the following program, using the GNU Fortran compiler (`gfortran` command), and ICC (`ifortran` command).
-
-
-        program hello
-           print *, "Hello, World!"
-        end program hello
-
-
-Be careful, the 6 spaces at the beginning of each line are required
-
-
-
-#### MPI
-
-MPI is a programming interface that enables the communication between processes of a distributed memory system.
-
-We will create a simple MPI program where the MPI process of rank 0 broadcasts an integer (42) to all the other processes.
-Then, each process prints its rank, the total number of processes and the value he received from the process 0.
-
-In your home directory, create a file `mpi_broadcast.c` and copy the following source code:
-
-
-        #include <stdio.h>
-        #include <mpi.h>
-        #include <unistd.h>
-        #include <time.h> /* for the work function only */
-
-        int main (int argc, char *argv []) {
-               char hostname[257];
-               int size, rank;
-               int i, pid;
-               int bcast_value = 1;
-
-               gethostname(hostname, sizeof hostname);
-               MPI_Init(&argc, &argv);
-               MPI_Comm_rank(MPI_COMM_WORLD, &rank);
-               MPI_Comm_size(MPI_COMM_WORLD, &size);
-               if (!rank) {
-                    bcast_value = 42;
-               }
-               MPI_Bcast(&bcast_value,1 ,MPI_INT, 0, MPI_COMM_WORLD );
-               printf("%s\t- %d - %d - %d\n", hostname, rank, size, bcast_value);
-               fflush(stdout);
-
-               MPI_Barrier(MPI_COMM_WORLD);
-               MPI_Finalize();
-               return 0;
-        }
-
-Reserve 2 tasks of 1 core on two distinct nodes with Slurm
-
-        (access-iris)$> srun -p interactive --qos debug --time 1:00:0 -N 2 -n 2 -c 1 --pty bash
-
-Load a toolchain and compile the code using `mpicc`
-
-        (node)$> mpicc mpi_broadcast.c -o mpi_broadcast -lpthread
-
-With Slurm, you can use the `srun` command. Create an interactive job, with 2 nodes (`-N 2`), and at least 2 tasks (`-n 2`).
-
-        (node)$> srun -n $SLURM_NTASKS ~/mpi_broadcast
-
-
-## Application - Object recognition with Tensorflow and Python Imageai (an embarassingly parralel case)
-
-### Introduction
-
-For many users, the typical usage of the HPC facilities is to execute a single program with various parameters, 
-which translates into executing sequentially a big number of independent tasks.
-
-On your local machine, you can just start your program 1000 times sequentially.
-However, you will obtain better results if you parallelize the executions on a HPC Cluster.
-
-In this section, we will apply an object recognition script to random images from a dataset, first sequentially, then in parallel, and we will compare the execution time.
-
-* [ULHPC/launcher-scripts](https://github.com/ULHPC/launcher-scripts)
-* [ULHPC/tutorials](https://github.com/ULHPC/tutorials)
-
-
-### Connect to the cluster access node, and set-up the environment for this tutorial
-
-Create a sub directory $SCRATCH/PS2, and work inside it
-
-```bash
-(access)$> mkdir $SCRATCH/PS2
-(access)$> cd $SCRATCH/PS2
-```
-
-At the end of the tutorial, please remember to remove this directory.
-
-### Step 0: Prepare the environment
-
-In the following parts, we will assume that you are working in this directory.
-
-Clone the repositories `ULHPC/tutorials`
-
-    (access)$> git clone https://github.com/ULHPC/tutorials.git
-
-
-In this exercise, we will process some images from the OpenImages V4 data set with an object recognition tools.
-
-Create a file which contains the list of parameters (random list of images):
-
-    (access)$> find /work/projects/bigdata_sets/OpenImages_V4/train/ -print | head -n 10000 | sort -R | head -n 50 | tail -n +2 > $SCRATCH/PS2/param_file
-
-Download a pre-trained model for image recognition
-
-    (access)$> cd $SCRATCH/PS2
-    (access)$> wget https://github.com/OlafenwaMoses/ImageAI/releases/download/1.0/resnet50_coco_best_v2.0.1.h5
-
-We will now prepare the software environment
-
-    (access)$> srun -p interactive -N 1 --qos debug --pty bash -i
-
-Load the default Python module
-
-    (node) module load lang/Python
-
-    (node) module list
-
-Create a new python virtual env
-
-    (node) cd $SCRATCH/PS2
-    (node) virtualenv venv
-
-Enable your newly created virtual env, and install the required modules inside.
-This way, we will not pollute the home directory with the python modules installed in this exercise.
-
-    (node) source venv/bin/activate
-
-    (node) pip install tensorflow scipy opencv-python pillow matplotlib keras
-    (node) pip install https://github.com/OlafenwaMoses/ImageAI/releases/download/2.0.3/imageai-2.0.3-py3-none-any.whl
-
-    (node) exit
-
-
-
-
-### Step 1: Naive sequential workflow
-
-We will create a new "launcher script", which is basically a loop over all the files listed 
-
-        (node)$> nano $SCRATCH/PS2/launcher_sequential.sh
-
-```bash
-#!/bin/bash -l
-
-#SBATCH --time=0-00:30:00 # 30 minutes
-#SBATCH --partition=batch # Use the batch partition reserved for passive jobs
-#SBATCH --qos=normal
-#SBATCH -J BADSerial      # Set the job name
-#SBATCH -N 1              # 1 computing node
-#SBATCH -c 1              # 1 core
-
-module load lang/Python
-
-cd $SCRATCH/PS2
-source venv/bin/activate
-
-OUTPUT_DIR=$SCRATCH/PS2/object_recognition_$SLURM_JOBID
-mkdir -p $OUTPUT_DIR
-
-for SRC_FILE in $(cat $SCRATCH/PS2/param_file) ; do
-    python $SCRATCH/PS2/tutorials/beginners/scripts/FirstDetection.py $SRC_FILE $OUTPUT_DIR
-done
-```
-
-
-Submit the job in passive mode with `sbatch`
-
-    (access)$> sbatch $SCRATCH/PS2/launcher_sequential.sh
-
-
-You can use the command `scontrol show job <JOBID>` to read all the details about your job:
-
-    (access)$> scontrol show job 207001
-    JobId=207001 JobName=BADSerial
-       UserId=hcartiaux(5079) GroupId=clusterusers(666) MCS_label=N/A
-       Priority=8791 Nice=0 Account=ulhpc QOS=normal
-       JobState=RUNNING Reason=None Dependency=(null)
-       Requeue=0 Restarts=0 BatchFlag=1 Reboot=0 ExitCode=0:0
-       RunTime=00:00:23 TimeLimit=01:00:00 TimeMin=N/A
-       SubmitTime=2018-11-23T10:01:04 EligibleTime=2018-11-23T10:01:04
-       StartTime=2018-11-23T10:01:05 EndTime=2018-11-23T11:01:05 Deadline=N/A
-
-
-And the command `sacct` to see the start and end date
-
-
-    (access)$> sacct --format=start,end --j 207004
-                  Start                 End
-    ------------------- -------------------
-    2018-11-23T10:01:20 2018-11-23T10:02:31
-    2018-11-23T10:01:20 2018-11-23T10:02:31
-
-In all cases, you can connect to a reserved node using the command `srun`
-and check the status of the system using standard linux command (`free`, `top`, `htop`, etc)
-
-    (access)$> srun -p interactive --qos debug --jobid <JOBID> --pty bash
-
-During the execution, you can see the job in the queue with the command `squeue`:
-
-    (access)$> squeue
-             JOBID PARTITION     NAME             USER ST       TIME  NODES NODELIST(REASON)
-            207001     batch BADSeria        hcartiaux  R       2:27      1 iris-110
-
-
-Using the [system monitoring tool ganglia](https://hpc.uni.lu/iris/ganglia/), check the activity on your node.
-
-
-### Step 2: Optimal method using GNU parallel (GNU Parallel)
-
-We will create a new "launcher script", which uses GNU Parallel to execute 10 processes in parallel
-
-        (node)$> nano $SCRATCH/PS2/launcher_parallel.sh
-
-```bash
-#!/bin/bash -l
-#SBATCH --time=0-00:30:00 # 30 minutes
-#SBATCH --partition=batch # Use the batch partition reserved for passive jobs
-#SBATCH --qos=normal
-#SBATCH -J ParallelExec   # Set the job name
-#SBATCH -N 2              # 2 computing nodes
-#SBATCH -n 10             # 10 tasks
-#SBATCH -c 1              # 1 core per task
-
-set -x
-module load lang/Python
-
-cd $SCRATCH/PS2
-source venv/bin/activate
-
-OUTPUT_DIR=$SCRATCH/PS2/object_recognition_$SLURM_JOBID
-mkdir -p $OUTPUT_DIR
-
-srun="srun --exclusive -N1 -n1"
-
-parallel="parallel -j $SLURM_NTASKS --joblog runtask_$SLURM_JOBID.log --resume"
-
-cat $SCRATCH/PS2/param_file | $parallel "$srun python $SCRATCH/PS2/tutorials/beginners/scripts/FirstDetection.py {} $OUTPUT_DIR"
-```
-
-Submit the job in passive mode with `sbatch`
-
-    (access)$> sbatch $SCRATCH/PS2/launcher_parallel.sh
-
-
-**Question**: compare and explain the execution time with both launchers:
-
-
-* Naive workflow: time = ?
-  ![CPU usage for the sequential workflow](https://github.com/ULHPC/tutorials/raw/devel/basic/sequential_jobs/images/chaos_ganglia_seq.png)
-
-* Parallel workflow: time = ?
-  ![CPU usage for the parallel workflow](https://github.com/ULHPC/tutorials/raw/devel/basic/sequential_jobs/images/chaos_ganglia_parallel.png)
-
-**Bonus question**: transfer the generated files in `$SCRATCH/PS2/object_recognition_$SLURM_JOBID` to your laptop and visualize them
