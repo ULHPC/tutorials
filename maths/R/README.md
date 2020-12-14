@@ -6,26 +6,26 @@ ULHPC](https://img.shields.io/badge/by-ULHPC-blue.svg)](https://hpc.uni.lu)
 [![Licence](https://img.shields.io/badge/license-GPL--3.0-blue.svg)](http://www.gnu.org/licenses/gpl-3.0.html)
 [![GitHub
 issues](https://img.shields.io/github/issues/ULHPC/tutorials.svg)](https://github.com/ULHPC/tutorials/issues/)
-[![](https://img.shields.io/badge/slides-PDF-red.svg)](https://github.com/ULHPC/tutorials/raw/devel/maths/R/PS11-introduction_to_R.pdf)
+[![](https://img.shields.io/badge/slides-PDF-red.svg)](https://github.com/ULHPC/tutorials/raw/devel/maths/R/PS10_targets.pdf)
 [![Github](https://img.shields.io/badge/sources-github-green.svg)](https://github.com/ULHPC/tutorials/tree/devel/maths/R/)
 [![Documentation
 Status](http://readthedocs.org/projects/ulhpc-tutorials/badge/?version=latest)](http://ulhpc-tutorials.readthedocs.io/en/latest/maths/R/)
 [![GitHub
 forks](https://img.shields.io/github/stars/ULHPC/tutorials.svg?style=social&label=Star)](https://github.com/ULHPC/tutorials)
 
------
+------------------------------------------------------------------------
 
 # R Tutorial
 
-``` 
-  Copyright (c) 2013-2020 Aurélien Ginolhac, UL HPC Team  <hpc-sysadmins@uni.lu>
-```
+      Copyright (c) 2013-2020 Aurelien Ginolhac, UL HPC Team  <hpc-sysadmins@uni.lu>
 
-[![](https://github.com/ULHPC/tutorials/raw/devel/maths/R/img/cover_slides.png)](https://github.com/ULHPC/tutorials/raw/devel/maths/R/PS10_targets.pdf)
+[![](https://github.com/ULHPC/tutorials/raw/devel/maths/R/img/cover_slides.png)](https://github.com/ULHPC/tutorials/raw/devel/maths/R/PS10_targets.html)
 
 <div class="shareagain" style="min-width:300px;margin:1em auto;">
-  <iframe src="PS10_targets.html" width="960" height="540" style="border:2px solid currentColor;" loading="lazy" allowfullscreen></iframe>
-  <script>fitvids('.shareagain', {players: 'iframe'});</script>
+
+<iframe src="PS10_targets.html" width="768" height="432" style="border:2px solid currentColor;" loading="lazy" allowfullscreen></iframe>
+<script>fitvids('.shareagain', {players: 'iframe'});</script>
+
 </div>
 
 Through this tutorial you will learn how to use R from your local
@@ -35,10 +35,9 @@ will illustrate how R can benefit from multicore and cluster
 parallelization.
 
 Warning: this tutorial does not focus on the learning of R language but
-aims at showing you nice start-up tips.  
-If you are also looking for a good tutorial on R’s data structures you
-can take a look at: [Hadley Wickham’s
-page](http://adv-r.had.co.nz/Data-structures.html). Another
+aims at showing you nice start-up tips. If you’re also looking for a
+good tutorial on R’s data structures you can take a look at: [Hadley
+Wickham’s page](http://adv-r.had.co.nz/Data-structures.html). Another
 [bookdown](https://bookdown.org/)’s book is available for free: [R for
 Data Science](http://r4ds.had.co.nz/index.html) by Garrett Grolemund &
 Hadley Wickham
@@ -90,19 +89,20 @@ Hadley Wickham
 
 <a name="prereq"></a>
 
------
+------------------------------------------------------------------------
 
 ## Pre-requisites
 
 Ensure you are able to [connect to the UL HPC
 clusters](https://hpc.uni.lu/users/docs/access.html)
 
-**you MUST work on a computing
-node**
+**you MUST work on a computing node**
 
 ``` bash
 # /!\ FOR ALL YOUR COMPILING BUSINESS, ENSURE YOU WORK ON A COMPUTING NODE
 (access-iris)$> si -n 2 -t 2:00:00        # 2h interactive reservation
+# OR (long version)
+(access-iris)$> srun -p interactive -n 2 -t 2:00:00 --pty bash
 ```
 
 ### Optional: On your local machine
@@ -130,7 +130,7 @@ This will install the core packages of the `tidyverse`, including
 `ggplot2` and `dplyr`.
 
 Note: on the first run, R might ask you various questions during the
-installation. _e.g._ selecting a CRAN mirror to use for downloading
+installation. e.g. selecting a CRAN mirror to use for downloading
 packages. Select a mirror close to your location. For other questions,
 using default values is ok.
 
@@ -154,7 +154,7 @@ tutorial](https://rworkshop.uni.lu/practicals/practical01_datasauRus.html)
 
 ## Comparing methods for aggregating data – diamonds
 
-Lets say we are working with the full `diamonds` dataset (supplied by
+Let’s say we are working with the full `diamonds` dataset (suppplied by
 the `ggplot2` package) and we want to compute the **average** price for
 a given diamond **cut**.
 
@@ -168,7 +168,7 @@ dim(diamonds)
 
 before computing the average price per **cut**, we should explore the
 dataset. We won’t use the ggplot’s function `geom_point()` as there are
-too many dots. However, binning the data is fast and still provide an
+too many dots. However, bining the data is fast and still provide an
 idea of where the majority of dots are with a chosen lost of precision
 (number of **bins**, set to 30 by default).
 
@@ -178,7 +178,7 @@ linear in the log-space. All those computation can be done by `ggplot2`
 Of note: you may need to install the package `hexbin`
 
 ``` r
-ggplot(diamonds) + 
+ggplot(diamonds) +
   # bin data into 30 sets
   geom_hex(aes(x = carat, y = price), bins = 30) +
   # split per cut
@@ -217,7 +217,7 @@ the `dplyr` package part of the [tidyverse](http://tidyverse.org) idiom
 
 #### `dplyr` from the tidyverse
 
-First of all, we chain the commands using the **pipe** *%\>%*. That
+First of all, we chain the commands using the **pipe** *%&gt;%*. That
 avoids many parenthesis and keep the natural reading from left to right.
 
 The first parameter will be the dataset, the second will be the column
@@ -231,6 +231,8 @@ diamonds %>%
   group_by(cut) %>%
   summarise(avg_price = mean(price))
 ```
+
+    ## `summarise()` ungrouping output (override with `.groups` argument)
 
     ## # A tibble: 5 x 2
     ##   cut       avg_price
@@ -265,8 +267,7 @@ aggregate(price ~ cut,
 ### `lapply` from base
 
 In the previous example we used `aggregate` for the **aggregation**, we
-could also have used `lapply` (but in a more complex
-way):
+could also have used `lapply` (but in a more complex way):
 
 ``` r
 as.data.frame(cbind(cut = as.character(unique(diamonds$cut)), avg_price = lapply(unique(diamonds$cut), function(x) mean(diamonds$price[which(diamonds$cut == x)]))))
@@ -294,7 +295,7 @@ for a comparison of both tools.
 # install.package("data.table")
 suppressPackageStartupMessages(library(data.table))
 DT <- data.table(diamonds)
-DT[, mean(price), by = cut] 
+DT[, mean(price), by = cut]
 ```
 
     ##          cut       V1
@@ -327,21 +328,112 @@ m <- bench::mark(LAPPLY    = as.data.frame(cbind(cut = as.character(unique(diamo
                  DPLYR     = group_by(diamonds, cut) %>% summarise(price = mean(price)),
                  DATATABLE = DT[, list(price = mean(price)), by = cut],
                  iterations = 100, check = FALSE)
-m
 ```
 
-    ## # A tibble: 4 x 6
-    ##   expression      min   median `itr/sec` mem_alloc `gc/sec`
-    ##   <bch:expr> <bch:tm> <bch:tm>     <dbl> <bch:byt>    <dbl>
-    ## 1 LAPPLY       9.65ms  11.03ms      78.8    8.04MB    23.6 
-    ## 2 AGGREGATE   39.42ms  47.82ms      21.2   11.85MB    16.0 
-    ## 3 DPLYR        2.01ms   2.26ms     365.   211.22KB     3.68
-    ## 4 DATATABLE    3.26ms   3.87ms     227.     1.24MB     9.46
+    ## `summarise()` ungrouping output (override with `.groups` argument)
+    ## `summarise()` ungrouping output (override with `.groups` argument)
+    ## `summarise()` ungrouping output (override with `.groups` argument)
+    ## `summarise()` ungrouping output (override with `.groups` argument)
+    ## `summarise()` ungrouping output (override with `.groups` argument)
+    ## `summarise()` ungrouping output (override with `.groups` argument)
+    ## `summarise()` ungrouping output (override with `.groups` argument)
+    ## `summarise()` ungrouping output (override with `.groups` argument)
+    ## `summarise()` ungrouping output (override with `.groups` argument)
+    ## `summarise()` ungrouping output (override with `.groups` argument)
+    ## `summarise()` ungrouping output (override with `.groups` argument)
+    ## `summarise()` ungrouping output (override with `.groups` argument)
+    ## `summarise()` ungrouping output (override with `.groups` argument)
+    ## `summarise()` ungrouping output (override with `.groups` argument)
+    ## `summarise()` ungrouping output (override with `.groups` argument)
+    ## `summarise()` ungrouping output (override with `.groups` argument)
+    ## `summarise()` ungrouping output (override with `.groups` argument)
+    ## `summarise()` ungrouping output (override with `.groups` argument)
+    ## `summarise()` ungrouping output (override with `.groups` argument)
+    ## `summarise()` ungrouping output (override with `.groups` argument)
+    ## `summarise()` ungrouping output (override with `.groups` argument)
+    ## `summarise()` ungrouping output (override with `.groups` argument)
+    ## `summarise()` ungrouping output (override with `.groups` argument)
+    ## `summarise()` ungrouping output (override with `.groups` argument)
+    ## `summarise()` ungrouping output (override with `.groups` argument)
+    ## `summarise()` ungrouping output (override with `.groups` argument)
+    ## `summarise()` ungrouping output (override with `.groups` argument)
+    ## `summarise()` ungrouping output (override with `.groups` argument)
+    ## `summarise()` ungrouping output (override with `.groups` argument)
+    ## `summarise()` ungrouping output (override with `.groups` argument)
+    ## `summarise()` ungrouping output (override with `.groups` argument)
+    ## `summarise()` ungrouping output (override with `.groups` argument)
+    ## `summarise()` ungrouping output (override with `.groups` argument)
+    ## `summarise()` ungrouping output (override with `.groups` argument)
+    ## `summarise()` ungrouping output (override with `.groups` argument)
+    ## `summarise()` ungrouping output (override with `.groups` argument)
+    ## `summarise()` ungrouping output (override with `.groups` argument)
+    ## `summarise()` ungrouping output (override with `.groups` argument)
+    ## `summarise()` ungrouping output (override with `.groups` argument)
+    ## `summarise()` ungrouping output (override with `.groups` argument)
+    ## `summarise()` ungrouping output (override with `.groups` argument)
+    ## `summarise()` ungrouping output (override with `.groups` argument)
+    ## `summarise()` ungrouping output (override with `.groups` argument)
+    ## `summarise()` ungrouping output (override with `.groups` argument)
+    ## `summarise()` ungrouping output (override with `.groups` argument)
+    ## `summarise()` ungrouping output (override with `.groups` argument)
+    ## `summarise()` ungrouping output (override with `.groups` argument)
+    ## `summarise()` ungrouping output (override with `.groups` argument)
+    ## `summarise()` ungrouping output (override with `.groups` argument)
+    ## `summarise()` ungrouping output (override with `.groups` argument)
+    ## `summarise()` ungrouping output (override with `.groups` argument)
+    ## `summarise()` ungrouping output (override with `.groups` argument)
+    ## `summarise()` ungrouping output (override with `.groups` argument)
+    ## `summarise()` ungrouping output (override with `.groups` argument)
+    ## `summarise()` ungrouping output (override with `.groups` argument)
+    ## `summarise()` ungrouping output (override with `.groups` argument)
+    ## `summarise()` ungrouping output (override with `.groups` argument)
+    ## `summarise()` ungrouping output (override with `.groups` argument)
+    ## `summarise()` ungrouping output (override with `.groups` argument)
+    ## `summarise()` ungrouping output (override with `.groups` argument)
+    ## `summarise()` ungrouping output (override with `.groups` argument)
+    ## `summarise()` ungrouping output (override with `.groups` argument)
+    ## `summarise()` ungrouping output (override with `.groups` argument)
+    ## `summarise()` ungrouping output (override with `.groups` argument)
+    ## `summarise()` ungrouping output (override with `.groups` argument)
+    ## `summarise()` ungrouping output (override with `.groups` argument)
+    ## `summarise()` ungrouping output (override with `.groups` argument)
+    ## `summarise()` ungrouping output (override with `.groups` argument)
+    ## `summarise()` ungrouping output (override with `.groups` argument)
+    ## `summarise()` ungrouping output (override with `.groups` argument)
+    ## `summarise()` ungrouping output (override with `.groups` argument)
+    ## `summarise()` ungrouping output (override with `.groups` argument)
+    ## `summarise()` ungrouping output (override with `.groups` argument)
+    ## `summarise()` ungrouping output (override with `.groups` argument)
+    ## `summarise()` ungrouping output (override with `.groups` argument)
+    ## `summarise()` ungrouping output (override with `.groups` argument)
+    ## `summarise()` ungrouping output (override with `.groups` argument)
+    ## `summarise()` ungrouping output (override with `.groups` argument)
+    ## `summarise()` ungrouping output (override with `.groups` argument)
+    ## `summarise()` ungrouping output (override with `.groups` argument)
+    ## `summarise()` ungrouping output (override with `.groups` argument)
+    ## `summarise()` ungrouping output (override with `.groups` argument)
+    ## `summarise()` ungrouping output (override with `.groups` argument)
+    ## `summarise()` ungrouping output (override with `.groups` argument)
+    ## `summarise()` ungrouping output (override with `.groups` argument)
+    ## `summarise()` ungrouping output (override with `.groups` argument)
+    ## `summarise()` ungrouping output (override with `.groups` argument)
+    ## `summarise()` ungrouping output (override with `.groups` argument)
+    ## `summarise()` ungrouping output (override with `.groups` argument)
+    ## `summarise()` ungrouping output (override with `.groups` argument)
+    ## `summarise()` ungrouping output (override with `.groups` argument)
+    ## `summarise()` ungrouping output (override with `.groups` argument)
+    ## `summarise()` ungrouping output (override with `.groups` argument)
+    ## `summarise()` ungrouping output (override with `.groups` argument)
+    ## `summarise()` ungrouping output (override with `.groups` argument)
+    ## `summarise()` ungrouping output (override with `.groups` argument)
+    ## `summarise()` ungrouping output (override with `.groups` argument)
+    ## `summarise()` ungrouping output (override with `.groups` argument)
+    ## `summarise()` ungrouping output (override with `.groups` argument)
+    ## `summarise()` ungrouping output (override with `.groups` argument)
+    ## `summarise()` ungrouping output (override with `.groups` argument)
 
-  - makes comparison easier to read using **relative** values. `1` for
+-   makes comparison easier to read using **relative** values. `1` for
     the fastest.
-
-<!-- end list -->
 
 ``` r
 summary(m, relative = TRUE)
@@ -350,12 +442,12 @@ summary(m, relative = TRUE)
     ## # A tibble: 4 x 6
     ##   expression   min median `itr/sec` mem_alloc `gc/sec`
     ##   <bch:expr> <dbl>  <dbl>     <dbl>     <dbl>    <dbl>
-    ## 1 LAPPLY      4.79   4.88      3.71     39.0      6.39
-    ## 2 AGGREGATE  19.6   21.2       1        57.5      4.35
-    ## 3 DPLYR       1      1        17.2       1        1   
-    ## 4 DATATABLE   1.62   1.71     10.7       6.02     2.57
+    ## 1 LAPPLY      5.45   4.94      4.42      6.06     2.63
+    ## 2 AGGREGATE  25.4   22.3       1         9.24     1.31
+    ## 3 DPLYR       3.31   3.03      7.16      1        1   
+    ## 4 DATATABLE   1      1        22.1       1.25     1.87
 
-  - plotting the benchmark
+-   plotting the benchmark
 
 You can use `ggplot2` via the `autoplot()` function
 
@@ -365,33 +457,14 @@ autoplot(m)
 
 ![](README_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
 
-  - plot the memory allocation
-
-<!-- end list -->
-
-``` r
-m %>%
-  unnest() %>%
-  filter(gc == "none") %>%
-  mutate(expression = as.character(expression)) %>%
-  ggplot(aes(x = mem_alloc, y = time, color = expression)) +
-  geom_point() +
-  theme_minimal(14)
-```
-
-![](README_files/figure-gfm/unnamed-chunk-11-1.png)<!-- -->
-
 <a name="hpc"></a>
 
 ## Parallel computing using HPC
 
 R is already available on `iris` clusters as a module. The current
-production version `3.4.4`, but you can get the uptodate `3.6.0` by
-fetching the **development** version of the module lists Valentin
-Plugaru prepared. They will soon by be released as the default
-production environment. The first step is the reservation of a resource.
-Connect to your favorite cluster frontend (here: `iris`). We assume you
-have already configured your `.ssh/config`.
+production version `3.6.0`. The first step is the reservation of a
+resource. Connect to your favorite cluster frontend (here: `iris`). We
+assume you have already configured your `.ssh/config`.
 
 #### iris
 
@@ -399,48 +472,24 @@ have already configured your `.ssh/config`.
 
 Once connected to the user frontend, book **4** cores for half an hour
 
-    [jdoe@access2 ~]$ srun -p interactive  --time=0:30:0 -c 4 --pty bash
+    [jdoe@access2 ~]$ run -p interactive --qos debug -C batch --time=0:30:0 -c 4 --pty bash
 
 When the job is running and you are connected load *R* module (so
-version `3.4.4`).
+version `3.6.0`).
 
     [jdoe@access2 ~]$ module load lang/R
 
 Now you should be able to invoke R and see something like this:
 
     [jdoe@iris-081 ~]$  R
-    
-    R version 3.4.4 (2018-03-15) -- "Someone to Lean On"
-    Copyright (C) 2018 The R Foundation for Statistical Computing
+
+    R version 3.6.0 (2019-04-26) -- "Planting of a Tree"
+    Copyright (C) 2019 The R Foundation for Statistical Computing
     Platform: x86_64-pc-linux-gnu (64-bit)
+
     [...]
     Type 'q()' to quit R.
     >
-
-`sessionInfo()` function gives information about R version, loaded
-libraries etc.
-
-    > sessionInfo()
-    R version 3.4.4 (2018-03-15)
-    Platform: x86_64-pc-linux-gnu (64-bit)
-    Running under: CentOS Linux 7 (Core)
-    
-    Matrix products: default
-    BLAS/LAPACK: /mnt/irisgpfs/apps/resif/data/devel/default/software/numlib/OpenBLAS/0.2.20-GCC-6.4.0-2.28/lib/libopenblas_haswellp-r0.2.20.so
-    
-    locale:
-     [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              
-     [3] LC_TIME=en_US.UTF-8        LC_COLLATE=en_US.UTF-8    
-     [5] LC_MONETARY=en_US.UTF-8    LC_MESSAGES=en_US.UTF-8   
-     [7] LC_PAPER=en_US.UTF-8       LC_NAME=C                 
-     [9] LC_ADDRESS=C               LC_TELEPHONE=C            
-    [11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       
-    
-    attached base packages:
-    [1] stats     graphics  grDevices utils     datasets  methods   base     
-    
-    loaded via a namespace (and not attached):
-    [1] compiler_3.4.4
 
 <a name="hpc_pkg"></a>
 
@@ -459,14 +508,12 @@ for the last section, you need to install the following packages,
 On `iris`, in an interactive session, load the module to get R version
 3.6.0, still **not** in *production*
 
-    module load swenv/default-env/devel
-    module load lang/R/3.6.0-foss-2019a-bare
+    module load lang/R/3.6.0-intel-2019a-bare
 
 you will a warning because it hasn’t been fully tested yet.
 
 After entering R using the `R` command, install both packages. Don’t
-forget to use multi-threading for the
-compilations.
+forget to use multi-threading for the compilations.
 
 ``` r
 install.packages(c("future", "furrr", "purrr", "dplyr", "dbscan", "tictoc", "Rtsne"), repos = "https://cran.rstudio.com", Ncpus = 4)
@@ -485,9 +532,7 @@ programming idiom of the tidyverse.
 
 Run a dumb loop on 3 times **2** that wait for those values
 
-  - first sequentially
-
-<!-- end list -->
+-   first sequentially
 
 ``` r
 library(furrr)
@@ -502,28 +547,31 @@ nothingness <- future_map(c(2, 2, 2), ~Sys.sleep(.x), .progress = TRUE)
 tictoc::toc()
 ```
 
-    ## 6.044 sec elapsed
+    ## 6.051 sec elapsed
 
-  - second in parallel
-
-<!-- end list -->
+-   second in parallel
 
 ``` r
 plan(multiprocess)
-tictoc::tic()
-nothingness <- future_map(c(2, 2, 2), ~Sys.sleep(.x), .progress = TRUE)
 ```
 
-    ## 
-     Progress:                                                                                                                     100%
-     Progress:                                                                                                                     100%
-     Progress: ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────── 100%
+    ## Warning: Strategy 'multiprocess' is deprecated in future (>= 1.20.0). Instead,
+    ## explicitly specify either 'multisession' or 'multicore'. In the current R
+    ## session, 'multiprocess' equals 'multisession'.
+
+    ## Warning in supportsMulticoreAndRStudio(...): [ONE-TIME WARNING] Forked
+    ## processing ('multicore') is not supported when running R from RStudio
+    ## because it is considered unstable. For more details, how to control forked
+    ## processing or not, and how to silence this warning in future R sessions, see ?
+    ## parallelly::supportsMulticore
 
 ``` r
+tictoc::tic()
+nothingness <- future_map(c(2, 2, 2), ~Sys.sleep(.x), .progress = TRUE)
 tictoc::toc()
 ```
 
-    ## 2.334 sec elapsed
+    ## 2.456 sec elapsed
 
 fetch env variables in R
 
@@ -553,8 +601,8 @@ library(Rtsne)
 availableCores()
 # load data
 tSNEdata <- readRDS("/scratch/users/aginolhac/renv/tSNEdata.rds")
-# create a partial function with filled arguments 
-short_tsne <- purrr::partial(Rtsne, X = tSNEdata, pca_center = TRUE, 
+# create a partial function with filled arguments
+short_tsne <- purrr::partial(Rtsne, X = tSNEdata, pca_center = TRUE,
                             theta = 0.5, pca_scale = TRUE, verbose = TRUE, max_iter = 300)
 
 plan(multiprocess)
@@ -568,7 +616,7 @@ tictoc::toc()
 
 tictoc::tic("finding clusters")
 res_tib <- mutate(tsne_future,
-                  # unlist and extract the 2D matrix 
+                  # unlist and extract the 2D matrix
                   Y = map(model, pluck, "result", "Y"),
                   # convert to a dataframe
                   Y_df = map(Y, as.data.frame),
@@ -606,7 +654,7 @@ echo "== Submit dir. : ${SLURM_SUBMIT_DIR}"
 
 # use version 3.6.0 and load the GNU toolchain
 module load swenv/default-env/devel
-module load lang/R/3.6.0-foss-2019a-bare
+module load lang/R/3.6.0-intel-2019a-bare
 
 # prevent sub-spawn, 28 cores -> 28 processes
 export OMP_NUM_THREADS=1
@@ -654,21 +702,21 @@ file:
 
 ##### trying the sequential version
 
-  - remove the `future` calls
+-   remove the `future` calls
 
 `sed 's/future_map/map/' tsne.R > tsne_nofuture.R`
 
-  - adapt launcher script
+-   adapt launcher script
 
 `sed 's/tsne.R/tsne_nofuture.R/' launcher.sh > launcher_nofuture.sh`
 
-  - submit the job
+-   submit the job
 
 `sbatch launcher_nofuture.sh`
 
-  - new timing, same `job_tsne_hpc.out` file:
+-   new timing, same `job_tsne_hpc.out` file:
 
-<!-- end list -->
+<!-- -->
 
     tsne: 214.913 sec elapsed
     finding clusters: 28.043 sec elapsed
@@ -692,7 +740,7 @@ visualise how the t-SNE evolves with increasing perplexities
 If of interest, the code it as follows (install required for
 `gganimate`, `gifski`):
 
-Beware, the animating takes ~ 4 minutes to complete.
+Beware, the animating takes \~ 4 minutes to complete.
 
 ``` r
 library(gganimate)
@@ -701,7 +749,7 @@ res <- read_rds("tsne_future.rds")
 
 res %>%
   rename(cdbl = c) %>%
-  filter(perplexities %in% seq(10, 110, 20)) %>% 
+  filter(perplexities %in% seq(10, 110, 20)) %>%
   unnest(tsne) %>%
   select(-output) %>%
   group_by(perplexities) %>%
@@ -739,15 +787,14 @@ In real life though, most dataset come as text files with some
 delimiters. Now we can load the equivalent of the t-SNE data as a `.csv`
 file and benchmarks the main tools for this step.
 
-  - `read.csv()` is the base function. Turns out to be slow for large
+-   `read.csv()` is the base function. Turns out to be slow for large
     files.
-  - [`fread()`](https://www.rdocumentation.org/packages/data.table/versions/1.12.2/topics/fread)
-    is the fantastic and fast import function from
-    `data.table`
-  - [`read_csv()`](https://readr.tidyverse.org/reference/read_delim.html)
+-   [`fread()`](https://www.rdocumentation.org/packages/data.table/versions/1.12.2/topics/fread)
+    is the fantastic and fast import function from `data.table`
+-   [`read_csv()`](https://readr.tidyverse.org/reference/read_delim.html)
     is the tidyverse way of reading a csv. Fast than base, slower than
     `data.table`.
-  - \[`vroom()`\] is the recent
+-   \[`vroom()`\] is the recent
     [package](http://vroom.r-lib.org/articles/vroom.html) that could be
     the next standard for reading files in the tidyverse dialect. Check
     the [benchmarks](http://vroom.r-lib.org/articles/benchmarks.html)
@@ -762,10 +809,7 @@ doubles.
 
 In your session on `iris`, in the R console,
 
-  - first install required
-packages
-
-<!-- end list -->
+-   first install required packages
 
 ``` r
 install.packages(c("vroom", "ggplot2", "cowplot", "data.table", "readr", "bench", "ggbeeswarm"), Ncpus = 4)
@@ -831,11 +875,9 @@ ggsave("csv_benchmarks.pdf", p, width = 8)
 
 ![](img/csv_benchmarks.png)
 
-By default the `ALTREP` framework for `vroom` is used. `vroom` is multi-threaded and will use the 4 cores we
-have (on `iris` we need to set it up manually) and performed similarly
-as `data.table` which was designed to be efficient for **numeric** data.
-For **characters**, `vroom`
-is faster even after materialization, see the
+`vroom` is multi-threaded and will use the 4 cores and performed
+similarly as `data.table` which was designed to be efficient for
+**numeric** data, see the
 [benchmarks](http://vroom.r-lib.org/articles/benchmarks.html) done by
 the author [Jim Hester](https://github.com/jimhester) (also maintainer
 of `readr`).
@@ -846,6 +888,8 @@ this package is still under development but is the promising replacement
 for `packrat`. Here is some instructions extracted from the [overview
 vignette](https://rstudio.github.io/renv/articles/renv.html)
 
+-   installation
+
 ``` r
 install.packages("renv")
 ```
@@ -854,9 +898,9 @@ install.packages("renv")
 
 ## Useful links
 
-  - [CRAN Archive](https://cran.r-project.org/)
-  - [CRAN HPC
+-   [CRAN Archive](https://cran.r-project.org/)
+-   [CRAN HPC
     Packages](https://cran.r-project.org/web/views/HighPerformanceComputing.html)
-  - [tidyverse Documentation](https://tidyverse.org/)
-  - [4-days tidyverse workshop.uni.lu](https://rworkshop.uni.lu/)
-  - [Advanced R programming by Hadley Wickham](http://adv-r.had.co.nz/)
+-   [tidyverse Documentation](https://tidyverse.org/)
+-   [4-days tidyverse workshop.uni.lu](https://rworkshop.uni.lu/)
+-   [Advanced R programming by Hadley Wickham](http://adv-r.had.co.nz/)

@@ -10,6 +10,9 @@ tar_option_set(packages = c("tidyverse", "fst"))
 # when done, remove with tar_destroy(destroy = "workspace")
 #tar_option_set(error = "workspace")
 
+#library(future)
+#plan(multicore)
+
 # Define the pipeline
 tar_pipeline(
   tar_url(gp_url, "https://raw.githubusercontent.com/jennybc/gapminder/master/inst/extdata/gapminder.tsv"),
