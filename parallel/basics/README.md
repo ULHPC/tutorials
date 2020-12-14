@@ -22,16 +22,32 @@ For all the executions we are going to perform in this tutorial, you probably wa
 * Connect to the allocated node:
 
 ```bash
+### Access to ULHPC cluster (if not yet done)
+(laptop)$> ssh iris-cluster
+### Have an interactive job to launch 4 OpenMP threads (for 30 minutes)
+# ... either directly
+(access)$> si --ntasks-per-node=1 -c 4 -t 0:30:00
+# ... or using the HPC School reservation 'hpcschool'if needed  - use 'sinfo -T' to check if active and its name
+# (access)$> srun --reservation=hpcschool --ntasks-per-node=1 -c 4 -t 0:30:00 --pty bash
+(node)$>
+```
+<!--
 ############### iris cluster (slurm)
 (access-iris)$> sq     # Check the allocated node
 (access-iris)$> ssh iris-XXX       # ADAPT accordingly
-```
-<!--
+
 ############## gaia/chaos clusters (OAR)
 (access-{gaia|chaos})$> oarstat -u     # Collect the job ID
 (access-{gaia|chaos})$> oarsub -C <jobid>
 -->
 
+* For passive job:
+
+```bash
+# Note: you may want/need to run it under the dedicated reservation set for the training event
+# using sbatch --reservation=[...]
+(access)$> sbatch ./launcher.OpenMP.sh 
+```
 
 * **For this new terminal/window**
     - run `htop`
