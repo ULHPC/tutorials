@@ -1,0 +1,291 @@
+/* less space from slide title to top */
+.remark-slide-content > h1:first-of-type {
+  margin-top: 5px;
+}
+
+/* less space below slide title */
+.nvs1 > h1:first-of-type {
+  margin-bottom: -5px;
+  margin-top: -10px;
+}
+.nvs2 > h1:first-of-type {
+  margin-bottom: -15px;
+  margin-top: -10px;
+}
+.nvs3 > h1:first-of-type {
+  margin-bottom: -25px;
+  margin-top: -10px;
+}
+
+.slide-practical {
+    background-color: #e4f0ff;
+}
+
+.slide-compact {
+  line-height: 0.85rem;
+}
+/* https://github.com/yihui/xaringan/issues/242 */
+.remark-code {
+  display: block;
+  overflow-x: auto;
+  padding: .5em;
+  color: #333;
+  background: #f8f8f8;
+}
+
+
+
+/* from https://stackoverflow.com/a/49018455/1395352 */
+.title-slide {
+  background-repeat: no-repeat; /* Do not repeat the image */
+  background-size: cover;
+  background-color: white;
+}
+.title-slide h1 {
+  margin-top: 100px;
+  text-align: center;
+  color: #515151;
+  font-weight: bold;
+  text-decoration: underline;
+  font-size: 4em;
+}
+
+.title-slide h2 {
+  text-align: center;
+  color: #515151;
+}
+.title-slide h3 {
+  text-align: center;
+  font-size: 1.5em;
+  color: #A9A9A9;
+}
+
+.title-slide .remark-slide-number {
+  display: none;
+}
+
+.bottom-footnote {
+  position: absolute;
+  bottom: 1em;
+  padding-right: 4em;
+  font-size: 90%;
+}
+
+/* https://github.com/yihui/xaringan/wiki/Progressbar
+.remark-slide-number {
+  position: inherit;
+}
+.remark-slide-number .progress-bar-container {
+  position: absolute;
+  bottom: 0;
+  height: 4px;
+  display: block;
+  left: 0;
+  right: 0;
+}
+.remark-slide-number .progress-bar {
+  height: 100%;
+  background-color: blue;
+}*/
+
+
+/* links are blue and not different from code: add underline
+and some effect */
+
+/* https://css-tricks.com/having-fun-with-link-hover-effects/ */
+:root {
+  --mainColor: #ff9800;
+}
+a {
+  background:
+     linear-gradient(
+       to bottom, var(--mainColor) 0%,
+       var(--mainColor) 100%
+     );
+background-position: 0 100%;
+background-repeat: repeat-x;
+background-size: 2px 2px;
+  text-decoration: none;
+  transition: background-size .2s;
+}
+
+a:hover {
+  background-size: 4px 50px;
+}
+
+.gbox {
+    background: #2fc974;
+    color: #fff;
+    display: block;
+    padding: 10px 10px;
+    text-align: center;
+    font-weight: bold;
+    text-decoration: none;
+    border-radius: 8px;
+}
+/* white box */
+.wbox {
+    background: white;
+    color: #fff;
+    display: block;
+    padding: 10px 10px;
+    text-align: center;
+    font-weight: bold;
+    text-decoration: none;
+    border-radius: 8px;
+}
+/* blue box */
+.bbox {
+    background: #00A4E1;
+    color: #fff;
+    display: block;
+    padding: 10px 10px;
+    text-align: center;
+    font-weight: bold;
+    text-decoration: none;
+    border-radius: 8px;
+}
+/* red box */
+.rbox {
+    background: #ff4a59;
+    color: #fff;
+    display: block;
+    padding: 10px 10px;
+    text-align: center;
+    font-weight: bold;
+    text-decoration: none;
+    border-radius: 8px;
+}
+.ybox {
+    background: #fed000;
+    color: #fff;
+    display: block;
+    padding: 10px 10px;
+    text-align: center;
+    font-weight: bold;
+    text-decoration: none;
+    border-radius: 8px;
+}
+/* from https://www.garrickadenbuie.com/blog/better-progressive-xaringan/ */
+.highlight-last-item > ul > li,
+.highlight-last-item > ol > li {
+  opacity: 0.5;
+}
+.highlight-last-item > ul > li:last-of-type,
+.highlight-last-item > ol > li:last-of-type {
+  opacity: 1;
+}
+
+/* lists more compact */
+li {
+  margin-bottom: 0;
+}
+
+
+.vembedr {
+  border-radius: 25px; /* adjust it to your needs */
+  overflow: hidden;
+}
+
+.vembedr iframe {
+  display: block;
+  width: 100%;
+  height: 450px;
+  align: center;
+  border: none;
+}
+
+/* Max Kuhn https://community.rstudio.com/t/adding-images-to-headers-of-specific-slides/48293 */
+.float-img{
+  height: 60px;
+  align: middle;
+  float: right;
+}
+
+/* see https://github.com/topepo/rstudio-conf-2019/blob/master/Materials/fonts_mtheme.css */
+
+
+/* from https://github.com/yihui/xaringan/blob/master/inst/rmarkdown/templates/xaringan/resources/hygge.css */
+.huge { font-size: 224% }
+.Large { font-size: 144% }
+.large { font-size: 120% }
+.small { font-size: 90% }
+.tiny { font-size: 60% }
+
+.black { color: black; }
+.red { color: red; }
+.blue { color: blue; }
+.green { color: green; }
+.yellow { color: yellow; }
+.orange { color: orange; }
+.purple { color: purple; }
+.gray { color: gray; }
+.grey { color: gray; }
+
+.bold { font-weight: bold; }
+.bolder { font-weight: bolder; }
+
+.content-box {
+    box-sizing: content-box;
+    	background-color: #e2e2e2;
+  /* Total width: 160px + (2 * 20px) + (2 * 8px) = 216px
+     Total height: 80px + (2 * 20px) + (2 * 8px) = 136px
+     Content box width: 160px
+     Content box height: 80px */
+}
+
+
+.content-box-blue,
+.content-box-gray,
+.content-box-grey,
+.content-box-army,
+.content-box-green,
+.content-box-purple,
+.content-box-red,
+.content-box-yellow {
+    border-radius: 15px;
+    margin: 0 0 25px;
+    overflow: hidden;
+    padding: 20px;
+    width: 100%;
+}
+
+.content-box-blue {
+    background-color: #F0F8FF;
+}
+
+/*pull right put higher */
+.pull-right-nvs {
+  float: right;
+  width: 47%;
+  margin-top: -120px;
+}
+
+/* Gaben Buie https://www.garrickadenbuie.com/blog/decouple-code-and-output-in-xaringan-slides/ */
+.left-code {
+  color: #777;
+  width: 38%;
+  height: 92%;
+  float: left;
+}
+.right-plot {
+  width: 60%;
+  float: right;
+  padding-left: 1%;
+}
+
+/* for small plot bottom corner */
+.plot-callout {
+  height: 150px;
+  width: 350px;
+  bottom: 15%;
+  right: 33%;
+  position: absolute;
+  padding: 0px;
+  z-index: 100;
+}
+.plot-callout img {
+  width: 100%;
+  border-radius: 10px;
+  border: 2px solid #23373B;
+}

@@ -6,19 +6,29 @@ pages:
   - Overview:       'setup/index.md'
   - Pre-Requisites: 'setup/preliminaries.md'
   - Installation:   'setup/install.md'
-- Basic Tutorials:
-  - Getting Started: 'beginners/index.md'
-  - Monitoring & Profiling: 'basic/monitoring/index.md'
-  - HPC workflow with sequential jobs: 'basic/sequential_jobs/index.md'
-  - Prototyping with Python: 'python/basics/index.md'
-- Scheduling:
-  - Job scheduling with SLURM: 'scheduling/advanced/index.md'
+- Preliminaries: 'preliminaries/index.md'
+- Command line utilities: 'tools/cli/index.md'
+- Getting started:
+  - Overview: 'beginners/index.md'
+  - Job scheduling with SLURM: 'basic/scheduling/index.md'
+  - Using software modules: 'tools/cli/modules.md'
 - Tools / Software management:
   - Easybuild: 'tools/easybuild/index.md'
 #  - RESIF:     'tools/resif/index.md'
+- Scheduling:
+  - Advanced job scheduling with SLURM: 'scheduling/advanced/index.md'
 - Debugging and Profiling:
+  - Monitoring and profiling: 'basic/monitoring/index.md'
   - Efficient Debugging:     'debugging/basics/index.md'
   - Performance engineering: 'debugging/advanced/index.md'
+- Sequential/Embarrassingly parallel jobs:
+  - Overview: 'sequential/basics/index.md'
+  - GNU Parallel: 'sequential/gnu-parallel/index.md'
+  - Serial Tasks in Action:
+      - Overview: 'sequential/examples/index.md'
+      - Example/Object Recognition: 'sequential/examples/object_recognition.md'
+      - Example/Watermarking Images: 'sequential/examples/watermarking.md'
+      - Example/JCell (GA in Java): 'sequential/examples/jcell.md'
 - Parallel MPI and/or OpenMP:
   - Overview: 'parallel/basics/index.md'
   - OSU Micro-benchmarks: 'parallel/mpi/OSU_MicroBenchmarks/index.md'

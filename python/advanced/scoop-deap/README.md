@@ -69,8 +69,7 @@ Be sure to start with a bare environment:
 * No python virtualenv already loaded
 
 ```bash
-# cd into scratch and clone tutorial repository
-cd $SCRATCH
+# Clone tutorial repository
 git clone https://github.com/ULHPC/tutorials.git
 # cd into the scripts folder
 cd tutorials/python/advanced/scoop-deap/scripts
