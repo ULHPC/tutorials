@@ -8,6 +8,7 @@ output: html_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 library(targets)
+library(tidyverse)
 ```
 
 ## Gapminder Data
@@ -35,7 +36,7 @@ tar_read(gp_grp)
 
 ## Combine results
 
-```{r}
+```{r paged.print=FALSE}
 tar_read(gp_grp) %>% 
   group_by(continent, country, tar_group) %>% 
   tidyr::nest() %>% 
@@ -58,5 +59,22 @@ gp_r2 %>%
   theme(legend.position = c(0.2, 0.7),
         axis.text.y = element_blank(),
         axis.ticks.y = element_blank())
+```
+
+
+### highlight African countries
+
+```{r}
+gp_r2 %>% 
+  unnest(data) %>% 
+  ggplot(aes(x = year, y = lifeExp, group = country)) +
+  geom_line() +
+  gghighlight::gghighlight(rsq < 0.1, use_direct_label = TRUE,
+                           label_params = list(hjust = 1, vjust = 1, 
+                                               fill = "red", colour = "white", 
+                                               alpha = 0.7)) +
+  theme_minimal(14) +
+  labs(title = "Gapminder",
+       subtitle = "rsq of lifeExp ~ year < 0.1")
 ```
 
