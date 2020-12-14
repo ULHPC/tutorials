@@ -7,17 +7,18 @@ pages:
   - Pre-Requisites: 'setup/preliminaries.md'
   - Installation:   'setup/install.md'
 - Preliminaries: 'preliminaries/index.md'
-- Basic Tutorials:
-  - Getting Started: 'beginners/index.md'
-  - Monitoring & Profiling: 'basic/monitoring/index.md'
-#  - HPC workflow with sequential jobs: 'basic/sequential_jobs/index.md'
-#  - Prototyping with Python: 'python/basics/index.md'
-- Scheduling:
-  - Job scheduling with SLURM: 'scheduling/advanced/index.md'
+- Command line utilities: 'tools/cli/index.md'
+- Getting started:
+  - Overview: 'beginners/index.md'
+  - Job scheduling with SLURM: 'basic/scheduling/index.md'
+  - Using software modules: 'tools/cli/modules.md'
 - Tools / Software management:
   - Easybuild: 'tools/easybuild/index.md'
 #  - RESIF:     'tools/resif/index.md'
+- Scheduling:
+  - Advanced job scheduling with SLURM: 'scheduling/advanced/index.md'
 - Debugging and Profiling:
+  - Monitoring and profiling: 'basic/monitoring/index.md'
   - Efficient Debugging:     'debugging/basics/index.md'
   - Performance engineering: 'debugging/advanced/index.md'
 - Sequential/Embarrassingly parallel jobs:
