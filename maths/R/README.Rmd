@@ -9,17 +9,20 @@ library(tidyverse)
 ```
 
 [![By ULHPC](https://img.shields.io/badge/by-ULHPC-blue.svg)](https://hpc.uni.lu) [![Licence](https://img.shields.io/badge/license-GPL--3.0-blue.svg)](http://www.gnu.org/licenses/gpl-3.0.html)
-[![GitHub issues](https://img.shields.io/github/issues/ULHPC/tutorials.svg)](https://github.com/ULHPC/tutorials/issues/) [![](https://img.shields.io/badge/slides-PDF-red.svg)](https://github.com/ULHPC/tutorials/raw/devel/maths/R/PS11-introduction_to_R.pdf) [![Github](https://img.shields.io/badge/sources-github-green.svg)](https://github.com/ULHPC/tutorials/tree/devel/maths/R/) [![Documentation Status](http://readthedocs.org/projects/ulhpc-tutorials/badge/?version=latest)](http://ulhpc-tutorials.readthedocs.io/en/latest/maths/R/) [![GitHub forks](https://img.shields.io/github/stars/ULHPC/tutorials.svg?style=social&label=Star)](https://github.com/ULHPC/tutorials)
+[![GitHub issues](https://img.shields.io/github/issues/ULHPC/tutorials.svg)](https://github.com/ULHPC/tutorials/issues/) [![](https://img.shields.io/badge/slides-PDF-red.svg)](https://github.com/ULHPC/tutorials/raw/devel/maths/R/PS10_targets.pdf) [![Github](https://img.shields.io/badge/sources-github-green.svg)](https://github.com/ULHPC/tutorials/tree/devel/maths/R/) [![Documentation Status](http://readthedocs.org/projects/ulhpc-tutorials/badge/?version=latest)](http://ulhpc-tutorials.readthedocs.io/en/latest/maths/R/) [![GitHub forks](https://img.shields.io/github/stars/ULHPC/tutorials.svg?style=social&label=Star)](https://github.com/ULHPC/tutorials)
 
 ---
 
 # R Tutorial
 
-      Copyright (c) 2013-2019 Aurelien Ginolhac, UL HPC Team  <hpc-sysadmins@uni.lu>
+      Copyright (c) 2013-2020 Aurelien Ginolhac, UL HPC Team  <hpc-sysadmins@uni.lu>
 
-[![](https://github.com/ULHPC/tutorials/raw/devel/maths/R/figures/cover_slides.png)](https://github.com/ULHPC/tutorials/raw/devel/maths/R/PS11-introduction_to_R.pdf)
+[![](https://github.com/ULHPC/tutorials/raw/devel/maths/R/img/cover_slides.png)](https://github.com/ULHPC/tutorials/raw/devel/maths/R/PS10_targets.html)
 
-- [slides as dynamic html](https://cdn.rawgit.com/ULHPC/tutorials/devel/maths/R/Intro_PS.html)
+<div class="shareagain" style="min-width:300px;margin:1em auto;">
+  <iframe src="PS10_targets.html" width="768" height="432" style="border:2px solid currentColor;" loading="lazy" allowfullscreen></iframe>
+  <script>fitvids('.shareagain', {players: 'iframe'});</script>
+</div>
 
 Through this tutorial you will learn how to use R from your local machine or from one of the [UL HPC platform](http://hpc.uni.lu) clusters.
 Then, we will see how to organize and group data. Finally we will illustrate how R can benefit from multicore and cluster parallelization.
@@ -238,7 +241,6 @@ m <- bench::mark(LAPPLY    = as.data.frame(cbind(cut = as.character(unique(diamo
                  DPLYR     = group_by(diamonds, cut) %>% summarise(price = mean(price)),
                  DATATABLE = DT[, list(price = mean(price)), by = cut],
                  iterations = 100, check = FALSE)
-m
 ```
 
 - makes comparison easier to read using **relative** values. `1` for the fastest.
@@ -255,23 +257,12 @@ You can use `ggplot2` via the `autoplot()` function
 autoplot(m)
 ```
 
-- plot the memory allocation
-
-```{r}
-m %>%
-  unnest() %>%
-  filter(gc == "none") %>%
-  mutate(expression = as.character(expression)) %>%
-  ggplot(aes(x = mem_alloc, y = time, color = expression)) +
-  geom_point() +
-  theme_minimal(14)
-```
 
 <a name="hpc"></a>
 
 ## Parallel computing using HPC
 
-R is already available on `iris` clusters as a module. The current production version `3.4.4`, but you can get the uptodate `3.6.0` by fetching the __development__ version of the module lists Valentin Plugaru prepared. They will soon by be released as the default production environment.
+R is already available on `iris` clusters as a module. The current production version `3.6.0`.
 The first step is the reservation of a resource. Connect to your favorite cluster frontend (here: `iris`). We assume you have already configured your `.ssh/config`.
 
 #### iris
@@ -280,9 +271,9 @@ The first step is the reservation of a resource. Connect to your favorite cluste
 
 Once connected to the user frontend, book **4** cores for half an hour
 
-    [jdoe@access2 ~]$ srun -p interactive  --time=0:30:0 -c 4 --pty bash
+    [jdoe@access2 ~]$ run -p interactive --qos debug -C batch --time=0:30:0 -c 4 --pty bash
 
-When the job is running and you are connected load _R_ module (so version `3.4.4`).
+When the job is running and you are connected load _R_ module (so version `3.6.0`).
 
     [jdoe@access2 ~]$ module load lang/R
 
@@ -291,36 +282,13 @@ Now you should be able to invoke R and see something like this:
 
     [jdoe@iris-081 ~]$  R
 
-    R version 3.4.4 (2018-03-15) -- "Someone to Lean On"
-    Copyright (C) 2018 The R Foundation for Statistical Computing
+    R version 3.6.0 (2019-04-26) -- "Planting of a Tree"
+    Copyright (C) 2019 The R Foundation for Statistical Computing
     Platform: x86_64-pc-linux-gnu (64-bit)
+
     [...]
     Type 'q()' to quit R.
     >
-
-`sessionInfo()` function gives information about R version, loaded libraries etc.
-
-    > sessionInfo()
-    R version 3.4.4 (2018-03-15)
-    Platform: x86_64-pc-linux-gnu (64-bit)
-    Running under: CentOS Linux 7 (Core)
-
-    Matrix products: default
-    BLAS/LAPACK: /mnt/irisgpfs/apps/resif/data/devel/default/software/numlib/OpenBLAS/0.2.20-GCC-6.4.0-2.28/lib/libopenblas_haswellp-r0.2.20.so
-
-    locale:
-     [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C
-     [3] LC_TIME=en_US.UTF-8        LC_COLLATE=en_US.UTF-8
-     [5] LC_MONETARY=en_US.UTF-8    LC_MESSAGES=en_US.UTF-8
-     [7] LC_PAPER=en_US.UTF-8       LC_NAME=C
-     [9] LC_ADDRESS=C               LC_TELEPHONE=C
-    [11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C
-
-    attached base packages:
-    [1] stats     graphics  grDevices utils     datasets  methods   base
-
-    loaded via a namespace (and not attached):
-    [1] compiler_3.4.4
 
 <a name="hpc_pkg"></a>
 
@@ -335,8 +303,7 @@ for the last section, you need to install the following packages, `future`, `fur
 On `iris`, in an interactive session, load the module to get R version 3.6.0, still **not** in _production_
 
 ```
-module load swenv/default-env/devel
-module load lang/R/3.6.0-foss-2019a-bare
+module load lang/R/3.6.0-intel-2019a-bare
 ```
 
 you will a warning because it hasn't been fully tested yet.
@@ -458,7 +425,7 @@ echo "== Submit dir. : ${SLURM_SUBMIT_DIR}"
 
 # use version 3.6.0 and load the GNU toolchain
 module load swenv/default-env/devel
-module load lang/R/3.6.0-foss-2019a-bare
+module load lang/R/3.6.0-intel-2019a-bare
 
 # prevent sub-spawn, 28 cores -> 28 processes
 export OMP_NUM_THREADS=1
@@ -489,11 +456,11 @@ When your _passive_ job has started, you can connect to the assigned node using 
 Once logged in, you can check that the job is indeed run using the 28 cores as the output of `htop` below
 
 
-![](figures/htop_28cores.png)
+![](img/htop_28cores.png)
 
 and that they are dully full processes
 
-![](figures/htop_processes.png)
+![](img/htop_processes.png)
 
 
 `furrr` allows to simply change your `map()` functions to `future_map()` to run in parallel. `future` takes in charge all the spawning and fetching of the processes.
@@ -532,13 +499,13 @@ finding clusters: 28.043 sec elapsed
 
 see below the benefit of using more cores on the elapsed time for computationally intensive tasks such as t-SNE (code in [`furrr_benchmark.Rmd`](https://github.com/ULHPC/tutorials/blob/devel/maths/R/furrr_benchmark.Rmd))
 
-![](figures/furrr_tsne.png)
+![](img/furrr_tsne.png)
 
 #### Animation
 
 just for the fun of it, using the [gganimate](https://github.com/thomasp85/gganimate) package, we can visualise how the t-SNE evolves with increasing perplexities
 
-![](figures/tsne_110_component.gif)
+![](img/tsne_110_component.gif)
 
 
 If of interest, the code it as follows (install required for `gganimate`, `gifski`):
@@ -664,9 +631,9 @@ ggsave("csv_benchmarks.pdf", p, width = 8)
 #   time <list>, gc <list>
 ```
 
-![](figures/csv_benchmarks.png)
+![](img/csv_benchmarks.png)
 
-By default the `ALTREP` framework for `vroom` is used only for **characters**. `vroom` is multi-threaded and will use the 4 cores we have (on `iris` we need to set it up manually) and performed similarly as `data.table` which was designed to be efficient for **numeric** data. By activating the option for all data types (altrep_opts = TRUE), `vroom` becomes even faster than `data.table`. But it means that after materialization, it will be slower. However, for **characters**, `vroom` is faster even after materialization, see the [benchmarks](http://vroom.r-lib.org/articles/benchmarks.html) done by the author [Jim Hester](https://github.com/jimhester) (also maintainer of `readr`).
+`vroom` is multi-threaded and will use the 4 cores and performed similarly as `data.table` which was designed to be efficient for **numeric** data, see the [benchmarks](http://vroom.r-lib.org/articles/benchmarks.html) done by the author [Jim Hester](https://github.com/jimhester) (also maintainer of `readr`).
 
 
 ### Enclosed R packages environment
@@ -674,10 +641,10 @@ By default the `ALTREP` framework for `vroom` is used only for **characters**. `
 this package is still under development but is the promising replacement for `packrat`.
 Here is some instructions extracted from the [overview vignette](https://rstudio.github.io/renv/articles/renv.html)
 
-- installation (`install.packages("remotes")` if you miss `remotes`)
+- installation
 
 ```{r, eval = FALSE}
-remotes::install_github("rstudio/renv")
+install.packages("renv")
 ```
 
 <a name="links"></a>

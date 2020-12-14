@@ -44,8 +44,6 @@ style_mono_accent(
   text_font_google   = google_font("Roboto Condensed", "300", "300i"),
   code_font_google   = google_font("Fira Mono")
 )
-#xaringanExtra::use_xaringan_extra(c("tile_view", "tachyons"))
-
 # bring in tachyons https://roperzh.github.io/tachyons-cheatsheet/
 xaringanExtra::use_tachyons()
 # tile view when press 't'
@@ -180,7 +178,7 @@ htmltools::img(src = "https://rworkshop.uni.lu/lectures/img/09/tidyverse_pkg_in_
 .large[.ybox[For intermediates]]
 - [exercises and `furrr`](https://ulhpc-tutorials.readthedocs.io/en/latest/maths/R/)
 
-<img src="https://ulhpc-tutorials.readthedocs.io/en/latest/maths/R/figures/tsne_110_component.gif", height="250px", style="center">
+<img src="https://ulhpc-tutorials.readthedocs.io/en/latest/maths/R/img/tsne_110_component.gif", height="250px", style="center">
 ]
 .w-33.bg-washed-blue.b--blue.ba.bw2.br3.shadow-5.ph3.mt3.mr1[
 .large[.bbox[For targets]]
@@ -797,10 +795,11 @@ output: html_document
 
 ## Gapminder Data
 
-we used the URL ``` `r targets::tar_read(gp_url)` ```
+we used the URL `r knitr::inline_expr('targets::tar_read(gp_url)')`
 ```
 
 #### lines for `_targets.R`
+
 ```{r, eval=FALSE}
 tar_render(report, "report.Rmd")
 ```
@@ -809,10 +808,55 @@ tar_render(report, "report.Rmd")
 - run the Build
 ]
 
+---
+
+# Step 7: more code to the report
+
+.pull-left[
+#### Combine gapminder and $r^2$ by `tar_group`
+```{r, eval = FALSE}
+tar_read(gp_grp) %>% 
+  group_by(continent, country, tar_group) %>% 
+  tidyr::nest() %>% 
+  ungroup() %>%
+  inner_join(tibble(rsq = tar_read(r2),
+                    tar_group = seq_len(length(tar_read(r2))))) -> gp_r2
+gp_r2
+#> Joining, by = "tar_group"
+#> # A tibble: 142 x 5
+#>    country     continent tar_group data                rsq
+#>    <chr>       <chr>         <int> <list>            <dbl>
+#>  1 Afghanistan Asia             78 <tibble [12 × 4]> 0.948
+#>  2 Albania     Europe          111 <tibble [12 × 4]> 0.911
+#>  3 Algeria     Africa            1 <tibble [12 × 4]> 0.985
+#>  4 Angola      Africa            2 <tibble [12 × 4]> 0.888
+#>  5 Argentina   Americas         53 <tibble [12 × 4]> 0.996
+```
+]
+
+--
+
+.pull-right[
+#### Snake plot
+```{r, eval = FALSE}
+gp_r2 %>% 
+  ggplot(aes(x = rsq, y = forcats::fct_reorder(country, rsq))) +
+  geom_point(aes(colour = continent)) +
+  labs(y = NULL,
+       x = "r squared") +
+  theme_classic(18) +
+  theme(legend.position = c(0.2, 0.7),
+        axis.text.y = element_blank(),
+        axis.ticks.y = element_blank())
+```
+
+.center[![](img/gp_snake.png)]
+
+]
 
 ---
 
-## Before we stop
+# Before we stop
 
 .flex[
 .w-50.bg-washed-green.b--green.ba.bw2.br3.shadow-5.ph3.mt2.ml1[
@@ -841,8 +885,16 @@ tar_render(report, "report.Rmd")
 - [`tarchetypes` reference](https://wlandau.github.io/tarchetypes/) by William Landau
 - [NY Open Statistical Meeup, Dec 2020, targets presentation](https://youtu.be/Gqn7Xn4d5NI) by William Landau
 ]
-.w-50.pv2.ph3.mt4.ml1[
+.w-50.pv2.ph3.mt2.ml1[
 .Large[.bbox[Thank you for your attention!]]
+
+.Large[.gbox[4-days Rworkshop in May 2021]]
+```{r, echo = FALSE}
+htmltools::img(src = "https://rworkshop.uni.lu/img/logo-rworkshop.png",
+               style = "float:right;height:80px;")
+```
+- [Elixir-LU event](https://elixir-luxembourg.org/events/2021_05_06_rtidyverse)
+- 6th - 11th May
 ]]
 
 
