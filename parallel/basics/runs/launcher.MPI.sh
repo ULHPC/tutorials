@@ -1,13 +1,12 @@
 #! /bin/bash -l
-# Time-stamp: <Mon 2020-12-14 12:06 svarrette>
-############################################################################
+# Time-stamp: <Mon 2020-12-14 12:33 svarrette>
+###############################################################################
 # Default launcher for MPI jobs
-# Usage: $0 <mpi-suit> [app].
-# Example:
-#    $0 intel     [app]
-#    $0 openmpi   [app]
-#    $0 mvapich2  [app]
-############################################################################
+# Usage:
+#       [EXE=/path/to/mpiapp.exe] [sbatch] $0 <mpi-suite> [app].
+# By default, MPI programs are expected to be built in APPDIR as '<suite>_<app>'
+# to easily get the MPI suite used for the build
+################################################################################
 #SBATCH -J MPI
 ###SBATCH --dependency singleton
 ###SBATCH --mail-type=FAIL     # Mail events (NONE, BEGIN, END, FAIL, ALL)
@@ -36,12 +35,12 @@ CMD_PREFIX=
 SUITE='openmpi'
 MODULE=mpi/OpenMPI
 
-##################as soon####################################
+######################################################
 # /!\ ADAPT below variables to match your own settings
 APPDIR=${APPDIR:=${HOME}/tutorials/OpenMP-MPI/basics/bin}    # bin directory holding your MPI builds
 APP=${APP:=hello_mpi}  # MPI application - OpenMPI/intel/... builds expected to be prefixed by
 #                                          openmpi_/intel_/<suit>_
-# Eventual options of the MPI program
+# Eventual options to be passed to the MPI program
 OPTS=
 
 
@@ -56,6 +55,7 @@ NAME
   Take the good habit to prefix the binary to execute with MPI suit used for
   the build. Here the default MPi application run would be
         EXE=${APPDIR}/openmpi_${APP}
+  which will be run as     srun -n \$SLURM_NTASKS [...]
 
 USAGE
   [sbatch] $0 [n] {intel | openmpi | mvapich2} [app]
@@ -68,7 +68,7 @@ Example:
   [sbatch] $0                          # run OpenMPI build    openmpi_hello_mpi
   [sbatch] $0 intel                    # run Intel MPI build  intel_hello_mpi
   [sbatch] $0 openmpi matrix_mult_mpi  # run OpenMPI build    openmpi_matrix_mult_mpi
-  EXE=$HOME/bin/xhpl [sbatch] $0 intel # run intel build      ~/bin/xhpl
+  EXE=$HOME/bin/xhpl [sbatch] $0 intel # run intel build  ~/bin/xhpl
 EOF
 }
 
@@ -80,7 +80,7 @@ while [ $# -ge 1 ]; do
         intel*   | --intel*)   SUITE='intel';    MODULE=toolchain/intel;;
         openmpi* | --openmpi*) SUITE='openmpi';  MODULE=mpi/OpenMPI;;
         mvapich* | --mvapich*) SUITE='mvapich2'; MODULE=mpi/MVAPICH2;;
-        *) APP=$1; break;;
+        *) APP=$1; shift; OPTS=$*; break;;
     esac
     shift
 done
