@@ -11,4 +11,4 @@ module load tools/itac/2019.4.036
 module load tools/VTune/2019_update4
 module load vis/GTK+/3.24.8-GCCcore-8.2.0
 
-srun -n 14 ./a.out
+srun -n $SLURM_NTASKS ./a.out

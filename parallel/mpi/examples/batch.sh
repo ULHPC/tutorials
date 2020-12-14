@@ -5,9 +5,8 @@
 #SBATCH -p batch
 #SBATCH -A ulhpc
 
-
 module purge
 module load swenv/default-env/latest
 module load toolchain/intel/2019a
 
-srun -n 14 ./a.out
+srun -n $SLURM_NTASKS ./a.out

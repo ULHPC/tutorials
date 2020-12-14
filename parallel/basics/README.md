@@ -394,7 +394,7 @@ Thus a minimal launcher would _typically_ look like that -- see also [our defaul
 
 # Load the intel toolchain and whatever MPI module you need
 module purge
-module load toolchain/intel    # or mpi/{OpenMPI|MVAPICH2}
+module load toolchain/intel    # or mpi/OpenMPI <!-- |MVAPICH2} -->
 # export I_MPI_PMI_LIBRARY=/usr/lib64/libpmi.so
 srun -n $SLURM_NTASKS /path/to/your/mpi_program
 ```
@@ -419,10 +419,19 @@ You have to setup the reservation to match the required number of MPI processes:
 
 As for running you MPI program, you typically need to rely on `mpirun` for which the command-line (unfortunately) differs depending on the MPI flavor:
 
+| MPI Suit                                                        | `module load`...  |
+|-----------------------------------------------------------------|-------------------|
+| [Intel MPI](http://software.intel.com/en-us/intel-mpi-library/) | `toolchain/intel` |
+| [OpenMPI](http://www.open-mpi.org/)                             | `mpi/OpenMPI`     |
+
+<!--
+
 | MPI Suit                                                        | `module load`...  | Typical run command (OAR)                                                   |
 |-----------------------------------------------------------------|-------------------|-----------------------------------------------------------------------------|
 | [Intel MPI](http://software.intel.com/en-us/intel-mpi-library/) | `toolchain/intel` | `mpirun -hostfile $OAR_NODEFILE [...]`                                      |
 | [OpenMPI](http://www.open-mpi.org/)                             | `mpi/OpenMPI`     | `mpirun -hostfile $OAR_NODEFILE -x PATH -x LD_LIBRARY_PATH [...]`           |
+
+-->
 
 <!--
 | [MVAPICH2](http://mvapich.cse.ohio-state.edu/overview/)         | `mpi/MVAPICH2`    | `mpirun -launcher ssh -launcher-exec /usr/bin/oarsh -f $OAR_NODEFILE [...]` |
@@ -443,7 +452,7 @@ fi
 module purge
 module load toolchain/intel    # or mpi/{OpenMPI|MVAPICH2}
 # ONLY on moonshot node that have no IB card: export I_MPI_FABRICS=tcp
--->
+
 
 ### Intel MPI
 mpirun -hostfile $OAR_NODEFILE path/to/mpi_program
@@ -452,6 +461,7 @@ mpirun -hostfile $OAR_NODEFILE -x PATH -x LD_LIBRARY_PATH path/to/mpi_program
 ### MVAPICH2
 mpirun -launcher ssh -launcher-exec /usr/bin/oarsh -f $OAR_NODEFILE path/to/mpi_program
 ```
+-->
 
 ### Hands-on: MPI Helloworld and matrix multiplication
 
@@ -519,11 +529,12 @@ $> ./launcher.MPI.sh -h
 NAME
   ./launcher.MPI.sh -- MPI launcher example
 USAGE
-  ./launcher.MPI.sh {intel | openmpi } [app]
+  ./launcher.MPI.sh {intel | openmpi} [app]
 
 Example:
   ./launcher.MPI.sh                          run OpenMPI on hello_mpi
   ./launcher.MPI.sh intel                    run Intel MPI on hello_mpi
+  ./launcher.MPI.sh openmpi matrix_mult_mpi  run OpenMPI on matrix_mult_mpi
 ```
 
 <!--
@@ -585,13 +596,15 @@ Of course, you can have _hybrid_ code mixing MPI and OpenMP primitives.
 * You need to compile the code with the `-qopenmp` (with Intel MPI) or `-fopenmp` (for the other MPI suits) flags
 * You need to adapt the `OMP_NUM_THREADS` environment variable accordingly
 * __(Slurm only)__: you need to adapt the value `-c <N>` (or `--cpus-per-task <N>`) to set the number of OpenMP threads you wish to use per MPI process
-*  **(OAR only)**: you have to take the following elements into account:
+* You need to ensure the environment variable `OMP_NUM_THREADS` is shared across the nodes
+* (_Intel MPI only_) you probably want to set [`I_MPI_PIN_DOMAIN=omp`](https://software.intel.com/en-us/mpi-developer-reference-linux-interoperability-with-openmp-api)
+<!--*  **(OAR only)**: you have to take the following elements into account:
     - You need to compute accurately the number of MPI processes per node `<PPN>` (in addition to the number of MPI processes) and pass it to `mpirun`
         * OpenMPI:   `mpirun -npernode <PPN> -np <N>`
         * Intel MPI: `mpirun -perhost <PPN>  -np <N>`
       <!--  * MVAPICH2:  `mpirun -ppn <PPN>      -np <N>` -->
-    - You need to ensure the environment variable `OMP_NUM_THREADS` is shared across the nodes
-    - (_Intel MPI only_) you probably want to set [`I_MPI_PIN_DOMAIN=omp`](https://software.intel.com/en-us/mpi-developer-reference-linux-interoperability-with-openmp-api)
+    <!-- - You need to ensure the environment variable `OMP_NUM_THREADS` is shared across the nodes
+    - (_Intel MPI only_) you probably want to set [`I_MPI_PIN_DOMAIN=omp`](https://software.intel.com/en-us/mpi-developer-reference-linux-interoperability-with-openmp-api) -->
    <!-- - (_MVAPICH2 only_) you probably want to set `MV2_ENABLE_AFFINITY=0` -->
 
 ### Slurm launcher for OpenMP+MPI programs
@@ -609,7 +622,7 @@ export OMP_NUM_THREADS=${SLURM_CPUS_PER_TASK}
 
 # Load the intel toolchain and whatever MPI module you need
 module purge
-module load toolchain/intel    # or mpi/{OpenMPI|MVAPICH2}
+module load toolchain/intel    # or mpi/{OpenMPI} <!-- |MVAPICH2} -->
 # export I_MPI_PMI_LIBRARY=/usr/lib64/libpmi.so
 srun -n $SLURM_NTASKS /path/to/your/hybrid_program
 ```

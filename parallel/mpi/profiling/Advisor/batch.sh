@@ -10,7 +10,7 @@ module load swenv/default-env/latest
 module load toolchain/intel/2019a
 module load perf/Advisor/2019_update4
 
-srun -n 14 advixe-cl --collect survey --project-dir result -- ./a.out
+srun -n $SLURM_NTASKS advixe-cl --collect survey --project-dir result -- ./a.out
 
 # on the login node
 # mpirun-np 14 inspxe-cl -collect=ti2 -r result ./a.out
