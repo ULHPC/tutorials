@@ -1,5 +1,5 @@
 #! /bin/bash -l
-# Time-stamp: <Mon 2020-12-14 12:01 svarrette>
+# Time-stamp: <Mon 2020-12-14 12:06 svarrette>
 ############################################################################
 # Default launcher for MPI jobs
 # Usage: $0 <mpi-suit> [app].
@@ -77,22 +77,13 @@ while [ $# -ge 1 ]; do
     case $1 in
         -h | --help) usage; exit 0;;
         -n | --noop | --dry-run) CMD_PREFIX=echo;;
-        intel*   | --intel*)   shift; SUITE='intel';    MODULE=toolchain/intel;;
-        openmpi* | --openmpi*) shift; SUITE='openmpi';  MODULE=mpi/OpenMPI;;
-        mvapich* | --mvapich*) shift; SUITE='mvapich2'; MODULE=mpi/MVAPICH2;;
+        intel*   | --intel*)   SUITE='intel';    MODULE=toolchain/intel;;
+        openmpi* | --openmpi*) SUITE='openmpi';  MODULE=mpi/OpenMPI;;
+        mvapich* | --mvapich*) SUITE='mvapich2'; MODULE=mpi/MVAPICH2;;
         *) APP=$1; break;;
     esac
     shift
 done
-
-# case $1 in
-#     -h       | --help)     usage; exit 0;;
-#     -n       | --noop | --dry-run) CMD_PREFIX=echo; shift;
-#     intel*   | --intel*)   SUITE='intel';    MODULE=toolchain/intel;;
-#     mvapich* | --mvapich*) SUITE='mvapich2'; MODULE=mpi/MVAPICH2;;
-#     *)                     SUITE='openmpi';  MODULE=mpi/OpenMPI;;
-# esac
-
 ################################################################################
 # Set default MPI executable
 [ -z "${EXE}" ]    && EXE=${APPDIR}/${SUITE}_${APP} || APP=$(basename ${EXE})
