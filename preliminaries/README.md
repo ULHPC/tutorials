@@ -1,18 +1,78 @@
 [![By ULHPC](https://img.shields.io/badge/by-ULHPC-blue.svg)](https://hpc.uni.lu) [![Licence](https://img.shields.io/badge/license-GPL--3.0-blue.svg)](http://www.gnu.org/licenses/gpl-3.0.html) [![GitHub issues](https://img.shields.io/github/issues/ULHPC/tutorials.svg)](https://github.com/ULHPC/tutorials/issues/) [![](https://img.shields.io/badge/slides-PDF-red.svg)](https://github.com/ULHPC/tutorials/raw/devel/preliminaries/slides.pdf) [![Github](https://img.shields.io/badge/sources-github-green.svg)](https://github.com/ULHPC/tutorials/tree/devel/preliminaries/) [![Documentation Status](http://readthedocs.org/projects/ulhpc-tutorials/badge/?version=latest)](http://ulhpc-tutorials.readthedocs.io/en/latest/preliminaries/) [![GitHub forks](https://img.shields.io/github/stars/ULHPC/tutorials.svg?style=social&label=Star)](https://github.com/ULHPC/tutorials)
 
 
+---------------------------------------
 # Preliminaries to ULHPC facility access
 
      Copyright (c) 2020 UL HPC Team <hpc-team@uni.lu>
 
-<!-- [![](https://github.com/ULHPC/tutorials/raw/devel/preliminaries/cover_slides.png)](https://github.com/ULHPC/tutorials/raw/devel/preliminaries/slides.pdf) -->
+ [![](https://github.com/ULHPC/tutorials/raw/devel/preliminaries/cover_slides.png)](https://github.com/ULHPC/tutorials/raw/devel/preliminaries/slides.pdf)
 
 Welcome to the High Performance Computing (HPC) Facility of the University of Luxembourg (ULHPC)!
 
 To take the best out of the different tutorials and practical sessions proposed in the training sessions organised by the University of Luxembourg, you have to follow several steps to configure your working environments.
 In particular, ensure you have followed the [preliminary setup instructions](setup/preliminaries.md) for your laptop.
 
+**Convention**
+
+In the below tutorial, you'll proposed terminal commands where the prompt is denoted by `$>`.
+
+In general, we will prefix to precise the execution context (_i.e._ your laptop, a cluster frontend or a node). Remember that `#` character is a comment. Example:
+
+                # This is a comment
+                $> hostname
+
+                (laptop)$> hostname         # executed from your personal laptop / workstation
+
+                (access-iris)$> hostname    # executed from access server of the Iris cluster
+
+
+## Git Installation
+
+```bash
+# Mac OS X, using Homebrew - https://brew.sh
+brew install git git-gui git-flow gitk tig kdiff3
+
+# Ubuntu / WSL / RedHat
+{ sudo apt | dnf } install git-core git-flow tig gitk kdiff3
+
+# Windows, using Chocolatey - https://chocolatey.org/
+$> choco.exe install git gitflow-avh
+```
+
+### Git Initial Setup
+
+```bash
+# /!\ To add to your bash/zsh profile (~/.profile)
+# XDG Base Directory Specification
+# See https://specifications.freedesktop.org/basedir-spec/latest/
+(laptop)$> export XDG_CONFIG_HOME=$HOME/.config
+(laptop)$> export XDG_CACHE_HOME=$HOME/.cache
+(laptop)$> export XDG_DATA_HOME=$HOME/.local/share
+
+# Create the directories
+mkdir -p ~/.config/git $XDG_CACHE_HOME $XDG_DATA_HOME
+
+# Basic Git defaults
+(laptop)$> git config --global user.name "Firstname LastName"
+(laptop)$> git config --global user.email "<email>@<domain>"
+(laptop)$> git config --global user.signingkey <gpg-keyID>     # <-- Leave this part if you don't have a gpg-keyID
+(laptop)$> git config --global color.ui true
+
+# Set your default editor -- vim in this case
+(laptop)$> git config ---global core.editor vim
+```
+
+---------------------
 ## Secure SHell (SSH)
+
+
+* [Access / SSH Tutorial](https://hpc.uni.lu/users/docs/access.html)
+
+The way SSH handles the keys and the configuration files is illustrated in the following figure:
+
+![SSH key management](https://hpc.uni.lu/images/docssh/schema.png)
+
 
 Developed by [SSH Communications Security Ltd.](http://www.ssh.com), Secure Shell is a program to log into another computer over a network, to execute commands in a remote machine, and to move files from one machine to another in a secure way.
 
@@ -28,7 +88,7 @@ Open a Terminal.
 SSH is installed natively on your machine and the `ssh` command should be accessible from the command line:
 
 ```bash
-$> ssh -V
+(laptop)$> ssh -V
 OpenSSH_7.9p1, LibreSSL 2.7.3
 ```
 
@@ -37,7 +97,7 @@ OpenSSH_7.9p1, LibreSSL 2.7.3
 You can check all available SSH keys on your computer by running the following command on your terminal:
 
 ```bash
-$> for key in ~/.ssh/id_*; do ssh-keygen -l -f "${key}"; done | uniq
+(laptop)$> for key in ~/.ssh/id_*; do ssh-keygen -l -f "${key}"; done | uniq
 ```
 
 Your SSH keys might use one of the following algorithms:
@@ -51,7 +111,7 @@ Your SSH keys might use one of the following algorithms:
 To generate an RSA SSH keys **of 4096-bit length**, just use the `ssh-keygen` command as follows:
 
 ```bash
-$> ssh-keygen -t rsa -b 4096 -o -a 100
+(laptop)$> ssh-keygen -t rsa -b 4096 -o -a 100
 Generating public/private rsa key pair.
 Enter file in which to save the key (/home/user/.ssh/id_rsa):
 Enter passphrase (empty for no passphrase):
@@ -84,7 +144,7 @@ After the execution of `ssh-keygen` command, the keys are generated and stored i
 Ensure the access rights are correct on the generated keys using the ' `ls -l` ' command. The private key should be readable only by you:
 
 ```bash
-$> ls -l ~/.ssh/id_*
+(laptop)$> ls -l ~/.ssh/id_*
 -rw------- 1 username groupname 751 Mar  1 20:16 /home/username/.ssh/id_rsa
 -rw-r--r-- 1 username groupname 603 Mar  1 20:16 /home/username/.ssh/id_rsa.pub
 ```
@@ -96,7 +156,7 @@ $> ls -l ~/.ssh/id_*
 Repeat the procedure to generate a
 
 ```bash
-$> ssh-keygen -t ed25519 -o -a 100
+(laptop)$> ssh-keygen -t ed25519 -o -a 100
 [...]
 $> ls -l ~/.ssh/id_*
 -rw------- 1 username groupname 751 Mar  1 20:16 /home/username/.ssh/id_rsa
@@ -117,10 +177,10 @@ First copy the content of the key you want to add
 
 ``` bash
 # Example with ED25519 **public** key
-$> cat ~/.ssh/id_ed25519.pub
+(laptop)$> cat ~/.ssh/id_ed25519.pub
 ssh-ed25519 AAAA[...]
 # OR the RSA **public** key
-$> cat ~/.ssh/id_rsa.pub
+(laptop)$> cat ~/.ssh/id_rsa.pub
 ssh-rsa AAAA[...]
 ```
 
@@ -139,50 +199,33 @@ Paste in the Base 64-encoded public key string, and click **Set**.
 Click **Save** at the top of the page.
 
 
+-------------------------------
+## Hands-On/SSH & UL HPC access
+
+### Step 1a - Connect to UL HPC (Linux / Mac OS / Unix)
+
+Run the following commands in a terminal (substituting *yourlogin* with the login name you received from us):
+
+        (laptop)$> ssh -p 8022 yourlogin@access-iris.uni.lu
+
+Now you probably want to avoid taping this long command to connect to the platform. You can customize SSH aliases for that. Edit the file `~/.ssh/config` (create it if it does not already exist) and adding the following entries:
+
+        Host iris-cluster
+            Hostname access-iris.uni.lu
+            User yourlogin
+            Port 8022
+            ForwardAgent no
+
+Now you shall be able to issue the following (simpler) command to connect to the cluster and obtain the welcome banner:
+
+        (laptop)$> ssh iris-cluster
 
 
-### SSH agent
-
-If you are tired of typing your passphrase, use `ssh-agent` to load your private key
-
-```bash
-$ ssh-add ~/.ssh/id_rsa
-Enter passphrase for ~/.ssh/id_rsa:           # <-- enter your passphrase here
-Identity added: ~/.ssh/id_rsa (<login>@<hostname>)
-
-$ ssh-add ~/.ssh/id_ed25519
-Enter passphrase for ~/.ssh/id_ed25519:       # <-- enter your passphrase here
-Identity added: ~/.ssh/id_ed25519 (<login>@<hostname>)
-```
-
-On **Ubuntu/WSL**, if you experience issues when using `ssh-add`, you should install the `keychain` package and use it as follows (eventually add it to your `~/.profile`):
-
-```bash
-# Installation
-sudo apt-get install keychain
-
-# Save your passphrase
-/usr/bin/keychain --nogui ~/.ssh/id_ed25519    # (eventually) repeat with ~/.ssh/id_rsa
-# Load the agent in your shell
-source ~/.keychain/$(hostname)-sh
-```
-
-
-### SSH Configuration
-
-You are encouraged to **ALWAYS** simplify the SSH connections by embedding them in a dedicated Host entry, allowing to connect to your remote servers with
-
-        ssh [-F <path/to/config>] <name>
-
-This also allow you to use a consistent naming across your server for either SSH or SCP/RSYNC data transfers. Ex:
-
-        rsync -e "ssh -F <path/to/config>" -avzu . <name>:path/to/remote/dir
 
 We are now going to illustrate the quick configuration of SSH to facilitate access to the two instances.
-Create a new file `~/.ssh/config` using your favorite editor
 
 ```bash
-$ nano ~/.ssh/config    # OR subl vim emacs  etc...
+(laptop)$> nano ~/.ssh/config    # OR subl vim emacs  etc...
 ```
 
 Create the following content:
@@ -209,7 +252,7 @@ Host *-cluster
 Now you can test the configuration with: `ssh iris-cluster`:
 
 ``` bash
-$ ssh iris-cluster
+(laptop)$> ssh iris-cluster
 ==================================================================================
  Welcome to access1.iris-cluster.uni.lux
 ==================================================================================
@@ -255,35 +298,170 @@ $ ssh iris-cluster
 [yourlogin@access1 ~]$
 ```
 
-### SSH Agent
+
+In the following sections, we assume these aliases to be defined.
+
+
+### Step 1b - Optional - using SSH proxycommand setup to access the clusters despite port filtering (Linux / Mac OS / Unix)
+
+It might happen that the port 8022 is filtered from your working place. You can easily bypass this firewall rule using an SSH proxycommand to setup transparently multi-hop connexions *through* one host (a gateway) to get to the access frontend of the cluster, as depited below:
+
+    [laptop] -----||--------> 22 [SSH gateway] ---------> 8022 [access-iris]
+               firewall
+
+The gateway can be any SSH server which have access to the access frontend of the cluster. The [Gforge @ UL](http://gforge.uni.lu) is typically used in this context but you can prefer any other alternative (your personal NAS @ home etc.). Then alter the SSH config on your laptop (in `~/.ssh/config` typically) as follows:
+
+* create an entry to be able to connect to the gateway:
+
+#### Alias for the gateway (not really needed, but convenient), below instantiated
+
+    Host gw
+      User anotherlogin
+      Hostname host.domain.org
+      ForwardAgent no
+
+#### Automatic connection to UL HPC from the outside via the gateway
+
+    Host *.ulhpc
+      ProxyCommand ssh -q -x gw -W `basename %h .ulhpc`:%p
+
+Ensure you can connect to the gateway:
+
+    (laptop)$> ssh gw
+    (gateway)$> exit # or CTRL-D
+
+The `.ulhpc` suffix we mentioned in the previous configuration is an arbitrary suffix you will now specify in your command lines in order to access the UL HPC platform via the gateway as follows:
+
+    (laptop)$> ssh iris.ulhpc
+
+
+### Step 1c - Connect to UL HPC (Windows)
+
+* Download [MobaXterm Installer edition](http://mobaxterm.mobatek.net/)
+* Install MobaXterm
+* Open the application **Start** > **Program Files** > **MobaXterm**
+* Change the default home directory for a persistent home directory instead of the default Temp directory. Go onto **Settings** > **Configuration** > **General** > **Persistent home directory**. Choose a location for your home directory.
+* load your private SSH key. **Tools** > **Network** > **MobaKeyGen (SSH key generator)** and choose Load (or create a new RSA key).
+* click on **Session**
+  * In **SSH Session**:
+    * Remote host: `access-iris.uni.lu`
+		* Check the **Specify username** box
+		* Username: `yourlogin`
+    * Port: 8022
+  * In **Advanced SSH Settings**
+	  * Check `Use private key` box
+		* Select your previously generated `id_rsa.ppk`
+  * Click on **OK**
+
+
+### Step 2 - Hands-on/ Transferring files
+
+Directories such as `$HOME`, `$WORK` or `$SCRATCH` are shared among the nodes of the cluster that you are using (including the front-end) via shared filesystems (NFS, Lustre) meaning that:
+
+* every file/directory pushed or created on the front-end is available on the computing nodes
+* every file/directory pushed or created on the computing nodes is available on the front-end
+
+
+#### Step 2a - Linux / OS X / Unix command line tools
+
+The two most common tools you can use for data transfers over SSH:
+
+* `scp`: for the full transfer of files and directories (only works fine for single files or directories of small/trivial size)
+* `rsync`: a software application which synchronizes files and directories from one location to another while minimizing data transfer as only the outdated or inexistent elements are transferred (practically required for lengthy complex transfers, which are more likely to be interrupted in the middle).
+
+Of both, normally the second approach should be preferred, as more generic; note that, both ensure a secure transfer of the data, within an encrypted tunnel.
+
+* Create a new directory on your local machine and download a file to transfer (next-gen sequencing data from the NIH Roadmap Epigenomics Project):
+
+		(laptop)$> mkdir file_transfer
+		(laptop)$> cd file_transfer
+		(laptop)$> wget "ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM409nnn/GSM409307/suppl/GSM409307_UCSD.H1.H3K4me1.LL228.bed.gz"
+
+* Transfer the file with scp:
+
+		(laptop)$> scp GSM409307_UCSD.H1.H3K4me1.LL228.bed.gz iris-cluster:
+
+* Connect to the cluster, check if the file is there and delete it.
+
+		(laptop)$> ssh iris-cluster
+		(access-iris)$> ls
+		(access-iris)$> rm GSM409307_UCSD.H1.H3K4me1.LL228.bed.gz
+		rm: remove regular file `GSM409307_UCSD.H1.H3K4me1.LL228.bed.gz'? y
+		(access-iris)$> exit
+
+* Transfer the directory with rsync:
+
+		(laptop)$> cd ..
+		(laptop)$> rsync -avzu file_transfer iris-cluster:
+        (laptop)$> rsync -e "ssh -F <path/to/config>" -avzu . <name>:path/to/remote/dir # Allow you to use a consistent naming across your server for either SSH or SCP/RSYNC data transfers.
+
+
+* Delete the file and retrieve it from the cluster:
+
+		(laptop)$> rm file_transfer/GSM409307_UCSD.H1.H3K4me1.LL228.bed.gz
+		(laptop)$> rsync -avzu iris-cluster:file_transfer .
+
+* **Bonus**: Check where the file is located on the cluster after the rsync.
+
+You can get more information about these transfer methods in the [file transfer documentation](https://hpc.uni.lu/users/docs/filetransfer.html).
+
+
+#### Step 2b - Windows MobaXterm file transfer
+
+If you are on Windows, you can directly use MobaXterm to transfer files. Connect to your session (see below on how to configure it). On the right panel you should see an **SFTP** panel opened.
+
+![SFTP on MobaXterm](https://github.com/ULHPC/tutorials/raw/devel/beginners/images/moba_sftp.png)
+
+You have just to drag and drop your files to this panel to transfer files to the cluster. You can try to upload this file [ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM409nnn/GSM409307/suppl/GSM409307_UCSD.H1.H3K4me1.LL228.bed.gz](ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM409nnn/GSM409307/suppl/GSM409307_UCSD.H1.H3K4me1.LL228.bed.gz) (next-gen sequencing data from the NIH Roadmap Epigenomics Project)
+
+To retrieve a file from the cluster, you can right click on it and choose the **Download** option. Please refers to MobaXterm documentation for more informations on the available features.
+
+------------------------
+## SSH agent
 
 If you are tired of typing your passphrase, use `ssh-agent` to load your private key
 
 ```bash
-$ ssh-add ~/.ssh/id_rsa
+(laptop)$> ssh-add ~/.ssh/id_rsa
 Enter passphrase for ~/.ssh/id_rsa:           # <-- enter your passphrase here
 Identity added: ~/.ssh/id_rsa (<login>@<hostname>)
 
-$ ssh-add ~/.ssh/id_ed25519
+(laptop)$> ssh-add ~/.ssh/id_ed25519
 Enter passphrase for ~/.ssh/id_ed25519:       # <-- enter your passphrase here
 Identity added: ~/.ssh/id_ed25519 (<login>@<hostname>)
-
-# Now you can connect transparently to both instances
-$> ssh -F ~/.ssh/AWS/config instance-1.aws
-Welcome to Ubuntu 20.04.1 LTS (GNU/Linux 5.4.0-1021-aws x86_64)
-[...]
-ubuntu@ip-172-31-47-105:~$ logout    # OR CTRL-D
-
-$> ssh -F ~/.ssh/AWS/config instance-2.aws
-Welcome to Ubuntu 20.04.1 LTS (GNU/Linux 5.4.0-1021-aws x86_64)
-[...]
-ubuntu@ip-172-31-44-210:~$  logout    # OR CTRL-D
 ```
 
+On **Ubuntu/WSL**, if you experience issues when using `ssh-add`, you should install the `keychain` package and use it as follows (eventually add it to your `~/.profile`):
 
-## SOCKS 5 Proxy plugin
+```bash
+# Installation
+(laptop)$> sudo apt install keychain
 
-We have seen how to use a jump host (`instance-1.aws`) typically exposed to the Internet to connect to a (potentially internal) server (`instance-2.aws`).
+# Save your passphrase
+/usr/bin/keychain --nogui ~/.ssh/id_ed25519    # (eventually) repeat with ~/.ssh/id_rsa
+# Load the agent in your shell
+source ~/.keychain/$(hostname)-sh
+```
+
+You are encouraged to **ALWAYS** simplify the SSH connections by embedding them in a dedicated Host entry, allowing to connect to your remote servers with
+
+        ssh [-F <path/to/config>] <name>
+
+```bash
+# Now you can connect transparently to both instances
+(laptop)$> ssh -F ~/.ssh/config iris-cluster
+Welcome to access1.iris-cluster.uni.lux
+[...]
+[yourlogin@access1 ~]$ logout    # OR CTRL-D
+
+(laptop)$> ssh -F ~/.ssh/config aion-cluster
+Welcome to access1.aion-cluster.uni.lux
+[...]
+[yourlogin@access1 ~]$ logout    # OR CTRL-D
+```
+
+-----------------------------------
+## SOCKS 5 Proxy plugin (Optional)
 
 Many Data Analytics framework involves a web interface (at the level of the master and/or the workers) you probably want to access in a relative transparent way.
 
@@ -295,11 +473,12 @@ __Setting Up the Tunnel__
 To initiate such a SOCKS proxy using SSH (listening on `localhost:1080` for instance), you simply need to use the `-D 1080` command line option when connecting to a remote server:
 
 ```bash
-$> ssh -D 1080 -C <name>
+(laptop)$> ssh -D 1080 -C <name>
 ```
 
 * `-D`: Tells SSH that we want a SOCKS tunnel on the specified port number (you can choose a number between 1025-65536)
 * `-C`: Compresses the data before sending it
+* `-name`: Server name
 
 __Configuring Firefox to Use the Tunnel__
 
@@ -318,7 +497,7 @@ extension for Firefox and configure it to use your SOCKS proxy:
 * Click on **OK**
 * Close
 * Open a new tab
-* Right click on the Fox
+* Click on the Fox
 * Choose the **ULHPC proxy**
 
 You can now access any web interface deployed on any service reachable from the SSH jump host _i.e._ the ULHPC login node.

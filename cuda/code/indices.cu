@@ -4,10 +4,9 @@
 
 #include <cstdio>
 
-void printSuccessForCorrectExecutionConfiguration()
+void printif()
 {
-  if (threadIdx.x == 1023 && blockIdx.x == 255)
-  {
+  if (threadIdx.x == 1023 && blockIdx.x == 255) {
     printf("Success!\n");
   }
 }
@@ -19,6 +18,6 @@ int main()
    * will print `"Success!"`.
    */
 
-  printSuccessForCorrectExecutionConfiguration<<<1, 1>>>();
+  printif<<<1, 1>>>();
 }
 

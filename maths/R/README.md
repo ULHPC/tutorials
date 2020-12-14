@@ -18,13 +18,15 @@ forks](https://img.shields.io/github/stars/ULHPC/tutorials.svg?style=social&labe
 # R Tutorial
 
 ``` 
-  Copyright (c) 2013-2019 Aurelien Ginolhac, UL HPC Team  <hpc-sysadmins@uni.lu>
+  Copyright (c) 2013-2020 Aurélien Ginolhac, UL HPC Team  <hpc-sysadmins@uni.lu>
 ```
 
-[![](https://github.com/ULHPC/tutorials/raw/devel/maths/R/figures/cover_slides.png)](https://github.com/ULHPC/tutorials/raw/devel/maths/R/PS11-introduction_to_R.pdf)
+[![](https://github.com/ULHPC/tutorials/raw/devel/maths/R/img/cover_slides.png)](https://github.com/ULHPC/tutorials/raw/devel/maths/R/PS10_targets.pdf)
 
-  - [slides as dynamic
-    html](https://cdn.rawgit.com/ULHPC/tutorials/devel/maths/R/Intro_PS.html)
+<div class="shareagain" style="min-width:300px;margin:1em auto;">
+  <iframe src="PS10_targets.html" width="960" height="540" style="border:2px solid currentColor;" loading="lazy" allowfullscreen></iframe>
+  <script>fitvids('.shareagain', {players: 'iframe'});</script>
+</div>
 
 Through this tutorial you will learn how to use R from your local
 machine or from one of the [UL HPC platform](http://hpc.uni.lu)
@@ -34,7 +36,7 @@ parallelization.
 
 Warning: this tutorial does not focus on the learning of R language but
 aims at showing you nice start-up tips.  
-If you’re also looking for a good tutorial on R’s data structures you
+If you are also looking for a good tutorial on R’s data structures you
 can take a look at: [Hadley Wickham’s
 page](http://adv-r.had.co.nz/Data-structures.html). Another
 [bookdown](https://bookdown.org/)’s book is available for free: [R for
@@ -101,8 +103,6 @@ node**
 ``` bash
 # /!\ FOR ALL YOUR COMPILING BUSINESS, ENSURE YOU WORK ON A COMPUTING NODE
 (access-iris)$> si -n 2 -t 2:00:00        # 2h interactive reservation
-# OR (long version)
-(access-iris)$> srun -p interactive -n 2 -t 2:00:00 --pty bash
 ```
 
 ### Optional: On your local machine
@@ -130,7 +130,7 @@ This will install the core packages of the `tidyverse`, including
 `ggplot2` and `dplyr`.
 
 Note: on the first run, R might ask you various questions during the
-installation. e.g. selecting a CRAN mirror to use for downloading
+installation. _e.g._ selecting a CRAN mirror to use for downloading
 packages. Select a mirror close to your location. For other questions,
 using default values is ok.
 
@@ -154,7 +154,7 @@ tutorial](https://rworkshop.uni.lu/practicals/practical01_datasauRus.html)
 
 ## Comparing methods for aggregating data – diamonds
 
-Let’s say we are working with the full `diamonds` dataset (suppplied by
+Lets say we are working with the full `diamonds` dataset (supplied by
 the `ggplot2` package) and we want to compute the **average** price for
 a given diamond **cut**.
 
@@ -168,7 +168,7 @@ dim(diamonds)
 
 before computing the average price per **cut**, we should explore the
 dataset. We won’t use the ggplot’s function `geom_point()` as there are
-too many dots. However, bining the data is fast and still provide an
+too many dots. However, binning the data is fast and still provide an
 idea of where the majority of dots are with a chosen lost of precision
 (number of **bins**, set to 30 by default).
 
@@ -636,11 +636,11 @@ node using the `sjoin` command on the frontend by Valentin Plugaru, use
 Once logged in, you can check that the job is indeed run using the 28
 cores as the output of `htop` below
 
-![](figures/htop_28cores.png)
+![](img/htop_28cores.png)
 
 and that they are dully full processes
 
-![](figures/htop_processes.png)
+![](img/htop_processes.png)
 
 `furrr` allows to simply change your `map()` functions to `future_map()`
 to run in parallel. `future` takes in charge all the spawning and
@@ -679,7 +679,7 @@ see below the benefit of using more cores on the elapsed time for
 computationally intensive tasks such as t-SNE (code in
 [`furrr_benchmark.Rmd`](https://github.com/ULHPC/tutorials/blob/devel/maths/R/furrr_benchmark.Rmd))
 
-![](figures/furrr_tsne.png)
+![](img/furrr_tsne.png)
 
 #### Animation
 
@@ -687,7 +687,7 @@ just for the fun of it, using the
 [gganimate](https://github.com/thomasp85/gganimate) package, we can
 visualise how the t-SNE evolves with increasing perplexities
 
-![](figures/tsne_110_component.gif)
+![](img/tsne_110_component.gif)
 
 If of interest, the code it as follows (install required for
 `gganimate`, `gifski`):
@@ -829,15 +829,12 @@ ggsave("csv_benchmarks.pdf", p, width = 8)
     # … with 5 more variables: total_time <bch:tm>, result <list>, memory <list>,
     #   time <list>, gc <list>
 
-![](figures/csv_benchmarks.png)
+![](img/csv_benchmarks.png)
 
-By default the `ALTREP` framework for `vroom` is used only for
-**characters**. `vroom` is multi-threaded and will use the 4 cores we
+By default the `ALTREP` framework for `vroom` is used. `vroom` is multi-threaded and will use the 4 cores we
 have (on `iris` we need to set it up manually) and performed similarly
 as `data.table` which was designed to be efficient for **numeric** data.
-By activating the option for all data types (altrep\_opts = TRUE),
-`vroom` becomes even faster than `data.table`. But it means that after
-materialization, it will be slower. However, for **characters**, `vroom`
+For **characters**, `vroom`
 is faster even after materialization, see the
 [benchmarks](http://vroom.r-lib.org/articles/benchmarks.html) done by
 the author [Jim Hester](https://github.com/jimhester) (also maintainer
@@ -849,12 +846,8 @@ this package is still under development but is the promising replacement
 for `packrat`. Here is some instructions extracted from the [overview
 vignette](https://rstudio.github.io/renv/articles/renv.html)
 
-  - installation (`install.packages("remotes")` if you miss `remotes`)
-
-<!-- end list -->
-
 ``` r
-remotes::install_github("rstudio/renv")
+install.packages("renv")
 ```
 
 <a name="links"></a>
