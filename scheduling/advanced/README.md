@@ -1,8 +1,8 @@
-[![By ULHPC](https://img.shields.io/badge/by-ULHPC-blue.svg)](https://hpc.uni.lu) [![Licence](https://img.shields.io/badge/license-GPL--3.0-blue.svg)](http://www.gnu.org/licenses/gpl-3.0.html) [![GitHub issues](https://img.shields.io/github/issues/ULHPC/tutorials.svg)](https://github.com/ULHPC/tutorials/issues/) [![](https://img.shields.io/badge/slides-PDF-red.svg)](slides.pdf) [![Github](https://img.shields.io/badge/sources-github-green.svg)](https://github.com/ULHPC/tutorials/tree/devel/advanced/advanced_scheduling/) [![Documentation Status](http://readthedocs.org/projects/ulhpc-tutorials/badge/?version=latest)](http://ulhpc-tutorials.readthedocs.io/en/latest/advanced/advanced_scheduling/) [![GitHub forks](https://img.shields.io/github/stars/ULHPC/tutorials.svg?style=social&label=Star)](https://github.com/ULHPC/tutorials)
+[![By ULHPC](https://img.shields.io/badge/by-ULHPC-blue.svg)](https://hpc.uni.lu) [![Licence](https://img.shields.io/badge/license-GPL--3.0-blue.svg)](http://www.gnu.org/licenses/gpl-3.0.html) [![GitHub issues](https://img.shields.io/github/issues/ULHPC/tutorials.svg)](https://github.com/ULHPC/tutorials/issues/) [![](https://img.shields.io/badge/slides-PDF-red.svg)](https://github.com/ULHPC/tutorials/raw/devel/scheduling/advanced/slides.pdf) [![Github](https://img.shields.io/badge/sources-github-green.svg)](https://github.com/ULHPC/tutorials/tree/devel/scheduling/advanced/) [![Documentation Status](http://readthedocs.org/projects/ulhpc-tutorials/badge/?version=latest)](http://ulhpc-tutorials.readthedocs.io/en/latest/scheduling/advanced/) [![GitHub forks](https://img.shields.io/github/stars/ULHPC/tutorials.svg?style=social&label=Star)](https://github.com/ULHPC/tutorials)
 
-# UL HPC Tutorial: Advanced scheduling with SLURM
+# Advanced scheduling with SLURM
 
-     Copyright (c) 2013-2018 UL HPC Team <hpc-sysadmins@uni.lu>
+     Copyright (c) 2013-2019 UL HPC Team <hpc-sysadmins@uni.lu>
 
 
 [![](cover_slides.png)](slides.pdf)
@@ -29,12 +29,10 @@ You must first connect to the iris cluster frontend, e.g. with `ssh yourlogin@ac
 __Notes__:
 
 * All the commands used have detailed manuals (`man $toolname`) that you can always refer to.
-* To make interactive jobs easier to launch, a function `si` exists that starts an interactive job with your parameters and the qos-interactive QOS
+* To make interactive jobs easier to launch, a function `si` exists that starts an interactive job with your parameters and the debug QOS
 * You can override it in your own `~/.bashrc` with aliases that customizes it for your particular needs, e.g.
-    - `alias si='srun -p interactive --qos qos-interactive --time=0:30:0 --pty bash -i'`
-    - `alias si='srun -p interactive --qos qos-interactive-001 --pty bash -i'`
-    - `alias six='srun -p interactive --qos qos-interactive --x11 --pty bash -i'`
-* Users that are part of groups with access to dedicated QOS should use their specific QOS when launching jobs below (e.g. `qos-interactive-001`)
+    - `alias si='srun -p interactive --qos debug --time=0:30:0 --pty bash -i'`
+    - `alias six='srun -p interactive --qos debug --x11 --pty bash -i'`
 * For the HPC Schools we generally create node reservations named as `hpcschool`
     - see information about the reservation with `sinfo -T` and `scontrol show res`
     - generally the reservation is made in the _batch_ partition, thus to the (srun/sbatch) commands below that ask you to run in the _batch_ partition you can prepend `--reservation=hpcschool` to use it
@@ -117,7 +115,7 @@ sacctmgr list association where users=$USER format=account%30s,user%20s,qos%120s
 * Start an interactive job with the default number of cores and walltime:
 
 ```
-srun -p interactive --qos qos-interactive --pty bash -i
+srun -p interactive --qos debug --pty bash -i
 ```
 
 __Question__: now before exiting the job, what does `env | grep SLURM` give out? What is the walltime for this job?
@@ -125,36 +123,27 @@ __Question__: now before exiting the job, what does `env | grep SLURM` give out?
 * Start an interactive job for 3 minutes, with 2 nodes and 4 tasks per node:
 
 ```
-srun -p interactive --qos qos-interactive --time=0:03:0 -N 2 --ntasks-per-node=4 --pty bash -i
+srun -p interactive --qos debug --time=0:03:0 -N 2 --ntasks-per-node=4 --pty bash -i
 ```
 
 __Question__: can you ssh between the nodes part of this job? what happens if you try to ssh to a different node (not from your job/jobs)? if you are still connected to the job after 3 minutes, what happens?
 
 * Start an interactive job with _X11 forwarding_ such that GUI applications (running in the cluster) will be shown on your workstation:
-    - note that your initial connection to the iris cluster needs to have X11 Forwarding enabled, e.g. `ssh -X iris-cluster`
+    - note that your initial connection to the iris cluster needs to have X11 Forwarding enabled, e.g. `ssh -Y iris-cluster`
 
-Note: as of 2017-11-09, direct X11 (--x11) support with srun (`srun -p interactive --qos qos-interactive --pty --x11 bash -i`) is being patched, and the below workaround is needed.
+Note: as of 2017-11-09, direct X11 (--x11) support with srun (`srun -p interactive --qos debug --pty --x11 bash -i`) is being patched, and the below workaround is needed. You can have a look at the [FAQ about X11 forwarding on our website](https://hpc.uni.lu/blog/2018/faq-x11-forwarding-not-working-with-slurm/)
 
-1. create a file `~/bin/slurm-x11` with the below content and make it executable (`chmod +x ~/bin/slurm-x11`):
+1. Connect to iris using the X11 forwarding `ssh -Y iris-cluster`
+2. Launch a job with X11 by doing an interactive reservation: `salloc -p interactive --qos debug bash -c 'ssh -Y $(scontrol show hostnames | head -n 1)'`
 
-```
-#!/bin/bash
-headNode=$(scontrol show hostname $SLURM_NODELIST | head -n1)
-slurmEnv=$(printenv | grep SLURM_ | sed -rn "s/=(.*)/='\1'/p" | paste -d ' ' -s)
-exec ssh -X $headNode -t "$slurmEnv bash"
-```
+Here are some explanation of what the command do:
 
-2. launch a job with X11: `salloc -p interactive --qos qos-interactive slurm-x11`
+* Request node allocation in interactive partition with qos debug
+* When the resource is allocated, spawn a bash process that will run a command
+* The command permits to connect to the first node of the reservation directly by using ssh with forwarding enable (`-Y` option)
+* You can give extra options at salloc (before the `bash -c` command) like the number of cores.
 
 __Question__: what happens if you launch a graphical application (e.g. `xterm`)? did it appear on your own machine? if not, what went wrong?
-
-* Start a best-effort interactive job (can be interrupted by regular jobs if other users submit them):
-
-```
-srun -p interactive --qos qos-besteffort --pty bash -i
-```
-
-__Question__: can you make this job be preempted? try to allocate other nodes in the interactive partition and see what happens when the besteffort job is marked for preemption.
 
 * Start an interactive job on nodes with Skylake CPUs
 
@@ -248,8 +237,8 @@ sacct -p -j $jobid1,$jobid2 --format=account,user,jobid,jobname,partition,state,
 * Show statistics for all personal jobs started since a particular date, then without job steps:
 
 ```
-sacct --starttime 2018-11-23 -u $USER
-sacct -X --starttime 2018-11-23 -u $USER
+sacct --starttime 2019-06-19 -u $USER
+sacct -X --starttime 2019-06-19 -u $USER
 ```
 
 #### Pausing, resuming and cancelling jobs
@@ -332,7 +321,7 @@ You should now:
 * adapt the most appropriate one (sequential, parallel, etc.) for your most commonly used HPC application
 * launch your own (short execution time) test case, on a single core for sequential code or two distributed cores for parallel code
     - take note of your fair-share and usage values (e.g. with `sshare -A $(sacctmgr -n show user $USER format=defaultaccount%30s)`)
-    - alternative: compile and use HPCG from the [ULHPC HPCG tutorial](https://github.com/ULHPC/tutorials/tree/devel/advanced/HPCG)
+    - alternative: compile and use HPCG from the [ULHPC HPCG tutorial](https://github.com/ULHPC/tutorials/tree/production/parallel/hybrid/HPCG)
 * monitor job progression:
     - with `sprio` / `sprio -l` to see its priority in the queue
     - using `sstat` once it starts, to get running metrics

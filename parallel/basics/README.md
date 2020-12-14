@@ -109,7 +109,7 @@ Thus a minimal Slurm launcher would typically look like that -- see also [our de
 #SBATCH -c 28               #  number of CPU cores i.e. OpenMP threads per task
 #SBATCH --time=0-01:00:00
 #SBATCH -p batch
-#SBATCH --qos=qos-batch
+#SBATCH --qos=normal
 
 export OMP_NUM_THREADS=${SLURM_CPUS_PER_TASK}
 
@@ -193,7 +193,7 @@ $> module load toolchain/intel
 $> icc -qopenmp -xhost -Wall -O2 src/hello_openmp.c -o bin/hello_openmp
 ```
 
-* (__only__ if you have trouble to compile): `make openmp`
+* (__only__ if you have trouble to compile): `make omp`
 
 * Execute the generated binaries multiple times. What do you notice?
 * Exit your interactive session (`exit` or `CTRL-D`)
@@ -375,7 +375,7 @@ Thus a minimal launcher would _typically_ look like that -- see also [our defaul
 #SBATCH -c 1        # Number of threads per MPI process (1 unless hybrid code)
 #SBATCH --time=0-01:00:00
 #SBATCH -p batch
-#SBATCH --qos=qos-batch
+#SBATCH --qos=normal
 
 # Use the RESIF build modules of the UL HPC platform
 if [ -f  /etc/profile ]; then
@@ -556,7 +556,7 @@ Of course, you can have _hybrid_ code mixing MPI and OpenMP primitives.
 #SBATCH -c 4                  # Number of OpenMP threads per MPI process
 #SBATCH --time=0-01:00:00
 #SBATCH -p batch
-#SBATCH --qos=qos-batch
+#SBATCH --qos=normal
 
 # Use the RESIF build modules of the UL HPC platform
 if [ -f  /etc/profile ]; then

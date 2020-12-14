@@ -110,6 +110,7 @@ res_p %>%
   geom_point() +
   geom_abline(intercept = 0, slope = 1, linetype = "dashed") +
   scale_x_continuous(breaks = c(1, seq(4, 28, 4))) +
+  # add scale_y_continous with percent format and limits to 0 - 100
   theme_minimal(14) +
   theme(legend.position = "none") +
   labs(y = "efficiency",
@@ -117,6 +118,7 @@ res_p %>%
        title = NULL,
        subtitle = "t-SNE: efficiency") -> p3
 library(patchwork)
+# would be nice to center the legend vertically
 p1 / (p2 | p3)
 ggsave("figures/furrr_tsne.png", last_plot(), width = 8, height = 7)
 ```

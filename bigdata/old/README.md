@@ -311,7 +311,7 @@ We will first exclusively allocate 2 nodes
 #SBATCH -J SparkMaster
 #          Passive jobs specifications
 #SBATCH --partition=batch
-#SBATCH --qos qos-batch
+#SBATCH --qos normal
 ```
 
 Then we will load the custom module

@@ -6,18 +6,29 @@ pages:
   - Overview:       'setup/index.md'
   - Pre-Requisites: 'setup/preliminaries.md'
   - Installation:   'setup/install.md'
-- Basic Tutorials:
-  - Getting Started: 'beginners/index.md'
-  - HPC workflow with sequential jobs: 'basic/sequential_jobs/index.md'
-  - Prototyping with Python: 'python/basics/index.md'
-- Scheduling:
-  - Job scheduling with SLURM: 'scheduling/advanced/index.md'
+- Preliminaries: 'preliminaries/index.md'
+- Command line utilities: 'tools/cli/index.md'
+- Getting started:
+  - Overview: 'beginners/index.md'
+  - Job scheduling with SLURM: 'basic/scheduling/index.md'
+  - Using software modules: 'tools/cli/modules.md'
 - Tools / Software management:
   - Easybuild: 'tools/easybuild/index.md'
 #  - RESIF:     'tools/resif/index.md'
+- Scheduling:
+  - Advanced job scheduling with SLURM: 'scheduling/advanced/index.md'
 - Debugging and Profiling:
+  - Monitoring and profiling: 'basic/monitoring/index.md'
   - Efficient Debugging:     'debugging/basics/index.md'
   - Performance engineering: 'debugging/advanced/index.md'
+- Sequential/Embarrassingly parallel jobs:
+  - Overview: 'sequential/basics/index.md'
+  - GNU Parallel: 'sequential/gnu-parallel/index.md'
+  - Serial Tasks in Action:
+      - Overview: 'sequential/examples/index.md'
+      - Example/Object Recognition: 'sequential/examples/object_recognition.md'
+      - Example/Watermarking Images: 'sequential/examples/watermarking.md'
+      - Example/JCell (GA in Java): 'sequential/examples/jcell.md'
 - Parallel MPI and/or OpenMP:
   - Overview: 'parallel/basics/index.md'
   - OSU Micro-benchmarks: 'parallel/mpi/OSU_MicroBenchmarks/index.md'
@@ -25,30 +36,52 @@ pages:
   - High Perf. Conjugate Gradient (HPCG): 'parallel/hybrid/HPCG/index.md'
 - Python:
   - Prototyping with Python: 'python/basics/index.md'
-  - Jupyter and Celery: 'python/advanced/index.md'
+  - Jupyter and Celery: 'python/advanced/jupyter-celery/index.md'
+  - Ipyparallel-Scikit-learn: 'python/advanced/scikit-learn/index.md'
+  - Scoop-Deap: 'python/advanced/scoop-deap/index.md'
+- GPU:
+  - Accelerating Applications with CUDA C/C++: 'cuda/index.md'
+  - Convolution using GPU: 'cuda/exercises/convolution/index.md'
 - Mathematics:
   - MATLAB: 'maths/matlab/basics/index.md'
   - MATLAB (advanced): 'maths/matlab/advanced/index.md'
   - R - statistical computing: 'maths/R/index.md'
+  - Cplex - Gurobi: 'maths/Cplex-Gurobi/index.md'
 - Bioinformatics:
   - Running bioinformatics software: 'bio/basics/index.md'
+  - Bioinformatics workflows with snakemake and conda: 'bio/snakemake/index.md'
   - Galaxy: 'bio/galaxy/index.md'
 - CFD/MD/Chemistry:
    - Advanced Parallel execution: 'multiphysics/index.md'
 - Big Data:
   - Big Data Application Over Hadoop and Spark: 'bigdata/index.md'
 - Machine and Deep Learning:
-  - Machine and Deep learning workflows: 'deep_learning/index.md'
+  - Machine and Deep Learning workflows: 'deep_learning/basics/index.md'
+  - Scalable Deep Learning: 'deep_learning/scalable/index.md'
 - Containers:
   - Singularity: 'containers/singularity/index.md'
 - Virtualization:
    - Vagrant: 'virtualization/vagrant/index.md'
-   - Grid5000 - Automatic VM deployment with VM5K: 'virtualization/vm5k/index.md'
 - Misc:
   - Reproducible Research: 'misc/reproducible-research/index.md'
+#  - CUDA Programming: 'cuda/index.md'
 # - Advanced topics:
 #   - Advanced workflows on sequential jobs management: 'advanced/advanced_workflows/README.md'
 - Documentation (RTFD): 'rtfd.md'
 - Contributing: 'contributing.md'
 - Contacts: 'contacts.md'
 theme: readthedocs
+# See https://github.com/mkdocs/mkdocs/issues/253
+markdown_extensions:
+  - pymdownx.arithmatex:
+  - pymdownx.snippets:
+  - markdown.extensions.abbr:
+  - markdown.extensions.toc:
+  - markdown.extensions.tables:
+  - markdown.extensions.attr_list:
+   # - markdown_include.include:
+   #      base_path: docs
+extra_javascript:
+  # other extra java script
+  - mathjax-config.js
+  - https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML

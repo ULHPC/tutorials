@@ -15,13 +15,15 @@ OUTPUT_DIR=.
 
 ### Java 7u80
 #ARCHIVE_JAVA7_URL='http://download.oracle.com/otn-pub/java/jdk/7u80-b15/jdk-7u80-linux-x64.tar.gz'
-ARCHIVE_JAVA7_URL='http://ftp.osuosl.org/pub/funtoo/distfiles/oracle-java/jdk-7u80-linux-x64.tar.gz'
+ARCHIVE_JAVA7_URL='https://files-cdn.liferay.com/mirrors/download.oracle.com/otn-pub/java/jdk/7u80-b15/jdk-7u80-linux-x64.tar.gz'
+#ARCHIVE_JAVA7_URL='http://ftp.osuosl.org/pub/funtoo/distfiles/oracle-java/jdk-7u80-linux-x64.tar.gz'
 ARCHIVE_JAVA7=$(basename "${ARCHIVE_JAVA7_URL}")
 JAVA7_EB='Java-1.7.0_80.eb'
 
 
 ### Java 8u152
-ARCHIVE_JAVA8_URL='http://ftp.osuosl.org/pub/funtoo/distfiles/oracle-java/jdk-8u152-linux-x64.tar.gz'
+#ARCHIVE_JAVA8_URL='http://ftp.osuosl.org/pub/funtoo/distfiles/oracle-java/jdk-8u152-linux-x64.tar.gz'
+ARCHIVE_JAVA8_URL='https://github.com/frekele/oracle-java/releases/download/8u152-b16/jdk-8u152-linux-x64.tar.gz'
 ARCHIVE_JAVA8=$(basename "${ARCHIVE_JAVA8_URL}")
 JAVA8_EB='Java-1.8.0_152.eb'
 

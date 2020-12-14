@@ -1,0 +1,117 @@
+#! /bin/bash
+# Time-stamp: <Wed 2019-11-20 23:52 svarrette>
+################################################################################
+# compute_N - Compute N for HPL runs
+################################################################################
+
+### Global variables
+COMMAND=$(basename $0)
+
+NNODES=${SLURM_NNODES:-1}
+TOTAL_MEMORY=
+RATIO=0.8
+MEM_RATIO=$(echo "${RATIO}*${RATIO}*100" | bc -l | xargs printf "%1.0f")
+NB=192
+
+### System Settings  - Total amount of usable RAM in KiB
+# While /proc/meminfo shows kilobytes (kB; 1 kB equals 1000 B), it is actually
+# kibibytes (KiB; 1 KiB equals 1024 B)
+[ -f /proc/meminfo ]  && RAM_SIZE=$(grep MemTotal /proc/meminfo | awk '{print $2}')
+if [ -z "${RAM_SIZE}" ]; then
+    # On Mac OS/BSD systems
+    hw_memsize=$(sysctl hw.memsize| awk '{ print $2 }')
+    RAM_SIZE=$(echo "${hw_memsize}/1024" | bc -l | xargs printf "%1.0f")
+fi
+# AVX512 capabilities (Skylake)
+[ -f /proc/cpuinfo ]  && AVX512=$(cat /proc/cpuinfo | grep flags | head -n1 | grep avx512)
+[ -n "${AVX512}"   ]  && NB=384
+
+######################
+print_error_and_exit() { echo "*** ERROR *** $*"; exit 1; }
+usage() {
+    cat <<EOF
+Compute N for HPL runs.
+
+SYNOPSIS
+  $COMMAND [-v] [--mem <SIZE_IN_GB>] [-N <NODES>] [-r <RATIO>] [-NB <NB>]
+  $COMMAND [-v] [--mem <SIZE_IN_GB>] [-N <NODES>] [-p <PERCENTAGE_MEM>] [-NB <NB>]
+
+  The following formulae is used (when using '-r <ratio>'):
+     N = <ratio>*SQRT( Total Memory Size in bytes / sizeof(double) )
+       = <ratio>*SQRT( <nnodes> * <ram_size> / 8)
+
+  Alternatively you may wish to specify a memory usage ratio (with -p <percentage_mem>),
+  in which case the following formulae is used:
+      N = SQRT( <percentage_mem>/100 * Total Memory Size in bytes / sizeof(doubl)
+
+OPTIONS
+  -m --mem --ramsize <SIZE>
+     Specify the total memory size per node, in GiB.
+     Default RAM size consider (yet in KiB): ${RAM_SIZE} KiB
+  -N --nodes <N>
+     Number of compute nodes
+  -NB <NB>
+     NB parameters to use. Default: ${NB} (384 for skylake)
+  -p --memshare <PERCENTAGE_MEM>
+     Percentage of the total memory size to use.
+     Derived from the below global ratio (i.e. ${MEM_RATIO}% since RATIO=${RATIO})
+  -r --ratio <RATIO>
+     Global ratio to apply. Default: ${RATIO}
+
+EXAMPLE
+  For 2 broadwell nodes on iris cluster, using 30% of the total memory per node:
+     $COMMAND -N 2 -p 30 -m 128 -NB 192
+  For 4 skylake nodes on iris cluster, using 85% of the total memory per node:
+     $COMMAND -N 4 -p 85 -m 128 -NB 384
+
+AUTHORS
+  Sebastien Varrette <Sebastien.Varrette@uni.lu> and UL HPC Team
+
+COPYRIGHT
+  This is free software; see the source for copying conditions.  There is
+  NO warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+EOF
+}
+
+################################################################################
+################################################################################
+# Check for options
+while [ $# -ge 1 ]; do
+    case $1 in
+        -h | --help) usage; exit 0;;
+        -b | -NB | --block*) shift; NB=$1;;
+        -m | --mem | --ram*)
+            # Memory size expected to be provided in GiB, thus converted to KiB
+            # as in /proc/meminfo
+            shift; RAM_SIZE=$(echo "$1*1024*1024" | bc -l);;
+        -p | --memshare) shift; MEM_RATIO=$(echo "$1/100" | bc -l | xargs printf "%1.2f");;
+        -N | --nodes) shift; NNODES=$1;;
+        -r | --ratio) shift; MEM_RATIO=$(echo "$1*$1" | bc -l);;
+        -v | --debug) VERBOSE=$1;;
+    esac
+    shift
+done
+
+# Total memory in bytes
+TOTAL_MEMORY=$(echo "${NNODES}*${RAM_SIZE}*1024" | bc -l)
+
+# HPL performs computation on an N x N array of Double Precision (DP) elements.
+# Each double precision element requires 8 bytes thus the memory consumed for a
+# problem size of N is 8N^2
+DP_ELEMENT=$(echo "sqrt(${MEM_RATIO}*${TOTAL_MEMORY}/8)/1" | bc -l | xargs printf "%1.0f")
+if [ -n "${VERBOSE}" ]; then
+    cat <<EOF
+NNODES       = ${NNODES}
+RAM_SIZE     = ${RAM_SIZE} KiB
+MEM_RATIO    = ${MEM_RATIO}
+TOTAL_MEMORY = ${TOTAL_MEMORY} bytes
+
+Default N: ${DP_ELEMENT} Double Precision elements
+    (leading to 8N^2 = $(echo "8*${DP_ELEMENT}*${DP_ELEMENT}" | bc -l) memory consumed for a problem size of N)
+
+Since N should be a multiple of NB=${NB}, proposed value for N is:
+EOF
+fi
+TMP_N=$(echo "${DP_ELEMENT}/${NB}" | bc -l | xargs printf "%1.0f")
+N=$(echo "${TMP_N}*${NB}" | bc)
+echo $N

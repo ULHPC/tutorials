@@ -78,7 +78,7 @@ being proposed later on as exercises.
 		(yourmachine)$> ssh access-iris.uni.lu
 		
 		# Request half a node in an interactive job:
-		(access-iris)$> srun -p interactive --qos qos-interactive -t 0-0:30:0 -N 1 -c 1 --ntasks-per-node=14 --pty bash
+		(access-iris)$> srun -p interactive --qos debug -t 0-0:30:0 -N 1 -c 1 --ntasks-per-node=14 --pty bash
 
 
 ```
@@ -192,7 +192,7 @@ being proposed later on as exercises.
 		(yourmachine)$> ssh access-iris.uni.lu
 		
 		# Request half a node in an interactive job:
-		(access-iris)$> srun -p interactive --qos qos-interactive -t 0-0:30:0 -N 1 -c 1 --ntasks-per-node=14 --pty bash
+		(access-iris)$> srun -p interactive --qos debug -t 0-0:30:0 -N 1 -c 1 --ntasks-per-node=14 --pty bash
 
 
 ```
@@ -293,7 +293,7 @@ versions prebuilt for Linux by the developers.
 		(yourmachine)$> ssh access-iris.uni.lu
 		
 		# Request half a node in an interactive job:
-		(access-iris)$> srun -p interactive --qos qos-interactive -t 0-0:30:0 -N 1 -c 14 --ntasks-per-node=1 --pty bash
+		(access-iris)$> srun -p interactive --qos debug -t 0-0:30:0 -N 1 -c 14 --ntasks-per-node=1 --pty bash
 
 ```
 # Create a folder for the new software and go to it
@@ -399,7 +399,7 @@ being proposed later on as exercises.
 		(yourmachine)$> ssh access-iris.uni.lu
 		
 		# Request half a node in an interactive job:
-		(access-iris)$> srun -p interactive --qos qos-interactive -t 0-0:30:0 -N 1 -c 1 --ntasks-per-node=14 --pty bash
+		(access-iris)$> srun -p interactive --qos debug -t 0-0:30:0 -N 1 -c 1 --ntasks-per-node=14 --pty bash
 		
 		# Load the bioinfo software set
 		(node)$> module use /opt/apps/resif/data/stable/bioinfo/modules/all

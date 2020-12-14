@@ -1,10 +1,10 @@
-[![By ULHPC](https://img.shields.io/badge/by-ULHPC-blue.svg)](https://hpc.uni.lu) [![Licence](https://img.shields.io/badge/license-GPL--3.0-blue.svg)](http://www.gnu.org/licenses/gpl-3.0.html) [![GitHub issues](https://img.shields.io/github/issues/ULHPC/tutorials.svg)](https://github.com/ULHPC/tutorials/issues/) [![](https://img.shields.io/badge/slides-PDF-red.svg)](https://github.com/ULHPC/tutorials/raw/devel/advanced/MATLAB1/MATLAB1.pdf) [![Github](https://img.shields.io/badge/sources-github-green.svg)](https://github.com/ULHPC/tutorials/tree/devel/advanced/MATLAB1/) [![Documentation Status](http://readthedocs.org/projects/ulhpc-tutorials/badge/?version=latest)](http://ulhpc-tutorials.readthedocs.io/en/latest/advanced/MATLAB1/) [![GitHub forks](https://img.shields.io/github/stars/ULHPC/tutorials.svg?style=social&label=Star)](https://github.com/ULHPC/tutorials)
+[![By ULHPC](https://img.shields.io/badge/by-ULHPC-blue.svg)](https://hpc.uni.lu) [![Licence](https://img.shields.io/badge/license-GPL--3.0-blue.svg)](http://www.gnu.org/licenses/gpl-3.0.html) [![GitHub issues](https://img.shields.io/github/issues/ULHPC/tutorials.svg)](https://github.com/ULHPC/tutorials/issues/) [![](https://img.shields.io/badge/slides-PDF-red.svg)](https://github.com/ULHPC/tutorials/raw/devel/maths/matlab/basics/slides.pdf) [![Github](https://img.shields.io/badge/sources-github-green.svg)](https://github.com/ULHPC/tutorials/tree/devel/maths/matlab/basics/) [![Documentation Status](http://readthedocs.org/projects/ulhpc-tutorials/badge/?version=latest)](http://ulhpc-tutorials.readthedocs.io/en/latest/maths/matlab/basics/) [![GitHub forks](https://img.shields.io/github/stars/ULHPC/tutorials.svg?style=social&label=Star)](https://github.com/ULHPC/tutorials)
 
 # MATLAB (interactive, passive and sequential jobs) execution on the UL HPC platform
 
-      Copyright (c) 2013-2018 UL HPC Team  <hpc-sysadmins@uni.lu>
+      Copyright (c) 2013-2019 UL HPC Team  <hpc-sysadmins@uni.lu>
 
-[![](https://github.com/ULHPC/tutorials/raw/devel/advanced/MATLAB1/cover_MATLAB1.png)](https://github.com/ULHPC/tutorials/raw/devel/advanced/MATLAB1/MATLAB1.pdf)
+[![](cover_slides.png)](slides.pdf)
 
 The objective of this tutorial is to exemplify the execution of [MATLAB](http://www.matlab.com) -
 a high-level language and interactive environment for numerical computation,
@@ -19,33 +19,32 @@ The tutorial will show you:
 5. how to plot data, saving the plots to file
 6. how to take advantage of some of the paralelization capabilities of MATLAB to speed up your tasks
 
-For the tutorial we will use the UL HPC [Gaia](http://hpc.uni.lu/systems/gaia/) cluster that includes nodes with GPU accelerators.
+For the tutorial we will use the UL HPC [Iris](http://hpc.uni.lu/systems/iris/) cluster that includes nodes with GPU accelerators.
 
 ## Prerequisites
 
 As part of this tutorial two Matlab example scripts have been developed and you will need to download them,
 along with their dependencies, before following the instructions in the next sections:
 
-        (gaia-frontend)$> mkdir -p ~/matlab-tutorial/code
-        (gaia-frontend)$> cd ~/matlab-tutorial/code
-        (gaia-frontend)$> wget --no-check-certificate https://raw.github.com/ULHPC/tutorials/devel/maths/matlab/basics/code/example1.m
-        (gaia-frontend)$> wget --no-check-certificate https://raw.github.com/ULHPC/tutorials/devel/maths/matlab/basics/code/example2.m
-        (gaia-frontend)$> wget --no-check-certificate https://raw.github.com/ULHPC/tutorials/devel/maths/matlab/basics/code/google_finance_data.m
-        (gaia-frontend)$> wget --no-check-certificate https://raw.github.com/ULHPC/tutorials/devel/maths/matlab/basics/code/file_data_source.m
-        (gaia-frontend)$> wget --no-check-certificate https://raw.github.com/ULHPC/tutorials/devel/maths/matlab/basics/code/AAPL.csv
+        (access-iris)$> mkdir -p ~/matlab-tutorial/code
+        (access-iris)$> cd ~/matlab-tutorial/code
+        (access-iris)$> wget --no-check-certificate https://raw.github.com/ULHPC/tutorials/devel/maths/matlab/basics/code/example1.m
+        (access-iris)$> wget --no-check-certificate https://raw.github.com/ULHPC/tutorials/devel/maths/matlab/basics/code/example2.m
+        (access-iris)$> wget --no-check-certificate https://raw.github.com/ULHPC/tutorials/devel/maths/matlab/basics/code/google_finance_data.m
+        (access-iris)$> wget --no-check-certificate https://raw.github.com/ULHPC/tutorials/devel/maths/matlab/basics/code/file_data_source.m
+        (access-iris)$> wget --no-check-certificate https://raw.github.com/ULHPC/tutorials/devel/maths/matlab/basics/code/AAPL.csv
 
 
 Or simply clone the full tutorials repository and make a link to this part of the MATLAB tutorial:
 
-        (gaia-frontend)$> git clone https://github.com/ULHPC/tutorials.git
-        (gaia-frontend)$> ln -s tutorials/maths/matlab/basics ~/matlab-tutorial
+        (access-iris)$> git clone https://github.com/ULHPC/tutorials.git
+        (access-iris)$> ln -s tutorials/maths/matlab/basics ~/matlab-tutorial
 
 ## Matlab execution in interactive mode
 
 ### Launching the full graphical environment
 
-Running the full MATLAB environment (e.g. on the Gaia cluster) requires an [interactive OAR session](https://hpc.uni.lu/users/docs/oar.html#concepts). When connecting to the clusters you will
-need to enable X11 forwarding in order for the graphical environment to be shown on your
+Running the full MATLAB environment on the Iris cluster will require you to enable X11 forwarding in order for the graphical environment to be shown on your
 local machine:
 
 - on Linux simply follow the commands below
@@ -54,21 +53,20 @@ local machine:
   and thus will need to install [XQuartz](http://xquartz.macosforge.org/landing/) if
   the first command below returns an 'X11 forwarding request failed on channel 0' error
 
-- on Windows you will need to run [VcXsrv](http://sourceforge.net/projects/vcxsrv/) first
-  then to configure Putty (Connection -> SSH -> X11 -> Enable X11 forwarding) before
-  logging in to the clusters.
+- on Windows you will either need to use MobaXTerm or if you use Putty, run [VcXsrv](http://sourceforge.net/projects/vcxsrv/) first
+  then configure Putty (Connection -> SSH -> X11 -> Enable X11 forwarding) before logging in to Iris.
 
-        # Connect to Gaia with X11 forwarding enabled (Linux/OS X):
-        (yourmachine)$> ssh yourlogin@access-gaia.uni.lu -p 8022 -X
+        # Connect to Iris with X11 forwarding enabled (Linux/OS X):
+        (yourmachine)$> ssh yourlogin@access-iris.uni.lu -p 8022 -X
 
-        # Request an interactive job (the default parameters get you 1 core for 2 hours):
-        (gaia-frontend)$> oarsub -I
+        # Request an interactive job (the default parameters get you 1 core for 2 hours) with an X11 tunnel:
+        (access-iris)$> salloc -p interactive bash -c 'ssh -X $(scontrol show hostnames | head -n 1)'
 
         # Check the Matlab versions installed on the clusters:
-        (node)$> module spider matlab
+        (node)$> module avail matlab
 
         # Load a specific MATLAB version:
-        (node)$> module load base/MATLAB/2017a
+        (node)$> module load base/MATLAB/2018a
 
         # Check that its profile has been loaded and thus we can start to use it:
         (node)$> module list
@@ -80,31 +78,43 @@ After a delay, the full Matlab interface will be displayed on your machine and y
 scripts and generate plots. An alternative to the graphical interface is the command-line (text-mode) interface, which is
 enabled through specific parameters, described in the following section.
 
+Note: to request a full Iris node for a large interactive experiment you can:
+
+1. Use all 28 cores within a node from the _interactive_ partition, with 4GB RAM/core
+
+        salloc -p interactive -N 1 -n 1 -c 28 bash -c 'ssh -X $(scontrol show hostnames | head -n 1)'
+
+2. Use all 112 cores within a node from the _bigmem_ partition, with ~27GB RAM/core
+
+        salloc -p bigmem -N 1 -n 1 -c 112 bash -c 'ssh -X $(scontrol show hostnames | head -n 1)'
+
 ### Launching the command-line environment
 
 Running the text-mode MATLAB interface in an interactive session, is much faster than
 using the full graphical environment through the network and is useful for commands/scripts testing and
 quick executions:
 
-        # First, connect to an UL cluster (e.g. Gaia):
+        # Connect to Iris, start an interactive job with 14 cores for 1 hour:
 
-        (yourmachine)$> ssh yourlogin@access-gaia.uni.lu -p 8022
-        (gaia-frontend)$> oarsub -I
-        (node)$> module load base/MATLAB/2017a
+        (yourmachine)$> ssh yourlogin@access-iris.uni.lu -p 8022
+        (access-iris)$> srun -n 1 -c 14 --time 1:0:0 -p interactive --pty bash -i
+        (node)$> module load base/MATLAB/2018a
 
         # Launch MATLAB with the graphical display mode disabled (critical parameters):
         (node)$> matlab -nodisplay -nosplash
-        Opening log file:  /home/users/vplugaru/java.log.23247
+        Opening log file:  /home/users/vplugaru/java.log.46818
 
-                                                                       < M A T L A B (R) >
-                                                             Copyright 1984-2017 The MathWorks, Inc.
-                                                              R2017a (9.2.0.538062) 64-bit (glnxa64)
-                                                                        February 23, 2017
+                                       < M A T L A B (R) >
+                             Copyright 1984-2018 The MathWorks, Inc.
+                              R2018a (9.4.0.813654) 64-bit (glnxa64)
+                                        February 23, 2018
+         
         To get started, type one of these: helpwin, helpdesk, or demo.
         For product information, visit www.mathworks.com.
+         
         >> version()
         ans =
-            '9.2.0.538062 (R2017a)
+            '9.4.0.813654 (R2018a)'
 
 In this command line you are now able to run Matlab commands, load and edit scripts, but cannot display plots - they can
 however be generated and exported to file, which you will need to transfer to your own machine for visualisation.
@@ -201,97 +211,117 @@ To see all available toolboxes:
 
 Checking the availability of statistics toolboxes (if we don't know the exact name, but that 'stat' is in the name):
 
-         (node)$> $EBROOTMATLAB/etc/glnxa64/lmutil lmstat -c $EBROOTMATLAB/licenses/network.lic -a | grep -i stat
+         (node)$> $EBROOTMATLAB/etc/glnxa64/lmutil lmstat -c $EBROOTMATLAB/licenses/network.lic -a | grep -i statistics
 
-Finally, checking the available toolboxes (but with no information on the specific # of available/used licenses), can be done directly from MATLAB, e.g.:
+Finally, checking the available toolboxes (but with no information on the specific # of available/used licenses), can be done directly from MATLAB with the `ver` command.
+We will load the development (experimental/testing) software set that as of June 2019 contains the newest MATLAB available (R2019a) and see this information:
 
-         (node)$> module load base/MATLAB/2017a
+         (node)$> module load swenv/default-env/devel
+         (node)$> module load base/MATLAB/2019a
          (node)$> matlab -nodesktop -nodisplay
-         Opening log file:  /home/users/vplugaru/java.log.6343
-                                                                     < M A T L A B (R) >
-                                                           Copyright 1984-2017 The MathWorks, Inc.
-                                                            R2017a (9.2.0.538062) 64-bit (glnxa64)
-                                                                      February 23, 2017
-
-
-         To get started, type one of these: helpwin, helpdesk, or demo.
+         Opening log file:  /home/users/vplugaru/java.log.16925
+         
+                                 < M A T L A B (R) >
+                       Copyright 1984-2019 The MathWorks, Inc.
+                       R2019a (9.6.0.1072779) 64-bit (glnxa64)
+                                    March 8, 2019
+         To get started, type doc.
          For product information, visit www.mathworks.com.
-
+          
          >> ver
-         ----------------------------------------------------------------------------------------------------
-         MATLAB Version: 9.2.0.538062 (R2017a)
+         -----------------------------------------------------------------------------------------------------
+         MATLAB Version: 9.6.0.1072779 (R2019a)
          MATLAB License Number: 886910
-         Operating System: Linux 3.16.0-4-amd64 #1 SMP Debian 3.16.43-2+deb8u3 (2017-08-15) x86_64
-         Java Version: Java 1.7.0_60-b19 with Oracle Corporation Java HotSpot(TM) 64-Bit Server VM mixed mode
-         ----------------------------------------------------------------------------------------------------
-         MATLAB                                                Version 9.2         (R2017a)
-         Simulink                                              Version 8.9         (R2017a)
-         Aerospace Blockset                                    Version 3.19        (R2017a)
-         Aerospace Toolbox                                     Version 2.19        (R2017a)
-         Antenna Toolbox                                       Version 2.2         (R2017a)
-         Bioinformatics Toolbox                                Version 4.8         (R2017a)
-         Communications System Toolbox                         Version 6.4         (R2017a)
-         Computer Vision System Toolbox                        Version 7.3         (R2017a)
-         Control System Toolbox                                Version 10.2        (R2017a)
-         Curve Fitting Toolbox                                 Version 3.5.5       (R2017a)
-         DSP System Toolbox                                    Version 9.4         (R2017a)
-         Database Toolbox                                      Version 7.1         (R2017a)
-         Datafeed Toolbox                                      Version 5.5         (R2017a)
-         Econometrics Toolbox                                  Version 4.0         (R2017a)
-         Embedded Coder                                        Version 6.12        (R2017a)
-         Filter Design HDL Coder                               Version 3.1.1       (R2017a)
-         Financial Instruments Toolbox                         Version 2.5         (R2017a)
-         Financial Toolbox                                     Version 5.9         (R2017a)
-         Fixed-Point Designer                                  Version 5.4         (R2017a)
-         Fuzzy Logic Toolbox                                   Version 2.2.25      (R2017a)
-         Global Optimization Toolbox                           Version 3.4.2       (R2017a)
-         HDL Coder                                             Version 3.10        (R2017a)
-         HDL Verifier                                          Version 5.2         (R2017a)
-         Image Acquisition Toolbox                             Version 5.2         (R2017a)
-         Image Processing Toolbox                              Version 10.0        (R2017a)
-         Instrument Control Toolbox                            Version 3.11        (R2017a)
-         LTE System Toolbox                                    Version 2.4         (R2017a)
-         MATLAB Coder                                          Version 3.3         (R2017a)
-         MATLAB Compiler                                       Version 6.4         (R2017a)
-         MATLAB Compiler SDK                                   Version 6.3.1       (R2017a)
-         MATLAB Report Generator                               Version 5.2         (R2017a)
-         Mapping Toolbox                                       Version 4.5         (R2017a)
-         Model Predictive Control Toolbox                      Version 5.2.2       (R2017a)
-         Neural Network Toolbox                                Version 10.0        (R2017a)
-         Optimization Toolbox                                  Version 7.6         (R2017a)
-         Parallel Computing Toolbox                            Version 6.10        (R2017a)
-         Partial Differential Equation Toolbox                 Version 2.4         (R2017a)
-         Phased Array System Toolbox                           Version 3.4         (R2017a)
-         RF Blockset                                           Version 6.0         (R2017a)
-         RF Blockset                                           Version 6.0         (R2017a)
-         RF Toolbox                                            Version 3.2         (R2017a)
-         Robotics System Toolbox                               Version 1.4         (R2017a)
-         Robust Control Toolbox                                Version 6.3         (R2017a)
-         Signal Processing Toolbox                             Version 7.4         (R2017a)
-         SimBiology                                            Version 5.6         (R2017a)
-         SimEvents                                             Version 5.2         (R2017a)
-         Simscape                                              Version 4.2         (R2017a)
-         Simscape Driveline                                    Version 2.12        (R2017a)
-         Simscape Electronics                                  Version 2.11        (R2017a)
-         Simscape Fluids                                       Version 2.2         (R2017a)
-         Simscape Multibody                                    Version 5.0         (R2017a)
-         Simscape Power Systems                                Version 6.7         (R2017a)
-         Simulink 3D Animation                                 Version 7.7         (R2017a)
-         Simulink Code Inspector                               Version 3.0         (R2017a)
-         Simulink Coder                                        Version 8.12        (R2017a)
-         Simulink Control Design                               Version 4.5         (R2017a)
-         Simulink Design Optimization                          Version 3.2         (R2017a)
-         Simulink Design Verifier                              Version 3.3         (R2017a)
-         Simulink Report Generator                             Version 5.2         (R2017a)
-         Simulink Test                                         Version 2.2         (R2017a)
-         Simulink Verification and Validation                  Version 3.13        (R2017a)
-         Stateflow                                             Version 8.9         (R2017a)
-         Statistics and Machine Learning Toolbox               Version 11.1        (R2017a)
-         Symbolic Math Toolbox                                 Version 7.2         (R2017a)
-         System Identification Toolbox                         Version 9.6         (R2017a)
-         Trading Toolbox                                       Version 3.2         (R2017a)
-         Vision HDL Toolbox                                    Version 1.4         (R2017a)
-         Wavelet Toolbox                                       Version 4.18        (R2017a)
+         Operating System: Linux 3.10.0-693.21.1.el7.x86_64 #1 SMP Wed Mar 7 19:03:37 UTC 2018 x86_64
+         Java Version: Java 1.8.0_181-b13 with Oracle Corporation Java HotSpot(TM) 64-Bit Server VM mixed mode
+         -----------------------------------------------------------------------------------------------------
+         MATLAB                                                Version 9.6         (R2019a)
+         Simulink                                              Version 9.3         (R2019a)
+         5G Toolbox                                            Version 1.1         (R2019a)
+         AUTOSAR Blockset                                      Version 2.0         (R2019a)
+         Aerospace Blockset                                    Version 4.1         (R2019a)
+         Aerospace Toolbox                                     Version 3.1         (R2019a)
+         Antenna Toolbox                                       Version 4.0         (R2019a)
+         Audio Toolbox                                         Version 2.0         (R2019a)
+         Automated Driving Toolbox                             Version 2.0         (R2019a)
+         Bioinformatics Toolbox                                Version 4.12        (R2019a)
+         Communications Toolbox                                Version 7.1         (R2019a)
+         Computer Vision Toolbox                               Version 9.0         (R2019a)
+         Control System Toolbox                                Version 10.6        (R2019a)
+         Curve Fitting Toolbox                                 Version 3.5.9       (R2019a)
+         DSP System Toolbox                                    Version 9.8         (R2019a)
+         Database Toolbox                                      Version 9.1         (R2019a)
+         Datafeed Toolbox                                      Version 5.8.1       (R2019a)
+         Deep Learning Toolbox                                 Version 12.1        (R2019a)
+         Econometrics Toolbox                                  Version 5.2         (R2019a)
+         Embedded Coder                                        Version 7.2         (R2019a)
+         Filter Design HDL Coder                               Version 3.1.5       (R2019a)
+         Financial Instruments Toolbox                         Version 2.9         (R2019a)
+         Financial Toolbox                                     Version 5.13        (R2019a)
+         Fixed-Point Designer                                  Version 6.3         (R2019a)
+         Fuzzy Logic Toolbox                                   Version 2.5         (R2019a)
+         GPU Coder                                             Version 1.3         (R2019a)
+         Global Optimization Toolbox                           Version 4.1         (R2019a)
+         HDL Coder                                             Version 3.14        (R2019a)
+         HDL Verifier                                          Version 5.6         (R2019a)
+         Image Acquisition Toolbox                             Version 6.0         (R2019a)
+         Image Processing Toolbox                              Version 10.4        (R2019a)
+         Instrument Control Toolbox                            Version 4.0         (R2019a)
+         LTE HDL Toolbox                                       Version 1.3         (R2019a)
+         LTE Toolbox                                           Version 3.1         (R2019a)
+         MATLAB Coder                                          Version 4.2         (R2019a)
+         MATLAB Compiler                                       Version 7.0.1       (R2019a)
+         MATLAB Compiler SDK                                   Version 6.6.1       (R2019a)
+         MATLAB Report Generator                               Version 5.6         (R2019a)
+         Mapping Toolbox                                       Version 4.8         (R2019a)
+         Mixed-Signal Blockset                                 Version 1.0         (R2019a)
+         Model Predictive Control Toolbox                      Version 6.3         (R2019a)
+         Optimization Toolbox                                  Version 8.3         (R2019a)
+         Parallel Computing Toolbox                            Version 7.0         (R2019a)
+         Partial Differential Equation Toolbox                 Version 3.2         (R2019a)
+         Phased Array System Toolbox                           Version 4.1         (R2019a)
+         Powertrain Blockset                                   Version 1.5         (R2019a)
+         Predictive Maintenance Toolbox                        Version 2.0         (R2019a)
+         RF Blockset                                           Version 7.2         (R2019a)
+         RF Toolbox                                            Version 3.6         (R2019a)
+         Reinforcement Learning Toolbox                        Version 1.0         (R2019a)
+         Risk Management Toolbox                               Version 1.5         (R2019a)
+         Robotics System Toolbox                               Version 2.2         (R2019a)
+         Robust Control Toolbox                                Version 6.6         (R2019a)
+         Sensor Fusion and Tracking Toolbox                    Version 1.1         (R2019a)
+         SerDes Toolbox                                        Version 1.0         (R2019a)
+         Signal Processing Toolbox                             Version 8.2         (R2019a)
+         SimBiology                                            Version 5.8.2       (R2019a)
+         SimEvents                                             Version 5.6         (R2019a)
+         Simscape                                              Version 4.6         (R2019a)
+         Simscape Driveline                                    Version 2.16        (R2019a)
+         Simscape Electrical                                   Version 7.1         (R2019a)
+         Simscape Fluids                                       Version 2.6         (R2019a)
+         Simscape Multibody                                    Version 6.1         (R2019a)
+         Simulink 3D Animation                                 Version 8.2         (R2019a)
+         Simulink Check                                        Version 4.3         (R2019a)
+         Simulink Code Inspector                               Version 3.4         (R2019a)
+         Simulink Coder                                        Version 9.1         (R2019a)
+         Simulink Control Design                               Version 5.3         (R2019a)
+         Simulink Coverage                                     Version 4.3         (R2019a)
+         Simulink Design Optimization                          Version 3.6         (R2019a)
+         Simulink Design Verifier                              Version 4.1         (R2019a)
+         Simulink Report Generator                             Version 5.6         (R2019a)
+         Simulink Requirements                                 Version 1.3         (R2019a)
+         Simulink Test                                         Version 3.0         (R2019a)
+         SoC Blockset                                          Version 1.0         (R2019a)
+         Stateflow                                             Version 10.0        (R2019a)
+         Statistics and Machine Learning Toolbox               Version 11.5        (R2019a)
+         Symbolic Math Toolbox                                 Version 8.3         (R2019a)
+         System Composer                                       Version 1.0         (R2019a)
+         System Identification Toolbox                         Version 9.10        (R2019a)
+         Text Analytics Toolbox                                Version 1.3         (R2019a)
+         Trading Toolbox                                       Version 3.5.1       (R2019a)
+         Vehicle Dynamics Blockset                             Version 1.2         (R2019a)
+         Vehicle Network Toolbox                               Version 4.2         (R2019a)
+         Vision HDL Toolbox                                    Version 1.8         (R2019a)
+         WLAN Toolbox                                          Version 2.1         (R2019a)
+         Wavelet Toolbox                                       Version 5.2         (R2019a)
 
 ## Matlab execution in passive mode
 
@@ -317,27 +347,21 @@ the end in order to close Matlab, otherwise after the script has executed Matlab
 waiting for further input until the end of the walltime you set for the passive job, tying up compute
 resources needlessly.
 
-The following minimal example shows how to run a serial (1 core) MATLAB script for 24 hours in passive mode:
+The following minimal launcher example shows how to run a serial (1 core) MATLAB script for 24 hours in passive mode:
 
-        (gaia-frontend)$> oarsub -l walltime=24:00:00 "source /etc/profile; module load base/MATLAB; matlab -nodisplay -nosplash < INPUTFILE.m > OUTPUTFILE.out"
+       #!/bin/bash -l
+       #SBATCH -J MATLAB
+       #SBATCH -N 1
+       #SBATCH -n 1
+       #SBATCH -c 1
+       #SBATCH --time=1-0:0:0
+       #SBATCH -p batch
+       
+       module load base/MATLAB/2018a
+       matlab -nodisplay -nosplash < /path/to/your/inputfile > /path/to/your/outputfile
 
-Ideally you __would not__ run MATLAB jobs like this but instead [create/adapt a launcher script](https://github.com/ULHPC/launcher-scripts) to contain those instructions. A minimal shell script (e.g. named 'your\_matlab\_launcher.sh') could be:
-
-        #!/bin/bash
-        source /etc/profile
-        # REMEMBER to change the following to the correct paths of the input/output files:
-        INPUTFILE=your_input_file_name_without_extension
-        OUTPUTFILE=your_output_file_name_with_extension.out
-        # Load a specific version of MATLAB and run the input script:
-        module load base/MATLAB/2017a
-        matlab -nodisplay -nosplash -r $INPUTFILE -logfile $OUTPUTFILE
-
-then launch it in a job (e.g. requesting 6 cores on 1 node for 10 hours - assuming your input file takes advantage of the parallel cores):
-
-        (gaia-frontend)$> oarsub -l nodes=1/core=6,walltime=10:00:00 your_matlab_launcher.sh
-
-Remember! that the Matlab script you run with the '-r' parameter must contain the `quit` command at the end
-in order to close Matlab properly when the script finishes.
+If your MATLAB code is (ideally) using [parfor](https://www.mathworks.com/help/parallel-computing/parfor.html) constructs for parallel loops, change the `-c` above to e.g. 28 to use all the cores available in a compute node from the _batch_ partition. 
+The most that you can get on a single node on Iris would be in the _bigmem_ partition, which has Skylake CPUs and 112 cores per node with ~27 GB RAM/core.
 
 ### Example usage of Matlab in passive mode
 
@@ -347,128 +371,91 @@ In this section we will use the _example2.m_ script which shows:
     the maximum number of parallel threads through environment variables; up to 1 full node
   - GPU-based parallel execution; available only on [GPU-enabled nodes](https://hpc.uni.lu/systems/accelerators.html)
 
-By default the parallel section of the script uses up to 4 threads, thus for a first test we will:
+By default the parallel section of the script uses up to 4 threads, thus for a first test you will:
 
-* create a _launcher script_ called matlab-minlauncher.sh (paste in your terminal from `cat` to `EOF` - [see here how this is done](http://tldp.org/LDP/abs/html/here-docs.html),
-or create the file yourself with the respective content)
-* make it executable by setting the corresponding filesystem permission ([see here for more details](https://en.wikipedia.org/wiki/Modes_(Unix)))
-* request from the OAR scheduler 4 cores on 1 compute node for 5 minutes
-* wait until the job completes its execution (see its status with `oarstat -j $JOBID` and full details with `oarstat -f -j $JOBID`):
+* create a _launcher script_ called matlab-launcher.sh: 
+  - use the launcher shown above, changing number of requested cores to 4 and a walltime of 5 minutes
+  - have MATLAB take its input from the _example2.m_ m-script, and store output in _example2.out_
+* submit the job to the scheduler with `sbatch`
+* wait until the job completes its execution (see its status with `squeue -l -j $JOBID` and runtime details with `sacct -l -j $JOBID`):
 
-        (gaia-frontend)$> cd ~/matlab-tutorial/code
-        (gaia-frontend)$> cat << EOF > matlab-minlauncher.sh
-        #!/bin/bash
-        source /etc/profile
-        module load base/MATLAB/2017a
-        cd ~/matlab-tutorial/code
-        matlab -nodisplay -nosplash -r example2 -logfile example2.out
-        EOF
-        (gaia-frontend)$> chmod +x matlab-minlauncher.sh
-        (gaia-frontend)$> oarsub -l nodes=1/core=4,walltime=00:05:00 ~/matlab-tutorial/code/matlab-minlauncher.sh
-        (gaia-frontend)$> cat example2.out
-                               < M A T L A B (R) >
-                     Copyright 1984-2017 The MathWorks, Inc.
-                      R2017a (9.2.0.538062) 64-bit (glnxa64)
-                                February 23, 2017
-  
-        To get started, type one of these: helpwin, helpdesk, or demo.
-        For product information, visit www.mathworks.com.
-  
-        -- Will perform 24 iterations on a 1000x1000 matrix
-  
-        -- Serial test
-        -- Execution time: 15.143097s.
-        -- Parallel tests with up to 4 cores
-  
-        -- Parallel test using 2 cores
-        Starting parallel pool (parpool) using the 'local' profile ...
-        connected to 2 workers.
-        Parallel pool using the 'local' profile is shutting down.
-        -- Execution time: 10.588108s.
-        -- Execution time with overhead: 51.693702s.
-  
-        -- Parallel test using 3 cores
-        Starting parallel pool (parpool) using the 'local' profile ...
-        connected to 3 workers.
-        Parallel pool using the 'local' profile is shutting down.
-        -- Execution time: 6.646897s.
-        -- Execution time with overhead: 21.025083s.
-  
-        -- Parallel test using 4 cores
-        Starting parallel pool (parpool) using the 'local' profile ...
-        connected to 4 workers.
-        Parallel pool using the 'local' profile is shutting down.
-        -- Execution time: 5.196755s.
-        -- Execution time with overhead: 19.772026s.
-  
-        -- Number of processes, parallel execution time (s), parallel execution time with overhead(s), speedup, speedup with overhead:
-          1.0000   15.1431   15.1431    1.0000    1.0000
-          2.0000   10.5881   51.6937    1.4302    0.2929
-          3.0000    6.6469   21.0251    2.2782    0.7202
-          4.0000    5.1968   19.7720    2.9140    0.7659
-  
-  
-        -- GPU-Parallel test not available on this system.
+        (access-iris)$> sbatch matlab-launcher.sh
+        (access-iris)$> cat example2.out
+                            < M A T L A B (R) >
+                  Copyright 1984-2018 The MathWorks, Inc.
+                   R2018a (9.4.0.813654) 64-bit (glnxa64)
+                             February 23, 2018
+         
+          
+         To get started, type one of these: helpwin, helpdesk, or demo.
+         For product information, visit www.mathworks.com.
+          
+         -- Will perform 200 iterations on a 1000x1000 matrix
+         
+         -- Serial test
+         -- Execution time: 115.532743s.
+         -- Parallel tests with up to 4 cores
+         
+         tmpJobStorageLocation =
+         
+             '/scratch/users/vplugaru/matlab.457594'
+         
+         
+         -- Parallel test using 2 cores
+         Starting parallel pool (parpool) using the 'local' profile ...
+         connected to 2 workers.
+         Parallel pool using the 'local' profile is shutting down.
+         -- Execution time: 74.798509s.
+         -- Execution time with overhead: 99.103444s.
+         
+         -- Parallel test using 4 cores
+         Starting parallel pool (parpool) using the 'local' profile ...
+         connected to 4 workers.
+         Parallel pool using the 'local' profile is shutting down.
+         -- Execution time: 39.275277s.
+         -- Execution time with overhead: 56.273791s.
+         
+         -- Number of processes, parallel execution time (s), parallel execution time with overhead(s), speedup, speedup with overhead:
+             1.0000  115.5327  115.5327    1.0000    1.0000
+             2.0000   74.7985   99.1034    1.5446    1.1658
+             4.0000   39.2753   56.2738    2.9416    2.0530
+         
+         
+         -- GPUs not available on this system. Not running GPU-parallel test.
+         
 
+We will now adapt this launcher to use one of the GPU nodes of Iris, requesting part of its 28 cores and 1 of its 4 GPUs:
 
-The next launcher script is also able to read an environment variable _MATLABMP_ and create as many parallel threads as specified in this variable.
-We will now generate another launcher which will set this variable to the number of cores we specified to OAR.
+       #!/bin/bash -l
+       #SBATCH -J MATLAB
+       #SBATCH -N 1
+       #SBATCH -n 1
+       #SBATCH -c 7
+       #SBATCH --gres=gpu:1
+       #SBATCH --time=0:10:0
+       #SBATCH -p gpu
+       
+       module load base/MATLAB/2018a
+       matlab -nodisplay -nosplash -r example2 -logfile example2-gpu.out
 
-    (gaia-frontend)$> cd ~/matlab-tutorial/code
-    (gaia-frontend)$> cat << EOF > matlab-minlauncher2.sh
-    #!/bin/bash
-    source /etc/profile
-    module load base/MATLAB/2017a
-    cd ~/matlab-tutorial/code
-    export MATLABMP=\$(cat $OAR_NODEFILE | wc -l)
-    matlab -nodisplay -nosplash -r example2 -logfile example2b.out
-    EOF
-    (gaia-frontend)$> chmod +x matlab-minlauncher2.sh
-    (gaia-frontend)$> oarsub -l nodes=1/core=6,walltime=00:05:00 ~/matlab-tutorial/code/matlab-minlauncher2.sh
-    # we now wait for the job to complete execution - check its progress yourself with oarstat
-    (gaia-frontend)$> head -n 17 example2b.out
-                           < M A T L A B (R) >
-                 Copyright 1984-2017 The MathWorks, Inc.
-                  R2017a (9.2.0.538062) 64-bit (glnxa64)
-                            February 23, 2017
-
-    To get started, type one of these: helpwin, helpdesk, or demo.
-    For product information, visit www.mathworks.com.
-
-    -- Will perform 24 iterations on a 1000x1000 matrix
-
-    -- Serial test
-    -- Execution time: 15.227198s.
-
-    -- Found environment variable MATLABMP=6.
-    -- Parallel tests with up to 6 cores
-    (gaia-frontend)$>
-
-We have submitted an OAR job requesting 6 cores for 5 minutes and used the second launcher. It can be seen that the example2.m script has read the MATLABMP environment variable and has used in its execution. Take a look at the MATLAB code to see how this is accomplished.
-
-As shown previously, the jobs we have submitted did not run on GPU-enabled nodes, thus in this last example we will specifically target GPU nodes and see that the last test of example2.m will also be executed.
-Before testing the following commands, edit the `matlab-minlauncher2.sh` script and make MATLAB store its output in a `example2c.out`
-file.
-
-      (gaia-frontend)$> cd ~/matlab-tutorial/code
-      (gaia-frontend)$> oarsub -l nodes=1/core=6,walltime=00:05:00 -t gpu ~/matlab-tutorial/code/matlab-minlauncher2.sh
-      # now wait for the job to complete execution, then check the output file
-      (gaia-frontend)$> tail -n 5 example2c.out
-      -- GPU test
-      -- GPU Execution time: 19.809493s.
-      -- GPU Execution time with overhead: 21.399610s.
-      -- GPU vs Serial speedup: 1.249748.
-      -- GPU with overhead vs Serial speedup: 1.156884.
-
-The following plot shows a sample speedup obtained by using parfor on Gaia, with up to 12 parallel threads:
-![Parfor speedup](https://raw.github.com/ULHPC/tutorials/devel/advanced/MATLAB1/plots/parfor-speedup.png)
+Start a job with this launcher, and now you will see that the GPU test of example2.m will also be carried out.
+What are the 1 GPU vs CPU-only speedups?
 
 Relative to the fast execution of the inner instruction (which calculates the eigenvalues of a matrix)
-the overhead given by the creation of the parallel pool and the task assignations is quite high in this example,
-where for 12 cores the speedup is 5.26x but taking the overhead into account it is only 4x.
+the overhead given by the creation of the parallel pool and the task assignations can be quite high.
+You will need to be careful how you create a parallel pool as spawning the workers may not make sense 
+if the overhead is higher compared to the computational time taken by the worker startup.
+
+### Additional work
+
+Additional experiments are suggested:
+- try the different nodes of Iris, e.g. the difference in obtained speed on Broadwell CPUs (use `-C broadwell` in your launcher) vs Skylake CPUs (`-C skylake`)
+- try the scaling limits of this example, e.g. on one of the large memory nodes (use the `-p bigmem` bigmem partition in your launcher, with up to 112 cores)
+- combine parfor with gpuArray and use the multi-GPU capabilities of Matlab (use `--gres=gpu:4` for submission, you'll need to edit the example2.m file as wel)
 
 ## Useful references
 
   - [Getting Started with Parallel Computing Toolbox](http://nl.mathworks.com/help/distcomp/getting-started-with-parallel-computing-toolbox.html)
   - [Parallel for-Loops (parfor) documentation](https://nl.mathworks.com/help/distcomp/parfor.html)
   - [GPU Computing documentation](https://nl.mathworks.com/discovery/matlab-gpu.html)
+  - [Multi-GPU computing examples](https://nl.mathworks.com/help/parallel-computing/examples/run-matlab-functions-on-multiple-gpus.html)

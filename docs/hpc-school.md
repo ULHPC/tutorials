@@ -1,24 +1,25 @@
-[![](https://hpc.uni.lu/images/logo/logo_hpc-shool2018.png)](https://hpc.uni.lu/hpc-school/)
+[![](https://hpc.uni.lu/images/logo/logo_hpc-shool2020.png)](https://hpc.uni.lu/hpc-school/)
 
 * [Latest UL HPC School](https://hpc.uni.lu/hpc-school/)
 
+Twice a year, we are organizing a HPC School / Workshop:
 
-| PS | Description                                                                       | Speaker     | Duration |
-|----|-----------------------------------------------------------------------------------|-------------|----------|
-| 1a | Getting Started (part 1: SSH)                                                     | C. Parisot  | 1h       |
-| 1b | Getting started (part 2)                                                          | H. Cartiaux | 45min    |
-|  2 | HPC workflow with sequential jobs                                                 | H. Cartiaux | 1h30     |
-| 3a | Advanced scheduling (SLURM, OAR)                                                  | V. Plugaru  | 1h       |
-| 3b | Software environment management using Easybuild                                   | S. Peter    | 1h       |
-| 4a | UL HPC Monitoring in practice                                                     | H. Cartiaux | 30min    |
-| 4b | Performance engineering - HPC debugging and profilling                            | V. Plugaru  | 1h30     |
-|  5 | Parallel computations with OpenMP/MPI                                             | S. Varrette | 1h30     |
-|  6 | User environment and storage data management (backups, git, __GDPR__, quotas)	 | S. Peter    | 1h       |
-|  7 | Multi-Physics workflows: test cases on CFD / MD / Chemistry applications          | V. Plugaru  | 1h30     |
-|  8 | Bio-informatics workflows and applications                                        | S. Peter    | 1h30     |
-|  9 | [Basic + Advanced] Prototyping with Python                                        | C. Parisot  | 2h       |
-| 10 | Scientific computing using MATLAB and Mathematica                                 | V. Plugaru  | 2h       |
-| 11 | Big Data Applications (batch, stream, hybrid) Hadoop, Spark, Storm                | S. Varrette | 1h30     |
-| 12 | R - statistical computing                                                         | A. Ginolhac | 1h30     |
-| 13 | Machine / Deep learning                                                           | S. Varrette | 1h15     |
-| 14 | HPC Containers: Singularity                                                       | V. Plugaru  | 1h15     |
+* one _long_ version in June on two days, mixing both common tutorials and advanced topic sessions
+* one _short_ version in November featuring in a single day the most common tutorials
+
+The practical sessions of the Dec 2020 HPC School are listed below
+
+
+| PS | Description                                                                       | Speaker              | Duration |
+|----|-----------------------------------------------------------------------------------|----------------------|----------|
+| 1  | Preliminaries (SSH - OpenOnDemand)                                                | A. Olloh, T. Valette | 1h30     |
+| 2  | Getting Started 2.0 SLURM, performance engineering and basic launchers            | H. Cartiaux          | 2h00     |
+| 3  | HPC Management of Sequential and Embarrassingly parallel jobs                     | S. Varrette          | 1h30     |
+| 4  | Big Data Analytics                                                                | S. Varrette          | 2h00     |
+| 5  | Scalable Science with OpenMP/MPI                                                  | E. Krishnasamy       | 2h00     |
+| 6  | HPC Containers with Singularity                                                   | E. Kieffer           | 1h00     |
+| 7a | Introduction to GPU programming with CUDA (Part I)                                | F. Pinel             | 1h00     |
+| 7b | Introduction to GPU programming with CUDA (Part II)                               | L. Koutsantonis      | 1h00     |
+| 8  | Advanced distributed computing with Python                                        | E. Kieffer           | 1h00     |
+| 9  | Multi-GPU Training of Neural Networks                                             | C. Hundt (Nvidia)    | 1h30     |
+| 10 | R - statistical computing                                                         | A. Ginolhac          | 1h30     |

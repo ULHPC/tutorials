@@ -1,0 +1,3 @@
+greenlet==0.4.15
+pyzmq==17.1.2
+scoop==0.7.1.1

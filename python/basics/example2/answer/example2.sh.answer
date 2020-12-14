@@ -5,10 +5,10 @@
 #SBATCH --ntasks=1
 #SBATCH --time=0-00:10:00
 #SBATCH -p batch
-#SBATCH --qos=qos-batch
+#SBATCH --qos=normal
 
-module load lang/Python/2.7.13-foss-2017a-bare
+module load lang/Python/2.7.14-foss-2018a-bare
 python example2.py
-module load lang/Python/3.6.0-foss-2017a-bare
+module load lang/Python/3.6.4-foss-2018a-bare
 python example2.py
 gnuplot gnuplot/time_vs_array_size.gpi

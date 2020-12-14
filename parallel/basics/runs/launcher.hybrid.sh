@@ -1,5 +1,5 @@
 #! /bin/bash -l
-# Time-stamp: <Fri 2018-11-23 14:29 svarrette>
+# Time-stamp: <Thu 2019-06-20 14:25 svarrette>
 ######## OAR directives ########
 #OAR -n Hybrid
 #OAR -l nodes=2/core=4,walltime=0:05:00
@@ -13,7 +13,7 @@
 #SBATCH -c 4
 #SBATCH --time=0-00:05:00
 #SBATCH -p batch
-#SBATCH --qos=qos-batch
+#SBATCH --qos=normal
 #SBATCH -o %x-%j.out
 #
 # Usage:
@@ -91,6 +91,7 @@ echo "#    ${NP} MPI process(es)"
 echo "# =============================================================="
 
 module purge || print_error_and_exit "Unable to find the module command"
+# module load swenv/default-env/devel
 module load ${MODULE}
 module list
 

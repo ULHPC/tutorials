@@ -1,0 +1,30 @@
+rule mapping:
+  input: "chip-seq/{sample}.fastq.gz"
+  output: "bowtie2/{sample}.bam"
+  params:
+    idx = "reference/Mus_musculus.GRCm38.dna_sm.chromosome.12"
+  log: "logs/bowtie2_{sample}.log"
+  benchmark: "benchmarks/mapping/{sample}.tsv"
+  conda: "envs/bowtie2.yaml"
+  shell:
+    """
+    bowtie2 -x {params.idx} -U {input} 2> {log} | \
+    samtools sort - > {output}
+    samtools index {output}
+    """
+
+rule peak_calling:
+  input:
+    control = "bowtie2/INPUT-{sample}.bam",
+    chip = "bowtie2/H3K4-{sample}.bam"
+  output:
+    peaks = "output/{sample}_peaks.narrowPeak",
+    control_bdg = "macs2/{sample}_control_lambda.bdg",
+    chip_bdg = "macs2/{sample}_treat_pileup.bdg"
+  conda: "envs/macs2.yaml"
+  shell:
+    """
+    macs2 callpeak -t {input.chip} -c {input.control} -f BAM -g mm -n {wildcards.sample} -B -q 0.01 --outdir macs2
+
+    cp macs2/{wildcards.sample}_peaks.narrowPeak {output.peaks}
+    """

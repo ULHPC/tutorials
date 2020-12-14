@@ -14,10 +14,10 @@
 SHELL = /bin/bash
 
 CC      = gcc
-CFLAGS  = -Wall -Wextra -pedantic --std=c99 -O2
+CFLAGS  = -g -Wall -Wextra -pedantic --std=c99 -O2
 # intel compiler flags -- see also
 #  https://software.intel.com/en-us/articles/step-by-step-optimizing-with-intel-c-compiler
-ICFLAGS = -Wall -xhost -O2
+ICFLAGS = -g -Wall -xhost -O2
 
 SRC_DIR     = src
 BUILD_DIR   = bin
@@ -34,7 +34,7 @@ TARGET_OMP_INTEL = $(SRC_OMP:$(SRC_DIR)/%.c=$(BUILD_DIR)/intel_%)
 TARGET_OPENMPI  = $(filter-out %openmp, $(addprefix $(BUILD_DIR)/openmpi_,  $(TARGET)))
 TARGET_INTEL    = $(filter-out %openmp, $(addprefix $(BUILD_DIR)/intel_,    $(TARGET)))
 TARGET_MVAPICH2 = $(filter-out %openmp, $(addprefix $(BUILD_DIR)/mvapich2_, $(TARGET)))
-TARGET_MPI      = $(TARGET_OPENMPI) $(TARGET_INTEL) $(TARGET_MVAPICH2)
+TARGET_MPI      = $(TARGET_OPENMPI) $(TARGET_INTEL) # $(TARGET_MVAPICH2)
 
 TARGETS = $(TARGET_OMP) $(TARGET_OMP_INTEL) $(TARGET_MPI)
 
@@ -73,7 +73,8 @@ fetch:
 		echo "=> $(DATARACEBENCH_DIR) has already been cloned in $(SRC_DIR)/"; \
 	fi
 
-build: __build.omp __build.openmpi __build.intel # __build.mvapich2
+build: __build.omp __build.openmpi __build.intel
+# __build.mvapich2
 mpi:    $(filter-out %hybrid,  $(TARGET_MPI))
 hybrid: $(filter-out %mpi,     $(TARGET_MPI))
 omp openmp: __build.omp

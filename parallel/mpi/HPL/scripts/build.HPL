@@ -1,0 +1,207 @@
+#!/bin/bash -l
+# Time-stamp: <Tue 2019-11-19 23:37 svarrette>
+################################################################################
+# build.HPL - Build HPL (High-Performance Linpack)
+################################################################################
+# set -x
+#SBATCH -J HPL-build
+#SBATCH --partition=batch
+#SBATCH --qos normal
+#SBATCH --time=00:20:00
+#SBATCH -N 1
+#SBATCH -o logs/%x-%j.out
+
+### Global variables
+COMMAND=$(basename $0)
+NAME=
+CLEAN_MODE=
+FORCE_MODE=
+
+# Load Modules
+if [ -f  /etc/profile ]; then
+    .  /etc/profile
+fi
+
+### Benchmark details
+BENCH=HPL
+VERSION="2.3"
+SRCDIR=
+BINDIR=
+SRC_MAKEFILE=
+SUITE='intel'
+
+#################
+STARTDIR="$(pwd)"
+SCRIPTFILENAME=$(basename $0)
+SCRIPTDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+if [ -n "${SLURM_SUBMIT_DIR}" ]; then
+    # We assume we submit from the super directory holding the build script
+    # as sbatch ./scripts/build.HPL
+    TOP_SRCDIR=${SLURM_SUBMIT_DIR}
+else
+    TOP_SRCDIR="$( cd ${SCRIPTDIR}/.. && pwd )"
+fi
+
+#TOP_SRCDIR="${TOP_SRCDIR}/src/hpl-${VERSION}"
+
+######################
+print_error_and_exit() { echo "*** ERROR *** $*"; exit 1; }
+usage(){
+    less <<EOF
+NAME
+  $COMMAND -- Build ${BENCH} benchmark version ${VERSION}
+
+SYNOPSIS
+  $COMMAND -h
+  $COMMAND [...] <suite>
+
+DESCRIPTION
+  $COMMAND builds the ${BENCH} benchmark for a given MPI suit (intel by default).
+  Allowed suits: intel (default), openmpi
+
+OPTIONS
+  -v --version <VERSION>
+     Set the option of the benchmark to build
+  -b --bindir <DIR>
+     Set the bin directory meant to host the final compiled version of ${BENCH}
+  -d --debug
+     Print debug information and exit
+  -f --force
+     Force rebuild even if existing
+  -n --name <NAME>
+     Optional meaningfull name used as ARCH for the generated binaries,
+     i.e. HPL will be built under arch <NAME>. Ex: skylake
+     Note that the default arch of your MPI suit will still serve as reference for the
+     content of the Makefile, i.e. src/Make.intel64 for intel toolchain.
+  -p --prefix <PREFIX>
+     Optional meaningfull name used as prefix of the ARCH for the generated binaries,
+     i.e. HPL will be built under arch <PREFIX>_<ARCH>. Ex: skylake_intel64
+  -s --srcdir <DIR>
+     Set the source directory hosting the ${BENCH} sources
+  -t --topdir <DIR>
+     Set the top source directory for piloting the ${BENCH} operations
+
+AUTHORS
+  Sebastien Varrette <Sebastien.Varrette@uni.lu>
+
+COPYRIGHT
+  This is free software; see the source for copying conditions.  There is
+  NO warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+EOF
+}
+###################
+print_debug_info(){
+    cat <<EOF
+SCRIPTFILENAME = ${SCRIPTFILENAME}
+------------ Directories -----------
+STARTDIR   = ${STARTDIR}
+TOP_SRCDIR = ${TOP_SRCDIR}
+SCRIPTDIR  = ${SCRIPTDIR}
+SRCDIR     = ${SRCDIR}
+----------- MPI/OpenMP Stuff --------------
+MPI SUITE  = ${SUITE}
+----------- HPL Build process ------------
+BENCH      = ${BENCH}
+VERSION    = ${VERSION}
+ARCH       = ${ARCH}
+NAME       = ${NAME}
+SRC_MAKEFILE   = ${SRC_MAKEFILE}
+EOF
+}
+###########
+############################################
+################# Let's go #################
+############################################
+
+##################################
+# Check for command-line options
+while [ $# -ge 1 ]; do
+    case $1 in
+        -h | --help)     usage;   exit 0;;
+        -b | --bindir)   shift; BINDIR=$1;;
+        # -c | --clean)    CLEAN_MODE=$1;;
+        -d | --debug)    DEBUG_MODE=$1;;
+        -f | --force)    FORCE_MODE=$1;;
+        -m | --makefile) shift; SRC_MAKEFILE=$1;;
+        -n | --name   | --arch-name)   shift; NAME=$1;;
+        -p | --prefix | --arch-prefix) shift; PREFIX=$1;;
+        -s | --srcdir)   shift; SRCDIR=$1;;
+        -t | --topdir)   shift; TOP_SRCDIR=$1;;
+        -v | --version)  shift; VERSION="$1";;
+        openmpi | intel ) SUITE=$1;;
+        *) print_error_and_exit "unrecognized option $1";;
+    esac
+    shift
+done
+[ -z "${SUB_SRCDIR}" ] && SUB_SRCDIR="src/hpl-${VERSION}"
+[ -z "${SRCDIR}" ]     && SRCDIR="${TOP_SRCDIR}/${SUB_SRCDIR}"
+[ -z "${BINDIR}" ]     && BINDIR="${TOP_SRCDIR}/bin"
+
+case ${SUITE} in
+    openmpi)  CCopt="CC=mpicc";              MODULE=mpi/OpenMPI;     ARCH=foss64;;
+    mvapich*) CCopt="CC=mpicc";              MODULE=mpi/MVAPICH2;    ARCH=foss64;;
+    intel)    CCopt="CC=mpiicc CXX=mpiicpc"; MODULE=toolchain/intel; ARCH=intel64;;
+esac
+
+# Default reference Makefile
+[ -z "${SRC_MAKEFILE}" ] && SRC_MAKEFILE="${TOP_SRCDIR}/src/Make.${ARCH}"
+
+[ -n "${DEBUG_MODE}" ] && print_debug_info && exit 0
+##################################
+# Sanity checks
+[ ! -d "${SRCDIR}" ] && print_error_and_exit "unable to find the ${BENCH} source directory '${SRCDIR}'"
+[ ! -f "${SRC_MAKEFILE}" ] && print_error_and_exit "Unable to find source Makefile '${SRC_MAKEFILE}'"
+
+### bootstrap directories
+for d in ${BINDIR}; do
+    if [ ! -d "${d}" ]; then
+        echo "=> creating ${d}"
+        mkdir -p ${d}
+    fi
+done
+
+### Detect presence of the 'module' command
+echo "=> loading module ${MODULE}"
+module purge || print_error_and_exit "Unable to find the 'module' command"
+module load ${MODULE}
+module list
+
+### Prepare Make.<arch>
+[ -n "${NAME}" ]   && ARCH="${NAME}"
+[ -n "${PREFIX}" ] && ARCH="${PREFIX}_${ARCH}"
+DST_MAKEFILE=${SRCDIR}/Make.${ARCH}
+if [ ! -f "${DST_MAKEFILE}" ]; then
+    echo "=> Preparing Makefile 'Make.<arch>' in the top-level source directory"
+    echo "   - Generating 'Make.${ARCH}' from ${SRC_MAKEFILE}"
+    cp ${SRC_MAKEFILE} ${DST_MAKEFILE}
+    echo "   - Adapting  Make.${ARCH}"
+    sed -i \
+        -e "s#^[[:space:]]*ARCH[[:space:]]*=[[:space:]]*.*#ARCH = ${ARCH}#" \
+        -e "s#^[[:space:]]*TOPdir[[:space:]]*=[[:space:]]*.*#TOPdir = ${SRCDIR}#" \
+        ${SRCDIR}/Make.${ARCH}
+    diff -ru ${SRC_MAKEFILE} ${DST_MAKEFILE}
+else
+    echo "=> 'Make.<arch>' in the top-level source directory already exists"
+fi
+
+### Build xhpl
+build_dir=${SRCDIR}/bin/${ARCH}
+APP=${build_dir}/xhpl
+
+if [ -z "${FORCE_MODE}" ] && [ -x "${APP}" ]; then
+    echo "${BENCH} (with ${SUITE} suite and ${ARCH} arch) already built as '${APP}'"
+    exit 0
+fi
+
+echo "=> building ${BENCH} in ${build_dir}"
+make -C ${SRCDIR} arch=${ARCH} clean_arch_all
+make -C ${SRCDIR} arch=${ARCH}
+
+# Check compiled binaries
+[ ! -x "${APP}" ] && print_error_and_exit "Unable to find the generated executable '${APP}'"
+APP_SYMLINK="${BINDIR}/xhpl_${ARCH}"
+if [ ! -L "${APP_SYMLINK}" ]; then
+   echo "=> creating convenient symlink bin/xhpl_${ARCH}"
+   ln -s ../${SUB_SRCDIR}/bin/${ARCH}/xhpl ${APP_SYMLINK}
+fi

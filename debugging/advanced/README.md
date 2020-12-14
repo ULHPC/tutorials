@@ -2,7 +2,7 @@
 
 # UL HPC Tutorial: Advanced debugging on the UL HPC platform
 
-     Copyright (c) 2013-2018 UL HPC Team <hpc-sysadmins@uni.lu>
+     Copyright (c) 2013-2019 UL HPC Team <hpc-sysadmins@uni.lu>
 
 [![](cover_slides.png)](slides.pdf)
 
@@ -50,3 +50,5 @@ Helper notes:
       * Gaia, Chaos clusters: `scan -s mpirun -hostfile $OAR_NODEFILE ./xhpcg`
       * Iris cluster: `scan -s srun ./xhpcg`
     - generate text report `square -s scorep_xhpcg_*_sum` and see it with `cat scorep_xhpcg_*_sum/scorep.score`
+
+__Note__: 2019 software environment (new compilers, debuggers, profilers) can be tested with `module load swenv/default-env/devel`. This is only necessary for the HPC School 2019.06, as this environment will become the new default production during summer 2019.

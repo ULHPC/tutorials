@@ -13,7 +13,7 @@
 #SBATCH --partition=batch
 #SBATCH --time=00:10:00
 #SBATCH --job-name=OSU-Microbenchmark
-#SBATCH --qos qos-batch
+#SBATCH --qos normal
 
 ### General SLURM Parameters
 echo "SLURM_JOBID="$SLURM_JOBID
@@ -36,7 +36,6 @@ esac
 SCRIPTFILENAME=$(basename $0)
 SCRIPTDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 if [ -n "${SLURM_SUBMIT_DIR}" ]; then
-    echo "toto SCRIPTDIR=${SCRIPTDIR}"
     [[ "${SCRIPTDIR}" == *"slurmd"* ]] && RUNDIR=${SLURM_SUBMIT_DIR} || RUNDIR=${SCRIPTDIR}
 else
     RUNDIR=${SCRIPTDIR}
