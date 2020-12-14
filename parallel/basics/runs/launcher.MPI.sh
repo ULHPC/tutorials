@@ -1,5 +1,5 @@
 #! /bin/bash -l
-# Time-stamp: <Mon 2020-12-14 12:33 svarrette>
+# Time-stamp: <Mon 2020-12-14 12:43 svarrette>
 ###############################################################################
 # Default launcher for MPI jobs
 # Usage:
@@ -58,8 +58,8 @@ NAME
   which will be run as     srun -n \$SLURM_NTASKS [...]
 
 USAGE
-  [sbatch] $0 [n] {intel | openmpi | mvapich2} [app]
-  EXE=/path/to/mpiapp.exe [sbatch] $0 [n] {intel | openmpi | mvapich2}
+  [sbatch] $0 [-n] {intel | openmpi | mvapich2} [app]
+  EXE=/path/to/mpiapp.exe [sbatch] $0 [-n] {intel | openmpi | mvapich2}
 
 OPTIONS:
   -n --dry-run: Dry run mode

@@ -1,5 +1,5 @@
 #! /bin/bash -l
-# Time-stamp: <Mon 2020-12-14 12:40 svarrette>
+# Time-stamp: <Mon 2020-12-14 12:44 svarrette>
 ################################################################################
 # Default launcher for OpenMP jobs
 # Usage:
@@ -38,7 +38,7 @@ MODULE=toolchain/foss
 ######################################################
 # /!\ ADAPT below variables to match your own settings
 APPDIR=${APPDIR:=${HOME}/tutorials/OpenMP-MPI/basics/bin}    # bin directory holding your OpenMP builds
-APP=${APP:=hello_mp}         # OpenMP application - intel builds expected to be prefixed by intel_<APP>
+APP=${APP:=hello_openmp}     # OpenMP application - intel builds expected to be prefixed by intel_<APP>
 # Eventual options to be passed to the MPI program
 OPTS=
 
@@ -56,12 +56,12 @@ NAME
   $(basename $0): Generic OpenMP launcher
     Default APPDIR: ${APPDIR}
     Default APP: ${APP}
-  Take the good habit to prefix the intel binaries (as foss toolchain assumed by default)
+  Take the good habit to prefix the intel binaries (as foss toolchain is assumed by default)
   with 'intel_'
 
 USAGE
-  [sbatch] $0 [n] {intel | foss } [app]
-  EXE=/path/to/multithreadedapp.exe [sbatch] $0 [n] {intel | foss }
+  [sbatch] $0 [-n] {intel | foss } [app]
+  EXE=/path/to/multithreadedapp.exe [sbatch] $0 [-n] {intel | foss }
 
 OPTIONS:
   -n --dry-run: Dry run mode
