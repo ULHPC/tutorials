@@ -1,6 +1,0 @@
-slurmstepd: error: Detected 1 oom-kill event(s) in step 2177059.0 cgroup. Some of your processes may have been killed by the cgroup out-of-memory handler.
-srun: error: iris-131: task 5: Out Of Memory
-srun: Job step aborted: Waiting up to 32 seconds for job step to finish.
-slurmstepd: error: *** JOB 2177059 ON iris-131 CANCELLED AT 2020-12-14T02:22:39 ***
-slurmstepd: error: *** STEP 2177059.0 ON iris-131 CANCELLED AT 2020-12-14T02:22:39 ***
-slurmstepd: error: Detected 1 oom-kill event(s) in step 2177059.batch cgroup. Some of your processes may have been killed by the cgroup out-of-memory handler.
