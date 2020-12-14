@@ -31,7 +31,8 @@ echo "On your laptop: ssh -p 8022 -NL 8889:$(facter ipaddress):8889 ${USER}@acce
 singularity instance start --nv jupyter_parallel_cuda.sif jupyter
 
 if [ ! -d "$VENV" ];then
-    singularity exec --nv instance://jupyter python3 -m venv $VENV --system-site-packages
+    # For some reasons, there is an issue with venv -- using virtualenv instead
+    singularity exec --nv instance://jupyter python3 -m virtualenv $VENV --system-site-packages
     singularity run --nv instance://jupyter $VENV "python3 -m pip install --upgrade pip" 
     # singularity run --nv instance://jupyter $VENV "python3 -m pip install <your_packages>"
     singularity run --nv instance://jupyter $VENV "python3 -m ipykernel install --sys-prefix --name HPC_SCHOOL_ENV_IPYPARALLEL_CUDA --display-name HPC_SCHOOL_ENV_IPYPARALLEL_CUDA"
