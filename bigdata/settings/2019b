@@ -1,4 +1,4 @@
-# Time-stamp: <Mon 2020-12-14 23:02 svarrette>
+# Time-stamp: <Mon 2020-12-14 23:43 svarrette>
 ################################################################################
 # Usage:
 #     source settings/2019b
@@ -25,5 +25,5 @@ function mu(){
 unset MODULEPATH
 module use /opt/apps/resif/iris/2019b/broadwell/modules/all
 
-# module use $LOCAL_MODULES
-# module load tools/EasyBuild 2>/dev/null || echo "/!\ WARNING: Module tools/EasyBuild NOT FOUND "
+module use $LOCAL_MODULES
+module load tools/EasyBuild 2>/dev/null || echo "/!\ WARNING: Module tools/EasyBuild NOT FOUND "

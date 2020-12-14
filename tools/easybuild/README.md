@@ -46,9 +46,10 @@ In particular, the `module` command **is not** available on the access frontends
 # Advanced users:
 #    always work within an GNU Screen session named with 'screen -S <topic>' (Adapt accordingly)
 # Have an interactive job
-############### iris cluster (slurm) ###############
-(access-iris)$> si --ntasks-per-node 1 -c 4 -t 2:00:00
-# srun -p interactive --qos debug -C batch --ntasks-per-node 1 -c 4 -t 2:00:00 --mem-per-cpu 4096 --pty bash
+# ... either directly
+(access)$> si --ntasks-per-node 1 -c 4 -t 2:00:00
+# ... or using the HPC School reservation 'hpcschool' if needed  - use 'sinfo -T' to check if active and its name
+# (access)$> srun --reservation=hpcschool --ntasks-per-node 1 -c 4 -t 2:00:00  --pty bash
 (node)$>
 ```
 

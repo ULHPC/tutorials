@@ -3,47 +3,99 @@
 
 # Big Data Applications (batch, stream, hybrid)
 
-     Copyright (c) 2013-2018 UL HPC Team  <hpc-sysadmins@uni.lu>
+     Copyright (c) 2013-2020 UL HPC Team  <hpc-sysadmins@uni.lu>
 
 [![](https://github.com/ULHPC/tutorials/raw/devel/bigdata/cover_slides.png)](https://github.com/ULHPC/tutorials/raw/devel/bigdata/slides.pdf)
 
-The objective of this tutorial is to demonstrate how to build and run on top of the [UL HPC](http://hpc.uni.lu) platform a couple of reference analytics engine for large-scale Big Data processing, _i.e._ [Hadoop](http://hadoop.apache.org/) or  [Apache Spark](http://spark.apache.org/)
+The objective of this tutorial is to demonstrate how to build and run on top of the [UL HPC](http://hpc.uni.lu) platform a couple of reference analytics engine for large-scale Big Data processing, _i.e._ [Hadoop](http://hadoop.apache.org/) or  [Apache Spark](http://spark.apache.org/).
 
 
 --------------------
 ## Pre-requisites ##
 
 Ensure you are able to [connect to the UL HPC clusters](https://hpc.uni.lu/users/docs/access.html)
-**For all tests and compilation, you MUST work on a computing node**
-
-You'll need to prepare the data sources required by this tutorial once connected
-
-``` bash
-### ONLY if not yet done: setup the tutorials repo
-# See http://ulhpc-tutorials.rtfd.io/en/latest/setup/install/
-$> mkdir -p ~/git/github.com/ULHPC
-$> cd ~/git/github.com/ULHPC
-$> git clone https://github.com/ULHPC/tutorials.git
-$> cd tutorials
-$> make setup          # Initiate git submodules etc...
-```
-
-Now you can prepare a dedicated directory to work on this tutorial:
+In particular, recall that the `module` command **is not** available on the access frontends.
+**For all tests, builds and compilation, you MUST work on a computing node**
 
 ```bash
-$> cd ~/git/github.com/ULHPC/tutorials/bigdata
+### Access to ULHPC cluster - here iris
+(laptop)$> ssh iris-cluster
 ```
 
-**Advanced users only**: rely on `screen` (see  [tutorial](http://support.suso.com/supki/Screen_tutorial) or the [UL HPC tutorial](https://hpc.uni.lu/users/docs/ScreenSessions.html) on the  frontend prior to running any `oarsub` or `srun/sbatch` command to be more resilient to disconnection.
+Now you'll need to pull the latest changes in your working copy of the [ULHPC/tutorials](https://github.com/ULHPC/tutorials) you should have cloned in `~/git/github.com/ULHPC/tutorials` (see ["preliminaries" tutorial](../preliminaries/))
 
-Finally, be aware that the latest version of this tutorial is available on
-[Github](https://github.com/ULHPC/tutorials/tree/devel/bigdata/) and on
+``` bash
+(access)$> cd ~/git/github.com/ULHPC/tutorials
+(access)$> git pull
+```
 
-<http://ulhpc-tutorials.readthedocs.io/en/latest/bigdata/>
+Now **configure a dedicated directory `~/tutorials/bigdata` for this session**
 
-One of the first objective is to install the  [Hadoop MapReduce by Cloudera](https://www.cloudera.com/downloads/cdh/5-12-0.html) using [EasyBuild](http://easybuild.readthedocs.io/).
+``` bash
+# return to your home
+(access)$> mkdir -p ~/tutorials/bigdata
+(access)$> cd ~/tutorials/bigdata
+# create a symbolic link to the reference material
+(access)$> ln -s ~/git/github.com/ULHPC/tutorials/bigdata ref.d
+# Prepare a couple of symbolic links that will be useful for the training
+(access)$> ln -s ref.d/scripts .     # Don't forget trailing '.' means 'here'
+(access)$> ln -s ref.d/settings .    # idem
+```
 
-**`/!\ IMPORTANT`**: For this reason, it is advised to have first followed the [Easybuild tutorial in `tools/easybuild.md`](http://ulhpc-tutorials.readthedocs.io/en/latest/tools/easybuild/). **In all cases,** you need to have easybuild locally installed -- see [installation guidelines](http://ulhpc-tutorials.readthedocs.io/en/latest/tools/easybuild/#part-2-easybuild).
+**Advanced users** (_eventually_ yet __strongly__ recommended), create a [GNU Screen](http://www.gnu.org/software/screen/) session you can recover later - see ["Getting Started" tutorial](../getting-started/) or [this `screen` tutorial](http://support.suso.com/supki/Screen_tutorial).
+
+### Easybuild
+
+One of the first objective is to install the latest version of [Hadoop](https://hadoop.apache.org/releases.html).
+using [EasyBuild](http://easybuild.readthedocs.io/).
+For this reason, you should first follow the [Easybuild tutorial in `tools/easybuild.md`](http://ulhpc-tutorials.readthedocs.io/en/latest/tools/easybuild/) and install the latest version of Easybuild (4.3.1 at the time of writing).
+
+### 2019b software set
+
+As indicated in the keynote, the 2019b software set is available for general availability and for **testing** purposes until Jan 31, 2021. We will use it in this tutorial, yes as it is not enabled by default, you will have to **setup it each time you request an interactive job**.
+Proceed as follows:
+
+```bash
+### Have an interactive job - reserve 14 cores for multithreaded compilations
+# ... either directly
+(access)$> si -c 14
+# ... or using the HPC School reservation 'hpcschool'if needed  - use 'sinfo -T' to check if active and its name
+# (access)$> srun --reservation=hpcschool -c 14 --pty bash
+# Enable (new) 2019b software set - iris cluster
+(node)$> unset MODULEPATH   # Safeguard to avoid mixing up with 2019a software
+(node)$> module use /opt/apps/resif/iris/2019b/broadwell/modules/all
+# Note: we won't use it here but later you may need to use the skylake/GPU-specialized builds,
+#       which should be used **ONLY** on skylake/GPU nodes
+# module use /opt/apps/resif/iris/2019b/skylake/modules/all
+# module use /opt/apps/resif/iris/2019b/gpu/modules/all
+
+### Now check that you have the latest EB 4.3.1 installed
+#                 # assuming you hade defined:   export LOCAL_MODULES=${EASYBUILD_PREFIX}/modules/all
+(node)$> mu       # shortcut for module use $LOCAL_MODULES; module load tools/EasyBuild
+(node)$> eb --version
+This is EasyBuild 4.3.1 (framework: 4.3.1, easyblocks: 4.3.1) on host iris-131.
+(node)$> echo $MODULEPATH
+/home/users/<login>/.local/easybuild/modules/all:/opt/apps/resif/iris/2019b/broadwell/modules/all
+# If all OK: you should be able to access Spark module 2.4.3 for 2019b toolchain
+(node)$> module avail Spark
+
+----------- /opt/apps/resif/iris/2019b/broadwell/modules/all ----------------
+   devel/Spark/2.4.3-intel-2019b-Hadoop-2.7-Java-1.8-Python-3.7.4
+
+[...]
+```
+
+As this procedure will have to be repeated several time, you can make it done by sourcing `settings/2019b`
+
+```bash
+(access)$> si
+(node)$> source settings/2019b
+# Double-check
+(node)$> eb --version
+This is EasyBuild 4.3.1 (framework: 4.3.1, easyblocks: 4.3.1) on host iris-117
+(node)$> echo $MODULEPATH
+/home/users/<login>/.local/easybuild/modules/all:/opt/apps/resif/iris/2019b/broadwell/modules/all
+```
 
 
 In the next part, we are going to install a few mandatory software required to install and use [Hadoop](http://hadoop.apache.org/) or  [Apache Spark](http://spark.apache.org/).
@@ -51,11 +103,13 @@ In the next part, we are going to install a few mandatory software required to i
 ----------------------------------
 ## 1. Preliminary installations ##
 
-### SOCKS 5 Proxy plugin
+### SOCKS 5 Proxy plugin (optional but VERY useful)
 
 Many Big Data framework involves a web interface (at the level of the master and/or the workers) you probably want to access in a relative transparent way.
 
 For that, a convenient way is to rely on a SOCKS proxy, which is basically an SSH tunnel in which specific applications forward their traffic down the tunnel to the server, and then on the server end, the proxy forwards the traffic out to the general Internet. Unlike a VPN, a SOCKS proxy has to be configured on an app by app basis on the client machine, but can be set up without any specialty client agents.
+
+These steps were also described in the [Preliminaries](../preliminaries) tutorial.
 
 __Setting Up the Tunnel__
 
@@ -90,241 +144,115 @@ extension for Firefox and configure it to use your SOCKS proxy:
 
 We will see later on (in the section dedicated to Spark) how to effectively use this configuration.
 
-### Java
-
-Hadoop and Spark depends on Java (something more probably HPC users don't like), and that Java needs to be treated specifically within Easybuild due to the licences involved, we will now cover it.
-
-This part cna be skipped if you're only interested to go to the spark section.
-Otherwise, to build Hadoop, we will need to prepare specific versions of Java and Maven as pre-requisites.
-
-For these builds, reserve an interactive job on one full node (for 3 hours)
-
-```bash
-############### iris cluster (slurm) ###############
-(access-iris)$> srun -p interactive -N 1 -n 1 -c 28 -t 3:00:00 --pty bash
-
-############### gaia/chaos clusters (OAR) ###############
-(access-{gaia|chaos})$> oarsub -I -l nodes=1,walltime=3
-```
-
-#### Step 1.a. Java 7u80 and 8u152
-
-We'll need several version of the [JDK](http://www.oracle.com/technetwork/java/javase/overview/index.html) (in Linux x64 source mode i.e. `jdk-<version>-linux-x64.tar.gz`), more specifically 1.7.0_80 (aka `7u80` in Oracle's naming convention) and 1.8.0_152 (aka `8u152`).
-
-Let's first try the classical approach we experimented before:
-
-``` bash
-$> module avail java
-
----------------- /opt/apps/resif/data/stable/default/modules/all --------------
-   lang/Java/1.8.0_121
-```
-
-Either an older (1.7.0_80) or more recent Java (1.8.0_152) is required, so let's search for Java and install it:
-
-``` bash
-$> mu      # See Easybuild tutorial
-$> eb -S Java-1.7
-[...]
-* $CFGS1/j/Java/Java-1.7.0_80.eb
-[...]
-$> eb Java-1.7.0_80.eb -Dr
-== temporary log file in case of crash /tmp/eb-MJtqvZ/easybuild-L1NfjN.log
-Dry run: printing build status of easyconfigs and dependencies
-CFGS=/home/users/svarrette/.local/easybuild/software/tools/EasyBuild/3.6.1/lib/python2.7/site-packages/easybuild_easyconfigs-3.6.1-py2.7.egg/easybuild/easyconfigs/j/Java
- * [ ] $CFGS/Java-1.7.0_80.eb (module: lang/Java/1.7.0_80)
-== Temporary log file(s) /tmp/eb-MJtqvZ/easybuild-L1NfjN.log* have been removed.
-== Temporary directory /tmp/eb-MJtqvZ has been removed.
-
-$> time eb Java-1.7.0_80.eb -r
-== temporary log file in case of crash /tmp/eb-wkXTsu/easybuild-UqzX_P.log
-== resolving dependencies ...
-== processing EasyBuild easyconfig /home/users/svarrette/.local/easybuild/software/tools/EasyBuild/3.6.1/lib/python2.7/site-packages/easybuild_easyconfigs-3.6.1-py2.7.egg/easybuild/easyconfigs/j/Java/Java-1.7.0_80.eb
-== building and installing lang/Java/1.7.0_80...
-== fetching files...
-== FAILED: Installation ended unsuccessfully (build directory: /home/users/svarrette/.local/easybuild/build/Java/1.7.0_80/dummy-dummy): build failed (first 300 chars): Couldn't find file jdk-7u80-linux-x64.tar.gz anywhere, and downloading it didn't work either...
-[...]
-```
-
-As the error indicates, you first need to download the archive.
-Hopefully, the main `Makefile` helps to collect the archives:
-
-``` bash
-$> pwd
-/home/users/<login>/git/hub.com/ULHPC/tutorials/bigdata
-$> make fetch
-./scripts/bootstrap.sh --java7 --output-dir src
-==> Downloading Java 7 archive 'jdk-7u80-linux-x64.tar.gz'
-
-100%[======================================================================================>] 153,530,841 4.44MB/s   in 54s
-
-./scripts/bootstrap.sh --java8 --output-dir src
-==> Downloading Java 8 archive 'jdk-8u152-linux-x64.tar.gz'
-[...]
-
-100%[======================================================================================>] 189,784,266 24.5MB/s   in 25s
-
-2018-06-12 21:40:32 (7.22 MB/s) - ‘jdk-8u152-linux-x64.tar.gz’ saved [189784266/189784266]
-```
-
-The sources are saved in `src/`
-
-```bash
-$> cd src
-$> eb Java-1.7.0_80.eb -Dr  # Dry-run
-# Real run -- set robot path to search in the local directory (do not forget the ':').
-# Prefix by time to get the time required to execute the command.
-$> time eb Java-1.7.0_80.eb --robot-paths=$PWD: -r
-
-# Repeat for Java 8:
-$> eb -S Java-1.8
-[...]
-* $CFGS2/j/Java/Java-1.8.0_152.eb
-[...]
-$> eb Java-1.8.0_152.eb -Dr # Dry-run
-$> time eb Java-1.8.0_152.eb --robot-paths=$PWD: -r
-```
-
-Check the result:
-
-```bash
-$> module av java
-$> module show lang/Java/1.7.0_80
-```
-
-#### Step 1.b. Maven 3.5.2
-
-We will also need an updated version of [Maven](https://maven.apache.org/) (3.5.2).
-
-Let's first try with the default reciPy/easyconfig:
-
-```bash
-$> eb -S Maven
-[...]
- * $CFGS1/Maven-3.2.3.eb
- * $CFGS1/Maven-3.3.3.eb
- * $CFGS1/Maven-3.3.9.eb
- * $CFGS1/Maven-3.5.0.eb
- * $CFGS1/Maven-3.5.2.eb
-
-# Let's try to install the most recent one:
-$> eb Maven-3.5.2.eb -Dr
-[...]
- * [ ] $CFGS/Maven-3.5.2.eb (module: devel/Maven/3.5.0)
-$> time eb Maven-3.5.2.eb -r
-```
-
-Check the result:
-
-```bash
-$> module av Maven
-module av Maven
------------ /home/users/<login>/.local/easybuild/modules/all --------
-   devel/Maven/3.5.2
-```
-
-A few other elements need to be installed.
-
-#### Step 1.c CMake, snappy, protobuf
-
-Let's repeat the process globally for:
-
-* [Cmake](https://cmake.org/) **3.9.1**  (the version is important), a very popular an open-source, cross-platform family of tools designed to build, test and package software,  * [snappy](https://github.com/google/snappy)
-**version 1.1.6** (the version is important), the fast compressor/decompressor from Google, and
-* [protobuf](https://github.com/google/protobuf), Google's language-neutral, platform-neutral, extensible mechanism for serializing structured data (**version 2.5.0**) we'll need later:
-
-```bash
-$> eb CMake-3.9.1.eb -Dr
-$> time eb CMake-3.9.1.eb -r
-[...]
-real    6m51.780s
-user    5m12.837s
-sys     1m10.029s
-
-$> eb snappy-1.1.6.eb -Dr
-$> time snappy-1.1.6.eb -r
-[...]
-real    0m7.315s
-user    0m3.768s
-sys     0m1.918s
-
-
-$> eb protobuf-2.5.0.eb -Dr    # Dry-run
-$> time eb protobuf-2.5.0.eb -r
-[...]
-real    1m51.002s
-user    1m35.820s
-sys     0m11.222s
-```
-
 
 ----------------------------
 ## 2. Hadoop Installation ##
 
-We're going to install the most recent  [Hadoop by Cloudera](https://www.cloudera.com/downloads/cdh/5-12-0.html) _i.e._ `Hadoop-2.6.0-cdh5.12.0-native.eb`.
-
 ```bash
-$> eb -S Hadoop | grep cdh
+(node)$> source settings/2019b
+(node)$> mu
+(node)$> eb --version
+This is EasyBuild 4.3.1 (framework: 4.3.1, easyblocks: 4.3.1) on host iris-117
+# Search for a recent version of Hadoop
+$> eb -S Hadoop-2
+== found valid index for /home/users/svarrette/.local/easybuild/software/EasyBuild/4.3.1/easybuild/easyconfigs, so using it...
+CFGS1=/opt/apps/resif/data/easyconfigs/ulhpc/default/easybuild/easyconfigs/s/Spark
+CFGS2=/home/users/svarrette/.local/easybuild/software/EasyBuild/4.3.1/easybuild/easyconfigs
+ * $CFGS1/Spark-2.3.0-intel-2018a-Hadoop-2.7-Java-1.8.0_162-Python-3.6.4.eb
+ * $CFGS1/Spark-2.4.0-Hadoop-2.7-Java-1.8.eb
+ * $CFGS1/Spark-2.4.3-intel-2019a-Hadoop-2.7-Java-1.8-Python-3.7.2.eb
+ * $CFGS2/h/Hadoop/Hadoop-2.10.0-GCCcore-8.3.0-native.eb
+ * $CFGS2/h/Hadoop/Hadoop-2.10.0_tirpc.patch
+ * $CFGS2/h/Hadoop/Hadoop-2.4.0-seagate-722af1-native.eb
  * $CFGS2/h/Hadoop/Hadoop-2.5.0-cdh5.3.1-native.eb
  * $CFGS2/h/Hadoop/Hadoop-2.6.0-cdh5.12.0-native.eb
  * $CFGS2/h/Hadoop/Hadoop-2.6.0-cdh5.4.5-native.eb
  * $CFGS2/h/Hadoop/Hadoop-2.6.0-cdh5.7.0-native.eb
  * $CFGS2/h/Hadoop/Hadoop-2.6.0-cdh5.8.0-native.eb
+ * $CFGS2/h/Hadoop/Hadoop-2.9.2-GCCcore-7.3.0-native.eb
+ * $CFGS2/h/Hadoop/Hadoop-2.9.2_fix-zlib.patch
+ * $CFGS2/s/Spark/Spark-2.2.0-Hadoop-2.6-Java-1.8.0_144.eb
+ * $CFGS2/s/Spark/Spark-2.2.0-Hadoop-2.6-Java-1.8.0_152.eb
+ * $CFGS2/s/Spark/Spark-2.2.0-intel-2017b-Hadoop-2.6-Java-1.8.0_152-Python-3.6.3.eb
+ * $CFGS2/s/Spark/Spark-2.3.0-Hadoop-2.7-Java-1.8.0_162.eb
+ * $CFGS2/s/Spark/Spark-2.4.0-Hadoop-2.7-Java-1.8.eb
+ * $CFGS2/s/Spark/Spark-2.4.0-intel-2018b-Hadoop-2.7-Java-1.8-Python-3.6.6.eb
 ```
 
-To have it _successfully_ built, we'll just need to adapt the corresponding recipY to use the latest Maven we just installed.
+So 2.10.0 is available, let's build it:
 
 ```bash
-$> eb -S Hadoop-2.6.0-cdh5.12.0-native.eb
-CFGS1=$HOME/.local/easybuild/software/tools/EasyBuild/3.6.1/lib/python2.7/site-packages/easybuild_easyconfigs-3.6.1-py2.7.egg/easybuild/easyconfigs/h/Hadoop
- * $CFGS1/Hadoop-2.6.0-cdh5.12.0-native.eb
-
-# Copy the recipy -- you need thus to define the CFGS1 variable
-$> CFGS1=$HOME/.local/easybuild/software/tools/EasyBuild/3.6.1/lib/python2.7/site-packages/easybuild_easyconfigs-3.6.1-py2.7.egg/easybuild/easyconfigs/h/Hadoop
-$> echo $CFGS1
-$> cd /tmp     # Work in a temporary directory
-$> cp $CFGS1/Hadoop-2.6.0-cdh5.12.0-native.eb .
+(node)$> eb src/Hadoop-2.10.0-GCCcore-8.3.0-native.eb -Dr   # Dry-run
+(node)$> eb src/Hadoop-2.10.0-GCCcore-8.3.0-native.eb -r
 ```
-Now adapt the recipY to use the latest Maven we just installed.
+The install will **fail**: the sources cannot be downloaded.
+
+Let's see the easyconfig:
+
+```bash
+$> eb -S Hadoop-2.10.0-GCCcore-8.3.0-native.eb
+== found valid index for /home/users/svarrette/.local/easybuild/software/EasyBuild/4.3.1/easybuild/easyconfigs, so using it...
+CFGS1=/home/users/svarrette/.local/easybuild/software/EasyBuild/4.3.1/easybuild/easyconfigs/h/Hadoop
+ * $CFGS1/Hadoop-2.10.0-GCCcore-8.3.0-native.eb
+# copy/paste the above definition
+CFGS1=/home/users/svarrette/.local/easybuild/software/EasyBuild/4.3.1/easybuild/easyconfigs/h/Hadoop
+# check the definition of the easyconfig
+less  $CFGS1/Hadoop-2.10.0-GCCcore-8.3.0-native.eb  # Q to quit
+```
+
+Check the `source_urls` definition.
+
+We can create a more recent version:
+
+```bash
+cp  $CFGS1/Hadoop-2.10.0-GCCcore-8.3.0-native.eb .
+mv Hadoop-2.10.0-GCCcore-8.3.0-native.eb Hadoop-2.10.1-GCCcore-8.3.0-native.eb
+```
+
+Edit this version as follows:
+
 
 ```diff
---- $HOME/.local/easybuild/software/tools/EasyBuild/3.6.1/lib/python2.7/site-packages/easybuild_easyconfigs-3.6.1-py2.7.egg/easybuild/easyconfigs/h/Hadoop/Hadoop-2.6.0-cdh5.12.0-native.eb     2018-06-07 23:30:47.111972000 +0200
-+++ /tmp/Hadoop-2.6.0-cdh5.12.0-native.eb    2018-06-12 22:44:26.425625000 +0200
-@@ -14,7 +14,7 @@
- patches = ['Hadoop-TeraSort-on-local-filesystem.patch']
+--- Hadoop-2.10.0-GCCcore-8.3.0-native.eb       2020-12-15 00:37:05.902236000 +0100
++++ src/Hadoop-2.10.1-GCCcore-8.3.0-native.eb   2020-12-14 19:10:37.998889667 +0100
+@@ -1,9 +1,9 @@
+ name = 'Hadoop'
+-version = '2.10.0'
++version = '2.10.1'
+ versionsuffix = '-native'
 
- builddependencies = [
--    ('Maven', '3.5.0'),
-+    ('Maven', '3.5.2'),
-     ('protobuf', '2.5.0'),  # *must* be this version
-     ('CMake', '3.9.1'),
-     ('snappy', '1.1.6'),
+-homepage = 'https://archive.cloudera.com/cdh5/cdh/5/'
+-description = """Hadoop MapReduce by Cloudera"""
++homepage = 'https://hadoop.apache.org/'
++description = """The Apache Hadoop project develops open-source software for reliable, scalable, distributed computing."""
+
+ toolchain = {'name': 'GCCcore', 'version': '8.3.0'}
+
+@@ -15,14 +15,12 @@
+ patches = [
+     'Hadoop-TeraSort-on-local-filesystem.patch',
+     'Hadoop-2.9.2_fix-zlib.patch',
+-    'HADOOP-14597.04.patch',
+     'Hadoop-2.10.0_tirpc.patch',
+ ]
+ checksums = [
+-    'baa9b125359a30eb209fbaa953e1b324eb61fa65ceb9a7cf19b0967188d8b1c0',  # hadoop-2.10.0-src.tar.gz
++    ('sha512','02e784d480c11006a6173ccf3de69a921f91964296383cb8991636f2b7f455d164db7eec6229d97dbfcee0993ceb0e137076b85afd82c99c6d34a48818b68361'),  # hadoop-2.10.1-src.tar.gz
+     'd0a69a6936b4a01505ba2a20911d0cec4f79440dbc8da52b9ddbd7f3a205468b',  # Hadoop-TeraSort-on-local-filesystem.patch
+     '1a1d084c7961078bdbaa84716e9639e37587e1d8c0b1f89ce6f12dde8bbbbc5c',  # Hadoop-2.9.2_fix-zlib.patch
+-    'ea93c7c2b03d36f1434c2f2921c031cdc385a98f337ed8f4b3103b45b0ad0da3',  # HADOOP-14597.04.patch
+     '9d66f604e6e03923d8fcb290382936fb93511001bb593025b8d63ababdca3a96',  # Hadoop-2.10.0_tirpc.patch
+ ]
 ```
 
-_Note_: the resulting Easyconfigs is provided to you in `src/Hadoop-2.6.0-cdh5.12.0-native.eb`:
+No run the build:
 
 ```bash
-$> module load devel/Maven devel/protobuf/2.5.0  devel/CMake/3.9.1 lib/snappy/1.1.6
-$> module list
-
-Currently Loaded Modules:
-1) tools/EasyBuild/3.6.1   3) devel/Maven/3.5.2      5) devel/CMake/3.9.1
-2) lang/Java/1.7.0_80      4) devel/protobuf/2.5.0   6) lib/snappy/1.1.6
+(node)$> eb src/Hadoop-2.10.1-GCCcore-8.3.0-native.eb -Dr   # Dry-run
+(node)$> eb src/Hadoop-2.10.1-GCCcore-8.3.0-native.eb -r
 ```
 
-Let's install it:
-
-```
-$> eb ./Hadoop-2.6.0-cdh5.12.0-native.eb -Dr   # Dry run
-$> time eb ./Hadoop-2.6.0-cdh5.12.0-native.eb -r
-[...]
-real    52m58.484s
-user    5m28.819s
-sys     2m8.673s
-```
-
-**`/!\ IMPORTANT`: As you can see, the build is quite long -- it takes ~53 minutes**
-You can monitor the execution in parallel using `htop`
+Installation will last ~9 minutes on a full `iris` node (`-c 28`)
 
 
 -----------------------
@@ -346,16 +274,17 @@ By default, Hadoop is configured to run in a non-distributed mode, as a single J
 Let's test it
 
 ```bash
+$> mkdir -p runs/hadoop/single/input
 $> cd runs/hadoop/single
 # Prepare input data
 $> mkdir input
 $> cp ${EBROOTHADOOP}/etc/hadoop/*.xml input
 # Map-reduce grep <pattern> -- result is produced in output/
-$> hadoop jar ${EBROOTHADOOP}/share/hadoop/mapreduce/hadoop-mapreduce-examples-2.6.0-cdh5.12.0.jar grep input output 'dfs[a-z.]+'
+$> hadoop jar ${EBROOTHADOOP}/share/hadoop/mapreduce/hadoop-mapreduce-examples-2.10.1.jar grep input output 'dfs[a-z.]+'
 [...]
         File System Counters
-                FILE: Number of bytes read=70426
-                FILE: Number of bytes written=1202298
+                FILE: Number of bytes read=1292924
+                FILE: Number of bytes written=3222544
                 FILE: Number of read operations=0
                 FILE: Number of large read operations=0
                 FILE: Number of write operations=0
@@ -364,7 +293,7 @@ $> hadoop jar ${EBROOTHADOOP}/share/hadoop/mapreduce/hadoop-mapreduce-examples-2
                 Map output records=1
                 Map output bytes=17
                 Map output materialized bytes=25
-                Input split bytes=186
+                Input split bytes=191
                 Combine input records=0
                 Combine output records=0
                 Reduce input groups=1
@@ -375,8 +304,8 @@ $> hadoop jar ${EBROOTHADOOP}/share/hadoop/mapreduce/hadoop-mapreduce-examples-2
                 Shuffled Maps =1
                 Failed Shuffles=0
                 Merged Map outputs=1
-                GC time elapsed (ms)=8
-                Total committed heap usage (bytes)=1046478848
+                GC time elapsed (ms)=0
+                Total committed heap usage (bytes)=1029701632
         Shuffle Errors
                 BAD_ID=0
                 CONNECTION=0
@@ -396,15 +325,15 @@ $> cat output/*
 ### 3.b Pseudo-Distributed Operation
 
 Hadoop can also be run on a single-node in a pseudo-distributed mode where each Hadoop daemon runs in a separate Java process.
-Follow the [official tutorial](https://hadoop.apache.org/docs/r2.6.0/hadoop-project-dist/hadoop-common/SingleCluster.html#Pseudo-Distributed_Operation) to ensure you are running in **Single Node Cluster**
+Follow the [official tutorial](https://hadoop.apache.org/docs/r2.10.1/hadoop-project-dist/hadoop-common/SingleCluster.html#Pseudo-Distributed_Operation) to ensure you are running in **Single Node Cluster**
 
-Once this is done, follow the [official Wordcount instructions](https://hadoop.apache.org/docs/r2.6.0/hadoop-mapreduce-client/hadoop-mapreduce-client-core/MapReduceTutorial.html#Example:_WordCount_v1.0)
+Once this is done, follow the [official Wordcount instructions](https://hadoop.apache.org/docs/r2.10.1/hadoop-mapreduce-client/hadoop-mapreduce-client-core/MapReduceTutorial.html#Example:_WordCount_v1.0)
 
 ### 3.b Full cluster setup
 
-Follow the official instructions of the [Cluster Setup](https://hadoop.apache.org/docs/r2.6.0/hadoop-project-dist/hadoop-common/ClusterSetup.html).
+Follow the official instructions of the [Cluster Setup](https://hadoop.apache.org/docs/r2.10.1/hadoop-project-dist/hadoop-common/ClusterSetup.html).
 
-Once this is done, Repeat the execution of the [official Wordcount example](https://hadoop.apache.org/docs/r2.6.0/hadoop-mapreduce-client/hadoop-mapreduce-client-core/MapReduceTutorial.html#Example:_WordCount_v1.0).
+Once this is done, Repeat the execution of the [official Wordcount example](https://hadoop.apache.org/docs/r2.10.1/hadoop-mapreduce-client/hadoop-mapreduce-client-core/MapReduceTutorial.html#Example:_WordCount_v1.0).
 
 --------------------------------------------------
 ## 4. Interactive Big Data Analytics with Spark ##
@@ -421,21 +350,50 @@ As for Hadoop, we are first going to build Spark using Easybuild before performi
 
 ### 4.1 Building Spark
 
-Spark 2.3.0 is available by default so you can load it.
+Spark 2.4.3 is available by default (on the 2019b software set) so you can load it.
 
 ``` bash
-$> module av spark
-------------- /opt/apps/resif/data/stable/default/modules/all -------------
-   devel/Spark/2.3.0-intel-2018a-Hadoop-2.7-Java-1.8.0_162-Python-3.6.4
+$> module av Spark
+
+------------ /opt/apps/resif/iris/2019b/broadwell/modules/all --------------
+   devel/Spark/2.4.3-intel-2019b-Hadoop-2.7-Java-1.8-Python-3.7.4
 
 $> module load devel/Spark
 ```
 
-You might wish to build and use the most recent version of [Spark](https://spark.apache.org/downloads.html) (_i.e._ at the time of writing 2.4.0 (Nov. 2nd, 2018) with Pre-built for Apache Hadoop 2.7 or later).
-You can simply expand the available Easybuild recipY for Spark 2.3.0:
+You might wish to build and use the most recent version of [Spark](https://spark.apache.org/downloads.html) (_i.e._ at the time of writing 2.4.7 (Dec. 14, 2020) with Pre-built for Apache Hadoop 2.7 or later).
+Let's see if Easybuild does not provide a more recent one:
+
 
 ```bash
-$> eb -S Spark-2.3
+# Cleanup loaded modules to avoid collusion
+$> module purge
+$> mu
+# Search for Spark 2.4
+$> eb -S Spark-2.4
+== found valid index for /home/users/svarrette/.local/easybuild/software/EasyBuild/4.3.1/easybuild/easyconfigs, so using it...
+CFGS1=/opt/apps/resif/data/easyconfigs/ulhpc/default/easybuild/easyconfigs/s/Spark
+CFGS2=/home/users/svarrette/.local/easybuild/software/EasyBuild/4.3.1/easybuild/easyconfigs/s/Spark
+ * $CFGS1/Spark-2.4.0-Hadoop-2.7-Java-1.8.eb
+ * $CFGS1/Spark-2.4.3-intel-2019a-Hadoop-2.7-Java-1.8-Python-3.7.2.eb
+ * $CFGS2/Spark-2.4.0-Hadoop-2.7-Java-1.8.eb
+ * $CFGS2/Spark-2.4.0-foss-2018b-Python-2.7.15.eb
+ * $CFGS2/Spark-2.4.0-intel-2018b-Hadoop-2.7-Java-1.8-Python-3.6.6.eb
+ * $CFGS2/Spark-2.4.0-intel-2018b-Python-2.7.15.eb
+ * $CFGS2/Spark-2.4.0-intel-2018b-Python-3.6.6.eb
+ * $CFGS2/Spark-2.4.5-intel-2019b-Python-3.7.4-Java-1.8.eb
+```
+
+That's the case. So let's build 2.4.5:
+
+```bash
+$> eb Spark-2.4.5-intel-2019b-Python-3.7.4-Java-1.8.eb -Dr   # Dry-run
+$> eb Spark-2.4.5-intel-2019b-Python-3.7.4-Java-1.8.eb -r
+```
+
+
+```bash
+$> eb -S Spark-2.
 CFGS1=/opt/apps/resif/data/easyconfigs/ulhpc/default/easybuild/easyconfigs/s/Spark
 CFGS2=$HOME/.local/easybuild/software/tools/EasyBuild/3.7.1/lib/python2.7/site-packages/easybuild_easyconfigs-3.7.1-py2.7.egg/easybuild/easyconfigs/s/Spark
  * $CFGS1/Spark-2.3.0-intel-2018a-Hadoop-2.7-Java-1.8.0_162-Python-3.6.4.eb
