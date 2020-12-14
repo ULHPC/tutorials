@@ -133,7 +133,11 @@ $> si-gpu -c7
 # srun -p interactive --qos debug -C gpu -c7 -G 1 --mem-per-cpu 27000 --pty bash
 
 ### ... or using the HPC School reservation 'hpcschool-gpu'
-srun --reservation=lecturers-gpu -p gpu --ntasks-per-node 1 -c7 -G 1 --pty bash
+srun --reservation=hpcschool-gpu -p gpu --ntasks-per-node 1 -c7 -G 1 --pty bash
+
+### Load the required modules
+module load system/CUDA
+module load compiler/GCC
 ```
 
 
@@ -295,7 +299,7 @@ nvcc -arch=compute_70 -o ./$exe $src
 where `nvcc` is the keyword for the nvcc compiler,
 `$src` is the name of the source file to compile ( e.g.`LoG_gpu.cu` is passed as the source file to compile,
 the `o` flag is used to specify the name `$exe` of the compiled program, and
-the `arch` points to the GPU architecture for which the source file must be compiled. `sm_70` indicates the Volta GPU architecture.
+the `arch` points to the GPU architecture for which the source file must be compiled. `sm_70` indicates the Volta GPU architecture. Use `-lm` to link the math library to your executable.
 
 To run your executable file interactively, just use:
 ```bash
