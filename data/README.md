@@ -16,22 +16,73 @@ Author: Sarah Peter
 
 The actual command comes only after this prefix.
 
+## Overview
+
+### Requirements
+
+* Access to the UL HPC clusters.
+* Basic knowledge of the linux command-line.
+
+### Questions
+
+* How can I check the my quotas on file sizes and number of files?
+* What do "soft quota", "hard quota" and "grace period" mean?
+* How can I see how much space is used on a specific file system?
+* How can I compute checksums?
+* How can I verify checksums?
+* How can I encrypt a file?
+* How can I decrypt a file?
+* How can I encrypt a directory of files?
+* How can I read the files in an encrypted directory?
+
+### Objectives
+
+* Explain the `df` and `df-ulhpc` commands to check disk usage and quota status.
+* Compute MD5 and SHA-256 checksums and understand the difference between them.
+* Verify MD5 and SHA-256 checksums.
+* Encrypt a single file with GPG.
+* Decrypt a GPG-encrypted file.
+* Encrypt a whole folder with gocryptfs.
+* Mount a gocryptfs-encrypted folder to read and write files in it.
+* Unmount a gocryptfs-encrypted folder to secure it from unauthorized access.
+
 ## Preliminaries
 
-#### 1. Connect to the cluster
+Connect to the cluster.
 
-#### 2. Start an interactive job
+## Quotas
+
+We provide the `df-ulhpc` command on the cluster login nodes, which displays current usage, soft quota, hard quota and grace period. Any directories that have exceeded the quota will be highlighted in red.
+
+Check your file size quota with:
 
 ```bash
-(access)$> si
+(access)$> df-ulhpc
 ```
 
-#### 3. Prepare data
+You will see a list of directories on which quotas are applied, how much space you are currently using, your soft quota, hard quota and the grace period.
+
+Once your usage reaches the soft quota you can still write data until the grace period expires (7 days) or you reach the hard quota. After you reach the end of the grace period or the hard quota, you have to reduce your usage to below the soft quota to be able to write data again.
+
+Check your inode quota with:
 
 ```bash
-(node)$> mkdir -p $SCRATCH/data_management
-(node)$> cd $SCRATCH/data_management
-(node)$> echo 'Happy secure computing!' > message.txt
+(access)$> df-ulhpc -i
+```
+
+Check the free space on all file systems with:
+
+```bash
+(access)$> df -h
+```
+
+Check the free space on the current file system with:
+
+```bash
+(access)$> cd
+(access)$> df -h .
+(access)$> cd /mnt/isilon/projects
+(access)$> df -h .
 ```
 
 ## Checksums
@@ -54,6 +105,15 @@ The actual command comes only after this prefix.
 > (...) it should not be relied on if there is a chance that  files have been purposefully and maliciously tampered. In the latter case, the use of a newer hashing tool such as [sha256sum](https://en.wikipedia.org/wiki/Sha256sum) is recommended.
 > 
 > &mdash; <cite>[Wikipedia - Md5sum](https://en.wikipedia.org/wiki/Md5sum)</cite>
+
+First, we need to start an interactive job and prepare some test data:
+
+```bash
+(access)$> si
+(node)$> mkdir -p $SCRATCH/data_management
+(node)$> cd $SCRATCH/data_management
+(node)$> echo 'Happy secure computing!' > message.txt
+```
 
 We can create the MD5 checksum with the following command:
 
@@ -199,7 +259,7 @@ To encrypt using a key, you must specify the email address associated to the key
 (node)$> gpg --encrypt --sign --recipient jane.doe@uni.lu message.txt
 ```
 
-### gocryptfs
+### Gocryptfs
 
 Gocryptfs is a modern implementation of an encryption overlay filesystem.
 
