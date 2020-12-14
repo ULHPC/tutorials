@@ -1,117 +1,117 @@
 #! /bin/bash -l
-# Time-stamp: <Thu 2019-06-20 14:25 svarrette>
-######## OAR directives ########
-#OAR -n Hybrid
-#OAR -l nodes=2/core=4,walltime=0:05:00
-#OAR -O Hybrid-%jobid%.log
-#OAR -E Hybrid-%jobid%.log
-#
-####### Slurm directives #######
-#SBATCH -J Hybrid
-#SBATCH -N 2
-#SBATCH --ntasks-per-node=1
-#SBATCH -c 4
-#SBATCH --time=0-00:05:00
-#SBATCH -p batch
-#SBATCH --qos=normal
-#SBATCH -o %x-%j.out
-#
+# Time-stamp: <Mon 2020-12-14 13:03 svarrette>
+###############################################################################
+# Default launcher for Hybrid OpenMP+MPI jobs
 # Usage:
-# $0 intel     [app]
-# $0 openmpi   [app]
-# $0 mvapich2  [app]
+#       [EXE=/path/to/mpiapp.exe] [sbatch] $0 <mpi-suite> [app].
+# By default, MPI programs are expected to be built in APPDIR as '<suite>_<app>'
+# to easily get the MPI suite used for the build
+################################################################################
+#SBATCH -J Hybrid
+###SBATCH --dependency singleton
+###SBATCH --mail-type=FAIL     # Mail events (NONE, BEGIN, END, FAIL, ALL)
+###SBATCH --mail-user=<email>
+#SBATCH --time=0-01:00:00      # 1 hour
+#SBATCH --partition=batch
+#__________________________
+#SBATCH -N 2
+#SBATCH --ntasks-per-socket 1  # (ideally) ensure 1 MPI process per processor
+#SBATCH --ntasks-per-node 2    #           ensure consistency accordingly over the node
+#SBATCH -c 14                  # multithreading per task : -c --cpus-per-task <n> request
+#__________________________    #      (ideally) as many OpenMP threads as cores available
+#SBATCH -o logs/%x-%j.out      # log goes into logs/<jobname>-<jobid>.out
+mkdir -p logs
+
+##############################
+### Guess the run directory
+# - either the script directory upon interactive jobs
+# - OR the submission directory upon passive/batch jobs
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+if [ -n "${SLURM_SUBMIT_DIR}" ]; then
+    [[ "${SCRIPT_DIR}" == *"slurmd"* ]] && TOP_DIR=${SLURM_SUBMIT_DIR} || TOP_DIR=$(realpath -es "${SCRIPT_DIR}")
+else
+    TOP_DIR="${SCRIPT_DIR}"
+fi
+CMD_PREFIX=
+SUITE='openmpi'
+MODULE=mpi/OpenMPI
+
+######################################################
+# /!\ ADAPT below variables to match your own settings
+APPDIR=${APPDIR:=${HOME}/tutorials/OpenMP-MPI/basics/bin}    # bin directory holding your MPI builds
+APP=${APP:=hello_hybrid}  # MPI application - OpenMPI/intel/... builds expected to be prefixed by
+#                                          openmpi_/intel_/<suit>_
+# Eventual options to be passed to the MPI program
+OPTS=
+
+
 
 ################################################################################
 print_error_and_exit() { echo "*** ERROR *** $*"; exit 1; }
 usage() {
     cat <<EOF
 NAME
-  $0 -- Hybrid OpenMP+MPI launcher example
+  $(basename $0): Generic Hybrid OpenMP+MPI launcher
+    Default APPDIR: ${APPDIR}
+    Default APP: ${APP}
+  Take the good habit to prefix the binary to execute with MPI suit used for
+  the build. Here the default Hybrid OpenMP+MPI application run would be
+        EXE=${APPDIR}/openmpi_${APP}
+  which will be run as     srun -n \$SLURM_NTASKS [...]
+
 USAGE
-  $0 {intel | openmpi | mvapich2} [app]
+  [sbatch] $0 [-n] {intel | openmpi | mvapich2} [app]
+  EXE=/path/to/hydridapp.exe [sbatch] $0 [-n] {intel | openmpi | mvapich2}
+
+OPTIONS:
+  -n --dry-run: Dry run mode
 
 Example:
-  $0 [openmpi]      run hybrid OpenMP+OpenMPI  on hello_hybrid
-  $0 intel          run hybrid OpenMP+IntelMPI on hello_hybrid
-  $0 mvapich2       run hybrid OpenMP+MVAPICH2 on hello_hybrid
+  [sbatch] $0                          # run hybrid OpenMPI build    openmpi_hello_hybrid
+  [sbatch] $0 intel                    # run hybrid Intel MPI build  intel_hello_hybrid
+  [sbatch] $0 openmpi matrix_mult      # run hybrid OpenMPI build    openmpi_matrix_mult
+  EXE=$HOME/bin/hpcg [sbatch] $0 intel # run hybrid intel build ~/bin/hpcg
 EOF
 }
 
 ################################################################################
-# OpenMP+MPI Setup
-if [ -n "$OAR_NODEFILE" ]; then
-    NTASKS=$(cat $OAR_NODEFILE | wc -l)
-    NNODES=$(cat $OAR_NODEFILE | sort -u | wc -l)
-    NCORES_PER_NODE=$(echo "${NTASKS}/${NNODES}" | bc)
-    export OMP_NUM_THREADS=$(cat $OAR_NODEFILE | uniq -c | head -n1 | awk '{print $1}')
-    NPERNODE=$(echo "$NCORES_PER_NODE/$OMP_NUM_THREADS" | bc)
-    NP=$(echo "$NTASKS/$OMP_NUM_THREADS" | bc)
-    MACHINEFILE=hostfile_${OAR_JOBID}.txt;
-    # Unique list of hostname for the machine file
-    cat $OAR_NODEFILE | uniq > ${MACHINEFILE};
-elif [ -n "SLURM_CPUS_PER_TASKS" ]; then
-    NCORES_PER_NODE=$(echo "${SLURM_NTASKS}/${$SLURM_NNODES}" | bc)
-    export OMP_NUM_THREADS=${SLURM_CPUS_PER_TASK}
-    NPERNODE=$(echo "$NCORES_PER_NODE/$OMP_NUM_THREADS" | bc)
-    NP=$SLURM_NTASKS
-    MACHINEFILE=hostfile_${SLURM_JOBID}.txt;
-    # Unique list of hostname for the machine file
-    srun hostname | sort -n | uniq > ${MACHINEFILE};
-fi
-# Use the UL HPC modules
-if [ -f  /etc/profile ]; then
-   .  /etc/profile
-fi
+while [ $# -ge 1 ]; do
+    case $1 in
+        -h | --help) usage; exit 0;;
+        -n | --noop | --dry-run) CMD_PREFIX=echo;;
+        intel*   | --intel*)   SUITE='intel';    MODULE=toolchain/intel;;
+        openmpi* | --openmpi*) SUITE='openmpi';  MODULE=mpi/OpenMPI;;
+        mvapich* | --mvapich*) SUITE='mvapich2'; MODULE=mpi/MVAPICH2;;
+        *) APP=$1; shift; OPTS=$*; break;;
+    esac
+    shift
+done
+# OpenMP Setup
+export OMP_NUM_THREADS=${SLURM_CPUS_PER_TASK:-1}
 
-################################################################################
-case $1 in
-    -h       | --help)     usage; exit 0;;
-    intel*   | --intel*)   SUITE='intel';    MODULE=toolchain/intel;;
-    mvapich* | --mvapich*) SUITE='mvapich2'; MODULE=mpi/MVAPICH2;;
-    *)                     SUITE='openmpi';  MODULE=mpi/OpenMPI;;
-esac
+# Set default MPI executable
+[ -z "${EXE}" ]    && EXE=${APPDIR}/${SUITE}_${APP} || APP=$(basename ${EXE})
+[ ! -x "${EXE}" ]  && print_error_and_exit "Unable to find the executable ${EXE}"
 
-################################################################################
-################################################################################
-# Directory holding your built applications
-# /!\ ADAPT to match your own settings
-APPDIR="$HOME/tutorials/OpenMP-MPI/basics/bin"
-[ -n "$2" ] && APP=${SUITE}_$2 || APP=${SUITE}_hello_hybrid
-# Eventual options of the MPI program
-OPTS=
-
-EXE="${APPDIR}/${APP}"
-[ ! -x "${EXE}" ]  && print_error_and_exit "Unable to find the generated executable ${EXE}"
-
-
-echo "# =============================================================="
-echo "# => OpenMP+MPI run of '${APP}' with the ${SUITE} MPI suite"
-echo "#    OMP_NUM_THREADS=${OMP_NUM_THREADS}"
-echo "#    ${NP} MPI process(es)"
-echo "# =============================================================="
+cat <<EOF
+# ==============================================================
+# => OpenMP+MPI run of '${APP}' with the ${SUITE} MPI suite
+#    OMP_NUM_THREADS=${OMP_NUM_THREADS}
+#    ${SLURM_NTASKS:-1} MPI process(es)"
+# ==============================================================
+EOF
 
 module purge || print_error_and_exit "Unable to find the module command"
-# module load swenv/default-env/devel
 module load ${MODULE}
 module list
 
-# The command to run
-case ${SUITE} in
-    openmpi)
-        CMD="mpirun -npernode ${NPERNODE:=1} -np ${NP} -hostfile \$OAR_NODEFILE -x OMP_NUM_THREADS -x PATH -x LD_LIBRARY_PATH ${EXE} ${OPTS}";;
-    mvapich*)
-        export MV2_ENABLE_AFFINITY=0;
-        CMD="mpirun -ppn ${NPERNODE:=1} -np ${NP} -genv OMP_NUM_THREADS=${OMP_NUM_THREADS} -launcher ssh -launcher-exec /usr/bin/oarsh -f $MACHINEFILE ${EXE} ${OPTS}";;
-    intel)
-        CMD="mpirun -perhost ${NPERNODE:=1} -np ${NP} -genv OMP_NUM_THREADS=${OMP_NUM_THREADS} -genv I_MPI_PIN_DOMAIN=omp -hostfile \$OAR_NODEFILE ${EXE} ${OPTS}";;
-    *)  print_error_and_exit "Unsupported MPI suite";;
-esac
-# Way easier on slurm...
-if [ -n "${SLURM_NTASKS}" ]; then
-    CMD="srun -n \${SLURM_NTASKS} ${EXE} ${OPTS}"
-fi
+start=$(date +%s)
+echo "### Starting timestamp (s): ${start}"
 
-echo "=> running command: ${CMD}"
-eval ${CMD}
+${CMD_PREFIX} srun -n ${SLURM_NTASKS:-1} ${EXE} ${OPTS}
 
-rm -f ${MACHINEFILE}
+end=$(date +%s)
+cat <<EOF
+### Ending timestamp (s): ${end}"
+# Elapsed time (s): $(($end-$start))
+EOF

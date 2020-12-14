@@ -1,19 +1,48 @@
 #! /bin/bash -l
-# Time-stamp: <Thu 2019-06-20 14:25 svarrette>
-######## OAR directives ########
-#OAR -n OpenMP
-#OAR -l nodes=1/core=4,walltime=0:05:00
-#OAR -O OpenMP-%jobid%.log
-#OAR -E OpenMP-%jobid%.log
-#
-####### Slurm directives #######
+# Time-stamp: <Mon 2020-12-14 12:44 svarrette>
+################################################################################
+# Default launcher for OpenMP jobs
+# Usage:
+#       [EXE=/path/to/multithreadedapp.exe] [sbatch] $0 <mpi-suite> [app].
+# By default, OpenMP programs are expected to be built in APPDIR.
+# Intel builds are expected to be named 'intel_<app>' to easily get the toolchain
+# used for the build
+#################################################################################
 #SBATCH -J OpenMP
-#SBATCH --ntasks-per-node=1
-#SBATCH -c 4
-#SBATCH --time=0-00:05:00
-#SBATCH -p batch
-#SBATCH --qos=normal
-#SBATCH -o %x-%j.out
+###SBATCH --dependency singleton
+###SBATCH --mail-type=FAIL     # Mail events (NONE, BEGIN, END, FAIL, ALL)
+###SBATCH --mail-user=<email>
+#SBATCH --time=0-01:00:00      # 1 hour
+#SBATCH --partition=batch
+#__________________________
+#SBATCH -N 1
+#SBATCH --ntasks-per-node 1    #
+#SBATCH -c 28                  # multithreading per task : -c --cpus-per-task <n> request
+#__________________________    #      (ideally) as many OpenMP threads as cores available
+#SBATCH -o logs/%x-%j.out      # log goes into logs/<jobname>-<jobid>.out
+mkdir -p logs
+
+##############################
+### Guess the run directory
+# - either the script directory upon interactive jobs
+# - OR the submission directory upon passive/batch jobs
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+if [ -n "${SLURM_SUBMIT_DIR}" ]; then
+    [[ "${SCRIPT_DIR}" == *"slurmd"* ]] && TOP_DIR=${SLURM_SUBMIT_DIR} || TOP_DIR=$(realpath -es "${SCRIPT_DIR}")
+else
+    TOP_DIR="${SCRIPT_DIR}"
+fi
+CMD_PREFIX=
+MODULE=toolchain/foss
+
+######################################################
+# /!\ ADAPT below variables to match your own settings
+APPDIR=${APPDIR:=${HOME}/tutorials/OpenMP-MPI/basics/bin}    # bin directory holding your OpenMP builds
+APP=${APP:=hello_openmp}     # OpenMP application - intel builds expected to be prefixed by intel_<APP>
+# Eventual options to be passed to the MPI program
+OPTS=
+
+
 #
 ### Usage:
 # $0 intel  [app]
@@ -24,56 +53,64 @@ print_error_and_exit() { echo "*** ERROR *** $*"; exit 1; }
 usage() {
     cat <<EOF
 NAME
-  $0 -- OpenMP launcher example
+  $(basename $0): Generic OpenMP launcher
+    Default APPDIR: ${APPDIR}
+    Default APP: ${APP}
+  Take the good habit to prefix the intel binaries (as foss toolchain is assumed by default)
+  with 'intel_'
+
 USAGE
-  $0 {intel | foss } [app]
+  [sbatch] $0 [-n] {intel | foss } [app]
+  EXE=/path/to/multithreadedapp.exe [sbatch] $0 [-n] {intel | foss }
+
+OPTIONS:
+  -n --dry-run: Dry run mode
 
 Example:
-  $0                          run foss on hello_openmp
-  $0 intel                    run intel on hello_openmp
-  $0 foss matrix_mult_openmp  run foss  on matrix_mult_openmp
+  [sbatch] $0                          # run FOSS  build   hello_openmp
+  [sbatch] $0 intel                    # run intel build   intel_hello_openmp
+  [sbatch] $0 foss matrix_mult_openmp  # run FOSS  build   matrix_mult_openmp
+  EXE=$HOME/bin/datarace [sbatch] $0 intel # run intel build  ~/bin/datarace
 EOF
 }
 
 ################################################################################
+while [ $# -ge 1 ]; do
+    case $1 in
+        -h | --help) usage; exit 0;;
+        -n | --noop | --dry-run) CMD_PREFIX=echo;;
+        intel* | --intel*) MODULE=toolchain/intel;;
+        foss*  | --foss*)  MODULE=toolchain/foss;;
+        *) APP=$1; shift; OPTS=$*; break;;
+    esac
+    shift
+done
+################################################################################
 # OpenMP Setup
-if [ -n "$OAR_NODEFILE" ]; then
-    export OMP_NUM_THREADS=$(cat $OAR_NODEFILE| wc -l)
-elif [ -n "SLURM_CPUS_PER_TASKS" ]; then
-    export OMP_NUM_THREADS=${SLURM_CPUS_PER_TASK}
-fi
-# Use the UL HPC modules
-if [ -f  /etc/profile ]; then
-   .  /etc/profile
-fi
+export OMP_NUM_THREADS=${SLURM_CPUS_PER_TASK:-1}
 
-################################################################################
-# Directory holding your built applications
-# /!\ ADAPT to match your own settings
-APPDIR="$HOME/tutorials/OpenMP-MPI/basics/bin"
-[ -n "$2" ] && APP=$2 || APP=hello_openmp
-# Eventual options of the OpenMP program
-OPTS=
+[[ "${MODULE}" == *"intel"* ]] && APP=intel_${APP}
+[ -z "${EXE}" ]   && EXE=${APPDIR}/${APP} || APP=$(basename ${EXE})
+[ ! -x "${EXE}" ] && print_error_and_exit "Unable to find the executable ${EXE}"
 
-################################################################################
-case $1 in
-    -h       | --help)     usage; exit 0;;
-    intel*   | --intel*)   APP=intel_${APP}; MODULE=toolchain/intel;;
-    *)                     MODULE=toolchain/foss;;
-esac
-
-EXE="${APPDIR}/${APP}"
-[ ! -x "${EXE}" ]  && print_error_and_exit "Unable to find the generated executable ${EXE}"
-
-echo "# =============================================================="
-echo "# => OpenMP run of '${APP}' with ${MODULE}"
-echo "#    OMP_NUM_THREADS=${OMP_NUM_THREADS}"
-echo "# =============================================================="
+cat <<EOF
+# ==============================================================
+# => OpenMP run of '${APP}' with ${MODULE}
+#    OMP_NUM_THREADS=${OMP_NUM_THREADS}
+# ==============================================================
+EOF
 
 module purge || print_error_and_exit "Unable to find the module command"
-# module load swenv/default-env/devel
 module load ${MODULE}
 module list
 
-echo "=> running command: ${EXE} ${OPTS}"
-${EXE} ${OPTS}
+start=$(date +%s)
+echo "### Starting timestamp (s): ${start}"
+
+${CMD_PREFIX} srun ${EXE} ${OPTS}
+
+end=$(date +%s)
+cat <<EOF
+### Ending timestamp (s): ${end}"
+# Elapsed time (s): $(($end-$start))
+EOF
