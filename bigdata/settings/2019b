@@ -1,0 +1,29 @@
+# Time-stamp: <Mon 2020-12-14 23:02 svarrette>
+################################################################################
+# Usage:
+#     source settings/2019b
+#
+# Facilitate the load the (new) 2019b software set on iris, used for this session
+#
+function check_module_cmd() {
+    if ! c=$(command -v module); then
+        echo "'module' command not found -- exiting"
+        return 0
+    fi
+}
+
+# Redefine EASYBUILD_PREFIX, if not yet defined
+export EASYBUILD_PREFIX=${EASYBUILD_PREFIX:=${HOME}/.local/easybuild}
+# useful EB variables used for this session
+export LOCAL_MODULE=${LOCAL_MODULE:=${EASYBUILD_PREFIX}/modules/all}
+function mu(){
+   module use $LOCAL_MODULES
+   module load tools/EasyBuild
+}
+
+# (new) 2019b software set - iris cluster
+unset MODULEPATH
+module use /opt/apps/resif/iris/2019b/broadwell/modules/all
+
+# module use $LOCAL_MODULES
+# module load tools/EasyBuild 2>/dev/null || echo "/!\ WARNING: Module tools/EasyBuild NOT FOUND "
