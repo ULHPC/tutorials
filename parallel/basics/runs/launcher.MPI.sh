@@ -1,5 +1,5 @@
 #! /bin/bash -l
-# Time-stamp: <Mon 2020-12-14 12:43 svarrette>
+# Time-stamp: <Mon 2020-12-14 13:05 svarrette>
 ###############################################################################
 # Default launcher for MPI jobs
 # Usage:
@@ -53,7 +53,7 @@ NAME
     Default APPDIR: ${APPDIR}
     Default APP: ${APP}
   Take the good habit to prefix the binary to execute with MPI suit used for
-  the build. Here the default MPi application run would be
+  the build. Here the default MPI application run would be
         EXE=${APPDIR}/openmpi_${APP}
   which will be run as     srun -n \$SLURM_NTASKS [...]
 
