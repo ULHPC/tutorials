@@ -244,7 +244,13 @@ As a matter of convenience, providing the `-run` flag will execute the successfu
 
 ### Practice: Launch parallel kernels
 
-The following program currently makes a very basic function call that prints a message.
+The following program currently makes a function call that prints a message, but it is incorrect.
+
+Fix and refactor the code such that `helloGPU` kernel to execute in parallel on 5 threads, all executing in a single thread block.
+You should see the output message printed 5 times after compiling and running the code.
+
+Refactor the `helloGPU` kernel again, this time to execute in parallel inside 5 thread blocks, each containing 5 threads.
+You should see the output message printed 25 times now after compiling and running.
 
 ```cpp
 /*
@@ -273,17 +279,11 @@ int main()
 
 ```
 
-Fix and refactor the code such that `helloGPU` kernel to execute in parallel on 5 threads, all executing in a single thread block.
-You should see the output message printed 5 times after compiling and running the code.
-
-Refactor the `helloGPU` kernel again, this time to execute in parallel inside 5 thread blocks, each containing 5 threads.
-You should see the output message printed 25 times now after compiling and running.
-
 ### Compiling and running CUDA code, continued
 
 The following compilation command works:
 ```bash
-$ nvcc -o out some-CUDA.cu
+$ nvcc some-CUDA.cu
 ```
 However, there is a potential problem with this code.
 Cuda uses a two stage compilation process, to PTX, and to binary.
@@ -345,6 +345,35 @@ In summary, if you want to package the PTX to allow for JIT compilation across d
 $ nvcc -o out -arch=compute_70 some-CUDA.cu  # or sm_70
 ```
 
+### Error handling
+
+It is strongly recommended to check for errors when calling CUDA API.a
+
+```cpp
+cudaError_t rc;  # cudaSuccess => ok
+rc = cudaDeviceSynchronize();
+printf("%s\n", cudaGetErrorString(rc));
+
+// for asynchronous calls:
+rc = cudaGetLastError();  # call after synchronization for post-launch kernel errors
+```
+
+For convenience, the following macros can help:
+```cpp
+#define CUDIE(result) { \
+        cudaError_t e = (result); \
+        if (e != cudaSuccess) { \
+                std::cerr << __FILE__ << ":" << __LINE__; \
+                std::cerr << " CUDA runtime error: " << cudaGetErrorString(e) << '\n'; \
+                exit((int)e); \
+        }}
+
+#define CUDIE0() CUDIE(cudaGetLastError())
+```
+
+For example, try compiling and executing code on iris (Volta GPU) with `-arch=sm_75` (or `compute_75`).
+
+
 ## CUDA thread hierarchy
 
 Each thread will execute the same kernel function.
@@ -382,10 +411,9 @@ Edit the source code to update the execution configuration so that the success m
 
 #include <cstdio>
 
-void printSuccessForCorrectExecutionConfiguration()
+void printif()
 {
-  if (threadIdx.x == 1023 && blockIdx.x == 255)
-  {
+  if (threadIdx.x == 1023 && blockIdx.x == 255) {
     printf("Success!\n");
   }
 }
@@ -397,7 +425,7 @@ int main()
    * will print `"Success!"`.
    */
 
-  printSuccessForCorrectExecutionConfiguration<<<1, 1>>>();
+  printif<<<1, 1>>>();
 }
 ```
 
@@ -408,14 +436,13 @@ Consider the following for loop, and notice that it controls how many times the 
 
 ```cpp
 int N = 2<<10;
-for (int i = 0; i < N; ++i)
-{
+for (int i = 0; i < N; ++i) {
   printf("%d\n", i);
 }
 ```
 In order to parallelize this loop, 2 steps must be taken:
 
-- A kernel must be written to do the work of a single iteration of the loop.
+- A kernel must do the work of a single iteration of the loop.
 - Because the kernel will ignore other running kernels, the execution configuration must ensure that the kernel executes the correct number of times, for example, the number of times the loop would have iterated.
 
 ### Exercise: Accelerating a For Loop with a Single Block of Threads
@@ -436,8 +463,7 @@ After successfully refactoring, the numbers 0 through 9 should still be printed.
 
 void loop(int N)
 {
-  for (int i = 0; i < N; ++i)
-  {
+  for (int i = 0; i < N; ++i) {
     printf("This is iteration number %d\n", i);
   }
 }
@@ -479,8 +505,7 @@ After successfully refactoring, the numbers 0 through 9 should still be printed.
 
 void loop(int N)
 {
-  for (int i = 0; i < N; ++i)
-  {
+  for (int i = 0; i < N; ++i) {
     printf("This is iteration number %d\n", i);
   }
 }
@@ -650,52 +675,10 @@ int main()
 
 A solution can be found in the next exercise.
 
-### Handling block configuration mismatches to number of needed threads (minor)
-
-It may be the case that an execution configuration cannot be expressed to create the exact number of threads needed for parallelizing a loop.
-
-A common example has to do with the desire to choose optimal block sizes.
-For example, due to GPU hardware traits, blocks that contain a number of threads that are a multiple of 32 are often desirable for performance benefits.
-Assuming that we wanted to launch blocks each containing 256 threads (a multiple of 32), and needed to run 1000 parallel tasks, then there is no number of blocks that would produce an exact total of 1000 threads in the grid, since there is no integer value 32 can be multiplied by to equal exactly 1000.
-
-This scenario can be easily addressed in the following way:
-
-Write an execution configuration that creates more threads than necessary to perform the allotted work.
-Pass a value as an argument into the kernel (N) that represents to the total size of the data set to be processed, or the total threads that are needed to complete the work.
-After calculating the thread's index within the grid (using `tid+bid*bdim`), check that this index does not exceed N, and only perform the pertinent work of the kernel if it does not.
-Here is an example of an idiomatic way to write an execution configuration when both N and the number of threads in a block are known, and an exact match between the number of threads in the grid and N cannot be guaranteed.
-It ensures that there are always at least as many threads as needed for N, and only 1 additional block's worth of threads extra, at most:
-
-```cpp
-// Assume 'N' is known
-int N = 100000;
-
-// Assume we have a desire to set 'threads_per_block' exactly to '256'
-size_t threads_per_block = 256;
-
-// Ensure there are at least 'N' threads in the grid, but only 1 block's worth extra
-size_t number_of_blocks = (N + threads_per_block - 1) / threads_per_block;
-
-some_kernel<<<number_of_blocks, threads_per_block>>>(N);
-```
-Because the execution configuration above results in more threads in the grid than N, care will need to be taken inside of the some_kernel definition so that some_kernel does not attempt to access out of range data elements, when being executed by one of the "extra" threads:
-```cpp
-__global__
-some_kernel(int N)
-{
-  int idx = threadIdx.x + blockIdx.x * blockDim.x;
-
-  if (idx < N) // Check to make sure 'idx' maps to some value within 'N'
-  {
-    // Only do work if it does
-  }
-}
-```
-
-### Data sets larger than the grid (important)
+### Data sets larger than the grid
 
 Either by choice, often to create the most performant execution configuration, or out of necessity, the number of threads in a grid may be smaller than the size of a data set.
-Consider an array with 1000 elements, and a grid with 250 threads (using trivial sizes here for ease of explanation).
+Consider an array with 1000 elements, and a grid with 250 threads.
 Here, each thread in the grid will need to be used 4 times.
 One common method to do this is to use a *grid-stride* loop within the kernel.
 
@@ -708,7 +691,7 @@ For example, for a 500 element array and a 250 thread grid, the thread with inde
 - Increment its index by 250, the size of the grid, resulting in 520.
 - Because 520 is now out of range for the array, the thread will stop its work.
 
-CUDA provides a special variable giving the number of blocks in a grid: `gridDim.x`.
+CUDA provides a special builtin variable giving the number of blocks in a grid: `gridDim.x`.
 Calculating the total number of threads in a grid then is simply the number of blocks in a grid multiplied by the number of threads in each block, `gridDim.x * blockDim.x`.
 With this in mind, here is a verbose example of a grid-stride loop within a kernel:
 ```cpp
@@ -802,13 +785,55 @@ int main()
 ```
 One solution is in file `sol-array-stride.cu`.
 
+### Handling block configuration mismatches to number of needed threads (minor)
+
+It may be the case that an execution configuration cannot be expressed to create the exact number of threads needed for parallelizing a loop.
+
+A common example has to do with the desire to choose optimal block sizes.
+For example, due to GPU hardware traits, blocks that contain a number of threads that are a multiple of 32 are often desirable for performance benefits.
+Assuming that we wanted to launch blocks each containing 256 threads (a multiple of 32), and needed to run 1000 parallel tasks, then there is no number of blocks that would produce an exact total of 1000 threads in the grid, since there is no integer value 32 can be multiplied by to equal exactly 1000.
+
+This scenario can be easily addressed in the following way:
+
+Write an execution configuration that creates more threads than necessary to perform the allotted work.
+Pass a value as an argument into the kernel (N) that represents to the total size of the data set to be processed, or the total threads that are needed to complete the work.
+After calculating the thread's index within the grid (using `tid+bid*bdim`), check that this index does not exceed N, and only perform the pertinent work of the kernel if it does not.
+Here is an example of an idiomatic way to write an execution configuration when both N and the number of threads in a block are known, and an exact match between the number of threads in the grid and N cannot be guaranteed.
+It ensures that there are always at least as many threads as needed for N, and only 1 additional block's worth of threads extra, at most:
+
+```cpp
+// Assume 'N' is known
+int N = 100000;
+
+// Assume we have a desire to set 'threads_per_block' exactly to '256'
+size_t threads_per_block = 256;
+
+// Ensure there are at least 'N' threads in the grid, but only 1 block's worth extra
+size_t number_of_blocks = (N + threads_per_block - 1) / threads_per_block;
+
+some_kernel<<<number_of_blocks, threads_per_block>>>(N);
+```
+Because the execution configuration above results in more threads in the grid than N, care will need to be taken inside of the some_kernel definition so that some_kernel does not attempt to access out of range data elements, when being executed by one of the "extra" threads:
+```cpp
+__global__
+some_kernel(int N)
+{
+  int idx = threadIdx.x + blockIdx.x * blockDim.x;
+
+  if (idx < N) // Check to make sure 'idx' maps to some value within 'N'
+  {
+    // Only do work if it does
+  }
+}
+```
+
 
 ### Shared memory
 
-As a first approximation, there are 3 memories available to your kernel code:
+On first approximation, there are 3 memories available to your kernel code:
 
-- global memory
-- block shared memory
+- global memory, large but slow,
+- block shared memory, small but fast,
 - registers.
 
 Within a kernel code:
@@ -943,7 +968,7 @@ int main()
 In case you need to setup the environment, issue the same interactive reservation as before:
 
 ```bash
-> srun -p gpu -G 1 --pty bash -i
+> si-gpu
 $ module r cuda  # restores our saved 'cuda' modules
 ```
 Or use the `sbatch` script presented at the beginning of this tutorial.
@@ -961,27 +986,25 @@ $ nvprof ./a.out  # you can also add --log-file prof
 The default output includes 2 sections:
 
 - one related to kernel and API calls
-- another related to memory
+- another related to memory.
 
 ### Execution configuration
 
 First, we look at the top part of the profiling result, related to function calls.
 
-After profiling the application, answer the following questions using information displayed in the profiling output:
+After profiling the application, can we answer the following questions:
 
 - What was the name of the only CUDA kernel called in this application?
 - How many times did this kernel run?
 - How long did it take this kernel to run? Record this time somewhere: you will be optimizing this application and will want to know how much faster you can make it.
 
 Experiment with different values for the number of threads, keeping only 1 block.
-Note your findings.
 
 Experiment with different values for both the number of threads and number of blocks.
-Note your findings.
 
 The GPUs that CUDA applications run on have processing units called streaming multiprocessors, or SMs.
 During kernel execution, blocks of threads are given to SMs to execute.
-In order to support the GPU's ability to perform as many parallel operations as possible, performance gains can often be had by choosing a grid size that has a number of blocks that is a multiple of the number of SMs on a given GPU.
+In order to support the GPU's ability to perform as many parallel operations as possible, performance often improves by choosing a grid size that has a number of blocks that is a multiple of the number of SMs on a given GPU.
 
 Additionally, SMs create, manage, schedule, and execute groupings of 32 threads from within a block called warps. i
 A more in depth coverage of SMs and warps is beyond the scope of this course, however, it is important to know that performance gains can also be had by choosing a block size that has a number of threads that is a multiple of 32.
@@ -997,7 +1020,7 @@ When Unified Memory is allocated, the memory is not resident yet on either the h
 When either the host or device attempts to access the memory, a page fault will occur, at which point the host or device will migrate the needed data in batches.
 Similarly, at any point when the CPU, or any GPU in the accelerated system, attempts to access memory not yet resident on it, page faults will occur and trigger its migration.
 
-The ability to page fault and migrate memory on demand is tremendously helpful for ease of development in your accelerated applications.
+The ability to page fault and migrate memory on demand is helpful for ease of development in your accelerated applications.
 Additionally, when working with data that exhibits sparse access patterns, for example when it is impossible to know which data will be required to be worked on until the application actually runs, and for scenarios when data might be accessed by multiple GPU devices in an accelerated system with multiple GPUs, on-demand memory migration is remarkably beneficial.
 There are times - for example when data needs are known prior to runtime, and large contiguous blocks of memory are required - when the overhead of page faulting and migrating data on demand incurs an overhead cost that would be better avoided.
 
