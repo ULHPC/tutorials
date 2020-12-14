@@ -44,7 +44,7 @@ Scoop can be used on [HPC platform](https://scoop.readthedocs.io/en/0.7/install.
 
 ## Deap
 
-For this tutorial, we are going to find the global minimum of the rastigin function (see below for 2 variables x and y). This function is used generally as benchmark to test evolutionary algorithms. The global optima ```f(x)=0``` with ```x=[0....0]```.
+For this tutorial, we are going to find the global minimum of the rastrigin function (see below for 2 variables x and y). This function is used generally as benchmark to test evolutionary algorithms. The global optima ```f(x)=0``` with ```x=[0....0]```.
 <center>
 ![](https://deap.readthedocs.io/en/master/_images/rastrigin.png)
 </center>
