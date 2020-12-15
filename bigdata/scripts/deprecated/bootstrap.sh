@@ -5,6 +5,10 @@
 # bootstrap.sh - Bootstrap Java, eventually with Easybuild
 # Time-stamp: <Tue 2018-06-12 22:14 svarrette>
 ################################################################################
+# /!\ DEPRECATED -- kept for archiving purposes only
+# Just use the
+# https://ulhpc-tutorials.readthedocs.io/en/latest/tools/easybuild/scripts/setup.sh
+# to bootstrap EB
 
 DO_EASYBUILD=
 INSTALL_JAVA7=
