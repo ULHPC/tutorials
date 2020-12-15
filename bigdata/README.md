@@ -3,7 +3,7 @@
 
 # Big Data Applications (batch, stream, hybrid)
 
-     Copyright (c) 2013-2020 UL HPC Team  <hpc-sysadmins@uni.lu>
+     Copyright (c) 2013-2020 UL HPC Team  <hpc-team@uni.lu>
 
 [![](https://github.com/ULHPC/tutorials/raw/devel/bigdata/cover_slides.png)](https://github.com/ULHPC/tutorials/raw/devel/bigdata/slides.pdf)
 
@@ -40,6 +40,7 @@ Now **configure a dedicated directory `~/tutorials/bigdata` for this session**
 # Prepare a couple of symbolic links that will be useful for the training
 (access)$> ln -s ref.d/scripts .     # Don't forget trailing '.' means 'here'
 (access)$> ln -s ref.d/settings .    # idem
+(access)$> ln -s ref.d/src .         # idem
 ```
 
 **Advanced users** (_eventually_ yet __strongly__ recommended), create a [GNU Screen](http://www.gnu.org/software/screen/) session you can recover later - see ["Getting Started" tutorial](../getting-started/) or [this `screen` tutorial](http://support.suso.com/supki/Screen_tutorial).
@@ -48,7 +49,21 @@ Now **configure a dedicated directory `~/tutorials/bigdata` for this session**
 
 One of the first objective is to install the latest version of [Hadoop](https://hadoop.apache.org/releases.html).
 using [EasyBuild](http://easybuild.readthedocs.io/).
-For this reason, you should first follow the [Easybuild tutorial in `tools/easybuild.md`](http://ulhpc-tutorials.readthedocs.io/en/latest/tools/easybuild/) and install the latest version of Easybuild (4.3.1 at the time of writing).
+For this reason, you should first check the [Easybuild tutorial in `tools/easybuild.md`](http://ulhpc-tutorials.readthedocs.io/en/latest/tools/easybuild/) and install the latest version of Easybuild (4.3.2 at the time of writing).
+
+Note that it should be sufficient to run the following command **once on a node**
+
+``` bash
+### Have an interactive job
+# ... either directly
+(access)$> si
+# ... or using the HPC School reservation 'hpcschool' if needed  - use 'sinfo -T' to check if active and its name
+# (access)$> srun --reservation=hpcschool --pty bash
+(node)$> ~/git/github.com/ULHPC/tutorials/tools/easybuild/scripts/setup.sh -h  # Help - check EASYBUILD_*
+(node)$> ~/git/github.com/ULHPC/tutorials/tools/easybuild/scripts/setup.sh -n  # Dry-run
+(node)$> ~/git/github.com/ULHPC/tutorials/tools/easybuild/scripts/setup.sh     # install
+```
+
 
 ### 2019b software set
 
@@ -56,11 +71,8 @@ As indicated in the keynote, the 2019b software set is available for general ava
 Proceed as follows:
 
 ```bash
-### Have an interactive job - reserve 14 cores for multithreaded compilations
-# ... either directly
-(access)$> si -c 14
-# ... or using the HPC School reservation 'hpcschool'if needed  - use 'sinfo -T' to check if active and its name
-# (access)$> srun --reservation=hpcschool -c 14 --pty bash
+### Have an interactive job
+(access)$> si
 # Enable (new) 2019b software set - iris cluster
 (node)$> unset MODULEPATH   # Safeguard to avoid mixing up with 2019a software
 (node)$> module use /opt/apps/resif/iris/2019b/broadwell/modules/all
@@ -69,11 +81,11 @@ Proceed as follows:
 # module use /opt/apps/resif/iris/2019b/skylake/modules/all
 # module use /opt/apps/resif/iris/2019b/gpu/modules/all
 
-### Now check that you have the latest EB 4.3.1 installed
+### Now check that you have the latest EB 4.3.2 installed
 #                 # assuming you hade defined:   export LOCAL_MODULES=${EASYBUILD_PREFIX}/modules/all
 (node)$> mu       # shortcut for module use $LOCAL_MODULES; module load tools/EasyBuild
 (node)$> eb --version
-This is EasyBuild 4.3.1 (framework: 4.3.1, easyblocks: 4.3.1) on host iris-131.
+This is EasyBuild 4.3.1 (framework: 4.3.2, easyblocks: 4.3.2) on host iris-131.
 (node)$> echo $MODULEPATH
 /home/users/<login>/.local/easybuild/modules/all:/opt/apps/resif/iris/2019b/broadwell/modules/all
 # If all OK: you should be able to access Spark module 2.4.3 for 2019b toolchain
@@ -92,16 +104,13 @@ As this procedure will have to be repeated several time, you can make it done by
 (node)$> source settings/2019b
 # Double-check
 (node)$> eb --version
-This is EasyBuild 4.3.1 (framework: 4.3.1, easyblocks: 4.3.1) on host iris-117
+This is EasyBuild 4.3.2 (framework: 4.3.2, easyblocks: 4.3.2) on host iris-117
 (node)$> echo $MODULEPATH
 /home/users/<login>/.local/easybuild/modules/all:/opt/apps/resif/iris/2019b/broadwell/modules/all
 ```
 
-
 In the next part, we are going to install a few mandatory software required to install and use [Hadoop](http://hadoop.apache.org/) or  [Apache Spark](http://spark.apache.org/).
 
-----------------------------------
-## 1. Preliminary installations ##
 
 ### SOCKS 5 Proxy plugin (optional but VERY useful)
 
@@ -115,44 +124,31 @@ __Setting Up the Tunnel__
 
 To initiate such a SOCKS proxy using SSH (listening on `localhost:1080` for instance), you simply need to use the `-D 1080` command line option when connecting to the cluster:
 
-```
+```bash
 (laptop)$> ssh -D 1080 -C iris-cluster
 ```
 
 * `-D`: Tells SSH that we want a SOCKS tunnel on the specified port number (you can choose a number between 1025-65536)
 * `-C`: Compresses the data before sending it
 
-__Configuring Firefox to Use the Tunnel__
-
-Now that you have an SSH tunnel, it's time to configure your web browser (in this case, Firefox) to use that tunnel.
-In particular, install the [Foxy Proxy](https://getfoxyproxy.org/order/?src=FoxyProxyForFirefox)
-extension for Firefox and configure it to use your SOCKS proxy:
-
-* Right click on the fox icon
-* Options
-* **Add a new proxy** button
-* Name: `ULHPC proxy`
-* Informations > **Manual configuration**
-  * Host IP: `127.0.0.1`
-  * Port: `1080`
-  * Check the **Proxy SOCKS** Option
-* Click on **OK**
-* Close
-* Open a new tab
-* Right click on the Fox
-* Choose the **ULHPC proxy**
+__Configuring Firefox to Use the Tunnel__: see [Preliminaries](../preliminaries) tutorial
 
 We will see later on (in the section dedicated to Spark) how to effectively use this configuration.
 
 
-----------------------------
-## 2. Hadoop Installation ##
+-------------------------------
+## Getting Started with Hadoop
+
+### Installation
+
+Quit your precedent job (`CTRL-D`) and let's reserve a new one with more cores to accelerate the builds:
 
 ```bash
+(access)$> si -c 14     # In normal times: target all cores i.e. 28
 (node)$> source settings/2019b
-(node)$> mu
+# (node)$> mu    # not necessary but kept for your information
 (node)$> eb --version
-This is EasyBuild 4.3.1 (framework: 4.3.1, easyblocks: 4.3.1) on host iris-117
+This is EasyBuild 4.3.2 (framework: 4.3.2, easyblocks: 4.3.2) on host iris-117
 # Search for a recent version of Hadoop
 $> eb -S Hadoop-2
 == found valid index for /home/users/svarrette/.local/easybuild/software/EasyBuild/4.3.1/easybuild/easyconfigs, so using it...
@@ -179,84 +175,18 @@ CFGS2=/home/users/svarrette/.local/easybuild/software/EasyBuild/4.3.1/easybuild/
  * $CFGS2/s/Spark/Spark-2.4.0-intel-2018b-Hadoop-2.7-Java-1.8-Python-3.6.6.eb
 ```
 
-So 2.10.0 is available, let's build it:
+So 2.10.0 is available, but that's not the latest one
+Launch the build with the provided easyconfig `src/Hadoop-2.10.1-GCCcore-8.3.0-native.eb`
 
 ```bash
-(node)$> eb src/Hadoop-2.10.0-GCCcore-8.3.0-native.eb -Dr   # Dry-run
-(node)$> eb src/Hadoop-2.10.0-GCCcore-8.3.0-native.eb -r
-```
-The install will **fail**: the sources cannot be downloaded.
-
-Let's see the easyconfig:
-
-```bash
-$> eb -S Hadoop-2.10.0-GCCcore-8.3.0-native.eb
-== found valid index for /home/users/svarrette/.local/easybuild/software/EasyBuild/4.3.1/easybuild/easyconfigs, so using it...
-CFGS1=/home/users/svarrette/.local/easybuild/software/EasyBuild/4.3.1/easybuild/easyconfigs/h/Hadoop
- * $CFGS1/Hadoop-2.10.0-GCCcore-8.3.0-native.eb
-# copy/paste the above definition
-CFGS1=/home/users/svarrette/.local/easybuild/software/EasyBuild/4.3.1/easybuild/easyconfigs/h/Hadoop
-# check the definition of the easyconfig
-less  $CFGS1/Hadoop-2.10.0-GCCcore-8.3.0-native.eb  # Q to quit
-```
-
-Check the `source_urls` definition.
-
-We can create a more recent version:
-
-```bash
-cp  $CFGS1/Hadoop-2.10.0-GCCcore-8.3.0-native.eb .
-mv Hadoop-2.10.0-GCCcore-8.3.0-native.eb Hadoop-2.10.1-GCCcore-8.3.0-native.eb
-```
-
-Edit this version as follows:
-
-
-```diff
---- Hadoop-2.10.0-GCCcore-8.3.0-native.eb       2020-12-15 00:37:05.902236000 +0100
-+++ src/Hadoop-2.10.1-GCCcore-8.3.0-native.eb   2020-12-14 19:10:37.998889667 +0100
-@@ -1,9 +1,9 @@
- name = 'Hadoop'
--version = '2.10.0'
-+version = '2.10.1'
- versionsuffix = '-native'
-
--homepage = 'https://archive.cloudera.com/cdh5/cdh/5/'
--description = """Hadoop MapReduce by Cloudera"""
-+homepage = 'https://hadoop.apache.org/'
-+description = """The Apache Hadoop project develops open-source software for reliable, scalable, distributed computing."""
-
- toolchain = {'name': 'GCCcore', 'version': '8.3.0'}
-
-@@ -15,14 +15,12 @@
- patches = [
-     'Hadoop-TeraSort-on-local-filesystem.patch',
-     'Hadoop-2.9.2_fix-zlib.patch',
--    'HADOOP-14597.04.patch',
-     'Hadoop-2.10.0_tirpc.patch',
- ]
- checksums = [
--    'baa9b125359a30eb209fbaa953e1b324eb61fa65ceb9a7cf19b0967188d8b1c0',  # hadoop-2.10.0-src.tar.gz
-+    ('sha512','02e784d480c11006a6173ccf3de69a921f91964296383cb8991636f2b7f455d164db7eec6229d97dbfcee0993ceb0e137076b85afd82c99c6d34a48818b68361'),  # hadoop-2.10.1-src.tar.gz
-     'd0a69a6936b4a01505ba2a20911d0cec4f79440dbc8da52b9ddbd7f3a205468b',  # Hadoop-TeraSort-on-local-filesystem.patch
-     '1a1d084c7961078bdbaa84716e9639e37587e1d8c0b1f89ce6f12dde8bbbbc5c',  # Hadoop-2.9.2_fix-zlib.patch
--    'ea93c7c2b03d36f1434c2f2921c031cdc385a98f337ed8f4b3103b45b0ad0da3',  # HADOOP-14597.04.patch
-     '9d66f604e6e03923d8fcb290382936fb93511001bb593025b8d63ababdca3a96',  # Hadoop-2.10.0_tirpc.patch
- ]
-```
-
-No run the build:
-
-```bash
-(node)$> eb src/Hadoop-2.10.1-GCCcore-8.3.0-native.eb -Dr   # Dry-run
+(node)$> eb src/Hadoop-2.10.1-GCCcore-8.3.0-native.eb -Dr   # Dry-run, check dependencies
 (node)$> eb src/Hadoop-2.10.1-GCCcore-8.3.0-native.eb -r
 ```
+Installation will last ~6 minutes using a full `iris` node (`-c 28`).
+In general it is preferable to make builds within a screen session.
 
-Installation will last ~9 minutes on a full `iris` node (`-c 28`)
 
-
------------------------
-## 3. Running Hadoop ##
+### Running Hadoop
 
 ```
 $> module av Hadoop
@@ -267,7 +197,7 @@ When doing that, the Hadoop distribution is installed in `$EBROOTHADOOP` (this i
 
 The below instructions are based on the [official tutorial](https://hadoop.apache.org/docs/r2.6.0/hadoop-project-dist/hadoop-common/SingleCluster.html).
 
-### 3.a Hadoop in Single mode
+#### Hadoop in Single mode
 
 By default, Hadoop is configured to run in a non-distributed mode, as a single Java process. This is useful for debugging.
 
@@ -322,21 +252,21 @@ $> cat output/*
 1       dfsadmin
 ```
 
-### 3.b Pseudo-Distributed Operation
+#### Pseudo-Distributed Operation
 
 Hadoop can also be run on a single-node in a pseudo-distributed mode where each Hadoop daemon runs in a separate Java process.
 Follow the [official tutorial](https://hadoop.apache.org/docs/r2.10.1/hadoop-project-dist/hadoop-common/SingleCluster.html#Pseudo-Distributed_Operation) to ensure you are running in **Single Node Cluster**
 
 Once this is done, follow the [official Wordcount instructions](https://hadoop.apache.org/docs/r2.10.1/hadoop-mapreduce-client/hadoop-mapreduce-client-core/MapReduceTutorial.html#Example:_WordCount_v1.0)
 
-### 3.b Full cluster setup
+#### Full cluster setup
 
 Follow the official instructions of the [Cluster Setup](https://hadoop.apache.org/docs/r2.10.1/hadoop-project-dist/hadoop-common/ClusterSetup.html).
 
 Once this is done, Repeat the execution of the [official Wordcount example](https://hadoop.apache.org/docs/r2.10.1/hadoop-mapreduce-client/hadoop-mapreduce-client-core/MapReduceTutorial.html#Example:_WordCount_v1.0).
 
---------------------------------------------------
-## 4. Interactive Big Data Analytics with Spark ##
+-----------------------------------------------
+## Interactive Big Data Analytics with Spark ##
 
 The objective of this section is to compile and run on [Apache Spark](http://spark.apache.org/)  on top of the [UL HPC](http://hpc.uni.lu) platform.
 
@@ -348,7 +278,7 @@ As for Hadoop, we are first going to build Spark using Easybuild before performi
 1. a single conffiguration where the classical interactive wrappers (`pyspark`, `scala` and `R` wrappers) will be reviewed.
 2. a [Standalone](https://spark.apache.org/docs/latest/spark-standalone.html) cluster configuration - a simple cluster manager included with Spark that makes it easy to set up a cluster), where we will run the Pi estimation.
 
-### 4.1 Building Spark
+### Installation
 
 Spark 2.4.3 is available by default (on the 2019b software set) so you can load it.
 
@@ -362,106 +292,29 @@ $> module load devel/Spark
 ```
 
 You might wish to build and use the most recent version of [Spark](https://spark.apache.org/downloads.html) (_i.e._ at the time of writing 2.4.7 (Dec. 14, 2020) with Pre-built for Apache Hadoop 2.7 or later).
-Let's see if Easybuild does not provide a more recent one:
+To do that, you will typically have to do the following (not covered in this session by lack of time):
+
+1. Search for the most recent version of Spark provided by Easybuild
+    - use the script `scripts/suggest-easyconfigs <pattern>` for that
+2. Copy the easyconfig file locally
+    - you'll need to get the path to it with `eb -S <pattern>`
+3. Rename the file to match the target version
+    * Check on the website for the most up-to-date version of the software released
+    * Adapt the filename of the copied easyconfig to match the target version / toolchain
+        - Ex: `mv Spark-2.4.5-intel-2019b-Python-3.7.4-Java-1.8.eb Spark-2.4.7-intel-2019b-Python-3.7.4-Java-1.8.eb`
+4. Edit the content of the easyconfig
+   - You'll typically have to adapt the version of the dependencies (use again `scripts/suggest-easyconfigs -s  dep1 dep2 [...]`) and the checksum(s) of the source/patch files to match the static versions set for the target toolchain, enforce https urls etc.
 
 
-```bash
-# Cleanup loaded modules to avoid collusion
-$> module purge
-$> mu
-# Search for Spark 2.4
-$> eb -S Spark-2.4
-== found valid index for /home/users/svarrette/.local/easybuild/software/EasyBuild/4.3.1/easybuild/easyconfigs, so using it...
-CFGS1=/opt/apps/resif/data/easyconfigs/ulhpc/default/easybuild/easyconfigs/s/Spark
-CFGS2=/home/users/svarrette/.local/easybuild/software/EasyBuild/4.3.1/easybuild/easyconfigs/s/Spark
- * $CFGS1/Spark-2.4.0-Hadoop-2.7-Java-1.8.eb
- * $CFGS1/Spark-2.4.3-intel-2019a-Hadoop-2.7-Java-1.8-Python-3.7.2.eb
- * $CFGS2/Spark-2.4.0-Hadoop-2.7-Java-1.8.eb
- * $CFGS2/Spark-2.4.0-foss-2018b-Python-2.7.15.eb
- * $CFGS2/Spark-2.4.0-intel-2018b-Hadoop-2.7-Java-1.8-Python-3.6.6.eb
- * $CFGS2/Spark-2.4.0-intel-2018b-Python-2.7.15.eb
- * $CFGS2/Spark-2.4.0-intel-2018b-Python-3.6.6.eb
- * $CFGS2/Spark-2.4.5-intel-2019b-Python-3.7.4-Java-1.8.eb
-```
-
-That's the case: version 2.4.5 is available.
-
-So let's build 2.4.5:
-
-```bash
-$> eb Spark-2.4.5-intel-2019b-Python-3.7.4-Java-1.8.eb -Dr   # Dry-run
-$> eb Spark-2.4.5-intel-2019b-Python-3.7.4-Java-1.8.eb -r
-```
-
-
-```bash
-$> eb -S Spark-2.
-CFGS1=/opt/apps/resif/data/easyconfigs/ulhpc/default/easybuild/easyconfigs/s/Spark
-CFGS2=$HOME/.local/easybuild/software/tools/EasyBuild/3.7.1/lib/python2.7/site-packages/easybuild_easyconfigs-3.7.1-py2.7.egg/easybuild/easyconfigs/s/Spark
- * $CFGS1/Spark-2.3.0-intel-2018a-Hadoop-2.7-Java-1.8.0_162-Python-3.6.4.eb
- * $CFGS2/Spark-2.3.0-Hadoop-2.7-Java-1.8.0_162.eb
-
-$> cd /dev/shm
-# Copy the recipy -- you need thus to define the CFGS2 variable
-# simply copy/paste from above result to declare the CFGS2 variable
-$> CFGS2=$HOME/.local/easybuild/software/tools/EasyBuild/3.7.1/lib/python2.7/site-packages/easybuild_easyconfigs-3.7.1-py2.7.egg/easybuild/easyconfigs/s/Spark
-$> cp $CFGS2/Spark-2.3.0-Hadoop-2.7-Java-1.8.0_162.eb Spark-2.4.0-Hadoop-2.7-Java-1.8.0_162.eb
-```
-
-You can now edit and adapt the custom `Spark-2.4.0-Hadoop-2.7-Java-1.8.0_162.eb` as follows:
-
-```diff
---- Spark-2.3.0-Hadoop-2.7-Java-1.8.0_162.eb    2018-08-16 18:22:49.703386000 +0200
-+++ Spark-2.4.0-Hadoop-2.7-Java-1.8.0_162.eb    2018-12-04 11:06:35.148845000 +0100
-@@ -1,7 +1,7 @@
- easyblock = 'Tarball'
-
- name = 'Spark'
--version = '2.3.0'
-+version = '2.4.0'
- versionsuffix = '-Hadoop-2.7-Java-%(javaver)s'
-
- homepage = 'http://spark.apache.org'
-@@ -15,7 +15,7 @@
-     'http://www.eu.apache.org/dist/%(namelower)s/%(namelower)s-%(version)s/',
-     'http://www.us.apache.org/dist/%(namelower)s/%(namelower)s-%(version)s/',
- ]
--checksums = ['5cfbc77d140454c895f2d8125c0a751465f53cbe12720da763b1785d25c63f05']
-+checksums = ['c93c096c8d64062345b26b34c85127a6848cff95a4bb829333a06b83222a5cfa']
-
- dependencies = [('Java', '1.8.0_162')]
-```
-
-_Note_: the resulting Easyconfigs is provided to you in `src/Spark-2.4.0-Hadoop-2.7-Java-1.8.0_162.eb`
-
-Let's install it:
-
-```
-$> eb ./Spark-2.4.0-Hadoop-2.7-Java-1.8.0_162.eb -Dr   # Dry run
-$> time eb ./Spark-2.4.0-Hadoop-2.7-Java-1.8.0_162.eb -r
-[...]
-real    0m9.940s
-user    0m5.167s
-sys     0m2.475s
-```
-
-### 4.2 Interactive usage
+### Interactive usage
 
 Exit your reservation to reload one with the `--exclusive` flag to allocate an exclusive node.
 Let's load the installed module:
 
 ```bash
-$> srun -p interactive -c 28 --exclusive -t 2:00:00 --pty bash
-$> mu
-$> module av Spark
-
----------- /home/users/svarrette/.local/easybuild/modules/all ----------
-   devel/Spark/2.4.0-Hadoop-2.7-Java-1.8.0_162 (D)
-
------------- /opt/apps/resif/data/stable/default/modules/all -----------
-   devel/Spark/2.3.0-intel-2018a-Hadoop-2.7-Java-1.8.0_162-Python-3.6.4
-
-$> module load devel/Spark/2.4.0
+(access)$> si -c 28 --exclusive -t 2:00:00
+(node)$> source settings/2019
+(node)$> module load devel/Spark/2.4.0
 ```
 
 #### 4.2.a. Pyspark
