@@ -96,7 +96,7 @@ In particular, Lmod adds many interesting features on top of the traditional imp
 ```bash
 $> module -h
 $> echo $MODULEPATH
-/opt/apps/resif/iris/2019b/broadwell/modules/all
+/opt/apps/resif/modules:/opt/apps/resif/data/stable/default/modules/all/
 # If you want to force a certain version
 unset MODULEPATH
 module use /opt/apps/resif/iris/2019b/broadwell/modules/all
@@ -220,21 +220,30 @@ $> echo $EASYBUILD_PREFIX
 
 Now let's install Easybuild following the [boostrapping procedure](http://easybuild.readthedocs.io/en/latest/Installation.html#bootstrapping-easybuild)
 
-**`/!\ IMPORTANT:`**  Recall that **you should be on a compute node to install [Easybuild]((http://easybuild.readthedocs.io)** (otherwise the checks of the `module` command availability will fail  -- it is normally still the case (Use `si -t 02:00:00 -N 1 --ntasks-per-node 1 -c 28` otherwise)
+**`/!\ IMPORTANT:`**  Recall that **you should be on a compute node to install [Easybuild]((http://easybuild.readthedocs.io)** (otherwise the checks of the `module` command availability will fail.)
+
+A dedicated script [`scripts/setup.sh`](https://github.com/ULHPC/tutorials/blob/devel/tools/easybuild/scripts/setup.sh) has been prepared to facilitate the install/update of your local version of Easybuild:
 
 ```bash
 ### Access to ULHPC cluster (if not yet done)
 (laptop)$> ssh iris-cluster
 # Have an interactive job (if not yet done)
 (access-iris)$> si
-(node)$> cd
+# Run the setup script
+(node)$> ./scripts/setup.sh -h  # help
+(node)$> ./scripts/setup.sh -n  # Dry-run
+(node)$> ./scripts/setup.sh
+```
+This script basically perform the following tasks:
+
+``` bash
 # download script
-(node)$> curl -o bootstrap_eb.py  https://raw.githubusercontent.com/easybuilders/easybuild-framework/develop/easybuild/scripts/bootstrap_eb.py
+(node)$> curl -o /tmp/bootstrap_eb.py https://raw.githubusercontent.com/easybuilders/easybuild-framework/develop/easybuild/scripts/bootstrap_eb.py
 
 # install Easybuild
 (node)$> echo $EASYBUILD_PREFIX
 /home/users/<login>/.local/easybuild
-(node)$> python bootstrap_eb.py $EASYBUILD_PREFIX
+(node)$> python /tmp/bootstrap_eb.py $EASYBUILD_PREFIX
 ```
 
 Now you can use your freshly built software. The main EasyBuild command is `eb`:
@@ -254,7 +263,7 @@ Now you can use your freshly built software. The main EasyBuild command is `eb`:
 (node)$> module spider Easybuild
 (node)$> module load tools/EasyBuild       # TAB is your friend...
 (node)$> eb --version
-This is EasyBuild 4.3.1 (framework: 4.3.1, easyblocks: 4.3.1) on host iris-095.
+This is EasyBuild 4.3.2 (framework: 4.3.2, easyblocks: 4.3.2) on host iris-080.
 ```
 
 Since you are going to use quite often the above command to use locally built modules and load easybuild, an alias `mu` is provided and can be used from now on. Use it **now**.
