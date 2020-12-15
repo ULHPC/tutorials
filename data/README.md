@@ -6,7 +6,7 @@
 
 Author: Sarah Peter
 
-<!-- [![](https://github.com/ULHPC/tutorials/raw/devel/data/cover_slides.png)](https://github.com/ULHPC/tutorials/raw/devel/data/slides.pdf) -->
+[![](https://github.com/ULHPC/tutorials/raw/devel/data/cover_slides.png)](https://github.com/ULHPC/tutorials/raw/devel/data/slides.pdf)
 
 **Note:** To make it clear where you should execute a certain command, the prompt is prefixed with the location, i.e.
 
