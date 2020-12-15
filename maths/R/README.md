@@ -19,7 +19,7 @@ forks](https://img.shields.io/github/stars/ULHPC/tutorials.svg?style=social&labe
 
       Copyright (c) 2013-2020 Aurelien Ginolhac, UL HPC Team  <hpc-sysadmins@uni.lu>
 
-[![](https://github.com/ULHPC/tutorials/raw/devel/maths/R/img/cover_slides.png)](https://github.com/ULHPC/tutorials/raw/devel/maths/R/PS10_targets.html)
+[![](https://github.com/ULHPC/tutorials/raw/devel/maths/R/img/cover_slides.png)](https://ulhpc-tutorials.readthedocs.io/en/latest/maths/R/PS10_targets.html)
 
 <div class="shareagain" style="min-width:300px;margin:1em auto;">
 
@@ -442,10 +442,10 @@ summary(m, relative = TRUE)
     ## # A tibble: 4 x 6
     ##   expression   min median `itr/sec` mem_alloc `gc/sec`
     ##   <bch:expr> <dbl>  <dbl>     <dbl>     <dbl>    <dbl>
-    ## 1 LAPPLY      5.45   4.94      4.42      6.06     2.63
-    ## 2 AGGREGATE  25.4   22.3       1         9.24     1.31
-    ## 3 DPLYR       3.31   3.03      7.16      1        1   
-    ## 4 DATATABLE   1      1        22.1       1.25     1.87
+    ## 1 LAPPLY      6.56   5.46      3.32      6.06     4.81
+    ## 2 AGGREGATE  24.9   24.0       1         9.24     3.80
+    ## 3 DPLYR       3.19   2.91      5.82      1        1   
+    ## 4 DATATABLE   1      1        16.4       1.25     3.57
 
 -   plotting the benchmark
 
@@ -547,7 +547,7 @@ nothingness <- future_map(c(2, 2, 2), ~Sys.sleep(.x), .progress = TRUE)
 tictoc::toc()
 ```
 
-    ## 6.051 sec elapsed
+    ## 6.081 sec elapsed
 
 -   second in parallel
 
@@ -571,7 +571,7 @@ nothingness <- future_map(c(2, 2, 2), ~Sys.sleep(.x), .progress = TRUE)
 tictoc::toc()
 ```
 
-    ## 2.456 sec elapsed
+    ## 2.941 sec elapsed
 
 fetch env variables in R
 
