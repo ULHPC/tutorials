@@ -100,9 +100,7 @@ clusters](https://hpc.uni.lu/users/docs/access.html)
 
 ``` bash
 # /!\ FOR ALL YOUR COMPILING BUSINESS, ENSURE YOU WORK ON A COMPUTING NODE
-(access-iris)$> si -n 2 -t 2:00:00        # 2h interactive reservation
-# OR (long version)
-(access-iris)$> srun -p interactive -n 2 -t 2:00:00 --pty bash
+(access-iris)$> srun -p interactive --qos debug --time=0:30:0 -N 1 --ntasks-per-node=1 --cpus-per-task=2 --mem-per-cpu 4096 --pty bash
 ```
 
 ### Optional: On your local machine
@@ -138,9 +136,6 @@ Now, to load packages with a `library()` call:
 
 `library(ggplot2)`
 
-A call to `sessionInfo()` function will display the `ggplot2` version as
-it is now attached to the current session.
-
 <a name="datasaurus"></a>
 
 ## Beginner session – dataSaurus
@@ -148,13 +143,13 @@ it is now attached to the current session.
 in R or Rstudio do `install.packages("tidyverse")` (takes some time)
 
 instructions: [in this
-tutorial](https://rworkshop.uni.lu/practicals/practical01_datasauRus.html)
+tutorial](https://rworkshop.uni.lu/practicals/practical01_datasauRus_solution.html)
 
 <a name="aggreg"></a>
 
 ## Comparing methods for aggregating data – diamonds
 
-Let’s say we are working with the full `diamonds` dataset (suppplied by
+Let’s say we are working with the full `diamonds` dataset (supplied by
 the `ggplot2` package) and we want to compute the **average** price for
 a given diamond **cut**.
 
@@ -168,14 +163,14 @@ dim(diamonds)
 
 before computing the average price per **cut**, we should explore the
 dataset. We won’t use the ggplot’s function `geom_point()` as there are
-too many dots. However, bining the data is fast and still provide an
+too many dots. However, binning the data is fast and still provide an
 idea of where the majority of dots are with a chosen lost of precision
 (number of **bins**, set to 30 by default).
 
 From previous plots, we know the relationship between carat and price is
 linear in the log-space. All those computation can be done by `ggplot2`
 
-Of note: you may need to install the package `hexbin`
+Of note: you need to install the package `hexbin`
 
 ``` r
 ggplot(diamonds) +
@@ -206,9 +201,12 @@ ggplot(diamonds) +
 We could do a for loop to aggregate the data per cuts and manually
 compute the average price, but in R loops are generally a bad idea ([if
 you avoid growing vectors there are
-fine](https://privefl.github.io/blog/why-loops-are-slow-in-r/)). It is
-better to concentrate on actions and not on programming, so the looping
-can be efficiently done internally.
+fine](https://privefl.github.io/blog/why-loops-are-slow-in-r/)) and:
+
+[![](https://rworkshop.uni.lu/lectures/img/07/for_loops.png)](https://rworkshop.uni.lu/lectures/lecture07_purrr.html#20)
+
+It is better to concentrate on actions and not on programming, so the
+looping can be efficiently done internally.
 
 Thus instead of looping around the dataset, we will use a function from
 the `dplyr` package part of the [tidyverse](http://tidyverse.org) idiom
@@ -219,6 +217,8 @@ the `dplyr` package part of the [tidyverse](http://tidyverse.org) idiom
 
 First of all, we chain the commands using the **pipe** *%&gt;%*. That
 avoids many parenthesis and keep the natural reading from left to right.
+Of note, the pipe `|>` will come in R base with the next version,
+**4.1**.
 
 The first parameter will be the dataset, the second will be the column
 of the dataset we want to group the results on, third parameter will be
@@ -270,7 +270,11 @@ In the previous example we used `aggregate` for the **aggregation**, we
 could also have used `lapply` (but in a more complex way):
 
 ``` r
-as.data.frame(cbind(cut = as.character(unique(diamonds$cut)), avg_price = lapply(unique(diamonds$cut), function(x) mean(diamonds$price[which(diamonds$cut == x)]))))
+as.data.frame(cbind(cut = as.character(unique(diamonds$cut)), 
+                    avg_price = lapply(unique(diamonds$cut), 
+                                       function(x) {
+                                         mean(diamonds$price[which(diamonds$cut == x)])
+                    })))
 ```
 
     ##         cut avg_price
@@ -442,10 +446,10 @@ summary(m, relative = TRUE)
     ## # A tibble: 4 x 6
     ##   expression   min median `itr/sec` mem_alloc `gc/sec`
     ##   <bch:expr> <dbl>  <dbl>     <dbl>     <dbl>    <dbl>
-    ## 1 LAPPLY      6.56   5.46      3.32      6.06     4.81
-    ## 2 AGGREGATE  24.9   24.0       1         9.24     3.80
-    ## 3 DPLYR       3.19   2.91      5.82      1        1   
-    ## 4 DATATABLE   1      1        16.4       1.25     3.57
+    ## 1 LAPPLY      5.63   5.25      3.55      6.06     1.95
+    ## 2 AGGREGATE  21.4   22.9       1         9.24     1.33
+    ## 3 DPLYR       2.83   2.71      6.47      1        1   
+    ## 4 DATATABLE   1      1        17.6       1.25     1.45
 
 -   plotting the benchmark
 
@@ -461,8 +465,8 @@ autoplot(m)
 
 ## Parallel computing using HPC
 
-R is already available on `iris` clusters as a module. The current
-production version `3.6.0`. The first step is the reservation of a
+**R** is already available on `iris` clusters as a module. The current
+production version is `3.6.0`. The first step is the reservation of a
 resource. Connect to your favorite cluster frontend (here: `iris`). We
 assume you have already configured your `.ssh/config`.
 
@@ -472,7 +476,7 @@ assume you have already configured your `.ssh/config`.
 
 Once connected to the user frontend, book **4** cores for half an hour
 
-    [jdoe@access2 ~]$ run -p interactive --qos debug -C batch --time=0:30:0 -c 4 --pty bash
+    [jdoe@access2 ~]$ srun -p interactive --qos debug --time=0:30:0 -N 1 --ntasks-per-node=1 --cpus-per-task=4 --mem-per-cpu 4096 --pty bash
 
 When the job is running and you are connected load *R* module (so
 version `3.6.0`).
@@ -505,9 +509,6 @@ expressions are run according to *plan* defined by the user.
 for the last section, you need to install the following packages,
 `future`, `furrr` and `Rstne`
 
-On `iris`, in an interactive session, load the module to get R version
-3.6.0, still **not** in *production*
-
     module load lang/R/3.6.0-intel-2019a-bare
 
 you will a warning because it hasn’t been fully tested yet.
@@ -516,7 +517,8 @@ After entering R using the `R` command, install both packages. Don’t
 forget to use multi-threading for the compilations.
 
 ``` r
-install.packages(c("future", "furrr", "purrr", "dplyr", "dbscan", "tictoc", "Rtsne"), repos = "https://cran.rstudio.com", Ncpus = 4)
+install.packages(c("future", "furrr", "purrr", "dplyr", "dbscan", "tictoc", "Rtsne"),
+                 repos = "https://cran.rstudio.com", Ncpus = 4)
 ```
 
 quit by typing `quit()` and `n` do not save workspace image (actually,
@@ -543,11 +545,11 @@ library(furrr)
 ``` r
 plan(sequential)
 tictoc::tic()
-nothingness <- future_map(c(2, 2, 2), ~Sys.sleep(.x), .progress = TRUE)
+nothingness <- future_map(c(2, 2, 2), ~ Sys.sleep(.x), .progress = TRUE)
 tictoc::toc()
 ```
 
-    ## 6.081 sec elapsed
+    ## 6.043 sec elapsed
 
 -   second in parallel
 
@@ -567,11 +569,11 @@ plan(multiprocess)
 
 ``` r
 tictoc::tic()
-nothingness <- future_map(c(2, 2, 2), ~Sys.sleep(.x), .progress = TRUE)
+nothingness <- future_map(c(2, 2, 2), ~ Sys.sleep(.x), .progress = TRUE)
 tictoc::toc()
 ```
 
-    ## 2.941 sec elapsed
+    ## 2.429 sec elapsed
 
 fetch env variables in R
 
@@ -902,5 +904,7 @@ install.packages("renv")
 -   [CRAN HPC
     Packages](https://cran.r-project.org/web/views/HighPerformanceComputing.html)
 -   [tidyverse Documentation](https://tidyverse.org/)
--   [4-days tidyverse workshop.uni.lu](https://rworkshop.uni.lu/)
+-   [4-days tidyverse workshop.uni.lu](https://rworkshop.uni.lu/) next
+    iteration in [May
+    2021](https://elixir-luxembourg.org/events/2021_05_06_rtidyverse)
 -   [Advanced R programming by Hadley Wickham](http://adv-r.had.co.nz/)
