@@ -106,7 +106,8 @@ $> cd ~/git/github.com/ULHPC/tutorials
 $> make up     # update both branches (production and devel)
 
 # Prepare a dedicated (separated) working directory
-$> mkdir -p ~/tutorials/HPC-School-2020      # Adapt event name accordingly
-$> cd ~/tutorials/HPC-School-2020
-$> ln -s ~/git/github.com/ULHPC/tutorials  ref.d    # create a symbolic link pointing to the tutorial reference material
+$> mkdir -p ~/tutorials/ULHPC-School-2020         # Adapt event name accordingly
+$> cd ~/tutorials/ULHPC-School-2020
+$> ln -s ~/git/github.com/ULHPC/tutorials  ref.d  # create a symbolic link pointing to the tutorial reference material
+# Now  $HOME/tutorials/ULHPC-School-2020/ref.d/ points to reference training material
 ```

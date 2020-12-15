@@ -5,7 +5,7 @@
      Copyright (c) 2018- UL HPC Team <hpc-team@uni.lu>
 
 
-[![](tutorial_singularity.png)](slides.pdf)
+[![](cover_slides.png)](slides.pdf)
 
 
 <p align="center">
@@ -258,9 +258,10 @@ Now image can be transferred, e.g. to the Iris cluster and used normally.
   - Other paths need to be explicitly set
 
 ```bash
-# Build the image on your laptop
+## Just an example - do not copy-paste
+# Build 
 sudo singularity build custom.sif python_3.7.3-stretch/
-# Test it on you laptop
+# Execute 
 singularity exec --bind /work/projects/myprj/:/mnt \
             custom.sif python3 /mnt/my_nice_code.py
 singularity exec --bind /work/projects/myprj:/work/projects/myprj \
@@ -427,6 +428,65 @@ singularity instance stop jupyter
 
 To start the container job: `sbatch <launcher_name>.sh`
 
+Once your job is running (see `squeue` command), you can use ssh forwarding to connect to the notebook from your laptop. Open a terminal on your laptop and copy-paste the ssh forward command in the slurm-****.out logfile.
+You should be now able to reach your notebook.
+
+__MobaXterm users__:
+
+MobaXterm has tunneling a feature to setup ssh forwarding. Click on the "Tuneling".
+
+<p align="center">
+<img src="./images/tunneling.png" width="900px" >
+</p>
+
+Then click on "New SSH tunnel".
+
+<p align="center">
+<img src="./images/tunneling_details.png" width="900px" >
+</p>
+
+Use the ssh forward command in the slurm-****.out logfile to setup correctly the tunnel.
+
+
+
+
+
+Then open your browser and go to the url: `http://127.0.0.1:8889/`. Jupyter should ask you for a password (see screenshot below). This password can be set before running the jupyter notebook and his part of the initial configuartion detailed at [Jupyter official documentation](https://jupyter-notebook.readthedocs.io/en/stable/public_server.html).
+
+if by mistake, you forgot to setup this password, have a look in the slurm-****.out file in which the output of the command `jupyter notebook list` has been recorded.
+
+
+```bash
+On your laptop: ssh -p 8022 -NL 8889:172.17.6.75:8889 ekieffer@access-iris.uni.lu 
+INFO:    instance started successfully
+[I 13:46:53.550 NotebookApp] Writing notebook server cookie secret to /home/users/ekieffer/jupyter_sing/2169124/jupyter_runtime/notebook_cookie_secret
+[I 13:46:53.916 NotebookApp] Serving notebooks from local directory: /home/users/ekieffer/singularity_tests
+[I 13:46:53.916 NotebookApp] Jupyter Notebook 6.1.5 is running at:
+[I 13:46:53.916 NotebookApp] http://172.17.6.75:8889/?token=f42786e3f025b30e28b8b6534bf74b2aab25e40ea229b20a
+[I 13:46:53.916 NotebookApp]  or http://127.0.0.1:8889/?token=f42786e3f025b30e28b8b6534bf74b2aab25e40ea229b20a
+[I 13:46:53.916 NotebookApp] Use Control-C to stop this server and shut down all kernels (twice to skip confirmation).
+[C 13:46:53.924 NotebookApp] 
+    
+    To access the notebook, open this file in a browser:
+        file:///home/users/ekieffer/jupyter_sing/2169124/jupyter_runtime/nbserver-20-open.html
+    Or copy and paste one of these URLs:
+        http://172.17.6.75:8889/?token=f42786e3f025b30e28b8b6534bf74b2aab25e40ea229b20a
+     or http://127.0.0.1:8889/?token=f42786e3f025b30e28b8b6534bf74b2aab25e40ea229b20a
+Currently running servers:
+http://172.17.6.75:8889/?token=f42786e3f025b30e28b8b6534bf74b2aab25e40ea229b20a :: /home/users/ekieffer/singularity_tests
+[I 13:49:54.399 NotebookApp] 302 GET / (172.17.2.11) 0.92ms
+[I 13:49:54.423 NotebookApp] 302 GET /tree? (172.17.2.11) 1.17ms
+[I 13:51:04.820 NotebookApp] 302 GET /?token=f42786e3f025b30e28b8b6534bf74b2aab25e40ea229b20a (172.17.2.11) 0.82ms
+[I 13:51:20.005 NotebookApp] Writing notebook-signing key to /home/users/ekieffer/jupyter_sing/2169124/jupyter_data/notebook_secret
+[W 13:51:20.007 NotebookApp] Notebook HPC school 2020.ipynb is not trusted
+[I 13:51:20.361 NotebookApp] Kernel started: 8961291f-7e23-4b9f-b382-7e90b4e5c9b7, name: python3
+[I 13:53:15.702 NotebookApp] Starting buffering for 8961291f-7e23-4b9f-b382-7e90b4e5c9b7:f77c8f489d3542548b1a4d6a83d28e52
+
+```
+
+Jupyter provides you a token to connect to the notebook.
+
+
 * Note that the number of cpus reported by python itself will be 28 (regular nodes)
 * This is obvisouly wrong. Check  `$SLURM_CPUS_PER_TASK`
 * Never use `os.cpu_count()` nor `multiprocessing.cpu_count()`
@@ -503,7 +563,7 @@ Stage: build
 
 ```bash
 #!/bin/bash -l
-#SBATCH -J Singularity_Jupyter
+#SBATCH -J Singularity_Jupyter_venv
 #SBATCH -N 1 # Nodes
 #SBATCH -n 1 # Tasks
 #SBATCH -c 2 # Cores assigned to each tasks
@@ -563,7 +623,7 @@ singularity instance stop jupyter
 
 ```bash
 #!/bin/bash -l
-#SBATCH -J Singularity_Jupyter
+#SBATCH -J Singularity_Jupyter_parallel
 #SBATCH -N 2 # Nodes
 #SBATCH -n 2 # Tasks
 #SBATCH -c 2 # Cores assigned to each tasks
@@ -740,9 +800,7 @@ Stage: build
     export LC_ALL=C
 
 %post
-    apt-get update
-    apt-get install -y python3-pip python3-venv
-    python3 -m pip install jupyter ipyparallel cgroup-utils
+    python3 -m pip install virtualenv jupyter ipyparallel cgroup-utils
 
 %runscript
     VENV=$1
@@ -774,7 +832,7 @@ Stage: build
 
 ```bash
 #!/bin/bash -l
-#SBATCH -J Singularity_Jupyter
+#SBATCH -J Singularity_Jupyter_parallel_cuda
 #SBATCH -N 1 # Nodes
 #SBATCH -n 1 # Tasks
 #SBATCH -c 1 # Cores assigned to each tasks
@@ -806,7 +864,8 @@ echo "On your laptop: ssh -p 8022 -NL 8889:$(facter ipaddress):8889 ${USER}@acce
 singularity instance start --nv jupyter_parallel_cuda.sif jupyter
 
 if [ ! -d "$VENV" ];then
-    singularity exec --nv instance://jupyter python3 -m venv $VENV --system-site-packages
+    # For some reasons, there is an issue with venv -- using virtualenv instead
+    singularity exec --nv instance://jupyter python3 -m virtualenv $VENV --system-site-packages
     singularity run --nv instance://jupyter $VENV "python3 -m pip install --upgrade pip" 
     # singularity run --nv instance://jupyter $VENV "python3 -m pip install <your_packages>"
     singularity run --nv instance://jupyter $VENV "python3 -m ipykernel install --sys-prefix --name HPC_SCHOOL_ENV_IPYPARALLEL_CUDA --display-name HPC_SCHOOL_ENV_IPYPARALLEL_CUDA"
