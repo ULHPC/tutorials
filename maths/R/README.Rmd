@@ -17,7 +17,7 @@ library(tidyverse)
 
       Copyright (c) 2013-2020 Aurelien Ginolhac, UL HPC Team  <hpc-sysadmins@uni.lu>
 
-[![](https://github.com/ULHPC/tutorials/raw/devel/maths/R/img/cover_slides.png)](https://github.com/ULHPC/tutorials/raw/devel/maths/R/PS10_targets.html)
+[![](https://github.com/ULHPC/tutorials/raw/devel/maths/R/img/cover_slides.png)](https://ulhpc-tutorials.readthedocs.io/en/latest/maths/R/PS10_targets.html)
 
 <div class="shareagain" style="min-width:300px;margin:1em auto;">
   <iframe src="PS10_targets.html" width="768" height="432" style="border:2px solid currentColor;" loading="lazy" allowfullscreen></iframe>
