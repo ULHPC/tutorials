@@ -235,7 +235,7 @@ install.packages("bench")
 The `mark()` function performs x times the calls of several expressions, grabbing its performance (time and ressources used)
 
 
-```{r}
+```{r, warning=FALSE, message=FALSE}
 library(bench)
 set.seed(123)
 m <- bench::mark(LAPPLY    = as.data.frame(cbind(cut = as.character(unique(diamonds$cut)),
@@ -340,7 +340,7 @@ tictoc::toc()
 - second in parallel
 
 ```{r}
-plan(multiprocess)
+plan(multisession)
 tictoc::tic()
 nothingness <- future_map(c(2, 2, 2), ~ Sys.sleep(.x), .progress = TRUE)
 tictoc::toc()
@@ -559,7 +559,7 @@ In real life though, most dataset come as text files with some delimiters. Now w
 - `read.csv()` is the base function. Turns out to be slow for large files.
 - [`fread()`](https://www.rdocumentation.org/packages/data.table/versions/1.12.2/topics/fread) is the fantastic and fast import function from `data.table`
 - [`read_csv()`](https://readr.tidyverse.org/reference/read_delim.html) is the tidyverse way of reading a csv. Fast than base, slower than `data.table`.
-- [`vroom()`] is the recent [package](http://vroom.r-lib.org/articles/vroom.html) that could be the next standard for reading files in the tidyverse dialect. Check the [benchmarks](http://vroom.r-lib.org/articles/benchmarks.html) for a detailed comparison. It uses the [ALTREP](https://purrple.cat/blog/2018/10/14/altrep-and-cpp/) introduced in R `3.5.0` that allows to delay actual reading data, making it super fast. Materialization of data comes when you need the exact column and rows.
+- `vroom()` is the recent [package](http://vroom.r-lib.org/articles/vroom.html) that could be the next standard for reading files in the tidyverse dialect. Check the [benchmarks](http://vroom.r-lib.org/articles/benchmarks.html) for a detailed comparison. It uses the [ALTREP](https://purrple.cat/blog/2018/10/14/altrep-and-cpp/) introduced in R `3.5.0` that allows to delay actual reading data, making it super fast. Materialization of data comes when you need the exact column and rows.
 
 Here we will benchmark reading only numbers since it is a matrix of doubles.
 

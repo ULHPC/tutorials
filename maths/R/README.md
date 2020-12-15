@@ -334,108 +334,6 @@ m <- bench::mark(LAPPLY    = as.data.frame(cbind(cut = as.character(unique(diamo
                  iterations = 100, check = FALSE)
 ```
 
-    ## `summarise()` ungrouping output (override with `.groups` argument)
-    ## `summarise()` ungrouping output (override with `.groups` argument)
-    ## `summarise()` ungrouping output (override with `.groups` argument)
-    ## `summarise()` ungrouping output (override with `.groups` argument)
-    ## `summarise()` ungrouping output (override with `.groups` argument)
-    ## `summarise()` ungrouping output (override with `.groups` argument)
-    ## `summarise()` ungrouping output (override with `.groups` argument)
-    ## `summarise()` ungrouping output (override with `.groups` argument)
-    ## `summarise()` ungrouping output (override with `.groups` argument)
-    ## `summarise()` ungrouping output (override with `.groups` argument)
-    ## `summarise()` ungrouping output (override with `.groups` argument)
-    ## `summarise()` ungrouping output (override with `.groups` argument)
-    ## `summarise()` ungrouping output (override with `.groups` argument)
-    ## `summarise()` ungrouping output (override with `.groups` argument)
-    ## `summarise()` ungrouping output (override with `.groups` argument)
-    ## `summarise()` ungrouping output (override with `.groups` argument)
-    ## `summarise()` ungrouping output (override with `.groups` argument)
-    ## `summarise()` ungrouping output (override with `.groups` argument)
-    ## `summarise()` ungrouping output (override with `.groups` argument)
-    ## `summarise()` ungrouping output (override with `.groups` argument)
-    ## `summarise()` ungrouping output (override with `.groups` argument)
-    ## `summarise()` ungrouping output (override with `.groups` argument)
-    ## `summarise()` ungrouping output (override with `.groups` argument)
-    ## `summarise()` ungrouping output (override with `.groups` argument)
-    ## `summarise()` ungrouping output (override with `.groups` argument)
-    ## `summarise()` ungrouping output (override with `.groups` argument)
-    ## `summarise()` ungrouping output (override with `.groups` argument)
-    ## `summarise()` ungrouping output (override with `.groups` argument)
-    ## `summarise()` ungrouping output (override with `.groups` argument)
-    ## `summarise()` ungrouping output (override with `.groups` argument)
-    ## `summarise()` ungrouping output (override with `.groups` argument)
-    ## `summarise()` ungrouping output (override with `.groups` argument)
-    ## `summarise()` ungrouping output (override with `.groups` argument)
-    ## `summarise()` ungrouping output (override with `.groups` argument)
-    ## `summarise()` ungrouping output (override with `.groups` argument)
-    ## `summarise()` ungrouping output (override with `.groups` argument)
-    ## `summarise()` ungrouping output (override with `.groups` argument)
-    ## `summarise()` ungrouping output (override with `.groups` argument)
-    ## `summarise()` ungrouping output (override with `.groups` argument)
-    ## `summarise()` ungrouping output (override with `.groups` argument)
-    ## `summarise()` ungrouping output (override with `.groups` argument)
-    ## `summarise()` ungrouping output (override with `.groups` argument)
-    ## `summarise()` ungrouping output (override with `.groups` argument)
-    ## `summarise()` ungrouping output (override with `.groups` argument)
-    ## `summarise()` ungrouping output (override with `.groups` argument)
-    ## `summarise()` ungrouping output (override with `.groups` argument)
-    ## `summarise()` ungrouping output (override with `.groups` argument)
-    ## `summarise()` ungrouping output (override with `.groups` argument)
-    ## `summarise()` ungrouping output (override with `.groups` argument)
-    ## `summarise()` ungrouping output (override with `.groups` argument)
-    ## `summarise()` ungrouping output (override with `.groups` argument)
-    ## `summarise()` ungrouping output (override with `.groups` argument)
-    ## `summarise()` ungrouping output (override with `.groups` argument)
-    ## `summarise()` ungrouping output (override with `.groups` argument)
-    ## `summarise()` ungrouping output (override with `.groups` argument)
-    ## `summarise()` ungrouping output (override with `.groups` argument)
-    ## `summarise()` ungrouping output (override with `.groups` argument)
-    ## `summarise()` ungrouping output (override with `.groups` argument)
-    ## `summarise()` ungrouping output (override with `.groups` argument)
-    ## `summarise()` ungrouping output (override with `.groups` argument)
-    ## `summarise()` ungrouping output (override with `.groups` argument)
-    ## `summarise()` ungrouping output (override with `.groups` argument)
-    ## `summarise()` ungrouping output (override with `.groups` argument)
-    ## `summarise()` ungrouping output (override with `.groups` argument)
-    ## `summarise()` ungrouping output (override with `.groups` argument)
-    ## `summarise()` ungrouping output (override with `.groups` argument)
-    ## `summarise()` ungrouping output (override with `.groups` argument)
-    ## `summarise()` ungrouping output (override with `.groups` argument)
-    ## `summarise()` ungrouping output (override with `.groups` argument)
-    ## `summarise()` ungrouping output (override with `.groups` argument)
-    ## `summarise()` ungrouping output (override with `.groups` argument)
-    ## `summarise()` ungrouping output (override with `.groups` argument)
-    ## `summarise()` ungrouping output (override with `.groups` argument)
-    ## `summarise()` ungrouping output (override with `.groups` argument)
-    ## `summarise()` ungrouping output (override with `.groups` argument)
-    ## `summarise()` ungrouping output (override with `.groups` argument)
-    ## `summarise()` ungrouping output (override with `.groups` argument)
-    ## `summarise()` ungrouping output (override with `.groups` argument)
-    ## `summarise()` ungrouping output (override with `.groups` argument)
-    ## `summarise()` ungrouping output (override with `.groups` argument)
-    ## `summarise()` ungrouping output (override with `.groups` argument)
-    ## `summarise()` ungrouping output (override with `.groups` argument)
-    ## `summarise()` ungrouping output (override with `.groups` argument)
-    ## `summarise()` ungrouping output (override with `.groups` argument)
-    ## `summarise()` ungrouping output (override with `.groups` argument)
-    ## `summarise()` ungrouping output (override with `.groups` argument)
-    ## `summarise()` ungrouping output (override with `.groups` argument)
-    ## `summarise()` ungrouping output (override with `.groups` argument)
-    ## `summarise()` ungrouping output (override with `.groups` argument)
-    ## `summarise()` ungrouping output (override with `.groups` argument)
-    ## `summarise()` ungrouping output (override with `.groups` argument)
-    ## `summarise()` ungrouping output (override with `.groups` argument)
-    ## `summarise()` ungrouping output (override with `.groups` argument)
-    ## `summarise()` ungrouping output (override with `.groups` argument)
-    ## `summarise()` ungrouping output (override with `.groups` argument)
-    ## `summarise()` ungrouping output (override with `.groups` argument)
-    ## `summarise()` ungrouping output (override with `.groups` argument)
-    ## `summarise()` ungrouping output (override with `.groups` argument)
-    ## `summarise()` ungrouping output (override with `.groups` argument)
-    ## `summarise()` ungrouping output (override with `.groups` argument)
-    ## `summarise()` ungrouping output (override with `.groups` argument)
-
 -   makes comparison easier to read using **relative** values. `1` for
     the fastest.
 
@@ -446,10 +344,10 @@ summary(m, relative = TRUE)
     ## # A tibble: 4 x 6
     ##   expression   min median `itr/sec` mem_alloc `gc/sec`
     ##   <bch:expr> <dbl>  <dbl>     <dbl>     <dbl>    <dbl>
-    ## 1 LAPPLY      5.63   5.25      3.55      6.06     1.95
-    ## 2 AGGREGATE  21.4   22.9       1         9.24     1.33
-    ## 3 DPLYR       2.83   2.71      6.47      1        1   
-    ## 4 DATATABLE   1      1        17.6       1.25     1.45
+    ## 1 LAPPLY      5.51   5.46      3.55      5.99     2.22
+    ## 2 AGGREGATE  21.6   23.8       1         9.13     1.58
+    ## 3 DPLYR       2.67   2.84      6.47      1        1   
+    ## 4 DATATABLE   1      1        19.4       1.23     1.81
 
 -   plotting the benchmark
 
@@ -549,31 +447,18 @@ nothingness <- future_map(c(2, 2, 2), ~ Sys.sleep(.x), .progress = TRUE)
 tictoc::toc()
 ```
 
-    ## 6.043 sec elapsed
+    ## 6.045 sec elapsed
 
 -   second in parallel
 
 ``` r
-plan(multiprocess)
-```
-
-    ## Warning: Strategy 'multiprocess' is deprecated in future (>= 1.20.0). Instead,
-    ## explicitly specify either 'multisession' or 'multicore'. In the current R
-    ## session, 'multiprocess' equals 'multisession'.
-
-    ## Warning in supportsMulticoreAndRStudio(...): [ONE-TIME WARNING] Forked
-    ## processing ('multicore') is not supported when running R from RStudio
-    ## because it is considered unstable. For more details, how to control forked
-    ## processing or not, and how to silence this warning in future R sessions, see ?
-    ## parallelly::supportsMulticore
-
-``` r
+plan(multisession)
 tictoc::tic()
 nothingness <- future_map(c(2, 2, 2), ~ Sys.sleep(.x), .progress = TRUE)
 tictoc::toc()
 ```
 
-    ## 2.429 sec elapsed
+    ## 2.413 sec elapsed
 
 fetch env variables in R
 
@@ -796,7 +681,7 @@ file and benchmarks the main tools for this step.
 -   [`read_csv()`](https://readr.tidyverse.org/reference/read_delim.html)
     is the tidyverse way of reading a csv. Fast than base, slower than
     `data.table`.
--   \[`vroom()`\] is the recent
+-   `vroom()` is the recent
     [package](http://vroom.r-lib.org/articles/vroom.html) that could be
     the next standard for reading files in the tidyverse dialect. Check
     the [benchmarks](http://vroom.r-lib.org/articles/benchmarks.html)
