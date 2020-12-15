@@ -1,7 +1,7 @@
 #! /bin/bash
 ################################################################################
 # setup.sh - Bootstrap Easybuild
-# Time-stamp: <Tue 2020-12-15 21:42 svarrette>
+# Time-stamp: <Tue 2020-12-15 21:55 svarrette>
 ################################################################################
 
 ### Local variables
@@ -38,13 +38,13 @@ while [ $# -ge 1 ]; do
     shift
 done
 
+# Pre-check: Lmod / Environment Module exists
+command -v module >/dev/null || print_error_and_exit "'module' command Not Found"
+
 if [ ! -f "${BOOTSTRAP_EB}" ]; then
     echo "=> download EB bootstrap script"
     ${CMD_PREFIX} curl -o ${BOOTSTRAP_EB}  https://raw.githubusercontent.com/easybuilders/easybuild-framework/develop/easybuild/scripts/bootstrap_eb.py
 fi
-
-# Pre-check: Lmod / Environment Module exists
-command -v module >/dev/null || print_error_and_exit "'module' command Not Found"
 
 if [ -n "${EASYBUILD_PREFIX}" ]; then
     echo "=> install EasyBuild"
@@ -52,5 +52,5 @@ if [ -n "${EASYBUILD_PREFIX}" ]; then
 fi
 
 ${CMD_PREFIX} module use ${LOCAL_MODULES}
-${CMD_PREFIX} module avail
+#${CMD_PREFIX} module avail
 ${CMD_PREFIX} module load tools/EasyBuild
