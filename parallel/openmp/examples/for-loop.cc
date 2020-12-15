@@ -22,9 +22,12 @@ int main()
   
   double start = omp_get_wtime(); 
   // one can set different scheduling here and see the performance.
-  // #pragma omp parallel for schedule(guided, 2) num_threads(5)
-  // #pragma omp parallel for schedule(dynamic, 2) num_threads(5)
-#pragma omp parallel for schedule(static, 2) num_threads(5)
+  //you can also set setenv as $> set OMP_SCHEDULE "dynamic,5"
+  //#pragma omp parallel for schedule(auto)
+  //#pragma omp parallel for schedule(guided, 5) num_threads(5)
+  //#pragma omp parallel for schedule(dynamic, 5) num_threads(5)
+  //#pragma omp parallel for schedule(static, 5) num_threads(5)
+#pragma omp parallel for num_threads(5)
   for (int i = 0; i < N; i++)
     {
       c[i]=a[i]*b[i];

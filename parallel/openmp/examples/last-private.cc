@@ -5,9 +5,10 @@ using namespace std;
 
 int main()
 {
-  int n=10;
+  int n=3;
   // for private varibale test
   int var = 5;
+cout << "initial var value " << var <<endl;
 #pragma omp parallel for lastprivate(var) num_threads(n) 
   for(int i = 0; i < n; i++)
     {
