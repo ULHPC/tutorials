@@ -15,6 +15,7 @@ pages:
 - Tools / Software management:
   - Easybuild: 'tools/easybuild/index.md'
 #  - RESIF:     'tools/resif/index.md'
+- Data Management: 'data/index.md'
 - Scheduling:
   - Advanced job scheduling with SLURM: 'scheduling/advanced/index.md'
 - Debugging and Profiling:
