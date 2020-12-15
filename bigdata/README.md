@@ -384,7 +384,9 @@ CFGS2=/home/users/svarrette/.local/easybuild/software/EasyBuild/4.3.1/easybuild/
  * $CFGS2/Spark-2.4.5-intel-2019b-Python-3.7.4-Java-1.8.eb
 ```
 
-That's the case. So let's build 2.4.5:
+That's the case: version 2.4.5 is available.
+
+So let's build 2.4.5:
 
 ```bash
 $> eb Spark-2.4.5-intel-2019b-Python-3.7.4-Java-1.8.eb -Dr   # Dry-run
