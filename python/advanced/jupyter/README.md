@@ -1,13 +1,11 @@
--*- mode: markdown;mode:visual-line;  fill-column: 80 -*-
+[![By ULHPC](https://img.shields.io/badge/by-ULHPC-blue.svg)](https://hpc.uni.lu) [![Licence](https://img.shields.io/badge/license-GPL--3.0-blue.svg)](http://www.gnu.org/licenses/gpl-3.0.html) [![GitHub issues](https://img.shields.io/github/issues/ULHPC/tutorials.svg)](https://github.com/ULHPC/tutorials/issues/) [![](https://img.shields.io/badge/slides-PDF-red.svg)](https://github.com/ULHPC/tutorials/raw/devel/python/advanced/tutorial_python_advanced.pdf) [![Github](https://img.shields.io/badge/sources-github-green.svg)](https://github.com/ULHPC/tutorials/tree/devel/python/advanced) [![Documentation Status](http://readthedocs.org/projects/ulhpc-tutorials/badge/?version=latest)](http://ulhpc-tutorials.readthedocs.io/en/latest/python/advanced/) [![GitHub forks](https://img.shields.io/github/stars/ULHPC/tutorials.svg?style=social&label=Star)](https://github.com/ULHPC/tutorials)
+
+# UL HPC Tutorial: Use Jupyter notebook on UL HPC
+
+      Copyright (c) 2020  UL HPC Team <hpc-team@uni.lu>
 
 Authors: Clément Parisot (updated by Frédéric Pinel)
 
-Copyright (c) 2020 UL HPC Team  -- see <http://hpc.uni.lu>
-
----------------------------------------------------------
-# UL HPC Tutorial: [Advanced] Python : Use Jupyter notebook on UL HPC
-
-[![By ULHPC](https://img.shields.io/badge/by-ULHPC-blue.svg)](https://hpc.uni.lu) [![Licence](https://img.shields.io/badge/license-GPL--3.0-blue.svg)](http://www.gnu.org/licenses/gpl-3.0.html) [![GitHub issues](https://img.shields.io/github/issues/ULHPC/tutorials.svg)](https://github.com/ULHPC/tutorials/issues/) [![](https://img.shields.io/badge/slides-PDF-red.svg)](https://github.com/ULHPC/tutorials/raw/devel/python/advanced/tutorial_python_advanced.pdf) [![Github](https://img.shields.io/badge/sources-github-green.svg)](https://github.com/ULHPC/tutorials/tree/devel/python/advanced) [![Documentation Status](http://readthedocs.org/projects/ulhpc-tutorials/badge/?version=latest)](http://ulhpc-tutorials.readthedocs.io/en/latest/python/advanced/) [![GitHub forks](https://img.shields.io/github/stars/ULHPC/tutorials.svg?style=social&label=Star)](https://github.com/ULHPC/tutorials)
 
 [![](https://github.com/ULHPC/tutorials/raw/devel/python/advanced/cover_slides.png)](https://github.com/ULHPC/tutorials/raw/devel/python/advanced/tutorial_python_advanced.pdf)
 
@@ -56,6 +54,12 @@ pip install jupyter
 pip install matplotlib
 # To use our virtualenv in the notebook, we need to install this module
 pip install ipykernel
+```
+
+To save the installed packages:
+
+```bash
+pip freeze -l > requirements.txt
 ```
 
 To install everything:
@@ -127,4 +131,3 @@ If you haven't chosen a password to protect your notebook, please append the tok
   * Choose **Change kernel**
   * Select our previously generated kernel called **venv**
 * Try to run the code of the notebook in the kernel by using 'Alt-Enter' keys.
-

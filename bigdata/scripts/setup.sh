@@ -1,0 +1,1 @@
+../../tools/easybuild/scripts/setup.sh
