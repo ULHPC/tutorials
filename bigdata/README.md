@@ -316,54 +316,84 @@ Let's load the installed module:
 (node)$> source settings/2019
 (node)$> module load devel/Spark/2.4.0
 ```
+As in the [GNU Parallel tutorial](../sequential/gnu-parallel/), let's create a list of images from the [OpenImages V4 data set](https://storage.googleapis.com/openimages/web/download_v4.html).
+A copy of this data set is available on the ULHPC facility, under `/work/projects/bigdata_sets/OpenImages_V4/`.
+Let's create a CSV file which contains a random selection of 1000 training files within this dataset (prefixed by a line number).
+You may want to do it as follows (**copy the full command**):
 
-#### 4.2.a. Pyspark
+``` bash
+#                                                       training set     select first 10K  random sort  take only top 10   prefix by line number      print to stdout AND in file
+#                                                         ^^^^^^           ^^^^^^^^^^^^^   ^^^^^^^^     ^^^^^^^^^^^^^      ^^^^^^^^^^^^^^^^^^^^^^^^   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(access)$> find /work/projects/bigdata_sets/OpenImages_V4/train/ -print | head -n 10000 | sort -R   |  head -n 1000       | awk '{ print ++i","$0 }' | tee openimages_v4_filelist.csv
+1,/work/projects/bigdata_sets/OpenImages_V4/train/6196380ea79283e0.jpg
+2,/work/projects/bigdata_sets/OpenImages_V4/train/7f23f40740731c03.jpg
+3,/work/projects/bigdata_sets/OpenImages_V4/train/dbfc1b37f45b3957.jpg
+4,/work/projects/bigdata_sets/OpenImages_V4/train/f66087cdf8e172cd.jpg
+5,/work/projects/bigdata_sets/OpenImages_V4/train/5efed414dd8b23d0.jpg
+6,/work/projects/bigdata_sets/OpenImages_V4/train/1be054cb3021f6aa.jpg
+7,/work/projects/bigdata_sets/OpenImages_V4/train/61446dee2ee9eb27.jpg
+8,/work/projects/bigdata_sets/OpenImages_V4/train/dba2da75d899c3e7.jpg
+9,/work/projects/bigdata_sets/OpenImages_V4/train/7ea06f092abc005e.jpg
+10,/work/projects/bigdata_sets/OpenImages_V4/train/2db694eba4d4bb04.jpg
+```
+
+Download also another data files from Uber:
+
+``` bash
+curl -o src/uber.csv https://gitlab.com/rahasak-labs/dot/-/raw/master/src/main/resources/uber.csv
+```
+
+#### Pyspark
 
 PySpark is the Spark Python API and exposes Spark Contexts to the Python programming environment.
 
 ```bash
 $> pyspark
-Python 2.7.5 (default, Aug  4 2017, 00:39:18)
-[GCC 4.8.5 20150623 (Red Hat 4.8.5-16)] on linux2
+Python 3.7.4 (default, Oct 19 2020, 02:00:06)
+[GCC 8.3.0] on linux
 Type "help", "copyright", "credits" or "license" for more information.
-2018-12-04 13:57:55 WARN  NativeCodeLoader:62 - Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+20/12/16 00:37:14 WARN NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+Using Spark's default log4j profile: org/apache/spark/log4j-defaults.properties
 Setting default log level to "WARN".
 To adjust logging level use sc.setLogLevel(newLevel). For SparkR, use setLogLevel(newLevel).
 Welcome to
       ____              __
      / __/__  ___ _____/ /__
     _\ \/ _ \/ _ `/ __/  '_/
-   /__ / .__/\_,_/_/ /_/\_\   version 2.4.0
+   /__ / .__/\_,_/_/ /_/\_\   version 2.4.3
       /_/
 
-Using Python version 2.7.5 (default, Aug  4 2017 00:39:18)
+Using Python version 3.7.4 (default, Oct 19 2020 02:00:06)
 SparkSession available as 'spark'.
 >>>
 ```
 
-See [this tutorial](https://www.dezyre.com/apache-spark-tutorial/pyspark-tutorial) for playing with pyspark.
+See [this tutorial](https://realpython.com/pyspark-intro/) for playing with pyspark.
 
-#### 4.2.b. Scala Spark Shell
+In particular, play with the build-in `filter()`, `map()`, and `reduce()` functions
+
+
+####  Scala Spark Shell
 
 Spark includes a modified version of the Scala shell that can be used interactively.
 Instead of running `pyspark` above, run the `spark-shell` command:
 
 ```bash
 $> spark-shell
-2018-12-04 13:58:43 WARN  NativeCodeLoader:62 - Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+Using Spark's default log4j profile: org/apache/spark/log4j-defaults.properties
 Setting default log level to "WARN".
 To adjust logging level use sc.setLogLevel(newLevel). For SparkR, use setLogLevel(newLevel).
-Spark context Web UI available at http://node-1.iris-cluster.uni.lux:4040
-Spark context available as 'sc' (master = local[*], app id = local-1543928329271).
+Spark context Web UI available at http://node-117.iris-cluster.uni.lux:4040
+Spark context available as 'sc' (master = local[*], app id = local-1608075995057).
 Spark session available as 'spark'.
 Welcome to
       ____              __
      / __/__  ___ _____/ /__
     _\ \/ _ \/ _ `/ __/  '_/
-   /___/ .__/\_,_/_/ /_/\_\   version 2.4.0
+   /___/ .__/\_,_/_/ /_/\_\   version 2.4.3
       /_/
 
-Using Scala version 2.11.12 (Java HotSpot(TM) 64-Bit Server VM, Java 1.8.0_162)
+Using Scala version 2.11.12 (Java HotSpot(TM) 64-Bit Server VM, Java 1.8.0_241)
 Type in expressions to have them evaluated.
 Type :help for more information.
 
@@ -376,7 +406,7 @@ The Spark R API is still experimental. Only a subset of the R API is available -
 Since this tutorial does not cover R, we are not going to use it.
 
 
-### 4.3 Running Spark in standalone cluster
+## Running Spark in standalone cluster
 
 * [Reference Documentation](https://spark.apache.org/docs/latest/cluster-overview.html)
 
@@ -420,8 +450,10 @@ To facilitate these steps, Spark comes with a couple of scripts you can use to l
 | `sbin/stop-slaves.sh`  | Stops all slave instances on the machines specified in the conf/slaves file. |
 | `sbin/stop-all.sh`     | Stops both the master and the slaves as described above.                     |
 
-Exit (if needed) the previous session.
-Ensure that you have connected by SSH to the cluster by opening an SOCKS proxy (see above instructions):
+Yet the ULHPC team has designed a dedicated launcher script `./scripts/launcher.Spark.sh` that exploits these script to quickly deploy and in a flexible way a Spark cluster over the resources allocated by slurm.
+
+Quit your previous job - eventually detach from your screen session
+Ensure that you have connected by SSH to the cluster by opening an SOCKS proxy:
 
 ```
 (laptop)$> ssh -D 1080 -C iris-cluster
@@ -432,202 +464,90 @@ Then make a new reservation across multiple nodes:
 ```bash
 # If not yet done, go to the appropriate directory
 $> cd ~/git/github.com/ULHPC/tutorials/bigdata
+# You'll likely need to reserve less nodes to satisfy all demands ;(
+$> srun --reservation=hpcschool -N 3 --ntasks-per-node 2 -c 14 --exclusive --pty bash
+$> source settings/2019b
+$> module load devel/Spark
+# Deploy an interactive Spark cluster **ACROSS** all reserved nodes
+$> ./scripts/launcher.Spark.sh -i
+SLURM_JOBID  = 2181586
+SLURM_JOB_NODELIST = iris-[001,117,121]
+SLURM_NNODES = 3
+SLURM_NTASK  = 6
+Submission directory = /mnt/irisgpfs/users/svarrette/tutorials/bigdata
+starting org.apache.spark.deploy.master.Master, logging to /home/users/svarrette/.spark/logs/spark-2181586-org.apache.spark.deploy.master.Master-1-iris-001.out
+==========================================
+============== Spark Master ==============
+==========================================
+url: spark://iris-001:7077
+Web UI: http://iris-001:8082
 
-$> srun -p interactive -n 4 -c 7 --exclusive --pty bash
-$> mu
-$> module av Spark
+===========================================
+============ 6 Spark Workers ==============
+===========================================
+export SPARK_HOME=$EBROOTSPARK
+export MASTER_URL=spark://iris-001:7077
+export SPARK_DAEMON_MEMORY=4096m
+export SPARK_WORKER_CORES=14
+export SPARK_WORKER_MEMORY=53248m
+export SPARK_EXECUTOR_MEMORY=53248m
 
----------- /home/users/svarrette/.local/easybuild/modules/all ----------
-   devel/Spark/2.4.0-Hadoop-2.7-Java-1.8.0_162 (D)
-
------------- /opt/apps/resif/data/stable/default/modules/all -----------
-   devel/Spark/2.3.0-intel-2018a-Hadoop-2.7-Java-1.8.0_162-Python-3.6.4
-
-$> module load devel/Spark/2.4.0
+ - create slave launcher script '/home/users/svarrette/.spark/worker/spark-start-slaves-2181586.sh'
+==========================================
+        *** Interactive mode ***
+==========================================
+Ex of submission command:
+    module load devel/Spark
+    export SPARK_HOME=$EBROOTSPARK
+    spark-submit \
+        --master spark://$(scontrol show hostname $SLURM_NODELIST | head -n 1):7077 \
+        --conf spark.driver.memory=${SPARK_DAEMON_MEMORY} \
+        --conf spark.executor.memory=${SPARK_EXECUTOR_MEMORY} \
+        --conf spark.python.worker.memory=${SPARK_WORKER_MEMORY} \
+        $SPARK_HOME/examples/src/main/python/pi.py 1000
 ```
 
-### Creation of a master
+As we are in interactive mode, copy/past the export commands mentioned by the command to have them defined in your shell -- **DO NOT COPY the above output but the one obtained on your side when launching the script**.
 
-Let's first start a master process:
-
-```bash
-$> start-master.sh -h
-Usage: ./sbin/start-master.sh [options]
-18/06/13 01:16:34 INFO Master: Started daemon with process name: 37750@iris-001
-18/06/13 01:16:34 INFO SignalUtils: Registered signal handler for TERM
-18/06/13 01:16:34 INFO SignalUtils: Registered signal handler for HUP
-18/06/13 01:16:34 INFO SignalUtils: Registered signal handler for INT
-
-Options:
-  -i HOST, --ip HOST     Hostname to listen on (deprecated, please use --host or -h)
-  -h HOST, --host HOST   Hostname to listen on
-  -p PORT, --port PORT   Port to listen on (default: 7077)
-  --webui-port PORT      Port for web UI (default: 8080)
-  --properties-file FILE Path to a custom Spark properties file.
-                         Default is conf/spark-defaults.conf.
-
-$> start-master.sh --host $(hostname)
-```
-
-Unlike what claim the help message, the `start-master.sh` script will launch a web interface on the port 8082 i.e. on `http://$(hostname):8082`
-
-You can check it:
-
-```bash
-$> netstat -an 8082
-```
-
-We are going to access this web portal (on `http://<IP>:8082`) using a SOCKS 5 Proxy Approach.
-That means that:
-
-* You should initiate an SSH connetion with `-D 1080` option to open on the local port 1080:
+Now you can transparently access the Web UI (master web portal, on `http://<IP>:8082`) using a SOCKS 5 Proxy Approach.
+Recall that this is possible as soon you have initiated an SSH connection with `-D 1080` flag option to open on the local port 1080:
 
 ```
 (laptop)$> ssh -D 1080 -C iris-cluster
 ```
-Now, install for example the [Foxy Proxy](https://getfoxyproxy.org/order/?src=FoxyProxyForFirefox)
-extension for Firefox and configure it to use your SOCKS proxy:
+Now, enable the `ULHPC proxy` setting from [Foxy Proxy](https://getfoxyproxy.org/order/?src=FoxyProxyForFirefox)
+extension (Firefox recommended) and access **transparently** the Web UI of the master process by entering the provided URL `http://iris-<N>:8082` -- if you haven't enabled the _remote_ DNS resolution, you will need to enter the url  `http://172.17.XX.YY:8082/` (adapt the IP).
 
-* Right click on the fox icon
-* Options
-* **Add a new proxy** button
-* Name: `ULHPC proxy`
-* Informations > **Manual configuration**
-  * Host IP: `127.0.0.1`
-  * Port: `1080`
-  * Check the **Proxy SOCKS** Option
-* Click on **OK**
-* Close
-* Open a new tab
-* Right click on the Fox
-* Choose the **ULHPC proxy**
+It is worth to note that:
 
-Now you should be able to access the Spark master website, by entering the URL `http://172.17.XX.YY:8082/` (adapt the IP).
+* The **memory in use exceed the capacity of a single node**, demonstrated if needed the scalability of the proposed setup
+* The number of workers (and each of their memory) is **automatically** defined by the way you have request your jobs (`-N 3 --ntasks-per-node 2` in this case)
+* You may notice that one worker has 1 less core (thread) available (13) than the others (14) -- note that this value is also automatically inherited by the slurm reservation (`-c 14` in this case).
+    - 1 core is indeed reserved for the master process.
+
+As suggested, you can submit a Spark jobs to your freshly deployed cluster with `spark-submit`:
+
+``` bash
+spark-submit \
+        --master spark://$(scontrol show hostname $SLURM_NODELIST | head -n 1):7077 \
+        --conf spark.driver.memory=${SPARK_DAEMON_MEMORY} \
+        --conf spark.executor.memory=${SPARK_EXECUTOR_MEMORY} \
+        --conf spark.python.worker.memory=${SPARK_WORKER_MEMORY} \
+        $SPARK_HOME/examples/src/main/python/pi.py 1000
+```
+
+And check the effect on the master portal.
+At the end, you should have a report of the Completed application as in the below screenshot.
+
+![](https://github.com/ULHPC/tutorials/raw/devel/bigdata/runs/spark/screenshot_spark_cluster_3_nodes_6_workers_completed.png)
 
 When you have finished, don't forget to close your tunnel and disable FoxyProxy
 on your browser.
 
 
-### Creation of a worker
+__Passive jobs examples:__
 
 ```bash
-$> export SPARK_HOME=$EBROOTSPARK           # Required
-$> export MASTER_URL=spark://$(hostname -s):7077   # Helpful
-$> echo $MASTER_URL
-```
-Now we can start a worker:
-
-```bash
-$> start-slave.sh -h
-Usage: ./sbin/start-slave.sh [options] <master>
-18/06/13 01:57:54 INFO Worker: Started daemon with process name: 44910@iris-001
-18/06/13 01:57:54 INFO SignalUtils: Registered signal handler for TERM
-18/06/13 01:57:54 INFO SignalUtils: Registered signal handler for HUP
-18/06/13 01:57:54 INFO SignalUtils: Registered signal handler for INT
-
-Master must be a URL of the form spark://hostname:port
-
-Options:
-  -c CORES, --cores CORES  Number of cores to use
-  -m MEM, --memory MEM     Amount of memory to use (e.g. 1000M, 2G)
-  -d DIR, --work-dir DIR   Directory to run apps in (default: SPARK_HOME/work)
-  -i HOST, --ip IP         Hostname to listen on (deprecated, please use --host or -h)
-  -h HOST, --host HOST     Hostname to listen on
-  -p PORT, --port PORT     Port to listen on (default: random)
-  --webui-port PORT        Port for web UI (default: 8081)
-  --properties-file FILE   Path to a custom Spark properties file.
-                           Default is conf/spark-defaults.conf.
-
-$> start-slave.sh -c ${SLURM_CPUS_PER_TASK} $MASTER_URL
-```
-
-Check the result on the master website `http://<IP>:8082`.
-
-Now we can submit an example python Pi estimation script to the Spark cluster with 100 partitions
-
-_Note_: partitions in this context refers of course to Spark's Resilient Distributed Dataset (RDD) and how the dataset is distributed across the nodes in the Spark cluster.
-
-```bash
-$> spark-submit --master $MASTER_URL  $SPARK_HOME/examples/src/main/python/pi.py 100
-[...]
-18/06/13 02:03:43 INFO DAGScheduler: Job 0 finished: reduce at /home/users/svarrette/.local/easybuild/software/devel/Spark/2.2.0-Hadoop-2.6-Java-1.8.0_152/examples/src/main/python/pi.py:43, took 3.738313 s
-Pi is roughly 3.140860
-```
-
-Finally, at the end, clean your environment and
-
-```bash
-# sbin/stop-master.sh - Stops the master that was started via the bin/start-master.sh script.
-$SPARK_HOME/sbin/stop-all.sh
-```
-
-Prepare a launcher (use your favorite editor) to setup a spark cluster and submit a task to this cluster in batch mode.
-Kindly pay attention to the fact that:
-
-* the master is expected to use **1 core** (and 4GiB of RAM) on the first allocated node
-    - in particular, the first worker running on the master node will use **1 less core** than  the allocated ones, _i.e._ `$((${SLURM_CPUS_PER_TASK}-1))`
-    - once set, the master URL can be obtained with
-
-             MASTER_URL="spark://$(scontrol show hostname $SLURM_NODELIST | head -n 1):7077"
-
-* the workers can use `$SLURM_CPUS_PER_TASK` cores (and a minimum of 1 core)
-
-        export SPARK_WORKER_CORES=${SLURM_CPUS_PER_TASK:-1}
-
-* you can afford 4 GiB per core to the workers, but take into account that Spark master and worker daemons themselves will need 4GiB to run
-
-```bash
-  export DAEMON_MEM=${SLURM_MEM_PER_CPU:=4096}
-  # Memory to allocate to the Spark master and worker daemons themselves
-  export SPARK_DAEMON_MEMORY=${DAEMON_MEM}m
-  export SPARK_MEM=$(( ${DAEMON_MEM}*(${SPARK_WORKER_CORES} -1) ))
-  # Total amount of memory to allow Spark applications to use on the machine,
-  # note that each application's individual memory is configured using its
-  # spark.executor.memory property.
-  export SPARK_WORKER_MEMORY=${SPARK_MEM}m
-  # Options read in YARN client mode
-  export SPARK_EXECUTOR_MEMORY=${SPARK_MEM}m
-```
-
-_Note_: if you are lazy (or late), you can use the provided launcher script [`runs/launcher.Spark.sh`](https://github.com/ULHPC/tutorials/blob/devel/bigdata/runs/launcher.Spark.sh).
-
-```bash
-$> cd runs
-$> ./launcher.Spark.sh -h
-NAME
-  ./launcher.Spark.sh -- Spark Standalone Mode launcher
-
-  This launcher will setup a Spark cluster composed of 1 master and <N> workers,
-  where <N> is the number of (full) nodes reserved (i.e. $SLURM_NNODES).
-  Then a spark application is submitted (using spark-submit) to the cluster
-  By default, $EBROOTSPARK/examples/src/main/python/pi.py is executed.
-
-SYNOPSIS
-  ./launcher.Spark.sh -h
-  ./launcher.Spark.sh [-i] [path/to/spark_app]
-
-OPTIONS
-  -i --interactive
-    Interactive mode: setup the cluster and give back the hand
-    Only mean with interactive jobs
-  -m --master
-    Setup a spark master (only)
-  -c --client
-    Setup spark worker(s)/slave(s). This assumes a master is running
-  -n --no-setup
-    Do not bootstrap the spark cluster
-
-AUTHOR
-  UL HPC Team <hpc-sysadmins@uni.lu>
-COPYRIGHT
-  This is free software; see the source for copying conditions.  There is
-  NO warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-```
-
-Passive jobs examples:
-
-```bash
-############### iris cluster (slurm) ###############
 $> sbatch ./launcher.Spark.sh
 [...]
 ```
