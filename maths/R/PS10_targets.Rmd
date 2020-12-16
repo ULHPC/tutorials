@@ -270,6 +270,7 @@ htmltools::img(src = "https://git-scm.com/images/logos/logomark-black@2x.png",
 - `_targets.R` is the only mandatory file
 - use a `R` sub-folder for functions, gets closer to a `R` package
 - a `run.R` file for [custom building](#custom_build) in RStudio
+- `chmod +x run.R` in the **Terminal** for execution rights
 - `Rmd` file allows to gather results in a report
 - in a RStudio project
 - version tracked with `git`
@@ -524,6 +525,9 @@ name: custom_build
 
 targets::tar_make()
 ```
+
+- `chmod +x run.R` in the **Terminal** for execution rights
+
 #### Then specified in RStudio project building option:
 ![](img/custom_make.png)
 ]
@@ -729,7 +733,7 @@ tar_fst_tbl(gp_grp,
 .pull-right[
 #### lines for `R/functions.R`
 ```{r, eval=FALSE}
-#' linear model on country, liefExp explained by year1950
+#' linear model on country, lifeExp explained by year1950
 #' so we get meaningful intercept
 ml_lifeExp <- function(.data) {
   gp <- mutate(.data, year1950 = year - 1950)

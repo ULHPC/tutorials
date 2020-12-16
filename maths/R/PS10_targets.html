@@ -234,6 +234,7 @@ install_github("wlandau/tarchetypes@main")
 - `_targets.R` is the only mandatory file
 - use a `R` sub-folder for functions, gets closer to a `R` package
 - a `run.R` file for [custom building](#custom_build) in RStudio
+- `chmod +x run.R` in the **Terminal** for execution rights
 - `Rmd` file allows to gather results in a report
 - in a RStudio project
 - version tracked with `git`
@@ -493,6 +494,9 @@ name: custom_build
 
 targets::tar_make()
 ```
+
+- `chmod +x run.R` in the **Terminal** for execution rights
+
 #### Then specified in RStudio project building option:
 ![](img/custom_make.png)
 ]
@@ -707,7 +711,7 @@ tar_fst_tbl(gp_grp,
 #### lines for `R/functions.R`
 
 ```r
-#' linear model on country, liefExp explained by year1950
+#' linear model on country, lifeExp explained by year1950
 #' so we get meaningful intercept
 ml_lifeExp &lt;- function(.data) {
   gp &lt;- mutate(.data, year1950 = year - 1950)
