@@ -1,0 +1,6 @@
+*.out
+venv/
+redis-*/
+*.tar.gz
+dump.rdb
+*.pyc

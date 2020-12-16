@@ -4,11 +4,17 @@
 
 using namespace std;
 
+
+int my_task(int a)
+{
+  return a*a;
+}
+
 int main()
 {
   omp_set_num_threads(10);
   double start = omp_get_wtime(); 
-
+  int *x=new int[10];
 #pragma omp parallel 
   {
     int tid = omp_get_thread_num();
