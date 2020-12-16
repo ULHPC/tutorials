@@ -3,332 +3,190 @@
 
 # Big Data Applications (batch, stream, hybrid)
 
-     Copyright (c) 2013-2018 UL HPC Team  <hpc-sysadmins@uni.lu>
+     Copyright (c) 2013-2020 UL HPC Team  <hpc-team@uni.lu>
 
 [![](https://github.com/ULHPC/tutorials/raw/devel/bigdata/cover_slides.png)](https://github.com/ULHPC/tutorials/raw/devel/bigdata/slides.pdf)
 
-The objective of this tutorial is to demonstrate how to build and run on top of the [UL HPC](http://hpc.uni.lu) platform a couple of reference analytics engine for large-scale Big Data processing, _i.e._ [Hadoop](http://hadoop.apache.org/) or  [Apache Spark](http://spark.apache.org/)
+The objective of this tutorial is to demonstrate how to build and run on top of the [UL HPC](http://hpc.uni.lu) platform a couple of reference analytics engine for large-scale Big Data processing, _i.e._ [Hadoop](http://hadoop.apache.org/) or  [Apache Spark](http://spark.apache.org/).
 
 
 --------------------
 ## Pre-requisites ##
 
 Ensure you are able to [connect to the UL HPC clusters](https://hpc.uni.lu/users/docs/access.html)
-**For all tests and compilation, you MUST work on a computing node**
-
-You'll need to prepare the data sources required by this tutorial once connected
-
-``` bash
-### ONLY if not yet done: setup the tutorials repo
-# See http://ulhpc-tutorials.rtfd.io/en/latest/setup/install/
-$> mkdir -p ~/git/github.com/ULHPC
-$> cd ~/git/github.com/ULHPC
-$> git clone https://github.com/ULHPC/tutorials.git
-$> cd tutorials
-$> make setup          # Initiate git submodules etc...
-```
-
-Now you can prepare a dedicated directory to work on this tutorial:
+In particular, recall that the `module` command **is not** available on the access frontends.
+**For all tests, builds and compilation, you MUST work on a computing node**
 
 ```bash
-$> cd ~/git/github.com/ULHPC/tutorials/bigdata
+### Access to ULHPC cluster - here iris
+(laptop)$> ssh iris-cluster
 ```
 
-**Advanced users only**: rely on `screen` (see  [tutorial](http://support.suso.com/supki/Screen_tutorial) or the [UL HPC tutorial](https://hpc.uni.lu/users/docs/ScreenSessions.html) on the  frontend prior to running any `oarsub` or `srun/sbatch` command to be more resilient to disconnection.
+Now you'll need to pull the latest changes in your working copy of the [ULHPC/tutorials](https://github.com/ULHPC/tutorials) you should have cloned in `~/git/github.com/ULHPC/tutorials` (see ["preliminaries" tutorial](../preliminaries/))
 
-Finally, be aware that the latest version of this tutorial is available on
-[Github](https://github.com/ULHPC/tutorials/tree/devel/bigdata/) and on
+``` bash
+(access)$> cd ~/git/github.com/ULHPC/tutorials
+(access)$> git pull
+```
 
-<http://ulhpc-tutorials.readthedocs.io/en/latest/bigdata/>
+Now **configure a dedicated directory `~/tutorials/bigdata` for this session**
 
-One of the first objective is to install the  [Hadoop MapReduce by Cloudera](https://www.cloudera.com/downloads/cdh/5-12-0.html) using [EasyBuild](http://easybuild.readthedocs.io/).
+``` bash
+# return to your home
+(access)$> mkdir -p ~/tutorials/bigdata
+(access)$> cd ~/tutorials/bigdata
+# create a symbolic link to the reference material
+(access)$> ln -s ~/git/github.com/ULHPC/tutorials/bigdata ref.d
+# Prepare a couple of symbolic links that will be useful for the training
+(access)$> ln -s ref.d/scripts .     # Don't forget trailing '.' means 'here'
+(access)$> ln -s ref.d/settings .    # idem
+(access)$> ln -s ref.d/src .         # idem
+```
 
-**`/!\ IMPORTANT`**: For this reason, it is advised to have first followed the [Easybuild tutorial in `tools/easybuild.md`](http://ulhpc-tutorials.readthedocs.io/en/latest/tools/easybuild/). **In all cases,** you need to have easybuild locally installed -- see [installation guidelines](http://ulhpc-tutorials.readthedocs.io/en/latest/tools/easybuild/#part-2-easybuild).
+**Advanced users** (_eventually_ yet __strongly__ recommended), create a [GNU Screen](http://www.gnu.org/software/screen/) session you can recover later - see ["Getting Started" tutorial](../getting-started/) or [this `screen` tutorial](http://support.suso.com/supki/Screen_tutorial).
 
+### Easybuild
+
+One of the first objective is to install the latest version of [Hadoop](https://hadoop.apache.org/releases.html).
+using [EasyBuild](http://easybuild.readthedocs.io/).
+For this reason, you should first check the [Easybuild tutorial in `tools/easybuild.md`](http://ulhpc-tutorials.readthedocs.io/en/latest/tools/easybuild/) and install the latest version of Easybuild (4.3.2 at the time of writing).
+
+Note that it should be sufficient to run the following command **once on a node**
+
+``` bash
+### Have an interactive job
+# ... either directly
+(access)$> si
+# ... or using the HPC School reservation 'hpcschool' if needed  - use 'sinfo -T' to check if active and its name
+# (access)$> srun --reservation=hpcschool --pty bash
+(node)$> ~/git/github.com/ULHPC/tutorials/tools/easybuild/scripts/setup.sh -h  # Help - check EASYBUILD_*
+(node)$> ~/git/github.com/ULHPC/tutorials/tools/easybuild/scripts/setup.sh -n  # Dry-run
+(node)$> ~/git/github.com/ULHPC/tutorials/tools/easybuild/scripts/setup.sh     # install
+```
+
+
+### 2019b software set
+
+As indicated in the keynote, the 2019b software set is available for general availability and for **testing** purposes until Jan 31, 2021. We will use it in this tutorial, yes as it is not enabled by default, you will have to **setup it each time you request an interactive job**.
+Proceed as follows:
+
+```bash
+### Have an interactive job
+(access)$> si
+# Enable (new) 2019b software set - iris cluster
+(node)$> unset MODULEPATH   # Safeguard to avoid mixing up with 2019a software
+(node)$> module use /opt/apps/resif/iris/2019b/broadwell/modules/all
+# Note: we won't use it here but later you may need to use the skylake/GPU-specialized builds,
+#       which should be used **ONLY** on skylake/GPU nodes
+# module use /opt/apps/resif/iris/2019b/skylake/modules/all
+# module use /opt/apps/resif/iris/2019b/gpu/modules/all
+
+### Now check that you have the latest EB 4.3.2 installed
+#                 # assuming you hade defined:   export LOCAL_MODULES=${EASYBUILD_PREFIX}/modules/all
+(node)$> mu       # shortcut for module use $LOCAL_MODULES; module load tools/EasyBuild
+(node)$> eb --version
+This is EasyBuild 4.3.1 (framework: 4.3.2, easyblocks: 4.3.2) on host iris-131.
+(node)$> echo $MODULEPATH
+/home/users/<login>/.local/easybuild/modules/all:/opt/apps/resif/iris/2019b/broadwell/modules/all
+# If all OK: you should be able to access Spark module 2.4.3 for 2019b toolchain
+(node)$> module avail Spark
+
+----------- /opt/apps/resif/iris/2019b/broadwell/modules/all ----------------
+   devel/Spark/2.4.3-intel-2019b-Hadoop-2.7-Java-1.8-Python-3.7.4
+
+[...]
+```
+
+As this procedure will have to be repeated several time, you can make it done by sourcing `settings/2019b`
+
+```bash
+(access)$> si
+(node)$> source settings/2019b
+# Double-check
+(node)$> eb --version
+This is EasyBuild 4.3.2 (framework: 4.3.2, easyblocks: 4.3.2) on host iris-117
+(node)$> echo $MODULEPATH
+/home/users/<login>/.local/easybuild/modules/all:/opt/apps/resif/iris/2019b/broadwell/modules/all
+```
 
 In the next part, we are going to install a few mandatory software required to install and use [Hadoop](http://hadoop.apache.org/) or  [Apache Spark](http://spark.apache.org/).
 
-----------------------------------
-## 1. Preliminary installations ##
 
-### SOCKS 5 Proxy plugin
+### SOCKS 5 Proxy plugin (optional but VERY useful)
 
 Many Big Data framework involves a web interface (at the level of the master and/or the workers) you probably want to access in a relative transparent way.
 
 For that, a convenient way is to rely on a SOCKS proxy, which is basically an SSH tunnel in which specific applications forward their traffic down the tunnel to the server, and then on the server end, the proxy forwards the traffic out to the general Internet. Unlike a VPN, a SOCKS proxy has to be configured on an app by app basis on the client machine, but can be set up without any specialty client agents.
 
+These steps were also described in the [Preliminaries](../preliminaries) tutorial.
+
 __Setting Up the Tunnel__
 
 To initiate such a SOCKS proxy using SSH (listening on `localhost:1080` for instance), you simply need to use the `-D 1080` command line option when connecting to the cluster:
 
-```
+```bash
 (laptop)$> ssh -D 1080 -C iris-cluster
 ```
 
 * `-D`: Tells SSH that we want a SOCKS tunnel on the specified port number (you can choose a number between 1025-65536)
 * `-C`: Compresses the data before sending it
 
-__Configuring Firefox to Use the Tunnel__
-
-Now that you have an SSH tunnel, it's time to configure your web browser (in this case, Firefox) to use that tunnel.
-In particular, install the [Foxy Proxy](https://getfoxyproxy.org/order/?src=FoxyProxyForFirefox)
-extension for Firefox and configure it to use your SOCKS proxy:
-
-* Right click on the fox icon
-* Options
-* **Add a new proxy** button
-* Name: `ULHPC proxy`
-* Informations > **Manual configuration**
-  * Host IP: `127.0.0.1`
-  * Port: `1080`
-  * Check the **Proxy SOCKS** Option
-* Click on **OK**
-* Close
-* Open a new tab
-* Right click on the Fox
-* Choose the **ULHPC proxy**
+__Configuring Firefox to Use the Tunnel__: see [Preliminaries](../preliminaries) tutorial
 
 We will see later on (in the section dedicated to Spark) how to effectively use this configuration.
 
-### Java
 
-Hadoop and Spark depends on Java (something more probably HPC users don't like), and that Java needs to be treated specifically within Easybuild due to the licences involved, we will now cover it.
+-------------------------------
+## Getting Started with Hadoop
 
-This part cna be skipped if you're only interested to go to the spark section.
-Otherwise, to build Hadoop, we will need to prepare specific versions of Java and Maven as pre-requisites.
+### Installation
 
-For these builds, reserve an interactive job on one full node (for 3 hours)
-
-```bash
-############### iris cluster (slurm) ###############
-(access-iris)$> srun -p interactive -N 1 -n 1 -c 28 -t 3:00:00 --pty bash
-
-############### gaia/chaos clusters (OAR) ###############
-(access-{gaia|chaos})$> oarsub -I -l nodes=1,walltime=3
-```
-
-#### Step 1.a. Java 7u80 and 8u152
-
-We'll need several version of the [JDK](http://www.oracle.com/technetwork/java/javase/overview/index.html) (in Linux x64 source mode i.e. `jdk-<version>-linux-x64.tar.gz`), more specifically 1.7.0_80 (aka `7u80` in Oracle's naming convention) and 1.8.0_152 (aka `8u152`).
-
-Let's first try the classical approach we experimented before:
-
-``` bash
-$> module avail java
-
----------------- /opt/apps/resif/data/stable/default/modules/all --------------
-   lang/Java/1.8.0_121
-```
-
-Either an older (1.7.0_80) or more recent Java (1.8.0_152) is required, so let's search for Java and install it:
-
-``` bash
-$> mu      # See Easybuild tutorial
-$> eb -S Java-1.7
-[...]
-* $CFGS1/j/Java/Java-1.7.0_80.eb
-[...]
-$> eb Java-1.7.0_80.eb -Dr
-== temporary log file in case of crash /tmp/eb-MJtqvZ/easybuild-L1NfjN.log
-Dry run: printing build status of easyconfigs and dependencies
-CFGS=/home/users/svarrette/.local/easybuild/software/tools/EasyBuild/3.6.1/lib/python2.7/site-packages/easybuild_easyconfigs-3.6.1-py2.7.egg/easybuild/easyconfigs/j/Java
- * [ ] $CFGS/Java-1.7.0_80.eb (module: lang/Java/1.7.0_80)
-== Temporary log file(s) /tmp/eb-MJtqvZ/easybuild-L1NfjN.log* have been removed.
-== Temporary directory /tmp/eb-MJtqvZ has been removed.
-
-$> time eb Java-1.7.0_80.eb -r
-== temporary log file in case of crash /tmp/eb-wkXTsu/easybuild-UqzX_P.log
-== resolving dependencies ...
-== processing EasyBuild easyconfig /home/users/svarrette/.local/easybuild/software/tools/EasyBuild/3.6.1/lib/python2.7/site-packages/easybuild_easyconfigs-3.6.1-py2.7.egg/easybuild/easyconfigs/j/Java/Java-1.7.0_80.eb
-== building and installing lang/Java/1.7.0_80...
-== fetching files...
-== FAILED: Installation ended unsuccessfully (build directory: /home/users/svarrette/.local/easybuild/build/Java/1.7.0_80/dummy-dummy): build failed (first 300 chars): Couldn't find file jdk-7u80-linux-x64.tar.gz anywhere, and downloading it didn't work either...
-[...]
-```
-
-As the error indicates, you first need to download the archive.
-Hopefully, the main `Makefile` helps to collect the archives:
-
-``` bash
-$> pwd
-/home/users/<login>/git/hub.com/ULHPC/tutorials/bigdata
-$> make fetch
-./scripts/bootstrap.sh --java7 --output-dir src
-==> Downloading Java 7 archive 'jdk-7u80-linux-x64.tar.gz'
-
-100%[======================================================================================>] 153,530,841 4.44MB/s   in 54s
-
-./scripts/bootstrap.sh --java8 --output-dir src
-==> Downloading Java 8 archive 'jdk-8u152-linux-x64.tar.gz'
-[...]
-
-100%[======================================================================================>] 189,784,266 24.5MB/s   in 25s
-
-2018-06-12 21:40:32 (7.22 MB/s) - ‘jdk-8u152-linux-x64.tar.gz’ saved [189784266/189784266]
-```
-
-The sources are saved in `src/`
+Quit your precedent job (`CTRL-D`) and let's reserve a new one with more cores to accelerate the builds:
 
 ```bash
-$> cd src
-$> eb Java-1.7.0_80.eb -Dr  # Dry-run
-# Real run -- set robot path to search in the local directory (do not forget the ':').
-# Prefix by time to get the time required to execute the command.
-$> time eb Java-1.7.0_80.eb --robot-paths=$PWD: -r
-
-# Repeat for Java 8:
-$> eb -S Java-1.8
-[...]
-* $CFGS2/j/Java/Java-1.8.0_152.eb
-[...]
-$> eb Java-1.8.0_152.eb -Dr # Dry-run
-$> time eb Java-1.8.0_152.eb --robot-paths=$PWD: -r
-```
-
-Check the result:
-
-```bash
-$> module av java
-$> module show lang/Java/1.7.0_80
-```
-
-#### Step 1.b. Maven 3.5.2
-
-We will also need an updated version of [Maven](https://maven.apache.org/) (3.5.2).
-
-Let's first try with the default reciPy/easyconfig:
-
-```bash
-$> eb -S Maven
-[...]
- * $CFGS1/Maven-3.2.3.eb
- * $CFGS1/Maven-3.3.3.eb
- * $CFGS1/Maven-3.3.9.eb
- * $CFGS1/Maven-3.5.0.eb
- * $CFGS1/Maven-3.5.2.eb
-
-# Let's try to install the most recent one:
-$> eb Maven-3.5.2.eb -Dr
-[...]
- * [ ] $CFGS/Maven-3.5.2.eb (module: devel/Maven/3.5.0)
-$> time eb Maven-3.5.2.eb -r
-```
-
-Check the result:
-
-```bash
-$> module av Maven
-module av Maven
------------ /home/users/<login>/.local/easybuild/modules/all --------
-   devel/Maven/3.5.2
-```
-
-A few other elements need to be installed.
-
-#### Step 1.c CMake, snappy, protobuf
-
-Let's repeat the process globally for:
-
-* [Cmake](https://cmake.org/) **3.9.1**  (the version is important), a very popular an open-source, cross-platform family of tools designed to build, test and package software,  * [snappy](https://github.com/google/snappy)
-**version 1.1.6** (the version is important), the fast compressor/decompressor from Google, and
-* [protobuf](https://github.com/google/protobuf), Google's language-neutral, platform-neutral, extensible mechanism for serializing structured data (**version 2.5.0**) we'll need later:
-
-```bash
-$> eb CMake-3.9.1.eb -Dr
-$> time eb CMake-3.9.1.eb -r
-[...]
-real    6m51.780s
-user    5m12.837s
-sys     1m10.029s
-
-$> eb snappy-1.1.6.eb -Dr
-$> time snappy-1.1.6.eb -r
-[...]
-real    0m7.315s
-user    0m3.768s
-sys     0m1.918s
-
-
-$> eb protobuf-2.5.0.eb -Dr    # Dry-run
-$> time eb protobuf-2.5.0.eb -r
-[...]
-real    1m51.002s
-user    1m35.820s
-sys     0m11.222s
-```
-
-
-----------------------------
-## 2. Hadoop Installation ##
-
-We're going to install the most recent  [Hadoop by Cloudera](https://www.cloudera.com/downloads/cdh/5-12-0.html) _i.e._ `Hadoop-2.6.0-cdh5.12.0-native.eb`.
-
-```bash
-$> eb -S Hadoop | grep cdh
+(access)$> si -c 14     # In normal times: target all cores i.e. 28
+(node)$> source settings/2019b
+# (node)$> mu    # not necessary but kept for your information
+(node)$> eb --version
+This is EasyBuild 4.3.2 (framework: 4.3.2, easyblocks: 4.3.2) on host iris-117
+# Search for a recent version of Hadoop
+$> eb -S Hadoop-2
+== found valid index for /home/users/svarrette/.local/easybuild/software/EasyBuild/4.3.1/easybuild/easyconfigs, so using it...
+CFGS1=/opt/apps/resif/data/easyconfigs/ulhpc/default/easybuild/easyconfigs/s/Spark
+CFGS2=/home/users/svarrette/.local/easybuild/software/EasyBuild/4.3.1/easybuild/easyconfigs
+ * $CFGS1/Spark-2.3.0-intel-2018a-Hadoop-2.7-Java-1.8.0_162-Python-3.6.4.eb
+ * $CFGS1/Spark-2.4.0-Hadoop-2.7-Java-1.8.eb
+ * $CFGS1/Spark-2.4.3-intel-2019a-Hadoop-2.7-Java-1.8-Python-3.7.2.eb
+ * $CFGS2/h/Hadoop/Hadoop-2.10.0-GCCcore-8.3.0-native.eb
+ * $CFGS2/h/Hadoop/Hadoop-2.10.0_tirpc.patch
+ * $CFGS2/h/Hadoop/Hadoop-2.4.0-seagate-722af1-native.eb
  * $CFGS2/h/Hadoop/Hadoop-2.5.0-cdh5.3.1-native.eb
  * $CFGS2/h/Hadoop/Hadoop-2.6.0-cdh5.12.0-native.eb
  * $CFGS2/h/Hadoop/Hadoop-2.6.0-cdh5.4.5-native.eb
  * $CFGS2/h/Hadoop/Hadoop-2.6.0-cdh5.7.0-native.eb
  * $CFGS2/h/Hadoop/Hadoop-2.6.0-cdh5.8.0-native.eb
+ * $CFGS2/h/Hadoop/Hadoop-2.9.2-GCCcore-7.3.0-native.eb
+ * $CFGS2/h/Hadoop/Hadoop-2.9.2_fix-zlib.patch
+ * $CFGS2/s/Spark/Spark-2.2.0-Hadoop-2.6-Java-1.8.0_144.eb
+ * $CFGS2/s/Spark/Spark-2.2.0-Hadoop-2.6-Java-1.8.0_152.eb
+ * $CFGS2/s/Spark/Spark-2.2.0-intel-2017b-Hadoop-2.6-Java-1.8.0_152-Python-3.6.3.eb
+ * $CFGS2/s/Spark/Spark-2.3.0-Hadoop-2.7-Java-1.8.0_162.eb
+ * $CFGS2/s/Spark/Spark-2.4.0-Hadoop-2.7-Java-1.8.eb
+ * $CFGS2/s/Spark/Spark-2.4.0-intel-2018b-Hadoop-2.7-Java-1.8-Python-3.6.6.eb
 ```
 
-To have it _successfully_ built, we'll just need to adapt the corresponding recipY to use the latest Maven we just installed.
+So 2.10.0 is available, but that's not the latest one
+Launch the build with the provided easyconfig `src/Hadoop-2.10.1-GCCcore-8.3.0-native.eb`
 
 ```bash
-$> eb -S Hadoop-2.6.0-cdh5.12.0-native.eb
-CFGS1=$HOME/.local/easybuild/software/tools/EasyBuild/3.6.1/lib/python2.7/site-packages/easybuild_easyconfigs-3.6.1-py2.7.egg/easybuild/easyconfigs/h/Hadoop
- * $CFGS1/Hadoop-2.6.0-cdh5.12.0-native.eb
-
-# Copy the recipy -- you need thus to define the CFGS1 variable
-$> CFGS1=$HOME/.local/easybuild/software/tools/EasyBuild/3.6.1/lib/python2.7/site-packages/easybuild_easyconfigs-3.6.1-py2.7.egg/easybuild/easyconfigs/h/Hadoop
-$> echo $CFGS1
-$> cd /tmp     # Work in a temporary directory
-$> cp $CFGS1/Hadoop-2.6.0-cdh5.12.0-native.eb .
+(node)$> eb src/Hadoop-2.10.1-GCCcore-8.3.0-native.eb -Dr   # Dry-run, check dependencies
+(node)$> eb src/Hadoop-2.10.1-GCCcore-8.3.0-native.eb -r
 ```
-Now adapt the recipY to use the latest Maven we just installed.
-
-```diff
---- $HOME/.local/easybuild/software/tools/EasyBuild/3.6.1/lib/python2.7/site-packages/easybuild_easyconfigs-3.6.1-py2.7.egg/easybuild/easyconfigs/h/Hadoop/Hadoop-2.6.0-cdh5.12.0-native.eb     2018-06-07 23:30:47.111972000 +0200
-+++ /tmp/Hadoop-2.6.0-cdh5.12.0-native.eb    2018-06-12 22:44:26.425625000 +0200
-@@ -14,7 +14,7 @@
- patches = ['Hadoop-TeraSort-on-local-filesystem.patch']
-
- builddependencies = [
--    ('Maven', '3.5.0'),
-+    ('Maven', '3.5.2'),
-     ('protobuf', '2.5.0'),  # *must* be this version
-     ('CMake', '3.9.1'),
-     ('snappy', '1.1.6'),
-```
-
-_Note_: the resulting Easyconfigs is provided to you in `src/Hadoop-2.6.0-cdh5.12.0-native.eb`:
-
-```bash
-$> module load devel/Maven devel/protobuf/2.5.0  devel/CMake/3.9.1 lib/snappy/1.1.6
-$> module list
-
-Currently Loaded Modules:
-1) tools/EasyBuild/3.6.1   3) devel/Maven/3.5.2      5) devel/CMake/3.9.1
-2) lang/Java/1.7.0_80      4) devel/protobuf/2.5.0   6) lib/snappy/1.1.6
-```
-
-Let's install it:
-
-```
-$> eb ./Hadoop-2.6.0-cdh5.12.0-native.eb -Dr   # Dry run
-$> time eb ./Hadoop-2.6.0-cdh5.12.0-native.eb -r
-[...]
-real    52m58.484s
-user    5m28.819s
-sys     2m8.673s
-```
-
-**`/!\ IMPORTANT`: As you can see, the build is quite long -- it takes ~53 minutes**
-You can monitor the execution in parallel using `htop`
+Installation will last ~6 minutes using a full `iris` node (`-c 28`).
+In general it is preferable to make builds within a screen session.
 
 
------------------------
-## 3. Running Hadoop ##
+### Running Hadoop
 
 ```
 $> module av Hadoop
@@ -339,23 +197,24 @@ When doing that, the Hadoop distribution is installed in `$EBROOTHADOOP` (this i
 
 The below instructions are based on the [official tutorial](https://hadoop.apache.org/docs/r2.6.0/hadoop-project-dist/hadoop-common/SingleCluster.html).
 
-### 3.a Hadoop in Single mode
+#### Hadoop in Single mode
 
 By default, Hadoop is configured to run in a non-distributed mode, as a single Java process. This is useful for debugging.
 
 Let's test it
 
 ```bash
+$> mkdir -p runs/hadoop/single/input
 $> cd runs/hadoop/single
 # Prepare input data
 $> mkdir input
 $> cp ${EBROOTHADOOP}/etc/hadoop/*.xml input
 # Map-reduce grep <pattern> -- result is produced in output/
-$> hadoop jar ${EBROOTHADOOP}/share/hadoop/mapreduce/hadoop-mapreduce-examples-2.6.0-cdh5.12.0.jar grep input output 'dfs[a-z.]+'
+$> hadoop jar ${EBROOTHADOOP}/share/hadoop/mapreduce/hadoop-mapreduce-examples-2.10.1.jar grep input output 'dfs[a-z.]+'
 [...]
         File System Counters
-                FILE: Number of bytes read=70426
-                FILE: Number of bytes written=1202298
+                FILE: Number of bytes read=1292924
+                FILE: Number of bytes written=3222544
                 FILE: Number of read operations=0
                 FILE: Number of large read operations=0
                 FILE: Number of write operations=0
@@ -364,7 +223,7 @@ $> hadoop jar ${EBROOTHADOOP}/share/hadoop/mapreduce/hadoop-mapreduce-examples-2
                 Map output records=1
                 Map output bytes=17
                 Map output materialized bytes=25
-                Input split bytes=186
+                Input split bytes=191
                 Combine input records=0
                 Combine output records=0
                 Reduce input groups=1
@@ -375,8 +234,8 @@ $> hadoop jar ${EBROOTHADOOP}/share/hadoop/mapreduce/hadoop-mapreduce-examples-2
                 Shuffled Maps =1
                 Failed Shuffles=0
                 Merged Map outputs=1
-                GC time elapsed (ms)=8
-                Total committed heap usage (bytes)=1046478848
+                GC time elapsed (ms)=0
+                Total committed heap usage (bytes)=1029701632
         Shuffle Errors
                 BAD_ID=0
                 CONNECTION=0
@@ -393,21 +252,21 @@ $> cat output/*
 1       dfsadmin
 ```
 
-### 3.b Pseudo-Distributed Operation
+#### Pseudo-Distributed Operation
 
 Hadoop can also be run on a single-node in a pseudo-distributed mode where each Hadoop daemon runs in a separate Java process.
-Follow the [official tutorial](https://hadoop.apache.org/docs/r2.6.0/hadoop-project-dist/hadoop-common/SingleCluster.html#Pseudo-Distributed_Operation) to ensure you are running in **Single Node Cluster**
+Follow the [official tutorial](https://hadoop.apache.org/docs/r2.10.1/hadoop-project-dist/hadoop-common/SingleCluster.html#Pseudo-Distributed_Operation) to ensure you are running in **Single Node Cluster**
 
-Once this is done, follow the [official Wordcount instructions](https://hadoop.apache.org/docs/r2.6.0/hadoop-mapreduce-client/hadoop-mapreduce-client-core/MapReduceTutorial.html#Example:_WordCount_v1.0)
+Once this is done, follow the [official Wordcount instructions](https://hadoop.apache.org/docs/r2.10.1/hadoop-mapreduce-client/hadoop-mapreduce-client-core/MapReduceTutorial.html#Example:_WordCount_v1.0)
 
-### 3.b Full cluster setup
+#### Full cluster setup
 
-Follow the official instructions of the [Cluster Setup](https://hadoop.apache.org/docs/r2.6.0/hadoop-project-dist/hadoop-common/ClusterSetup.html).
+Follow the official instructions of the [Cluster Setup](https://hadoop.apache.org/docs/r2.10.1/hadoop-project-dist/hadoop-common/ClusterSetup.html).
 
-Once this is done, Repeat the execution of the [official Wordcount example](https://hadoop.apache.org/docs/r2.6.0/hadoop-mapreduce-client/hadoop-mapreduce-client-core/MapReduceTutorial.html#Example:_WordCount_v1.0).
+Once this is done, Repeat the execution of the [official Wordcount example](https://hadoop.apache.org/docs/r2.10.1/hadoop-mapreduce-client/hadoop-mapreduce-client-core/MapReduceTutorial.html#Example:_WordCount_v1.0).
 
---------------------------------------------------
-## 4. Interactive Big Data Analytics with Spark ##
+-----------------------------------------------
+## Interactive Big Data Analytics with Spark ##
 
 The objective of this section is to compile and run on [Apache Spark](http://spark.apache.org/)  on top of the [UL HPC](http://hpc.uni.lu) platform.
 
@@ -419,138 +278,122 @@ As for Hadoop, we are first going to build Spark using Easybuild before performi
 1. a single conffiguration where the classical interactive wrappers (`pyspark`, `scala` and `R` wrappers) will be reviewed.
 2. a [Standalone](https://spark.apache.org/docs/latest/spark-standalone.html) cluster configuration - a simple cluster manager included with Spark that makes it easy to set up a cluster), where we will run the Pi estimation.
 
-### 4.1 Building Spark
+### Installation
 
-Spark 2.3.0 is available by default so you can load it.
+Spark 2.4.3 is available by default (on the 2019b software set) so you can load it.
 
 ``` bash
-$> module av spark
-------------- /opt/apps/resif/data/stable/default/modules/all -------------
-   devel/Spark/2.3.0-intel-2018a-Hadoop-2.7-Java-1.8.0_162-Python-3.6.4
+$> module av Spark
+
+------------ /opt/apps/resif/iris/2019b/broadwell/modules/all --------------
+   devel/Spark/2.4.3-intel-2019b-Hadoop-2.7-Java-1.8-Python-3.7.4
 
 $> module load devel/Spark
 ```
 
-You might wish to build and use the most recent version of [Spark](https://spark.apache.org/downloads.html) (_i.e._ at the time of writing 2.4.0 (Nov. 2nd, 2018) with Pre-built for Apache Hadoop 2.7 or later).
-You can simply expand the available Easybuild recipY for Spark 2.3.0:
+You might wish to build and use the most recent version of [Spark](https://spark.apache.org/downloads.html) (_i.e._ at the time of writing 2.4.7 (Dec. 14, 2020) with Pre-built for Apache Hadoop 2.7 or later).
+To do that, you will typically have to do the following (not covered in this session by lack of time):
 
-```bash
-$> eb -S Spark-2.3
-CFGS1=/opt/apps/resif/data/easyconfigs/ulhpc/default/easybuild/easyconfigs/s/Spark
-CFGS2=$HOME/.local/easybuild/software/tools/EasyBuild/3.7.1/lib/python2.7/site-packages/easybuild_easyconfigs-3.7.1-py2.7.egg/easybuild/easyconfigs/s/Spark
- * $CFGS1/Spark-2.3.0-intel-2018a-Hadoop-2.7-Java-1.8.0_162-Python-3.6.4.eb
- * $CFGS2/Spark-2.3.0-Hadoop-2.7-Java-1.8.0_162.eb
+1. Search for the most recent version of Spark provided by Easybuild
+    - use the script `scripts/suggest-easyconfigs <pattern>` for that
+2. Copy the easyconfig file locally
+    - you'll need to get the path to it with `eb -S <pattern>`
+3. Rename the file to match the target version
+    * Check on the website for the most up-to-date version of the software released
+    * Adapt the filename of the copied easyconfig to match the target version / toolchain
+        - Ex: `mv Spark-2.4.5-intel-2019b-Python-3.7.4-Java-1.8.eb Spark-2.4.7-intel-2019b-Python-3.7.4-Java-1.8.eb`
+4. Edit the content of the easyconfig
+   - You'll typically have to adapt the version of the dependencies (use again `scripts/suggest-easyconfigs -s  dep1 dep2 [...]`) and the checksum(s) of the source/patch files to match the static versions set for the target toolchain, enforce https urls etc.
 
-$> cd /dev/shm
-# Copy the recipy -- you need thus to define the CFGS2 variable
-# simply copy/paste from above result to declare the CFGS2 variable
-$> CFGS2=$HOME/.local/easybuild/software/tools/EasyBuild/3.7.1/lib/python2.7/site-packages/easybuild_easyconfigs-3.7.1-py2.7.egg/easybuild/easyconfigs/s/Spark
-$> cp $CFGS2/Spark-2.3.0-Hadoop-2.7-Java-1.8.0_162.eb Spark-2.4.0-Hadoop-2.7-Java-1.8.0_162.eb
-```
 
-You can now edit and adapt the custom `Spark-2.4.0-Hadoop-2.7-Java-1.8.0_162.eb` as follows:
-
-```diff
---- Spark-2.3.0-Hadoop-2.7-Java-1.8.0_162.eb    2018-08-16 18:22:49.703386000 +0200
-+++ Spark-2.4.0-Hadoop-2.7-Java-1.8.0_162.eb    2018-12-04 11:06:35.148845000 +0100
-@@ -1,7 +1,7 @@
- easyblock = 'Tarball'
-
- name = 'Spark'
--version = '2.3.0'
-+version = '2.4.0'
- versionsuffix = '-Hadoop-2.7-Java-%(javaver)s'
-
- homepage = 'http://spark.apache.org'
-@@ -15,7 +15,7 @@
-     'http://www.eu.apache.org/dist/%(namelower)s/%(namelower)s-%(version)s/',
-     'http://www.us.apache.org/dist/%(namelower)s/%(namelower)s-%(version)s/',
- ]
--checksums = ['5cfbc77d140454c895f2d8125c0a751465f53cbe12720da763b1785d25c63f05']
-+checksums = ['c93c096c8d64062345b26b34c85127a6848cff95a4bb829333a06b83222a5cfa']
-
- dependencies = [('Java', '1.8.0_162')]
-```
-
-_Note_: the resulting Easyconfigs is provided to you in `src/Spark-2.4.0-Hadoop-2.7-Java-1.8.0_162.eb`
-
-Let's install it:
-
-```
-$> eb ./Spark-2.4.0-Hadoop-2.7-Java-1.8.0_162.eb -Dr   # Dry run
-$> time eb ./Spark-2.4.0-Hadoop-2.7-Java-1.8.0_162.eb -r
-[...]
-real    0m9.940s
-user    0m5.167s
-sys     0m2.475s
-```
-
-### 4.2 Interactive usage
+### Interactive usage
 
 Exit your reservation to reload one with the `--exclusive` flag to allocate an exclusive node.
 Let's load the installed module:
 
 ```bash
-$> srun -p interactive -c 28 --exclusive -t 2:00:00 --pty bash
-$> mu
-$> module av Spark
+(access)$> si -c 28 --exclusive -t 2:00:00
+(node)$> source settings/2019
+(node)$> module load devel/Spark/2.4.0
+```
+As in the [GNU Parallel tutorial](../sequential/gnu-parallel/), let's create a list of images from the [OpenImages V4 data set](https://storage.googleapis.com/openimages/web/download_v4.html).
+A copy of this data set is available on the ULHPC facility, under `/work/projects/bigdata_sets/OpenImages_V4/`.
+Let's create a CSV file which contains a random selection of 1000 training files within this dataset (prefixed by a line number).
+You may want to do it as follows (**copy the full command**):
 
----------- /home/users/svarrette/.local/easybuild/modules/all ----------
-   devel/Spark/2.4.0-Hadoop-2.7-Java-1.8.0_162 (D)
-
------------- /opt/apps/resif/data/stable/default/modules/all -----------
-   devel/Spark/2.3.0-intel-2018a-Hadoop-2.7-Java-1.8.0_162-Python-3.6.4
-
-$> module load devel/Spark/2.4.0
+``` bash
+#                                                       training set     select first 10K  random sort  take only top 10   prefix by line number      print to stdout AND in file
+#                                                         ^^^^^^           ^^^^^^^^^^^^^   ^^^^^^^^     ^^^^^^^^^^^^^      ^^^^^^^^^^^^^^^^^^^^^^^^   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(access)$> find /work/projects/bigdata_sets/OpenImages_V4/train/ -print | head -n 10000 | sort -R   |  head -n 1000       | awk '{ print ++i","$0 }' | tee openimages_v4_filelist.csv
+1,/work/projects/bigdata_sets/OpenImages_V4/train/6196380ea79283e0.jpg
+2,/work/projects/bigdata_sets/OpenImages_V4/train/7f23f40740731c03.jpg
+3,/work/projects/bigdata_sets/OpenImages_V4/train/dbfc1b37f45b3957.jpg
+4,/work/projects/bigdata_sets/OpenImages_V4/train/f66087cdf8e172cd.jpg
+5,/work/projects/bigdata_sets/OpenImages_V4/train/5efed414dd8b23d0.jpg
+6,/work/projects/bigdata_sets/OpenImages_V4/train/1be054cb3021f6aa.jpg
+7,/work/projects/bigdata_sets/OpenImages_V4/train/61446dee2ee9eb27.jpg
+8,/work/projects/bigdata_sets/OpenImages_V4/train/dba2da75d899c3e7.jpg
+9,/work/projects/bigdata_sets/OpenImages_V4/train/7ea06f092abc005e.jpg
+10,/work/projects/bigdata_sets/OpenImages_V4/train/2db694eba4d4bb04.jpg
 ```
 
-#### 4.2.a. Pyspark
+Download also another data files from Uber:
+
+``` bash
+curl -o src/uber.csv https://gitlab.com/rahasak-labs/dot/-/raw/master/src/main/resources/uber.csv
+```
+
+#### Pyspark
 
 PySpark is the Spark Python API and exposes Spark Contexts to the Python programming environment.
 
 ```bash
 $> pyspark
-Python 2.7.5 (default, Aug  4 2017, 00:39:18)
-[GCC 4.8.5 20150623 (Red Hat 4.8.5-16)] on linux2
+Python 3.7.4 (default, Oct 19 2020, 02:00:06)
+[GCC 8.3.0] on linux
 Type "help", "copyright", "credits" or "license" for more information.
-2018-12-04 13:57:55 WARN  NativeCodeLoader:62 - Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+20/12/16 00:37:14 WARN NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+Using Spark's default log4j profile: org/apache/spark/log4j-defaults.properties
 Setting default log level to "WARN".
 To adjust logging level use sc.setLogLevel(newLevel). For SparkR, use setLogLevel(newLevel).
 Welcome to
       ____              __
      / __/__  ___ _____/ /__
     _\ \/ _ \/ _ `/ __/  '_/
-   /__ / .__/\_,_/_/ /_/\_\   version 2.4.0
+   /__ / .__/\_,_/_/ /_/\_\   version 2.4.3
       /_/
 
-Using Python version 2.7.5 (default, Aug  4 2017 00:39:18)
+Using Python version 3.7.4 (default, Oct 19 2020 02:00:06)
 SparkSession available as 'spark'.
 >>>
 ```
 
-See [this tutorial](https://www.dezyre.com/apache-spark-tutorial/pyspark-tutorial) for playing with pyspark.
+See [this tutorial](https://realpython.com/pyspark-intro/) for playing with pyspark.
 
-#### 4.2.b. Scala Spark Shell
+In particular, play with the build-in `filter()`, `map()`, and `reduce()` functions
+
+
+####  Scala Spark Shell
 
 Spark includes a modified version of the Scala shell that can be used interactively.
 Instead of running `pyspark` above, run the `spark-shell` command:
 
 ```bash
 $> spark-shell
-2018-12-04 13:58:43 WARN  NativeCodeLoader:62 - Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+Using Spark's default log4j profile: org/apache/spark/log4j-defaults.properties
 Setting default log level to "WARN".
 To adjust logging level use sc.setLogLevel(newLevel). For SparkR, use setLogLevel(newLevel).
-Spark context Web UI available at http://node-1.iris-cluster.uni.lux:4040
-Spark context available as 'sc' (master = local[*], app id = local-1543928329271).
+Spark context Web UI available at http://node-117.iris-cluster.uni.lux:4040
+Spark context available as 'sc' (master = local[*], app id = local-1608075995057).
 Spark session available as 'spark'.
 Welcome to
       ____              __
      / __/__  ___ _____/ /__
     _\ \/ _ \/ _ `/ __/  '_/
-   /___/ .__/\_,_/_/ /_/\_\   version 2.4.0
+   /___/ .__/\_,_/_/ /_/\_\   version 2.4.3
       /_/
 
-Using Scala version 2.11.12 (Java HotSpot(TM) 64-Bit Server VM, Java 1.8.0_162)
+Using Scala version 2.11.12 (Java HotSpot(TM) 64-Bit Server VM, Java 1.8.0_241)
 Type in expressions to have them evaluated.
 Type :help for more information.
 
@@ -563,7 +406,7 @@ The Spark R API is still experimental. Only a subset of the R API is available -
 Since this tutorial does not cover R, we are not going to use it.
 
 
-### 4.3 Running Spark in standalone cluster
+## Running Spark in standalone cluster
 
 * [Reference Documentation](https://spark.apache.org/docs/latest/cluster-overview.html)
 
@@ -607,8 +450,10 @@ To facilitate these steps, Spark comes with a couple of scripts you can use to l
 | `sbin/stop-slaves.sh`  | Stops all slave instances on the machines specified in the conf/slaves file. |
 | `sbin/stop-all.sh`     | Stops both the master and the slaves as described above.                     |
 
-Exit (if needed) the previous session.
-Ensure that you have connected by SSH to the cluster by opening an SOCKS proxy (see above instructions):
+Yet the ULHPC team has designed a dedicated launcher script `./scripts/launcher.Spark.sh` that exploits these script to quickly deploy and in a flexible way a Spark cluster over the resources allocated by slurm.
+
+Quit your previous job - eventually detach from your screen session
+Ensure that you have connected by SSH to the cluster by opening an SOCKS proxy:
 
 ```
 (laptop)$> ssh -D 1080 -C iris-cluster
@@ -619,202 +464,90 @@ Then make a new reservation across multiple nodes:
 ```bash
 # If not yet done, go to the appropriate directory
 $> cd ~/git/github.com/ULHPC/tutorials/bigdata
+# You'll likely need to reserve less nodes to satisfy all demands ;(
+$> srun --reservation=hpcschool -N 3 --ntasks-per-node 2 -c 14 --exclusive --pty bash
+$> source settings/2019b
+$> module load devel/Spark
+# Deploy an interactive Spark cluster **ACROSS** all reserved nodes
+$> ./scripts/launcher.Spark.sh -i
+SLURM_JOBID  = 2181586
+SLURM_JOB_NODELIST = iris-[001,117,121]
+SLURM_NNODES = 3
+SLURM_NTASK  = 6
+Submission directory = /mnt/irisgpfs/users/svarrette/tutorials/bigdata
+starting org.apache.spark.deploy.master.Master, logging to /home/users/svarrette/.spark/logs/spark-2181586-org.apache.spark.deploy.master.Master-1-iris-001.out
+==========================================
+============== Spark Master ==============
+==========================================
+url: spark://iris-001:7077
+Web UI: http://iris-001:8082
 
-$> srun -p interactive -n 4 -c 7 --exclusive --pty bash
-$> mu
-$> module av Spark
+===========================================
+============ 6 Spark Workers ==============
+===========================================
+export SPARK_HOME=$EBROOTSPARK
+export MASTER_URL=spark://iris-001:7077
+export SPARK_DAEMON_MEMORY=4096m
+export SPARK_WORKER_CORES=14
+export SPARK_WORKER_MEMORY=53248m
+export SPARK_EXECUTOR_MEMORY=53248m
 
----------- /home/users/svarrette/.local/easybuild/modules/all ----------
-   devel/Spark/2.4.0-Hadoop-2.7-Java-1.8.0_162 (D)
-
------------- /opt/apps/resif/data/stable/default/modules/all -----------
-   devel/Spark/2.3.0-intel-2018a-Hadoop-2.7-Java-1.8.0_162-Python-3.6.4
-
-$> module load devel/Spark/2.4.0
+ - create slave launcher script '/home/users/svarrette/.spark/worker/spark-start-slaves-2181586.sh'
+==========================================
+        *** Interactive mode ***
+==========================================
+Ex of submission command:
+    module load devel/Spark
+    export SPARK_HOME=$EBROOTSPARK
+    spark-submit \
+        --master spark://$(scontrol show hostname $SLURM_NODELIST | head -n 1):7077 \
+        --conf spark.driver.memory=${SPARK_DAEMON_MEMORY} \
+        --conf spark.executor.memory=${SPARK_EXECUTOR_MEMORY} \
+        --conf spark.python.worker.memory=${SPARK_WORKER_MEMORY} \
+        $SPARK_HOME/examples/src/main/python/pi.py 1000
 ```
 
-### Creation of a master
+As we are in interactive mode, copy/past the export commands mentioned by the command to have them defined in your shell -- **DO NOT COPY the above output but the one obtained on your side when launching the script**.
 
-Let's first start a master process:
-
-```bash
-$> start-master.sh -h
-Usage: ./sbin/start-master.sh [options]
-18/06/13 01:16:34 INFO Master: Started daemon with process name: 37750@iris-001
-18/06/13 01:16:34 INFO SignalUtils: Registered signal handler for TERM
-18/06/13 01:16:34 INFO SignalUtils: Registered signal handler for HUP
-18/06/13 01:16:34 INFO SignalUtils: Registered signal handler for INT
-
-Options:
-  -i HOST, --ip HOST     Hostname to listen on (deprecated, please use --host or -h)
-  -h HOST, --host HOST   Hostname to listen on
-  -p PORT, --port PORT   Port to listen on (default: 7077)
-  --webui-port PORT      Port for web UI (default: 8080)
-  --properties-file FILE Path to a custom Spark properties file.
-                         Default is conf/spark-defaults.conf.
-
-$> start-master.sh --host $(hostname)
-```
-
-Unlike what claim the help message, the `start-master.sh` script will launch a web interface on the port 8082 i.e. on `http://$(hostname):8082`
-
-You can check it:
-
-```bash
-$> netstat -an 8082
-```
-
-We are going to access this web portal (on `http://<IP>:8082`) using a SOCKS 5 Proxy Approach.
-That means that:
-
-* You should initiate an SSH connetion with `-D 1080` option to open on the local port 1080:
+Now you can transparently access the Web UI (master web portal, on `http://<IP>:8082`) using a SOCKS 5 Proxy Approach.
+Recall that this is possible as soon you have initiated an SSH connection with `-D 1080` flag option to open on the local port 1080:
 
 ```
 (laptop)$> ssh -D 1080 -C iris-cluster
 ```
-Now, install for example the [Foxy Proxy](https://getfoxyproxy.org/order/?src=FoxyProxyForFirefox)
-extension for Firefox and configure it to use your SOCKS proxy:
+Now, enable the `ULHPC proxy` setting from [Foxy Proxy](https://getfoxyproxy.org/order/?src=FoxyProxyForFirefox)
+extension (Firefox recommended) and access **transparently** the Web UI of the master process by entering the provided URL `http://iris-<N>:8082` -- if you haven't enabled the _remote_ DNS resolution, you will need to enter the url  `http://172.17.XX.YY:8082/` (adapt the IP).
 
-* Right click on the fox icon
-* Options
-* **Add a new proxy** button
-* Name: `ULHPC proxy`
-* Informations > **Manual configuration**
-  * Host IP: `127.0.0.1`
-  * Port: `1080`
-  * Check the **Proxy SOCKS** Option
-* Click on **OK**
-* Close
-* Open a new tab
-* Right click on the Fox
-* Choose the **ULHPC proxy**
+It is worth to note that:
 
-Now you should be able to access the Spark master website, by entering the URL `http://172.17.XX.YY:8082/` (adapt the IP).
+* The **memory in use exceed the capacity of a single node**, demonstrated if needed the scalability of the proposed setup
+* The number of workers (and each of their memory) is **automatically** defined by the way you have request your jobs (`-N 3 --ntasks-per-node 2` in this case)
+* You may notice that one worker has 1 less core (thread) available (13) than the others (14) -- note that this value is also automatically inherited by the slurm reservation (`-c 14` in this case).
+    - 1 core is indeed reserved for the master process.
+
+As suggested, you can submit a Spark jobs to your freshly deployed cluster with `spark-submit`:
+
+``` bash
+spark-submit \
+        --master spark://$(scontrol show hostname $SLURM_NODELIST | head -n 1):7077 \
+        --conf spark.driver.memory=${SPARK_DAEMON_MEMORY} \
+        --conf spark.executor.memory=${SPARK_EXECUTOR_MEMORY} \
+        --conf spark.python.worker.memory=${SPARK_WORKER_MEMORY} \
+        $SPARK_HOME/examples/src/main/python/pi.py 1000
+```
+
+And check the effect on the master portal.
+At the end, you should have a report of the Completed application as in the below screenshot.
+
+![](https://github.com/ULHPC/tutorials/raw/devel/bigdata/runs/spark/screenshot_spark_cluster_3_nodes_6_workers_completed.png)
 
 When you have finished, don't forget to close your tunnel and disable FoxyProxy
 on your browser.
 
 
-### Creation of a worker
+__Passive jobs examples:__
 
 ```bash
-$> export SPARK_HOME=$EBROOTSPARK           # Required
-$> export MASTER_URL=spark://$(hostname -s):7077   # Helpful
-$> echo $MASTER_URL
-```
-Now we can start a worker:
-
-```bash
-$> start-slave.sh -h
-Usage: ./sbin/start-slave.sh [options] <master>
-18/06/13 01:57:54 INFO Worker: Started daemon with process name: 44910@iris-001
-18/06/13 01:57:54 INFO SignalUtils: Registered signal handler for TERM
-18/06/13 01:57:54 INFO SignalUtils: Registered signal handler for HUP
-18/06/13 01:57:54 INFO SignalUtils: Registered signal handler for INT
-
-Master must be a URL of the form spark://hostname:port
-
-Options:
-  -c CORES, --cores CORES  Number of cores to use
-  -m MEM, --memory MEM     Amount of memory to use (e.g. 1000M, 2G)
-  -d DIR, --work-dir DIR   Directory to run apps in (default: SPARK_HOME/work)
-  -i HOST, --ip IP         Hostname to listen on (deprecated, please use --host or -h)
-  -h HOST, --host HOST     Hostname to listen on
-  -p PORT, --port PORT     Port to listen on (default: random)
-  --webui-port PORT        Port for web UI (default: 8081)
-  --properties-file FILE   Path to a custom Spark properties file.
-                           Default is conf/spark-defaults.conf.
-
-$> start-slave.sh -c ${SLURM_CPUS_PER_TASK} $MASTER_URL
-```
-
-Check the result on the master website `http://<IP>:8082`.
-
-Now we can submit an example python Pi estimation script to the Spark cluster with 100 partitions
-
-_Note_: partitions in this context refers of course to Spark's Resilient Distributed Dataset (RDD) and how the dataset is distributed across the nodes in the Spark cluster.
-
-```bash
-$> spark-submit --master $MASTER_URL  $SPARK_HOME/examples/src/main/python/pi.py 100
-[...]
-18/06/13 02:03:43 INFO DAGScheduler: Job 0 finished: reduce at /home/users/svarrette/.local/easybuild/software/devel/Spark/2.2.0-Hadoop-2.6-Java-1.8.0_152/examples/src/main/python/pi.py:43, took 3.738313 s
-Pi is roughly 3.140860
-```
-
-Finally, at the end, clean your environment and
-
-```bash
-# sbin/stop-master.sh - Stops the master that was started via the bin/start-master.sh script.
-$SPARK_HOME/sbin/stop-all.sh
-```
-
-Prepare a launcher (use your favorite editor) to setup a spark cluster and submit a task to this cluster in batch mode.
-Kindly pay attention to the fact that:
-
-* the master is expected to use **1 core** (and 4GiB of RAM) on the first allocated node
-    - in particular, the first worker running on the master node will use **1 less core** than  the allocated ones, _i.e._ `$((${SLURM_CPUS_PER_TASK}-1))`
-    - once set, the master URL can be obtained with
-
-             MASTER_URL="spark://$(scontrol show hostname $SLURM_NODELIST | head -n 1):7077"
-
-* the workers can use `$SLURM_CPUS_PER_TASK` cores (and a minimum of 1 core)
-
-        export SPARK_WORKER_CORES=${SLURM_CPUS_PER_TASK:-1}
-
-* you can afford 4 GiB per core to the workers, but take into account that Spark master and worker daemons themselves will need 4GiB to run
-
-```bash
-  export DAEMON_MEM=${SLURM_MEM_PER_CPU:=4096}
-  # Memory to allocate to the Spark master and worker daemons themselves
-  export SPARK_DAEMON_MEMORY=${DAEMON_MEM}m
-  export SPARK_MEM=$(( ${DAEMON_MEM}*(${SPARK_WORKER_CORES} -1) ))
-  # Total amount of memory to allow Spark applications to use on the machine,
-  # note that each application's individual memory is configured using its
-  # spark.executor.memory property.
-  export SPARK_WORKER_MEMORY=${SPARK_MEM}m
-  # Options read in YARN client mode
-  export SPARK_EXECUTOR_MEMORY=${SPARK_MEM}m
-```
-
-_Note_: if you are lazy (or late), you can use the provided launcher script [`runs/launcher.Spark.sh`](https://github.com/ULHPC/tutorials/blob/devel/bigdata/runs/launcher.Spark.sh).
-
-```bash
-$> cd runs
-$> ./launcher.Spark.sh -h
-NAME
-  ./launcher.Spark.sh -- Spark Standalone Mode launcher
-
-  This launcher will setup a Spark cluster composed of 1 master and <N> workers,
-  where <N> is the number of (full) nodes reserved (i.e. $SLURM_NNODES).
-  Then a spark application is submitted (using spark-submit) to the cluster
-  By default, $EBROOTSPARK/examples/src/main/python/pi.py is executed.
-
-SYNOPSIS
-  ./launcher.Spark.sh -h
-  ./launcher.Spark.sh [-i] [path/to/spark_app]
-
-OPTIONS
-  -i --interactive
-    Interactive mode: setup the cluster and give back the hand
-    Only mean with interactive jobs
-  -m --master
-    Setup a spark master (only)
-  -c --client
-    Setup spark worker(s)/slave(s). This assumes a master is running
-  -n --no-setup
-    Do not bootstrap the spark cluster
-
-AUTHOR
-  UL HPC Team <hpc-sysadmins@uni.lu>
-COPYRIGHT
-  This is free software; see the source for copying conditions.  There is
-  NO warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-```
-
-Passive jobs examples:
-
-```bash
-############### iris cluster (slurm) ###############
 $> sbatch ./launcher.Spark.sh
 [...]
 ```
