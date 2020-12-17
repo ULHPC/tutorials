@@ -1,0 +1,12 @@
+# Coupling parameter
+1e-4
+
+#Pacing point
+1.355 0.71 2.37
+
+#Pacing radius
+0.1
+
+
+# dt
+0.0025

@@ -156,8 +156,8 @@ bottom:1em;left:1em;
 ]
 .w-33.bg-washed-blue.b--blue.ba.bw2.br3.shadow-5.ph3.mt3.mr1[
 .large[.bbox[For targets]]
-- [targets](XX)
-![](img/gp_dag.png)
+- [targets](#practical)
+.center[![](img/gp_dag.png)]
 ]
 ]
 
@@ -181,8 +181,6 @@ bottom:1em;left:1em;
 - Improved parallel efficiency.
 - Designed for custom user-side metaprogramming (`tarchetypes`/`stantargets`).
 
-- [Debugging!](https://wlandau.github.io/targets-manual/practice.html#debugging) with [workspaces](https://wlandau.github.io/targets/reference/tar_workspace.html) (wishing this exists in `snakemake`)
-
 .footnote[Source: targets [slides](https://wlandau.github.io/nyhackr2020/#40) W. Landau. NY Meetup hackR]
 ]
 .w-45.bg-washed-yellow.b--yellow.ba.bw2.br3.shadow-5.ph3.mt1[
@@ -196,6 +194,7 @@ install_github("wlandau/targets@main")
 install_github("wlandau/tarchetypes@main")
 ```
 
+- [Debugging!](https://wlandau.github.io/targets-manual/practice.html#debugging) with [workspaces](https://wlandau.github.io/targets/reference/tar_workspace.html) (wishing this exists in `snakemake`)
 
 ]]
 
@@ -231,10 +230,11 @@ install_github("wlandau/tarchetypes@main")
 ]
 
 .right-column[
-- with `renv`
+- with [`renv`](https://rstudio.github.io/renv/)
 - `_targets.R` is the only mandatory file
-- use a `R` sub-folder, gets closer to a `R` package
-- a `run.R` file for custom building in RStudio
+- use a `R` sub-folder for functions, gets closer to a `R` package
+- a `run.R` file for [custom building](#custom_build) in RStudio
+- `chmod +x run.R` in the **Terminal** for execution rights
 - `Rmd` file allows to gather results in a report
 - in a RStudio project
 - version tracked with `git`
@@ -269,9 +269,9 @@ tar_pipeline(
 .pull-right[
 .large[
 - add `library(tarchetypes)` for extra-utilities
-- nice helpers in options like silencing `tidyverse` loading
+- optional helpers like silencing `tidyverse` loading
 - declare packages that will be loaded by default
-- each `target` can have their own additional packages to load (avoid loading for nothing)
+- each `target` can have their own additional lib calls (avoid loading for nothing)
 - using bar names of targets, create the dependencies
 - `pattern = map()` creates dynamic branching
 
@@ -297,9 +297,9 @@ tar_pipeline(
 - `"fst_tbl"`: same for `tibbles` objects
 - `"keras"`
 - `"torch"`
-- `"url"`
-- `"file"`: automatic hashing
-- `"aws_rds/file"`: for AWS S3 cloud
+- `"url"`: automatic Last-Modified time stamp check
+- `"file"`: automatic hashing check
+- `"aws_rds/aws_file"`: for AWS S3 cloud
 ]
 
 .pull-right[
@@ -334,15 +334,18 @@ tar_pipeline(
   tar_target(b, a + 1,
              pattern = map(a))
 )
+# graph dependency BEFORE tar_make()
+tar_visnetwork()
+# run the pipeline
 tar_make()
 #&gt; ● run target a
 #&gt; ● run branch b_0a91b2ed
 #&gt; ● run branch b_847c5ae2
 #&gt; ● run branch b_1619f1a0
+
+# read a target content
 tar_read(b_0a91b2ed)
 #&gt; [1] 2
-# graph dependency BEFORE tar_make()
-tar_visnetwork()
 ```
 .center[![](img/graph1.png)]
 ]
@@ -473,7 +476,12 @@ tar_pipeline(
 
 .Large.center[Still overhead, but individual target can be parallelised (`deployment` / `resources` args)]
 
+--
+
+.Large.center.red[Deploy only heavy computation .bold[remotely] possible with [`clustermq`](https://wlandau.github.io/targets-manual/hpc.html#clustermq). TBD]
+
 ---
+name: custom_build
 
 # Custom Build in RStudio
 
@@ -486,6 +494,9 @@ tar_pipeline(
 
 targets::tar_make()
 ```
+
+- `chmod +x run.R` in the **Terminal** for execution rights
+
 #### Then specified in RStudio project building option:
 ![](img/custom_make.png)
 ]
@@ -493,7 +504,7 @@ targets::tar_make()
 --
 
 .pull-right[
-#### Example (also nice a keyboard shortcut)
+#### Example (also nice to use the keyboard shortcut)
 ![](img/custom_build.png)
 
 ]
@@ -506,7 +517,7 @@ class: inverse, middle, center
 
 ---
 
-# Linear modelling on the `gapminder` dataset
+# Linear modelling on the [`gapminder`](https://cran.r-project.org/web/packages/gapminder/index.html) dataset
 
 
 .pull-left[
@@ -546,7 +557,7 @@ class: inverse, middle, center
 
 ---
 class: center, middle
-
+name: practical
 
 .flex[
 .w-50.pv2.ph3.mt2.ml7[
@@ -566,6 +577,9 @@ class: center, middle
 - extract 142 `\(r^2\)`
 - bundle results in a `Rmarkdown`
 - snake plots the `\(r^2\)`
+
+.footnote[dependency graph from `tar_glimpse()`]
+
 ]
 
 .right-column[
@@ -574,7 +588,7 @@ class: center, middle
 .center[![](img/gp_snake.png)]
 ]
 
-.footnote[dependency graph from `tar_glimpse()`]
+
 
 ---
 
@@ -635,12 +649,6 @@ tar_read(gp_url)
 --
 
 .pull-right[
-#### lines for `_targets.R`
-
-```r
-tar_file(gp_file, download_file(gp_url, "gapminder.tsv")),
-tar_fst_tbl(gp, read_tsv(gp_file, col_types = cols())),
-```
 #### lines for `R/functions.R`
 
 ```r
@@ -649,6 +657,13 @@ download_file &lt;- function(url, out) {
   download.file(url, out, quiet = TRUE)
   out
 }
+```
+
+#### lines for `_targets.R`
+
+```r
+tar_file(gp_file, download_file(gp_url, "gapminder.tsv")),
+tar_fst_tbl(gp, read_tsv(gp_file, col_types = cols())),
 ```
 
 ]
@@ -696,7 +711,7 @@ tar_fst_tbl(gp_grp,
 #### lines for `R/functions.R`
 
 ```r
-#' linear model on country, liefExp explained by year1950
+#' linear model on country, lifeExp explained by year1950
 #' so we get meaningful intercept
 ml_lifeExp &lt;- function(.data) {
   gp &lt;- mutate(.data, year1950 = year - 1950)
@@ -723,7 +738,7 @@ tar_target(models,
 
 .pull-left[
 - add a function to extract  `\(r^2\)`
-- add the target `r2``
+- add the target `r2`
     + pattern is map over the models
     + specify `iteration = "vector"`
 ]
@@ -853,12 +868,12 @@ gp_r2 %&gt;%
 .w-50.bg-washed-blue.b--blue.ba.bw2.br3.shadow-5.ph3.mt2.ml2[
 .large[.bbox[Acknowledgments  🙏 👏]]
 
-* [Willam Laudau](https://github.com/wlandau) obviously
+* [William Landau](https://github.com/wlandau) obviously
 * [Eric Koncina](https://github.com/koncina) early adopter of `targets`
 * [Hadley Wickham](https://github.com/hadley)
 * [Henrik Bengtsson](https://github.com/HenrikBengtsson/)
-* [Xie Yihuie](https://github.com/yihuie) and [Garrick Aden-Buie](https://github.com/gadenbuie) for [`xarigan`](https://github.com/yihui/xaringan)/[`xaringanExtra`](https://github.com/gadenbuie/xaringanExtra)
-* [Jennyfer Bryan](https://github.com/jennybc)
+* [Xie Yihui](https://github.com/yihui) and [Garrick Aden-Buie](https://github.com/gadenbuie) for [`xarigan`](https://github.com/yihui/xaringan)/[`xaringanExtra`](https://github.com/gadenbuie/xaringanExtra)
+* [Jennifer Bryan](https://github.com/jennybc)
 ]]
 .flex[
 .w-50.bg-washed-green.b--green.ba.bw2.br3.shadow-5.ph3.mt2.ml1[

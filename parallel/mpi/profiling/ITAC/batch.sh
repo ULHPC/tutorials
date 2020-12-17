@@ -1,9 +1,9 @@
 #!/bin/bash -l
 #SBATCH -N 2
-#SBATCH --ntasks-per-node=7
+#SBATCH --ntasks-per-node=3
 #SBATCH --time=00:15:00
 #SBATCH -p batch
-#SBATCH -A ulhpc
+#SBATCH --reservation=hpcschool
 
 module purge
 module load toolchain/intel/2019a

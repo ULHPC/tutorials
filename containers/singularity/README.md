@@ -5,7 +5,7 @@
      Copyright (c) 2018- UL HPC Team <hpc-team@uni.lu>
 
 
-[![](tutorial_singularity.png)](slides.pdf)
+[![](cover_slides.png)](slides.pdf)
 
 
 <p align="center">
