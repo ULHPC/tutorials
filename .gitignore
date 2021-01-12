@@ -1,3 +1,5 @@
 site/
 .Rproj.user
 *.Rproj
+git_stats/
+.vagrant

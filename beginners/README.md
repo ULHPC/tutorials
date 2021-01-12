@@ -2,7 +2,7 @@
 
 # Getting Started on the UL HPC platform
 
-     Copyright (c) 2013-2019 UL HPC Team <hpc-sysadmins@uni.lu>
+     Copyright (c) 2013-2021 UL HPC Team <hpc-sysadmins@uni.lu>
 
 [![](https://github.com/ULHPC/tutorials/raw/devel/beginners/cover_slides.png)](https://github.com/ULHPC/tutorials/raw/devel/beginners/slides.pdf)
 
