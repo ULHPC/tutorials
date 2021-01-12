@@ -3,7 +3,7 @@
 
 # Preliminaries to ULHPC facility access
 
-     Copyright (c) 2021 UL HPC Team <hpc-team@uni.lu>
+     Copyright (c) 2020-2021 UL HPC Team <hpc-team@uni.lu>
 
  [![](https://github.com/ULHPC/tutorials/raw/devel/preliminaries/cover_slides.png)](https://github.com/ULHPC/tutorials/raw/devel/preliminaries/slides.pdf)
 
