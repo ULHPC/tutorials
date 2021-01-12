@@ -2,7 +2,7 @@
 
 # Introduction to GPU programming with CUDA (C/C++)
 
-     Copyright (c) 2013-2020 UL HPC Team <hpc-sysadmins@uni.lu>
+     Copyright (c) 2013-2021 UL HPC Team <hpc-sysadmins@uni.lu>
 
 [![](https://github.com/ULHPC/tutorials/raw/devel/cuda/cover_slides.png)](https://github.com/ULHPC/tutorials/raw/devel/cuda/slides.pdf)
 

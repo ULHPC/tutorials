@@ -2,7 +2,7 @@
 
 # Image Convolution with GPU and CUDA
 
-     Copyright (c) 2020 L. Koutsantonis UL HPC Team <hpc-team@uni.lu>
+     Copyright (c) 2020-2021 L. Koutsantonis UL HPC Team <hpc-team@uni.lu>
 
 [![](https://github.com/ULHPC/tutorials/raw/devel/cuda/exercises/convolution/cover_slides.png)](https://github.com/ULHPC/tutorials/raw/devel/cuda/exercises/convolution/slides.pdf)
 
