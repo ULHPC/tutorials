@@ -6,6 +6,6 @@ MarkupSafe==1.1.1
 mkdocs==1.0.4
 pep562==1.0
 pymdown-extensions==6.2
-PyYAML==5.1.2
+PyYAML==5.4
 six==1.13.0
 tornado==6.0.3
