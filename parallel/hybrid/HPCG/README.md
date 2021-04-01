@@ -22,7 +22,7 @@ In all cases, ensure you are able to [connect to the UL HPC  clusters](https://h
 # /!\ FOR ALL YOUR COMPILING BUSINESS, ENSURE YOU WORK ON A (at least half) COMPUTING NODE
 # Have an interactive job
 (access)$> si -n 14                                      # iris
-(access)$> srun -p interactive --qos debug -n 14 --pty bash  # iris (long version)
+(access)$> salloc -p interactive --qos debug -n 14       # iris (long version)
 (access)$> oarsub -I -l enclosure=1/nodes=1,walltime=4   # chaos / gaia
 ```
 

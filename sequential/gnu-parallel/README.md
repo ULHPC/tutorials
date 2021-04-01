@@ -47,7 +47,7 @@ Get the latest stable sources of [GNU Parallel](https://www.gnu.org/software/par
 # ... either directly
 (access)$> si
 # ... or using the HPC School reservation 'hpcschool' if needed  - use 'sinfo -T' to check if active and its name
-# (access)$> srun --reservation=hpcschool --pty bash
+# (access)$> si --reservation=hpcschool
 ```
 
 [GNU Parallel](https://www.gnu.org/software/parallel/) is one of the many software that can be build very easily through the [Autotools](https://www.gnu.org/software/automake/manual/html_node/Autotools-Introduction.html) build system _i.e_ `./configure; make; make install`.

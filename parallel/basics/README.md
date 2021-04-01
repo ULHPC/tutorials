@@ -27,7 +27,7 @@ For all the executions we are going to perform in this tutorial, you probably wa
 # ... either directly
 (access)$> si --ntasks-per-node=1 -c 4 -t 0:30:00
 # ... or using the HPC School reservation 'hpcschool'if needed  - use 'sinfo -T' to check if active and its name
-# (access)$> srun --reservation=hpcschool --ntasks-per-node=1 -c 4 -t 0:30:00 --pty bash
+# (access)$> salloc -p interactive --reservation=hpcschool --ntasks-per-node=1 -c 4 -t 0:30:00
 (node)$>
 ```
 <!--
@@ -186,7 +186,7 @@ You can find in `src/hello_openmp.c` the traditional OpenMP "Helloworld" example
 
 ```bash
 ############### iris cluster (slurm) ###############
-(access-iris)$> srun -p interactive --ntasks-per-node=1 -c 4 -t 0:30:00 --pty bash
+(access-iris)$> salloc -p interactive --ntasks-per-node=1 -c 4 -t 0:30:00
 $> export OMP_NUM_THREADS=${SLURM_CPUS_PER_TASK}
 ```
 
@@ -303,7 +303,7 @@ Now you can reserve the nodes and set `OMP_NUM_THREADS`:
 
 ```bash
 ############### iris cluster (slurm) ###############
-(access-iris)$> srun -p interactive --ntasks-per-node=1 -c 12 -t 1:00:00 --pty bash
+(access-iris)$> salloc -p interactive --ntasks-per-node=1 -c 12 -t 1:00:00
 $> export OMP_NUM_THREADS=${SLURM_CPUS_PER_TASK}
 ```
 <!--
@@ -486,7 +486,7 @@ You can find in `src/hello_mpi.c` the traditional MPI "Helloworld" example.
 
 ```bash
 ############### iris cluster (slurm) ###############
-(access-iris)$> srun -p interactive -N 2 --ntasks-per-node=3 -t 0:30:00 --pty bash
+(access-iris)$> salloc -p interactive -N 2 --ntasks-per-node=3 -t 0:30:00
 ```
 <!--
 ############### gaia/chaos clusters (OAR) ###############
@@ -704,7 +704,7 @@ You can find in `src/hello_hybrid.c` the traditional OpenMP+MPI "Helloworld" exa
 
 ```bash
 ############### iris cluster (slurm) ###############
-(access-iris)$> srun -p interactive -N 2 --ntasks-per-node=1 -c 4 -t 0:30:00 --pty bash
+(access-iris)$> salloc -p interactive -N 2 --ntasks-per-node=1 -c 4 -t 0:30:00
 $> export OMP_NUM_THREADS=${SLURM_CPUS_PER_TASK}
 ```
 <!--

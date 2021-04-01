@@ -47,7 +47,7 @@ Download a pre-trained model for image recognition
 
 We will now prepare the software environment
 
-    (access)$> srun -p interactive -N 1 --qos debug --pty bash -i
+    (access)$> si -N 1
 
 Load the default Python module
 
@@ -133,7 +133,7 @@ And the command `sacct` to see the start and end date
 In all cases, you can connect to a reserved node using the command `srun`
 and check the status of the system using standard linux command (`free`, `top`, `htop`, etc)
 
-    (access)$> srun -p interactive --qos debug --jobid <JOBID> --pty bash
+    (access)$> sjoin <JOBID>
 
 During the execution, you can see the job in the queue with the command `squeue`:
 

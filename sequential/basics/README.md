@@ -125,7 +125,7 @@ Let's first test this command in an interactive jobs:
 # ... either directly
 (access)$> si
 # ... or using the HPC School reservation 'hpcschool'if needed  - use 'sinfo -T' to check if active and its name
-# (access)$> srun --reservation=hpcschool --pty bash
+# (access)$> si --reservation=hpcschool
 (node)$>
 ```
 
@@ -211,7 +211,7 @@ Let's test it in an interactive job:
 # ... either directly
 (access)$> si
 # ... or using the HPC School reservation 'hpcschool'if needed  - use 'sinfo -T' to check if active and its name
-# (access)$> srun --reservation=hpcschool --pty bash
+# (access)$> si --reservation=hpcschool
 
 # check usage
 (node)$> ./launcher.stressme-serial.sh -h
@@ -688,7 +688,7 @@ You can test this launcher within an **exclusive** interactive job (otherwise th
 # ... either directly
 (access)$> si --ntasks-per-node 4 --exclusive
 # ... or using the HPC School reservation 'hpcschool'if needed  - use 'sinfo -T' to check if active and its name
-# (access)$> srun --reservation=hpcschool --ntasks-per-node 4 --exclusive --pty bash
+# (access)$> srun --reservation=hpcschool --ntasks-per-node 4 --exclusive  --pty bash
 ```
 
 As before, in another terminal (or another screen tab/windows), connect to that job and run `htop`.

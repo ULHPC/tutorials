@@ -80,7 +80,7 @@ Ensure you are able to [connect to the UL HPC clusters](https://hpc.uni.lu/users
 ############### iris cluster (slurm) ###############
 (access-iris)$> si -n 2 -t 2:00:00        # 2h interactive reservation
 # OR (long version)
-(access-iris)$> srun -p interactive -n 2 -t 2:00:00 --pty bash
+(access-iris)$> salloc -p interactive -n 2 -t 2:00:00
 
 ############### gaia/chaos clusters (OAR) ###############
 (access-{gaia|chaos})$> oarsub -I -l nodes=1/core=2,walltime=2

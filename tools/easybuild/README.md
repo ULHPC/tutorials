@@ -49,7 +49,7 @@ In particular, the `module` command **is not** available on the access frontends
 # ... either directly
 (access)$> si --ntasks-per-node 1 -c 4 -t 2:00:00
 # ... or using the HPC School reservation 'hpcschool' if needed  - use 'sinfo -T' to check if active and its name
-# (access)$> srun --reservation=hpcschool --ntasks-per-node 1 -c 4 -t 2:00:00  --pty bash
+# (access)$> si --reservation=hpcschool --ntasks-per-node 1 -c 4 -t 2:00:00
 (node)$>
 ```
 

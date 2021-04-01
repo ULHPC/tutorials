@@ -61,7 +61,7 @@ As usual, more information can be found in the [documentation][4].
 # ... either directly
 (access)$> si-gpu
 # ... or using the HPC School reservation 'hpcschool-gpu' if needed  - use 'sinfo -T' to check if active and its name
-# (access)$> srun -p gpu -G 1 --reservation=hpcschool-gpu --pty bash -i
+# (access)$> si-gpu --reservation=hpcschool-gpu
 $ nvidia-smi
 $ nvcc  # ?
 ```

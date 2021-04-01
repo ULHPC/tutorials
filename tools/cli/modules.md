@@ -232,7 +232,7 @@ In your home directory, create a file `mpi_broadcast.c` and copy the following s
 
 Reserve 2 tasks of 1 core on two distinct nodes with Slurm
 
-        (access-iris)$> srun -p interactive --qos debug --time 1:00:0 -N 2 -n 2 -c 1 --pty bash
+        (access-iris)$> si --time 1:00:0 -N 2 -n 2 -c 1
 
 Load a toolchain and compile the code using `mpicc`
 

@@ -35,7 +35,7 @@ To configure the environment, we only need one core of one node.
 Request such resource from the iris-cluster:
 ```bash
 []$ ssh iris-cluster
-[]$ srun -n1 -c1 -pinteractive --pty bash -i
+[]$ si -n1 -c1
 []$ # Inspect your resources, several ways:
 []$ scontrol show job $SLURM_JOB_ID
 []$ sj $SLURM_JOB_ID  # alias for the above
@@ -165,7 +165,7 @@ Here, we will execute the functioning program developed above on a GPU node, int
 Request such resource from the iris-cluster:
 ```bash
 []$ ssh iris-cluster
-[]$ srun -n1 -c1 --gres=gpu:1 -pgpu --pty bash -i
+[]$ si-gpu -G 1 -n1 -c1 
 ```
 Load the modules, and the choose the proper python environment:
 ```bash

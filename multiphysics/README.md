@@ -46,7 +46,7 @@ Note: you can check out either the instructions for the OAR scheduler (gaia and 
 
 First of all, we will submit on the iris cluster an interactive job with 2 tasks on each of 2 compute nodes for 1 hour.
 
-       (iris-frontend)$> srun -p interactive -N 2 --ntasks-per-node 2 --pty bash -i
+       (iris-frontend)$> si -N 2 --ntasks-per-node 2
        (node)$>
 
 The SLURM scheduler provides several environment variables once we are inside a job, check them out with

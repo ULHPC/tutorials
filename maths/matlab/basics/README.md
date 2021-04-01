@@ -97,7 +97,7 @@ quick executions:
         # Connect to Iris, start an interactive job with 14 cores for 1 hour:
 
         (yourmachine)$> ssh yourlogin@access-iris.uni.lu -p 8022
-        (access-iris)$> srun -n 1 -c 14 --time 1:0:0 -p interactive --pty bash -i
+        (access-iris)$> si -n 1 -c 14 --time 1:0:0
         (node)$> module load base/MATLAB/2018a
 
         # Launch MATLAB with the graphical display mode disabled (critical parameters):
