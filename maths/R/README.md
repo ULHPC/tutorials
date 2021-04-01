@@ -100,7 +100,7 @@ clusters](https://hpc.uni.lu/users/docs/access.html)
 
 ``` bash
 # /!\ FOR ALL YOUR COMPILING BUSINESS, ENSURE YOU WORK ON A COMPUTING NODE
-(access-iris)$> srun -p interactive --qos debug --time=0:30:0 -N 1 --ntasks-per-node=1 --cpus-per-task=2 --mem-per-cpu 4096 --pty bash
+(access-iris)$> si --time=0:30:0 -N 1 --ntasks-per-node=1 --cpus-per-task=2 --mem-per-cpu 4096
 ```
 
 ### Optional: On your local machine
@@ -374,7 +374,7 @@ assume you have already configured your `.ssh/config`.
 
 Once connected to the user frontend, book **4** cores for half an hour
 
-    [jdoe@access2 ~]$ srun -p interactive --qos debug --time=0:30:0 -N 1 --ntasks-per-node=1 --cpus-per-task=4 --mem-per-cpu 4096 --pty bash
+    [jdoe@access2 ~]$ si --time=0:30:0 -N 1 --ntasks-per-node=1 --cpus-per-task=4 --mem-per-cpu 4096
 
 When the job is running and you are connected load *R* module (so
 version `3.6.0`).

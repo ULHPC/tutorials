@@ -31,8 +31,8 @@ __Notes__:
 * All the commands used have detailed manuals (`man $toolname`) that you can always refer to.
 * To make interactive jobs easier to launch, a function `si` exists that starts an interactive job with your parameters and the debug QOS
 * You can override it in your own `~/.bashrc` with aliases that customizes it for your particular needs, e.g.
-    - `alias si='srun -p interactive --qos debug --time=0:30:0 --pty bash -i'`
-    - `alias six='srun -p interactive --qos debug --x11 --pty bash -i'`
+    - `alias si='salloc -p interactive --qos debug --time=0:30:0'`
+    - `alias six='salloc -p interactive --qos debug --x11'`
 * For the HPC Schools we generally create node reservations named as `hpcschool`
     - see information about the reservation with `sinfo -T` and `scontrol show res`
     - generally the reservation is made in the _batch_ partition, thus to the (srun/sbatch) commands below that ask you to run in the _batch_ partition you can prepend `--reservation=hpcschool` to use it
@@ -115,7 +115,7 @@ sacctmgr list association where users=$USER format=account%30s,user%20s,qos%120s
 * Start an interactive job with the default number of cores and walltime:
 
 ```
-srun -p interactive --qos debug --pty bash -i
+si
 ```
 
 __Question__: now before exiting the job, what does `env | grep SLURM` give out? What is the walltime for this job?
@@ -123,7 +123,7 @@ __Question__: now before exiting the job, what does `env | grep SLURM` give out?
 * Start an interactive job for 3 minutes, with 2 nodes and 4 tasks per node:
 
 ```
-srun -p interactive --qos debug --time=0:03:0 -N 2 --ntasks-per-node=4 --pty bash -i
+si --time=0:03:0 -N 2 --ntasks-per-node=4
 ```
 
 __Question__: can you ssh between the nodes part of this job? what happens if you try to ssh to a different node (not from your job/jobs)? if you are still connected to the job after 3 minutes, what happens?
@@ -131,7 +131,7 @@ __Question__: can you ssh between the nodes part of this job? what happens if yo
 * Start an interactive job with _X11 forwarding_ such that GUI applications (running in the cluster) will be shown on your workstation:
     - note that your initial connection to the iris cluster needs to have X11 Forwarding enabled, e.g. `ssh -Y iris-cluster`
 
-Note: as of 2017-11-09, direct X11 (--x11) support with srun (`srun -p interactive --qos debug --pty --x11 bash -i`) is being patched, and the below workaround is needed. You can have a look at the [FAQ about X11 forwarding on our website](https://hpc.uni.lu/blog/2018/faq-x11-forwarding-not-working-with-slurm/)
+Note: as of 2017-11-09, direct X11 (--x11) support with srun (`si --x11`) is being patched, and the below workaround is needed. You can have a look at the [FAQ about X11 forwarding on our website](https://hpc.uni.lu/blog/2018/faq-x11-forwarding-not-working-with-slurm/)
 
 1. Connect to iris using the X11 forwarding `ssh -Y iris-cluster`
 2. Launch a job with X11 by doing an interactive reservation: `salloc -p interactive --qos debug bash -c 'ssh -Y $(scontrol show hostnames | head -n 1)'`
@@ -148,7 +148,7 @@ __Question__: what happens if you launch a graphical application (e.g. `xterm`)?
 * Start an interactive job on nodes with Skylake CPUs
 
 ```
-srun -C skylake --pty bash -i
+salloc -p interactive -C skylake
 ```
 
 __Question__: what partition is this job running in? how many cores and walltime did it reserve?

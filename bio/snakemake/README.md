@@ -540,7 +540,7 @@ Quit your current job and start a new one with more cores to test the multithrea
 
 ```bash
 (node)$> exit
-(access)$> srun --cpu-bind=none -p interactive -t 0-0:15:0 -N 1 -c 6 --ntasks-per-node=1 --pty bash -i
+(access)$> srun --cpu-bind=none -p interactive -t 0-0:15:0 -N 1 -c 6 --ntasks-per-node=1
 (node)$> conda activate bioinfo_tutorial
 (node)$> cd $SCRATCH/bioinfo_tutorial
 ```

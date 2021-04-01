@@ -34,7 +34,7 @@ We will work with 2 files:
 In an interactive job, install `pillow` in your home directory using this command:
 
 
-    (access IRIS)>$ srun -p interactive -N 1 --qos debug --pty bash -i
+    (access IRIS)>$ si -N 1
 
 
     (node)>$ pip install --user pillow

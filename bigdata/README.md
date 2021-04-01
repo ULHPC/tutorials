@@ -58,7 +58,7 @@ Note that it should be sufficient to run the following command **once on a node*
 # ... either directly
 (access)$> si
 # ... or using the HPC School reservation 'hpcschool' if needed  - use 'sinfo -T' to check if active and its name
-# (access)$> srun --reservation=hpcschool --pty bash
+# (access)$> si --reservation=hpcschool
 (node)$> ~/git/github.com/ULHPC/tutorials/tools/easybuild/scripts/setup.sh -h  # Help - check EASYBUILD_*
 (node)$> ~/git/github.com/ULHPC/tutorials/tools/easybuild/scripts/setup.sh -n  # Dry-run
 (node)$> ~/git/github.com/ULHPC/tutorials/tools/easybuild/scripts/setup.sh     # install

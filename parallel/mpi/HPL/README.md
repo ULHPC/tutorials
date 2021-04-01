@@ -149,9 +149,9 @@ Now you can reserve an interactive job for the compilation **from the access** s
 # Quickly get one interactive job for 1h
 $> si -N 2 --ntasks-per-node 2
 # OR get one interactive (totalling 2*2 MPI processes) on broadwell-based nodes
-$> srun -N 2 -p batch -C broadwell -N 2 --ntasks-per-node  2 --pty bash
+$> salloc -p interactive -N 2 -C broadwell --ntasks-per-node 2
 # OR get one interactive (totalling 2*2 MPI processes) on skylake-based nodes
-$> srun -N 2 -p batch -C skylake -N 2 --ntasks-per-node  2 --pty bash
+$> salloc -p interactive -N 2 -C skylake --ntasks-per-node 2
 ```
 
 Now that you are on a computing node, you can load the appropriate module  for Intel MKL and Intel MPI suite, i.e. `toolchain/intel`:

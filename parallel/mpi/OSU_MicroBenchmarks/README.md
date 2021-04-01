@@ -80,7 +80,7 @@ Now you can reserve an interactive job on 2 nodes and 1 task per node (for 30 mi
 
 ```bash
 ############### iris cluster (slurm) ###############
-(access-iris)$> srun -p interactive -N 2 --ntasks-per-node=1 -t 0:30:00 --pty bash
+(access-iris)$> si -N 2 --ntasks-per-node=1 -t 0:30:00
 $> echo $SLURM_NTASKS
 
 ############### gaia/chaos clusters (OAR) ###############

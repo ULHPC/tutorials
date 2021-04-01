@@ -40,7 +40,7 @@ We will now see the basic commands of Slurm.
 
 * Connect to **iris-cluster**. You can request resources in interactive mode:
 
-        (access)$> srun -p interactive --qos debug --pty bash
+        (access)$> si
 
   Notice that with no other parameters, srun gave you one resource for 30 minutes. You were also directly connected to the node you reserved with an interactive shell.
   Now exit the reservation (`exit` command or CTRL-D)
@@ -57,7 +57,7 @@ you can reserve and connect in two steps using the job id associated to your res
 
   You noticed that you received a job ID (in the above example: `390`), which you can later use to connect to the reserved resource(s):
 
-        (access)$> srun -p interactive --qos debug --jobid 390 --pty bash # adapt the job ID accordingly ;)
+        (access)$> sjoin 390 # adapt the job ID accordingly ;)
         (node)$> ps aux | grep sleep
         <login> 186342  0.0  0.0 107896   604 ?        S    17:58   0:00 sleep 4h
         <login> 187197  0.0  0.0 112656   968 pts/0    S+   18:04   0:00 grep --color=auto sleep
@@ -115,11 +115,11 @@ You probably want to use more than one core, and you might want them for a diffe
 
 * Reserve interactively 4 cores in one task on one node, for 30 minutes (delete the job afterwards)
 
-        (access)$> srun -p interactive --qos debug --time=0:30:0 -N 1 --ntasks-per-node=1 --cpus-per-task=4 --pty bash
+        (access)$> salloc -p interactive --time=0:30:0 -N 1 --ntasks-per-node=1 --cpus-per-task=4
 
 * Reserve interactively 4 tasks (system processes) with 2 nodes for 30 minutes (delete the job afterwards)
 
-        (access)$> srun -p interactive --qos debug --time=0:30:0 -N 2 --ntasks-per-node=4 --cpus-per-task=4 --pty bash
+        (access)$> salloc -p interactive --time=0:30:0 -N 2 --ntasks-per-node=4 --cpus-per-task=4
 
 This command can also be written in a more compact way
 

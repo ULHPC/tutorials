@@ -126,7 +126,7 @@ We will illustrate the usage of GNU screen by performing a compilation of a rece
 * create a new window and rename it "Compile"
 * within this new window, start a new interactive job over 1 node and 2 cores for 4 hours
 
-		(access)$> srun -p interactive --qos debug --time 2:00:0 -N 1 -c 2 --pty bash
+		(access)$> si --time 2:00:0 -N 1 -c 2
 
 * detach from this screen (using `CTRL+a d`)
 * kill your current SSH connection and your terminal
