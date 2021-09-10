@@ -76,7 +76,7 @@ d = {'x': 1,
 ```
 </td>
 <td>
-<img style="float: right;max-height: 200px;" src="https://docs.dask.org/en/latest/_images/dask-simple.png">
+<img style="float: right;max-height: 200px;" src="https://docs.dask.org/en/latest/_images/dask-simple.svg">
 </td>
 </tr>
 </table>
