@@ -1,7 +1,7 @@
 #!/bin/bash -l
 
 #SBATCH -p batch
-#SBATCH -J DASK_main_job
+#SBATCH -J DASK_jobs_workers
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
 #SBATCH --cpus-per-task=1
@@ -11,9 +11,17 @@
 module load lang/Python
 
 # Make sure that you have an virtualenv dask_env installed
-export DASK_VENV="./dask_env/bin/activate"
+export DASK_VENV="$1" 
+shift
+if [ ! -d "${DASK_VENV}" ] || [ ! -f "${DASK_VENV}/bin/activate" ]; then
+    
+    echo "Error with virtualenv" && exit 1
+
+fi
 
 # Source the python env
-source ${DASK_VENV}
+source "${DASK_VENV}/bin/activate"
 
 python -u $*
+
+

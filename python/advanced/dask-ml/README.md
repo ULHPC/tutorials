@@ -76,7 +76,7 @@ d = {'x': 1,
 ```
 </td>
 <td>
-<img style="float: right;max-height: 200px;" src="https://docs.dask.org/en/latest/_images/dask-simple.svg">
+<img style="float: right;max-height: 200px;" src="https://docs.dask.org/en/latest/_images/dask-simple.png">
 </td>
 </tr>
 </table>
@@ -199,13 +199,13 @@ pip install -r requirements.txt
 
 ### Automatic setup 
 
-We first create a generic launcher.
+We first create a generic launcher `cluster_jobs_workers.sh`. Be carefull, you will need to install two different virtualenv if you planned to run the code on both clusters, i.e., Aion and Iris.
 
 ```bash
 #!/bin/bash -l
 
 #SBATCH -p batch          
-#SBATCH -J DASK_main_job     
+#SBATCH -J DASK_jobs_workers     
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1                
 #SBATCH --cpus-per-task=1               
@@ -215,13 +215,21 @@ We first create a generic launcher.
 module load lang/Python
 
 # Make sure that you have an virtualenv dask_env installed
-export DASK_VENV="./dask_env/bin/activate"
+export DASK_VENV="$1" 
+shift
+if [ ! -d "${DASK_VENV}" ] || [ ! -f "${DASK_VENV}/bin/activate" ]; then
+    
+    echo "Error with virtualenv" && exit 1
+
+fi
 
 # Source the python env
-source ${DASK_VENV}
+source "${DASK_VENV}/bin/activate"
 
 python -u $*
 ```
+
+Below a small example to start workers as slurm jobs: `cluster_jobs_workers.py`.
 
 ```python
 from dask_jobqueue import SLURMCluster
@@ -248,6 +256,7 @@ cluster.scale(5)
 
 # Connect to distributed cluster and override default
 client = Client(cluster)
+client.wait_for_workers()
 
 # Decorator  
 @dask.delayed
@@ -273,7 +282,7 @@ for x in data:
 
 # Second approach as a delayed function
 total = dask.delayed(sum)(output)
-total.visualize(filename='task_graph.png')
+total.visualize(filename='task_graph.svg')
 # parallel execution workers
 results = total.compute()
 print(results)
@@ -307,11 +316,137 @@ distributed.nanny - INFO - Closing Nanny at 'tcp://172.19.6.19:44324'
 distributed.dask_worker - INFO - End worker
 ```
 
-
-
-
-
 ### Manual setup
 
-# https://towardsdatascience.com/how-to-handle-large-datasets-in-python-with-pandas-and-dask-34f43a897d55
-# https://www.analyticsvidhya.com/blog/2018/08/dask-big-datasets-machine_learning-python/
+In this part, we show how to start manually the dask-scheduler and how to spawn the workers. Hereafter, workers will not be created as new jobs but new steps inside a main job. We advise to use this workflow to avoid filling the scheduler queue.
+
+First, we create a new slurm launcher: `cluster_steps_workers.sh`
+
+```bash
+#!/bin/bash -l
+
+#SBATCH -p batch
+#SBATCH -J DASK_steps_workers
+#SBATCH --nodes=2
+#SBATCH --ntasks-per-node=4
+#SBATCH --cpus-per-task=1
+#SBATCH -t 00:30:00
+
+# Load the python version used to install Dask
+module load lang/Python
+
+# Make sure that you have an virtualenv dask_env installed
+export DASK_VENV="$1"
+shift
+if [ ! -d "${DASK_VENV}" ] || [ ! -f "${DASK_VENV}/bin/activate" ]; then
+
+        echo "Error with virtualenv" && exit 1
+
+    fi
+
+# Source the python env
+source "${DASK_VENV}/bin/activate"
+
+# Dask configuration to store the scheduler file
+DASK_CONFIG="${HOME}/.dask"
+DASK_JOB_CONFIG="${DASK_CONFIG}/job_${SLURM_JOB_ID}"
+mkdir -p ${DASK_JOB_CONFIG}
+export SCHEDULER_FILE="${DASK_JOB_CONFIG}/scheduler.json"
+
+# Start controller on this first task
+dask-scheduler  --scheduler-file "${SCHEDULER_FILE}"  --interface "ib0" &
+sleep 10
+
+#srun: runs ipengine on each other available core
+srun --cpu-bind=cores dask-worker  --scheduler-file "${SCHEDULER_FILE}"  --interface "ib0" &
+sleep 25
+
+python -u $*
+
+```
+
+To illustrate this manual setting, we are going now to scale XGBoost using Dask. [XGBoost](https://xgboost.readthedocs.io/en/latest/) is an optimized gradient boosting library designed to be highly efficient, flexible and portable. Gradient boosted trees can be distributed by making Dask and XGBoost working together. XGBoost provides a powerful prediction framework, and it works well in practice. It wins Kaggle contests and is popular in industry because it has good performance and can be easily interpreted (i.e., it’s easy to find the important features from a XGBoost model).
+
+<table class="tab_css">
+<tr>
+</tr>
+<tr>
+<td>
+<img style="float: center;height: 100px;" src="https://dask.readthedocs.io/en/latest/_images/dask_horizontal.svg">
+</td>
+<td>
+<img style="float: center;height: 100px;" src="https://raw.githubusercontent.com/dmlc/dmlc.github.io/master/img/logo-m/xgboost.png">
+</td>
+</tr>
+</table>
+
+
+Suppose we have access to Dask cluster with a set of workers. The first task is to install the xgboost library.
+
+```python
+pip install xgboost
+```
+
+then create the following script `cluster_steps_workers.py`:
+
+```python
+from dask.distributed import Client
+# Library to generate plots
+import matplotlib as mpl
+# Define Agg as Backend for matplotlib when no X server is running
+mpl.use('Agg')
+import matplotlib.pyplot as plt
+import dask
+import xgboost as xgb
+import dask.array as da
+import json
+import os
+
+data=[]
+# Using the distributed shared file system, we can access to the Dask cluster
+# configuration.
+# We read the scheduler address and port from the scheduler file
+with open(os.environ["SCHEDULER_FILE"]) as f:
+        data = json.load(f)
+        scheduler_address=data['address']
+
+# Connect to the the cluster
+client = Client(scheduler_address)
+client.wait_for_workers()
+
+# X and y must be Dask dataframes or arrays
+num_obs = 1e5
+num_features = 20
+X = da.random.random(size=(num_obs, num_features), chunks=(1000, num_features))
+y = da.random.random(size=(num_obs, 1), chunks=(1000, 1))
+
+# Training
+dtrain = xgb.dask.DaskDMatrix(client, X, y)
+
+output = xgb.dask.train(
+    client,
+    {"verbosity": 2, "tree_method": "hist", "objective": "reg:squarederror"},
+    dtrain,
+    num_boost_round=10,
+    evals=[(dtrain, "train")],
+)
+
+booster = output['booster']  # booster is the trained model
+history = output['history']  # A dictionary containing evaluation results
+
+ax = xgb.plot_importance(booster, height=0.8, max_num_features=9)
+ax.grid(False, axis="y")
+ax.set_title('Estimated feature importance')
+plt.savefig("importance.png")
+
+# Stop Dask cluster
+client.shutdown()
+```
+
+
+# References
+
+* https://distributed.dask.org/en/latest/
+* https://jobqueue.dask.org/en/latest/
+* https://wiki.mpimet.mpg.de/doku.php?id=analysis:pot_pourri:sapphire:dask_parallel_postprocessing
+
