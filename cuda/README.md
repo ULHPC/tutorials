@@ -102,9 +102,6 @@ $ module purge
 $ module restore cuda
 ```
 
-Note: you can compile CUDA applications on a node without GPU, using the same modules.
-You will not however be able to execute them.
-
 In case there is not enough GPU cards available, you can submit passive jobs, using `sbatch`.
 Below is an example `sbatch` file, to remote compile, run and profile a source file:
 
