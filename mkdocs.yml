@@ -44,6 +44,7 @@ pages:
 - GPU:
   - Accelerating Applications with CUDA C/C++: 'cuda/index.md'
   - Convolution using GPU: 'cuda/exercises/convolution/index.md'
+  - Introduction to OpenACC: 'openacc/index.md'  
 - Mathematics:
   - MATLAB: 'maths/matlab/basics/index.md'
   - MATLAB (advanced): 'maths/matlab/advanced/index.md'
