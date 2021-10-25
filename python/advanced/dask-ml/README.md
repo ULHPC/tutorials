@@ -137,6 +137,7 @@ si --time=01:00:00 # OR si-gpu --time=01:00:00 if a GPU is needed
 module load lang/Python # Load default python 
 python -m venv dask_env_${ULHPC_CLUSTER}
 source dask_env_${ULHPC_CLUSTER}/bin/activate
+pip install --upgrade pip
 pip install "dask[complete]"
 ```
 
@@ -192,6 +193,7 @@ si --time=01:00:00
 module load lang/Python
 python -m venv dask_env_${ULHPC_CLUSTER}
 source dask_env_${ULHPC_CLUSTER}/bin/activate
+pip install --upgrade pip
 pip install -r requirements.txt
 ```
 
