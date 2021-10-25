@@ -1,9 +1,10 @@
 #!/bin/bash -l
 
+### Documentation: https://hpc-docs.uni.lu/slurm/launchers/
 #SBATCH -p batch           #batch partition
 #SBATCH -J DASK_TESTS     #job name
 #SBATCH -N 2
-#SBATCH -n 10            # 56 tasks, you can increase it
+#SBATCH --ntasks-per-node  3      # Adapt to maximize node capacity         
 #SBATCH -c 1               # 1 core per task
 #SBATCH -t 00:30:00        # Job is killed after 10h
 ###SBATCH --mail-user=firstname.lastname@uni.lu   # Adapt accordingly
