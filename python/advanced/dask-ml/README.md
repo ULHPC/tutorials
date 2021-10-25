@@ -135,7 +135,7 @@ ssh [aion,iris]-cluster    # assuming proper configuration
 # Once on the clusters, ask for a interactive job
 si --time=01:00:00 # OR si-gpu --time=01:00:00 if a GPU is needed
 module load lang/Python # Load default python 
-python -m venv dask_env
+python -m venv dask_env_${ULHPC_CLUSTER}
 source dask_env/bin/activate
 pip install "dask[complete]"
 ```
@@ -168,7 +168,7 @@ In the remainder of this paper, we will only consider Distributed Dask cluster. 
 
 On the ULHPC platform, you have two strategies to create a Dask cluster:
 
-- Using SLURMCluster class
+- Using [`SLURMCluster` class](https://jobqueue.dask.org/en/latest/generated/dask_jobqueue.SLURMCluster.html)
 - Starting manually the dask-scheduler and dask-workers 
 
 
@@ -190,7 +190,7 @@ cd tutorials/python/advanced/dask-ml/scripts
 si --time=01:00:00
 # Load python3 module (load by default Python3)
 module load lang/Python
-python -m venv dask_env
+python -m venv dask_env_${ULHPC_CLUSTER}
 source dask_env/bin/activate
 pip install -r requirements.txt
 ```
@@ -294,7 +294,7 @@ The Dask delayed function decorates your functions so that they operate lazily. 
 
 ![](https://docs.dask.org/en/latest/_images/delayed-inc-double-add.svg)
 
-You can execute the previous example with the following command: `sbatch auto_slurm_cluster.sh auto_slurm_cluster.py`. Once the main job has started, you should see dask-workers spanning in the queue using `squeue -u user`.
+You can execute the previous example with the following command: `sbatch cluster_jobs_workers.sh dask_env_${ULHPC_CLUSTER} cluster_jobs_workers.py`. Once the main job has started, you should see dask-workers spanning in the queue using `squeue -u user`.
 Please note also that each worker has his own slurm-**jobid**.out file which provide all necessary information to diagnose problems. An example is provided below.
 
 ```bash
@@ -443,6 +443,25 @@ plt.savefig("importance.png")
 # Stop Dask cluster
 client.shutdown()
 ```
+
+You can try the manual setup example using the following command: `sbatch cluster_steps_workers.sh dask_env_${ULHPC_CLUSTER} cluster_steps_workers.py`.
+
+
+## Remark on the worker Thread Pool
+
+Each worker sends computations to a thread in a concurrent.futures.ThreadPoolExecutor for computation. These computations occur in the same process as the Worker communication server so that they can access and share data efficiently between each other. For the purposes of data locality all threads within a worker are considered the same worker.
+
+If your computations are mostly numeric in nature (for example NumPy and Pandas computations) and release the GIL entirely then it is advisable to run dask-worker processes with many threads and one process. This reduces communication costs and generally simplifies deployment.
+
+If your computations are mostly Python code and don’t release the GIL then it is advisable to run dask-worker processes with many processes and one thread per process:
+
+```bash
+$ dask-worker scheduler:8786 --nprocs 8 --nthreads 1
+```
+
+This will launch 8 worker processes each of which has its own ThreadPoolExecutor of size 1.
+
+If your computations are external to Python and long-running and don’t release the GIL then beware that while the computation is running the worker process will not be able to communicate to other workers or to the scheduler. This situation should be avoided. If you don’t link in your own custom C/Fortran code then this topic probably doesn’t apply.
 
 
 # References

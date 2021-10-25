@@ -18,7 +18,7 @@ cluster = SLURMCluster(cores=1,
                        interface="ib0")
 
 # Let's scale to 5 workers
-numworkers = int(os.environ("SLURM_NTASKS")) if os.environ("SLURM_NTASKS") else 1
+numworkers = 5
 cluster.scale(numworkers)
 
 # Connect to distributed cluster and override default
