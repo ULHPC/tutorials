@@ -136,7 +136,7 @@ ssh [aion,iris]-cluster    # assuming proper configuration
 si --time=01:00:00 # OR si-gpu --time=01:00:00 if a GPU is needed
 module load lang/Python # Load default python 
 python -m venv dask_env_${ULHPC_CLUSTER}
-source dask_env/bin/activate
+source dask_env_${ULHPC_CLUSTER}/bin/activate
 pip install "dask[complete]"
 ```
 
@@ -191,7 +191,7 @@ si --time=01:00:00
 # Load python3 module (load by default Python3)
 module load lang/Python
 python -m venv dask_env_${ULHPC_CLUSTER}
-source dask_env/bin/activate
+source dask_env_${ULHPC_CLUSTER}/bin/activate
 pip install -r requirements.txt
 ```
 
