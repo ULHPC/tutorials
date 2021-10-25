@@ -23,7 +23,10 @@ dask-scheduler --scheduler-file "./scheduler.json" --interface "ib0" &
 sleep 10
 
 #srun: runs ipengine on each available core
-srun --cpu-bind=cores dask-worker  --scheduler-file "./scheduler.json" --interface "ib0" &
+srun --cpu-bind=cores dask-worker  \
+     --label \
+     --interface "ib0" \
+     --scheduler-file "./scheduler.json"  &
 sleep 25
 
 wait
