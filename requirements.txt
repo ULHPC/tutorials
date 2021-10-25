@@ -12,7 +12,7 @@ pep562==1.0
 pymdown-extensions==6.2
 pyparsing==3.0.1
 python-dateutil==2.8.2
-PyYAML==5.1.2
+PyYAML==6.0
 pyyaml_env_tag==0.1
 six==1.13.0
 tornado==6.0.3
