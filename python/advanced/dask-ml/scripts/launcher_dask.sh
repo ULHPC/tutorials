@@ -6,8 +6,8 @@
 #SBATCH -n 10            # 56 tasks, you can increase it
 #SBATCH -c 1               # 1 core per task
 #SBATCH -t 00:30:00        # Job is killed after 10h
-#SBATCH --mail-user=emmanuel.kieffer@uni.lu
-#SBATCH --mail-type=BEGIN,FAIL,END
+###SBATCH --mail-user=firstname.lastname@uni.lu   # Adapt accordingly
+###SBATCH --mail-type=BEGIN,FAIL,END
 
 module load lang/Python
 
