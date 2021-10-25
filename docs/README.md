@@ -2,7 +2,7 @@
 
 # Uni.lu High Performance Computing (HPC) Tutorials
 
-     Copyright (c) 2013-2020 UL HPC Team <hpc-team@uni.lu>
+     Copyright (c) 2013-2021 UL HPC Team <hpc-team@uni.lu>
 
 This repository holds a set of tutorials to help the users of the [UL HPC](https://hpc.uni.lu) platform to better understand or simply use our platform.
 
