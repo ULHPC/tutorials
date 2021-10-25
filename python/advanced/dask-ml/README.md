@@ -130,7 +130,8 @@ pip install ".[complete]"
 We strongly recommend to install Dask inside a virtual environment using the python versions included in the [software set](https://hpc-docs.uni.lu/software/). 
 
 ```bash
-ssh -p 8022 [user]@access-[aion,iris].uni.lu # OR simply ssh [aion,iris]-cluster if configured
+# See https://hpc-docs.uni.lu/connect/ssh/
+ssh [aion,iris]-cluster    # assuming proper configuration
 # Once on the clusters, ask for a interactive job
 si --time=01:00:00 # OR si-gpu --time=01:00:00 if a GPU is needed
 module load lang/Python # Load default python 
