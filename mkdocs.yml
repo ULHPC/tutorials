@@ -41,6 +41,7 @@ pages:
   - Celery: 'python/advanced/celery/index.md'
   - Ipyparallel-Scikit-learn: 'python/advanced/scikit-learn/index.md'
   - Scoop-Deap: 'python/advanced/scoop-deap/index.md'
+  - Dask-ML: 'python/advanced/dask-ml/index.md'
 - GPU:
   - Accelerating Applications with CUDA C/C++: 'cuda/index.md'
   - Convolution using GPU: 'cuda/exercises/convolution/index.md'
