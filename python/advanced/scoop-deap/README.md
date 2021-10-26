@@ -79,6 +79,7 @@ si
 module load lang/Python
 python -m venv scoop_env_${ULHPC_CLUSTER}
 source scoop_env_${ULHPC_CLUSTER}/bin/activate
+pip install --upgrade pip
 pip install numpy deap scoop matplotlib
 ```
 
