@@ -50,9 +50,11 @@ si
 # Load python 3.6 module
 module load lang/Python 
 # Create your virtual environment
-python3 -m venv scikit
+python3 -m venv scikit_${ULHPC_CLUSTER}
 # Activate your env
-source ./scikit/bin/activate
+source ./scikit_${ULHPC_CLUSTER}/bin/activate
+# Upgrade pip
+pip install --upgrade pip
 # Now install required packages
 # jupyter himself
 pip install ipython
@@ -74,6 +76,8 @@ exit
 
 Hereafter, a general script for using ipyparrallel with the SLURM scheduler is provided. We are going to use it in the remaining part of this tutorial. This is the file ```launcher.sh``` that you can find in the scripts directory. 
 
+** Remark ** The launcher below requests 10 tasks on 2 nodes with 1 cpu per task. This is **NOT** an efficient use of the hardware but only for educational purpose. Please always try to maximize nodes usage, i.e., 28 tasks max on iris, 128 max on aion or decrease and increase multithreading if possible. You may use  `--ntasks-per-nodes`or `--ntasks-per-socket` for this purpose. Please also refer to the [ULHPC documentation](https://hpc-docs.uni.lu/slurm/#specific-resource-allocation) for more details. 
+
 
 ```bash
 
@@ -81,13 +85,14 @@ Hereafter, a general script for using ipyparrallel with the SLURM scheduler is p
 
 #BATCH -p batch           #batch partition 
 #SBATCH -J ipy_engines      #job name
-#SBATCH -n 10                # 10 cores, you can increase it
 #SBATCH -N 2                # 2 node, you can increase it
+#SBATCH -n 10                # 10 cores, you can increase it
+#SBATCH -c 1                # 1 cpu per task
 #SBATCH -t 1:00:00         # Job is killed after 1h
 
 module load lang/Python 
 
-source scikit/bin/activate
+source scikit_${ULHPC_CLUSTER}/bin/activate
 
 #create a new ipython profile appended with the job id number
 profile=job_${SLURM_JOB_ID}
