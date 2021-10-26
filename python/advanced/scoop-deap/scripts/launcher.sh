@@ -14,7 +14,7 @@ cat << EOF > $SCOOP_WRAPPER
 #!/bin/bash -l
 module load lang/Python
 export SLURM_NTASKS=${SLURM_NTASKS}
-source $(pwd)/test_env/bin/activate
+source $(pwd)/scoop_env_${ULHPC_CLUSTER}/bin/activate
 EOF
 echo 'python $@' >> $SCOOP_WRAPPER
 
@@ -22,7 +22,7 @@ chmod +x $SCOOP_WRAPPER
 
 # Classical "module load" in the main script
 module load lang/Python
-source $(pwd)/test_env/bin/activate
+source $(pwd)/scoop_env_${ULHPC_CLUSTER}/bin/activate
 
 # Save the hostname of the allocated nodes
 scontrol show hostnames > $HOSTFILE
