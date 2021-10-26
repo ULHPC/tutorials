@@ -17,14 +17,13 @@ profile=job_${SLURM_JOB_ID}
 echo "Creating profile_${profile}"
 ipython profile create ${profile}
 
-ipcontroller --ip="*" --profile=${profile} &
+srun --exclusive -N 1 -n 1 -c 1 ipcontroller --ip="*" --profile=${profile} &
 sleep 10
 
 #srun: runs ipengine on each available core
-srun  -n $((${SLURM_NTASKS}-1)) -c 1 ipengine --profile=${profile} --location=$(hostname) &
+srun --exclusive -n 8 -c 1 ipengine --profile=${profile} --location=$(hostname) &
 sleep 25
 
 echo "Launching job for script $1"
-srun -n 1 -c 1 python $1 -p ${profile} &
+srun --exclusive -N 1 -n 1 -c 1 python $1 -p ${profile} 
 
-wait

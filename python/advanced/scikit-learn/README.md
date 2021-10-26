@@ -100,15 +100,15 @@ profile=job_${SLURM_JOB_ID}
 echo "Creating profile_${profile}"
 ipython profile create ${profile}
 
-ipcontroller --ip="*" --profile=${profile} &
+srun --exclusive -N 1 -n 1 -c 1 ipcontroller --ip="*" --profile=${profile} &
 sleep 10
 
 #srun: runs ipengine on each available core
-srun ipengine --profile=${profile} --location=$(hostname) &
+srun --exclusive -n 8 -c 1 ipengine --profile=${profile} --location=$(hostname) &
 sleep 25
 
 echo "Launching job for script $1"
-python $1 -p ${profile}
+srun --exclusive -N 1 -n 1 -c 1 python $1 -p ${profile}
 
 ```
 __________
@@ -288,6 +288,7 @@ with open(os.path.join(FILE_DIR,'scores_kmeans.csv'), 'w') as f:
     f.write('nbClusters,inertia,\n')
     f.write("\n".join(','.join(str(c) for c in l) for l in inertia))
     f.write('\n')
+c.shutdown()
 ```
 
 ### Start parallel clustering
@@ -426,6 +427,7 @@ plt.xticks(np.arange(len(param_space['gamma'])), map(lambda x : "%.2E"%(x),param
 plt.yticks(np.arange(len(param_space['C'])), map(lambda x : "%.2E"%(x),param_space['C']), fontsize=8, rotation=45)
 plt.title('Validation accuracy')
 plt.savefig(os.path.join(FILE_DIR,"validation.png"))
+c.shutdown()
 ```
 ### Start parallel supervized learning
 

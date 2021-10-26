@@ -59,3 +59,5 @@ with open(os.path.join(FILE_DIR,'scores_kmeans.csv'), 'w') as f:
     f.write('nbClusters,inertia,\n')
     f.write("\n".join(','.join(str(c) for c in l) for l in inertia))
     f.write('\n')
+
+c.shutdown()

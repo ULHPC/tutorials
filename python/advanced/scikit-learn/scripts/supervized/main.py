@@ -87,3 +87,4 @@ plt.xticks(np.arange(len(param_space['gamma'])), map(lambda x : "%.2E"%(x),param
 plt.yticks(np.arange(len(param_space['C'])), map(lambda x : "%.2E"%(x),param_space['C']), fontsize=8, rotation=45)
 plt.title('Validation accuracy')
 plt.savefig(os.path.join(FILE_DIR,"validation.png"))
+c.shutdown()
