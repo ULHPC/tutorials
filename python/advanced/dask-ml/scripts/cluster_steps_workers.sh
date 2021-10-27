@@ -36,8 +36,8 @@ export NB_WORKERS=$((${SLURM_NTASKS}-2))
 LOG_DIR="$(pwd)/logs/job_${SLURM_JOBID}"
 mkdir -p ${LOG_DIR}
 
-# Start controller on this first task
-srun -w $(hostname) --output=${LOG_DIR}/ipcontroller-%j-workers.out  --exclusive -N 1 -n 1 -c ${SLURM_CPUS_PER_TASK} \
+# Start scheduler on this first task
+srun -w $(hostname) --output=${LOG_DIR}/scheduler-%j-workers.out  --exclusive -N 1 -n 1 -c ${SLURM_CPUS_PER_TASK} \
      dask-scheduler  --scheduler-file "${SCHEDULER_FILE}"  --interface "ib0" &
 sleep 10
 
