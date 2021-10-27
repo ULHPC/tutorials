@@ -248,7 +248,7 @@ import os
 
 # Submit workers as slurm job
 # Below we define the slurm parameters of a single worker
-cluster = SLURMCluster(cores=os.envion.get("SLURM_CPUS_PER_TASK",1),
+cluster = SLURMCluster(cores=os.environ.get("SLURM_CPUS_PER_TASK",1),
                        processes=1,
                        memory="4GB",
                        walltime="01:00:00",
