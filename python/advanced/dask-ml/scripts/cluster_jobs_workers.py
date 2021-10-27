@@ -11,14 +11,14 @@ import os
 
 # Submit workers as slurm job 
 # Below we define the slurm parameters of a single worker
-cluster = SLURMCluster(cores=os.environ.get("SLURM_CPUS_PER_TASK",1),
+cluster = SLURMCluster(cores=int(os.environ.get("SLURM_CPUS_PER_TASK",1)),
                        processes=1,
                        memory="4GB",
                        walltime="01:00:00",
                        queue="batch",
                        interface="ib0")
 
-numworkers = os.environ("NB_WORKERS",1)
+numworkers = int(os.environ.get("NB_WORKERS",1))
 cluster.scale(numworkers)
 
 # Connect to distributed cluster and override default
