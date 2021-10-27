@@ -86,7 +86,7 @@ Hereafter, a general script for using ipyparrallel with the SLURM scheduler is p
 #BATCH -p batch           #batch partition 
 #SBATCH -J ipy_engines      #job name
 #SBATCH -N 2                # 2 node, you can increase it
-#SBATCH -n 10                # 10 cores, you can increase it
+#SBATCH -n 10                # 10 task, you can increase it
 #SBATCH -c 1                # 1 cpu per task
 #SBATCH -t 1:00:00         # Job is killed after 1h
 
@@ -100,15 +100,23 @@ profile=job_${SLURM_JOB_ID}
 echo "Creating profile_${profile}"
 ipython profile create ${profile}
 
-srun --exclusive -N 1 -n 1 -c 1 ipcontroller --ip="*" --profile=${profile} &
+# Number of tasks - 1 controller task - 1 python task 
+NB_WORKERS=$((${SLURM_NTASKS}-2))
+
+LOG_DIR="$(pwd)/logs/job_${SLURM_JOBID}"
+mkdir -p ${LOG_DIR}
+
+#srun: runs ipcontroller -- forces to start on first node 
+srun -w $(hostname) --output=${LOG_DIR}/ipcontroller-%j-workers.out  --exclusive -N 1 -n 1 -c ${SLURM_CPUS_PER_TASK} ipcontroller --ip="*" --profile=${profile} &
 sleep 10
 
-#srun: runs ipengine on each available core
-srun --exclusive -n 8 -c 1 ipengine --profile=${profile} --location=$(hostname) &
+#srun: runs ipengine on each available core -- controller location first node
+srun --output=${LOG_DIR}/ipengine-%j-workers.out --exclusive -n ${NB_WORKERS} -c ${SLURM_CPUS_PER_TASK} ipengine --profile=${profile} --location=$(hostname) &
 sleep 25
 
+#srun: starts job
 echo "Launching job for script $1"
-srun --exclusive -N 1 -n 1 -c 1 python $1 -p ${profile}
+srun --output=${LOG_DIR}/code-%j-execution.out  --exclusive -N 1 -n 1 -c ${SLURM_CPUS_PER_TASK} python $1 -p ${profile} 
 
 ```
 __________
@@ -261,6 +269,10 @@ logging.info("args.profile: {0}".format(profile))
 
 #prepare the engines
 c = Client(profile=profile)
+NB_WORKERS = os.environ.get("NB_WORKERS",1)
+# wait for the engines
+c.wait_for_engines(NB_WORKERS)
+
 #The following command will make sure that each engine is running in
 # the right working directory to access the custom function(s).
 c[:].map(os.chdir, [FILE_DIR]*len(c))
@@ -377,6 +389,10 @@ logging.info("args.profile: {0}".format(profile))
 
 #prepare the engines
 c = Client(profile=profile)
+NB_WORKERS = os.environ.get("NB_WORKERS",1)
+# wait for the engines
+c.wait_for_engines(NB_WORKERS)
+
 #The following command will make sure that each engine is running in
 # the right working directory to access the custom function(s).
 c[:].map(os.chdir, [FILE_DIR]*len(c))

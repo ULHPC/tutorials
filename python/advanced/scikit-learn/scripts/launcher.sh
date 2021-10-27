@@ -21,7 +21,7 @@ ipython profile create ${profile}
 NB_WORKERS=$((${SLURM_NTASKS}-2))
 
 LOG_DIR="$(pwd)/logs/job_${SLURM_JOBID}"
-mkdir -p LOG_DIR
+mkdir -p ${LOG_DIR}
 
 #srun: runs ipcontroller -- forces to start on first node 
 srun -w $(hostname) --output=${LOG_DIR}/ipcontroller-%j-workers.out  --exclusive -N 1 -n 1 -c ${SLURM_CPUS_PER_TASK} ipcontroller --ip="*" --profile=${profile} &
