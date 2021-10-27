@@ -18,7 +18,7 @@ echo "Creating profile_${profile}"
 ipython profile create ${profile}
 
 # Number of tasks - 1 controller task - 1 python task 
-NB_WORKERS=$((${SLURM_NTASKS}-2))
+export NB_WORKERS=$((${SLURM_NTASKS}-2))
 
 LOG_DIR="$(pwd)/logs/job_${SLURM_JOBID}"
 mkdir -p ${LOG_DIR}

@@ -244,18 +244,19 @@ import matplotlib as mpl
 mpl.use('Agg')
 import matplotlib.pyplot as plt
 import socket
+import os
 
 # Submit workers as slurm job
 # Below we define the slurm parameters of a single worker
-cluster = SLURMCluster(cores=1,
+cluster = SLURMCluster(cores=os.envion.get("SLURM_CPUS_PER_TASK",1),
                        processes=1,
                        memory="4GB",
                        walltime="01:00:00",
                        queue="batch",
                        interface="ib0")
 
-# Let's scale to 5 workers
-cluster.scale(5)
+numworkers = os.environ("SLURM_NTASKS",1)
+cluster.scale(numworkers)
 
 # Connect to distributed cluster and override default
 client = Client(cluster)
@@ -328,26 +329,26 @@ First, we create a new slurm launcher: `cluster_steps_workers.sh`
 ```bash
 #!/bin/bash -l
 
-#SBATCH -p batch
-#SBATCH -J DASK_steps_workers
-#SBATCH --nodes=2
-#SBATCH --ntasks-per-node=4
-#SBATCH --cpus-per-task=1
-#SBATCH -t 00:30:00
+#SBATCH -p batch    
+#SBATCH -J DASK_steps_workers    
+#SBATCH -N 2
+#SBATCH -n 10     
+#SBATCH -c 1    
+#SBATCH -t 00:30:00    
 
 # Load the python version used to install Dask
 module load lang/Python
 
 # Make sure that you have an virtualenv dask_env installed
-export DASK_VENV="$1"
+export DASK_VENV="$1" 
 shift
 if [ ! -d "${DASK_VENV}" ] || [ ! -f "${DASK_VENV}/bin/activate" ]; then
-
+        
         echo "Error with virtualenv" && exit 1
 
     fi
 
-# Source the python env
+# Source the python env 
 source "${DASK_VENV}/bin/activate"
 
 # Dask configuration to store the scheduler file
@@ -356,17 +357,35 @@ DASK_JOB_CONFIG="${DASK_CONFIG}/job_${SLURM_JOB_ID}"
 mkdir -p ${DASK_JOB_CONFIG}
 export SCHEDULER_FILE="${DASK_JOB_CONFIG}/scheduler.json"
 
+
+# Number of tasks - 1 controller task - 1 python task
+export NB_WORKERS=$((${SLURM_NTASKS}-2))
+
+
+LOG_DIR="$(pwd)/logs/job_${SLURM_JOBID}"
+mkdir -p ${LOG_DIR}
+
 # Start controller on this first task
-dask-scheduler  --scheduler-file "${SCHEDULER_FILE}"  --interface "ib0" &
+srun -w $(hostname) --output=${LOG_DIR}/ipcontroller-%j-workers.out  --exclusive -N 1 -n 1 -c ${SLURM_CPUS_PER_TASK} \
+     dask-scheduler  --scheduler-file "${SCHEDULER_FILE}"  --interface "ib0" &
 sleep 10
 
 #srun: runs ipengine on each other available core
-srun --cpu-bind=cores dask-worker  --scheduler-file "${SCHEDULER_FILE}"  --interface "ib0" &
-sleep 25
+srun --output=${LOG_DIR}/ipengine-%j-workers.out \
+     --exclusive -n ${NB_WORKERS} -c ${SLURM_CPUS_PER_TASK} \
+     --cpu-bind=cores dask-worker  \
+     --label \
+     --interface "ib0" \
+     --scheduler-file "${SCHEDULER_FILE}"  &
 
-python -u $*
+sleep 25 
+
+srun --output=${LOG_DIR}/code-%j-execution.out  --exclusive -N 1 -n 1 -c ${SLURM_CPUS_PER_TASK} python -u $*
 
 ```
+
+** Remark ** The launcher below requests 10 tasks on 2 nodes with 1 cpu per task. This is **NOT** an efficient use of the hardware but only for educational purpose. Please always try to maximize nodes usage, i.e., 28 tasks max on iris, 128 max on aion or decrease and increase multithreading if possible. You may use  `--ntasks-per-nodes`or `--ntasks-per-socket` for this purpose. Please also refer to the [ULHPC documentation](https://hpc-docs.uni.lu/slurm/#specific-resource-allocation) for more details. 
+
 
 To illustrate this manual setting, we are going now to scale XGBoost using Dask. [XGBoost](https://xgboost.readthedocs.io/en/latest/) is an optimized gradient boosting library designed to be highly efficient, flexible and portable. Gradient boosted trees can be distributed by making Dask and XGBoost working together. XGBoost provides a powerful prediction framework, and it works well in practice. It wins Kaggle contests and is popular in industry because it has good performance and can be easily interpreted (i.e., it’s easy to find the important features from a XGBoost model).
 

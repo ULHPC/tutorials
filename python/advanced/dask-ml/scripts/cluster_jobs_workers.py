@@ -7,18 +7,18 @@ import matplotlib as mpl
 mpl.use('Agg')
 import matplotlib.pyplot as plt 
 import socket
+import os
 
 # Submit workers as slurm job 
 # Below we define the slurm parameters of a single worker
-cluster = SLURMCluster(cores=1,
+cluster = SLURMCluster(cores=os.envion.get("SLURM_CPUS_PER_TASK",1),
                        processes=1,
                        memory="4GB",
                        walltime="01:00:00",
                        queue="batch",
                        interface="ib0")
 
-# Let's scale to 5 workers
-numworkers = 5
+numworkers = os.environ("SLURM_NTASKS",1)
 cluster.scale(numworkers)
 
 # Connect to distributed cluster and override default

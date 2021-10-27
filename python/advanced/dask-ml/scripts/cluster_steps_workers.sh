@@ -2,9 +2,9 @@
 
 #SBATCH -p batch    
 #SBATCH -J DASK_steps_workers    
-#SBATCH --nodes=2
-#SBATCH --ntasks-per-node=4     
-#SBATCH --cpus-per-task=1    
+#SBATCH -N 2
+#SBATCH -n 10     
+#SBATCH -c 1    
 #SBATCH -t 00:30:00    
 
 # Load the python version used to install Dask
@@ -28,16 +28,29 @@ DASK_JOB_CONFIG="${DASK_CONFIG}/job_${SLURM_JOB_ID}"
 mkdir -p ${DASK_JOB_CONFIG}
 export SCHEDULER_FILE="${DASK_JOB_CONFIG}/scheduler.json"
 
+
+# Number of tasks - 1 controller task - 1 python task
+export NB_WORKERS=$((${SLURM_NTASKS}-2))
+
+
+LOG_DIR="$(pwd)/logs/job_${SLURM_JOBID}"
+mkdir -p ${LOG_DIR}
+
 # Start controller on this first task
-dask-scheduler  --scheduler-file "${SCHEDULER_FILE}"  --interface "ib0" &
+srun -w $(hostname) --output=${LOG_DIR}/ipcontroller-%j-workers.out  --exclusive -N 1 -n 1 -c ${SLURM_CPUS_PER_TASK} \
+     dask-scheduler  --scheduler-file "${SCHEDULER_FILE}"  --interface "ib0" &
 sleep 10
 
 #srun: runs ipengine on each other available core
-srun --cpu-bind=cores dask-worker  \
+srun --output=${LOG_DIR}/ipengine-%j-workers.out \
+     --exclusive -n ${NB_WORKERS} -c ${SLURM_CPUS_PER_TASK} \
+     --cpu-bind=cores dask-worker  \
      --label \
      --interface "ib0" \
      --scheduler-file "${SCHEDULER_FILE}"  &
+
 sleep 25 
 
-python -u $*
+srun --output=${LOG_DIR}/code-%j-execution.out  --exclusive -N 1 -n 1 -c ${SLURM_CPUS_PER_TASK} python -u $*
+
 
