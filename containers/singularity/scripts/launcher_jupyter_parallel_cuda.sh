@@ -24,8 +24,10 @@ export IPYTHONDIR="$HOME/ipython_sing/$SLURM_JOBID"
 mkdir -p $JUPYTER_CONFIG_DIR
 mkdir -p $IPYTHONDIR
 
+export IP_ADDRESS=$(hostname -I | awk '{print $1}')
 
-echo "On your laptop: ssh -p 8022 -NL 8889:$(facter ipaddress):8889 ${USER}@access-iris.uni.lu " 
+
+echo "On your laptop: ssh -p 8022 -NL 8889:${IP_ADDRESS}:8889 ${USER}@access-${ULHPC_CLUSTER}.uni.lu " 
 
 
 singularity instance start --nv jupyter_parallel_cuda.sif jupyter
@@ -57,7 +59,7 @@ sleep 25
 
 export XDG_RUNTIME_DIR=""
 
-singularity run --nv instance://jupyter $VENV "jupyter notebook --ip $(facter ipaddress) --no-browser --port 8889" &
+singularity run --nv instance://jupyter $VENV "jupyter notebook --ip ${IP_ADDRESS} --no-browser --port 8889" &
 pid=$!
 sleep 5s
 singularity run --nv instance://jupyter $VENV "jupyter notebook list"

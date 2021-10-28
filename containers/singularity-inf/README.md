@@ -343,7 +343,7 @@ sudo singularity build kera.sif keraUbuntu1804/
 #SBATCH --time=0-00:15:00
 #SBATCH -p batch
 #SBATCH --qos=normal
-#SBATCH --mail-user=ovidiu-cristian.marcu@uni.lu
+#SBATCH --mail-user=firstname.lastname@uni.lu
 #SBATCH --mail-type=BEGIN,END
 
 module load tools/Singularity
