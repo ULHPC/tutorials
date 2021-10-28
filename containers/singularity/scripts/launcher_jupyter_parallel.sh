@@ -13,7 +13,7 @@
 
 module load tools/Singularity
 
-export VENV="$HOME/.envs/venv_parallel"
+export VENV="$HOME/.envs/venv_parallel_${ULHPC_CLUSTER}"
 export JUPYTER_CONFIG_DIR="$HOME/jupyter_sing/$SLURM_JOBID/"
 export JUPYTER_PATH="$VENV/share/jupyter":"$HOME/jupyter_sing/$SLURM_JOBID/jupyter_path"
 export JUPYTER_DATA_DIR="$HOME/jupyter_sing/$SLURM_JOBID/jupyter_data"
