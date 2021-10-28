@@ -6,8 +6,8 @@ pages:
   - Overview:       'setup/index.md'
   - Pre-Requisites: 'setup/preliminaries.md'
   - Installation:   'setup/install.md'
+- Shell-novice: 'tools/cli/index.md'
 - Preliminaries: 'preliminaries/index.md'
-- Command line utilities: 'tools/cli/index.md'
 - Getting started:
   - Overview: 'beginners/index.md'
   - Job scheduling with SLURM: 'basic/scheduling/index.md'

@@ -14,7 +14,7 @@ Kindly create in advance the various accounts for the **cloud services** we migh
 
 ## UL HPC account
 
-You need to have an account on our platform. See <https://hpc.uni.lu/users/get_an_account.html>
+You need to have an account on our platform. See <https://hpc-docs.uni.lu/accounts/>
 
 ## Software List
 
@@ -26,7 +26,7 @@ The following software should be installed, depending on your running platform. 
 | Mac OS        | [iTerm2](https://www.iterm2.com/)                                                               | enhanced Terminal                                       |                     |
 | Windows       | [Chocolatey](https://chocolatey.org/)                                                           | Package Manager for Windows                             | `choco install ...` |
 | Windows       | [Windows Subsystem for Linux](https://docs.microsoft.com/en-us/windows/wsl/install-win10) (WSL) | Emulation-like translation of Linux kernel system calls |                     |
-| Windows       | [Ubuntu over WSL](https://www.microsoft.com/en-us/p/ubuntu/9nblggh4msv6)                        | Linux Ubuntu on Windows                                 |                     |
+| Windows       | [Ubuntu over WSL](https://www.microsoft.com/en-us/p/ubuntu/9nblggh4msv6)                        | Linux Ubuntu on Windows (recommended)                   |                     |
 | Windows       | [Windows Terminal](https://github.com/microsoft/terminal)                                       |                                                         |                     |
 | Windows       | [MobaXTERM](https://mobaxterm.mobatek.net/)                                                     | Terminal with tabbed SSH client                         |                     |
 | Windows       | [SourceTree](https://www.sourcetreeapp.com/)                                                    | _(optional)_ enhanced git GUI                           |                     |
@@ -41,8 +41,28 @@ Follow the below **custom** instructions depending on your running platform and 
 
 #### Chocolatey: The Package Manager for Windows
 
-Follow Installation instructions on <https://chocolatey.org/> - install in an **administrator** PowerShell.
+Follow Installation instructions on <https://chocolatey.org/> - install it as an **administrator** PowerShell.
 You'll probably need to reboot your laptop.
+
+__Chocolatey Installation__
+
+With PowerShell, you must ensure Get-ExecutionPolicy is not Restricted.
+
+- Right click on the Windows starting boutton and choose Windows PowerShell
+
+- Run these three commands
+
+```bash
+Get-ExecutionPolicy
+### if it returns  Restricted then go to the next step
+Set-ExecutionPolicy AllSigned   ## or Set-ExecutionPolicy Bypass -Scope Process
+Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
+```
+- Then use __chocolatey__ to install a software
+
+```bash
+choco.exe install virtualbox
+```
 
 #### WSL and Ubuntu over Windows
 
@@ -94,9 +114,12 @@ You will need to enable by default the good font (top left window icon / Propert
 #### Microsoft Terminal
 
 You probably want to install then  [Windows Terminal](https://github.com/microsoft/terminal)
+It offers the ability to use multiple shell environment in one terminal.
 
-* Install the [Windows Terminal from the Microsoft Store](https://aka.ms/terminal).
+* Install the [Windows Terminal from the Microsoft Store](https://aka.ms/terminal). [Other useful link](https://ohmyposh.dev/docs/windows)
 * Install the [Cascadia Code PL](https://github.com/microsoft/cascadia-code/releases) font
+* Install the [Meslo LGM NF](https://ohmyposh.dev/docs/fonts) font
+* [Other useful link](https://ohmyposh.dev/docs/windows)
 
 
 __Changing the Powershell prompt__
@@ -106,7 +129,8 @@ Install posh-git and oh-my-posh:
 ```bash
 Install-Module posh-git -Scope CurrentUser
 Install-Module oh-my-posh -Scope CurrentUser
-Set-Theme Paradox
+Install-Module -Name PSReadLine -Scoope CurrentUser -Force -SkipPublisherCheck 
+Set-PoshPrompt -Theme Agnoster
 ```
 If you get an error message "Running scripts is disabled on this system", you have to change the PowerShell execution policy which doesn't allow to run scripts:
 
@@ -120,16 +144,29 @@ To make these changes permanent, append the following lines in the Powershell pr
 ```bash
 Import-Module posh-git
 Import-Module oh-my-posh
-Set-Theme Paradox
+Set-PoshPrompt -Theme Agnoster
 ```
 
-You will also need to enable the [Cascadia Code PL](https://github.com/microsoft/cascadia-code/releases) font by addin into the Windows Terminal Parameters the following lines in the `settings.json` files under the default
+You will also need to enable the [Cascadia Code PL](https://github.com/microsoft/cascadia-code/releases) font by adding into the Windows Terminal Parameters the following lines in the `settings.json` files under the default
 
 ```json
 "defaults":
 {
-  // SETTINGS TO APPLY TO ALL PROFILES
-  "fontFace": "Cascadia Code PL",
+    "font": 
+            {
+                "face": "MesloLGM NF"
+            }
+        },
+        "list": 
+        [
+            {
+                "commandline": "powershell.exe",
+                "guid": "{61c54bbd-c2c6-5271-96e7-009a87ff44bf}",
+                "hidden": false,
+                "name": "Windows PowerShell"
+                "fontFace": "MesloLGM NF",
+            },
+        ]
 },
 ```
 
