@@ -63,6 +63,7 @@ pages:
   - Scalable Deep Learning: 'deep_learning/scalable/index.md'
 - Containers:
   - Singularity: 'containers/singularity/index.md'
+  - Singularity-Infiniband: 'containers/singularity-inf/index.md'
 - Virtualization:
    - Vagrant: 'virtualization/vagrant/index.md'
 - Misc:

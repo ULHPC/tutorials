@@ -44,6 +44,7 @@ So far, the following tutorials are proposed:
 | _Big Data_              | [Running Big Data Application using Apache Hadoop and Spark ](bigdata/)                               | intermediate   |
 | _Machine/Deep Learning_ | [Machine and Deep learning workflows](deep_learning/)                                                 | intermediate   |
 | _Containers_            | [HPC Containers with Singularity](containers/singularity/)                                            | advanced       |
+|                         | [Singularity with Infiniband](containers/singularity-inf/)                                            | advanced       |
 | _Virtualization_        | (OLD) [Create and reproduce work environments using Vagrant](advanced/Vagrant/)                       | intermediate   |
 |                         | [Deploying virtual machines with Vm5k on Grid'5000](advanced/vm5k/)                                   | intermediate   |
 | _GPU_                   | [Introduction to GPU programming with CUDA (C/C++)](cuda/)                                            | intermediate   |
