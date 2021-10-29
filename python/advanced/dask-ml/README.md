@@ -9,6 +9,8 @@ fontsize: 12pt
 
 ![](./images/dask_logo.jpeg)
 
+[![](cover_slides.png)](slides.pdf)
+
 ## Description
 
 Dask is a flexible library to perform parallel computing Data Science tasks in [Python](https://www.python.org/). Although multiple parallel and distributed computing libraries already exist in Python, Dask remains **Pythonic** while being very efficient (see [Diagnosing Performance](https://distributed.dask.org/en/latest/diagnosing-performance.html)).
