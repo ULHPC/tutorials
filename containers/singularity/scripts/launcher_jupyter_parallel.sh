@@ -23,9 +23,6 @@ export IPYTHONDIR="$HOME/ipython_sing/$SLURM_JOBID"
 mkdir -p $JUPYTER_CONFIG_DIR
 mkdir -p $IPYTHONDIR
 
-LOG_IPY="$(pwd)/logs_ipy/job_${SLURM_JOBID}"
-mkdir -p ${LOG_DIR}
-
 
 export IP_ADDRESS=$(hostname -I | awk '{print $1}')
 export XDG_RUNTIME_DIR=""
