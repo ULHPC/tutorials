@@ -297,6 +297,50 @@ Now you can test the configuration with: `ssh iris-cluster`:
 [yourlogin@access1 ~]$
 ```
 
+You can also test your configuration with: `ssh aion-cluster`
+
+```bash
+(laptop)$> ssh aion-cluster
+==================================================================================
+ Welcome to access1.aion-cluster.uni.lux
+==================================================================================
+                            _                         _
+                           / \   ___ ___ ___  ___ ___/ |
+                          / _ \ / __/ __/ _ \/ __/ __| |
+                         / ___ \ (_| (_|  __/\__ \__ \ |
+                        /_/   \_\___\___\___||___/___/_|
+            __  _    _                ____ _           _          __
+           / / / \  (_) ___  _ __    / ___| |_   _ ___| |_ ___ _ _\ \
+          | | / _ \ | |/ _ \| '_ \  | |   | | | | / __| __/ _ \ '__| |
+          | |/ ___ \| | (_) | | | | | |___| | |_| \__ \ ||  __/ |  | |
+          | /_/   \_\_|\___/|_| |_|  \____|_|\__,_|___/\__\___|_|  | |
+           \_\                                                    /_/
+==================================================================================
+ Atos BullSequana XH2000 Direct Liquid Cooling (DLC) supercomputer
+                                             https://hpc-docs.uni.lu/systems/aion/
+=== Computing Nodes ========================================= #RAM/n === #Cores ==
+ aion-[0001-0318] 318 Atos X2410 AMD compute blade            256GB      40704
+                      (2 AMD Epyc ROME 7H12 @ 2.6 GHz [64c/280W])
+==================================================================================
+ Fast interconnect using InfiniBand HDR 100 Gb/s technology
+ Shared Storage with iris (raw capacity): 2180 TB (GPFS)+1300 TB (Lustre) = 3480TB
+
+ Support (in this order!)                                 Platform notifications
+   - *NEW* Technical Docs ...  https://hpc-docs.uni.lu         - Twitter: @ULHPC
+   - FAQ .................... https://hpc-docs.uni.lu/support/
+   - User Mailing-list ...... hpc-users@uni.lu  (moderated)
+   - Helpdesk/Bug reports ... https://hpc.uni.lu/support (Service Now)
+   - HPC Devops/Admins ...... hpc-team@uni.lu (OPEN TICKETS)
+ ULHPC user guide is available on https://hpc-docs.uni.lu
+
+    - 2020b software set released as default module environment
+==================================================================================
+ /!\ NEVER COMPILE OR RUN YOUR PROGRAMS FROM THIS FRONTEND !
+     First reserve your nodes (using srun/sbatch(1))
+ /!\ BEWARE of OS and architecture differences between Iris and Aion 
+     Identify the cluster used to compile your programs (Ex: <name>_<cluster>) 
+[yourlogin@access1 ~]$ 
+```
 
 In the following sections, we assume these aliases to be defined.
 
