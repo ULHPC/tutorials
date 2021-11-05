@@ -1,49 +1,15 @@
 [![By ULHPC](https://img.shields.io/badge/by-ULHPC-blue.svg)](https://hpc.uni.lu) [![Licence](https://img.shields.io/badge/license-GPL--3.0-blue.svg)](http://www.gnu.org/licenses/gpl-3.0.html) [![GitHub issues](https://img.shields.io/github/issues/ULHPC/tutorials.svg)](https://github.com/ULHPC/tutorials/issues/) [![](https://img.shields.io/badge/slides-PDF-red.svg)](https://github.com/ULHPC/tutorials/raw/devel/beginners/slides.pdf) [![Github](https://img.shields.io/badge/sources-github-green.svg)](https://github.com/ULHPC/tutorials/tree/devel/beginners/) [![Documentation Status](http://readthedocs.org/projects/ulhpc-tutorials/badge/?version=latest)](http://ulhpc-tutorials.readthedocs.io/en/latest/beginners/) [![GitHub forks](https://img.shields.io/github/stars/ULHPC/tutorials.svg?style=social&label=Star)](https://github.com/ULHPC/tutorials)                                                                                                                                                                                                           
 
-# Command line utilities
+# Introducing the Shell
 
-     Copyright (c) 2013-2020 UL HPC Team <hpc-sysadmins@uni.lu>
+     Copyright (c) 2013-2021 UL HPC Team <hpc-sysadmins@uni.lu>
 
-## Using a command line text editor
+The use of the shell is fundamental to a wide range of advanced computing tasks, including high-performance computing. These lessons will introduce you to this powerful tool.
+We will cover a range of basic commands that will help you navigate and explore, create files and directories, write script, read and concatenate, how to use command arguments/options and combine existing commands, as well as copy, move and remove files.
 
-Before the next section, you must learn to use a text editor in command line.
-We can recommend `nano` or `vim`: `nano` is very simple, `vim` is complex but very powerful.
+## Basic linux commands
 
-
-### Nano
-
-`$ nano <path/filename>`
-
-* quit and save: `CTRL+x`
-* save: `CTRL+o`
-* highlight text: `Alt-a`
-* Cut the highlighted text: `CTRL+k`
-* Paste: `CTRL+u`
-
-
-### Vim
-
-[`vim <path/filename>`](https://vim.rtorr.com/)
-
-There are 2 main modes:
-
-* Edition mode: press `i` or `insert` once
-* Command mode: press `ESC` once
-
-Here is a short list of useful commands:
-
-* save: `:w`
-* save and quit: `:wq`
-* quit and discard changes: `:q!`
-* search: `/<pattern>`
-* search & replace: `:%s/<pattern>/<replacement>/g`
-* jump to line 100: `:100`
-* highlight text: `CTRL+V`
-* cut the highlighted text: `d`
-* cut one line: `dd`
-* paste: `p`
-* undo: `u`
-
+If you're not already comfortable manipulating files and directories, searching for files with `grep` and `find`, and writing simple loops and scripts. We recommend you to explore this lesson [Unix Shell](https://swcarpentry.github.io/shell-novice/)
 
 ## Persistent Terminal Sessions using GNU Screen
 
@@ -68,7 +34,7 @@ While not mandatory, we advise you to rely on our customized configuration file 
 
 Otherwise, simply clone the [ULHPC dotfile repository](https://github.com/ULHPC/dotfiles/) and make a symbolic link `~/.screenrc` targeting the file `screen/screenrc` of the repository.
 
-### Basic commands
+### Screen commands
 
 You can start a screen session (_i.e._ creates a single window with a shell in it) with the `screen` command.
 Its main command-lines options are listed below:
