@@ -12,10 +12,7 @@ The practical sessions of the Nov 2021 HPC School are listed below
 
 | PS | Description                                                                       | Speaker              | Duration |
 |----|-----------------------------------------------------------------------------------|----------------------|----------|
-| 1a | Preliminary: shell setup on your local Laptop (Windows, MacOS, Linux)             | A. Olloh, T. Valette | 30min    |
-| 1b | Introduction; Navigating Files and Directories                                    | A. Olloh, T. Valette | 1h15     |
-| 1c | Working With Files and Directories; Pipes and Filters; Loops                      | A. Olloh, T. Valette | 1h30     |
-| 1d | Shell Scripts; Finding Things; Concluding remarks                                 | H. Cartiaux          | 1h30     |
+| 1  | Introductionto UNIX/Linux Shell and Command lines                                 | A. Olloh, T. Valette, H. Cartiaux | 4h45     |
 | 2  | Preliminaries (SSH - OpenOnDemand)                                                | A. Olloh, T. Valette | 1h30     |
 | 3  | Getting Started 2.0 Introduction to the SLURM Job Scheduler, basic launchers      | H. Cartiaux          | 1h45     |
 | 4  | HPC Management of Sequential and Embarrassingly parallel jobs                     | S. Varrette          | 1h30     |
@@ -29,4 +26,3 @@ The practical sessions of the Nov 2021 HPC School are listed below
 | 12 | R - Statistical computing                                                         | A. Ginolac           | 2h30     |
 | 13 | Data management (backup, security)                                                | S. Peter             | 1h00     |
 | 14 | Big Data Analytics: Batch, Stream and Hybrid processing engines                   | S. Varrette          | 55min    |
-
