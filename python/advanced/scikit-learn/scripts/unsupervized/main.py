@@ -30,8 +30,14 @@ logging.basicConfig(filename=os.path.join(FILE_DIR,profile+'.log'),
 logging.info("number of CPUs found: {0}".format(cpu_count()))
 logging.info("args.profile: {0}".format(profile))
 
-#prepare the engines
+# prepare the engines
 c = Client(profile=profile)
+NB_WORKERS = os.environ.get("NB_WORKERS",1)
+# wait for the engines
+c.wait_for_engines(NB_WORKERS)
+
+# Be sure to wait for engines
+
 #The following command will make sure that each engine is running in
 # the right working directory to access the custom function(s).
 c[:].map(os.chdir, [FILE_DIR]*len(c))
@@ -59,3 +65,5 @@ with open(os.path.join(FILE_DIR,'scores_kmeans.csv'), 'w') as f:
     f.write('nbClusters,inertia,\n')
     f.write("\n".join(','.join(str(c) for c in l) for l in inertia))
     f.write('\n')
+
+c.shutdown()

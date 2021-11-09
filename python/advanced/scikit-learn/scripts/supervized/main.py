@@ -37,6 +37,10 @@ logging.info("args.profile: {0}".format(profile))
 
 #prepare the engines
 c = Client(profile=profile)
+NB_WORKERS = os.environ.get("NB_WORKERS",1)
+# wait for the engines
+c.wait_for_engines(NB_WORKERS)
+
 #The following command will make sure that each engine is running in
 # the right working directory to access the custom function(s).
 c[:].map(os.chdir, [FILE_DIR]*len(c))
@@ -87,3 +91,4 @@ plt.xticks(np.arange(len(param_space['gamma'])), map(lambda x : "%.2E"%(x),param
 plt.yticks(np.arange(len(param_space['C'])), map(lambda x : "%.2E"%(x),param_space['C']), fontsize=8, rotation=45)
 plt.title('Validation accuracy')
 plt.savefig(os.path.join(FILE_DIR,"validation.png"))
+c.shutdown()

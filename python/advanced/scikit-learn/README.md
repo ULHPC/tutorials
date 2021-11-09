@@ -50,9 +50,11 @@ si
 # Load python 3.6 module
 module load lang/Python 
 # Create your virtual environment
-python3 -m venv scikit
+python3 -m venv scikit_${ULHPC_CLUSTER}
 # Activate your env
-source ./scikit/bin/activate
+source ./scikit_${ULHPC_CLUSTER}/bin/activate
+# Upgrade pip
+pip install --upgrade pip
 # Now install required packages
 # jupyter himself
 pip install ipython
@@ -74,6 +76,8 @@ exit
 
 Hereafter, a general script for using ipyparrallel with the SLURM scheduler is provided. We are going to use it in the remaining part of this tutorial. This is the file ```launcher.sh``` that you can find in the scripts directory. 
 
+** Remark ** The launcher below requests 10 tasks on 2 nodes with 1 cpu per task. This is **NOT** an efficient use of the hardware but only for educational purpose. Please always try to maximize nodes usage, i.e., 28 tasks max on iris, 128 max on aion or decrease and increase multithreading if possible. You may use  `--ntasks-per-nodes`or `--ntasks-per-socket` for this purpose. Please also refer to the [ULHPC documentation](https://hpc-docs.uni.lu/slurm/#specific-resource-allocation) for more details. 
+
 
 ```bash
 
@@ -81,13 +85,14 @@ Hereafter, a general script for using ipyparrallel with the SLURM scheduler is p
 
 #BATCH -p batch           #batch partition 
 #SBATCH -J ipy_engines      #job name
-#SBATCH -n 10                # 10 cores, you can increase it
 #SBATCH -N 2                # 2 node, you can increase it
+#SBATCH -n 10                # 10 task, you can increase it
+#SBATCH -c 1                # 1 cpu per task
 #SBATCH -t 1:00:00         # Job is killed after 1h
 
 module load lang/Python 
 
-source scikit/bin/activate
+source scikit_${ULHPC_CLUSTER}/bin/activate
 
 #create a new ipython profile appended with the job id number
 profile=job_${SLURM_JOB_ID}
@@ -95,15 +100,23 @@ profile=job_${SLURM_JOB_ID}
 echo "Creating profile_${profile}"
 ipython profile create ${profile}
 
-ipcontroller --ip="*" --profile=${profile} &
+# Number of tasks - 1 controller task - 1 python task 
+export NB_WORKERS=$((${SLURM_NTASKS}-2))
+
+LOG_DIR="$(pwd)/logs/job_${SLURM_JOBID}"
+mkdir -p ${LOG_DIR}
+
+#srun: runs ipcontroller -- forces to start on first node 
+srun -w $(hostname) --output=${LOG_DIR}/ipcontroller-%j-workers.out  --exclusive -N 1 -n 1 -c ${SLURM_CPUS_PER_TASK} ipcontroller --ip="*" --profile=${profile} &
 sleep 10
 
-#srun: runs ipengine on each available core
-srun ipengine --profile=${profile} --location=$(hostname) &
+#srun: runs ipengine on each available core -- controller location first node
+srun --output=${LOG_DIR}/ipengine-%j-workers.out --exclusive -n ${NB_WORKERS} -c ${SLURM_CPUS_PER_TASK} ipengine --profile=${profile} --location=$(hostname) &
 sleep 25
 
+#srun: starts job
 echo "Launching job for script $1"
-python $1 -p ${profile}
+srun --output=${LOG_DIR}/code-%j-execution.out  --exclusive -N 1 -n 1 -c ${SLURM_CPUS_PER_TASK} python $1 -p ${profile} 
 
 ```
 __________
@@ -256,6 +269,10 @@ logging.info("args.profile: {0}".format(profile))
 
 #prepare the engines
 c = Client(profile=profile)
+NB_WORKERS = os.environ.get("NB_WORKERS",1)
+# wait for the engines
+c.wait_for_engines(NB_WORKERS)
+
 #The following command will make sure that each engine is running in
 # the right working directory to access the custom function(s).
 c[:].map(os.chdir, [FILE_DIR]*len(c))
@@ -283,6 +300,7 @@ with open(os.path.join(FILE_DIR,'scores_kmeans.csv'), 'w') as f:
     f.write('nbClusters,inertia,\n')
     f.write("\n".join(','.join(str(c) for c in l) for l in inertia))
     f.write('\n')
+c.shutdown()
 ```
 
 ### Start parallel clustering
@@ -371,6 +389,10 @@ logging.info("args.profile: {0}".format(profile))
 
 #prepare the engines
 c = Client(profile=profile)
+NB_WORKERS = os.environ.get("NB_WORKERS",1)
+# wait for the engines
+c.wait_for_engines(NB_WORKERS)
+
 #The following command will make sure that each engine is running in
 # the right working directory to access the custom function(s).
 c[:].map(os.chdir, [FILE_DIR]*len(c))
@@ -421,6 +443,7 @@ plt.xticks(np.arange(len(param_space['gamma'])), map(lambda x : "%.2E"%(x),param
 plt.yticks(np.arange(len(param_space['C'])), map(lambda x : "%.2E"%(x),param_space['C']), fontsize=8, rotation=45)
 plt.title('Validation accuracy')
 plt.savefig(os.path.join(FILE_DIR,"validation.png"))
+c.shutdown()
 ```
 ### Start parallel supervized learning
 
