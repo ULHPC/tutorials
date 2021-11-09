@@ -125,7 +125,7 @@ We can create the SHA-256 checksum with the following command:
 40d61ef3ba32cc17f2c90db65e6c4d884d220b1999cbded7e80988541c9db11b  message.txt
 ```
 
-Since we want to store the checksum, we should save to a file:
+Since we want to store the checksum, we should save it to a file:
 
 ```bash
 (node)$> sha256sum message.txt > message.sha256
