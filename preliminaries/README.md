@@ -10,7 +10,7 @@
 Welcome to the High Performance Computing (HPC) Facility of the University of Luxembourg (ULHPC)!
 
 To take the best out of the different tutorials and practical sessions proposed in the training sessions organised by the University of Luxembourg, you have to follow several steps to configure your working environments.
-In particular, ensure you have followed the [preliminary setup instructions](setup/preliminaries.md) for your laptop.
+In particular, ensure you have followed the [preliminary setup instructions](https://ulhpc-tutorials.readthedocs.io/en/latest/setup/preliminaries/) for your laptop.
 
 **Convention**
 
@@ -81,14 +81,14 @@ The public key authentication is the most secure and flexible approach to ensure
 
 ### SSH Key Generation
 
-(_Again_) ensure your have followed the [preliminary setup instructions](setup/preliminaries.md) as the below guideline is common to **ALL** platforms (including Windows assuming you have configure Ubuntu over WSL)
+(_Again_) ensure your have followed the [preliminary setup instructions](https://ulhpc-tutorials.readthedocs.io/en/latest/setup/preliminaries/) as the below guideline is common to **ALL** platforms (including Windows assuming you have configure Ubuntu over WSL)
 
 Open a Terminal.
 SSH is installed natively on your machine and the `ssh` command should be accessible from the command line:
 
 ```bash
 (laptop)$> ssh -V
-OpenSSH_7.9p1, LibreSSL 2.7.3
+OpenSSH_8.8p1, OpenSSL 1.1.1l
 ```
 
 #### SSH Key Management
@@ -205,19 +205,19 @@ Click **Save** at the top of the page.
 
 Run the following commands in a terminal (substituting *yourlogin* with the login name you received from us):
 
-        (laptop)$> ssh -p 8022 yourlogin@access-iris.uni.lu
+        (laptop)$> ssh -p 8022 yourlogin@access-aion.uni.lu
 
 Now you probably want to avoid taping this long command to connect to the platform. You can customize SSH aliases for that. Edit the file `~/.ssh/config` (create it if it does not already exist) and adding the following entries:
 
-        Host iris-cluster
-            Hostname access-iris.uni.lu
+        Host aion-cluster
+            Hostname access-aion.uni.lu
             User yourlogin
             Port 8022
             ForwardAgent no
 
 Now you shall be able to issue the following (simpler) command to connect to the cluster and obtain the welcome banner:
 
-        (laptop)$> ssh iris-cluster
+        (laptop)$> ssh aion-cluster
 
 
 
@@ -248,55 +248,50 @@ Host *-cluster
     ForwardAgent no
 ```
 
-Now you can test the configuration with: `ssh iris-cluster`:
+Now you can test the configuration with: `ssh aion-cluster`:
 
 ``` bash
-(laptop)$> ssh iris-cluster
+(laptop)$> ssh aion-cluster
 ==================================================================================
- Welcome to access1.iris-cluster.uni.lux
+ Welcome to access1.aion-cluster.uni.lux
 ==================================================================================
                             _                         _
                            / \   ___ ___ ___  ___ ___/ |
                           / _ \ / __/ __/ _ \/ __/ __| |
                          / ___ \ (_| (_|  __/\__ \__ \ |
                         /_/   \_\___\___\___||___/___/_|
-               _____      _        ____ _           _          __
-              / /_ _|_ __(_)___   / ___| |_   _ ___| |_ ___ _ _\ \
-             | | | || '__| / __| | |   | | | | / __| __/ _ \ '__| |
-             | | | || |  | \__ \ | |___| | |_| \__ \ ||  __/ |  | |
-             | ||___|_|  |_|___/  \____|_|\__,_|___/\__\___|_|  | |
-              \_\                                              /_/
+            __  _    _                ____ _           _          __
+           / / / \  (_) ___  _ __    / ___| |_   _ ___| |_ ___ _ _\ \
+          | | / _ \ | |/ _ \| '_ \  | |   | | | | / __| __/ _ \ '__| |
+          | |/ ___ \| | (_) | | | | | |___| | |_| \__ \ ||  __/ |  | |
+          | /_/   \_\_|\___/|_| |_|  \____|_|\__,_|___/\__\___|_|  | |
+           \_\                                                    /_/
 ==================================================================================
-
+ Atos BullSequana XH2000 Direct Liquid Cooling (DLC) supercomputer
+                                             https://hpc-docs.uni.lu/systems/aion/
 === Computing Nodes ========================================= #RAM/n === #Cores ==
- iris-[001-108] 108 Dell C6320 (2 Xeon E5-2680v4@2.4GHz [14c/120W]) 128GB  3024
- iris-[109-168]  60 Dell C6420 (2 Xeon Gold 6132@2.6GHz [14c/140W]) 128GB  1680
- iris-[169-186]  18 Dell C4140 (2 Xeon Gold 6132@2.6GHz [14c/140W]) 768GB   504
-                +72 GPU  (4 Tesla V100 [5120c CUDA + 640c Tensor])   16GB +368640
- iris-[187-190]   4 Dell R840 (4 Xeon Platin.8180M@2.5GHz [28c/205W]) 3TB   448
- iris-[191-196]   6 Dell C4140 (2 Xeon Gold 6132@2.6GHz [14c/140W]) 768GB   168
-                +24 GPU  (4 Tesla V100 [5120c CUDA + 640c Tensor])   32GB +122880
+ aion-[0001-0318] 318 Atos X2410 AMD compute blade            256GB      40704
+                      (2 AMD Epyc ROME 7H12 @ 2.6 GHz [64c/280W])
 ==================================================================================
-  *** TOTAL: 196 nodes, 5824 cores + 491520 CUDA cores + 61440 Tensor cores ***
+ Fast interconnect using InfiniBand HDR 100 Gb/s technology
+ Shared Storage with iris (raw capacity): 2180 TB (GPFS)+1300 TB (Lustre) = 3480TB
 
- Fast interconnect using InfiniBand EDR 100 Gb/s technology
- Shared Storage (raw capacity): 2180 TB (GPFS) + 1300 TB (Lustre) = 3480 TB
+ Support (in this order!)                                 Platform notifications
+   - *NEW* Technical Docs ...  https://hpc-docs.uni.lu         - Twitter: @ULHPC
+   - FAQ .................... https://hpc-docs.uni.lu/support/
+   - User Mailing-list ...... hpc-users@uni.lu  (moderated)
+   - Helpdesk/Bug reports ... https://hpc.uni.lu/support (Service Now)
+   - HPC Devops/Admins ...... hpc-team@uni.lu (OPEN TICKETS)
+ ULHPC user guide is available on https://hpc-docs.uni.lu
 
- Support (in this order!)                       Platform notifications
-   - User DOC ........ https://hpc.uni.lu/docs    - Twitter: @ULHPC
-   - FAQ ............. https://hpc.uni.lu/faq
-   - Mailing-list .... hpc-users@uni.lu
-   - Bug reports .NEW. https://hpc.uni.lu/support (Service Now)
-   - Admins .......... hpc-team@uni.lu (OPEN TICKETS)
-
-    ULHPC user guide 2020 available on hpc.uni.lu:
-          https://hpc.uni.lu/blog/2020/ulhpc-user-guide-2020/
+    - 2020b software set released as default module environment
 ==================================================================================
  /!\ NEVER COMPILE OR RUN YOUR PROGRAMS FROM THIS FRONTEND !
      First reserve your nodes (using srun/sbatch(1))
+ /!\ BEWARE of OS and architecture differences between Iris and Aion 
+     Identify the cluster used to compile your programs (Ex: <name>_<cluster>) 
 [yourlogin@access1 ~]$
 ```
-
 
 In the following sections, we assume these aliases to be defined.
 
@@ -308,7 +303,7 @@ It might happen that the port 8022 is filtered from your working place. You can 
     [laptop] -----||--------> 22 [SSH gateway] ---------> 8022 [access-iris]
                firewall
 
-The gateway can be any SSH server which have access to the access frontend of the cluster. The [Gforge @ UL](http://gforge.uni.lu) is typically used in this context but you can prefer any other alternative (your personal NAS @ home etc.). Then alter the SSH config on your laptop (in `~/.ssh/config` typically) as follows:
+The gateway can be any SSH server which have access to the access frontend of the cluster. You can use your personal NAS @ home etc. Then alter the SSH config on your laptop (in `~/.ssh/config` typically) as follows:
 
 * create an entry to be able to connect to the gateway:
 
@@ -331,7 +326,7 @@ Ensure you can connect to the gateway:
 
 The `.ulhpc` suffix we mentioned in the previous configuration is an arbitrary suffix you will now specify in your command lines in order to access the UL HPC platform via the gateway as follows:
 
-    (laptop)$> ssh iris.ulhpc
+    (laptop)$> ssh aion.ulhpc
 
 
 ### Step 1c - Connect to UL HPC (Windows)
@@ -343,7 +338,7 @@ The `.ulhpc` suffix we mentioned in the previous configuration is an arbitrary s
 * load your private SSH key. **Tools** > **Network** > **MobaKeyGen (SSH key generator)** and choose Load (or create a new RSA key).
 * click on **Session**
   * In **SSH Session**:
-    * Remote host: `access-iris.uni.lu`
+    * Remote host: `access-aion.uni.lu` _(or access-iris.uni.lu)_
 		* Check the **Specify username** box
 		* Username: `yourlogin`
     * Port: 8022
