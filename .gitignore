@@ -3,3 +3,4 @@ site/
 *.Rproj
 git_stats/
 .vagrant
+venv/
