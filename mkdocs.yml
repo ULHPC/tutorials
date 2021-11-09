@@ -45,6 +45,7 @@ pages:
 - GPU:
   - Accelerating Applications with CUDA C/C++: 'cuda/index.md'
   - Convolution using GPU: 'cuda/exercises/convolution/index.md'
+  - Solving the Laplace Equation on GPU with OpenAcc: 'OpenAccExe/index.md' 
 - Mathematics:
   - MATLAB: 'maths/matlab/basics/index.md'
   - MATLAB (advanced): 'maths/matlab/advanced/index.md'

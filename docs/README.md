@@ -49,6 +49,7 @@ So far, the following tutorials are proposed:
 |                         | [Deploying virtual machines with Vm5k on Grid'5000](advanced/vm5k/)                                   | intermediate   |
 | _GPU_                   | [Introduction to GPU programming with CUDA (C/C++)](cuda/)                                            | intermediate   |
 |                         | [Image Convolution with GPU and CUDA](cuda/exercises/convolution/)                                    | intermediate   |
+|                         | [Solving the Laplace Equation on GPU with OpenAcc](OpenAccExe/)                                       | intermediate   |
 | _Misc_                  | [Reproducible Research at the Cloud Era](misc/reproducible-research/)                                 | intermediate   |
 
 __List of contributors__
