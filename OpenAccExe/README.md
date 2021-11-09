@@ -40,12 +40,28 @@ Now you'll need to pull the latest changes in your working copy of the [ULHPC/tu
 
 ```
 
+## Objectives
+
+The objective of this tutorial is to show how the OpenAcc directives can be used to accelerate a numerical solver commonly used in engineering and scientific applications. After completing the exercise of this tutorial you would be able to: 
+
+* Transfer data from hosr to the device using the data directives,
+
+* Accelerate a nested loop application with the loop directives, and,
+
+* Use the reduction clause to perform summation on variables or  elements of a vector.
+
+
 ## The Laplace Equation
-*
 
-*
+* The Laplace differential equation in 2D is given by:
 
-*
+$$ \nabla^2 F = \frac{d^2F}{dx^2} + \frac{d^2F}{dy^2} = 0 $$
+
+* It models t a distribution at steady state or equilibrium in a 2D space (e.g. Temperature Distribution). 
+
+* The Laplace differential equation can be solved using the Jacobi method if the boundary conditions are known (e.g. the temperature at the edges of the physical region of interest)
+
+An example of a 2D problem is demonstrated in the figures bellow. The first figure presents the temperature at the edges of a plane. The solution of the Laplacian equation providing  the steady state temperature distribution was calculated for the given boundary condition using the Jacobi method and is shown in the second figure.
 
 <p>
     <img src="images/tinp.png" alt  width="650;">
@@ -74,11 +90,12 @@ Now you'll need to pull the latest changes in your working copy of the [ULHPC/tu
 
   * Derivative Filter used to find rapid changes in signals and especially images
 
+    $$H(x,y) = \frac{-1}{\pi \sigma ^4}(1-\frac{x^2+y^2}{2\sigma ^2})e^{-\frac{x^2+y^2}{2\sigma^2}}$$
+
   * Used for edge detection and noise detection
 
   * Mathematical Formula:
 
-$$H(x,y) = \frac{-1}{\pi \sigma ^4}(1-\frac{x^2+y^2}{2\sigma ^2})e^{-\frac{x^2+y^2}{2\sigma^2}}$$
 
 
 ## Implementation of Jacobi Method in C
