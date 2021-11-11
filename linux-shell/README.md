@@ -7,7 +7,7 @@
 The use of the shell is fundamental to a wide range of advanced computing tasks, including high-performance computing. These lessons will introduce you to this powerful tool.
 We will cover a range of basic commands that will help you navigate and explore, create files and directories, write script, read and concatenate, how to use command arguments/options and combine existing commands, as well as copy, move and remove files.
 
- [![](https://github.com/ULHPC/tutorials/raw/devel/linux-shell/cover_slides.png)](https://github.com/ULHPC/tutorials/raw/linux-shell/slides.pdf)
+ [![](https://github.com/ULHPC/tutorials/raw/devel/linux-shell/cover_slides.png)](https://github.com/ULHPC/tutorials/raw/devel/linux-shell/slides.pdf)
 
 ## Very first steps on UNIX/Linux Shell and Command lines
 
