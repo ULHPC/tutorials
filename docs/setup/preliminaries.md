@@ -88,7 +88,7 @@ Then  __Enable the Developer mode__
 - In Start Menu: select "Developers Settings"
 - Turn on Developer Mode
 
-Now you can **Intall Ubuntu within the [Microsoft Store](https://aka.ms/wslstore)**
+Now you can **Install Ubuntu within the [Microsoft Store](https://aka.ms/wslstore)**
 
 ![](https://docs.microsoft.com/en-us/windows/wsl/media/store.png)
 
