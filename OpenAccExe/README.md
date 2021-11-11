@@ -4,8 +4,13 @@
 
      Copyright (c) 2020-2021 L. Koutsantonis, T. Carneiro, UL HPC Team <hpc-team@uni.lu>
 
+[![](https://github.com/ULHPC/tutorials/raw/devel/OpenAccExe/cover_slides.png)](https://github.com/ULHPC/tutorials/raw/devel/OpenAccExe/slides.pdf)
 
+<br />
+<br />
 --------------------
+<br />
+<br />
 ## Pre-requisites 
 
 Ensure you are able to [connect to the UL HPC cluster](https://hpc.uni.lu/users/docs/access.html).
@@ -33,6 +38,8 @@ Now you'll need to pull the latest changes in your working copy of the [ULHPC/tu
 (access)$> git pull
 
 ```
+<br />
+<br />
 
 ## Objectives
 
