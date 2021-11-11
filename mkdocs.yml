@@ -6,7 +6,7 @@ pages:
   - Overview:       'setup/index.md'
   - Pre-Requisites: 'setup/preliminaries.md' 
   - Clone and setup ULHPC Tutorials:   'setup/install.md'
-- Fist interactions with ULHPC:
+- First interactions with ULHPC:
   - The UNIX/Linux Shell:  'linux-shell/index.md'
   - SSH and OpenOnDemand: 'preliminaries/index.md'
 - Getting started:
