@@ -5,9 +5,10 @@ pages:
 - Setup:
   - Overview:       'setup/index.md'
   - Pre-Requisites: 'setup/preliminaries.md'
-  - Installation:   'setup/install.md'
-- Preliminaries: 'preliminaries/index.md'
-- Command line utilities: 'tools/cli/index.md'
+- First steps on Shell:
+  - Introducing the Shell: 'preliminaries/introduction-shell.md'
+  - Connect to UL HPC: 'preliminaries/ulhpc-preliminaries.md'
+  - Prepare Tutorials:   'setup/install.md'
 - Getting started:
   - Overview: 'beginners/index.md'
   - Job scheduling with SLURM: 'basic/scheduling/index.md'
