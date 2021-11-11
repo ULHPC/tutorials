@@ -4,11 +4,11 @@ pages:
 - Latest HPC School: 'hpc-school.md'
 - Setup:
   - Overview:       'setup/index.md'
-  - Pre-Requisites: 'setup/preliminaries.md'
-- First steps on Shell:
-  - Introducing the Shell: 'preliminaries/introduction-shell.md'
-  - Connect to UL HPC: 'preliminaries/ulhpc-preliminaries.md'
-  - Prepare Tutorials:   'setup/install.md'
+  - Pre-Requisites: 'setup/preliminaries.md' 
+  - Clone and setup ULHPC Tutorials:   'setup/install.md'
+- Fist interactions with ULHPC:
+  - The UNIX/Linux Shell:  'linux_shell/index.md'
+  - SSH and OpenOnDemand: 'preliminaries/index.md'
 - Getting started:
   - Overview: 'beginners/index.md'
   - Job scheduling with SLURM: 'basic/scheduling/index.md'
@@ -26,11 +26,11 @@ pages:
 - Sequential/Embarrassingly parallel jobs:
   - Overview: 'sequential/basics/index.md'
   - GNU Parallel: 'sequential/gnu-parallel/index.md'
-  - Serial Tasks in Action:
-      - Overview: 'sequential/examples/index.md'
-      - Example/Object Recognition: 'sequential/examples/object_recognition.md'
-      - Example/Watermarking Images: 'sequential/examples/watermarking.md'
-      - Example/JCell (GA in Java): 'sequential/examples/jcell.md'
+- Serial Tasks in Action:
+  - Overview: 'sequential/examples/index.md'
+  - Example/Object Recognition: 'sequential/examples/object_recognition.md'
+  - Example/Watermarking Images: 'sequential/examples/watermarking.md'
+  - Example/JCell (GA in Java): 'sequential/examples/jcell.md'
 - Parallel MPI and/or OpenMP:
   - Overview: 'parallel/basics/index.md'
   - OSU Micro-benchmarks: 'parallel/mpi/OSU_MicroBenchmarks/index.md'
