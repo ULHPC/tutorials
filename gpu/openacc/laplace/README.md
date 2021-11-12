@@ -4,7 +4,7 @@
 
      Copyright (c) 2020-2021 L. Koutsantonis, T. Carneiro, UL HPC Team <hpc-team@uni.lu>
 
-[![](https://github.com/ULHPC/tutorials/raw/devel/gpu/openacc/laplacecover_slides.png)](https://github.com/ULHPC/tutorials/raw/devel/gpu/openacc/laplace/slides.pdf)
+[![](https://github.com/ULHPC/tutorials/raw/devel/gpu/openacc/laplace/cover_slides.png)](https://github.com/ULHPC/tutorials/raw/devel/gpu/openacc/laplace/slides.pdf)
 
 <br />
 <br />
@@ -227,7 +227,7 @@ ssh iris-cluster
 mkdir -p ~/git/github.com/ULHPC
 cd  ~/git/github.com/ULHPC
 git clone https://github.com/ULHPC/tutorials.git
-cd tutorials/OpenAccExe/exercise/
+cd tutorials/gpu/openacc/laplace/exercise
 git stash && git pull -r && git stash pop
 ```
 <br />
