@@ -54,7 +54,7 @@ Reserve a node with one GPU for interactive development, load the necessary modu
 
 As usual, more information can be found in the [documentation][4].
 
-[4]: https://hpc.uni.lu/users/docs/gpu.html
+[4]: https://hpc-docs.uni.lu/jobs/gpu/
 
 ```bash
 ### Have an interactive GPU job

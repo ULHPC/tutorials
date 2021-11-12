@@ -126,6 +126,9 @@ git stash && git pull -r && git stash pop
 
 ### Get an interactive GPU job
 
+See also [documentation](https://hpc-docs.uni.lu/jobs/gpu/)
+
+
 ```bash
 ### ... either directly - dedicate 1/4 of available cores to the management of GPU card
 $> si-gpu -c7

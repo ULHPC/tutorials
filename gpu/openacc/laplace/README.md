@@ -1,10 +1,10 @@
-[![By ULHPC](https://img.shields.io/badge/by-ULHPC-blue.svg)](https://hpc.uni.lu) [![Licence](https://img.shields.io/badge/license-GPL--3.0-blue.svg)](http://www.gnu.org/licenses/gpl-3.0.html) [![GitHub issues](https://img.shields.io/github/issues/ULHPC/tutorials.svg)](https://github.com/ULHPC/tutorials/issues/) [![](https://img.shields.io/badge/slides-PDF-red.svg)](https://github.com/ULHPC/tutorials/raw/devel/cuda/exercises/convolution/slides.pdf) [![Github](https://img.shields.io/badge/sources-github-green.svg)](https://github.com/ULHPC/tutorials/tree/devel/cuda/exercises/convolution/) [![Documentation Status](http://readthedocs.org/projects/ulhpc-tutorials/badge/?version=latest)](http://ulhpc-tutorials.readthedocs.io/en/latest/cuda/exercises/convolution/) [![GitHub forks](https://img.shields.io/github/stars/ULHPC/tutorials.svg?style=social&label=Star)](https://github.com/ULHPC/tutorials)
+[![By ULHPC](https://img.shields.io/badge/by-ULHPC-blue.svg)](https://hpc.uni.lu) [![Licence](https://img.shields.io/badge/license-GPL--3.0-blue.svg)](http://www.gnu.org/licenses/gpl-3.0.html) [![GitHub issues](https://img.shields.io/github/issues/ULHPC/tutorials.svg)](https://github.com/ULHPC/tutorials/issues/) [![](https://img.shields.io/badge/slides-PDF-red.svg)](https://github.com/ULHPC/tutorials/raw/devel/cuda/exercises/convolution/slides.pdf) [![Github](https://img.shields.io/badge/sources-github-green.svg)](https://github.com/ULHPC/tutorials/tree/devel/gpu/openacc/laplace/) [![Documentation Status](http://readthedocs.org/projects/ulhpc-tutorials/badge/?version=latest)](http://ulhpc-tutorials.readthedocs.io/en/latest/gpu/openacc/laplace/) [![GitHub forks](https://img.shields.io/github/stars/ULHPC/tutorials.svg?style=social&label=Star)](https://github.com/ULHPC/tutorials)
 
 # Solving the Laplace Equation on GPU with OpenAcc
 
      Copyright (c) 2020-2021 L. Koutsantonis, T. Carneiro, UL HPC Team <hpc-team@uni.lu>
 
-[![](https://github.com/ULHPC/tutorials/raw/devel/OpenAccExe/cover_slides.png)](https://github.com/ULHPC/tutorials/raw/devel/OpenAccExe/slides.pdf)
+[![](https://github.com/ULHPC/tutorials/raw/devel/gpu/openacc/laplacecover_slides.png)](https://github.com/ULHPC/tutorials/raw/devel/gpu/openacc/laplace/slides.pdf)
 
 <br />
 <br />
@@ -17,7 +17,7 @@ Ensure you are able to [connect to the UL HPC cluster](https://hpc.uni.lu/users/
 In particular, recall that the `module` command **is not** available on the access frontends.
 
 
-Access to ULHPC cluster  (here iris): 
+Access to ULHPC cluster  (here iris as it is the only one featuring GPU nodes): 
 
 ```bash
 (laptop)$> ssh iris-cluster
@@ -36,8 +36,22 @@ Now you'll need to pull the latest changes in your working copy of the [ULHPC/tu
 ``` bash
 (access)$> cd ~/git/github.com/ULHPC/tutorials
 (access)$> git pull
-
 ```
+
+## Access to a GPU-equipped node of the Iris cluster
+
+This practical session assumes that you reserve a node on `iris` with one GPU for interactive development.
+See [documentation](https://hpc-docs.uni.lu/jobs/gpu/)
+
+```bash
+### Have an interactive GPU job
+# ... either directly
+(access)$> si-gpu
+# ... or using the HPC School reservation 'hpcschool-gpu' if needed  - use 'sinfo -T' to check if active and its name
+# (access)$> si-gpu --reservation=hpcschool-gpu
+$ nvidia-smi
+```
+
 <br />
 <br />
 
@@ -201,7 +215,7 @@ void update(float *restrict F, float  *restrict Fnew, int n, int m)
 <br />
 
 ## Exercise: 
-## Parallelize the Jacobi iteration with OpenAcc
+## Parallelize the Jacobi iteration with OpenACC
 
 Follow the steps bellow to accelerate the Jacobi solver using the OpenAcc directives. 
 
