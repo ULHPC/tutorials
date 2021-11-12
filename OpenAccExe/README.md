@@ -9,9 +9,9 @@
 <br />
 <br />
 --------------------
-<br />
-<br />
-## Pre-requisites 
+
+
+## Pre-requisites
 
 Ensure you are able to [connect to the UL HPC cluster](https://hpc.uni.lu/users/docs/access.html).
 In particular, recall that the `module` command **is not** available on the access frontends.
