@@ -175,8 +175,8 @@ You will also need to enable the [Cascadia Code PL](https://github.com/microsoft
 Now you can install MobaXterm using [chocolatey]( https://chocolatey.org/) (within an _administrator_ Powershell -- You may need to enable the appropriate powerline font by defaults in the Properties of the Administrator Powershell):
 
 ```bash
-$> choco.exe install mobaxterm          # Enhanced X11 Terminal for Windows
-$> choco.exe install vcxsrv
+$ choco.exe install mobaxterm          # Enhanced X11 Terminal for Windows
+$ choco.exe install vcxsrv
 ```
 
 Alternatively, you can consider using [VcXsrv](https://sourceforge.net/projects/vcxsrv/) as an X-server yet our training sessions will assume you rely on MobaXterm.
@@ -216,11 +216,11 @@ You probably want to install the following editors/IDE:
 Then, while most of the below software are covered in the trainings, if you want a fast setup, once you have Chocolatey installed, run the following within an _administrator_ Powershell:
 
 ~~~bash
-$> choco.exe install git gitflow-avh    # (newer) Git stuff
-$> choco.exe install mobaxterm          # Enhanced X11 Terminal for Windows
-$> choco.exe install virtualbox         # install virtualbox -- see https://www.virtualbox.org/
-$> choco.exe install vagrant            # install Vagrant    -- see https://www.vagrantup.com/downloads.html
-$> choco.exe install docker-desktop     # install Docker -- https://docs.docker.com/engine/installation/mac/
+$ choco.exe install git gitflow-avh    # (newer) Git stuff
+$ choco.exe install mobaxterm          # Enhanced X11 Terminal for Windows
+$ choco.exe install virtualbox         # install virtualbox -- see https://www.virtualbox.org/
+$ choco.exe install vagrant            # install Vagrant    -- see https://www.vagrantup.com/downloads.html
+$ choco.exe install docker-desktop     # install Docker -- https://docs.docker.com/engine/installation/mac/
 ~~~
 
 #### Update to WSL 2
@@ -236,23 +236,23 @@ Enable-WindowsOptionalFeature -Online -FeatureName VirtualMachinePlatform
 Then you can get the list of your WSL systems and convert them as follows:
 
 ```bash
-$> wsl -l -v
+$ wsl -l -v
   NAME     STATE     VERSION
 * Ubuntu   Stopped   1
 # Convert -- Adapt the Distribution name accordinaly
-$> wsl --set-version Ubuntu 2
+$ wsl --set-version Ubuntu 2
 ```
 
 For setting all future distributions to use WSL 2, you will need to use the following command:
 
 ```bash
-$> wsl --set-default-version 2
+$ wsl --set-default-version 2
 ```
 
 Finally, verify that your changes worked:
 
 ```bash
-$> wsl -l -v    # OR wsl --list --verbose
+$ wsl -l -v    # OR wsl --list --verbose
   NAME     STATE     VERSION
 * Ubuntu   Stopped   2
 ```
@@ -267,16 +267,16 @@ Install [iterm2](https://iterm2.com/) and [Homebrew](https://brew.sh/)
 Once you have [Homebrew](http://brew.sh/) installed:
 
 ~~~bash
-$> brew install git git-flow    # (newer) Git stuff
-$> brew install mkdocs               # (optional) install mkdocs
-$> brew install pyenv pyenv-virtualenv direnv # see https://varrette.gforge.uni.lu/tutorials/pyenv.html
-$> brew install virtualbox      # install virtualbox -- see https://www.virtualbox.org/
-$> brew install vagrant         # install Vagrant    -- see https://www.vagrantup.com/downloads.html
-$> brew install vagrant-manager # see http://vagrantmanager.com/
-$> brew install docker          # install Docker -- https://docs.docker.com/engine/installation/mac/
+$ brew install git git-flow    # (newer) Git stuff
+$ brew install mkdocs               # (optional) install mkdocs
+$ brew install pyenv pyenv-virtualenv direnv # see https://varrette.gforge.uni.lu/tutorials/pyenv.html
+$ brew install virtualbox      # install virtualbox -- see https://www.virtualbox.org/
+$ brew install vagrant         # install Vagrant    -- see https://www.vagrantup.com/downloads.html
+$ brew install vagrant-manager # see http://vagrantmanager.com/
+$ brew install docker          # install Docker -- https://docs.docker.com/engine/installation/mac/
 # Note that you probably want to install Firefox, Chrome etc. with brew
-$> brew install firefox
-$> brew install google-chrome
+$ brew install firefox
+$ brew install google-chrome
 ~~~
 
 _Note_: later on, you might wish to use the following shell function to update the software installed using [Homebrew](http://brew.sh/).
@@ -296,9 +296,9 @@ bup () {
 
 ~~~bash
 # Adapt the package names (and package manager) in case you are using another Linux distribution.
-$> sudo apt-get update
-$> sudo apt-get install git git-flow build-essential
-$> sudo apt-get install rubygems virtualbox vagrant virtualbox-dkms
+$ sudo apt-get update
+$ sudo apt-get install git git-flow build-essential
+$ sudo apt-get install rubygems virtualbox vagrant virtualbox-dkms
 ~~~
 
 For [Docker](https://docker.com/), choose your distribution from https://docs.docker.com/engine/installation/linux/
@@ -336,11 +336,11 @@ __Git__:
 (Eventually) Make yourself known to Git
 
 ~~~bash
-$> git config –-global user.name  "Firstname LastName"              # Adapt accordingly
-$> git config –-global user.email "Firstname.LastName@domain.org"   # Adapt with your mail
+$ git config –-global user.name  "Firstname LastName"              # Adapt accordingly
+$ git config –-global user.email "Firstname.LastName@domain.org"   # Adapt with your mail
 # Eventually, if you have a GPG key, use the public key to sign your commits/tags
-$> git config --global user.helper osxkeychain       # Only on Mac OS
-$> git config --global user.signingkey <fingerprint> # Ex: git config --global user.signingkey 5D08BCDD4F156AD7
+$ git config --global user.helper osxkeychain       # Only on Mac OS
+$ git config --global user.signingkey <fingerprint> # Ex: git config --global user.signingkey 5D08BCDD4F156AD7
 # you can get your key fingerprint (prefixed by 0x) with 'gpg -K --fingerprint | grep sec'
 ~~~
 
@@ -353,7 +353,7 @@ __Vagrant__
 Ensure that vagrant is running and has the appropriate plugins from the command line
 
 ```bash
-$> vagrant --version
+$ vagrant --version
 Vagrant 2.2.13
 ```
 
@@ -362,7 +362,7 @@ __Docker (only required for containers tutorials)__
 Launch the `Docker` app and then check that the [Docker](https://www.docker.com/) works:
 
 ~~~bash
-$> docker info
+$ docker info
 Containers: 9
  Running: 0
  Paused: 0
@@ -375,7 +375,7 @@ Server Version: 18.03.1-ce
 *  Pull the docker containers we might need for the concerned tutorial
 
 ~~~bash
-$> docker pull centos
+$ docker pull centos
 ~~~
 
 * Login onto you [Docker hub account](https://hub.docker.com/) (take note of your Docker Hub ID and password).
