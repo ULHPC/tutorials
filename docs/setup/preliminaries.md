@@ -267,7 +267,7 @@ Install [iterm2](https://iterm2.com/) and [Homebrew](https://brew.sh/)
 Once you have [Homebrew](http://brew.sh/) installed:
 
 ~~~bash
-$> brew install git-core git-flow    # (newer) Git stuff
+$> brew install git git-flow    # (newer) Git stuff
 $> brew install mkdocs               # (optional) install mkdocs
 $> brew install pyenv pyenv-virtualenv direnv # see https://varrette.gforge.uni.lu/tutorials/pyenv.html
 $> brew install virtualbox      # install virtualbox -- see https://www.virtualbox.org/
