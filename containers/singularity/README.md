@@ -105,10 +105,9 @@ source ~/.bashrc
 * Download singularity [source](https://sylabs.io/guides/3.6/user-guide/quick_start.html#download)
 
 ```bash
-export VERSION=3.6.4
-export URL="https://github.com/sylabs/singularity/releases/download"
-wget "${URL}/v${VERSION}/singularity-${VERSION}.tar.gz"
-tar -xzf singularity-${VERSION}.tar.gz
+export VERSION="v3.6.4"
+git clone https://github.com/hpcng/singularity.git
+git checkout ${VERSION}
 cd singularity
 ```
 
@@ -233,7 +232,7 @@ Type "help", "copyright", "credits" or "license" for more information.
 sudo singularity build --sandbox \
      python_3.7.3-stretch docker://python:3.7.3-stretch
 sudo singularity exec --writable \
-     python_3.7.3-stretch/ pip3 install numpy nose test
+     python_3.7.3-stretch/ pip3 install numpy nose pytest hypothesis
 singularity exec python_3.7.3-stretch \
      python3 -c "import numpy; numpy.test()"
 ```
