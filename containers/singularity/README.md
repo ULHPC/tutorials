@@ -352,9 +352,10 @@ Stage: build
     export PORT=8889
     export LC_ALL=C
 %post
+    apt-get update
+    apt-get upgrade -y
     apt-get install -y software-properties-common
     add-apt-repository multiverse
-    apt-get update
     apt-get install -y python3 python3-pip python3-venv
     python3 -m pip install jupyter
 ```
@@ -522,9 +523,10 @@ Stage: build
     export LC_ALL=C
 
 %post
+    apt-get update
+    apt-get upgrade -y
     apt-get install -y software-properties-common
     add-apt-repository multiverse
-    apt-get update
     apt-get install -y python3 python3-pip python3-venv
     python3 -m pip install jupyter cgroup-utils
 
@@ -809,6 +811,8 @@ Stage: build
     export LC_ALL=C
 
 %post
+    apt-get update
+    apt-get upgrade -y
     python3 -m pip install virtualenv jupyter ipyparallel cgroup-utils
 
 %runscript
