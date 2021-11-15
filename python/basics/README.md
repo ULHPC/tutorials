@@ -60,7 +60,7 @@ In this part we will simply run our Python script on the UL HPC platform, on a s
 
 ### Get all the scripts
 
-Clone the UL HPC python tutorial under your home directory on the **Iris** cluster. If you have cloned it before, simply run `git pull` to update it to the latest version.
+Clone the UL HPC python tutorial under your home directory on the **Iris** or **Aion** cluster. If you have cloned it before, simply run `git pull` to update it to the latest version.
 
 ```
 (laptop)$> ssh aion-cluster
@@ -114,7 +114,7 @@ Now, check that the content of `example1.out` corresponds to the expected output
 
 There are multiple versions of Python installed on the UL HPC clusters.
 
-First, you have the Python provided with the operating system packages, e.g. the default `python`. Since you cannot be sure which version this is, you should check it with:
+First, you have the Python provided with the operating system, e.g. the default `python`. Since you cannot be sure which version this is, you should check it with:
 
 ```
 (node)$> python --version
@@ -127,7 +127,7 @@ Usually, you have both versions 2.7 and 3 available this way:
 (node)$> python3 --version
 ```
 
-Additionally, we have newer version of Python available through the modules. To list these versions, you should use this command on a compute node:
+Additionally, we have newer versions of Python available through the modules. To list these versions, you should use this command on a compute node:
 
 ```
 (node)$> module avail lang/Python
@@ -163,7 +163,7 @@ In `tutorials/python/basics/example3/example3.py` you should see a version of th
 Try to execute the script on the Aion cluster in **interactive** mode.
 
 ```
-(access)$> si
+(node)$> module purge
 (node)$> module load lang/Python/3.8.6-GCCcore-10.2.0
 (node)$> python example3.py
 ```
@@ -177,8 +177,6 @@ We need to install the numpy library. We can install it ourselves in our home di
 `pip` is a package manager for Python. With this tool you can manage Python packages easily: install, uninstall, list, search packages or upgrade them. If you specify the `--user` parameter, the package will be installed under **your home directory** and will be available on all the compute nodes. You should also use `--no-cache` to prevent pip from searching in the cache directory which can be wrongly populated if you deal with several version of Python. Let's install numpy using `pip`.
 
 ```
-(access)$> si
-(node)$> module load lang/Python/3.8.6-GCCcore-10.2.0
 (node)$> python -m pip install --no-cache --user numpy==1.16
 (node)$> python -m pip show numpy
 (node)$> python -c "import numpy as np; print(np.__version__)"
@@ -208,23 +206,15 @@ Here comes a very specific case. Sometimes you have to use tools which depends o
 
 In this tutorial we will create a new virtual environment for the previous code in order to install a different version of numpy and check the performances of our code with it.
 
-First of all, if you use bare/system version of Python, install `virtualenv` package using pip:
-
-```
-(access)$> si
-(node)$> module load lang/Python/3.8.6-GCCcore-10.2.0
-(node)$> python3 -m pip install --no-cache --user virtualenv
-```
-
-Now you can create two virtual environments for your project. They will contain two different versions of numpy (1.21 and 1.16). Name it respectively `numpy21` and `numpy16`.
+Create two virtual environments for your project. They will contain two different versions of numpy (1.21 and 1.16). Name then`numpy21` and `numpy16`, respectively.
 
 ```
 (node)$> cd ~/tutorials/python/basics/example3/
-(node)$> python3 -m virtualenv numpy21
-(node)$> python3 -m virtualenv numpy16
+(node)$> python3 -m venv numpy21
+(node)$> python3 -m venv numpy16
 ```
 
-So now you should be able to active this environment with this `source` command. Please notice the `(numpy21)` present in your prompt that indicates that the `numpy21` environment is active. You can use `deactivate` command to exit the virtual environment.
+So now you should be able to active any of these environments with this `source` command. Please notice the `(numpy21)` present in your prompt that indicates that the `numpy21` environment is active. You can use `deactivate` command to exit the virtual environment.
 
 ```
 (node)$> source numpy21/bin/activate
@@ -242,7 +232,7 @@ So now you should be able to active this environment with this `source` command.
 
 To exit a virtual environment run the `deactivate` command.
 
-So now, we can install a different numpy version inside your virtual environments. Check that the version installed corresponds to numpy 1.21 for *numpy21* and numpy 1.16 in *numpy16*.
+So now, we can install a different numpy version inside each of your virtual environments. Check that the version installed corresponds to numpy 1.21 for *numpy21* and numpy 1.16 in *numpy16*.
 
 ```
 (node)$> # Go inside numpy21 environment and install numpy 1.21
@@ -258,6 +248,24 @@ So now, we can install a different numpy version inside your virtual environment
 ```
 
 Now you can adapt your script to load the right virtualenv and compare the performance of different versions of numpy.
+
+Here are the steps to compare the two versions:
+
+* Go to `tutorials/python/basics/example3`
+* Create a batch script named `numpy_compare.sh`
+* Edit it with your favorite editor (`vim`, `nano`, `emacs`...)
+* Add a shebang at the beginning (`#!/bin/bash`)
+* Add **#SBATCH** parameters
+  * `1` core
+  * `numpy_compare` name
+  * maximum `10m` walltime
+  * logfile under `numpy_compare.out`
+* Activate *numpy16* environment.
+* Execute `numpy_compare.py` a first time with this version of numpy.
+* Deactivate environment
+* Activate *numpy21* environment..
+* Execute the script a second time with this numpy version.
+* Check the content of the file `example3.out` and identify the two executions.
 
 **QUESTIONS**
 
