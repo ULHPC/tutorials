@@ -45,6 +45,7 @@ pages:
 - GPU:
   - Accelerating Applications with CUDA C/C++: 'cuda/index.md'
   - Convolution using GPU: 'cuda/exercises/convolution/index.md'
+  - OpenCL Programming: 'opencl/index.md'
 - Mathematics:
   - MATLAB: 'maths/matlab/basics/index.md'
   - MATLAB (advanced): 'maths/matlab/advanced/index.md'
@@ -68,7 +69,6 @@ pages:
    - Vagrant: 'virtualization/vagrant/index.md'
 - Misc:
   - Reproducible Research: 'misc/reproducible-research/index.md'
-#  - CUDA Programming: 'cuda/index.md'
 # - Advanced topics:
 #   - Advanced workflows on sequential jobs management: 'advanced/advanced_workflows/README.md'
 - Documentation (RTFD): 'rtfd.md'
