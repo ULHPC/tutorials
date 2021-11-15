@@ -291,8 +291,8 @@ def standard_dev(lst):
 * Compile your code using pythran:
 
 ```
-(node)$> pythran example4.py -e -o std.cpp # NEVER COMPILE ON ACCESS
-(node)$> pythran example4.py -o std.so # NEVER COMPILE ON ACCESS
+(node)$> pythran example4.py -e -o std.cpp # NEVER COMPILE ON ACCESS (only translate)
+(node)$> pythran example4.py -o std.so # NEVER COMPILE ON ACCESS (compile)
 (node)$> python -c "import std" # this imports the newly generated module with C implementation
 ```
 
@@ -310,7 +310,7 @@ def standard_dev(lst):
 
 ### Overview graph of runtimes
 
-![alt-text](https://github.com/ULHPC/tutorials/raw/devel/python/basics/time_vs_array_size.jpg)
+![alt-text](https://github.com/ULHPC/tutorials/raw/feature/2021_python-basics/python/basics/example4/answer/time_vs_array_size.jpeg)
 
 ## Use Scoop to parallelize execution of your Python code with Slurm
 
