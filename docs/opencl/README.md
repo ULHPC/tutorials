@@ -4,7 +4,7 @@
 
      Copyright (c) T. Carneiro, L. Koutsantonis, 2013-2021 UL HPC Team <hpc-sysadmins@uni.lu>
 
-[![](https://github.com/ULHPC/tutorials/raw/devel/gpu/openacc/laplace/cover_slides.png)](https://github.com/ULHPC/tutorials/raw/devel/gpu/openacc/laplace/slides.pdf)
+[![](./cover_slides.png)](./PS10b2.pdf)
 
 
 In the HPC school, the students had the opportunity to work with a higher-level heterogeneous programming model based on directives, called **OpenACC**. In this programming model, the parallelism is implicit, which means that the compiler is responsible for the parallelization, which might not work in all scenarios. However, OpenACC is a proprietary parallel programming model and it is supported by a limited set of devices, such as NVIDIA GPUs. 
@@ -25,7 +25,6 @@ The target audience of OpenCL consists of programmers that aim at programming po
 ------------------------------
 
 
-
 In this introductory tutorial, we teach how to perform the sum of two vectors `C=A+B` on the OpenCL device and how to retrieve the results from the device memory.
 
 
@@ -36,9 +35,8 @@ The **main objective** of this tutorial is to introduce for students of the HPC 
 ## This tutorial covers the following aspects of OpenCL programming:
 
 
-
-- Verify the existence of OpenCL-capable device(s) on the system;
-- Allocate memory on the device;
+- Check for OpenCL-capable device(s);
+- Memory allocation on the device;
 - Data transfer to the device;
 - Retrieve data from the device;
 - Compile C/C++ programs that launch OpenCL kernels.
@@ -103,11 +101,8 @@ $ nvidia-smi
 Driver is loaded, but we still need to load the CUDA development kit.
 
 ```bash
-$ module load compiler/GCC system/CUDA  # defaults are fine
-$ ml
-$ module save cuda  # save our environment
-$ module purge
-$ module restore cuda
+$ resif-load-swset-devel
+$ module load system/ULHPC-gpu/2020b
 ```
 
 --------------------
@@ -129,7 +124,7 @@ Refer to the [code folder][0] for the complete example.
 
 # The OpenCL platform model
 
-The platform model of OpenCL is similar to the one of the CUDA programming model. In short, according to the [OpenCL Specification][2], *"The model consists of a **host** (usually the COU) connected to one or more OpenCL **devices** (e.g., GPUs, FPGAs). An OpenCL device is divided into one or more compute units (CUs) which
+The platform model of OpenCL is similar to the one of the CUDA programming model. In short, according to the [OpenCL Specification][2], *"The model consists of a **host** (usually the CPU) connected to one or more OpenCL **devices** (e.g., GPUs, FPGAs). An OpenCL device is divided into one or more compute units (CUs) which
 are further divided into one or more processing elements (PEs). Computations on a device occur
 within the processing element"*
 
@@ -185,12 +180,12 @@ An OpenCL platform might have several devices. The next step is to ensure that t
 ----------------------
 # The OpenCL Context
 
-The action we perform in this step, in short, is something close to connecting the runtime to the device `default_device`.
+According to the **OpenCL Parallel Programming Development Cookbook**, *"contexts are used by the OpenCL runtime for managing objects such as command queues (the object that allows you to send commands to the device), memory, program, and kernel objects, and for executing kernels on one or more devices specified in the context"*.
 
 ```cpp
     cl::Context context({default_device});
 ```
-Now we need to define the code which is going to be executed on the device, called kernel. 
+Now we need to define the code object which is going to be executed on the device, called *kernel*. 
 
 ```cpp
    cl::Program::Sources sources;
@@ -223,7 +218,7 @@ In this tutorial, it is necessary to create three buffers: one `CL_MEM_READ_ONLY
 --------------------
 # Creating a Queue
 
-In OpenCL, it is required to create a queue to push commands onto the device. For those who program in CUDA, OpenCL queues are close to *CUDA streams*. 
+In OpenCL, it is required to create a queue to push commands onto the device. For those who program in CUDA, OpenCL queues are similar *CUDA streams*. 
 
 
 ```cpp
@@ -287,7 +282,7 @@ if (program.build({ default_device }) != CL_SUCCESS) {
     }
     
 ```
-It is important to point out that compilation errors are found, in execution time, at this point. If compilation errors are found, the program output the message `Error building`, and, then, outputs the compilation errors.
+It is important to point out that compilation errors are found, in execution time at this point. If compilation errors are found, the program output the message `Error building`, and, then, outputs the compilation errors.
 
 It is worth to mention that there are other ways to define a kernel in OpenCL. Furthermore, it is also possible to perform offline compilation of OpenCL kernels. 
 
@@ -318,7 +313,7 @@ In this example, it is only required to retrieve data from `C_d` to `C_h`.
 
 
 ```cpp
-queue.enqueueReadBuffer(buffer_C, CL_TRUE, 0, sizeof(int) * SIZE, C);
+queue.enqueueReadBuffer(C_d, CL_TRUE, 0, sizeof(int) * SIZE, C_h);
 ```
 
 In the line above, we read, from the buffer  `C_d`, `sizeof(int) * SIZE`  bytes using the `enqueueReadBuffer` function.
@@ -335,6 +330,8 @@ If it is not possible to find the OpenCL library, it is required, first, to `loc
 g++ -lOpenCL exercise1.cpp
 ```
 
+## Exercise 1: whats the output of exercise1.cpp on the Iris cluster? Is it using the GPUs by Default?
+
 On the Iris cluster, if the programmer compiles the code by only adding the `-lOpenCL` flag, the compiler uses the *Portable Computing Language (PoCL)* implementation of OpenCL that runs on the CPU.
 
 So, in the output, this first example, the *platform* is the [Portable Computing Language](http://portablecl.org/)
@@ -348,6 +345,8 @@ g++ -I/mnt/irisgpfs/apps/resif/iris/2019b/gpu/software/CUDA/10.1.243-GCC-8.3.0/i
 
 Here `/mnt/…` is the directory in which the module has been loaded. 
 
+## Exercise 2: compile the code using the NVIDIA implementation of OpenCL.
+
 ## Compilation errors
 
 For the sake of higher portability, the OpenCL code is compiled in execution time. For instance, in the kernel, adding `AAA` to the `const` keyword returns the following compiler error in execution time: 
@@ -359,7 +358,7 @@ Error building: <kernel>:1:34: error: unknown type name 'constAAA'
 ```
 It is important to point out that this runtime error was returned using the NVIDIA implementation of OpenCL 3.0.
 
-# Exercise 2: C=A+B and D=2*C
+# Exercise 3: D=A+B+C 
 
 Extend the previous example so a vector `D` receives the sum of three other vectors, `A`,`B`, and `C`.
 
