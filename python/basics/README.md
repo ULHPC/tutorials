@@ -10,6 +10,30 @@ Python is a high-level interpreted language widely used in research. It lets you
 
 In this tutorial, we are going to explain the steps to run a Python script on the cluster and install a Python package as a user. We will also create a virtual environment and switch from one to the other. We will show how to use different versions of Python on a node. Finally, we will parallelize your code with Scoop and compile it in C to fasten its execution.
 
+## Overview
+
+### Requirements
+
+* Access to the UL HPC clusters.
+* Basic knowledge of the linux command-line.
+* Basic programming knowledge.
+
+### Questions
+
+* How can I speed up my python code?
+* How can I install python packages?
+* How can I manage different versions of Python or packages?
+* ...
+
+### Objectives
+
+* See the difference between Python versions.
+* Speed up code using packages.
+* Speed up code by compiling it in C.
+* Install Python packages.
+* Switch between different Python and package versions using a virtual environment.
+* ...
+
 ## Examples used in this tutorial
 
 ### Example 1
@@ -93,18 +117,18 @@ Now, check that the content of `example1.out` corresponds to the expected output
 
 **HINT:** You can find the answer under `tutorials/python/basics/example1/answer/example1.sh.answer`.
 
-## Compare version of Python
+## Compare versions of Python
 
 You can switch between several version of Python that are already install on UL HPC iris cluster. To list the versions available, you should use this command on a compute node:
 
 ```
-(iris-001)$> module spider Python
+(iris-001)$> module avail lang/Python
 ```
 
 **QUESTIONS:**
 
-* What are the versions of Python available on Iris cluster ? On Gaia cluster ?
-* Which toolchains have been used to build them ?
+* What are the versions of Python available on Iris cluster? On Aion cluster? To update Iris to the same versions as Aion, you can run `resif-load-swset-devel`.
+* Which toolchains have been used to build them?
 
 Here we will compare the performance of Python 2.7 and Python 3.
 
@@ -120,15 +144,14 @@ Here are the steps to compare 2 codes:
   * maximum `10m` walltime
   * logfile under `example2.out`
 * Load Python version 2.7
-* Execute the script a first time with this version of Python
-* Load Python version 3.6
+* Execute the script a first time with this version of Python.
+* Load Python version 3.
 * Execute the script a second time with this Python version.
 * Check the content of the file `example2.out` and identify the 2 executions and the module load.
 
 **QUESTIONS**
 
-* What is the fastest version of Python ?
-* There are both `foss` and `intel` compiled versions of Python available on the Iris cluster. Modify your script to compare their execution time. Which is the fastest one ?
+* What is the fastest version of Python?
 
 **HINT**
 
@@ -145,6 +168,7 @@ Try to execute the script on iris cluster in **interactive** mode.
 
 ```
 (access)$> si
+(iris-001)$> module load lang/Python/3.7.4-GCCcore-8.3.0
 (iris-001)$> python example3.py
 ```
 
@@ -158,10 +182,11 @@ We need to install the numpy library. We can install it ourselves in our home di
 
 ```
 (access)$> si
-(iris-001)$> python -m pip install --no-cache --user numpy==1.16.4
+(iris-001)$> module load lang/Python/3.7.4-GCCcore-8.3.0
+(iris-001)$> python -m pip install --no-cache --user numpy==1.16
 (iris-001)$> python -m pip show numpy
 (iris-001)$> python -c "import numpy as np; print(np.__version__)"
-(iris-001)$> python -m pip install --no-cache --user numpy==1.13
+(iris-001)$> python -m pip install --no-cache --user numpy==1.21
 (iris-001)$> python -m pip show numpy
 (iris-001)$> python -c "import numpy as np; print(np.__version__)"
 ```
@@ -172,8 +197,12 @@ You can now run **example3.py** code and check its execution time.
 
 **QUESTIONS**
 
-* Which execution is faster between *numpy* code (example3.py) and *naïve* code (example1.py) ?
-* Why do you think that numpy is not as powerful as intended ? Which parameter can we change to compare the performances ?
+* Which execution is faster between *numpy* code (example3.py) and *naïve* code (example1.py)?
+* Why do you think that numpy is not as powerful as intended? Which parameter can we change to compare the performances?
+
+**NOTE**
+
+Numpy is also available from the `lang/SciPy-bundle` modules, tied to different Python versions. Check `module list` to see which Python version was loaded along the SciPy bundle.
 
 ## Create virtual environment to switch between several versions of a package
 
@@ -193,11 +222,11 @@ First of all, if you use bare/system version of Python, install `virtualenv` pac
 **PYTHON3**:
 ```
 (access)$> si
-(iris-001)$> module load lang/Python/3.6.4-foss-2018a-bare
+(iris-001)$> module load lang/Python/3.7.4-GCCcore-8.3.0
 (iris-001)$> python3 -m pip install --no-cache --user virtualenv
 ```
 
-Now you can create 2 virtual environment for your project. They will contain 2 different version of numpy (1.13 and 1.16). Name it respectively `numpy13` and `numpy16`.
+Now you can create two virtual environments for your project. They will contain two different versions of numpy (1.13 and 1.16). Name it respectively `numpy13` and `numpy16`.
 
 **PYTHON2** (default on iris cluster):
 ```
@@ -206,6 +235,7 @@ Now you can create 2 virtual environment for your project. They will contain 2 d
 (iris-001)$> python2 -m virtualenv numpy16
 ```
 **PYTHON3**:
+
 ```
 (iris-001)$> cd ~/tutorials/python/basics/example3/
 (iris-001)$> module load lang/Python/3.6.4-foss-2018a-bare
@@ -289,8 +319,8 @@ def standard_dev(lst):
 
 **QUESTIONS**
 
-* What is the fastest execution ? Why ?
-* Where can I find the code that has been generated from my Python script ?
+* What is the fastest execution? Why?
+* Where can I find the code that has been generated from my Python script?
 
 **HINT:** If you run `pythran example4.py -e -o std.cpp` it will generate the C code. Have a look at the `*.cpp` files in your directory.
 
@@ -308,8 +338,8 @@ We will first have to install the scoop library using `pip`:
 
 ```
 (access)$> si
-(iris-001)$> python -m pip install --no-cache --user filelock
-(iris-001)$> python -m pip install --no-cache --user https://github.com/soravux/scoop/archive/master.zip
+(iris-001)$> python3 -m pip install --no-cache --user filelock
+(iris-001)$> python3 -m pip install --no-cache --user scoop
 ```
 
 Scoop comes with direct Slurm bindings. If you run your code on a single node, it will try to use the most cores that it can. If you have reserved several nodes, it will use all the nodes of your reservation and distribute work on it.
