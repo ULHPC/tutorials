@@ -1,5 +1,5 @@
 #! /bin/bash
-# Time-stamp: <Sat 2020-12-12 21:05 svarrette>
+# Time-stamp: <Mon 2021-11-15 21:51 svarrette>
 ################################################################################
 # Sample submission script illustrating singleton dependency when exploring
 # a large parameter range divided in subdomains of chuncksize element
@@ -7,7 +7,7 @@
 ############################################################
 CMD_PREFIX=echo
 
-LAUNCHER=./launcher.stressme.sh
+LAUNCHER=./launcher.stressme.${ULHPC_CLUSTER}.sh
 JOBNAME=StressMe
 MAXNODES=4
 

@@ -23,7 +23,7 @@
 #SBATCH --partition=batch
 #__________________________
 #SBATCH -N 1
-#SBATCH --ntasks-per-node 28   # Optimized for 1 full node of iris
+#SBATCH --ntasks-per-node 128  # Optimized for 1 full node of aion
 #SBATCH -c 1                   # multithreading per task : -c --cpus-per-task <n> request
 #__________________________
 #SBATCH -o logs/%x-%j.out      # log goes into logs/<jobname>-<jobid>.out

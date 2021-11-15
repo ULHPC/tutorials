@@ -2,7 +2,7 @@
 
 # HPC Management of Sequential and Embarrassingly Parallel Jobs
 
-     Copyright (c) 2020 S. Varrette and UL HPC Team <hpc-team@uni.lu>
+     Copyright (c) 2021 S. Varrette and UL HPC Team <hpc-team@uni.lu>
 
 [![](https://github.com/ULHPC/tutorials/raw/devel/sequential/basics/cover_slides.png)](https://github.com/ULHPC/tutorials/raw/devel/sequential/basics/slides.pdf)
 
@@ -32,15 +32,20 @@ The objective of this practical session is to guide you toward the effective man
 Ensure you are able to [connect to the UL HPC clusters](https://hpc.uni.lu/users/docs/access.html).
 In particular, recall that the `module` command **is not** available on the access frontends.
 
-If you have never configured [GNU Screen](http://www.gnu.org/software/screen/) before, and while not strictly mandatory, we advise you to rely on our customized configuration file for screen [`.screenrc`](https://github.com/ULHPC/dotfiles/blob/master/screen/.screenrc) available on [Github](https://github.com/ULHPC/dotfiles/blob/master/screen/.screenrc) and available on the access nodes under `/etc/dotfiles.d/screen/.screenrc`
+If you have never configured [GNU Screen](http://www.gnu.org/software/screen/) before, and while not strictly mandatory, we advise you to rely on our customized configuration file for screen [`.screenrc`](https://github.com/ULHPC/dotfiles/blob/master/screen/.screenrc) available on [Github](https://github.com/ULHPC/dotfiles/blob/master/screen/.screenrc) and available on the access nodes under `/etc/dotfiles.d/screen/.screenrc`.
+Otherwise, on Aion and more recent systems, **Prefer [Tmux](https://github.com/tmux/tmux/wiki)** -- see [Tmux cheat sheet](https://tmuxcheatsheet.com/) and [tutorial](https://www.howtogeek.com/671422/how-to-use-tmux-on-linux-and-why-its-better-than-screen/).
+You may even want to use the [tmux-powerline](https://powerline.readthedocs.io/) by creating the file `~/.tmux.conf` mentioned below
 
 ```bash
-### Access to ULHPC cluster - here iris
-(laptop)$> ssh iris-cluster
+### Access to ULHPC cluster - here aion
+(laptop)$> ssh aion-cluster
 # /!\ Advanced (but recommended) best-practice:
-#    always work within an GNU Screen session named with 'screen -S <topic>' (Adapt accordingly)
+#    always work within an Tmux (aion) or GNU Screen (iris only) session named
+#    with 'tmux new -s <topic>' OR (with screen) 'screen -S <topic>' (Adapt accordingly)
 # IIF not yet done, copy ULHPC .screenrc in your home
 (access)$> cp /etc/dotfiles.d/screen/.screenrc ~/
+# IIF not yet done, copy ULHPC .tmux.conf in your home
+(access)$> cp /etc/dotfiles.d/tmux/.tmux.conf ~/
 ```
 
 Now you'll need to pull the latest changes in your working copy of the [ULHPC/tutorials](https://github.com/ULHPC/tutorials) you should have cloned in `~/git/github.com/ULHPC/tutorials` (see ["preliminaries" tutorial](../../preliminaries/))
@@ -60,21 +65,23 @@ Now **configure a dedicated directory `~/tutorials/sequential` for this session*
 (access)$> ln -s ~/git/github.com/ULHPC/tutorials/sequential/basics ref.d
 ```
 
-**Advanced users** (_eventually_ yet __strongly__ recommended), create a [GNU Screen](http://www.gnu.org/software/screen/) session you can recover later - see ["Getting Started" tutorial](../../getting-started/)
+**Advanced users** (_eventually_ yet __strongly__ recommended), create a [Tmux](https://github.com/tmux/tmux/wiki) session (see [Tmux cheat sheet](https://tmuxcheatsheet.com/) and [tutorial](https://www.howtogeek.com/671422/how-to-use-tmux-on-linux-and-why-its-better-than-screen/)) or [GNU Screen](http://www.gnu.org/software/screen/) session you can recover later. See also ["Getting Started" tutorial ](../../beginners/).
 
 ``` bash
 # /!\ Advanced (but recommended) best-practice:
-#     Always work within an GNU Screen session named with 'screen -S <topic>' (Adapt accordingly)
-#     _note_: assumes you have previously copied ULHPC .screenrc in your homedir
-(access-iris)$> screen -S HPC-school
-#    CTRL + a c: (create) creates a new Screen window. The default Screen number is zero.
-#    CTRL + a n: (next) switches to the next window.
-#    CTRL + a p: (prev) switches to the previous window.
-#    CTRL + a A: (title) rename the current window
-#    CTRL + a d: (detach) detaches from a Screen -
+#     Always work within a TMux or GNU Screen session named '<topic>' (Adapt accordingly)
+(access-aion)$> tmux new -s HPC-school   # Tmux
+(access-iris)$> screen -S HPC-school     # GNU Screen
+#  TMux     | GNU Screen | Action
+# ----------|------------|----------------------------------------------
+#  CTRL+b c | CTRL+a c   | (create) creates a new Screen window. The default Screen number is zero.
+#  CTRL+b n | CTRL+a n   | (next) switches to the next window.
+#  CTRL+b p | CTRL+a p   | (prev) switches to the previous window.
+#  CTRL+b , | CTRL+a A   | (title) rename the current window
+#  CTRL+b d | CTRL+a d   | (detach) detaches from a Screen -
 # Once detached:
-#   screen -ls : list available screen
-#   screen -x    reattach to a past screen
+#   tmux ls  | screen -ls : list available screen
+#   tmux att | screen -x  : reattach to a past screen
 ```
 
 ## A sample "Stress Me!" parameter exploration
@@ -83,7 +90,7 @@ In this sample scenario, we will mimic the exploration of integer parameters wit
 To keep it simple, we will assume the n=30 by default.
 
 You will use a script, `scripts/run_stressme`, to reproduce a configurable amount of  stress on the system set for a certain amount of time (by default: 20s) passed as parameter using the '[stress](https://linux.die.net/man/1/stress)' command.
-We would like thus to conduct the following executions:
+For instance, we would like to conduct the following executions:
 
 ``` bash
 run_stressme 1     # execution time: 1s
@@ -91,8 +98,6 @@ run_stressme 2     # execution time: 2s
 run_stressme 3     # execution time: 3s
 run_stressme 4     # execution time: 4s
 run_stressme 5     # execution time: 5s
-run_stressme 6     # execution time: 6s
-run_stressme 7     # execution time: 7s
 [...]
 run_stressme 27    # execution time: 27s
 run_stressme 28    # execution time: 28s
@@ -120,7 +125,7 @@ Let's first test this command in an interactive jobs:
 
 ```bash
 ### Access to ULHPC cluster (if not yet done)
-(laptop)$> ssh iris-cluster
+(laptop)$> ssh aion-cluster
 ### Have an interactive job
 # ... either directly
 (access)$> si
@@ -269,192 +274,35 @@ _Hint_: still for the lazy persons, just run:
 #    TASK=$(pwd)/scripts/run_stressme  sbatch ./scripts/launcher.serial.sh
 ```
 
-### A VERY BAD StressMe Job Campaign: For loop on  `sbatch`
+## Embarrassingly parallel parameter exploration
 
-**Now the job campaign for N tasks (N=30) can be obtained by submitting N=30 jobs**:
+Now that we dispose of a launcher able to execute our individual _task_, we can consider the exploration campaign consisting of testing our task over 30 parameters `{1..30}`.
 
-``` bash
-# Note: you may want/need to run it under the dedicated reservation set for the training event
-# using sbatch --reservation=[...]
-# /!\ ALWAYS echo your commands in a for loop before going real
-(access)$> for i in $(seq 1 30); do echo sbatch ./launcher.stressme-serial.sh $i; done
-sbatch ./launcher.stressme-serial.sh 1
-sbatch ./launcher.stressme-serial.sh 2
-sbatch ./launcher.stressme-serial.sh 3
-[...]
-sbatch ./launcher.stressme-serial.sh 28
-sbatch ./launcher.stressme-serial.sh 29
-sbatch ./launcher.stressme-serial.sh 30
-# Equivalent of
-#   for i in {1..30}; do echo sbatch ./launcher.stressme-serial.sh $i; done
+### First VERY BAD idea: For loop on sbatch or Job arrays
 
-# Go real
-(access)$> for i in $(seq 1 30); do sbatch ./launcher.stressme-serial.sh $i; done
-Submitted batch job 2171802
-Submitted batch job 2171803
-Submitted batch job 2171804
-Submitted batch job 2171805
-Submitted batch job 2171806
-Submitted batch job 2171807
-Submitted batch job 2171809
-Submitted batch job 2171810
-Submitted batch job 2171811
-Submitted batch job 2171812
-Submitted batch job 2171813
-Submitted batch job 2171814
-Submitted batch job 2171815
-Submitted batch job 2171816
-Submitted batch job 2171817
-Submitted batch job 2171818
-Submitted batch job 2171819
-Submitted batch job 2171820
-Submitted batch job 2171821
-Submitted batch job 2171822
-Submitted batch job 2171823
-Submitted batch job 2171824
-Submitted batch job 2171825
-Submitted batch job 2171827
-Submitted batch job 2171828
-Submitted batch job 2171829
-Submitted batch job 2171830
-Submitted batch job 2171831
-Submitted batch job 2171832
-Submitted batch job 2171834
-```
-
-Use `sq` to check the status of your job in the queue:
-
-``` bash
-(access)$> sq   # squeue -u $(whoami)
-   JOBID PARTIT       QOS                 NAME       USER NODE  CPUS ST         TIME    TIME_LEFT PRIORITY NODELIST(REASON)
- 2171819  batch    normal      StressMe-single  <login>    1     1 CG         0:19        59:41    12678 iris-081
- 2171820  batch    normal      StressMe-single  <login>    1     1 CG         0:19        59:41    12678 iris-149
- 2171818  batch    normal      StressMe-single  <login>    1     1 CG         0:18        59:42    12678 iris-081
- 2171831  batch    normal      StressMe-single  <login>    1     1  R         0:13        59:47    12678 iris-075
- 2171832  batch    normal      StressMe-single  <login>    1     1  R         0:13        59:47    12678 iris-075
- 2171834  batch    normal      StressMe-single  <login>    1     1  R         0:13        59:47    12678 iris-075
- 2171830  batch    normal      StressMe-single  <login>    1     1  R         0:15        59:45    12678 iris-075
- 2171825  batch    normal      StressMe-single  <login>    1     1  R         0:16        59:44    12678 iris-082
- 2171827  batch    normal      StressMe-single  <login>    1     1  R         0:16        59:44    12678 iris-082
- 2171828  batch    normal      StressMe-single  <login>    1     1  R         0:16        59:44    12678 iris-082
- 2171829  batch    normal      StressMe-single  <login>    1     1  R         0:16        59:44    12678 iris-082
- 2171823  batch    normal      StressMe-single  <login>    1     1  R         0:18        59:42    12678 iris-149
- 2171824  batch    normal      StressMe-single  <login>    1     1  R         0:18        59:42    12678 iris-149
- 2171821  batch    normal      StressMe-single  <login>    1     1  R         0:19        59:41    12678 iris-149
- 2171822  batch    normal      StressMe-single  <login>    1     1  R         0:19        59:41    12678 iris-149
-```
-
-Check the past jobs statistics upon completion:
-
-``` bash
-(access)$> sacct -X --format User,JobID,partition%12,state,time,start,end,elapsed,nnodes,ncpus,nodelist
-   User        JobID    Partition      State  Timelimit               Start                 End    Elapsed   NNodes      NCPUS        NodeList
-------- ------------ ------------ ---------- ---------- ------------------- ------------------- ---------- -------- ---------- ---------------
-<login> 2171802             batch  COMPLETED   01:00:00 2020-12-10T17:42:38 2020-12-10T17:42:39   00:00:01        1          1        iris-075
-<login> 2171803             batch  COMPLETED   01:00:00 2020-12-10T17:42:41 2020-12-10T17:42:43   00:00:02        1          1        iris-075
-<login> 2171804             batch  COMPLETED   01:00:00 2020-12-10T17:42:41 2020-12-10T17:42:44   00:00:03        1          1        iris-075
-<login> 2171805             batch  COMPLETED   01:00:00 2020-12-10T17:42:41 2020-12-10T17:42:45   00:00:04        1          1        iris-075
-<login> 2171806             batch  COMPLETED   01:00:00 2020-12-10T17:42:41 2020-12-10T17:42:47   00:00:06        1          1        iris-075
-<login> 2171807             batch  COMPLETED   01:00:00 2020-12-10T17:42:41 2020-12-10T17:42:48   00:00:07        1          1        iris-075
-<login> 2171809             batch  COMPLETED   01:00:00 2020-12-10T17:42:41 2020-12-10T17:42:49   00:00:08        1          1        iris-075
-<login> 2171810             batch  COMPLETED   01:00:00 2020-12-10T17:42:41 2020-12-10T17:42:50   00:00:09        1          1        iris-075
-<login> 2171811             batch  COMPLETED   01:00:00 2020-12-10T17:42:44 2020-12-10T17:42:54   00:00:10        1          1        iris-076
-<login> 2171812             batch  COMPLETED   01:00:00 2020-12-10T17:42:44 2020-12-10T17:42:55   00:00:11        1          1        iris-076
-<login> 2171813             batch  COMPLETED   01:00:00 2020-12-10T17:42:44 2020-12-10T17:42:56   00:00:12        1          1        iris-076
-<login> 2171814             batch  COMPLETED   01:00:00 2020-12-10T17:42:44 2020-12-10T17:42:57   00:00:13        1          1        iris-076
-<login> 2171815             batch  COMPLETED   01:00:00 2020-12-10T17:42:44 2020-12-10T17:42:58   00:00:14        1          1        iris-076
-<login> 2171816             batch  COMPLETED   01:00:00 2020-12-10T17:42:45 2020-12-10T17:42:59   00:00:14        1          1        iris-081
-<login> 2171817             batch  COMPLETED   01:00:00 2020-12-10T17:42:46 2020-12-10T17:43:01   00:00:15        1          1        iris-081
-<login> 2171818             batch  COMPLETED   01:00:00 2020-12-10T17:42:46 2020-12-10T17:43:04   00:00:18        1          1        iris-081
-<login> 2171819             batch  COMPLETED   01:00:00 2020-12-10T17:42:47 2020-12-10T17:43:06   00:00:19        1          1        iris-081
-<login> 2171820             batch  COMPLETED   01:00:00 2020-12-10T17:42:47 2020-12-10T17:43:06   00:00:19        1          1        iris-149
-<login> 2171821             batch  COMPLETED   01:00:00 2020-12-10T17:42:48 2020-12-10T17:43:09   00:00:21        1          1        iris-149
-<login> 2171822             batch  COMPLETED   01:00:00 2020-12-10T17:42:48 2020-12-10T17:43:09   00:00:21        1          1        iris-149
-<login> 2171823             batch  COMPLETED   01:00:00 2020-12-10T17:42:49 2020-12-10T17:43:11   00:00:22        1          1        iris-149
-<login> 2171824             batch  COMPLETED   01:00:00 2020-12-10T17:42:49 2020-12-10T17:43:12   00:00:23        1          1        iris-149
-<login> 2171825             batch  COMPLETED   01:00:00 2020-12-10T17:42:51 2020-12-10T17:43:14   00:00:23        1          1        iris-082
-<login> 2171827             batch  COMPLETED   01:00:00 2020-12-10T17:42:51 2020-12-10T17:43:17   00:00:26        1          1        iris-082
-<login> 2171828             batch  COMPLETED   01:00:00 2020-12-10T17:42:51 2020-12-10T17:43:17   00:00:26        1          1        iris-082
-<login> 2171829             batch  COMPLETED   01:00:00 2020-12-10T17:42:51 2020-12-10T17:43:19   00:00:28        1          1        iris-082
-<login> 2171830             batch  COMPLETED   01:00:00 2020-12-10T17:42:52 2020-12-10T17:43:19   00:00:27        1          1        iris-075
-<login> 2171831             batch  COMPLETED   01:00:00 2020-12-10T17:42:54 2020-12-10T17:43:22   00:00:28        1          1        iris-075
-<login> 2171832             batch  COMPLETED   01:00:00 2020-12-10T17:42:54 2020-12-10T17:43:23   00:00:29        1          1        iris-075
-<login> 2171834             batch  COMPLETED   01:00:00 2020-12-10T17:42:54 2020-12-10T17:43:24   00:00:30        1          1        iris-075
-```
-
-As can be seen, the campaign was initiated at 17:42:38 to be completed for the latest job at 17:43:24: **it took thus 46s to be completed**. It's **90,1% improvement on the sequential completion time**.
-Note that you can quickly get the maximum value of the 7th column with `sort -k 7 [-n]` as follows:
-
-``` bash
-(access)$> sacct -X --format User,JobID,partition%12,state,time,start,end,elapsed,nnodes,ncpus,nodelist --noheader | sort -k 7 | tail -n 2
-```
-Repeating the experience on **100** consecutive tests demonstrated a completion between 18:43:22 and 18:46:19, i.e. on **less than 3 minutes (2m 57s or 177s)**. It corresponds to a **96,5% improvement on the sequential completion time**.
-The below table summarizes the results:
-
-| #tasks | #jobs | Seq. time | Optimal | `for [...] sbatch [...]` | Seq. Time Decrease | #nodes         |
-|--------|-------|-----------|---------|--------------------------|--------------------|----------------|
-| 1      | 1     | 1s        | 1s      | 1s                       | 0%                 | 1 (max 1)      |
-| 10     | 10    | 55s       | 10s     | 19s                      | 65%                | 3 (max 10)     |
-| __30__ | 30    | __465s__  | __30s__ | __46s__                  | __90,1% __         | __5 (max 30)__ |
-| 100    | 100s  | 5050s     | 100s    | 177s                     | 96,5%              | 10  (max 100)  |
-
-
-This works of course but this is **generally against best-practices**:
-
-* **to complete N (serial) tasks, you need to submit N jobs that could be spread on up to N different nodes**.
-    - This induces an **non-necessary overload of the scheduler** for (generally) very short tasks
-* Node coverage is sub-optimal
-    - your serial jobs can be spread on **up to N different nodes**
-
-Imagine expanding the job campaign to 1000 or 10000 test cases if not more, you risk to degrade significantly the HPC environment (the scheduler will likely have trouble to manage so many short-live jobs).
+**One legitimate naive way would be to perform N tasks (N=30) which can be obtained by submitting N=30 jobs**, typically through a `for [...] sbatch [...]` loop or [job Arrays](https://slurm.schedmd.com/job_array.html), a mechanism for submitting and managing collections of similar jobs quickly and easily.
+This works of course but this is **generally against best-practices** (and basically every time you consider this approach, and except in a very few case, a `for [...] sbatch [...]` loop is probably a bad idea). Indeed:
+    - **to complete N (serial) tasks, you need to submit N jobs that could be spread on up to N different nodes**.
+         * this induces an **non-necessary overload of the scheduler** for (generally) very short tasks
+         * you will likely wait (sometimes very long time) to have all your jobs completed
+    - Node coverage is sub-optimal
+         * your serial jobs can be spread on **up to N different nodes**
+    Imagine expanding the job campaign to 1000 or 10000 test cases if not more, you risk to degrade significantly the HPC environment (the scheduler will likely have trouble to manage so many short-live jobs).
 
 To prevent this behaviour, **We have thus limit the number of jobs allowed per user**  (see `sqos`).
 The objective is to invite you _gently_ to **regroup your tasks per node** in order to better exploit their many-core configuration (28 cores on `iris`, 128 on `aion`).
 
+So you should favor a single jobs (for a full node) and use it to schedule _inside_ it your embarrassingly parallel exploration tasks. It will be both more efficient and faster to schedule.
 
-### A BAD StressMe Job Campaign: job arrays
-
-Slurm support [Job Arrays](https://slurm.schedmd.com/job_array.html), a mechanism for submitting and managing collections of similar jobs quickly and easily;
-All jobs must have the same initial options (e.g. size, time limit, etc.) and you can limit the numner
-You just need to specify the array index values using the `--array` or `-a` option of the `sbatch` command. You **SHOULD** set the maximum number of simultaneously running tasks from the job array  using a "%" separator -- typically match the number of cores per node (28 on `iris`, 128 on `aion`). For example `--array=0-100%28" will limit the number of simultaneously running tasks from this job array to 28.
+_Note on [Job Arrays](https://slurm.schedmd.com/job_array.html)_ support in Slurm:
+all jobs must have the same initial options (e.g. size, time limit, etc.) and you can limit the number of simultaneous jobs by specifying the array index values using the `--array` or `-a` option of the `sbatch` command. You **SHOULD** set the maximum number of simultaneously running tasks from the job array  using a "%" separator -- typically match the number of cores per node (28 on `iris`, 128 on `aion`). For example `--array=0-100%28" will limit the number of simultaneously running tasks from this job array to 28.
 Job arrays will have several additional environment variable set:
 
 * `$SLURM_ARRAY_JOB_ID`     will be set to the first job ID of the array
 * `$SLURM_ARRAY_TASK_ID`    will be set to the job array index value.
 * `$SLURM_ARRAY_TASK_COUNT` will be set to the number of tasks in the job array.
 
-We will copy the previous launcher:
-
-```bash
-(access)$> cd ~/tutorials/sequential # if not yet done
-(access)$> cp launcher.stressme-serial.sh launcher.stressme-jobarray.sh
-```
-
-Use your favorite editor (`nano`, `vim` etc) to edit it as follows:
-
-```diff
-@@ -14,7 +14,8 @@
- #SBATCH --ntasks-per-node 1
- #SBATCH -c 1                   # multithreading per task : -c --cpus-per-task <n> request
- #__________________________
--#SBATCH -o logs/%x-%j.out      # log goes into logs/<jobname>-<jobid>.out
-+#SBATCH --array 1-9%5
-+#SBATCH -o logs/%x-%A_%a.out   # log goes into logs/<jobname>-<masterID>_<taskID>.out
-@@ -75,7 +74,7 @@
- start=$(date +%s)
- echo "### Starting timestamp (s): ${start}"
-
--${CMD_PREFIX} ${TASK} ${OPTS}
-+${CMD_PREFIX} ${TASK} ${OPTS} ${SLURM_ARRAY_TASK_ID}
-```
-
-Now you can run the same job campaign as before with a single `sbatch` command:
-
-``` bash
-(access)$> sbatch --array 1-30%28 ./launcher.stressme-jobarray.sh
-```
-
-**The above command WON'T work**: massive job arrays campaign were run in the past that used to overwhelm the slurm controllers.
+We have configured the ULHPC facility to prevent job arrays. Indeed, massive job arrays campaign were run in the past that used to overwhelm the slurm controllers.
 To avoid this behaviour to repeat, **we drastically reduce the capabilities of job arrays**:
 
 ``` bash
@@ -463,180 +311,25 @@ To avoid this behaviour to repeat, **we drastically reduce the capabilities of j
 
 _In short_, **Don't use job arrays!!!**: you can do better with [GNU Parallel](http://www.gnu.org/software/parallel/)
 
-----------------------------------------------------
-## A better launcher (1 job, #cores tasks per node)
+### Second VERY BAD idea: Fork [bomb] for loop
 
-As advised, you are encouraged to aggregate several serial tasks within a single job to better exploit the many-core configuration of each nodes (28 or 128 cores per node) - this would clearly be beneficial compared to you laptop that probably have "_only_" 4 cores.
-
-One natural way of doing so would be to aggregate these tasks within a single slurm launcher, start them in the background (i.e. as child processes) by using the ampersand `&` after a Bash command, and the `wait` command:
+So you are encouraged to aggregate several serial tasks within a single job to better exploit the many-core configuration of each nodes (28 or 128 cores per node) - this would clearly be beneficial compared to you laptop that probably have "_only_" 4 cores.
+One natural way of doing so would be to aggregate these tasks within a single slurm launcher, start them in the background (i.e. as child processes) by using the ampersand `&` after a Bash command, and the `wait` command to restrict the number of simultaneous tasks:
 
 ``` bash
-# Dangerous
-TASK=run_stressme
-for i in {1..30}; do
-    srun -n1 --exclusive -c 1 --cpu-bind=cores ${TASK} $i &
-done
-wait
-```
-The ampersand `&` spawns the command `srun -n1 --exclusive -c 1 --cpu-bind=cores ${TASK} $i`  in the background and allows the loop to continue to the next iteration without waiting for this sub-process to finish.
-This approach is dangerous and the location of the `wait` command can be optimized to match the number of tasks per nodes as ideally, you would target to execute your bag of tasks by groups of 28 (or 128) to match the hardware configuration of ULHPC nodes.
-In generic terms, you wish to target `${SLURM_NTASKS_PER_NODE}` (if set) or the output of `nproc --all` (28 on iris) process to be forked assuming you use a full node.
-The code would be as follows:
-
-``` bash
-# Better but still dangerous
+# For illustration purpose only, DON'T DO THAT, prefer GNU Parallel
 TASK=run_stressme
 ncores=${SLURM_NTASKS_PER_NODE:-$(nproc --all)}
 For i in {1..30}; do
     srun -n1 --exclusive -c 1 --cpu-bind=cores ${TASK} $i &
-    [[ $((i%ncores)) -eq 0 ]] && wait
+    [[ $((i%ncores)) -eq 0 ]] && wait    # Safeguard to limit simultaneously executed forsked sub-processes
 done
 wait
 ```
 
-You can test it from the sample launcher [`launcher.serial-ampersand.sh`](scripts/launcher.serial-ampersand.sh).
-
-```bash
-(access)$> cd ~/tutorials/sequential # if not yet done
-(access)$> cp ~/git/github.com/ULHPC/tutorials/sequential/basics/scripts/launcher.serial-ampersand.sh .   # <- trailing '.' means 'here
-(access)$> mv launcher.serial-ampersand.sh launcher.stressme-serial-ampersand.sh
-```
-
-Use your favorite editor (`nano`, `vim` etc) to edit it as follows:
-
-```diff
---- scripts/launcher.serial-ampersand.sh        2020-12-12 17:05:02.346701013 +0100
-+++ launcher.stressme-serial-ampersand.sh       2020-12-12 17:06:30.001896000 +0100
-@@ -5,7 +5,7 @@
- # within one node using the Bash & (ampersand), a builtin control operator
- # used to fork processes, and the wait command.
- ############################################################################
--###SBATCH -J Serial-ampersand
-+#SBATCH -J StressMe-ampersand
- #SBATCH --time=0-01:00:00      # 1 hour
- #SBATCH --partition=batch
- #__________________________
-@@ -24,7 +24,7 @@
- # /!\ ADAPT TASK variable accordingly
- # Absolute path to the (serial) task to be executed i.e. your favorite
- # Java/C/C++/Ruby/Perl/Python/R/whatever program to be run
--TASK=${TASK:=${HOME}/bin/app.exe}
-+TASK=${TASK:=${HOME}/tutorials/sequential/scripts/run_stressme}
- MIN=1
- MAX=30
- NCORES=${SLURM_NTASKS_PER_NODE:-$(nproc --all)}
-```
-
-Now launch the job campaign as before with a single `sbatch` command:
-
-
-``` bash
-# Note: you may want/need to run it under the dedicated reservation set for the training event
-# using sbatch --reservation=[...]
-(access)$> sbatch ./launcher.stressme-serial-ampersand.sh
-Submitted batch job 2175666
-# if you have not done it upon submission, you can correct it with (adapt accordingly):
-#     scontrol update jobid=<JOBID> reservationname=<name>
-```
-
-_Hint_: still for the lazy persons afraid of copies/modifications, just run:
-
-``` bash
-# Note: you may want/need to run it under the dedicated reservation set for the training event
-# using [...] sbatch --reservation=[...]
-#       TASK=$(pwd)/scripts/run_stressme sbatch ./scripts/launcher.serial-ampersand.sh
-```
-
-Check the duration of the job afterward:
-``` bash
-# See all job steps with slist <jobID>
-(access)$> slist 2175666
-# sacct -j 2175666 --format User,JobID,Jobname%30,partition,state,time,elapsed,MaxRss,MaxVMSize,nnodes,ncpus,nodelist,AveCPU,ConsumedEnergyRaw
-     User        JobID                        JobName  Partition      State  Timelimit    Elapsed     MaxRSS  MaxVMSize   NNodes      NCPUS        NodeList     AveCPU ConsumedEnergyRaw
---------- ------------ ------------------------------ ---------- ---------- ---------- ---------- ---------- ---------- -------- ---------- --------------- ---------- -----------------
-svarrette 2175666                  StressMe-ampersand      batch  COMPLETED   01:00:00   00:00:59                              1         28        iris-121                        11885
-          2175666.bat+                          batch             COMPLETED              00:00:59      7472K    178788K        1         28        iris-121   00:00:00             11850
-          2175666.ext+                         extern             COMPLETED              00:00:59          0    108056K        1         28        iris-121   00:00:00             11885
-          2175666.0                      run_stressme             COMPLETED              00:00:03          0    248544K        1          1        iris-121   00:00:00               949
-          2175666.1                      run_stressme             COMPLETED              00:00:04          0    248544K        1          1        iris-121   00:00:00              1279
-          2175666.2                      run_stressme             COMPLETED              00:00:01          0    248544K        1          1        iris-121   00:00:00               276
-          2175666.3                      run_stressme             COMPLETED              00:00:07          0    248544K        1          1        iris-121   00:00:00              1952
-          2175666.4                      run_stressme             COMPLETED              00:00:08          0    248544K        1          1        iris-121   00:00:00              2526
-          2175666.5                      run_stressme             COMPLETED              00:00:02          0    248544K        1          1        iris-121   00:00:00               635
-[...]
-          2175666.22                     run_stressme             COMPLETED              00:00:20          0    248544K        1          1        iris-121   00:00:00              5395
-          2175666.23                     run_stressme             COMPLETED              00:00:25          0    248544K        1          1        iris-121   00:00:00              6434
-          2175666.24                     run_stressme             COMPLETED              00:00:18          0    248544K        1          1        iris-121   00:00:00              4930
-          2175666.25                     run_stressme             COMPLETED              00:00:23          0    248544K        1          1        iris-121   00:00:00              6027
-          2175666.26                     run_stressme             COMPLETED              00:00:24          0    248544K        1          1        iris-121   00:00:00              6228
-          2175666.27                     run_stressme             COMPLETED              00:00:28          0    248544K        1          1        iris-121   00:00:00              6944
-          2175666.28                     run_stressme             COMPLETED              00:00:30          0    248544K        1          1        iris-121   00:00:00              4413
-          2175666.29                     run_stressme             COMPLETED              00:00:30       392K    248544K        1          1        iris-121   00:00:29              4554
-#
-# seff 2175666
-#
-Job ID: 2175666
-Cluster: iris
-User/Group: svarrette/clusterusers
-State: COMPLETED (exit code 0)
-Nodes: 1
-Cores per node: 28
-CPU Utilized: 00:07:45
-CPU Efficiency: 28.15% of 00:27:32 core-walltime
-Job Wall-clock time: 00:00:59
-Memory Utilized: 7.30 MB
-Memory Efficiency: 0.01% of 112.00 GB
-```
-
-You can get the aggregated statistics with `-X`:
-
-``` bash
-# See aggregated statictis with slist <jobID> -X
-(access)$> slist 2175666 -X
-# sacct -j 2175666 --format User,JobID,Jobname%30,partition,state,time,elapsed,MaxRss,MaxVMSize,nnodes,ncpus,nodelist,AveCPU,ConsumedEnergyRaw -X
-     User        JobID                        JobName  Partition      State  Timelimit    Elapsed     MaxRSS  MaxVMSize   NNodes      NCPUS        NodeList     AveCPU ConsumedEnergyRaw
---------- ------------ ------------------------------ ---------- ---------- ---------- ---------- ---------- ---------- -------- ---------- --------------- ---------- -----------------
-svarrette 2175666                  StressMe-ampersand      batch  COMPLETED   01:00:00   00:00:59                              1         28        iris-121                        11885
-# [...]
-```
-The launcher script supports the option `-c` to limit the number of cores used.
-Check it out it's effect on the `htop` terminal/session:
-
-``` bash
-# Note: you may want/need to run it under the dedicated reservation set for the training event
-# using sbatch --reservation=[...]
-(access)$> sbatch ./launcher.stressme-serial-ampersand.sh -c 14
-```
-
-Finally, repeat with 100 and 10 tasks (aggreated within a single job):
-
-``` bash
-# Note: you may want/need to run it under the dedicated reservation set for the training event
-# using sbatch --reservation=[...]
-(access)$> sbatch ./launcher.stressme-serial-ampersand.sh --max 100
-Submitted batch job 2175664
-(access)$> sbatch ./launcher.stressme-serial-ampersand.sh --max 10
-Submitted batch job 2175665
-# sq [...]
-# Once completed, check all statistics - # /!\ ADAPT JobID accordingly
-(access)$> slist 2175664,2175665,2175666 -X
-# sacct -j 2175664,2175665,2175666 --format User,JobID,Jobname%30,partition,state,time,elapsed,MaxRss,MaxVMSize,nnodes,ncpus,nodelist,AveCPU,ConsumedEnergyRaw -X
-User        JobID                        JobName  Partition      State  Timelimit    Elapsed     MaxRSS  MaxVMSize   NNodes      NCPUS        NodeList     AveCPU ConsumedEnergyRaw
---------- ------------ ------------------------------ ---------- ---------- ---------- ---------- ---------- ---------- -------- ---------- --------------- ---------- -----------------
-svarrette 2175664                  StressMe-ampersand      batch  COMPLETED   01:00:00   00:04:33                              1         28        iris-117                        76260
-svarrette 2175665                  StressMe-ampersand      batch  COMPLETED   01:00:00   00:00:11                              1         28        iris-121                         1866
-svarrette 2175666                  StressMe-ampersand      batch  COMPLETED   01:00:00   00:00:59                              1         28        iris-121                        11885
-```
-
-Compared to the (**VERY BAD**) "for loop of sbatch" approach, we have thus drastically optimized the resources allocation (a single node allocated, when 10 and up to 100 were required for the bigger campaign (100 tasks)) at the price of a affordable time penalty, still largely beneficial when compared to sequential i.e.:
-
-* for 30 tasks:  28% penalty (59s  vs. 46s), still demonstrating a 87% improvement compared to the sequential run.
-* for 100 tasks: 54% penalty (273s vs 177s), still demonstrating a 95% improvement compared to the sequential run.
-
-Nevertheless, we had to revisit the logic of the launcher script and enforce several customization.
-On the contrary, [GNU Parallel](http://www.gnu.org/software/parallel/) allow flexibility and adaptability while minimizing the customization: it makes the pallalelization happen automagically based on the slurm constraits (`--ntasks-per-node`, `-c`).
-
-We will focus on a **single node run** for reasons make clear later.
+The ampersand `&` spawns the command `srun -n1 --exclusive -c 1 --cpu-bind=cores ${TASK} $i`  in the background.
+The propose check to run the `wait` command allows to execute your bag of tasks by groups of 28 (or 128) to match the hardware configuration of ULHPC nodes. In generic terms, you wish to target `${SLURM_NTASKS_PER_NODE}` (if set) or the output of `nproc --all` (28 on iris, 128 on aion) process to be forked assuming you use a full node.
+**This approach is nevertheless sub-optimal**: each bag of tasks is waiting for the longest one to complete before the next one is executed. That why you should favor the [GNU Parallel](http://www.gnu.org/software/parallel/) approach proposed on the sequel.
 
 
 ----------------------------------------------------------------
@@ -646,22 +339,35 @@ We will focus on a **single node run** for reasons make clear later.
 
 [GNU Parallel](http://www.gnu.org/software/parallel/) is a tool for executing tasks in parallel, typically on a single machine. When coupled with the Slurm command `srun`, parallel becomes a powerful way of distributing a set of embarrassingly parallel tasks amongst a number of workers. This is particularly useful when the number of tasks is significantly larger than the number of available workers (i.e. `$SLURM_NTASKS`), and each tasks is independent of the others.
 
-**Follow now our [GNU Parallel tutorial](../gnu-parallel/) to become more accustomed with the special (complex) syntax of this tool.**
+**Follow now our [GNU Parallel tutorial](../gnu-parallel/) to become more accustomed with the special (complex) syntax of this tool.** In particular, you **MUST** run this tutorial over a more recent version of GNU Parallel (20211022) instead of the default system version.
 
-To illustrate the advantages of this approach, we will use the generic GNU parallel launcher script designed by the UL HPC Team **[`scripts/launcher.parallel.sh`](https://github.com/ULHPC/tutorials/blob/devel/sequential/basics/scripts/launcher.parallel.sh)**.
+To illustrate the advantages of this approach, we will use the generic GNU parallel launcher script designed by the UL HPC Team **[`scripts/launcher.parallel.sh`](https://github.com/ULHPC/tutorials/blob/devel/sequential/basics/scripts/launcher.parallel.sh)**. This file of proposed with optimized default slurm settings for each cluster, i.e. `scripts/launcher.parallel.{iris,aion}.sh` - use the most appropriate one (you can use the global variable `$ULHPC_CLUSTER` for that)
+
+```diff
+--- launcher.parallel.aion.sh	2021-11-15 21:43:53.000000000 +0100
++++ launcher.parallel.iris.sh	2021-11-15 21:43:54.000000000 +0100
+@@ -23,7 +23,7 @@
+ #SBATCH --partition=batch
+ #__________________________
+ #SBATCH -N 1
+-#SBATCH --ntasks-per-node 128  # Optimized for 1 full node of aion
++#SBATCH --ntasks-per-node 28   # Optimized for 1 full node of iris
+ #SBATCH -c 1                   # multithreading per task : -c --cpus-per-task <n> request
+```
+
 First copy this script template and **make it your FINAL launcher for stressme**:
 
 ```bash
 (access)$> cd ~/tutorials/sequential # if not yet done
-(access)$> cp ~/git/github.com/ULHPC/tutorials/sequential/basics/scripts/launcher.parallel.sh .   # <- trailing '.' means 'here
-(access)$> mv launcher.parallel.sh launcher.stressme.sh
+(access)$> cp ~/git/github.com/ULHPC/tutorials/sequential/basics/scripts/launcher.parallel.${ULHPC_CLUSTER}.sh .   # <- trailing '.' means 'here
+(access)$> mv launcher.parallel.${ULHPC_CLUSTER}.sh launcher.stressme.${ULHPC_CLUSTER}.sh
 ```
 
 Use your favorite editor (`nano`, `vim` etc) to edit it as follows:
 
 ```diff
---- scripts/launcher.parallel.sh   2020-12-12 14:28:56.978642778 +0100
-+++ launcher.stressme.sh           2020-12-12 14:31:14.432175130 +0100
+--- scripts/launcher.parallel.${ULHPC_CLUSTER}.sh   2021-11-12 14:28:56.978642778 +0100
++++ launcher.stressme.${ULHPC_CLUSTER}.sh           2021-11-12 14:31:14.432175130 +0100
 @@ -55,9 +55,9 @@
  ### /!\ ADAPT TASK and TASKLIST[FILE] variables accordingly
  # Absolute path to the (serial) task to be executed i.e. your favorite
@@ -795,6 +501,9 @@ Quit your interactive job (exit or `CTRL+D`) and submit it as a passive job:
 ``` bash
 # Exit the interactive job
 (node)$> exit    # OR CTRL-D
+### IFF not yet done: remove logs/state.parallel.log
+(node)$> rm logs/state.parallel.log
+
 # Note: you may want/need to run it under the dedicated reservation set for the training event
 # using sbatch --reservation=[...]
 (access)$> sbatch ./launcher.stressme.sh # --joblog /dev/null
@@ -824,7 +533,7 @@ In this case, you can be reassured on your htop usage:
 
 ![](images/screenshot_htop_gnu_parallel_j28.png)
 
-_Note_: if you use the default (old) version of `parallel` (GNU parallel 20160222), you may occasionally witness a single core that seems inactive. This is a bug inherent to that version (tied to the controlling process) corrected in more recent version.
+_Note_: if you use the default (old) version of `parallel` (GNU parallel 20160222 or 2019), you may occasionally witness a single core that seems inactive. This is a bug inherent to that version (tied to the controlling process) corrected in more recent version.
 
 Repeat with 10 tasks
 
