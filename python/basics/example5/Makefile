@@ -20,7 +20,7 @@ test:
 	make graph
 
 clean:
-	rm -f scoop.log
+	rm -f scoop_*.log
 	rm -f scoop.lock
 	rm -f $(SORTED_DATA)
 	rm -f $(GRAPH)
@@ -41,4 +41,4 @@ $(SPEEDUP_DATA): $(SORTED_DATA)
 
 #$(DATA): ./scoop_launcher.sh ./pi_calc.py
 #	make clean
-#	for i in {1..55}; do sbatch -W scoop_laucher.sh $i; done
+#	for i in {1..55}; do sbatch -W scoop_laucher.sh $$i; done
