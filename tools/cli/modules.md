@@ -63,15 +63,17 @@ The environment variable `$MODULEPATH` contains the path of the directory contai
 You can use this variable to change your software environment.
 
 
-In the following command, we use the new environment, which will be officially released very soon.
+In the following command, we use the 2020b environment compiled for Broadwell CPUs on Iris.
 
 ```
-export MODULEPATH=/opt/apps/resif/iris/2019b/broadwell/modules/all
+export MODULEPATH=/opt/apps/resif/iris/2020b/broadwell/modules/all
 ```
 
-For backward compatibility reasons and for reproducibility, it is always possible to load the older environments.
+This is equivalent to the command `resif-load-swset-devel` on Iris.
 
+For backward compatibility reasons and for reproducibility, it is always possible to load the older environments, with the command `resif-load-swset-legacy`
 
+In order to restore production settings, run the command `resif-load-swset-prod`
 
 ## Examples
 
