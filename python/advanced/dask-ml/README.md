@@ -487,6 +487,189 @@ This will launch 8 worker processes each of which has its own ThreadPoolExecutor
 If your computations are external to Python and long-running and don’t release the GIL then beware that while the computation is running the worker process will not be able to communicate to other workers or to the scheduler. This situation should be avoided. If you don’t link in your own custom C/Fortran code then this topic probably doesn’t apply.
 
 
+## DASK + Jupyter
+
+Dask can be used in combination with Jupyter to perform Parallel interactive computations. The `dask_jupyter.sh` launcher is an example how to start a Jupyter Notebook with Dask support. Here, we will only consider dask-worker processes ...
+We start the notebook instance and the dask scheduler on the first node of the allocation and assign workers to remaining cores.
+
+
+```bash
+#!/bin/bash -l
+
+#SBATCH -p batch    
+#SBATCH -J DASK_JUPYTER
+#SBATCH -N 2
+#SBATCH -n 10     
+#SBATCH -c 1    
+#SBATCH -t 00:30:00    
+
+# Load the python version used to install Dask
+module load lang/Python
+
+# Export Environment variables
+# Set a environement which depends on which cluster you wish to start the notebook
+export VENV="$HOME/.envs/jupyter_dask_${ULHPC_CLUSTER}"
+
+# Replace default jupyter and environement variable by custom ones
+# We add to the path the jobid for debugging purpose
+export JUPYTER_CONFIG_DIR="$HOME/jupyter/$SLURM_JOBID/"
+export JUPYTER_PATH="$VENV/share/jupyter":"$HOME/jupyter_sing/$SLURM_JOBID/jupyter_path"
+export JUPYTER_DATA_DIR="$HOME/jupyter/$SLURM_JOBID/jupyter_data"
+export JUPYTER_RUNTIME_DIR="$HOME/jupyter/$SLURM_JOBID/jupyter_runtime"
+
+# We create the empty directory
+mkdir -p $JUPYTER_CONFIG_DIR
+
+# The Jupyter notebook will run on the first node of the slurm allocation (here only one anyway)
+# We retrieve its address
+export IP_ADDRESS=$(hostname -I | awk '{print $1}')
+
+# Dask configuration to store the scheduler file
+export DASK_CONFIG="${HOME}/.dask"
+export DASK_JOB_CONFIG="${DASK_CONFIG}/job_${SLURM_JOB_ID}"
+mkdir -p ${DASK_JOB_CONFIG}
+export SCHEDULER_FILE="${DASK_JOB_CONFIG}/scheduler.json"
+
+
+# Minimal virtualenv setup
+# We create a minimal virtualenv with the necessary packages to start
+if [ ! -d "$VENV" ];then
+    echo "Building the virtual environment"
+    # Create the virtualenv
+    python3 -m venv $VENV 
+    # Load the virtualenv
+    source "$VENV/bin/activate"
+    # Upgrade pip 
+    python3 -m pip install pip --upgrade
+    # Install minimum requirement
+    python3 -m pip install dask[complete] matplotlib \
+        dask-jobqueue \
+        graphviz \
+        xgboost \
+        jupyter \
+        jupyter-server-proxy
+
+    # Setup ipykernel
+    # "--sys-prefix" install ipykernel where python is installed
+    # here next the python symlink inside the virtualenv
+    python3 -m ipykernel install --sys-prefix --name custom_kernel --display-name custom_kernel
+fi
+
+export XDG_RUNTIME_DIR=""
+
+
+# Source the python env 
+source "${VENV}/bin/activate"
+
+
+#create a new ipython profile appended with the job id number
+echo "On your laptop: ssh -p 8022 -NL 8889:${IP_ADDRESS}:8889 ${USER}@access-${ULHPC_CLUSTER}.uni.lu " 
+
+# Start jupyter on a single core
+srun --exclusive -N 1 -n 1 -c 1 -w $(hostname) jupyter notebook --ip ${IP_ADDRESS} --no-browser --port 8889 &
+
+sleep 5s
+
+# No real need to use srun here ....
+# We should only be careful to call the jupyter executable where the
+# notebook instance has been started
+
+srun --exclusive -N 1 -n 1 -c 1 -w $(hostname) jupyter notebook list
+srun --exclusive -N 1 -n 1 -c 1 -w $(hostname) jupyter --paths
+srun --exclusive -N 1 -n 1 -c 1 -w $(hostname) jupyter kernelspec list
+
+
+# Start scheduler on this first task
+srun -w $(hostname) --exclusive -N 1 -n 1 -c 1 \
+     dask-scheduler  --scheduler-file "${SCHEDULER_FILE}"  --interface "ib0" &
+sleep 10
+
+# Number of tasks - 1 controller task - 1 jupyter task
+export NB_WORKERS=$((${SLURM_NTASKS}-2))
+
+#srun: runs ipengine on each other available core
+srun  --exclusive -n ${NB_WORKERS} -c 1 \
+     --cpu-bind=cores dask-worker  \
+     --label \
+     --interface "ib0" \
+     --scheduler-file "${SCHEDULER_FILE}"  &
+
+wait
+
+```
+
+You can start dask+jupyter by issuing the following command: `sbatch dask_jupyter.sh`. Using `tail -F slurm-<idjob>.out`, you can observe the different setups, i.e., notebook + dask cluster.
+Once all setups have been performed, you should see a similar output than the one below:
+
+```bash
+In your laptop: ssh -p 8022 -NL 8889:172.17.6.155:8889 ekieffer@access-iris.uni.lu
+[I 16:08:17.627 NotebookApp] Writing notebook server cookie secret to /home/users/ekieffer/jupyter/2540915/jupyter_runtime/notebook_cookie_secret
+[I 16:08:18.485 NotebookApp] Serving notebooks from local directory: /mnt/irisgpfs/users/ekieffer/HPC_SCHOOL_2021/python/advanced/dask-ml/scripts
+[I 16:08:18.485 NotebookApp] Jupyter Notebook 6.4.5 is running at:
+[I 16:08:18.485 NotebookApp] http://172.17.6.155:8889/?token=a32b995ddd86e73eac5a4e9d20cbc9907ac52a5afb92c1d7
+[I 16:08:18.485 NotebookApp]  or http://127.0.0.1:8889/?token=a32b995ddd86e73eac5a4e9d20cbc9907ac52a5afb92c1d7
+[I 16:08:18.485 NotebookApp] Use Control-C to stop this server and shut down all kernels (twice to skip confirmation).
+[C 16:08:18.490 NotebookApp]
+
+    To access the notebook, open this file in a browser:
+        file:///home/users/ekieffer/jupyter/2540915/jupyter_runtime/nbserver-117695-open.html
+    Or copy and paste one of these URLs:
+        http://172.17.6.155:8889/?token=a32b995ddd86e73eac5a4e9d20cbc9907ac52a5afb92c1d7
+     or http://127.0.0.1:8889/?token=a32b995ddd86e73eac5a4e9d20cbc9907ac52a5afb92c1d7
+Currently running servers:
+http://172.17.6.155:8889/?token=a32b995ddd86e73eac5a4e9d20cbc9907ac52a5afb92c1d7 :: /mnt/irisgpfs/users/ekieffer/HPC_SCHOOL_2021/python/advanced/dask-ml/scripts
+config:
+    /home/users/ekieffer/jupyter/2540915/
+    /home/users/ekieffer/.envs/jupyter_dask_iris/etc/jupyter
+    /usr/local/etc/jupyter
+    /etc/jupyter
+data:
+    /home/users/ekieffer/.envs/jupyter_dask_iris/share/jupyter
+    /home/users/ekieffer/jupyter_sing/2540915/jupyter_path
+    /home/users/ekieffer/jupyter/2540915/jupyter_data
+    /home/users/ekieffer/.envs/jupyter_dask_iris/share/jupyter
+    /usr/local/share/jupyter
+    /usr/share/jupyter
+runtime:
+    /home/users/ekieffer/jupyter/2540915/jupyter_runtime
+Available kernels:
+  custom_kernel    /home/users/ekieffer/.envs/jupyter_dask_iris/share/jupyter/kernels/custom_kernel
+  python3          /home/users/ekieffer/.envs/jupyter_dask_iris/share/jupyter/kernels/python3
+distributed.scheduler - INFO - -----------------------------------------------
+distributed.scheduler - INFO - -----------------------------------------------
+distributed.scheduler - INFO - Clear task state
+distributed.scheduler - INFO -   Scheduler at:   tcp://172.19.6.155:8786
+distributed.scheduler - INFO -   dashboard at:         172.19.6.155:8787
+distributed.nanny - INFO -         Start Nanny at: 'tcp://172.19.6.155:46160'
+distributed.nanny - INFO -         Start Nanny at: 'tcp://172.19.6.155:33160'
+distributed.nanny - INFO -         Start Nanny at: 'tcp://172.19.6.155:46866'
+distributed.worker - INFO -       Start worker at:   tcp://172.19.6.155:37158
+distributed.worker - INFO -       Start worker at:   tcp://172.19.6.155:41399
+distributed.worker - INFO -          Listening to:   tcp://172.19.6.155:37158
+distributed.worker - INFO -       Start worker at:   tcp://172.19.6.155:41713
+distributed.worker - INFO -          dashboard at:         172.19.6.155:37929
+distributed.worker - INFO -          Listening to:   tcp://172.19.6.155:41713
+distributed.worker - INFO - Waiting to connect to:    tcp://172.19.6.155:8786
+distributed.worker - INFO - -------------------------------------------------
+distributed.worker - INFO -          dashboard at:         172.19.6.155:40746
+distributed.worker - INFO -               Threads:                          1
+distributed.worker - INFO - Waiting to connect to:    tcp://172.19.6.155:8786
+```
+
+Use the foolwing ssh command: `ssh -p 8022 -NL 8889:${IP_ADDRESS}:8889 ${USER}@access-${ULHPC_CLUSTER}.uni.lu` displayed in the output file to be able to access the notebook from your local machine. 
+In order to access the notebook for the first time, please click on the link containing the token (ex:`http://127.0.0.1:8889/?token=<token_value>`). This link has been generated in the output file.
+
+You should have now access to the `DASK_JUPYTER.ipynb` notebook (see below). 
+
+
+![](./images/notebook.png)
+
+
+
+
+
+
+
 # References
 
 * https://distributed.dask.org/en/latest/
