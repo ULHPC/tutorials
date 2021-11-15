@@ -322,6 +322,7 @@ We will first have to install the scoop library using `pip`:
 
 ```
 (access)$> si
+(node)$> module load lang/Python/3.8.6-GCCcore-10.2.0
 (node)$> python3 -m pip install --no-cache --user filelock
 (node)$> python3 -m pip install --no-cache --user scoop
 ```
@@ -352,3 +353,156 @@ When your job is over, you can use `make graph` command to generate the graph.
 
 * What is the correlation between number of workers and execution time ?
 * Use what you learned in the previous part to optimize your code!
+
+
+
+## Install your own Python and create reproducible software environments with Conda
+
+In this part we will use the [`conda` package manager](https://www.anaconda.com/) to install Python and the required packages.
+
+> Conda is an open source package management system and environment management system that runs on Windows, macOS and Linux. Conda quickly installs, runs and updates packages and their dependencies. Conda easily creates, saves, loads and switches between environments on your local computer. It was created for Python programs, but it can package and distribute software for any language.
+>
+> Conda as a package manager helps you find and install packages. If you need a package that requires a different version of Python, you do not need to switch to a different environment manager, because conda is also an environment manager. With just a few commands, you can set up a totally separate environment to run that different version of Python, while continuing to run your usual version of Python in your normal environment.
+>
+> &mdash; <cite>[Conda  manual](https://docs.conda.io/en/latest/index.html)</cite>
+
+It can encapsulate **software** and packages in environments, so you can have multiple different versions of a software installed at the same time and avoid incompatibilities between different tools. It also has functionality to easily port and replicate environments, which is important to ensure reproducibility of analyses.
+
+You can think of it as an extension of Python virtualenv to all software, not just Python packages.
+
+**Attention when dealing with sensitive data:** Everyone can very easily contribute installation recipies to the bioconda channel, without verified identity or double-checking from the community. Therefore it's possible to insert malicious software. If you use bioconda when processing sensitive data, you should check the recipes to verify that they install software from the official sources.
+
+### Install conda on the cluster
+
+Connect to the cluster and start an interactive job:
+
+```bash
+(laptop)$> ssh aion-cluster
+(access)$> si
+```
+
+
+
+Create a backup of your `.bashrc` configuration file, since the conda installation will modify it:
+
+```bash
+(access)$> cp ~/.bashrc ~/.bashrc-$(date +%Y%m%d).bak
+```
+
+Install conda:
+
+```bash
+(node)$> wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
+(node)$> chmod u+x Miniconda3-latest-Linux-x86_64.sh
+(node)$> ./Miniconda3-latest-Linux-x86_64.sh
+```
+
+You need to specify your installation destination, e.g. `/home/users/sdiehl/tools/miniconda3`. You must use the **full** path and can**not** use `$HOME/tools/miniconda3`. Answer `yes` to initialize Miniconda3.
+
+The installation will modify your `.bashrc` to make conda directly available after each login. To activate the changes now, run
+
+```bash
+(node)$> source ~/.bashrc
+```
+
+### Setup the environment
+
+1. Update conda to the latest version:
+
+   ```bash
+   (node)$> conda update conda
+   ```
+
+2. Create a new conda environment and activate it:
+
+   ```bash
+   (node)$> conda create -n python_tutorial
+   (node)$> conda activate python_tutorial
+   ```
+
+   After validation of the creation step and once activated, you can see that your prompt will now be prefixed with `(python_tutorial)` to show which environment is active. For the rest of the tutorial make sure that you always have this environment active.
+
+3. Make sure Python does not pick up packages in your home directory:
+
+   ```bash
+   (python_tutorial)(node)$> export PYTHONNOUSERSITE=True
+   ```
+
+4. Install numpy and pythran:
+
+   ```bash
+   (python_tutorial)(node)$> conda install numpy pythran
+   ```
+
+### Working with conda environments
+
+You can list the packages installed in your current environment with:
+
+```bash
+(python_tutorial)(node)$> conda list
+```
+
+You can export your current environment to a yaml file with:
+
+```bash
+(python_tutorial)(node)$> conda env export > environment.yaml
+(python_tutorial)(node)$> cat environment.yaml
+```
+
+This file can be shared or uploaded to a repository, to allow other people to recreate the same environment.
+
+It contains three main items:
+
+* `name` of the environment
+* a list of `channels` (repositories) from which to install the packages
+* a list of `dependencies`, the packages to install and optionally their version 
+
+When creating this environment file via export, it will list the packages you installed and also all their dependencies and the dependencies of their dependencies down to the lowest level. However, when manually creating the file, it's sufficient to specify the top-level required packages or tools. All the dependencies will be installed automatically.
+
+For our environment with numpy and python, the most simple definition - if we do not care about versions - would be:
+
+```yaml
+name: python_tutorial
+channels:
+  - default
+dependencies:
+  - numpy
+  - pythran
+```
+
+For reproducibility, it is advisable to always specify the version, though.
+
+```yaml
+name: python_tutorial
+channels:
+  - default
+dependencies:
+  - python=3.9.7
+  - numpy=1.21.2
+  - pythran=0.9.11
+```
+
+Let us deactivate the environment, delete it and recreate it from the yaml file. You may use the exported yaml or create a minimal one like shown above and use this one.
+
+```bash
+(python_tutorial)(node)$> conda deactivate
+(base)(node)$> conda remove --name python_tutorial --all
+(base)(node)$> conda env create -f environment.yaml
+(base)(node)$> conda activate python_tutorial
+```
+
+You can list available conda environments with:
+
+```bash
+(python_tutorial)(node)$> conda env list
+```
+
+### (Optional) Remove conda
+
+If you want to stop conda from always being active:
+
+```bash
+(access)$> conda init --reverse
+```
+
+Alternatively, you can revert back to the backup of your `.bashrc` we created earlier. In case you want to get rid of conda completely, you can now also delete the directory where you installed it (default is `$HOME/miniconda3`).
