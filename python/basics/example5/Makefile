@@ -1,3 +1,4 @@
+SHELL:=/bin/bash
 GRAPH=./output/output.jpeg
 DATA=./data/time_per_core.dat
 SORTED_DATA=./data/time_per_core_sorted.dat
@@ -38,6 +39,6 @@ $(SORTED_DATA): $(DATA)
 $(SPEEDUP_DATA): $(SORTED_DATA)
 	awk -f gnuplot/compute_speedup.awk $(SORTED_DATA)
 
-$(DATA): ./scoop.sh ./pi_calc.py
-	make clean
-	sbatch -W scoop.sh
+#$(DATA): ./scoop_launcher.sh ./pi_calc.py
+#	make clean
+#	for i in {1..55}; do sbatch -W scoop_laucher.sh $i; done
