@@ -183,10 +183,10 @@ We need to install the numpy library. We can install it ourselves in our home di
 ```
 (access)$> si
 (node)$> module load lang/Python/3.8.6-GCCcore-10.2.0
-(node)$> python -m pip install --no-cache --user numpy==1.13
+(node)$> python -m pip install --no-cache --user numpy==1.16
 (node)$> python -m pip show numpy
 (node)$> python -c "import numpy as np; print(np.__version__)"
-(node)$> python -m pip install --no-cache --user numpy==1.16
+(node)$> python -m pip install --no-cache --user numpy==1.21
 (node)$> python -m pip show numpy
 (node)$> python -c "import numpy as np; print(np.__version__)"
 ```
@@ -203,7 +203,6 @@ You can now run **example3.py** code and check its execution time.
 **NOTES**
 
 * Numpy is also available from the `lang/SciPy-bundle` modules, tied to different Python versions. Check `module list` to see which Python version was loaded along the SciPy bundle.
-* We use outdated versions of numpy in this tutorial to ensure compatibility with Python 2.7. Usually you want to install the latest version with just `python -m pip install --no-cache --user numpy`.
 
 ## Create virtual environment to switch between several versions of a package
 
@@ -215,45 +214,26 @@ In this tutorial we will create a new virtual environment for the previous code 
 
 First of all, if you use bare/system version of Python, install `virtualenv` package using pip:
 
-**PYTHON2**:
-
-```
-(access)$> si
-(node)$> module load lang/Python/2.7.18-GCCcore-10.2.0
-(node)$> python2 -m pip install --no-cache --user virtualenv
-```
-**PYTHON3**:
 ```
 (access)$> si
 (node)$> module load lang/Python/3.8.6-GCCcore-10.2.0
 (node)$> python3 -m pip install --no-cache --user virtualenv
 ```
 
-Now you can create two virtual environments for your project. They will contain two different versions of numpy (1.13 and 1.16). Name it respectively `numpy13` and `numpy16`.
-
-**PYTHON2**:
+Now you can create two virtual environments for your project. They will contain two different versions of numpy (1.21 and 1.16). Name it respectively `numpy21` and `numpy16`.
 
 ```
 (node)$> cd ~/tutorials/python/basics/example3/
-(node)$> module load lang/Python/2.7.18-GCCcore-10.2.0
-(node)$> python2 -m virtualenv numpy13
-(node)$> python2 -m virtualenv numpy16
-```
-**PYTHON3**:
-
-```
-(node)$> cd ~/tutorials/python/basics/example3/
-(node)$> module load lang/Python/3.8.6-GCCcore-10.2.0
-(node)$> python3 -m virtualenv numpy13
+(node)$> python3 -m virtualenv numpy21
 (node)$> python3 -m virtualenv numpy16
 ```
 
-So now you should be able to active this environment with this `source` command. Please notice the `(numpy13)` present in your prompt that indicates that the `numpy13` environment is active. You can use `deactivate` command to exit the virtual environment.
+So now you should be able to active this environment with this `source` command. Please notice the `(numpy21)` present in your prompt that indicates that the `numpy21` environment is active. You can use `deactivate` command to exit the virtual environment.
 
 ```
-(node)$> source numpy13/bin/activate
-(numpy13)(node)$> # You are now inside numpy13 virtual environment
-(numpy13)(node)$> deactivate
+(node)$> source numpy21/bin/activate
+(numpy21)(node)$> # You are now inside numpy21 virtual environment
+(numpy21)(node)$> deactivate
 (node)$> source numpy16/bin/activate
 (numpy16)(node)$> # You are now inside numpy16 virtual environment
 ```
@@ -266,14 +246,14 @@ So now you should be able to active this environment with this `source` command.
 
 To exit a virtual environment run the `deactivate` command.
 
-So now, we can install a different numpy version inside your virtual environments. Check that the version installed corresponds to numpy 1.13 for *numpy13* and numpy 1.16 in *numpy16*.
+So now, we can install a different numpy version inside your virtual environments. Check that the version installed corresponds to numpy 1.21 for *numpy21* and numpy 1.16 in *numpy16*.
 
 ```
-(node)$> # Go inside numpy13 environment and install numpy 1.13
-(node)$> source numpy13/bin/activate
-(numpy13)(node)$> python -m pip install numpy==1.13
-(numpy13)(node)$> python -c "import numpy as np; print(np.__version__)"
-(numpy13)(node)$> deactivate
+(node)$> # Go inside numpy21 environment and install numpy 1.21
+(node)$> source numpy21/bin/activate
+(numpy21)(node)$> python -m pip install numpy==1.21
+(numpy21)(node)$> python -c "import numpy as np; print(np.__version__)"
+(numpy21)(node)$> deactivate
 (node)$> # Go inside numpy16 environment and install numpy 1.16
 (node)$> source numpy16/bin/activate
 (numpy16)(node)$> python -m pip install numpy==1.16
@@ -285,7 +265,7 @@ Now you can adapt your script to load the right virtualenv and compare the perfo
 
 **QUESTIONS**
 
-* Check the size of numpy13 folder. Why is it so big ? What does it contain ?
+* Check the size of numpy21 folder. Why is it so big ? What does it contain ?
 
 ## Compile your code in C language
 
