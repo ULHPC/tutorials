@@ -80,6 +80,8 @@ c. repeat the following morning when you come back to the office.
 
 Enter the long-existing and very simple, but totally indispensable [GNU screen](http://www.gnu.org/software/screen/) command. It has the ability to completely detach running processes from one terminal and reattach it intact (later) from a different terminal login.
 
+Note that screen is not available anymore on modern system, especially when using the Aion cluster, you should use Tmux instead.
+
 ### Pre-requisite: screen configuration file `~/.screenrc`
 
 While not mandatory, we advise you to rely on our customized configuration file for screen [`.screenrc`](https://github.com/ULHPC/dotfiles/blob/master/screen/.screenrc) available on [Github](https://github.com/ULHPC/dotfiles/blob/master/screen/.screenrc).
@@ -107,3 +109,33 @@ Once within a screen, you can invoke a screen command which consist of a "`CTRL 
 * `CTRL + a 0-9`: switches between windows 0 through 9.
 * `CTRL + a k` or `CTRL + d`: (kill) destroy the current window
 * `CTRL + a ?`: (help) display a list of all the command options available for Screen.
+
+## Persistent Terminal Sessions using Tmux
+
+Tmux is a more modern equivalent to GNU screen.
+
+### Pre-requisite: screen configuration file `~/.tmuxrc`
+
+While not mandatory, we advise you to rely on our customized configuration file for tmux [`.tmuxrc`](https://github.com/ULHPC/dotfiles/blob/master/tmux/.tmuxrc) available on [Github](https://github.com/ULHPC/dotfiles/blob/master/tmux/.tmuxrc).
+
+Otherwise, simply clone the [ULHPC dotfile repository](https://github.com/ULHPC/dotfiles/) and make a symbolic link `~/.tmuxrc` targeting the file `tmux/tmuxrc` of the repository.
+
+### Tmux commands
+
+You can start a tmux session (_i.e._ creates a single window with a shell in it) with the `tmux` command.
+Its main command-lines options are listed below:
+
+* `tmux`: start a new tmux session
+* `tmux ls`: does not start tmux, but print the list of the existing sessions.
+* `tmux a`: resumes a detached tmux session
+
+Once within a tmux, you can invoke a tmux command which consist of a "`CTRL + b`" sequence followed by one other character. The main commands are:
+
+* `CTRL + b c`: (create) creates a new tmux window. The default tmux number is one.
+* `CTRL + b n`: (next) switches to the next window.
+* `CTRL + b p`: (prev) switches to the previous window.
+* `CTRL + b d`: (detach) detaches from a session
+* `CTRL + b ,`: (title) rename the current window
+* `CTRL + b 0-9`: switches between windows 0 through 9.
+* `CTRL + d`: (kill) destroy the current window
+* `CTRL + b ?`: (help) display a list of all the command options available for tmux.
