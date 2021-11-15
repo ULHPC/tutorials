@@ -34,9 +34,7 @@ In this tutorial, we are going to explain the steps to run a Python script on th
 * Switch between different Python and package versions using a virtual environment.
 * ...
 
-## Examples used in this tutorial
-
-### Example 1
+## Example: compute mean value
 
 The first example used in this tutorial is fully inspired from [PythonCExtensions](https://github.com/mattfowler/PythonCExtensions). This code simply computes the mean value of an array of random numbers. The naïve code used to compute the mean of an array is:
 
@@ -52,14 +50,6 @@ def standard_deviation(lst):
 ```
 
 The variable will be the size of the array on which we want to compute the mean. The idea is to reduce the time used to compute this value by using libraries (**numpy**) or compile the code in C.
-
-### Example 2
-
-The second example used in this tutorial comes from [Scoop example computation of pi](http://scoop.readthedocs.io/en/0.7/examples.html#computation-of). We will use a [Monte-Carlo method](https://en.wikipedia.org/wiki/Monte_Carlo_method) to compute the value of pi. As written in the Scoop documentation, it spawns two pseudo-random numbers that are fed to the hypot function which calculates the hypotenuse of its parameters. This step computes the Pythagorean equation (\sqrt{x^2+y^2}) of the given parameters to find the distance from the origin (0,0) to the randomly placed point (which X and Y values were generated from the two pseudo-random values). Then, the result is compared to one to evaluate if this point is inside or outside the unit disk. If it is inside (have a distance from the origin lesser than one), a value of one is produced (red dots in the figure), otherwise the value is zero (blue dots in the figure). The experiment is repeated *tries* number of times with new random values.
-
-![alt text](http://scoop.readthedocs.io/en/0.7/_images/monteCarloPiExample.gif "Monte-Carlo pi calculation example")
-
-The variable here will be the number of workers (cores on which the script runs) compared to the time of execution.
 
 ## Python usage
 
@@ -117,54 +107,13 @@ Now, check that the content of `example1.out` corresponds to the expected output
 
 **HINT:** You can find the answer under `tutorials/python/basics/example1/answer/example1.sh.answer`.
 
-## Compare versions of Python
-
-You can switch between several version of Python that are already install on UL HPC iris cluster. To list the versions available, you should use this command on a compute node:
-
-```
-(node)$> module avail lang/Python
-```
-
-**QUESTIONS:**
-
-* What are the versions of Python available on Iris cluster? On Aion cluster? To update Iris to the same versions as Aion, you can run `resif-load-swset-devel`.
-* Which toolchains have been used to build them?
-
-Here we will compare the performance of Python 2.7 and Python 3.
-
-Here are the steps to compare 2 codes:
-
-* Go to `tutorials/python/basics/example2`
-* Create a batch script named `example2.sh`
-* Edit it with your favorite editor (`vim`, `nano`, `emacs`...)
-* Add a shebang at the beginning (`#!/bin/bash`)
-* Add **#SBATCH** parameters
-  * `1` core
-  * `example2` name
-  * maximum `10m` walltime
-  * logfile under `example2.out`
-* Load Python version 2.7
-* Execute the script a first time with this version of Python.
-* Load Python version 3.
-* Execute the script a second time with this Python version.
-* Check the content of the file `example2.out` and identify the 2 executions and the module load.
-
-**QUESTIONS**
-
-* What is the fastest version of Python?
-
-**HINT**
-
-* You can use `module load` command to load a specific version of Python.
-* An example of a BATCH script can be found under `tutorials/python/basics/example2/answer/example2.sh.answer`
-
 ## Use a library to optimize your code
 
 In this part we will try to use [Numpy](https://docs.scipy.org/doc/numpy-dev/user/quickstart.html), a Python library, to optimize our code.
 
 In `tutorials/python/basics/example3/example3.py` you should see a version of the previous script using Numpy.
 
-Try to execute the script on Aion cluster in **interactive** mode.
+Try to execute the script on the Aion cluster in **interactive** mode.
 
 ```
 (access)$> si
@@ -311,48 +260,6 @@ def standard_dev(lst):
 ### Overview graph of runtimes
 
 ![alt-text](https://github.com/ULHPC/tutorials/raw/feature/2021_python-basics/python/basics/example4/answer/time_vs_array_size.jpeg)
-
-## Use Scoop to parallelize execution of your Python code with Slurm
-
-In this part, we will use Scoop library to parallelize our Python code and execute it on iris cluster. This example uses the Monte-Carlo algorithm to compute the value of pi. Please have a look at the top of this page to check how it works.
-
-**WARNING:** We will need to create a wrapper around SCOOP to manage the loading of modules and virtualenv before calling SCOOP module. It is a tricky part that will need some additional steps to be performed before running your script.
-
-We will first have to install the scoop library using `pip`:
-
-```
-(access)$> si
-(node)$> module load lang/Python/3.8.6-GCCcore-10.2.0
-(node)$> python3 -m pip install --no-cache --user filelock
-(node)$> python3 -m pip install --no-cache --user scoop
-```
-
-Scoop comes with direct Slurm bindings. If you run your code on a single node, it will try to use the most cores that it can. If you have reserved several nodes, it will use all the nodes of your reservation and distribute work on it.
-
-You can specify the number of cores to use with the `-n` option in scoop.
-
-We will write a batch script to execute our python script. We want to compare time of execution to the number of workers used in scoop. We want to go from 1 worker (`-n 1` for Scoop option) to 55 workers, increasing the worker number 1 by 1. As you can see, our script takes 1 parameter `x` in input which corresponds to the number of workers.
-
-There will be 1 batch script. It should contain:
-
-* 1 task per cpu
-* maximum execution time of 35m
-* name of the job should be `scoop`
-* a job array which goes from 1 to 55 (maximal number of core on 2 nodes is 56)
-* will give, as an option to scoop script, each value in the job array. For each sub-job we will ask a number of workers equals to "$SLURM_ARRAY_TASK_ID" and also pass this as an option to the script.
-* be the only user to use those resources to avoid conflicting with other scoop users (see `--exclusive` option of sbatch)
-* only execute the script on skylake CPU nodes.
-
-**HINT** Have a look at `tutorials/python/basics/example5/scoop_launcher.sh` for the batch script example
-
-Run this script with `sbatch` command. Check the content of `scoop_*.log` to see if everything is going well. Also use `squeue -u $USER` to see the pending array jobs.
-
-When your job is over, you can use `make graph` command to generate the graph.
-
-**QUESTIONS**
-
-* What is the correlation between number of workers and execution time ?
-* Use what you learned in the previous part to optimize your code!
 
 
 
@@ -504,3 +411,52 @@ If you want to stop conda from always being active:
 ```
 
 Alternatively, you can revert back to the backup of your `.bashrc` we created earlier. In case you want to get rid of conda completely, you can now also delete the directory where you installed it (default is `$HOME/miniconda3`).
+
+## (Optional) Use Scoop to parallelize execution of your Python code with Slurm
+
+In this part, we will use Scoop library to parallelize our Python code and execute it on iris cluster. 
+
+The second example used in this tutorial comes from [Scoop example computation of pi](http://scoop.readthedocs.io/en/0.7/examples.html#computation-of). We will use a [Monte-Carlo method](https://en.wikipedia.org/wiki/Monte_Carlo_method) to compute the value of pi. As written in the Scoop documentation, it spawns two pseudo-random numbers that are fed to the hypot function which calculates the hypotenuse of its parameters. This step computes the Pythagorean equation (\sqrt{x^2+y^2}) of the given parameters to find the distance from the origin (0,0) to the randomly placed point (which X and Y values were generated from the two pseudo-random values). Then, the result is compared to one to evaluate if this point is inside or outside the unit disk. If it is inside (have a distance from the origin lesser than one), a value of one is produced (red dots in the figure), otherwise the value is zero (blue dots in the figure). The experiment is repeated *tries* number of times with new random values.
+
+![alt text](http://scoop.readthedocs.io/en/0.7/_images/monteCarloPiExample.gif "Monte-Carlo pi calculation example")
+
+The variable here will be the number of workers (cores on which the script runs) compared to the time of execution.
+
+**WARNING:** We will need to create a wrapper around SCOOP to manage the loading of modules and virtualenv before calling SCOOP module. It is a tricky part that will need some additional steps to be performed before running your script.
+
+We will first have to install the scoop library using `pip`:
+
+```
+(access)$> si
+(node)$> module load lang/Python/3.8.6-GCCcore-10.2.0
+(node)$> python3 -m pip install --no-cache --user filelock
+(node)$> python3 -m pip install --no-cache --user scoop
+```
+
+Scoop comes with direct Slurm bindings. If you run your code on a single node, it will try to use the most cores that it can. If you have reserved several nodes, it will use all the nodes of your reservation and distribute work on it.
+
+You can specify the number of cores to use with the `-n` option in scoop.
+
+We will write a batch script to execute our python script. We want to compare time of execution to the number of workers used in scoop. We want to go from 1 worker (`-n 1` for Scoop option) to 55 workers, increasing the worker number 1 by 1. As you can see, our script takes 1 parameter `x` in input which corresponds to the number of workers.
+
+There will be 1 batch script. It should contain:
+
+* 1 task per cpu
+* maximum execution time of 35m
+* name of the job should be `scoop`
+* a variable `$NB_WORKERS=$1` for the number of workers to spawn, that takes the first command-line argument of the script as the values (use a value between 1 and 55 (maximal number of cores on 2 nodes on Iris is 56)
+* will give `$NB_WORKERS` as an option to the scoop script.
+* be the only user to use those resources to avoid conflicting with other scoop users (see `--exclusive` option of sbatch)
+* (only on Iris) only execute the script on Skylake CPU nodes.
+
+**HINT** Have a look at `tutorials/python/basics/example5/scoop_launcher.sh` for the batch script example
+
+Run this script with `sbatch` command. Check the content of `scoop_*.log` to see if everything is going well. Also use `squeue -u $USER` to see the pending array jobs.
+
+When your job is over, you can use `make graph` command to generate the graph.
+
+**QUESTIONS**
+
+* What is the correlation between number of workers and execution time ?
+* Use what you learned in the previous part to optimize your code!
+
