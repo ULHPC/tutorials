@@ -1,0 +1,20 @@
+#!/bin/bash -l
+#SBATCH --job-name=numpy_compare
+#SBATCH --output=numpy_compare.out
+#
+#SBATCH --ntasks=1
+#SBATCH --time=0-00:10:00
+#SBATCH -p batch
+#SBATCH --qos=normal
+
+# Without Numpy
+python example1.py
+# With numpy 1.16
+source numpy16/bin/activate
+python numpy_compare.py
+deactivate
+# With numpy 1.21
+source numpy21/bin/activate
+python numpy_compare.py
+deactivate
+gnuplot gnuplot/numpy_compare.gpi
