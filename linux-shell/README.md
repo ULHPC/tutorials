@@ -131,7 +131,7 @@ Its main command-lines options are listed below:
 
 Once within a tmux, you can invoke a tmux command which consist of a "`CTRL + b`" sequence followed by one other character. The main commands are:
 
-* `CTRL + b c`: (create) creates a new tmux window. The default tmux number is one.
+* `CTRL + b c`: (create) creates a new tmux window. The default tmux number is zero.
 * `CTRL + b n`: (next) switches to the next window.
 * `CTRL + b p`: (prev) switches to the previous window.
 * `CTRL + b d`: (detach) detaches from a session
