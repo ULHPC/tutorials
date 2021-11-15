@@ -269,7 +269,7 @@ logging.info("args.profile: {0}".format(profile))
 
 #prepare the engines
 c = Client(profile=profile)
-NB_WORKERS = os.environ.get("NB_WORKERS",1)
+NB_WORKERS = int(os.environ.get("NB_WORKERS",1))
 # wait for the engines
 c.wait_for_engines(NB_WORKERS)
 
@@ -389,7 +389,7 @@ logging.info("args.profile: {0}".format(profile))
 
 #prepare the engines
 c = Client(profile=profile)
-NB_WORKERS = os.environ.get("NB_WORKERS",1)
+NB_WORKERS = int(os.environ.get("NB_WORKERS",1))
 # wait for the engines
 c.wait_for_engines(NB_WORKERS)
 
