@@ -381,8 +381,6 @@ Connect to the cluster and start an interactive job:
 (access)$> si
 ```
 
-
-
 Create a backup of your `.bashrc` configuration file, since the conda installation will modify it:
 
 ```bash
@@ -413,7 +411,7 @@ The installation will modify your `.bashrc` to make conda directly available aft
    (node)$> conda update conda
    ```
 
-2. Create a new conda environment and activate it:
+2. Create a new empty conda environment and activate it:
 
    ```bash
    (node)$> conda create -n python_tutorial
@@ -428,11 +426,12 @@ The installation will modify your `.bashrc` to make conda directly available aft
    (python_tutorial)(node)$> export PYTHONNOUSERSITE=True
    ```
 
-4. Install numpy and pythran:
+4. Install Python and numpy:
 
    ```bash
-   (python_tutorial)(node)$> conda install numpy pythran
+   (python_tutorial)(node)$> conda install python numpy
    ```
+   You can also just install Python with conda and then numpy with `pip`.
 
 ### Working with conda environments
 
@@ -459,15 +458,15 @@ It contains three main items:
 
 When creating this environment file via export, it will list the packages you installed and also all their dependencies and the dependencies of their dependencies down to the lowest level. However, when manually creating the file, it's sufficient to specify the top-level required packages or tools. All the dependencies will be installed automatically.
 
-For our environment with numpy and python, the most simple definition - if we do not care about versions - would be:
+For our environment with Python and numpy, the most simple definition - if we do not care about versions - would be:
 
 ```yaml
 name: python_tutorial
 channels:
   - default
 dependencies:
+  - python
   - numpy
-  - pythran
 ```
 
 For reproducibility, it is advisable to always specify the version, though.
@@ -479,7 +478,6 @@ channels:
 dependencies:
   - python=3.9.7
   - numpy=1.21.2
-  - pythran=0.9.11
 ```
 
 Let us deactivate the environment, delete it and recreate it from the yaml file. You may use the exported yaml or create a minimal one like shown above and use this one.
