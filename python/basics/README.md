@@ -1,6 +1,6 @@
 [![By ULHPC](https://img.shields.io/badge/by-ULHPC-blue.svg)](https://hpc.uni.lu) [![Licence](https://img.shields.io/badge/license-GPL--3.0-blue.svg)](http://www.gnu.org/licenses/gpl-3.0.html) [![GitHub issues](https://img.shields.io/github/issues/ULHPC/tutorials.svg)](https://github.com/ULHPC/tutorials/issues/) [![](https://img.shields.io/badge/slides-PDF-red.svg)](https://github.com/ULHPC/tutorials/raw/devel/python/basics/slides.pdf) [![Github](https://img.shields.io/badge/sources-github-green.svg)](https://github.com/ULHPC/tutorials/tree/devel/python/basics/) [![Documentation Status](http://readthedocs.org/projects/ulhpc-tutorials/badge/?version=latest)](http://ulhpc-tutorials.readthedocs.io/en/latest/python/basics) [![GitHub forks](https://img.shields.io/github/stars/ULHPC/tutorials.svg?style=social&label=Star)](https://github.com/ULHPC/tutorials)
 
-# UL HPC Tutorial: Prototyping with Python
+# UL HPC Tutorial: Python basics
 
       Copyright (c) 2018-2019 UL HPC Team <hpc-sysadmins@uni.lu>
 
@@ -18,6 +18,7 @@ In this tutorial, we are going to explain the steps to run a Python script on th
 * Basic knowledge of the linux command-line.
 * Basic programming knowledge.
 * Basic Python knowledge.
+* Running passive SLURM jobs using launcher scripts.
 
 ### Questions
 
@@ -93,7 +94,7 @@ To run your script in a **passive** way, you should create a batch script to run
 
 * Create a `example1.sh` file under `tutorials/advanced/Python/example1/`.
 * Edit it by using your favorite editor (`vim`, `nano`, `emacs`...)
-* Add a shebang at the beginning (`#!/bin/bash`)
+* Add a shebang at the beginning (`#!/bin/bash -l`)
 * Add **#SBATCH** parameters (see [Slurm documentation](https://hpc.uni.lu/users/docs/slurm.html))
   * `1` core
   * `example1` name
@@ -160,7 +161,7 @@ In this part we will try to use [Numpy](https://docs.scipy.org/doc/numpy-dev/use
 
 In `tutorials/python/basics/example3/example3.py` you should see a version of the previous script using Numpy.
 
-Try to execute the script on the Aion cluster in **interactive** mode.
+Try to execute the script on the Iris or Aion cluster in **interactive** mode.
 
 ```
 (node)$> module purge
@@ -247,15 +248,15 @@ So now, we can install a different numpy version inside each of your virtual env
 (numpy16)(node)$> deactivate
 ```
 
-Now you can adapt your script to load the right virtualenv and compare the performance of different versions of numpy.
+Now you can write a batch script to load the right virtualenv and compare the performance of different versions of numpy.
 
 Here are the steps to compare the two versions:
 
 * Go to `tutorials/python/basics/example3`
 * Create a batch script named `numpy_compare.sh`
 * Edit it with your favorite editor (`vim`, `nano`, `emacs`...)
-* Add a shebang at the beginning (`#!/bin/bash`)
-* Add **#SBATCH** parameters
+* Add a shebang at the beginning (`#!/bin/bash -l`)
+* Add `#SBATCH` parameters
   * `1` core
   * `numpy_compare` name
   * maximum `10m` walltime
@@ -265,7 +266,7 @@ Here are the steps to compare the two versions:
 * Deactivate environment
 * Activate *numpy21* environment..
 * Execute the script a second time with this numpy version.
-* Check the content of the file `example3.out` and identify the two executions.
+* Check the content of the file `numpy_compare.out` and identify the two executions.
 
 **QUESTIONS**
 
@@ -291,7 +292,7 @@ The code can be found under `tutorials/python/basics/example4/example4.py`.
 def standard_dev(lst):
 ```
 
-* Be sure to have `pythran` installed! If not, use `python -m pip install --no-cache --user pythran` command (within a job) to install it in your home directory.
+* Create a new virtual environment, activate it and install `pythran`.
 * Compile your code using pythran:
 
 ```
@@ -332,8 +333,6 @@ It can encapsulate **software** and packages in environments, so you can have mu
 
 You can think of it as an extension of Python virtualenv to all software, not just Python packages.
 
-**Attention when dealing with sensitive data:** Everyone can very easily contribute installation recipies to the bioconda channel, without verified identity or double-checking from the community. Therefore it's possible to insert malicious software. If you use bioconda when processing sensitive data, you should check the recipes to verify that they install software from the official sources.
-
 ### Install conda on the cluster
 
 Connect to the cluster and start an interactive job:
@@ -346,7 +345,7 @@ Connect to the cluster and start an interactive job:
 Create a backup of your `.bashrc` configuration file, since the conda installation will modify it:
 
 ```bash
-(access)$> cp ~/.bashrc ~/.bashrc-$(date +%Y%m%d).bak
+(node)$> cp ~/.bashrc ~/.bashrc-$(date +%Y%m%d).bak
 ```
 
 Install conda:
@@ -380,14 +379,14 @@ The installation will modify your `.bashrc` to make conda directly available aft
    (node)$> conda activate python_tutorial
    ```
 
-   After validation of the creation step and once activated, you can see that your prompt will now be prefixed with `(python_tutorial)` to show which environment is active. For the rest of the tutorial make sure that you always have this environment active.
+   After validation of the creation step and once activated, you can see that your prompt will now be prefixed with `(python_tutorial)` to show which environment is active.
 
 3. Make sure Python does not pick up packages in your home directory:
 
    ```bash
    (python_tutorial)(node)$> export PYTHONNOUSERSITE=True
    ```
-
+   Not applying this setting can cause erratic and unreproducible behaviour from conda, e.g. it will prefer outdated package versions in your home folder over newer ones in the active environment. If you are a regular (and exclusive) conda user, you might want to add this line to your `~/.bashrc` or `~/.bash_profile`.
 4. Install Python and numpy:
 
    ```bash
@@ -431,7 +430,19 @@ dependencies:
   - numpy
 ```
 
-For reproducibility, it is advisable to always specify the version, though.
+If you want to install numpy from `pip` instead, it would look like:
+
+```yaml
+name: python_tutorial
+channels:
+  - default
+dependencies:
+  - python
+  - pip:
+    - numpy
+```
+
+For reproducibility, it is advisable to always specify the versions, though.
 
 ```yaml
 name: python_tutorial
