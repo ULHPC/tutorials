@@ -2,7 +2,7 @@
 
 # Uni.lu High Performance Computing (HPC) Tutorials
 
-     Copyright (c) 2013-2020 UL HPC Team <hpc-team@uni.lu>
+     Copyright (c) 2013-2021 UL HPC Team <hpc-team@uni.lu>
 
 This repository holds a set of tutorials to help the users of the [UL HPC](https://hpc.uni.lu) platform to better understand or simply use our platform.
 
@@ -44,10 +44,12 @@ So far, the following tutorials are proposed:
 | _Big Data_              | [Running Big Data Application using Apache Hadoop and Spark ](bigdata/)                               | intermediate   |
 | _Machine/Deep Learning_ | [Machine and Deep learning workflows](deep_learning/)                                                 | intermediate   |
 | _Containers_            | [HPC Containers with Singularity](containers/singularity/)                                            | advanced       |
+|                         | [Singularity with Infiniband](containers/singularity-inf/)                                            | advanced       |
 | _Virtualization_        | (OLD) [Create and reproduce work environments using Vagrant](advanced/Vagrant/)                       | intermediate   |
 |                         | [Deploying virtual machines with Vm5k on Grid'5000](advanced/vm5k/)                                   | intermediate   |
-| _GPU_                   | [Introduction to GPU programming with CUDA (C/C++)](cuda/)                                            | intermediate   |
+| _GPU Programming_       | [Introduction to GPU programming with CUDA (C/C++)](cuda/)                                            | intermediate   |
 |                         | [Image Convolution with GPU and CUDA](cuda/exercises/convolution/)                                    | intermediate   |
+|                         | [Solving the Laplace Equation on GPU with OpenAcc](gpu/openacc/laplace/)                                       | intermediate   |
 | _Misc_                  | [Reproducible Research at the Cloud Era](misc/reproducible-research/)                                 | intermediate   |
 
 __List of contributors__

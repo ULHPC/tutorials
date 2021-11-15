@@ -103,6 +103,52 @@ To see what directories are using your disk space and quota:
 >
 > &mdash; <cite>[LCSB How-to Cards](https://howto.lcsb.uni.lu/external/integrity/checksum/)</cite>
 
+### SHA
+
+SHA is short for Secure Hash Algorithm. There are several versions of SHA that have been developed over time: SHA-1, SHA-2 and SHA-3. SHA-2 is a whole family of algorithms that create hash values of different lengths.
+
+The most commonly used version and the one recommended by the National Institute of Standards and Technology (NIST) is SHA-256, which creates a hash value of 256 bits. 
+
+First, we need to start an interactive job and prepare some test data:
+
+```bash
+(access)$> si -t 01:00:00
+(node)$> mkdir -p $SCRATCH/data_management
+(node)$> cd $SCRATCH/data_management
+(node)$> echo 'Happy secure computing!' > message.txt
+```
+
+We can create the SHA-256 checksum with the following command:
+
+```bash
+(node)$> sha256sum message.txt
+40d61ef3ba32cc17f2c90db65e6c4d884d220b1999cbded7e80988541c9db11b  message.txt
+```
+
+Since we want to store the checksum, we should save it to a file:
+
+```bash
+(node)$> sha256sum message.txt > message.sha256
+```
+
+Given a data file and its checksum, you can **verify** the file against the checksum with the following command:
+
+```bash
+(node)$> sha256sum -c message.sha256
+message.txt: OK
+```
+
+Let us change the file and see what happens to the checksum:
+
+```bash
+(node)$> echo "This file has been changed." >> message.txt
+(node)$> sha256sum message.txt
+01eed8eccae1728091ddc6b65fba5016a93757cab11f0c2d5c26b8e4d9321d11  message.txt
+(node)$> sha256sum -c message.sha256
+message.txt: FAILED
+sha256sum: WARNING: 1 computed checksum did NOT match
+```
+
 ### MD5
 
 > The **MD5 message-digest algorithm** is a widely used hash function producing a 128-bit hash value. Although MD5 was initially designed to be used as a cryptographic hash function, it has been found to suffer from extensive vulnerabilities. It can still be used as a [checksum](https://en.wikipedia.org/wiki/Checksum) to verify data integrity, but only against unintentional corruption.
@@ -113,62 +159,16 @@ To see what directories are using your disk space and quota:
 > 
 > &mdash; <cite>[Wikipedia - Md5sum](https://en.wikipedia.org/wiki/Md5sum)</cite>
 
-First, we need to start an interactive job and prepare some test data:
-
-```bash
-(access)$> si
-(node)$> mkdir -p $SCRATCH/data_management
-(node)$> cd $SCRATCH/data_management
-(node)$> echo 'Happy secure computing!' > message.txt
-```
-
 We can create the MD5 checksum with the following command:
 
-```bash
-(node)$> md5sum message.txt
-05babfa77d503a60561ceab31d767b34  message.txt
 ```
-
-Since we want to store the checksum, we should save to a file:
-
-```bash
 (node)$> md5sum message.txt > message.md5
-```
-
-Given a data file and its checksum, you can **verify** the file against the checksum with the following command:
-
-```bash
-(node)$> md5sum -c message.md5
-message.txt: OK
-```
-
-Let us change the file and see what happens to the checksum:
-
-```bash
-(node)$> echo "This file has been changed." >> message.txt
-(node)$> md5sum message.txt
-ebaf49a0b2482da084bca535db0423ba  message.txt
-(node)$> md5sum -c message.md5
-message.txt: FAILED
-md5sum: WARNING: 1 computed checksum did NOT match
-```
-
-### SHA
-
-SHA is short for Secure Hash Algorithm. There are several versions of SHA that have been developed over time: SHA-1, SHA-2 and SHA-3. SHA-2 is a whole family of algorithms that create hash values of different lengths.
-
-The most commonly used version and the one recommended by the National Institute of Standards and Technology (NIST) is SHA-256, which creates a hash value of 256 bits. 
-
-We can create the SHA-256 checksum with the following command:
-
-```bash
-(node)$> sha256sum message.txt > message.sha256
 ```
 
 We can verify the file against the checksum similar to above:
 
-```bash
-(node)$> sha256sum -c message.sha256
+```
+(node)$> md5sum -c message.md5
 message.txt: OK
 ```
 
@@ -244,9 +244,9 @@ You can list the contents of your keyring with
 (node)$> gpg --list-keys
 ```
 
-If you are going to transfer the data to someone else, you want to encrypt the data with the public key of the recipient, though, and not your own key. You can upload (the public) keys to public repositories for easier sharing. 
+If you are going to transfer the data to someone else, you want to encrypt the data with the public key of the recipient, though, and not your own key. You can upload the **public** keys to public repositories for easier sharing. Never share, upload or transfer private keys!
 
-You can export your key to a file with:
+You can export (the public part of) your key to a file with:
 
 ```bash
 (node)$> gpg --output jane-doe.key --armor --export jane.doe@uni.lu
@@ -383,6 +383,8 @@ Note that you should always ensure that this happens before your job reservation
 - (Parallel) Applications ran through `srun`  on the Iris cluster cannot "see" the unencrypted *view* folder as they are run in a different context.   
 
   This is also the case if you use `sjoin` or `srun --jobid` to attach your terminal to a running job.
+  
+- The `-init` command has an option `-plaintextnames` to preserve file names.
 
 #### Gocryptfs store password management
 

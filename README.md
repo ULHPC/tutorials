@@ -6,12 +6,12 @@
        | |_| | |___  |  _  |  __/| |___    | || |_| | || (_) | |  | | (_| | \__ \
         \___/|_____| |_| |_|_|    \____|   |_| \__,_|\__\___/|_|  |_|\__,_|_|___/
 
-               Copyright (c) 2013-2020 UL HPC Team <hpc-sysadmins@uni.lu>
+               Copyright (c) 2013-2021 UL HPC Team <hpc-team@uni.lu>
 
 This repository holds a set of tutorials to help the users of the [UL HPC](https://hpc.uni.lu) platform to better understand or simply use our platform.
 
 * [**Reference online version**](http://ulhpc-tutorials.readthedocs.io)
-* The list of the proposed tutorials is continuously evolving and are used on a regular basis during the [UL HPC School](http://hpc.uni.lu/hpc-school/) we organise twice a year at the University of Luxembourg.
+* The list of the proposed tutorials is continuously evolving and are used on a regular basis during the [UL HPC School](https://hpc.uni.lu/education/hpcschool/) we organise at the University of Luxembourg.
     - You can find the up-to-date list of tutorials [on this page](docs/README.md)
 
 ## Installation / Repository Setup

@@ -77,8 +77,9 @@ cd tutorials/python/advanced/scoop-deap/scripts
 si
 # Load python3 module (load by default Python3)
 module load lang/Python
-python -m venv test_env
-source test_env/bin/activate
+python -m venv scoop_env_${ULHPC_CLUSTER}
+source scoop_env_${ULHPC_CLUSTER}/bin/activate
+pip install --upgrade pip
 pip install numpy deap scoop matplotlib
 ```
 
@@ -318,7 +319,7 @@ cat << EOF > $SCOOP_WRAPPER
 #!/bin/bash -l
 module load lang/Python
 export SLURM_NTASKS=${SLURM_NTASKS}
-source $(pwd)/test_env/bin/activate
+source $(pwd)/scoop_env_${ULHPC_CLUSTER}/bin/activate
 EOF
 echo 'python $@' >> $SCOOP_WRAPPER
 
@@ -326,7 +327,7 @@ chmod +x $SCOOP_WRAPPER
 
 # Classical "module load" in the main script
 module load lang/Python
-source $(pwd)/test_env/bin/activate
+source $(pwd)/scoop_env_${ULHPC_CLUSTER}/bin/activate
 
 # Save the hostname of the allocated nodes
 scontrol show hostnames > $HOSTFILE
@@ -337,6 +338,9 @@ python -m scoop --hostfile $HOSTFILE -n ${SLURM_NTASKS} --python-interpreter=$SC
 ```
 
 Finally in order to execute this script (```launcher.sh```) on multiple cores and nodes, you can use the ```sbatch``` command. For example, ```sbatch --ntasks=31 --cpus-per-task=1 --time=00:10:00 -p batch launcher.sh 50``` will start the script with 31 cores allocated during 10 minutes to solve the rastrigin benchmark having 50 variables.
+
+
+** Remark ** The launcher requests 31 tasks with 1 cpu per task. This is **NOT** an efficient use of the hardware but only for educational purpose. Please always try to maximize nodes usage, i.e., 28 tasks max on iris, 128 max on aion or decrease and increase multithreading if possible. You may use  `--ntasks-per-nodes`or `--ntasks-per-socket` for this purpose. Please also refer to the [ULHPC documentation](https://hpc-docs.uni.lu/slurm/#specific-resource-allocation) for more details.
 
 After job completion, use [scp or rsync](https://hpc.uni.lu/users/docs/filetransfer.html) to retrieve your results on your laptop.
 

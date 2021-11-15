@@ -22,7 +22,7 @@ From a general perspective, the [Support page](https://hpc.uni.lu/users/docs/rep
 
 In the below tutorial, you'll proposed terminal commands where the prompt is denoted by `$>`.
 
-In general, we will prefix to precise the execution context (_i.e._ your laptop, a cluster frontend or a node). Remember that `#` character is a comment. Example:
+In general, we will prefix to precise the execution context (_i.e._ your laptop, a cluster access server or a node). Remember that `#` character is a comment. Example:
 
 		# This is a comment
 		$> hostname
@@ -115,32 +115,30 @@ You can use the SLURM web interface for a visualization of the job scheduler sta
 
 ### Sample Usage on the UL HPC platform: Kernel compilation
 
-We will illustrate the usage of GNU screen by performing a compilation of a recent linux kernel.
+We will illustrate the usage of `tmux` by performing a compilation of a recent linux kernel.
 
-* start a new screen session
+* start a new tmux session
 
-        (access)$> screen
+        (access)$> tmux
 
 * rename the screen window "Frontend" (using `CTRL+a A`)
 
 * create a new window and rename it "Compile"
-* within this new window, start a new interactive job over 1 node and 2 cores for 4 hours
+* within this new window, start a new interactive job over 1 node and 2 cores for 2 hours
 
 		(access)$> si --time 2:00:0 -N 1 -c 2
 
-* detach from this screen (using `CTRL+a d`)
+* detach from this screen (using `CTRL+b d`)
 * kill your current SSH connection and your terminal
-* re-open your terminal and connect back to the cluster frontend
-* list your running screens:
+* re-open your terminal and connect back to the cluster access server
+* list your running tmux sessions:
 
-		(access)$> screen -ls
-		There is a screen on:
-			9143.pts-0.access	(05/04/2014 11:29:43 PM) (Detached)
-		1 Socket in /var/run/screen/S-svarrette.
+		(access)$> tmux ls
+		0: 1 windows (created Mon Nov 15 17:48:58 2021) [316x46]
 
 * re-attach your previous screen session
 
-		(access)$> screen -r      # OR screen -r 9143.pts-0.access (see above socket name)
+		(access)$> tmux a        # OR tmux attach-session -t 0:
 
 * in the "Compile" windows, go to the temporary directory and download the Linux kernel sources
 
@@ -157,7 +155,7 @@ We will illustrate the usage of GNU screen by performing a compilation of a rece
 		(node)$> make alldefconfig
 		(node)$> make 2>&1 | tee /dev/shm/PS1/kernel_compile.log
 
-* You can now detach from the screen and take a coffee
+* You can now detach from the tmux session and have a coffee
 
 The last compilation command make use of `tee`, a nice tool which read from standard input and write to standard output _and_ files. This permits to save in a log file the message written in the standard output.
 
@@ -166,7 +164,7 @@ The last compilation command make use of `tee`, a nice tool which read from stan
 **Question: why working in `/dev/shm` is more efficient?**
 
 
-* Reattach from time to time to your screen to see the status of the compilation
+* Reattach from time to time to your tmux session to see the status of the compilation
 * Your compilation is successful if it ends with the sequence:
 
 		[...]
