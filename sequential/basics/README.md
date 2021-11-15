@@ -368,7 +368,7 @@ Use your favorite editor (`nano`, `vim` etc) to edit it as follows:
 
 ```diff
 --- scripts/launcher.parallel.${ULHPC_CLUSTER}.sh   2021-11-12 14:28:56.978642778 +0100
-+++ launcher.stressme.${ULHPC_CLUSTER}.sh           2021-11-12 14:31:14.432175130 +0100
++++ launcher.stressme.sh           2021-11-12 14:31:14.432175130 +0100
 @@ -55,9 +55,9 @@
  ### /!\ ADAPT TASK and TASKLIST[FILE] variables accordingly
  # Absolute path to the (serial) task to be executed i.e. your favorite
@@ -468,7 +468,7 @@ In particular, if you need to rerun this GNU Parallel job, be sure to delete the
 logfile logs/state*.parallel.log or it will think it has already finished!
 ```
 
-A quick look in parallel on `htop` report in the second terminal/screen windows demonstrate the usage of only 4 cores as expressed in the slurm job (`--ntasks-per-node 4`):
+A quick look in parallel on `htop` report in the second terminal/screen windows demonstrate the usage of only 4 cores as expressed in the slurm job (`--ntasks-per-node 4`). Below image was taken when executing on iris.
 
 ![](images/screenshot_htop_gnu_parallel_j4_interactive.png)
 
@@ -530,7 +530,7 @@ Yet you can repeat the experience for 100 `run_stressme` tasks quite convenientl
 (access)$> sbatch ./launcher.stressme.sh --joblog /dev/null "{1..100}"
 ```
 
-In this case, you can be reassured on your htop usage:
+In this case, you can be reassured on your htop usage (here sampled on iris)
 
 ![](images/screenshot_htop_gnu_parallel_j28.png)
 
@@ -560,10 +560,8 @@ svarrette 2175721                         GnuParallel      batch  COMPLETED   01
 
 Compared to the serial ampersand approach, we have thus **obtained a significant improvement in time efficiency** for the same node occupancy (1  single node allocated):
 
-* for 30 tasks:  **39% improvement** (36s vs 59s), demonstrating a 92% improvement compared to the sequential run.
-     - it's also 22% better than the VERY BAD `for [...] sbatch` approach (36s vs 46s)
-* for 100 tasks: **13% improvement** (237s vs. 277s), demonstrating a 95% improvement compared to the sequential run.
-
+* for 30 tasks: **92% improvement** compared to the sequential run.
+* for 100 tasks: **95% improvement** compared to the sequential run.
 
 
 
