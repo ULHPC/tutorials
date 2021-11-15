@@ -70,7 +70,7 @@ In this part we will simply run our Python script on the UL HPC platform, on a s
 Clone the UL HPC python tutorial under your home directory on the **Iris** cluster. If you have cloned it before, simply run `git pull` to update it to the latest version.
 
 ```
-(laptop)$> ssh iris-cluster
+(laptop)$> ssh aion-cluster
 (access)$> git clone https://github.com/ULHPC/tutorials.git
 (access)$> cd tutorials/
 (access)$> git stash && git pull -r && git stash pop
@@ -80,10 +80,10 @@ All the scripts used in this tutorial can be found under `tutorials/python/basic
 
 ### Execute your first python script on the cluster (Example 1)
 
-First, connect to `iris-cluster` and go to example 1:
+First, connect to `aion-cluster` and go to example 1:
 
 ```
-(laptop)$> ssh iris-cluster
+(laptop)$> ssh aion-cluster
 (access)$> cd tutorials/python/basics/example1/
 ```
 
@@ -91,7 +91,7 @@ To run your script **interactively** on the cluster, you should do:
 
 ```
 (access)>$ si
-(iris-001)$> python example1.py
+(node)$> python example1.py
 ```
 
 You should see the output of your script directly written in your terminal. It prints the length of the array and the number of seconds it took to compute the standard deviation 10,000 times.
@@ -122,7 +122,7 @@ Now, check that the content of `example1.out` corresponds to the expected output
 You can switch between several version of Python that are already install on UL HPC iris cluster. To list the versions available, you should use this command on a compute node:
 
 ```
-(iris-001)$> module avail lang/Python
+(node)$> module avail lang/Python
 ```
 
 **QUESTIONS:**
@@ -164,12 +164,12 @@ In this part we will try to use [Numpy](https://docs.scipy.org/doc/numpy-dev/use
 
 In `tutorials/python/basics/example3/example3.py` you should see a version of the previous script using Numpy.
 
-Try to execute the script on iris cluster in **interactive** mode.
+Try to execute the script on Aion cluster in **interactive** mode.
 
 ```
 (access)$> si
-(iris-001)$> module load lang/Python/3.7.4-GCCcore-8.3.0
-(iris-001)$> python example3.py
+(node)$> module load lang/Python/3.8.6-GCCcore-10.2.0
+(node)$> python example3.py
 ```
 
 **QUESTIONS**
@@ -182,16 +182,16 @@ We need to install the numpy library. We can install it ourselves in our home di
 
 ```
 (access)$> si
-(iris-001)$> module load lang/Python/3.7.4-GCCcore-8.3.0
-(iris-001)$> python -m pip install --no-cache --user numpy==1.16
-(iris-001)$> python -m pip show numpy
-(iris-001)$> python -c "import numpy as np; print(np.__version__)"
-(iris-001)$> python -m pip install --no-cache --user numpy==1.21
-(iris-001)$> python -m pip show numpy
-(iris-001)$> python -c "import numpy as np; print(np.__version__)"
+(node)$> module load lang/Python/3.8.6-GCCcore-10.2.0
+(node)$> python -m pip install --no-cache --user numpy==1.13
+(node)$> python -m pip show numpy
+(node)$> python -c "import numpy as np; print(np.__version__)"
+(node)$> python -m pip install --no-cache --user numpy==1.16
+(node)$> python -m pip show numpy
+(node)$> python -c "import numpy as np; print(np.__version__)"
 ```
 
-Notice that with pip you can only have 1 version of numpy installed at a time. In the next section, we will see how to easily switch between several versions of numpy by using **vitualenv**.
+Notice that with pip you can only have one version of numpy installed at a time. In the next section, we will see how to easily switch between several versions of numpy by using **vitualenv**.
 
 You can now run **example3.py** code and check its execution time.
 
@@ -200,9 +200,10 @@ You can now run **example3.py** code and check its execution time.
 * Which execution is faster between *numpy* code (example3.py) and *naïve* code (example1.py)?
 * Why do you think that numpy is not as powerful as intended? Which parameter can we change to compare the performances?
 
-**NOTE**
+**NOTES**
 
-Numpy is also available from the `lang/SciPy-bundle` modules, tied to different Python versions. Check `module list` to see which Python version was loaded along the SciPy bundle.
+* Numpy is also available from the `lang/SciPy-bundle` modules, tied to different Python versions. Check `module list` to see which Python version was loaded along the SciPy bundle.
+* We use outdated versions of numpy in this tutorial to ensure compatibility with Python 2.7. Usually you want to install the latest version with just `python -m pip install --no-cache --user numpy`.
 
 ## Create virtual environment to switch between several versions of a package
 
@@ -214,49 +215,53 @@ In this tutorial we will create a new virtual environment for the previous code 
 
 First of all, if you use bare/system version of Python, install `virtualenv` package using pip:
 
-**PYTHON2** (default on iris cluster):
+**PYTHON2**:
+
 ```
 (access)$> si
-(iris-001)$> python2 -m pip install --no-cache --user virtualenv
+(node)$> module load lang/Python/2.7.18-GCCcore-10.2.0
+(node)$> python2 -m pip install --no-cache --user virtualenv
 ```
 **PYTHON3**:
 ```
 (access)$> si
-(iris-001)$> module load lang/Python/3.7.4-GCCcore-8.3.0
-(iris-001)$> python3 -m pip install --no-cache --user virtualenv
+(node)$> module load lang/Python/3.8.6-GCCcore-10.2.0
+(node)$> python3 -m pip install --no-cache --user virtualenv
 ```
 
 Now you can create two virtual environments for your project. They will contain two different versions of numpy (1.13 and 1.16). Name it respectively `numpy13` and `numpy16`.
 
-**PYTHON2** (default on iris cluster):
+**PYTHON2**:
+
 ```
-(iris-001)$> cd ~/tutorials/python/basics/example3/
-(iris-001)$> python2 -m virtualenv numpy13
-(iris-001)$> python2 -m virtualenv numpy16
+(node)$> cd ~/tutorials/python/basics/example3/
+(node)$> module load lang/Python/2.7.18-GCCcore-10.2.0
+(node)$> python2 -m virtualenv numpy13
+(node)$> python2 -m virtualenv numpy16
 ```
 **PYTHON3**:
 
 ```
-(iris-001)$> cd ~/tutorials/python/basics/example3/
-(iris-001)$> module load lang/Python/3.6.4-foss-2018a-bare
-(iris-001)$> python3 -m virtualenv numpy13
-(iris-001)$> python3 -m virtualenv numpy16
+(node)$> cd ~/tutorials/python/basics/example3/
+(node)$> module load lang/Python/3.8.6-GCCcore-10.2.0
+(node)$> python3 -m virtualenv numpy13
+(node)$> python3 -m virtualenv numpy16
 ```
 
 So now you should be able to active this environment with this `source` command. Please notice the `(numpy13)` present in your prompt that indicates that the `numpy13` environment is active. You can use `deactivate` command to exit the virtual environment.
 
 ```
-(iris-001)$> source numpy13/bin/activate
-(numpy13)(iris-001)$> # You are now inside numpy13 virtual environment
-(numpy13)(iris-001)$> deactivate
-(iris-001)$> source numpy16/bin/activate
-(numpy16)(iris-001)$> # You are now inside numpy16 virtual environment
+(node)$> source numpy13/bin/activate
+(numpy13)(node)$> # You are now inside numpy13 virtual environment
+(numpy13)(node)$> deactivate
+(node)$> source numpy16/bin/activate
+(numpy16)(node)$> # You are now inside numpy16 virtual environment
 ```
 
 **QUESTIONS**
 
-* Using `python -m pip freeze`, what are the modules available before the activation of your virtual environment ?
-* What are the module available after ?
+* Using `python -m pip freeze`, what are the modules available before the activation of your virtual environment?
+* What are the module available after?
 * What version of python is used inside the virtual environment ? Where is it located ? (You can use `which` command.)
 
 To exit a virtual environment run the `deactivate` command.
@@ -264,17 +269,16 @@ To exit a virtual environment run the `deactivate` command.
 So now, we can install a different numpy version inside your virtual environments. Check that the version installed corresponds to numpy 1.13 for *numpy13* and numpy 1.16 in *numpy16*.
 
 ```
-(iris-001)$> # Go inside numpy13 environment and install numpy 1.13
-(iris-001)$> # Eventually load your Python version with `module load`
-(iris-001)$> source numpy13/bin/activate
-(numpy13)(iris-001)$> python -m pip install numpy==1.13
-(numpy13)(iris-001)$> python -c "import numpy as np; print(np.__version__)"
-(numpy13)(iris-001)$> deactivate
-(iris-001)$> # Go inside numpy16 environment and install numpy 1.16
-(iris-001)$> source numpy16/bin/activate
-(numpy16)(iris-001)$> python -m pip install numpy==1.16
-(numpy16)(iris-001)$> python -c "import numpy as np; print(np.__version__)"
-(numpy16)(iris-001)$> deactivate
+(node)$> # Go inside numpy13 environment and install numpy 1.13
+(node)$> source numpy13/bin/activate
+(numpy13)(node)$> python -m pip install numpy==1.13
+(numpy13)(node)$> python -c "import numpy as np; print(np.__version__)"
+(numpy13)(node)$> deactivate
+(node)$> # Go inside numpy16 environment and install numpy 1.16
+(node)$> source numpy16/bin/activate
+(numpy16)(node)$> python -m pip install numpy==1.16
+(numpy16)(node)$> python -c "import numpy as np; print(np.__version__)"
+(numpy16)(node)$> deactivate
 ```
 
 Now you can adapt your script to load the right virtualenv and compare the performance of different versions of numpy.
@@ -307,9 +311,9 @@ def standard_dev(lst):
 * Compile your code using pythran:
 
 ```
-(iris-001)$> pythran example4.py -e -o std.cpp # NEVER COMPILE ON ACCESS
-(iris-001)$> pythran example4.py -o std.so # NEVER COMPILE ON ACCESS
-(iris-001)$> python -c "import std" # this imports the newly generated module with C implementation
+(node)$> pythran example4.py -e -o std.cpp # NEVER COMPILE ON ACCESS
+(node)$> pythran example4.py -o std.so # NEVER COMPILE ON ACCESS
+(node)$> python -c "import std" # this imports the newly generated module with C implementation
 ```
 
 * Have a look at `c_compare.py` that contains the code to
@@ -338,8 +342,8 @@ We will first have to install the scoop library using `pip`:
 
 ```
 (access)$> si
-(iris-001)$> python3 -m pip install --no-cache --user filelock
-(iris-001)$> python3 -m pip install --no-cache --user scoop
+(node)$> python3 -m pip install --no-cache --user filelock
+(node)$> python3 -m pip install --no-cache --user scoop
 ```
 
 Scoop comes with direct Slurm bindings. If you run your code on a single node, it will try to use the most cores that it can. If you have reserved several nodes, it will use all the nodes of your reservation and distribute work on it.
