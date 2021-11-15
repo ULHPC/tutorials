@@ -361,6 +361,7 @@ First copy this script template and **make it your FINAL launcher for stressme**
 (access)$> cd ~/tutorials/sequential # if not yet done
 (access)$> cp ~/git/github.com/ULHPC/tutorials/sequential/basics/scripts/launcher.parallel.${ULHPC_CLUSTER}.sh .   # <- trailing '.' means 'here
 (access)$> mv launcher.parallel.${ULHPC_CLUSTER}.sh launcher.stressme.${ULHPC_CLUSTER}.sh
+(access)$> ln -s launcher.stressme.${ULHPC_CLUSTER}.sh launcher.stressme.sh    # symlink to default launcher.
 ```
 
 Use your favorite editor (`nano`, `vim` etc) to edit it as follows:
