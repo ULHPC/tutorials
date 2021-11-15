@@ -24,7 +24,7 @@ echo "Submission directory = "$SLURM_SUBMIT_DIR
 
 ### Default mode
 MODE='openmpi'
-MCA="--mca btl openib,self,sm"
+#MCA="--mca btl openib,self,sm"
 case $1 in
     --eth*) MCA="--mca btl tcp,self";;
     intel*   | --intel*)   MODE='intel';;
