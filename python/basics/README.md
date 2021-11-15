@@ -17,22 +17,25 @@ In this tutorial, we are going to explain the steps to run a Python script on th
 * Access to the UL HPC clusters.
 * Basic knowledge of the linux command-line.
 * Basic programming knowledge.
+* Basic Python knowledge.
 
 ### Questions
 
+* How can I run Python scripts on the cluster?
+* What Python versions are available on the cluster and how can I use them?
 * How can I speed up my python code?
 * How can I install python packages?
 * How can I manage different versions of Python or packages?
-* ...
 
 ### Objectives
 
+* Run Python scripts on the cluster.
 * See the difference between Python versions.
 * Speed up code using packages.
 * Speed up code by compiling it in C.
 * Install Python packages.
 * Switch between different Python and package versions using a virtual environment.
-* ...
+* Create an independent Python installation with conda.
 
 ## Example: compute mean value
 
@@ -107,9 +110,53 @@ Now, check that the content of `example1.out` corresponds to the expected output
 
 **HINT:** You can find the answer under `tutorials/python/basics/example1/answer/example1.sh.answer`.
 
-## Use a library to optimize your code
+## Different versions of Python
 
-In this part we will try to use [Numpy](https://docs.scipy.org/doc/numpy-dev/user/quickstart.html), a Python library, to optimize our code.
+There are multiple versions of Python installed on the UL HPC clusters.
+
+First, you have the Python provided with the operating system packages, e.g. the default `python`. Since you cannot be sure which version this is, you should check it with:
+
+```
+(node)$> python --version
+```
+
+Usually, you have both versions 2.7 and 3 available this way:
+
+```
+(node)$> python2 --version
+(node)$> python3 --version
+```
+
+Additionally, we have newer version of Python available through the modules. To list these versions, you should use this command on a compute node:
+
+```
+(node)$> module avail lang/Python
+```
+
+**QUESTIONS:**
+
+* What are the versions of Python available on Iris cluster? On Aion cluster? To update Iris to the same versions as Aion, you can run `resif-load-swset-devel`.
+* Which toolchains have been used to build them?
+
+You can load a specific Python version provided through the modules with `module load`:
+
+```
+(node)$> module load lang/Python/3.8.6-GCCcore-10.2.0
+```
+
+You can pick any of these Python versions and try to rerun `example1.py`.
+
+For the rest of the tutorial we will use the Python 3 version from the modules.
+
+**IMPORTANT**:
+
+* Python code is not necessarily compatible between versions 2 and 3.
+* For many packages recent versions are only available for Python 3.
+* Make sure to always use the same Python version (and package versions) when running your code or workflow.
+
+## Use a package to optimize your code
+
+In this part we will try to use [Numpy](https://docs.scipy.org/doc/numpy-dev/user/quickstart.html), a Python package, to optimize our code.
 
 In `tutorials/python/basics/example3/example3.py` you should see a version of the previous script using Numpy.
 
