@@ -360,10 +360,50 @@ That's where [EasyBuild](http://easybuild.readthedocs.io) comes into play.
 
 [<img width='150px' src='http://easybuild.readthedocs.io/en/latest/_static/easybuild_logo_alpha.png'/>](https://easybuilders.github.io/easybuild/)
 
-EasyBuild is a tool that allows to perform automated and reproducible compilation and installation of software. A large number of scientific software are supported (**[2133 supported software packages](http://easybuild.readthedocs.io/en/latest/version-specific/Supported_software.html)** in the last release 4.3.1) -- see also [What is EasyBuild?](http://easybuild.readthedocs.io/en/latest/Introduction.html)
+EasyBuild is a tool that allows to perform automated and reproducible compilation and installation of software. A large number of scientific software are supported (**[2506 supported software packages](http://easybuild.readthedocs.io/en/latest/version-specific/Supported_software.html)** in the last release 4.5.0) -- see also [What is EasyBuild?](http://easybuild.readthedocs.io/en/latest/Introduction.html)
 
 All builds and installations are performed at user level, so you don't need the admin (i.e. `root`) rights.
-The software are installed in your home directory (by default in `$HOME/.local/easybuild/software/`) and a module file is generated (by default in `$HOME/.local/easybuild/modules/`) to use the software.
+The software are installed in your home directory under `$EASYBUILD_PREFIX` -- see <https://hpc-docs.uni.lu/environment/easybuild/>
+
+|                     | Default setting (local)  | Recommended setting                                                           |
+|---------------------|--------------------------|-------------------------------------------------------------------------------|
+| `$EASYBUILD_PREFIX` | `$HOME/.local/easybuild` | `$HOME/.local/easybuild/${ULHPC_CLUSTER}/${RESIF_VERSION_PROD}/${RESIF_ARCH}` |
+|                     |                          |                                                                               |
+
+* built software are placed under `${EASYBUILD_PREFIX}/software/`
+* modules install path `${EASYBUILD_PREFIX}/modules/all`
+
+### Local Easybuild configuration
+
+Follow the instructions from the [ULHPC technical documentation](https://hpc-docs.uni.lu/environment/easybuild/) to adapt you custom build to cluster, the toolchain version and the architecture as done in RESIF3 by editing with your favorite editor (`nano`, `vim` etc. your `~/.bashrc`
+
+``` bash
+# EASYBUILD_PREFIX: [basedir]/<cluster>/<environment>/<arch>
+# Ex: Default EASYBUILD_PREFIX in your home - Adapt to project directory if needed
+_EB_PREFIX=$HOME/.local/easybuild
+# ... eventually complemented with cluster
+[ -n "${ULHPC_CLUSTER}" ] && _EB_PREFIX="${_EB_PREFIX}/${ULHPC_CLUSTER}"
+# ... eventually complemented with software set version
+_EB_PREFIX="${_EB_PREFIX}/2019b"
+# ... eventually complemented with arch
+[ -n "${RESIF_ARCH}" ] && _EB_PREFIX="${_EB_PREFIX}/${RESIF_ARCH}"
+export EASYBUILD_PREFIX="${_EB_PREFIX}"
+export LOCAL_MODULES=${EASYBUILD_PREFIX}/modules/all
+```
+
+Save the changed, Source the configuration and check that you now have the expected value for `EASYBUILD_PREFIX`:
+
+``` bash
+$ echo $EASYBUILD_PREFIX
+/home/users/svarrette/.local/easybuild     # Default value
+$ source ~/.bashrc
+$ echo $EASYBUILD_PREFIX
+/home/users/svarrette/.local/easybuild/aion/2020b/epyc
+```
+
+### Easybuild main concepts
+
+See also the [official Easybuild Tutorial: "Maintaining a Modern Scientific Software Stack Made Easy with EasyBuild"](https://easybuilders.github.io/easybuild-tutorial/2021-isc21/)
 
 EasyBuild relies on two main concepts: *Toolchains* and *EasyConfig files*.
 
@@ -389,8 +429,13 @@ Additional details are available on EasyBuild website:
 - [EasyConfig files](http://easybuild.readthedocs.io/en/latest/Writing_easyconfig_files.html)
 - [List of supported software packages](http://easybuild.readthedocs.io/en/latest/version-specific/Supported_software.html)
 
-### a. Installation
+Easybuild is provided to you as a software module.
 
+``` bash
+module load tools/EasyBuild
+```
+
+In case you cant to install the latest version yourself, follow the
 * [the official instructions](http://easybuild.readthedocs.io/en/latest/Installation.html).
 
 What is important for the installation of Easybuild are the following variables:
@@ -399,80 +444,90 @@ What is important for the installation of Easybuild are the following variables:
 * `EASYBUILD_MODULES_TOOL`: the type of [modules](http://modules.sourceforge.net/) tool you are using, _i.e._ `LMod` in this case
 * `EASYBUILD_MODULE_NAMING_SCHEME`: the way the software and modules should be organized (flat view or hierarchical) -- we're advising on `CategorizedModuleNamingScheme`
 
-Add the following entries to your `~/.bashrc` (use your favorite CLI editor like `nano` or `vim`):
-
-```bash
-# Easybuild
-export EASYBUILD_PREFIX=$HOME/.local/easybuild
-export EASYBUILD_MODULES_TOOL=Lmod
-export EASYBUILD_MODULE_NAMING_SCHEME=CategorizedModuleNamingScheme
-# Use the below variable to run:
-#    module use $LOCAL_MODULES
-#    module load tools/EasyBuild
-export LOCAL_MODULES=${EASYBUILD_PREFIX}/modules/all
-
-alias ma="module avail"
-alias ml="module list"
-function mu(){
-   module use $LOCAL_MODULES
-   module load tools/EasyBuild
-}
-```
-
-Then source this file to expose the environment variables:
-
-```bash
-$> source ~/.bashrc
-$> echo $EASYBUILD_PREFIX
-/home/users/<login>/.local/easybuild
-```
-
-Now let's install Easybuild following the [boostrapping procedure](http://easybuild.readthedocs.io/en/latest/Installation.html#bootstrapping-easybuild)
-
 **`/!\ IMPORTANT:`**  Recall that **you should be on a compute node to install [Easybuild]((http://easybuild.readthedocs.io)** (otherwise the checks of the `module` command availability will fail.)
 
-A dedicated script [`scripts/setup.sh`](https://github.com/ULHPC/tutorials/blob/devel/tools/easybuild/scripts/setup.sh) has been prepared to facilitate the install/update of your local version of Easybuild:
+### Install a missing software
 
-```bash
-### Access to ULHPC cluster (if not yet done)
-(laptop)$> ssh iris-cluster
-# Have an interactive job (if not yet done)
-(access-iris)$> si
-# Run the setup script
-(node)$> ./scripts/setup.sh -h  # help
-(node)$> ./scripts/setup.sh -n  # Dry-run
-(node)$> ./scripts/setup.sh
-```
-This script basically perform the following tasks:
+Let's try to install the missing software
 
 ``` bash
-# download script
-(node)$> curl -o /tmp/bootstrap_eb.py https://raw.githubusercontent.com/easybuilders/easybuild-framework/develop/easybuild/scripts/bootstrap_eb.py
+(node)$ module spider BCFtools   # Complementaty tool to SAMTools
+Lmod has detected the following error:  Unable to find: "BCFtools".
 
-# install Easybuild
-(node)$> echo $EASYBUILD_PREFIX
-/home/users/<login>/.local/easybuild
-(node)$> python /tmp/bootstrap_eb.py $EASYBUILD_PREFIX
+# Load Easybuild
+(node)$ module load tools/EasyBuild
+# Search for recipes for the missing software
+(node)$ eb -S BCFtools
+CFGS1=/opt/apps/resif/aion/2020b/epyc/software/EasyBuild/4.4.1/easybuild/easyconfigs
+ * $CFGS1/b/BCFtools/BCFtools-1.2_extHTSlib_Makefile.patch
+ * $CFGS1/b/BCFtools/BCFtools-1.3-foss-2016a.eb
+ * $CFGS1/b/BCFtools/BCFtools-1.3-intel-2016a.eb
+ * $CFGS1/b/BCFtools/BCFtools-1.3.1-foss-2016b.eb
+ * $CFGS1/b/BCFtools/BCFtools-1.3_extHTSlib_Makefile.patch
+ * $CFGS1/b/BCFtools/BCFtools-1.6-foss-2016b.eb
+ * $CFGS1/b/BCFtools/BCFtools-1.6-foss-2017b.eb
+ * $CFGS1/b/BCFtools/BCFtools-1.6-intel-2017b.eb
+ * $CFGS1/b/BCFtools/BCFtools-1.8-GCC-6.4.0-2.28.eb
+ * $CFGS1/b/BCFtools/BCFtools-1.9-foss-2018a.eb
+ * $CFGS1/b/BCFtools/BCFtools-1.9-foss-2018b.eb
+ * $CFGS1/b/BCFtools/BCFtools-1.9-iccifort-2019.1.144-GCC-8.2.0-2.31.1.eb
+ * $CFGS1/b/BCFtools/BCFtools-1.9-intel-2018b.eb
+ * $CFGS1/b/BCFtools/BCFtools-1.10.2-GCC-8.3.0.eb
+ * $CFGS1/b/BCFtools/BCFtools-1.10.2-GCC-9.3.0.eb
+ * $CFGS1/b/BCFtools/BCFtools-1.10.2-iccifort-2019.5.281.eb
+ * $CFGS1/b/BCFtools/BCFtools-1.11-GCC-10.2.0.eb
+ * $CFGS1/b/BCFtools/BCFtools-1.12-GCC-9.3.0.eb
+ * $CFGS1/b/BCFtools/BCFtools-1.12-GCC-10.2.0.eb
 ```
 
-Now you can use your freshly built software. The main EasyBuild command is `eb`:
+From this list, you should select the version matching the target toolchain version -- see [ULHPC Toolchains and Software Set Versioning documentation](https://hpc-docs.uni.lu/environment/modules/#ulhpc-toolchains-and-software-set-versioning)
+In particular, for 2020b version, the `GCC[core]` is set to 10.2.0 so `BCFtools-1.12-GCC-10.2.0.eb` seems like a promising candidate .
 
-```bash
-(node)$> eb --version             # expected ;)
--bash: eb: command not found
+Once you pick a given recipy (for instance `BCFtools-1.12-GCC-10.2.0.eb`), install it with
 
-# Load the newly installed Easybuild
-(node)$> echo $MODULEPATH
-/opt/apps/resif/iris/2019b/broadwell/modules/all
+       eb <name>.eb [-D] -r
 
-(node)$> module use $LOCAL_MODULES
-(node)$> echo $MODULEPATH
-/home/users/<login>/.local/easybuild/modules/all:/opt/apps/resif/iris/2019b/broadwell/modules/all
+* `-D` enables the dry-run mode to check what's going to be install -- **ALWAYS try it first**
+* `-r` enables the robot mode to automatically install all dependencies while searching for easyconfigs in a set of pre-defined directories -- you can also prepend new directories to search for eb files (like the current directory `$PWD`) using the option and syntax `--robot-paths=$PWD:` (do not forget the ':'). See [Controlling the robot search path documentation](http://easybuild.readthedocs.io/en/latest/Using_the_EasyBuild_command_line.html#controlling-the-robot-search-path)
+* The `$CFGS<n>/` prefix should be dropped unless you know what you're doing (and thus have previously defined the variable -- see the first output of the `eb -S [...]` command).
 
-(node)$> module spider Easybuild
-(node)$> module load tools/EasyBuild       # TAB is your friend...
-(node)$> eb --version
-This is EasyBuild 4.3.2 (framework: 4.3.2, easyblocks: 4.3.2) on host iris-080.
+Let's try to review the missing dependencies from a dry-run :
+
+``` bash
+# Select the one matching the target software set version
+(node)$ eb BCFtools-1.12-GCC-10.2.0.eb -Dr   # Dry-run
+== Temporary log file in case of crash /tmp/eb-73oGNP/easybuild-seaUIw.log
+Dry run: printing build status of easyconfigs and dependencies
+CFGS=/opt/apps/resif/aion/2020b/epyc/software/EasyBuild/4.4.1/easybuild/easyconfigs
+ * [x] $CFGS/m/M4/M4-1.4.18.eb (module: devel/M4/1.4.18)
+ * [x] $CFGS/b/Bison/Bison-3.5.3.eb (module: lang/Bison/3.5.3)
+ * [x] $CFGS/b/Bison/Bison-3.7.1.eb (module: lang/Bison/3.7.1)
+ * [x] $CFGS/z/zlib/zlib-1.2.11.eb (module: lib/zlib/1.2.11)
+ * [x] $CFGS/h/help2man/help2man-1.47.4.eb (module: tools/help2man/1.47.4)
+ * [x] $CFGS/f/flex/flex-2.6.4.eb (module: lang/flex/2.6.4)
+ * [x] $CFGS/b/binutils/binutils-2.35.eb (module: tools/binutils/2.35)
+ * [x] $CFGS/g/GCCcore/GCCcore-10.2.0.eb (module: compiler/GCCcore/10.2.0)
+ * [x] $CFGS/z/zlib/zlib-1.2.11-GCCcore-10.2.0.eb (module: lib/zlib/1.2.11-GCCcore-10.2.0)
+ * [x] $CFGS/n/ncurses/ncurses-6.2.eb (module: devel/ncurses/6.2)
+ * [x] $CFGS/g/gettext/gettext-0.21.eb (module: tools/gettext/0.21)
+ * [x] $CFGS/h/help2man/help2man-1.47.16-GCCcore-10.2.0.eb (module: tools/help2man/1.47.16-GCCcore-10.2.0)
+ * [x] $CFGS/m/M4/M4-1.4.18-GCCcore-10.2.0.eb (module: devel/M4/1.4.18-GCCcore-10.2.0)
+ * [x] $CFGS/b/Bison/Bison-3.7.1-GCCcore-10.2.0.eb (module: lang/Bison/3.7.1-GCCcore-10.2.0)
+ * [x] $CFGS/f/flex/flex-2.6.4-GCCcore-10.2.0.eb (module: lang/flex/2.6.4-GCCcore-10.2.0)
+ * [x] $CFGS/b/binutils/binutils-2.35-GCCcore-10.2.0.eb (module: tools/binutils/2.35-GCCcore-10.2.0)
+ * [x] $CFGS/c/cURL/cURL-7.72.0-GCCcore-10.2.0.eb (module: tools/cURL/7.72.0-GCCcore-10.2.0)
+ * [x] $CFGS/g/GCC/GCC-10.2.0.eb (module: compiler/GCC/10.2.0)
+ * [x] $CFGS/b/bzip2/bzip2-1.0.8-GCCcore-10.2.0.eb (module: tools/bzip2/1.0.8-GCCcore-10.2.0)
+ * [x] $CFGS/x/XZ/XZ-5.2.5-GCCcore-10.2.0.eb (module: tools/XZ/5.2.5-GCCcore-10.2.0)
+ * [x] $CFGS/g/GSL/GSL-2.6-GCC-10.2.0.eb (module: numlib/GSL/2.6-GCC-10.2.0)
+ * [x] $CFGS/h/HTSlib/HTSlib-1.12-GCC-10.2.0.eb (module: bio/HTSlib/1.12-GCC-10.2.0)
+ * [ ] $CFGS/b/BCFtools/BCFtools-1.12-GCC-10.2.0.eb (module: bio/BCFtools/1.12-GCC-10.2.0)
+```
+Let's try to install it (remove the `-D`):
+
+``` bash
+# Select the one matching the target software set version
+(node)$ eb BCFtools-1.12-GCC-10.2.0.eb -r
 ```
 
 Since you are going to use quite often the above command to use locally built modules and load easybuild, an alias `mu` is provided and can be used from now on. Use it **now**.
@@ -481,182 +536,40 @@ Since you are going to use quite often the above command to use locally built mo
 (node)$> mu
 (node)$> module avail     # OR 'ma'
 ```
-To get help on the EasyBuild options, use the `-h` or `-H` option flags:
-
-    (node)$> eb -h
-    (node)$> eb -H
-
-### b. Local vs. global usage
-
-As you probably guessed, we are going to use two places for the installed software:
-
-* local builds `~/.local/easybuild`          (see `$LOCAL_MODULES`)
-* global builds (provided to you by the UL HPC team) in `/opt/apps/resif/data/stable/default/modules/all` (see default `$MODULEPATH`).
-
-Default usage (with the `eb` command) would install your software and modules in `~/.local/easybuild`.
-
-Before that, let's explore the basic usage of [EasyBuild](http://easybuild.readthedocs.io/) and the `eb` command.
+Now you  should be able to check the installed software:
 
 ```bash
-(node)$> module av Tensorflow
------------------ /opt/apps/resif/iris/2019b/broadwell/modules/all -----------------------------
-   lib/TensorFlow/2.1.0-foss-2019b-Python-3.7.4
-   tools/Horovod/0.19.1-foss-2019b-TensorFlow-2.1.0-Python-3.7.4
+(node)$  module spider BCF
 
-# Search for an Easybuild recipy with 'eb -S <pattern>'
-(node)$>  eb -S Tensorflow
-CFGS1=/opt/apps/resif/data/easyconfigs/ulhpc/iris/easybuild/easyconfigs
-CFGS2=/opt/apps/resif/data/easyconfigs/ulhpc/default/easybuild/easyconfigs
-CFGS3=/home/users/svarrette/.local/easybuild/software/EasyBuild/4.3.1/easybuild/easyconfigs
-[...]
- * $CFGS3/t/TensorFlow/TensorFlow-2.2.0-foss-2019b-Python-3.7.4.eb
- * $CFGS3/t/TensorFlow/TensorFlow-2.2.0-fosscuda-2019b-Python-3.7.4.eb
- * $CFGS3/t/TensorFlow/TensorFlow-2.3.1-foss-2019b-Python-3.7.4.eb
- * $CFGS3/t/TensorFlow/TensorFlow-2.3.1-foss-2020a-Python-3.8.2.eb
- * $CFGS3/t/TensorFlow/TensorFlow-2.3.1-fosscuda-2019b-Python-3.7.4.eb
+-----------------------------------------------------------------------------------------------------
+  bio/BCFtools: bio/BCFtools/1.12-GCC-10.2.0
+-----------------------------------------------------------------------------------------------------
+    Description:
+      Samtools is a suite of programs for interacting with high-throughput sequencing data. BCFtools -
+      Reading/writing BCF2/VCF/gVCF files and calling/filtering/summarising SNP and short indel sequence
+      variants
+   This module can be loaded directly: module load bio/BCFtools/1.12-GCC-10.2.0
+
+    Help:
+
+      Description
+      ===========
+      Samtools is a suite of programs for interacting with high-throughput sequencing data.
+       BCFtools - Reading/writing BCF2/VCF/gVCF files and calling/filtering/summarising SNP and short indel sequence
+       variants
+
+
+      More information
+      ================
+       - Homepage: https://www.htslib.org/
 ```
 
-We can see that in this example, a more recent version of Tensorflow exists, matching the 2019b toolchain.
-
-
-### c. Build software using provided EasyConfig file
-
-In this part, we propose to build a more recent version of [Tensorflow](https://www.tensorflow.org/) using EasyBuild.
-As seen above, we are going to build Tensorflow 2.3.1  against the `foss` toolchain, typically the 2019b version which is available by default on the platform.
-
-Pick the corresponding recipy (for instance `TensorFlow-2.3.1-foss-2019b-Python-3.7.4.eb`), install it with
-
-       eb <name>.eb [-D] -r
-
-* `-D` enables the dry-run mode to check what's going to be install -- **ALWAYS try it first**
-* `-r` enables the robot mode to automatically install all dependencies while searching for easyconfigs in a set of pre-defined directories -- you can also prepend new directories to search for eb files (like the current directory `$PWD`) using the option and syntax `--robot-paths=$PWD:` (do not forget the ':'). See [Controlling the robot search path documentation](http://easybuild.readthedocs.io/en/latest/Using_the_EasyBuild_command_line.html#controlling-the-robot-search-path)
-* The `$CFGS<n>/` prefix should be dropped unless you know what you're doing (and thus have previously defined the variable -- see the first output of the `eb -S [...]` command).
-
-So let's install `Tensorflow` version 2.3.1 and **FIRST** check which dependencies are satisfied with `-Dr`:
-
-```bash
-(node)$> eb TensorFlow-2.3.1-foss-2019b-Python-3.7.4.eb -Dr
-== temporary log file in case of crash /tmp/eb-xlOj8P/easybuild-z4CDzy.log
-== found valid index for /home/users/svarrette/.local/easybuild/software/EasyBuild/4.3.1/easybuild/easyconfigs, so using it...
-Dry run: printing build status of easyconfigs and dependencies
-* [x] $CFGS/m/M4/M4-1.4.18.eb (module: devel/M4/1.4.18)
-* [x] $CFGS/j/Java/Java-1.8.0_241.eb (module: lang/Java/1.8.0_241)
-* [x] $CFGS/j/Java/Java-1.8.eb (module: lang/Java/1.8)
-[...]
-* [x] $CFGS/p/pkg-config/pkg-config-0.29.2-GCCcore-8.3.0.eb (module: devel/pkg-config/0.29.2-GCCcore-8.3.0)
-* [ ] $CFGS/d/DB/DB-18.1.32-GCCcore-8.3.0.eb (module: tools/DB/18.1.32-GCCcore-8.3.0)
-* [x] $CFGS/g/giflib/giflib-5.2.1-GCCcore-8.3.0.eb (module: lib/giflib/5.2.1-GCCcore-8.3.0)
-[...]
-* [x] $CFGS/i/ICU/ICU-64.2-GCCcore-8.3.0.eb (module: lib/ICU/64.2-GCCcore-8.3.0)
-* [ ] $CFGS/b/Bazel/Bazel-3.4.1-GCCcore-8.3.0.eb (module: devel/Bazel/3.4.1-GCCcore-8.3.0)
-* [x] $CFGS/g/git/git-2.23.0-GCCcore-8.3.0-nodocs.eb (module: tools/git/2.23.0-GCCcore-8.3.0-nodocs)
-* [x] $CFGS/s/SWIG/SWIG-4.0.1-GCCcore-8.3.0.eb (module: devel/SWIG/4.0.1-GCCcore-8.3.0)
- * [ ] $CFGS/t/TensorFlow/TensorFlow-2.3.1-foss-2019b-Python-3.7.4.eb (module: lib/TensorFlow/2.3.1-foss-2019b-Python-3.7.4)
-== Temporary log file(s) /tmp/eb-xlOj8P/easybuild-z4CDzy.log* have been removed.
-== Temporary directory /tmp/eb-xlOj8P has been removed.
-```
-
-As can be seen, there was a few elements to install and this has not been done so far (box not checked). Most of the dependencies are already present (box checked).
-Let's really install the selected software -- you may want to prefix the `eb` command with the `time` to collect the installation time:
-
-```bash
-(node)$> eb TensorFlow-2.3.1-foss-2019b-Python-3.7.4.eb -r
-== temporary log file in case of crash /tmp/eb-tqZXLe/easybuild-wJX_gs.log
-== found valid index for /home/users/svarrette/.local/easybuild/software/EasyBuild/4.3.1/easybuild/easyconfigs, so using it...
-== resolving dependencies ...
-== processing EasyBuild easyconfig /home/users/svarrette/.local/easybuild/software/EasyBuild/4.3.1/easybuild/easyconfigs/b/Bazel/Bazel-3.4.1-GCCcore-8.3.0.eb
-== building and installing devel/Bazel/3.4.1-GCCcore-8.3.0...
-== fetching files...
-== creating build dir, resetting environment...
-== unpacking...
-== patching...
-== preparing...
-== configuring...
-== building...
-== testing...
-== installing...
-== taking care of extensions...
-== restore after iterating...
-== postprocessing...
-== sanity checking...
-== cleaning up...
-== creating module...
-== permissions...
-== packaging...
-== COMPLETED: Installation ended successfully (took 3 min 26 sec)
-== Results of the build can be found in the log file(s) /home/users/svarrette/.local/easybuild/software/Bazel/3.4.1-GCCcore-8.3.0/easybuild/easybuild-Bazel-3.4.1-20201209.215735.log
-== processing EasyBuild easyconfig /home/users/svarrette/.local/easybuild/software/EasyBuild/4.3.1/easybuild/easyconfigs/t/TensorFlow/TensorFlow-2.3.1-foss-2019b-Python-3.7.4.eb
-== building and installing lib/TensorFlow/2.3.1-foss-2019b-Python-3.7.4...
-== fetching files...
-== creating build dir, resetting environment...
-== unpacking...
-== patching...
-== preparing...
-== configuring...
-== building...
-== testing...
-== installing...
-== taking care of extensions...
-== installing extension Markdown 3.2.2 (1/23)...
-== installing extension pyasn1-modules 0.2.8 (2/23)...
-== installing extension rsa 4.6 (3/23)...
-[...]
-= installing extension Keras-Preprocessing 1.1.2 (22/23)...
-== installing extension TensorFlow 2.3.1 (23/23)...
-== restore after iterating...
-== postprocessing...
-== sanity checking...
-== cleaning up...
-== creating module...
-== permissions...
-== packaging...
-== COMPLETED: Installation ended successfully (took 38 min 47 sec)
-[...]
-```
-
-Check the installed software:
-
-```
-(node)$> module av Tensorflow
-
-------------------------- /home/users/<login>/.local/easybuild/modules/all -------------------------
-   lib/TensorFlow/2.3.1-foss-2019b-Python-3.7.4
-
------------------ /opt/apps/resif/iris/2019b/broadwell/modules/all -----------------------------
-   lib/TensorFlow/2.1.0-foss-2019b-Python-3.7.4
-   tools/Horovod/0.19.1-foss-2019b-TensorFlow-2.1.0-Python-3.7.4
-
-
-
-Use "module spider" to find all possible modules.
-Use "module keyword key1 key2 ..." to search for all possible modules matching any of the "keys".
-```
-
-**Note**: to see the (locally) installed software, the `MODULEPATH` variable should include the `$HOME/.local/easybuild/modules/all/` (of `$LOCAL_MODULES`) path (which is what happens when using `module use <path>` -- see the `mu` command)
-
-You can now load the freshly installed module like any other:
-
-```bash
-(node)$> module load  lib/TensorFlow/2.3.1-foss-2019b-Python-3.7.4
-(node)$> module list
-
-Currently Loaded Modules:
-  1) tools/EasyBuild/3.6.1                          7) mpi/impi/2017.1.132-iccifort-2017.1.132-GCC-6.3.0-2.27
-  2) compiler/GCCcore/6.3.0                         8) toolchain/iimpi/2017a
-  3) tools/binutils/2.27-GCCcore-6.3.0              9) numlib/imkl/2017.1.132-iimpi-2017a
-  4) compiler/icc/2017.1.132-GCC-6.3.0-2.27        10) toolchain/intel/2017a
-  5) compiler/ifort/2017.1.132-GCC-6.3.0-2.27      11) tools/HPL/2.2-intel-2017a
-  6) toolchain/iccifort/2017.1.132-GCC-6.3.0-2.27
-
-# Check version
-(node)$> python -c 'import tensorflow as tf; print(tf.__version__)'
-```
 
 **Tips**: When you load a module `<NAME>` generated by Easybuild, it is installed within the directory reported by the `$EBROOT<NAME>` variable.
-In the above case, you will find the generated binary for Tensorflow in `${EBROOTTENSORFLOW}/`.
+In the above case, you will find the generated binary in `${EBROOTBCFTOOLS}/`.
 
 
-### d. Build software using a customized EasyConfig file
+### Build software using a customized EasyConfig file
 
 There are multiple ways to amend an EasyConfig file. Check the `--try-*` option flags for all the possibilities.
 
@@ -803,6 +716,7 @@ $> eb <filename>.eb --robot=$PWD:$EASYBUILD_ROBOT
 
 ## To go further (to update)
 
+- [ULHPC/sw](https://github.com/ULHPC/sw): RESIF 3 sources
 - [EasyBuild homepage](http://easybuilders.github.io/easybuild)
 - [EasyBuild documentation](http://easybuilders.github.io/easybuild/)
 - [Getting started](https://github.com/easybuilders/easybuild/wiki/Getting-started)
