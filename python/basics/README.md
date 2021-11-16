@@ -2,7 +2,7 @@
 
 # UL HPC Tutorial: Python basics
 
-      Copyright (c) 2018-2019 UL HPC Team <hpc-sysadmins@uni.lu>
+      Copyright (c) 2018-2021 UL HPC Team <hpc-sysadmins@uni.lu>
 
 [![](https://github.com/ULHPC/tutorials/raw/devel/python/basics/cover_slides.png)](https://github.com/ULHPC/tutorials/raw/devel/python/basics/slides.pdf)
 
