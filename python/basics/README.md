@@ -1,4 +1,4 @@
-[![By ULHPC](https://img.shields.io/badge/by-ULHPC-blue.svg)](https://hpc.uni.lu) [![Licence](https://img.shields.io/badge/license-GPL--3.0-blue.svg)](http://www.gnu.org/licenses/gpl-3.0.html) [![GitHub issues](https://img.shields.io/github/issues/ULHPC/tutorials.svg)](https://github.com/ULHPC/tutorials/issues/) [![](https://img.shields.io/badge/slides-PDF-red.svg)](https://github.com/ULHPC/tutorials/raw/devel/python/basics/slides.pdf) [![Github](https://img.shields.io/badge/sources-github-green.svg)](https://github.com/ULHPC/tutorials/tree/devel/python/basics/) [![Documentation Status](http://readthedocs.org/projects/ulhpc-tutorials/badge/?version=latest)](http://ulhpc-tutorials.readthedocs.io/en/latest/python/basics) [![GitHub forks](https://img.shields.io/github/stars/ULHPC/tutorials.svg?style=social&label=Star)](https://github.com/ULHPC/tutorials)
+;[![By ULHPC](https://img.shields.io/badge/by-ULHPC-blue.svg)](https://hpc.uni.lu) [![Licence](https://img.shields.io/badge/license-GPL--3.0-blue.svg)](http://www.gnu.org/licenses/gpl-3.0.html) [![GitHub issues](https://img.shields.io/github/issues/ULHPC/tutorials.svg)](https://github.com/ULHPC/tutorials/issues/) [![](https://img.shields.io/badge/slides-PDF-red.svg)](https://github.com/ULHPC/tutorials/raw/devel/python/basics/slides.pdf) [![Github](https://img.shields.io/badge/sources-github-green.svg)](https://github.com/ULHPC/tutorials/tree/devel/python/basics/) [![Documentation Status](http://readthedocs.org/projects/ulhpc-tutorials/badge/?version=latest)](http://ulhpc-tutorials.readthedocs.io/en/latest/python/basics) [![GitHub forks](https://img.shields.io/github/stars/ULHPC/tutorials.svg?style=social&label=Star)](https://github.com/ULHPC/tutorials)
 
 # UL HPC Tutorial: Python basics
 
@@ -178,7 +178,7 @@ We need to install the numpy library. We can install it ourselves in our home di
 `pip` is a package manager for Python. With this tool you can manage Python packages easily: install, uninstall, list, search packages or upgrade them. If you specify the `--user` parameter, the package will be installed under **your home directory** and will be available on all the compute nodes. You should also use `--no-cache` to prevent pip from searching in the cache directory which can be wrongly populated if you deal with several version of Python. Let's install numpy using `pip`.
 
 ```
-(node)$> python -m pip install --no-cache --user numpy==1.16
+(node)$> python -m pip install --no-cache --user numpy==1.18
 (node)$> python -m pip show numpy
 (node)$> python -m pip install --no-cache --user numpy==1.21
 (node)$> python -m pip show numpy
@@ -205,12 +205,12 @@ Here comes a very specific case. Sometimes you have to use tools which depends o
 
 In this tutorial we will create a new virtual environment for the previous code in order to install a different version of numpy and check the performances of our code with it.
 
-Create two virtual environments for your project. They will contain two different versions of numpy (1.21 and 1.16). Name then`numpy21` and `numpy16`, respectively.
+Create two virtual environments for your project. They will contain two different versions of numpy (1.21 and 1.18). Name then`numpy21` and `numpy18`, respectively.
 
 ```
 (node)$> cd ~/tutorials/python/basics/example3/
 (node)$> python3 -m venv numpy21
-(node)$> python3 -m venv numpy16
+(node)$> python3 -m venv numpy18
 ```
 
 So now you should be able to active any of these environments with this `source` command. Please notice the `(numpy21)` present in your prompt that indicates that the `numpy21` environment is active. You can use `deactivate` command to exit the virtual environment.
@@ -219,8 +219,8 @@ So now you should be able to active any of these environments with this `source`
 (node)$> source numpy21/bin/activate
 (numpy21)(node)$> # You are now inside numpy21 virtual environment
 (numpy21)(node)$> deactivate
-(node)$> source numpy16/bin/activate
-(numpy16)(node)$> # You are now inside numpy16 virtual environment
+(node)$> source numpy18/bin/activate
+(numpy18)(node)$> # You are now inside numpy18 virtual environment
 ```
 
 **QUESTIONS**
@@ -231,7 +231,7 @@ So now you should be able to active any of these environments with this `source`
 
 To exit a virtual environment run the `deactivate` command.
 
-So now, we can install a different numpy version inside each of your virtual environments. Check that the version installed corresponds to numpy 1.21 for *numpy21* and numpy 1.16 in *numpy16*.
+So now, we can install a different numpy version inside each of your virtual environments. Check that the version installed corresponds to numpy 1.21 for *numpy21* and numpy 1.18 in *numpy18*.
 
 ```
 # Go inside numpy21 environment and install numpy 1.21
@@ -240,11 +240,11 @@ So now, we can install a different numpy version inside each of your virtual env
 (numpy21)(node)$> python -m pip show numpy
 (numpy21)(node)$> deactivate
 
-# Go inside numpy16 environment and install numpy 1.16
-(node)$> source numpy16/bin/activate
-(numpy16)(node)$> python -m pip install numpy==1.16
-(numpy16)(node)$> python -m pip show numpy
-(numpy16)(node)$> deactivate
+# Go inside numpy18 environment and install numpy 1.18
+(node)$> source numpy18/bin/activate
+(numpy18)(node)$> python -m pip install numpy==1.18
+(numpy18)(node)$> python -m pip show numpy
+(numpy18)(node)$> deactivate
 ```
 
 Now you can write a batch script to load the right virtualenv and compare the performance of different versions of numpy.
@@ -260,7 +260,7 @@ Here are the steps to compare the two versions:
   * `numpy_compare` name
   * maximum `10m` walltime
   * logfile under `numpy_compare.out`
-* Activate *numpy16* environment.
+* Activate *numpy18* environment.
 * Execute `numpy_compare.py` a first time with this version of numpy.
 * Deactivate environment
 * Activate *numpy21* environment..
@@ -437,6 +437,7 @@ channels:
   - default
 dependencies:
   - python
+  - pip
   - pip:
     - numpy
 ```
