@@ -11,11 +11,11 @@
 using namespace std; 
 
 
-// kernel calculates for each element C=A+B
+// kernel calculates for each element D=A+B+C
 std::string kernel_code =
     "   void kernel simple_add(global const int* A, global const int* B, global int* C,global int* D){ "
-    "       D[get_global_id(0)]=A[get_global_id(0)]+B[get_global_id(0)]+C[get_global_id(0)];                 "
-    "   }                                                                               ";
+    "       D[get_global_id(0)]=A[get_global_id(0)]+B[get_global_id(0)]+C[get_global_id(0)];           "
+    "   }                                                                                              ";
 
 int main() {
 
