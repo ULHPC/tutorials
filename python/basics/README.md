@@ -477,9 +477,11 @@ If you want to stop conda from always being active:
 
 Alternatively, you can revert back to the backup of your `.bashrc` we created earlier. In case you want to get rid of conda completely, you can now also delete the directory where you installed it (default is `$HOME/miniconda3`).
 
-## (Optional) Use Scoop to parallelize execution of your Python code with Slurm
+## (Deprecated) Use Scoop to parallelize execution of your Python code with Slurm
 
-In this part, we will use Scoop library to parallelize our Python code and execute it on iris cluster. 
+In this part, we will use Scoop library to parallelize our Python code and execute it on iris cluster.
+
+**WARNING**: Scoop uses `ssh` to spawn workers instead of `srun`, so no slurm steps are created. This also means that workers will neither see any loaded modules nor the virtual environment, if you use any.
 
 The second example used in this tutorial comes from [Scoop example computation of pi](http://scoop.readthedocs.io/en/0.7/examples.html#computation-of). We will use a [Monte-Carlo method](https://en.wikipedia.org/wiki/Monte_Carlo_method) to compute the value of pi. As written in the Scoop documentation, it spawns two pseudo-random numbers that are fed to the hypot function which calculates the hypotenuse of its parameters. This step computes the Pythagorean equation (\sqrt{x^2+y^2}) of the given parameters to find the distance from the origin (0,0) to the randomly placed point (which X and Y values were generated from the two pseudo-random values). Then, the result is compared to one to evaluate if this point is inside or outside the unit disk. If it is inside (have a distance from the origin lesser than one), a value of one is produced (red dots in the figure), otherwise the value is zero (blue dots in the figure). The experiment is repeated *tries* number of times with new random values.
 
