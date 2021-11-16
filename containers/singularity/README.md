@@ -107,8 +107,8 @@ source ~/.bashrc
 ```bash
 export VERSION="v3.6.4"
 git clone https://github.com/hpcng/singularity.git
-git checkout ${VERSION}
 cd singularity
+git checkout ${VERSION}
 ```
 
 * Compiling singularity from source
