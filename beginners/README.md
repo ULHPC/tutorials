@@ -121,7 +121,7 @@ We will illustrate the usage of `tmux` by performing a compilation of a recent l
 
         (access)$> tmux
 
-* rename the screen window "Frontend" (using `CTRL+a A`)
+* rename the screen window "Frontend" (using `CTRL+b ,`)
 
 * create a new window and rename it "Compile"
 * within this new window, start a new interactive job over 1 node and 2 cores for 2 hours
