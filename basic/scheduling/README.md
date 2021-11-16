@@ -2,7 +2,7 @@
 
 # Job scheduling with SLURM
 
-     Copyright (c) 2013-2020 UL HPC Team <hpc-sysadmins@uni.lu>
+     Copyright (c) 2013-2021 UL HPC Team <hpc-sysadmins@uni.lu>
 
 This page is part of the Getting started tutorial, and the follow-up of the "Overview" section.
 
@@ -10,7 +10,7 @@ This page is part of the Getting started tutorial, and the follow-up of the "Ove
 
 ## The basics
 
-[Slurm](https://slurm.schedmd.com/) Slurm is an open source, fault-tolerant, and highly scalable cluster management and job scheduling system for large and small Linux clusters. It is used on Iris UL HPC cluster.
+[Slurm](https://slurm.schedmd.com/) is an open source, fault-tolerant, and highly scalable cluster management and job scheduling system for large and small Linux clusters. It is used on Iris UL HPC cluster.
 
 * It allocates exclusive or non-exclusive access to the resources (compute nodes) to users during a limited amount of time so that they can perform they work
 * It provides a framework for starting, executing and monitoring work
@@ -38,7 +38,7 @@ This page is part of the Getting started tutorial, and the follow-up of the "Ove
 
 We will now see the basic commands of Slurm.
 
-* Connect to **iris-cluster**. You can request resources in interactive mode:
+* Connect to **aion-cluster** or **iris-cluster**. You can request resources in interactive mode:
 
         (access)$> si
 
@@ -157,5 +157,5 @@ Modify this example to:
 
 * request 6 single core tasks equally spread across two nodes for 3 hours
 * Request as many tasks as cores available on a single node in the batch queue for 3 hours
-* Request one sequential task requiring half the memory of a regular iris node for 1 day (use the header `#SBATCH --mem=64GB`)
-* Request one GPU tasks for 4 hours - dedicate 1/4 of available cores for its management (use the gpu partition and the header `#SBATCH -G 1`)
+* Request one sequential task requiring half the memory of a regular node for 1 day (use the header `#SBATCH --mem=64GB` on Iris or `#SBATCH --mem=128GB`)
+* Iris only - request one GPU tasks for 4 hours - dedicate 1/4 of available cores for its management (use the gpu partition and the header `#SBATCH -G 1`)

@@ -42,14 +42,14 @@ as it will soon be promoted as the next default environment.
 
 The ULHPC team updates the software set every year based on the Easybuild releases.
 
-| Name    | Type      | 2019a (prod)       | 2019b (devel)      | 2020a (next) |
-|---------|-----------|--------------------|--------------------|--------------|
-| GCCCore | compiler  | 8.2.0              | 8.3.0              | 9.3.0        |
-| foss    | toolchain | 2019a              | 2019b              | 2020a        |
-| intel   | toolchain | 2019a              | 2019b              | 2020a        |
-| Python  |           | 3.7.2 (and 2.7.15) | 3.7.4 (and 2.7.16) | 3.8.2        |
+| Name    | Type      | 2019b (legacy)     | 2020a        | 2020b (prod) | 2021a (devel) |
+|---------|-----------|--------------------|--------------|--------------|---------------|
+| GCCCore | compiler  | 8.3.0              | 9.3.0        | 10.2.0       | 10.3.0        |
+| foss    | toolchain | 2019b              | 2020a        | 2020b        | 2021a         |
+| intel   | toolchain | 2019b              | 2020a        | 2020b        | 2021a         |
+| Python  |           | 3.7.4 (and 2.7.16) | 3.8.2        | 3.8.6        | 3.9.2         |
 
-Each environment provides different versions of softwares. 
+Each environment provides different versions of softwares.
 The core of the software environment is the toolchain, a toolchain is a set of tools used to compile and run of the other programs of the software environment.
 
 The ULHPC team provides two toolchain:
@@ -63,15 +63,17 @@ The environment variable `$MODULEPATH` contains the path of the directory contai
 You can use this variable to change your software environment.
 
 
-In the following command, we use the new environment, which will be officially released very soon.
+In the following command, we use the 2020b environment compiled for Broadwell CPUs on Iris.
 
 ```
-export MODULEPATH=/opt/apps/resif/iris/2019b/broadwell/modules/all
+export MODULEPATH=/opt/apps/resif/iris/2020b/broadwell/modules/all
 ```
 
-For backward compatibility reasons and for reproducibility, it is always possible to load the older environments.
+This is equivalent to the command `resif-load-swset-devel` on Iris.
 
+For backward compatibility reasons and for reproducibility, it is always possible to load the older environments, with the command `resif-load-swset-legacy`
 
+In order to restore production settings, run the command `resif-load-swset-prod`
 
 ## Examples
 
