@@ -40,7 +40,7 @@ In this tutorial, we are going to explain the steps to run a Python script on th
 
 ## Example: compute standard deviation
 
-The first example used in this tutorial is fully inspired from [PythonCExtensions](https://github.com/mattfowler/PythonCExtensions). This code computes the standard deviation of an array of random numbers. The naïve code used to compute the standard deviation of an array is:
+The first example used in this tutorial is fully inspired from [PythonCExtensions](https://github.com/mattfowler/PythonCExtensions). This code computes the standard deviation of an array of random numbers. The naïve code used to compute the standard deviation of an array (`lst`) is:
 
 ```python
 def mean(lst):
