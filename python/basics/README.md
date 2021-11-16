@@ -180,10 +180,8 @@ We need to install the numpy library. We can install it ourselves in our home di
 ```
 (node)$> python -m pip install --no-cache --user numpy==1.16
 (node)$> python -m pip show numpy
-(node)$> python -c "import numpy as np; print(np.__version__)"
 (node)$> python -m pip install --no-cache --user numpy==1.21
 (node)$> python -m pip show numpy
-(node)$> python -c "import numpy as np; print(np.__version__)"
 ```
 
 Notice that with pip you can only have one version of numpy installed at a time. In the next section, we will see how to easily switch between several versions of numpy by using **vitualenv**.
@@ -236,15 +234,16 @@ To exit a virtual environment run the `deactivate` command.
 So now, we can install a different numpy version inside each of your virtual environments. Check that the version installed corresponds to numpy 1.21 for *numpy21* and numpy 1.16 in *numpy16*.
 
 ```
-(node)$> # Go inside numpy21 environment and install numpy 1.21
+# Go inside numpy21 environment and install numpy 1.21
 (node)$> source numpy21/bin/activate
 (numpy21)(node)$> python -m pip install numpy==1.21
-(numpy21)(node)$> python -c "import numpy as np; print(np.__version__)"
+(numpy21)(node)$> python -m pip show numpy
 (numpy21)(node)$> deactivate
-(node)$> # Go inside numpy16 environment and install numpy 1.16
+
+# Go inside numpy16 environment and install numpy 1.16
 (node)$> source numpy16/bin/activate
 (numpy16)(node)$> python -m pip install numpy==1.16
-(numpy16)(node)$> python -c "import numpy as np; print(np.__version__)"
+(numpy16)(node)$> python -m pip show numpy
 (numpy16)(node)$> deactivate
 ```
 
