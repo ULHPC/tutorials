@@ -38,9 +38,9 @@ In this tutorial, we are going to explain the steps to run a Python script on th
 * Switch between different Python and package versions using a virtual environment.
 * Create an independent Python installation with conda.
 
-## Example: compute mean value
+## Example: compute standard deviation
 
-The first example used in this tutorial is fully inspired from [PythonCExtensions](https://github.com/mattfowler/PythonCExtensions). This code simply computes the mean value of an array of random numbers. The naïve code used to compute the mean of an array is:
+The first example used in this tutorial is fully inspired from [PythonCExtensions](https://github.com/mattfowler/PythonCExtensions). This code computes the standard deviation of an array of random numbers. The naïve code used to compute the standard deviation of an array is:
 
 ```python
 def mean(lst):
@@ -53,7 +53,7 @@ def standard_deviation(lst):
     return math.sqrt(variance / len(lst))
 ```
 
-The variable will be the size of the array on which we want to compute the mean. The idea is to reduce the time used to compute this value by using libraries (**numpy**) or compile the code in C.
+The variable will be the size of the array on which we want to compute the standard deviation. The idea is to reduce the time used to compute this value by using libraries (**numpy**) or compile the code in C.
 
 ## Python usage
 
