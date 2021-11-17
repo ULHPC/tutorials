@@ -1,5 +1,5 @@
 #! /bin/bash -l
-# Time-stamp: <Wed 2021-11-17 18:23 svarrette>
+# Time-stamp: <Wed 2021-11-17 18:30 svarrette>
 ###############################################################################
 # Default launcher for Hybrid OpenMP+MPI jobs
 # Usage:
@@ -97,9 +97,9 @@ export OMP_NUM_THREADS=${SLURM_CPUS_PER_TASK:-1}
 
 cat <<EOF
 # ==============================================================
-# => OpenMP+MPI run of '${APP}' with the ${SUITE} MPI suite
+# => OpenMP+MPI run of '$(basename ${EXE})' with the ${SUITE} MPI suite
 #    OMP_NUM_THREADS=${OMP_NUM_THREADS}
-#    ${SLURM_NTASKS:-1} MPI process(es)"
+#    ${SLURM_NTASKS:-1} MPI process(es)
 # ==============================================================
 EOF
 

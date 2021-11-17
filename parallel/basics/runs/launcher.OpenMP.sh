@@ -1,5 +1,5 @@
 #! /bin/bash -l
-# Time-stamp: <Wed 2021-11-17 17:29 svarrette>
+# Time-stamp: <Wed 2021-11-17 18:29 svarrette>
 ################################################################################
 # Default launcher for OpenMP jobs
 # Usage:
@@ -96,7 +96,7 @@ export OMP_NUM_THREADS=${SLURM_CPUS_PER_TASK:-1}
 
 cat <<EOF
 # ==============================================================
-# => OpenMP run of '$(basename ${APP})' with ${MODULE}
+# => OpenMP run of '$(basename ${EXE})' with ${MODULE}
 #    OMP_NUM_THREADS=${OMP_NUM_THREADS}
 # ==============================================================
 EOF

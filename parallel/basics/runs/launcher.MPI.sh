@@ -1,5 +1,5 @@
 #! /bin/bash -l
-# Time-stamp: <Wed 2021-11-17 17:39 svarrette>
+# Time-stamp: <Wed 2021-11-17 18:30 svarrette>
 ###############################################################################
 # Default launcher for MPI jobs
 # Usage:
@@ -92,7 +92,7 @@ done
 
 cat <<EOF
 # ==============================================================
-# => MPI run of '$(basename ${APP})' with the ${SUITE} MPI suite
+# => MPI run of '$(basename ${EXE})' with the ${SUITE} MPI suite
 # ==============================================================
 EOF
 
