@@ -31,13 +31,11 @@ Finally, and this is especially true for hydrid OpenMP/MPI code, remember that y
 
 * _Ex (AION): 16 cores per socket, 8 sockets ("physical" CPUs) per node_ (128c/node)
     - `[-N <N>] --ntasks-per-node <8n> --ntasks-per-socket <n> -c <thread>`
-         * _Total_: `<N>`$\times 8\times$`<n>` tasks, each on `<thread>` threads
-         * **Ensure** `<n>`$\times$`<thread>`= 16 on aion **if you target a full node utilisation**
+         * _Total_: `<N>`$\times 8\times$`<n>` tasks, each on `<thread>` threads, **Ensure** `<n>`$\times$`<thread>`= 16 on aion **if you target a full node utilisation**
          * Ex: `-N 2 --ntasks-per-node 32 --ntasks-per-socket 4 -c 4` (_Total_: 64 tasks)
 * _Ex (IRIS): 14 cores per socket, 2 sockets ("physical" CPUs) per node_ (28c/node)
     - `[-N <N>] --ntasks-per-node <2n> --ntasks-per-socket <n> -c <thread>`
-         * _Total_: `<N>`$\times 2\times$`<n>` tasks, each on `<thread>` threads
-         * **Ensure** `<n>`$\times$`<thread>`= 14 on iris **if you target a full node utilisation**
+         * _Total_: `<N>`$\times 2\times$`<n>` tasks, each on `<thread>` threads,  **Ensure** `<n>`$\times$`<thread>`= 14 on iris **if you target a full node utilisation**
          * Ex: `-N 2 --ntasks-per-node 4 --ntasks-per-socket 2  -c 7` (_Total_: 8 tasks)
 
 
@@ -62,7 +60,7 @@ Now **configure a dedicated directory `~/tutorials/sequential` for this session*
 (access)$> cd ~/tutorials/OpenMP-MPI
 # create a symbolic link to the top reference material
 (access)$> ln -s ~/git/github.com/ULHPC/tutorials/parallel ref.d
-$> ln -s ~/git/github.com/ULHPC/tutorials/parallel ref.d  # Symlink to the reference tutorial
+$> ln -s ~/git/github.com/ULHPC/tutorials/parallel ref.d  # Symlink to the **root** reference parallel tutorial
 $> ln -s ref.d/basics .   # Basics instructions
 $> cd basics
 ```
@@ -168,20 +166,21 @@ $> export OMP_NUM_THREADS=${SLURM_CPUS_PER_TASK:-1}
         $> echo $OMP_NUM_THREADS
 
 * Check and compile the source `src/hello_openmp.c` to generate:
-    - `bin/hello_openmp`       (compiled over the `foss`  toolchain)
-    - `bin/intel_hello_openmp` (compiled over the `intel` toolchain)
+    - `bin/${ULHPC_CLUSTER}_hello_openmp`       (compiled over the `foss`  toolchain)
+    - `bin/${ULHPC_CLUSTER}_intel_hello_openmp` (compiled over the `intel` toolchain)
+    - indeed it's always a good practice to specify the supercomputer that was used to generate the binary. Use the global variable `${ULHPC_CLUSTER}` for that.
 
 ```bash
 $> cat src/hello_openmp.c
 ######### foss toolchain
 $> module purge                # Safeguard
 $> module load toolchain/foss
-$> gcc -fopenmp -Wall -O2 src/hello_openmp.c -o bin/hello_openmp
+$> gcc -fopenmp -Wall -O2 src/hello_openmp.c -o bin/${ULHPC_CLUSTER}_hello_openmp
 
 ######### intel toolchain
 $> module purge                # Safeguard
 $> module load toolchain/intel
-$> icc -qopenmp -xhost -Wall -O2 src/hello_openmp.c -o bin/hello_openmp
+$> icc -qopenmp -xhost -Wall -O2 src/hello_openmp.c -o bin/intel_${ULHPC_CLUSTER}_hello_openmp
 ```
 
 * (__only__ if you have trouble to compile): `make omp`
@@ -198,31 +197,44 @@ Repeat the above procedure on a more serious computation: a naive matrix multipl
 
 Adapt the launcher script to sustain both executions (OpenMP helloworld and matrix multiplication)
 
-_Note_: if you are lazy (or late), you can use the provided launcher script `runs/launcher.OpenMP.sh`.
+_Note_: if you are lazy (or late), you can use the provided launcher script [`scripts/launcher.OpenMP.sh`](https://github.com/ULHPC/tutorials/blob/devel/parallel/basics/runs/launcher.OpenMP.sh).
 
 ```bash
-$> cd runs
-$> ./launcher.OpenMP.sh -h
+$> ./scripts/launcher.OpenMP.sh -h
 NAME
-  ./launcher.OpenMP.sh -- OpenMP launcher example
+  launcher.OpenMP.sh: Generic OpenMP launcher
+    Default APPDIR: /home/users/svarrette/tutorials/OpenMP-MPI/basics/bin
+    Default APP: aion_hello_openmp
+  Take the good habit to prefix the intel binaries (as foss toolchain is assumed by default)
+  with 'intel_'
+
 USAGE
-  ./launcher.OpenMP.sh {intel | foss} [app]
+  [sbatch] ./scripts/launcher.OpenMP.sh [-n] {intel | foss } [app]
+  EXE=/path/to/multithreadedapp.exe [sbatch] ./scripts/launcher.OpenMP.sh [-n] {intel | foss }
+
+OPTIONS:
+  -n --dry-run: Dry run mode
 
 Example:
-  ./launcher.OpenMP.sh                          run foss on hello_openmp
-  ./launcher.OpenMP.sh intel                    run intel on hello_openmp
-  ./launcher.OpenMP.sh foss matrix_mult_openmp  run foss  on matrix_mult_openmp
-
-$> ./launcher.OpenMP.sh
-$> ./launcher.OpenMP.sh intel
-$> ./launcher.OpenMP.sh foss matrix_mult_openmp
+  [sbatch] ./scripts/launcher.OpenMP.sh                          # run FOSS  build   [<cluster>_]hello_openmp
+  [sbatch] ./scripts/launcher.OpenMP.sh intel                    # run intel build   [<cluster>_]intel_hello_openmp
+  [sbatch] ./scripts/launcher.OpenMP.sh foss matrix_mult_openmp  # run FOSS  build   [<cluster>_]matrix_mult_openmp
+  EXE=/home/users/svarrette/bin/datarace [sbatch] ./scripts/launcher.OpenMP.sh intel # run intel build  ~/bin/datarace
 ```
 
-Passive jobs examples:
+Now you can execute it:
 
 ```bash
-$> sbatch ./launcher.OpenMP.sh foss  matrix_mult_openmp
-$> sbatch ./launcher.OpenMP.sh intel matrix_mult_openmp
+$ ./scripts/launcher.OpenMP.sh
+$ ./scripts/launcher.OpenMP.sh intel
+$ ./scripts/launcher.OpenMP.sh foss ${ULHPC_CLUSTER}_matrix_mult_openmp
+```
+
+Passive jobs examples on aion:
+
+```bash
+$> sbatch -c 128 ./scripts/launcher.OpenMP.sh foss  ${ULHPC_CLUSTER}_matrix_mult_openmp
+$> sbatch -c 128 ./scripts/launcher.OpenMP.sh intel ${ULHPC_CLUSTER}_matrix_mult_openmp
 ```
 
 Check the elapsed time: what do you notice ?
@@ -241,18 +253,13 @@ $> cd src/dataracebench
 
 Now you can reserve the nodes and set `OMP_NUM_THREADS`:
 
-* Reserve an interactive job to launch 12 OpenMP threads (for 1 hour)
+* Reserve an interactive job to launch a maximum of OpenMP threads on 1 node (for 1 hour)
 
 ```bash
-(access)$> si --ntasks-per-node=1 -c 12 -t 1:00:00
+# Example on Aion, 128 cores per node
+(access)$> si --ntasks-per-node=1 -c 128 -t 1:00:00
 $> export OMP_NUM_THREADS=${SLURM_CPUS_PER_TASK:-1}
 ```
-
-<!--
-############### gaia/chaos clusters (OAR) ###############
-(access-{gaia|chaos})$> oarsub -I -l nodes=1/core=12,walltime=1:00:00
-$> export OMP_NUM_THREADS=$(cat $OAR_NODEFILE| wc -l)
--->
 
 * Open **another** terminal (or another `tmux/screen` window) to monitor the execution (see intructions on top).
 
@@ -262,18 +269,23 @@ $> export OMP_NUM_THREADS=$(cat $OAR_NODEFILE| wc -l)
 $> module load toolchain/intel
 $> ./check-data-races.sh --help
 
-Usage: ./check-data-races.sh [--run] [--help]
+Usage: ./check-data-races.sh [--run] [--help] language
 
---help     : this option
---small    : compile and test all benchmarks using small parameters with Helgrind, ThreadSanitizer, Archer, Intel inspector.
---run      : compile and run all benchmarks with gcc (no evaluation)
---run-intel: compile and run all benchmarks with Intel compilers (no evaluation)
---helgrind : compile and test all benchmarks with Helgrind
---tsan     : compile and test all benchmarks with clang ThreadSanitizer
---archer   : compile and test all benchmarks with Archer
---inspector: compile and test all benchmarks with Intel Inspector
+--help      : this option
+--small     : compile and test all benchmarks using small parameters with Helgrind, ThreadSanitizer, Archer, Intel inspector.
+--run       : compile and run all benchmarks with gcc (no evaluation)
+--run-intel : compile and run all benchmarks with Intel compilers (no evaluation)
+--helgrind  : compile and test all benchmarks with Helgrind
+--tsan-clang: compile and test all benchmarks with clang ThreadSanitizer
+--tsan-gcc  : compile and test all benchmarks with gcc ThreadSanitizer
+--archer    : compile and test all benchmarks with Archer
+--coderrect : compile and test all benchmarks with Coderrect Scanner
+--inspector : compile and test all benchmarks with Intel Inspector
+--romp      : compile and test all benchmarks with Romp
+--llov    : compile and test all benchmarks with LLVM OpenMP Verifier (LLOVE)
+--customize : compile and test customized test list and tools
 
-$> ./check-data-races.sh --run-intel
+$> ./check-data-races.sh --run-intel C
 ```
 
 __Useful OpenMP links__:
@@ -301,24 +313,19 @@ In most MPI implementations,   a fixed set of processes is created at program in
 
 The [UL HPC platform](https://hpc.uni.lu) offers to you different MPI implementations:
 
-| MPI Suit                                                        | Version | `module load`...  | Compiler                    |
-|-----------------------------------------------------------------|---------|-------------------|-----------------------------|
-| [Intel MPI](http://software.intel.com/en-us/intel-mpi-library/) |  17.0.1 | `toolchain/intel` | C: `mpiicc`; C++: `mpiicpc` |
-| [OpenMPI](http://www.open-mpi.org/)                             |   2.1.1 | `mpi/OpenMPI`     | C: `mpicc`;  C++: `mpic++`  |
+| __MPI Suite__                                                   | `module load`...  | __Compiler (C)__ | __Compiler (C++)__ |
+|-----------------------------------------------------------------|-------------------|------------------|--------------------|
+| [Intel MPI](http://software.intel.com/en-us/intel-mpi-library/) | `toolchain/intel` | `mpiicc [...]`   | `mpiicpc [...]`    |
+| [OpenMPI](http://www.open-mpi.org/)                             | `mpi/OpenMPI`     | `mpicc  [...]`   | `mpic++  [...]`    |
 
 
 ### MPI compilation
 
-| MPI Suit                                                        | `module load`...  | Compilation command (C )                     |
-|-----------------------------------------------------------------|-------------------|----------------------------------------------|
-| [Intel MPI](http://software.intel.com/en-us/intel-mpi-library/) | `toolchain/intel` | `mpiicc -Wall [-qopenmp] [-xhost] -O2 [...]` |
-| [OpenMPI](http://www.open-mpi.org/)                             | `mpi/OpenMPI`     | `mpicc  -Wall [-fopenmp] -O2 [...]`          |
+| __MPI Suite__ | __Example Compilation command__                        |
+|---------------|--------------------------------------------------------|
+| Intel MPI     | `{mpiicc/mpiicpc} -Wall [-qopenmp] [-xhost] -O2 [...]` |
+| OpenMPI       | `{mpicc/mpic++}   -Wall [-fopenmp] -O2 [...]`          |
 
-
-<!--
-| [MVAPICH2](http://mvapich.cse.ohio-state.edu/overview/)         |    2.3a | `mpi/MVAPICH2`    | C: `mpicc`;  C++: `mpic++`  |
-| [MVAPICH2](http://mvapich.cse.ohio-state.edu/overview/)         | `mpi/MVAPICH2`    | `mpicc  -Wall [-fopenmp] -O2 [...]`          |
--->
 Of course, it is possible to have **hybrid** code, mixing MPI and OpenMP primitives.
 
 ### Slurm reservations and usage for MPI programs
@@ -331,94 +338,32 @@ Of course, it is possible to have **hybrid** code, mixing MPI and OpenMP primiti
 
 **Important**:
 
-* To run your MPI program, be aware that Slurm is able to directly launch MPI tasks and initialize of MPI communications via [Process Management Interface (PMI)](https://slurm.schedmd.com/mpi_guide.html)
-     - pmi2 is currently available, we'll switch to PMIx with the incoming RESIF release introducing the 2018a toolchains.
+* To run your MPI program, be aware that Slurm is able to directly launch MPI tasks and initialize of MPI communications via [Process Management Interface (PMI)](https://slurm.schedmd.com/mpi_guide.html) and [PMIx](https://openpmix.github.io/)
      - permits to resolve the task affinity by the scheduler (avoiding to use `mpirun --map-by [...]`)
 * Simply use (whatever MPI flavor you use):
 
             srun -n $SLURM_NTASKS /path/to/mpiprog [...]
 
-Thus a minimal launcher would _typically_ look like that -- see also [our default Slurm launchers](https://github.com/ULHPC/launcher-scripts/blob/devel/slurm/launcher.default.sh).
+Thus a **minimal launcher for OpenMPI** would _typically_ look like that -- see [MPI template  Launcher](https://hpc-docs.uni.lu/slurm/launchers/#mpi)
 
 ```bash
 #!/bin/bash -l
-#SBATCH -N 2                  # Use 2 nodes
-#SBATCH --ntasks-per-node=28  # Number of MPI process per node
-#SBATCH -c 1        # Number of threads per MPI process (1 unless hybrid code)
+#SBATCH -N 2
+#SBATCH --ntasks-per-node 128    # MPI processes per node - use 28 on iris
+#SBATCH -c 1
 #SBATCH --time=0-01:00:00
 #SBATCH -p batch
 
+print_error_and_exit() { echo "***ERROR*** $*"; exit 1; }
+module purge || print_error_and_exit "No 'module' command"
+module load toolchain/foss
+module load mpi/OpenMPI
+OPTS=$*
 
-# Load the intel toolchain and whatever MPI module you need
-module purge
-module load toolchain/intel    # or mpi/OpenMPI <!-- |MVAPICH2} -->
-# export I_MPI_PMI_LIBRARY=/usr/lib64/libpmi.so
-srun -n $SLURM_NTASKS /path/to/your/mpi_program
+srun -n $SLURM_NTASKS /path/to/your/openmpi.app ${OPTS}
 ```
 
-<!--
-#SBATCH --qos=normal
-# Use the RESIF build modules of the UL HPC platform
-if [ -f  /etc/profile ]; then
-   .  /etc/profile
-fi
--->
-
-In the above example, 2x28 = 56 MPI processes will be launched.
-
-<!--
-### OAR reservations and usage for MPI programs
-
-You have to setup the reservation to match the required number of MPI processes:
-
-      oarsub -l nodes=2/core=12[...]
--->
-
-As for running you MPI program, you typically need to rely on `mpirun` for which the command-line (unfortunately) differs depending on the MPI flavor:
-
-| MPI Suit                                                        | `module load`...  |
-|-----------------------------------------------------------------|-------------------|
-| [Intel MPI](http://software.intel.com/en-us/intel-mpi-library/) | `toolchain/intel` |
-| [OpenMPI](http://www.open-mpi.org/)                             | `mpi/OpenMPI`     |
-
-<!--
-
-| MPI Suit                                                        | `module load`...  | Typical run command (OAR)                                                   |
-|-----------------------------------------------------------------|-------------------|-----------------------------------------------------------------------------|
-| [Intel MPI](http://software.intel.com/en-us/intel-mpi-library/) | `toolchain/intel` | `mpirun -hostfile $OAR_NODEFILE [...]`                                      |
-| [OpenMPI](http://www.open-mpi.org/)                             | `mpi/OpenMPI`     | `mpirun -hostfile $OAR_NODEFILE -x PATH -x LD_LIBRARY_PATH [...]`           |
-
--->
-
-<!--
-| [MVAPICH2](http://mvapich.cse.ohio-state.edu/overview/)         | `mpi/MVAPICH2`    | `mpirun -launcher ssh -launcher-exec /usr/bin/oarsh -f $OAR_NODEFILE [...]` |
--->
-
-<!--
-Thus a minimal OAR launcher would typically look like that
-
-```bash
-#!/bin/bash -l
-#OAR -l nodes=2/core=6,walltime=1
-
-# Use the RESIF build modules of the UL HPC platform
-if [ -f  /etc/profile ]; then
-   .  /etc/profile
-fi
-# Load the intel toolchain and whatever MPI module you need
-module purge
-module load toolchain/intel    # or mpi/{OpenMPI|MVAPICH2}
-# ONLY on moonshot node that have no IB card: export I_MPI_FABRICS=tcp
-
-
-### Intel MPI
-mpirun -hostfile $OAR_NODEFILE path/to/mpi_program
-### OpenMPI
-mpirun -hostfile $OAR_NODEFILE -x PATH -x LD_LIBRARY_PATH path/to/mpi_program
-### MVAPICH2
-mpirun -launcher ssh -launcher-exec /usr/bin/oarsh -f $OAR_NODEFILE path/to/mpi_program
-```
--->
+In the above example, 2x128 = 256 MPI processes will be launched (matches Aion configuration). **You will have to adapt it for running on Iris**.
 
 ### Hands-on: MPI Helloworld and matrix multiplication
 
@@ -427,13 +372,8 @@ You can find in `src/hello_mpi.c` the traditional MPI "Helloworld" example.
 * Reserve an interactive job to launch 6 MPI processes across two nodes 2x3 (for 30 minutes)
 
 ```bash
-############### iris cluster (slurm) ###############
-(access-iris)$> salloc -p interactive -N 2 --ntasks-per-node=3 -t 0:30:00
+(access)$> si -N 2 --ntasks-per-node=3 -t 0:30:00
 ```
-<!--
-############### gaia/chaos clusters (OAR) ###############
-(access-{gaia|chaos})$> oarsub -I -l nodes=2/core=3,walltime=0:30:00
--->
 
 * Check and compile the source `src/hello_mpi.c` to generate:
     - `bin/openmpi_hello_mpi`  (compiled with the `mpi/OpenMPI` module)
@@ -465,13 +405,8 @@ $> mpicc -Wall -O2 src/hello_mpi.c -o bin/mvapich2_hello_mpi
 * Prepare a launcher script (use your favorite editor) to execute this application in batch mode.
 
 ```bash
-############### iris cluster (slurm) ###############
 $> sbatch ./launcher.MPI.sh
 ```
-<!--
-############### gaia/chaos clusters (OAR) ###############
-$> oarsub -S ./launcher.MPI.sh
--->
 
 Repeat the above procedure on a more serious computation: a naive matrix multiplication  using MPI, those source code is located in `src/matrix_mult_mpi.c`
 
@@ -481,8 +416,8 @@ _Note_: if you are lazy (or late), you can use the provided launcher script `run
 
 
 ```bash
-$> cd runs
-$> ./launcher.MPI.sh -h
+$ cd runs
+$ ./launcher.MPI.sh -h
 NAME
   ./launcher.MPI.sh -- MPI launcher example
 USAGE
@@ -494,46 +429,12 @@ Example:
   ./launcher.MPI.sh openmpi matrix_mult_mpi  run OpenMPI on matrix_mult_mpi
 ```
 
-<!--
-```bash
-$> cd runs
-$> ./launcher.MPI.sh -h
-NAME
-  ./launcher.MPI.sh -- MPI launcher example
-USAGE
-  ./launcher.MPI.sh {intel | openmpi | mvapich2} [app]
-
-Example:
-  ./launcher.MPI.sh                          run OpenMPI on hello_mpi
-  ./launcher.MPI.sh intel                    run Intel MPI on hello_mpi
-  ./launcher.MPI.sh openmpi matrix_mult_mpi  run OpenMPI on matrix_mult_mpi
-```
--->
-
 Passive jobs examples:
 
 ```bash
-############### iris cluster (slurm) ###############
-$> sbatch ./launcher.MPI.sh openmpi matrix_mult_mpi
-$> sbatch ./launcher.MPI.sh intel   matrix_mult_mpi
+$ sbatch ./launcher.MPI.sh openmpi matrix_mult_mpi
+$ sbatch ./launcher.MPI.sh intel   matrix_mult_mpi
 ```
-
-<!--
-############### Gaia/chaos clusters (OAR) ###############
-# Arguments of the launcher script to tests
-$> cat > mpi-args.txt <<EOF
-openmpi matrix_mult_mpi
-intel   matrix_mult_mpi
-EOF
-
-$> oarsub -S ./launcher.MPI.sh --array-param-file mpi-args.txt
-[ADMISSION RULE] Modify resource description with type and ibpool constraints
-Simple array job submission is used
-OAR_JOB_ID=4357652
-OAR_JOB_ID=4357653
-OAR_ARRAY_ID=4357652
-```
--->
 
 Check the elapsed time: what do you notice ?
 
