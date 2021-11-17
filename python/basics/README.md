@@ -95,7 +95,7 @@ To run your script in a **passive** way, you should create a batch script to run
 * Create a `example1.sh` file under `tutorials/advanced/Python/example1/`.
 * Edit it by using your favorite editor (`vim`, `nano`, `emacs`...)
 * Add a shebang at the beginning (`#!/bin/bash -l`)
-* Add **#SBATCH** parameters (see [Slurm documentation](https://hpc.uni.lu/users/docs/slurm.html))
+* Add **#SBATCH** parameters (see [Slurm documentation](https://hpc-docs.uni.lu/slurm/))
   * `1` core
   * `example1` name
   * maximum `10m` walltime
@@ -365,33 +365,34 @@ The installation will modify your `.bashrc` to make conda directly available aft
 
 ### Setup the environment
 
-1. Update conda to the latest version:
+#### 1. Update conda to the latest version:
 
-   ```bash
-   (node)$> conda update conda
-   ```
+```bash
+(node)$> conda update conda
+```
 
-2. Create a new empty conda environment and activate it:
+#### 2. Create a new empty conda environment and activate it:
 
-   ```bash
-   (node)$> conda create -n python_tutorial
-   (node)$> conda activate python_tutorial
-   ```
+```bash
+(node)$> conda create -n python_tutorial
+(node)$> conda activate python_tutorial
+```
 
-   After validation of the creation step and once activated, you can see that your prompt will now be prefixed with `(python_tutorial)` to show which environment is active.
+After validation of the creation step and once activated, you can see that your prompt will now be prefixed with `(python_tutorial)` to show which environment is active.
 
-3. Make sure Python does not pick up packages in your home directory:
+#### 3. Make sure Python does not pick up packages in your home directory:
 
-   ```bash
-   (python_tutorial)(node)$> export PYTHONNOUSERSITE=True
-   ```
-   Not applying this setting can cause erratic and unreproducible behaviour from conda, e.g. it will prefer outdated package versions in your home folder over newer ones in the active environment. If you are a regular (and exclusive) conda user, you might want to add this line to your `~/.bashrc` or `~/.bash_profile`.
-4. Install Python and numpy:
+```bash
+(python_tutorial)(node)$> export PYTHONNOUSERSITE=True
+```
+Not applying this setting can cause erratic and unreproducible behaviour from conda, e.g. it will prefer outdated package versions in your home folder over newer ones in the active environment. If you are a regular (and exclusive) conda user, you might want to add this line to your `~/.bashrc` or `~/.bash_profile`.
 
-   ```bash
-   (python_tutorial)(node)$> conda install python numpy
-   ```
-   You can also just install Python with conda and then numpy with `pip`.
+#### 4. Install Python and numpy:
+
+```bash
+(python_tutorial)(node)$> conda install python numpy
+```
+You can also just install Python with conda and then numpy with `pip`.
 
 ### Working with conda environments
 
