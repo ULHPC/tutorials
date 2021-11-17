@@ -12,7 +12,7 @@ The objective of this tutorial is to compile and run on of the [OSU micro-benchm
 
 You can work in groups for this training, yet individual work is encouraged to ensure you understand and practice the usage of MPI programs on an HPC platform.
 
-In all cases, ensure you are able to [connect to the UL HPC  clusters](https://hpc.uni.lu/users/docs/access.html).
+In all cases, ensure you are able to [connect to the UL HPC  clusters](https://hpc-docs.uni.lu/connect/access/).
 
 **Advanced users only**: rely on `screen` (see  [tutorial](http://support.suso.com/supki/Screen_tutorial) or the [UL HPC tutorial](https://hpc.uni.lu/users/docs/ScreenSessions.html) on the  frontend prior to running any `oarsub` or `srun/sbatch` command to be more resilient to disconnection.
 

@@ -12,11 +12,11 @@ This tutorial will guide you through your first steps on the
 
 Before proceeding:
 
-* make sure you have an account (if not, follow [this procedure](https://hpc.uni.lu/get_an_account)), and an SSH client.
-* take a look at the [quickstart guide](https://hpc.uni.lu/users/quickstart.html)
-* ensure you operate from a Linux / Mac environment. Most commands below assumes running in a Terminal in this context. If you're running Windows, you can use MobaXterm, Putty tools etc. as described [on this page](https://hpc.uni.lu/users/docs/access/access_windows.html) yet it's probably better that you familiarize "natively" with Linux-based environment by having a Linux Virtual Machine (consider for that [VirtualBox](https://www.virtualbox.org/)) or [Windows Subsystem for Linux](https://docs.microsoft.com/en-us/windows/wsl/install-win10).
+* make sure you have an account (if not, follow [this procedure](https://hpc-docs.uni.lu/accounts/)), and an SSH client.
+* take a look at the [Getting Started](https://hpc-docs.uni.lu/getting-started/)
+* Follow the ["Linux Shell" Tutorial](../linux-shell/)
 
-From a general perspective, the [Support page](https://hpc.uni.lu/users/docs/report_pbs.html) describes how to get help during your UL HPC usage.
+From a general perspective, the [Support page](https://hpc-docs.uni.lu/support/) describes how to get help during your UL HPC usage.
 
 **Convention**
 
@@ -40,7 +40,7 @@ The general organization of each cluster is depicted below:
 
 ![UL HPC clusters general organization](https://hpc.uni.lu/images/overview/clusters_general_organization.png)
 
-Details on this organization can be found [here](https://hpc.uni.lu/systems/clusters.html#clusters-organization)
+Details on this organization can be found [here](https://hpc-docs.uni.lu/systems/)
 
 
 ## Discovering, visualizing and reserving UL HPC resources
@@ -49,9 +49,8 @@ In the following sections, replace `<login>` in the proposed commands with you l
 
 ### Step 1: the working environment
 
-* [reference documentation](http://hpc.uni.lu/users/docs/env.html)
-
-After a successful login onto one of the access node (see [Cluster Access](https://hpc.uni.lu/users/docs/access.html)), you end into your personal homedir `$HOME` which is shared over GPFS between the access node and the computing nodes.
+* [reference documentation](https://hpc-docs.uni.lu/environment/)
+After a successful login onto one of the access node (see [Cluster Access](https://hpc-docs.uni.lu/connect/access/)), you end into your personal homedir `$HOME` which is shared over GPFS between the access node and the computing nodes.
 
 Otherwise, you have to be aware of at least two directories:
 
@@ -192,4 +191,3 @@ The table below should convince you to always run `make` with the `-j` option wh
     * `free -m`
     * `uptime`
     * `ps aux`
-

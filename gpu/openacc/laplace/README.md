@@ -13,11 +13,11 @@
 
 ## Pre-requisites
 
-Ensure you are able to [connect to the UL HPC cluster](https://hpc.uni.lu/users/docs/access.html).
+Ensure you are able to [connect to the UL HPC cluster](https://hpc-docs.uni.lu/connect/access/).
 In particular, recall that the `module` command **is not** available on the access frontends.
 
 
-Access to ULHPC cluster  (here iris as it is the only one featuring GPU nodes): 
+Access to ULHPC cluster  (here iris as it is the only one featuring GPU nodes):
 
 ```bash
 (laptop)$> ssh iris-cluster
@@ -57,7 +57,7 @@ $ nvidia-smi
 
 ## Objectives
 
-The objective of this tutorial is to show how the OpenAcc directives can be used to accelerate a numerical solver commonly used in engineering and scientific applications. After completing the exercise of this tutorial you would be able to: 
+The objective of this tutorial is to show how the OpenAcc directives can be used to accelerate a numerical solver commonly used in engineering and scientific applications. After completing the exercise of this tutorial you would be able to:
 
 * Transfer data from host to  device using the data directives,
 
@@ -74,7 +74,7 @@ The objective of this tutorial is to show how the OpenAcc directives can be used
 
 $$ \nabla^2 F = \frac{d^2F}{dx^2} + \frac{d^2F}{dy^2} = 0 $$
 
-* It models a distribution at steady state or equilibrium in a 2D space (e.g. Temperature Distribution). 
+* It models a distribution at steady state or equilibrium in a 2D space (e.g. Temperature Distribution).
 
 * The Laplace differential equation can be solved using the Jacobi method if the boundary conditions are known (e.g. the temperature at the edges of the physical region of interest)
 
@@ -160,16 +160,16 @@ $$f(x,y) = \frac{1}{4}(f(x, y +\delta) + f(x, y -\delta) + f(x+\delta, y) + f(x-
 while ((iter < miter )&& (error > thres))
     {
       error = calcTempStep(T, Tnew, n, m);
-      
+
       update(T, Tnew, n, m);
-      
+
       if(iter % 50 == 0) printf("Iterations = %5d, Error = %16.10f\n", iter, error);
-      
+
       iter++;
     }
 ```
 
-* The nested loop is implemented in function `calcTempStep(float *restrict F, float *restrict Fnew, int n, int m)`. `n` and `m` are the dimensions of the 2D matrix $F$, $F$ is a vector containing the current estimations, and $F_{new}$ is a buffer storing the new elements values  as resulted from the stencil calculations. The error is calculated for each new stencil calculation using the corresponding  elements of vectors $F$ and $F_{new}$. The error is summed  (reduced) for all elements  and returned 
+* The nested loop is implemented in function `calcTempStep(float *restrict F, float *restrict Fnew, int n, int m)`. `n` and `m` are the dimensions of the 2D matrix $F$, $F$ is a vector containing the current estimations, and $F_{new}$ is a buffer storing the new elements values  as resulted from the stencil calculations. The error is calculated for each new stencil calculation using the corresponding  elements of vectors $F$ and $F_{new}$. The error is summed  (reduced) for all elements  and returned
 to the main function.
 
 ```c
@@ -177,8 +177,8 @@ float calcTempStep(float *restrict F, float *restrict Fnew, int n, int m)
 {
   float Fu, Fd, Fl, Fr;
   float error = 0.0;
-  
- 
+
+
   for (int i = 1; i < n-1; i++){
     for (int j = 1; j < m-1; j++){
       Fu = F[(i-1)*m + j];
@@ -189,8 +189,8 @@ float calcTempStep(float *restrict F, float *restrict Fnew, int n, int m)
       error += (Fnew[i*m+j] - F[i*m+j])*(Fnew[i*m+j] - F[i*m+j]);
     }
   }
-  
-  
+
+
   return error;
 }
 ```
@@ -200,12 +200,12 @@ float calcTempStep(float *restrict F, float *restrict Fnew, int n, int m)
 ```c
 void update(float *restrict F, float  *restrict Fnew, int n, int m)
 {
-  
+
   for (int i = 0; i < n; i++)
     for (int j = 0; j < m; j++ )
-      F[i*m+j] = Fnew[i*m+j]; 
-  
-  
+      F[i*m+j] = Fnew[i*m+j];
+
+
 }
 ```
 
@@ -214,10 +214,10 @@ void update(float *restrict F, float  *restrict Fnew, int n, int m)
 <br />
 <br />
 
-## Exercise: 
+## Exercise:
 ## Parallelize the Jacobi iteration with OpenACC
 
-Follow the steps bellow to accelerate the Jacobi solver using the OpenAcc directives. 
+Follow the steps bellow to accelerate the Jacobi solver using the OpenAcc directives.
 
 
 ***Task 1:*** If you do not have yet the UL HPC tutorial repository, clone it. Update to the latest version.
@@ -266,11 +266,11 @@ module load compiler/GCC
 while ((iter < miter )&& (error > thres))
     {
       error = calcTempStep(T, Tnew, n, m);
-      
+
       update(T, Tnew, n, m);
-      
+
       if(iter % 50 == 0) printf("Iterations = %5d, Error = %16.10f\n", iter, error);
-      
+
       iter++;
     }
 ```
@@ -286,7 +286,7 @@ float calcTempStep(float *restrict F, float *restrict Fnew, int n, int m)
 {
   float Fu, Fd, Fl, Fr;
   float error = 0.0;
-  
+
  //Code Here! (1 line)
   for (int i = 1; i < n-1; i++){
   //Code Here! (1 line)
@@ -299,8 +299,8 @@ float calcTempStep(float *restrict F, float *restrict Fnew, int n, int m)
       error += (Fnew[i*m+j] - F[i*m+j])*(Fnew[i*m+j] - F[i*m+j]);
     }
   }
-  
-  
+
+
   return error;
 }
 ```
@@ -313,13 +313,13 @@ float calcTempStep(float *restrict F, float *restrict Fnew, int n, int m)
 ```c
 void update(float *restrict F, float  *restrict Fnew, int n, int m)
 {
-//Code Here! (1 line)  
+//Code Here! (1 line)
   for (int i = 0; i < n; i++)
 //Code Here! (1 line)
     for (int j = 0; j < m; j++ )
-      F[i*m+j] = Fnew[i*m+j]; 
-  
-  
+      F[i*m+j] = Fnew[i*m+j];
+
+
 }
 ```
 
@@ -364,7 +364,7 @@ main:
 
 To run your executable file interactively, simply run:
 ```bash
-./$exe 
+./$exe
 ```
 where `$exe` is the name of your executable after compilation. After running your script, the program prints to the screen the calculated error at each iteration:
 
@@ -389,9 +389,9 @@ Iterations =   600, Error =     0.0066990838
 
 The total time and number of iterations required for reducing the error bellow the threshold value is printed when the program finishes its execution:
 ```bash
-Total Iterations =            10000 
-Error            =     0.0000861073 
-Total time (sec) =            2.976 
+Total Iterations =            10000
+Error            =     0.0000861073
+Total time (sec) =            2.976
 
 ```
 
@@ -405,12 +405,3 @@ pgcc  -Minfo jacobi.c -o $exe
 ```
 
 Run your serial application. What do you observe? What is the acceleration achieved using the OpenAcc directives?
-
-
-
-
-
-
-
-
-

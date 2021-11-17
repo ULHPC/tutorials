@@ -22,7 +22,7 @@ and expected performances
 --------------------
 ## Pre-requisites ##
 
-Ensure you are able to [connect to the UL HPC clusters](https://hpc.uni.lu/users/docs/access.html)
+Ensure you are able to [connect to the UL HPC clusters](https://hpc-docs.uni.lu/connect/access/).
 **For all tests and compilation, you MUST work on a computing node**
 
 You'll need to prepare the data sources required by this tutorial once connected

@@ -66,11 +66,11 @@ mkdir -p ~/.config/git $XDG_CACHE_HOME $XDG_DATA_HOME
 ## Secure SHell (SSH)
 
 
-* [Access / SSH Tutorial](https://hpc.uni.lu/users/docs/access.html)
+* [Access / SSH Tutorial](https://hpc-docs.uni.lu/connect/access/)
 
 The way SSH handles the keys and the configuration files is illustrated in the following figure:
 
-![SSH key management](https://hpc.uni.lu/images/docssh/schema.png)
+![SSH key management](https://hpc-docs.uni.lu/connect/images/ssh.png)
 
 
 Developed by [SSH Communications Security Ltd.](http://www.ssh.com), Secure Shell is a program to log into another computer over a network, to execute commands in a remote machine, and to move files from one machine to another in a secure way.
@@ -288,8 +288,8 @@ Now you can test the configuration with: `ssh aion-cluster`:
 ==================================================================================
  /!\ NEVER COMPILE OR RUN YOUR PROGRAMS FROM THIS FRONTEND !
      First reserve your nodes (using srun/sbatch(1))
- /!\ BEWARE of OS and architecture differences between Iris and Aion 
-     Identify the cluster used to compile your programs (Ex: <name>_<cluster>) 
+ /!\ BEWARE of OS and architecture differences between Iris and Aion
+     Identify the cluster used to compile your programs (Ex: <name>_<cluster>)
 [yourlogin@access1 ~]$
 ```
 
@@ -397,7 +397,7 @@ Of both, normally the second approach should be preferred, as more generic; note
 
 * **Bonus**: Check where the file is located on the cluster after the rsync.
 
-You can get more information about these transfer methods in the [file transfer documentation](https://hpc.uni.lu/users/docs/filetransfer.html).
+You can get more information about these transfer methods in the [file transfer documentation](https://hpc-docs.uni.lu/data/transfer/)
 
 
 #### Step 2b - Windows MobaXterm file transfer
