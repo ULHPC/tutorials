@@ -1,5 +1,5 @@
 #! /bin/bash -l
-# Time-stamp: <Wed 2021-11-17 16:46 svarrette>
+# Time-stamp: <Wed 2021-11-17 17:29 svarrette>
 ################################################################################
 # Default launcher for OpenMP jobs
 # Usage:
@@ -19,7 +19,7 @@
 #SBATCH --ntasks-per-node 1    #
 #SBATCH -c 28                  # multithreading per task : -c --cpus-per-task <n> request
 #__________________________    #      (ideally) as many OpenMP threads as cores available
-#                              #  In praticular, set to 128 on Aion
+#                              #  In particular, set to 128 on Aion
 #SBATCH -o logs/%x-%j.out      # log goes into logs/<jobname>-<jobid>.out
 mkdir -p logs
 
@@ -96,7 +96,7 @@ export OMP_NUM_THREADS=${SLURM_CPUS_PER_TASK:-1}
 
 cat <<EOF
 # ==============================================================
-# => OpenMP run of '${APP}' with ${MODULE}
+# => OpenMP run of '$(basename ${APP})' with ${MODULE}
 #    OMP_NUM_THREADS=${OMP_NUM_THREADS}
 # ==============================================================
 EOF

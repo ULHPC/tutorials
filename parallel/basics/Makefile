@@ -1,6 +1,6 @@
 ##################################################################################
 # Makefile - Configuration file for GNU make (http://www.gnu.org/software/make/)
-# Time-stamp: <Wed 2021-11-17 16:03 svarrette>
+# Time-stamp: <Wed 2021-11-17 17:12 svarrette>
 #
 # Copyright (c) 2013-2018 Sebastien Varrette <Sebastien.Varrette@uni.lu>
 #               http://varrette.gforge.uni.lu
@@ -101,7 +101,7 @@ $(BUILD_DIR)/intel_$(CLUSTER)_%_openmp: $(SRC_DIR)/%_openmp.c
 
 ##### OpenMPI and hybrid OpenMP+OpenMPI builds
 __build.openmpi: $(TARGET_OPENMPI)
-$(BUILD_DIR)/openmpi_%: $(SRC_DIR)/%.c
+$(BUILD_DIR)/openmpi_$(CLUSTER)_%: $(SRC_DIR)/%.c
 	@echo "==> OpenMPI example build (from $<)"
 	. /etc/profile
 	module purge
@@ -110,7 +110,7 @@ $(BUILD_DIR)/openmpi_%: $(SRC_DIR)/%.c
 
 ##### Intel MPI and hybrid OpenMP+Intel MPI builds
 __build.intel: $(TARGET_INTEL)
-$(BUILD_DIR)/intel_%: $(SRC_DIR)/%.c
+$(BUILD_DIR)/intel_$(CLUSTER)_%: $(SRC_DIR)/%.c
 	@echo "==> Intel MPI example build (from $<)"
 	. /etc/profile
 	module purge
@@ -118,7 +118,7 @@ $(BUILD_DIR)/intel_%: $(SRC_DIR)/%.c
 
 ##### MVAPICH2 and hybrid OpenMP+MVAPICH2 builds
 __build.mvapich2: $(TARGET_MVAPICH2)
-$(BUILD_DIR)/mvapich2_%: $(SRC_DIR)/%.c
+$(BUILD_DIR)/mvapich2_$(CLUSTER)_%: $(SRC_DIR)/%.c
 	@echo "==> MVAPICH2 example build (from $<)"
 	. /etc/profile
 	module purge

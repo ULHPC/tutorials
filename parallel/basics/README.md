@@ -187,7 +187,7 @@ $> icc -qopenmp -xhost -Wall -O2 src/hello_openmp.c -o bin/intel_${ULHPC_CLUSTER
 
 * Execute the generated binaries multiple times. What do you notice?
 * Exit your interactive session (`exit` or `CTRL-D`)
-* Prepare a launcher script (use your favorite editor) to execute this application in batch mode -- see [pthreads/OpenMP template  Launcher](https://hpc-docs.uni.lu/slurm/launchers/#pthreadsopenmp-launcher)
+* Prepare a launcher script (use your favorite editor) to execute this application in batch mode -- adapt [pthreads/OpenMP template  Launcher](https://hpc-docs.uni.lu/slurm/launchers/#pthreadsopenmp-launcher)
 
 ```bash
 $> sbatch ./launcher.OpenMP.sh
@@ -216,9 +216,9 @@ OPTIONS:
   -n --dry-run: Dry run mode
 
 Example:
-  [sbatch] ./scripts/launcher.OpenMP.sh                          # run FOSS  build   [<cluster>_]hello_openmp
-  [sbatch] ./scripts/launcher.OpenMP.sh intel                    # run intel build   [<cluster>_]intel_hello_openmp
-  [sbatch] ./scripts/launcher.OpenMP.sh foss matrix_mult_openmp  # run FOSS  build   [<cluster>_]matrix_mult_openmp
+  [sbatch] ./scripts/launcher.OpenMP.sh                          # run FOSS  build   <cluster>_hello_openmp
+  [sbatch] ./scripts/launcher.OpenMP.sh intel                    # run intel build   intel_<cluster>_hello_openmp
+  [sbatch] ./scripts/launcher.OpenMP.sh foss matrix_mult_openmp  # run FOSS  build   matrix_mult_openmp
   EXE=/home/users/svarrette/bin/datarace [sbatch] ./scripts/launcher.OpenMP.sh intel # run intel build  ~/bin/datarace
 ```
 
@@ -385,24 +385,18 @@ $> cat src/hello_mpi.c
 ######### OpenMPI
 $> module purge                # Safeguard
 $> module load mpi/OpenMPI
-$> mpicc -Wall -O2 src/hello_mpi.c -o bin/openmpi_hello_mpi
+$> mpicc -Wall -O2 src/hello_mpi.c -o bin/openmpi_${ULHPC_CLUSTER}_hello_mpi
 
 ######### Intel MPI
 $> module purge                # Safeguard
 $> module load toolchain/intel
-$> mpiicc -Wall -xhost -O2 src/hello_mpi.c -o bin/intel_hello_mpi
+$> mpiicc -Wall -xhost -O2 src/hello_mpi.c -o bin/intel_${ULHPC_CLUSTER}_hello_mpi
 ```
-<!--
-######### MVAPICH2
-$> module purge                # Safeguard
-$> module load mpi/MVAPICH2
-$> mpicc -Wall -O2 src/hello_mpi.c -o bin/mvapich2_hello_mpi
--->
 
 * (__only__ if you have trouble to compile): `make mpi`
 * Execute the generated binaries multiple times. What do you notice?
 * Exit your interactive session (`exit` or `CTRL-D`)
-* Prepare a launcher script (use your favorite editor) to execute this application in batch mode.
+* Prepare a launcher script (use your favorite editor) to execute this application in batch mode -- -- adapt [MPI template  Launcher](https://hpc-docs.uni.lu/slurm/launchers/#mpi)
 
 ```bash
 $> sbatch ./launcher.MPI.sh
@@ -417,23 +411,45 @@ _Note_: if you are lazy (or late), you can use the provided launcher script `run
 
 ```bash
 $ cd runs
-$ ./launcher.MPI.sh -h
+$ ./scripts/launcher.MPI.sh -h
 NAME
-  ./launcher.MPI.sh -- MPI launcher example
+  launcher.MPI.sh: Generic MPI launcher
+    Default APPDIR: /Users/svarrette/tutorials/OpenMP-MPI/basics/bin
+    Default APP: _hello_mpi
+  Take the good habit to prefix the binary to execute with MPI suit used for
+  the build. Here the default MPI application run would be
+        EXE=/Users/svarrette/tutorials/OpenMP-MPI/basics/bin/openmpi__hello_mpi
+  which will be run as     srun -n $SLURM_NTASKS [...]
+
 USAGE
-  ./launcher.MPI.sh {intel | openmpi} [app]
+  [sbatch] ./scripts/launcher.MPI.sh [-n] {intel | openmpi | mvapich2} [app]
+  EXE=/path/to/mpiapp.exe [sbatch] ./scripts/launcher.MPI.sh [-n] {intel | openmpi | mvapich2}
+
+OPTIONS:
+  -n --dry-run: Dry run mode
 
 Example:
-  ./launcher.MPI.sh                          run OpenMPI on hello_mpi
-  ./launcher.MPI.sh intel                    run Intel MPI on hello_mpi
-  ./launcher.MPI.sh openmpi matrix_mult_mpi  run OpenMPI on matrix_mult_mpi
+  [sbatch] ./scripts/launcher.MPI.sh                          # run OpenMPI build    openmpi_<cluster>_hello_mpi
+  [sbatch] ./scripts/launcher.MPI.sh intel                    # run Intel MPI build  intel_<cluster>_hello_mpi
+  [sbatch] ./scripts/launcher.MPI.sh openmpi matrix_mult_mpi  # run OpenMPI build    openmpi_matrix_mult_mpi
+  EXE=/Users/svarrette/bin/xhpl [sbatch] ./scripts/launcher.MPI.sh intel # run intel build  ~/bin/xhpl
 ```
+
+Now you can execute it:
+
+```bash
+$ ./scripts/launcher.MPI.sh
+$ ./scripts/launcher.MPI.sh intel
+$ ./scripts/launcher.MPI.sh ${ULHPC_CLUSTER}_matrix_mult_mpi
+$ ./scripts/launcher.MPI.sh intel ${ULHPC_CLUSTER}_matrix_mult_mpi
+```
+
 
 Passive jobs examples:
 
 ```bash
-$ sbatch ./launcher.MPI.sh openmpi matrix_mult_mpi
-$ sbatch ./launcher.MPI.sh intel   matrix_mult_mpi
+$ sbatch ./scripts/launcher.MPI.sh openmpi
+$ sbatch ./scripts/launcher.MPI.sh intel   ${ULHPC_CLUSTER}_matrix_mult_mpi
 ```
 
 Check the elapsed time: what do you notice ?
@@ -444,7 +460,7 @@ __Useful MPI links__:
 * [MPI Tutorial LLNL](https://computing.llnl.gov/tutorials/mpi/)
 * [Intel MPI](http://software.intel.com/en-us/intel-mpi-library/):
    - [Step by Step Performance Optimization with Intel® C++ Compiler](https://software.intel.com/en-us/articles/step-by-step-optimizing-with-intel-c-compiler)
-   - [Intel(c) C++ Compiler 17.0 Developer Guide and Reference](https://software.intel.com/en-us/intel-cplusplus-compiler-17.0-user-and-reference-guide) (`toolchain/intel/2017a`)
+   - [Intel(c) C++ Compiler Developer Guide and Reference](https://www.intel.com/content/www/us/en/develop/documentation/cpp-compiler-developer-guide-and-reference/top.html)
 
 --------------------------------
 ## Hybrid OpenMP+MPI Programs ##
