@@ -28,38 +28,39 @@
   please refer to __PRACE MOOC__ ***GPU Programming for Scientific Computing and Beyond - Dr. Ezhilmathi Krishnasamy***
 
 
-# Preparation
-#### Access the slides and exercises
+--------------------
+## Pre-requisites ##
 
-* To keep the tutorial and exercise on your local machine
+Ensure you are able to [connect to the UL HPC clusters](https://hpc-docs.uni.lu/connect/access/).
+In particular, recall that the `module` command **is not** available on the access frontends. **For all tests and compilation, you MUST work on a computing node**
 
-```
-$> mkdir UHPC-School-2021
-$> cd UHPC-School-2021
-$> git clone https://github.com/ULHPC/tutorials
-$> cd tutorials/gpu/openacc/OpenACC-Tutorial/exercises # for exercises
-$> cd tutorials/gpu/openacc/OpenACC-Tutorial/ # for slides and README.md
-```
+Now you'll need to pull the latest changes in your working copy of the [ULHPC/tutorials](https://github.com/ULHPC/tutorials) you should have cloned in `~/git/github.com/ULHPC/tutorials` (see ["preliminaries" tutorial](../../preliminaries/))
 
-#### Connect to Iris cluster
-```
-$> ssh -X iris-cluster // or ssh iris-cluster
-//or
-$>  ssh -p 8022 user@access-iris.uni.lu
+```bash
+(access)$ cd ~/git/github.com/ULHPC/tutorials
+(access)$ git pull
 ```
 
-#### Transfer the files(exercises) to Iris cluster
-```
-$> rsync -avP --no-p --no-g -r exercises iris-cluster:/home/users/ekrishnasamy
-// or
-$> rsync -avP --no-p --no-g -r exercises ekrishnasamy@access-iris.uni.lu:/home/users/ekrishnasamy
+Now **configure a dedicated directory `~/tutorials/openacc` for this session**
+
+```bash
+# return to your home
+(access)$ mkdir -p ~/tutorials/openacc
+(access)$ cd ~/tutorials/openacc
+# create a symbolic link to the top reference material
+(access)$ ln -s ~/git/github.com/ULHPC/tutorials/gpu/openacc/basics ref.d # Symlink to the reference tutorial material
+# copy / synchronize a copy of the exercises
+(access)$ rsync -avzu ref.d/exercises .   # DO NOT forget the trailing .
 ```
 
-#### Reserve the compute node for exercises
-```
-$> si-gpu --reservation=hpcschool-gpu -G 1 -n 4 -t 00:30:00
-//or
-$> si-gpu
+**Advanced users** (_eventually_ yet __strongly__ recommended), create a [Tmux](https://github.com/tmux/tmux/wiki) session (see [Tmux cheat sheet](https://tmuxcheatsheet.com/) and [tutorial](https://www.howtogeek.com/671422/how-to-use-tmux-on-linux-and-why-its-better-than-screen/)) or [GNU Screen](http://www.gnu.org/software/screen/) session you can recover later. See also ["Getting Started" tutorial ](../../beginners/).
+
+#### Connect to Iris cluster and get an interactive GPU job
+
+
+```bash
+$ ssh iris-cluster   # The only cluster featuring GPU
+$ si-gpu -G 1 --ntasks-per-node 1 -c 7 -t 00:30:00   # (eventually) --reservation=hpcschool-gpu
 ```
 
 #### Load the OpenACC compiler (PGI)
