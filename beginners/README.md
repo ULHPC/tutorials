@@ -34,11 +34,11 @@ In general, we will prefix to precise the execution context (_i.e._ your laptop,
 
 ## Platform overview.
 
-You can find a brief overview of the platform with key characterization numbers [on this page](https://hpc.uni.lu/systems/overview.html).
+You can find a brief overview of the platform with key characterization numbers [on this page](https://hpc-docs.uni.lu/systems/).
 
 The general organization of each cluster is depicted below:
 
-![UL HPC clusters general organization](https://hpc.uni.lu/images/overview/clusters_general_organization.png)
+![UL HPC clusters general organization](https://hpc.uni.lu/old/images/overview/clusters_general_organization.png)
 
 Details on this organization can be found [here](https://hpc-docs.uni.lu/systems/)
 
