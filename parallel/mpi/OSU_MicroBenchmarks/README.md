@@ -179,7 +179,7 @@ We will place them in a separate directory (`runs/`) as it will host the outcome
 $ cd ~/tutorials/OSU-MicroBenchmarks/
 $ mkdir runs    # Prepare the specific run directory
 $ cd runs
-$ cp ../ref.d/runs/launcher-OSU.slurm.sh .
+$ cp ../ref.d/runs/launcher.OSU.sh .
 ```
 
 You can test the script in an interactive job as follows:
@@ -188,17 +188,17 @@ You can test the script in an interactive job as follows:
 # go into the runs directory
 $ cd ~/tutorials/OSU-MicroBenchmarks/runs
 $ si -N 2 --ntasks-per-node=1     # create an interactive job, 1 core on 2 nodes
-$ ./launcher-OSU.slurm.sh -h
-$ ./launcher-OSU.intel.sh
-$ ./launcher-OSU.intel.sh intel
+$ ./launcher.OSU.sh -h
+$ ./launcher.OSU.sh
+$ ./launcher.OSU.sh intel
 ```
 
 Exit your job and test it in batch mode:
 
 ```bash
 $ cd ~/tutorials/OSU-MicroBenchmarks/runs
-$ sbatch ./launcher-OSU.intel.sh
-$ sbatch ./launcher-OSU.intel.sh intel
+$ sbatch ./launcher.OSU.sh
+$ sbatch ./launcher.OSU.sh intel
 ```
 
 ## Now for Lazy / frustrated persons
