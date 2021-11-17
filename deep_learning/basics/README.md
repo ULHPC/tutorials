@@ -7,7 +7,7 @@
 
 [![](cover_slides.png)](slides.pdf)
 
-This tutorial demonstrates how to develop and run on the [UL HPC](http://hpc.uni.lu) platform a deep learning application using the Tensorflow framework.
+This tutorial demonstrates how to develop and run on the [UL HPC](https://hpc.uni.lu) platform a deep learning application using the Tensorflow framework.
 
 The scope of this tutorial is *single* node execution, multi-CPU and multi-GPU.
 Another tutorial covers multi-node execution.

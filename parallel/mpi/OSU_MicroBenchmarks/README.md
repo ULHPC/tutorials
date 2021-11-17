@@ -37,7 +37,7 @@ In this tutorial, we will build **version 5.5 of the [OSU micro-benchmarks](http
 
 > The bandwidth tests were carried out by having the sender sending out a fixed number (equal to the window size) of back-to-back messages to the receiver and then waiting for a reply from the receiver. The receiver sends the reply only after receiving all these messages. This process is repeated for several iterations and the bandwidth is calculated based on the elapsed time (from the time sender sends the first message until the time it receives the reply back from the receiver) and the number of bytes sent by the sender. The objective of this bandwidth test is to determine the maximum sustained date rate that can be achieved at the network level. Thus, non-blocking version of MPI functions (MPI_Isend and MPI_Irecv) were used in the test.
 
-The idea is to compare the different MPI implementations available on the [UL HPC platform](http://hpc.uni.lu).:
+The idea is to compare the different MPI implementations available on the [UL HPC platform](https://hpc.uni.lu).:
 
 * [Intel MPI](http://software.intel.com/en-us/intel-mpi-library/)
 * [OpenMPI](http://www.open-mpi.org/)

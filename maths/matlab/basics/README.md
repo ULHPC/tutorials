@@ -8,7 +8,7 @@
 
 The objective of this tutorial is to exemplify the execution of [MATLAB](http://www.matlab.com) -
 a high-level language and interactive environment for numerical computation,
-visualization and programming, on top of the [UL HPC](http://hpc.uni.lu) platform.
+visualization and programming, on top of the [UL HPC](https://hpc.uni.lu) platform.
 
 The tutorial will show you:
 
@@ -19,7 +19,7 @@ The tutorial will show you:
 5. how to plot data, saving the plots to file
 6. how to take advantage of some of the paralelization capabilities of MATLAB to speed up your tasks
 
-For the tutorial we will use the UL HPC [Iris](http://hpc.uni.lu/systems/iris/) cluster that includes nodes with GPU accelerators.
+For the tutorial we will use the UL HPC [Iris](https://hpc.uni.lu/systems/iris/) cluster that includes nodes with GPU accelerators.
 
 ## Prerequisites
 

@@ -8,7 +8,7 @@
 
 
 This tutorial will guide you through your first steps on the
-[UL HPC platform](http://hpc.uni.lu).
+[UL HPC platform](https://hpc.uni.lu).
 
 Before proceeding:
 

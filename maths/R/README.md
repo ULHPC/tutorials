@@ -29,7 +29,7 @@ forks](https://img.shields.io/github/stars/ULHPC/tutorials.svg?style=social&labe
 </div>
 
 Through this tutorial you will learn how to use R from your local
-machine or from one of the [UL HPC platform](http://hpc.uni.lu)
+machine or from one of the [UL HPC platform](https://hpc.uni.lu)
 clusters. Then, we will see how to organize and group data. Finally we
 will illustrate how R can benefit from multicore and cluster
 parallelization.

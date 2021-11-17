@@ -4,7 +4,7 @@
 
      Copyright (c) 2013-2019 UL HPC Team  <hpc-sysadmins@uni.lu>
 
-The objective of this tutorial is to compile and run on of the reference HPC benchmarks, [HPL](http://www.netlib.org/benchmark/hpl/), on top of the [UL HPC](http://hpc.uni.lu) platform.
+The objective of this tutorial is to compile and run on of the reference HPC benchmarks, [HPL](http://www.netlib.org/benchmark/hpl/), on top of the [UL HPC](https://hpc.uni.lu) platform.
 
 You can work in groups for this training, yet individual work is encouraged to ensure you understand and practice the usage of MPI programs on an HPC platform.
 If not yet done, you should consider completing the following tutorials:
@@ -96,7 +96,7 @@ HPL rely on an efficient implementation of the Basic Linear Algebra Subprograms 
 * [ATLAS](http://math-atlas.sourceforge.net/atlas_install/)
 * [GotoBlas](https://www.tacc.utexas.edu/research-development/tacc-software/gotoblas2/)
 
-The idea is to compare the different MPI and BLAS implementations available on the [UL HPC platform](http://hpc.uni.lu):
+The idea is to compare the different MPI and BLAS implementations available on the [UL HPC platform](https://hpc.uni.lu):
 
 * [Intel MPI](http://software.intel.com/en-us/intel-mpi-library/) and the Intel MKL
 * [OpenMPI](http://www.open-mpi.org/)

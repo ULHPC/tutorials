@@ -8,7 +8,7 @@ Authors: Valentin Plugaru and Sarah Peter
 
 [![](https://github.com/ULHPC/tutorials/raw/devel/bio/basics/cover_slides.png)](https://github.com/ULHPC/tutorials/raw/devel/bio/basics/slides.pdf)
 
-The objective of this tutorial is to exemplify the execution of several Bioinformatics packages on top of the [UL HPC](http://hpc.uni.lu) platform.
+The objective of this tutorial is to exemplify the execution of several Bioinformatics packages on top of the [UL HPC](https://hpc.uni.lu) platform.
 
 The targeted applications are:
 

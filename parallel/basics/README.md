@@ -330,7 +330,7 @@ In most MPI implementations,   a fixed set of processes is created at program in
 
 ### MPI implementations
 
-The [UL HPC platform](http://hpc.uni.lu) offers to you different MPI implementations:
+The [UL HPC platform](https://hpc.uni.lu) offers to you different MPI implementations:
 
 | MPI Suit                                                        | Version | `module load`...  | Compiler                    |
 |-----------------------------------------------------------------|---------|-------------------|-----------------------------|
