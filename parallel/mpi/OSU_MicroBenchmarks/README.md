@@ -34,10 +34,7 @@ The idea is to compare the different MPI implementations available on the [UL HP
 * [OpenMPI](http://www.open-mpi.org/)
 <!-- * [MVAPICH2](http://mvapich.cse.ohio-state.edu/overview/) (MPI-3 over OpenFabrics-IB, Omni-Path, OpenFabrics-iWARP, PSM, and TCP/IP) -->
 
-For the sake of time and simplicity, we will focus on the first two suits. Eventually, the benchmarking campain will typically involves for each MPI suit:
-
-* two nodes, belonging to the _same_ enclosure
-* two nodes, belonging to _different_ enclosures
+For the sake of time and simplicity, we will focus on the first two suits. Eventually, the benchmarking campain will typically involves for each MPI suit two nodes
 
 --------------------
 ## Pre-requisites ##
@@ -57,7 +54,7 @@ Now **configure a dedicated directory `~/tutorials/OSU-MicroBenchmarks` for this
 (access)$ cd ~/tutorials/OSU-MicroBenchmarks
 # create a symbolic link to the top reference material
 (access)$ ln -s ~/git/github.com/ULHPC/tutorials/parallel/mpi/OSU_MicroBenchmarks ref.d  # Symlink to the reference tutorial
-# creat other convenient symlinks
+# create other convenient symlinks
 (access)$ ln -s ref.d/Makefile .     # symlink to the root Makefile - DO NOT forget the trailing '.'
 (access)$ ln -s ref.d/scripts  .     # symlinkls to launcher/build scripts - DO NOT forget the trailing '.'
 ```
