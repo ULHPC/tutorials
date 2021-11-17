@@ -1,7 +1,7 @@
 ##################################################################################
 # Makefile - Configuration file for GNU make (http://www.gnu.org/software/make/)
 # Creation : 07 Nov 2013
-# Time-stamp: <Fri 2018-11-23 16:17 svarrette>
+# Time-stamp: <Wed 2021-11-17 19:09 svarrette>
 #
 # Copyright (c) 2013 Sebastien Varrette <Sebastien.Varrette@uni.lu>
 #               http://varrette.gforge.uni.lu
@@ -24,8 +24,8 @@ PLOT_DIR    = plots
 ### Benchmark info
 BENCH_SHORTNAME = OSU
 BENCH_DESC      = "OSU Micro-Benchmarks"
-BENCH_VERSION   = 5.5
-BENCH_URL       = "http://mvapich.cse.ohio-state.edu/download/mvapich/osu-micro-benchmarks-$(BENCH_VERSION).tar.gz"
+BENCH_VERSION   = 5.8
+BENCH_URL       = "http://mvapich.cse.ohio-state.edu/download/mvapich/osu-micro-benchmarks-$(BENCH_VERSION).tgz"
 BENCH_TARBALL   = $(shell basename $(BENCH_URL) )
 BENCH_SRCDIR    = $(SRC_DIR)/$(shell basename $(BENCH_TARBALL) .tar.gz)
 

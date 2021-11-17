@@ -1,6 +1,6 @@
 [![By ULHPC](https://img.shields.io/badge/by-ULHPC-blue.svg)](https://hpc.uni.lu) [![Licence](https://img.shields.io/badge/license-GPL--3.0-blue.svg)](http://www.gnu.org/licenses/gpl-3.0.html) [![GitHub issues](https://img.shields.io/github/issues/ULHPC/tutorials.svg)](https://github.com/ULHPC/tutorials/issues/) [![](https://img.shields.io/badge/slides-PDF-red.svg)](https://github.com/ULHPC/tutorials/raw/devel/parallel/basics/slides.pdf) [![Github](https://img.shields.io/badge/sources-github-green.svg)](https://github.com/ULHPC/tutorials/tree/devel/parallel/basics/) [![Documentation Status](http://readthedocs.org/projects/ulhpc-tutorials/badge/?version=latest)](http://ulhpc-tutorials.readthedocs.io/en/latest/parallel/basics/) [![GitHub forks](https://img.shields.io/github/stars/ULHPC/tutorials.svg?style=social&label=Star)](https://github.com/ULHPC/tutorials)
 
-# Parallel computations with OpenMP/MPI
+# Scalable Science and Parallel computations with OpenMP/MPI
 
      Copyright (c) 2013-2021 UL HPC Team  <hpc-sysadmins@uni.lu>
 
@@ -52,7 +52,7 @@ Now you'll need to pull the latest changes in your working copy of the [ULHPC/tu
 (access)$> git pull
 ```
 
-Now **configure a dedicated directory `~/tutorials/sequential` for this session**
+Now **configure a dedicated directory `~/tutorials/OpenMP-MPI` for this session**
 
 ``` bash
 # return to your home
@@ -156,8 +156,7 @@ You can find in `src/hello_openmp.c` the traditional OpenMP "Helloworld" example
 * Reserve an interactive job to launch 4 OpenMP threads (for 30 minutes)
 
 ```bash
-############### iris cluster (slurm) ###############
-(access-iris)$> si -c 4 -t 0:30:00
+(access)$> si -c 4 -t 0:30:00
 $> export OMP_NUM_THREADS=${SLURM_CPUS_PER_TASK:-1}
 ```
 
