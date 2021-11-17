@@ -70,7 +70,7 @@ Another [bookdown](https://bookdown.org/)'s book  is available for free: [R for 
 --------------------
 ## Pre-requisites ##
 
-Ensure you are able to [connect to the UL HPC clusters](https://hpc.uni.lu/users/docs/access.html)
+Ensure you are able to [connect to the UL HPC clusters](https://hpc-docs.uni.lu/connect/ssh/)
 
 **you MUST work on a computing node**
 
@@ -200,8 +200,8 @@ In the previous example we used `aggregate` for the **aggregation**, we could al
 
 
 ```{r}
-as.data.frame(cbind(cut = as.character(unique(diamonds$cut)), 
-                    avg_price = lapply(unique(diamonds$cut), 
+as.data.frame(cbind(cut = as.character(unique(diamonds$cut)),
+                    avg_price = lapply(unique(diamonds$cut),
                                        function(x) {
                                          mean(diamonds$price[which(diamonds$cut == x)])
                     })))

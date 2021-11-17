@@ -6,13 +6,13 @@
 
 This page is part of the Getting started tutorial.
 
-[Environment Modules](http://modules.sourceforge.net/) is a software package that allows us to provide a [multitude of applications and libraries in multiple versions](https://hpc.uni.lu/users/software/) on the UL HPC platform. The tool itself is used to manage environment variables such as `PATH`, `LD_LIBRARY_PATH` and `MANPATH`, enabling the easy loading and unloading of application/library profiles and their dependencies.
+[Environment Modules](http://modules.sourceforge.net/) is a software package that allows us to provide a [multitude of applications and libraries in multiple versions](https://hpc-docs.uni.lu/software/) on the UL HPC platform. The tool itself is used to manage environment variables such as `PATH`, `LD_LIBRARY_PATH` and `MANPATH`, enabling the easy loading and unloading of application/library profiles and their dependencies.
 
 We will have multiple occasion to use modules in the other tutorials so there is nothing special we foresee here. You are just encouraged to read the following resources:
 
 * [Introduction to Environment Modules by Wolfgang Baumann](https://www.hlrn.de/home/view/System3/ModulesUsage)
 * [Modules tutorial @ NERSC](https://www.nersc.gov/users/software/nersc-user-environment/modules/)
-* [UL HPC documentation on modules](https://hpc.uni.lu/users/docs/modules.html)
+* [UL HPC documentation on modules](https://hpc-docs.uni.lu/environment/modules/)
 
 
 ## Commands

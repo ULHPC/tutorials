@@ -26,7 +26,7 @@ In all cases, ensure you are able to [connect to the UL HPC  clusters]((https://
 (access)$> oarsub -I -l enclosure=1/nodes=1,walltime=4   # chaos / gaia
 ```
 
-**Advanced users only**: rely on `screen` (see  [tutorial](http://support.suso.com/supki/Screen_tutorial) or the [UL HPC tutorial](https://hpc.uni.lu/users/docs/ScreenSessions.html) on the  frontend prior to running any `oarsub` or `srun/sbatch` command to be more resilient to disconnection.
+**Advanced users only**: rely on `screen` (see  [tutorial](http://support.suso.com/supki/Screen_tutorial) or the [UL HPC tutorial](https://ulhpc-tutorials.readthedocs.io/en/latest/linux-shell/#persistent-terminal-sessions-using-gnu-screen) on the frontend prior to running any `oarsub` or `srun/sbatch` command to be more resilient to disconnection.
 
 The latest version of this tutorial is available on [Github](https://github.com/ULHPC/tutorials/tree/devel/advanced/HPCG).
 Finally, advanced MPI users might be interested to take a look at the [Intel Math Kernel Library Link Line Advisor](https://software.intel.com/en-us/articles/intel-mkl-link-line-advisor).

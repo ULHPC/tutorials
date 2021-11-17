@@ -55,7 +55,7 @@ $> ln -s ~/git/github.com/ULHPC/tutorials/parallel/mpi/HPL ref.ulhpc.d
 $> ln -s ref.ulhpc.d/Makefile .     # symlink to the root Makefile
 ```
 
-**Advanced users only**: rely on `screen` (see  [tutorial](http://support.suso.com/supki/Screen_tutorial) or the [UL HPC tutorial](https://hpc.uni.lu/users/docs/ScreenSessions.html) on the  frontend prior to running any `srun/sbatch` command to be more resilient to disconnection.
+**Advanced users only**: rely on `screen` (see  [tutorial](http://support.suso.com/supki/Screen_tutorial) or the [UL HPC tutorial](https://ulhpc-tutorials.readthedocs.io/en/latest/linux-shell/#persistent-terminal-sessions-using-gnu-screen) on the frontend prior to running any `srun/sbatch` command to be more resilient to disconnection.
 
 Finally, be aware that the latest version of this tutorial is available on
 [Github](https://github.com/ULHPC/tutorials/tree/devel/parallel/mpi/HPL/) and on
@@ -558,7 +558,7 @@ Of course, we made here a small test and optimizing the HPL parameters to get th
 
 Below are some plots obtained when benchmarking the `iris` cluster and seeking the best set of parameters across increasing number of nodes (see [this blog post](https://hpc.uni.lu/blog/2017/preliminary-performance-results-of-the-iris-cluster/))
 
-![](https://hpc.uni.lu/images/benchs/benchmark_HPL-iris_25N.png)
-![](https://hpc.uni.lu/images/benchs/benchmark_HPL-iris_50N.png)
-![](https://hpc.uni.lu/images/benchs/benchmark_HPL-iris_75N.png)
-![](https://hpc.uni.lu/images/benchs/benchmark_HPL-iris_100N.png)
+![](https://hpc.uni.lu/old/images/benchs/benchmark_HPL-iris_25N.png)
+![](https://hpc.uni.lu/old/images/benchs/benchmark_HPL-iris_50N.png)
+![](https://hpc.uni.lu/old/images/benchs/benchmark_HPL-iris_75N.png)
+![](https://hpc.uni.lu/old/images/benchs/benchmark_HPL-iris_100N.png)

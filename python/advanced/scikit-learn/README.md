@@ -22,7 +22,7 @@ This library allows you to tackle:
 * Regression
 * etc ...
 
-In this tutorial, we are going to show how to perform parrallel machine learning computations on a High Performance Computing platform such as the **Iris cluster**.
+In this tutorial, we are going to show how to perform parallel machine learning computations on a High Performance Computing platform such as the **Iris cluster**.
 
 ## Dependencies
 
@@ -309,7 +309,7 @@ You only need to start the following command from the ```scripts``` directory:
 ```sbatch launcher.sh unsupervized/main.py```
 
 
-After job completion, use [scp or rsync](https://hpc.uni.lu/users/docs/filetransfer.html) to retrieve your results on your laptop.
+After job completion, use [scp or rsync](https://hpc-docs.uni.lu/data/transfer/) to retrieve your results on your laptop.
 
 ![](./images/clusterings.png)
 
@@ -449,7 +449,7 @@ c.shutdown()
 
 In the ```scripts``` folder, enter the following command ```sbatch launcher.sh supervized/main.py```.
 
-After job completion, use [scp or rsync](https://hpc.uni.lu/users/docs/filetransfer.html) to retrieve your results on your laptop.
+After job completion, use [scp or rsync](https://hpc-docs.uni.lu/data/transfer/) to retrieve your results on your laptop.
 
 ![Scores heatmap](./images/validation.png)
 
