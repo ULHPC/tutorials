@@ -1,4 +1,4 @@
-!! Authour: Ezhilmathi Krishnasamy (ezhilmathi.krishnasamy@uni.lu)
+!! Author: Ezhilmathi Krishnasamy (ezhilmathi.krishnasamy@uni.lu)
 
 module Vector_Addition_Mod  
   implicit none 
