@@ -1,4 +1,4 @@
-// Authour:Ezhilmathi Krishnasamy (ezhilmathi.krishnasamy@uni.lu)
+// Author:Ezhilmathi Krishnasamy (ezhilmathi.krishnasamy@uni.lu)
 
 #include <stdio.h>
 #include <stdlib.h>

@@ -57,7 +57,7 @@ $> rsync -avP --no-p --no-g -r exercises ekrishnasamy@access-iris.uni.lu:/home/u
 
 #### Reserve the compute node for exercises 
 ```
-$> salloc --reservation=hpcschool-gpu -G 1 -n 4 -t 00:30:00
+$> si-gpu --reservation=hpcschool-gpu -G 1 -n 4 -t 00:30:00
 //or 
 $> si-gpu
 ```
