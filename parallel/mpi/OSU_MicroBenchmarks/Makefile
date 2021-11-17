@@ -1,7 +1,7 @@
 ##################################################################################
 # Makefile - Configuration file for GNU make (http://www.gnu.org/software/make/)
 # Creation : 07 Nov 2013
-# Time-stamp: <Wed 2021-11-17 19:09 svarrette>
+# Time-stamp: <Wed 2021-11-17 22:59 svarrette>
 #
 # Copyright (c) 2013 Sebastien Varrette <Sebastien.Varrette@uni.lu>
 #               http://varrette.gforge.uni.lu
@@ -67,37 +67,11 @@ __build.%:
 	@echo "=> building complete - see build.*"
 
 plot:
-	$(MAKE) -C $(PLOT_DIR)/
+		$(MAKE) -C $(PLOT_DIR)/ \
 
 clean:
 	@echo "=> removing build directories"
 	rm -rf  build.*
 	@echo "=> removing $(BENCH_TARBALL)"
 	rm -f $(SRC_DIR)/$(BENCH_TARBALL)
-	$(MAKE) -C $(PLOT_DIR)/ $@
-
-
-
-ifndef OAR_NODEFILE
-run_interactive _run_interactive.impi __run_interactive.openmpi: # __run_interactive.mvapich2:
-	@echo "OAR_NODEFILE is not set - you have to be in an interactive job"
-
-run: __run.impi
-
-__run.%:
-	ln -sf $(shell basename $(DEFAULT_LAUNCHER_SCRIPT)) $(RUN_DIR)/launcher_osu_$*
-	@echo "FIXME: not working"
-	@echo oarsub -n "OSU $*" -O OSU_$*-%jobid%.log -E OSU_$*-%jobid%.log -l enclosure=1/nodes=2/core=1 -S "./$(RUN_DIR)/launcher_osu_$* --datadir $(RUN_DIR)/data/`date +%Y-%m-%d`"
-
-
-else
-run __run.impi __run.openmpi: # __run.mvapich2:
-	@echo "OAR_NODEFILE is set - you have to be on the access to be able to submit a passive job"
-
-run_interactive: build __run_interactive.impi __run_interactive.openmpi # __run_interactive.mvapich2
-
-__run_interactive.%:
-	ln -sf $(shell basename $(DEFAULT_LAUNCHER_SCRIPT)) $(RUN_DIR)/launcher_osu_$*
-	./$(RUN_DIR)/launcher_osu_$* --datadir $(RUN_DIR)/data/`date +%Y-%m-%d`
-
-endif
+#	$(MAKE) -C $(PLOT_DIR)/ $@
