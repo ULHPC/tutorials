@@ -1,4 +1,4 @@
-!! Authour:Ezhilmathi Krishnasamy (ezhilmathi.krishnasamy@uni.lu)
+!! Author:Ezhilmathi Krishnasamy (ezhilmathi.krishnasamy@uni.lu)
 
 subroutine Print_Hello_World()
   integer ::i
