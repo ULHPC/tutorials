@@ -8,7 +8,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-int main (int argc, char *argv[])  {
+int main () { //int argc, char *argv[])  {
   int nthreads, tid;
 
   // Fork a team of threads giving them their own copies of variables
