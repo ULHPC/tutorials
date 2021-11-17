@@ -13,7 +13,7 @@
       - compute constructs, loop constructs, data clauses
 * Implementing OpenACC parallel strategy in [C/C++](https://www.cprogramming.com/) and [FORTRAN](https://fortran-lang.org/) programming languages
 * Simple [mathematical examples](https://www.netlib.org/blas/) to support and understand the OpenACC programming model 
-* Finally to show how to run these examples using [Iris cluster (ULHPC)](https://hpc-docs.uni.lu/systems/iris/)
+* Finally, show you how to run these examples using [Iris cluster (ULHPC)](https://hpc-docs.uni.lu/systems/iris/)
           - both [interactively](https://hpc-docs.uni.lu/jobs/interactive/) and using a [batch job script](https://hpc-docs.uni.lu/jobs/gpu/)
 
 ### Prerequisite:
@@ -77,9 +77,9 @@ $> module load compiler/PGI/19.10-GCC-8.3.0-2.32
 * On the GPU, the cores are grouped and called "Streaming Multiprocessor - SM"
 * Even on the Nvidia GPU, it has a "Tensor Process Unit - TPU" to handle the AI/ML
   computations in an optimized way
-* GPU are based on the "Single Instruction Multiple Threads"
-* Threads are executed in a group on the GPU, typically they have 32 threads.
-  This is called "warps" on the Nividia GPU and "wavefronts" on the AMD GPU.
+* GPUs are based on the "Single Instruction Multiple Threads"
+* Threads are executed in a group on the GPU, typically they have 32 threads
+  This is called "warps" on the Nividia GPU and "wavefronts" on the AMD GPU
 
 
 #### CPU vs GPU
@@ -96,7 +96,7 @@ $> module load compiler/PGI/19.10-GCC-8.3.0-2.32
 * Step 1: application preparation, initialize the memories on both CPU and GPU
 * Step 2: transfer the data to GPU
 * Step 3: do the computation on the GPU
-* Step 4: transfer the data back to CPU
+* Step 4: transfer the data back to the CPU
 * Step 5: finalize the application and delete the memories on both CPU and GPU
 
 ![](./Nvidia-cpu-gpu-parallel.png)
@@ -125,13 +125,13 @@ $> module load compiler/PGI/19.10-GCC-8.3.0-2.32
 #### Ways to accelerate applications on the GPU
 
 * Libraries: easy to use with very limited knowledge with GPU programming
-      - cuBLAS, cuFFT, CUDA Math Library, etc,.
+      - cuBLAS, cuFFT, CUDA Math Library, etc.
 * Directive based programming model: will accelerate the application 
   with using directives in the existing code
       - OpenACC and OpenMP (might be applicable in the future)
 * Programming languages: low level programming languages that will
   further optimize the application on the accelerator
-      - CUDA, OpenCL, etc,.
+      - CUDA, OpenCL, etc.
 
 
 #### Compilers and directives (only few of them listed in here)
@@ -141,11 +141,11 @@ $> module load compiler/PGI/19.10-GCC-8.3.0-2.32
 * Compute constructs:
      - parallel and kernel 
 * Loop constructs:
-     - loop, collapse, gang, worker, vector, etc,.
+     - loop, collapse, gang, worker, vector, etc.
 * Data management clauses:
      - copy, create, copyin, copyout, delete and present
 * Others:
-     - reduction, atomic, cache, etc,.
+     - reduction, atomic, cache, etc.
 * More information about the OpenACC directives can be found in [here](https://www.openacc.org/sites/default/files/inline-files/OpenACC_2_0_specification.pdf)
 
 
@@ -183,7 +183,7 @@ void Print_Hello_World()            | void Print_Hello_World()
 
 
 * compilation: ```pgcc -fast -Minfo=all -ta=tesla -acc Hello_World.c```
-      - Compiler will give already much info, what do you see? 
+      - The compiler will already give much info; what do you see? 
       
 
 ```
