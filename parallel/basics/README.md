@@ -15,9 +15,7 @@ Thus you will be able to run:
 
 The objective of this tutorial is to show you how to run your OpenMP and/or [hybrid] MPI applications on top of the [UL HPC](https://hpc.uni.lu) platform.
 
-
-
-For all the executions we are going to perform in this tutorial, you probably want to monitor the parallel execution on one of the allocated nodes. To do that, and **assuming** you have reserved computing resources (see the `srun` <!-- / oarsub`--> commands of each section):
+For all the executions we are going to perform in this tutorial, you probably want to monitor the parallel execution on one of the allocated nodes. To do that, and **assuming** you have reserved computing resources or have a passive job running (see below):
 
 * open **another** terminal (or another `tmux/screen` window  -- see ) as you'll want to monitor the execution.
 * Connect to the allocated node with `sjoin <jobid> <nodename)`
@@ -26,34 +24,67 @@ For all the executions we are going to perform in this tutorial, you probably wa
         * press 'u' to filter by process owner, select your login
         * press 'F5' to enable the tree view
 
+Note that there are other more advanced ways and tools to monitor parallel executions over OpenMP/MPI that are covered in [another tutorial](../../debugging/advanced/).
+
+
+Finally, and this is especially true for hydrid OpenMP/MPI code, remember that you should **always align resource specs with physical NUMA characteristics**
+
+* _Ex (AION): 16 cores per socket, 8 sockets ("physical" CPUs) per node_ (128c/node)
+    - `[-N <N>] --ntasks-per-node <8n> --ntasks-per-socket <n> -c <thread>`
+         * _Total_: `<N>`$\times 8\times$`<n>` tasks, each on `<thread>` threads
+         * **Ensure** `<n>`$\times$`<thread>`= 16 on aion **if you target a full node utilisation**
+         * Ex: `-N 2 --ntasks-per-node 32 --ntasks-per-socket 4 -c 4` (_Total_: 64 tasks)
+* _Ex (IRIS): 14 cores per socket, 2 sockets ("physical" CPUs) per node_ (28c/node)
+    - `[-N <N>] --ntasks-per-node <2n> --ntasks-per-socket <n> -c <thread>`
+         * _Total_: `<N>`$\times 2\times$`<n>` tasks, each on `<thread>` threads
+         * **Ensure** `<n>`$\times$`<thread>`= 14 on iris **if you target a full node utilisation**
+         * Ex: `-N 2 --ntasks-per-node 4 --ntasks-per-socket 2  -c 7` (_Total_: 8 tasks)
+
+
 --------------------
 ## Pre-requisites ##
 
 Ensure you are able to [connect to the UL HPC clusters](https://hpc-docs.uni.lu/connect/access/).
-**For all tests and compilation, you MUST work on a computing node**
+In particular, recall that the `module` command **is not** available on the access frontends. **For all tests and compilation, you MUST work on a computing node**
 
-You'll need to prepare the data sources required by this tutorial once connected
+Now you'll need to pull the latest changes in your working copy of the [ULHPC/tutorials](https://github.com/ULHPC/tutorials) you should have cloned in `~/git/github.com/ULHPC/tutorials` (see ["preliminaries" tutorial](../../preliminaries/))
 
 ``` bash
-### ONLY if not yet done: setup the tutorials repo
-# See http://ulhpc-tutorials.rtfd.io/en/latest/setup/install/
-$> mkdir -p ~/git/github.com/ULHPC
-$> cd ~/git/github.com/ULHPC
-$> git clone https://github.com/ULHPC/tutorials.git
-$> cd tutorials
-$> make setup          # Initiate git submodules etc...
+(access)$> cd ~/git/github.com/ULHPC/tutorials
+(access)$> git pull
 ```
 
-Now you can prepare a dedicated directory to work on this tutorial:
+Now **configure a dedicated directory `~/tutorials/sequential` for this session**
 
-```bash
-$> mkdir -p ~/tutorials/OpenMP-MPI/bin
-$> cd ~/tutorials/OpenMP-MPI
+``` bash
+# return to your home
+(access)$> mkdir -p ~/tutorials/OpenMP-MPI/bin
+(access)$> cd ~/tutorials/OpenMP-MPI
+# create a symbolic link to the top reference material
+(access)$> ln -s ~/git/github.com/ULHPC/tutorials/parallel ref.d
 $> ln -s ~/git/github.com/ULHPC/tutorials/parallel ref.d  # Symlink to the reference tutorial
 $> ln -s ref.d/basics .   # Basics instructions
 $> cd basics
 ```
 
+**Advanced users** (_eventually_ yet __strongly__ recommended), create a [Tmux](https://github.com/tmux/tmux/wiki) session (see [Tmux cheat sheet](https://tmuxcheatsheet.com/) and [tutorial](https://www.howtogeek.com/671422/how-to-use-tmux-on-linux-and-why-its-better-than-screen/)) or [GNU Screen](http://www.gnu.org/software/screen/) session you can recover later. See also ["Getting Started" tutorial ](../../beginners/).
+
+``` bash
+# /!\ Advanced (but recommended) best-practice:
+#     Always work within a TMux or GNU Screen session named '<topic>' (Adapt accordingly)
+(access-aion)$> tmux new -s HPC-school   # Tmux
+(access-iris)$> screen -S HPC-school     # GNU Screen
+#  TMux     | GNU Screen | Action
+# ----------|------------|----------------------------------------------
+#  CTRL+b c | CTRL+a c   | (create) creates a new Screen window. The default Screen number is zero.
+#  CTRL+b n | CTRL+a n   | (next) switches to the next window.
+#  CTRL+b p | CTRL+a p   | (prev) switches to the previous window.
+#  CTRL+b , | CTRL+a A   | (title) rename the current window
+#  CTRL+b d | CTRL+a d   | (detach) detaches from a Screen -
+# Once detached:
+#   tmux ls  | screen -ls : list available screen
+#   tmux att | screen -x  : reattach to a past screen
+```
 
 --------------------------
 ## Parallel OpenMP Jobs ##
@@ -61,15 +92,17 @@ $> cd basics
 [OpenMP](https://www.openmp.org/) (Open Multi-Processing) is a popular parallel programming model for multi-threaded applications. More precisely, it is an Application Programming Interface (API) that supports **multi-platform shared memory multiprocessing** programming in C, C++, and Fortran on most platforms, instruction set architectures and operating systems.
 
 * [Reference website](https://www.openmp.org/): <https://www.openmp.org/>
-* __Latest version: 4.5__ (Nov 2015) -- [specifications](https://www.openmp.org/wp-content/uploads/openmp-4.5.pdf)
-* Below notes are adapted from [LLNL OpenMP tutorial](https://computing.llnl.gov/tutorials/openMP/)
+* __Latest version: 5.2__ (Nov 2021) -- [specifications](https://www.openmp.org/wp-content/uploads/OpenMP-API-Specification-5-2.pdf)
+* Below notes are adapted from [LLNL OpenMP tutorial](https://hpc.llnl.gov/tuts/openMP/)
 
 [OpenMP](https://www.openmp.org/) is designed for multi-processor/core, shared memory machine (nowadays NUMA). OpenMP programs accomplish parallelism **exclusively** through the use of threads.
 
 * A __thread__ of execution is the smallest unit of processing that can be scheduled by an operating system.
     - Threads exist within the resources of a _single_ process. Without the process, they cease to exist.
-* Typically, the number of threads match the number of machine processors/cores.
-    - _Reminder_: **[iris](https://hpc-docs.uni.lu/systems/iris/compute/)**: 2x14 cores.
+* Typically, the number of threads match the number of machine processors/cores -- see [Resource Allocation](https://hpc-docs.uni.lu/slurm/#specific-resource-allocation)
+    - _Reminder_:
+    **[aion](https://hpc-docs.uni.lu/systems/aion/compute/)** compute nodes **MUST** be seen as **8 (virtual) processors of 16 cores each**, even if physically the nodes are hosting 2 physical sockets of [AMD Epyc ROME 7H12](https://www.amd.com/en/products/cpu/amd-epyc-7h12) processors having 64 cores each (total: 128 cores per node).
+    **[iris](https://hpc-docs.uni.lu/systems/iris/compute/)**:  compute nodes typically hosts 2 physical processors of 14 cores each (total: 28 cores per nodes). The exception are the bigmem nodes (4 physical processors of 28 cores each, total 112 cores per nodes) is
     - However, the actual _use_ of threads is up to the application.
     - `OMP_NUM_THREADS` (if present) specifies _initially_ the _max_ number of threads;
         * you can use `omp_set_num_threads()` to override the value of `OMP_NUM_THREADS`;
@@ -87,69 +120,36 @@ $> cd basics
 
 ### Slurm reservations for OpenMP programs
 
-* (eventually as this is the default) set a _single_ task per node with `--ntasks-per-node=1`
+* (eventually as this is the default but recommended to **always** specify to ensure you know what you're doing) set a _single_ task per node with `--ntasks-per-node=1`
 * Use `-c <N>` (or `--cpus-per-task <N>`) to set the number of OpenMP threads you wish to use.
 * (again) **The number of threads should not exceed the number of cores on a compute node.**
 
-Thus a minimal Slurm launcher would typically look like that -- see also [our default Slurm launchers](https://github.com/ULHPC/launcher-scripts/blob/devel/slurm/launcher.default.sh).
+Thus a minimal [Slurm launcher for OpenMP](https://hpc-docs.uni.lu/slurm/launchers/#pthreadsopenmp-launcher) would typically look like that -- see also [our default Slurm launchers](https://github.com/ULHPC/launcher-scripts/blob/devel/slurm/launcher.default.sh).
 
 ```bash
 #!/bin/bash -l
 #SBATCH --ntasks-per-node=1 # Run a single task per node, more explicit than '-n 1'
-#SBATCH -c 28               #  number of CPU cores i.e. OpenMP threads per task
+#SBATCH -c 28               # on iris: number of CPU cores i.e. OpenMP threads per task
+###SBATCH -c 128            # on aion (remove first '##' and top line)
 #SBATCH --time=0-01:00:00
 #SBATCH -p batch
 
-export OMP_NUM_THREADS=${SLURM_CPUS_PER_TASK}
+print_error_and_exit() { echo "***ERROR*** $*"; exit 1; }
+module purge || print_error_and_exit "No 'module' command"
+module load toolchain/foss    # or toolchain/intel
 
-# Load the {intel | foss} toolchain and whatever module(s) you need
-module purge
-module load toolchain/intel    # or toolchain/foss
+export OMP_NUM_THREADS=${SLURM_CPUS_PER_TASK:-1}
+OPTS=$*
 
-srun /path/to/your/openmp_program
+srun /path/to/your/threaded.app ${OPTS}
 ```
-
-<!--
-#SBATCH --qos=normal
-# Use the RESIF build modules of the UL HPC platform
-if [ -f  /etc/profile ]; then
-   .  /etc/profile
-fi
--->
-
-<!--
-### OAR reservations for OpenMP programs
-
-You have to setup the reservation to match the required number of OpenMP threads with the number of cores **within** the same node _i.e._
-
-      oarsub -l nodes=1/core=<N>[...]
-
-Thus a minimal OAR launcher would typically look like that
-
-```bash
-#!/bin/bash -l
-#OAR -l nodes=1/core=4,walltime=1
-
-export OMP_NUM_THREADS=$(cat $OAR_NODEFILE| wc -l)
-
-# Use the RESIF build modules of the UL HPC platform
-if [ -f  /etc/profile ]; then
-   .  /etc/profile
-fi
-# Load the {intel | foss} toolchain and whatever module(s) you need
-module purge
-module load toolchain/intel    # or toolchain/foss
-
-path/to/your/openmp_program
-```
--->
 
 ### OpenMP Compilation
 
-| Toolchain         | Compilation command  |
-|-------------------|----------------------|
-| `toolchain/intel` | `icc -qopenmp [...]` |
-| `toolchain/foss`  | `gcc -fopenmp [...]` |
+| __Toolchain__     | __Compilation command (C)__ | __Compilation command (C++)__ |
+|-------------------|-----------------------------|-------------------------------|
+| `toolchain/intel` | `icc -qopenmp [...]`        | `icpc -qopenmp [...]`         |
+| `toolchain/foss`  | `gcc -fopenmp [...]`        | `g++  -fopenmp [...]`         |
 
 ### Hands-on: OpenMP Helloworld and matrix multiplication
 
@@ -159,15 +159,9 @@ You can find in `src/hello_openmp.c` the traditional OpenMP "Helloworld" example
 
 ```bash
 ############### iris cluster (slurm) ###############
-(access-iris)$> salloc -p interactive --ntasks-per-node=1 -c 4 -t 0:30:00
-$> export OMP_NUM_THREADS=${SLURM_CPUS_PER_TASK}
+(access-iris)$> si -c 4 -t 0:30:00
+$> export OMP_NUM_THREADS=${SLURM_CPUS_PER_TASK:-1}
 ```
-
-<!--
-############### gaia/chaos clusters (OAR) ###############
-(access-{gaia|chaos})$> oarsub -I -l nodes=1/core=4,walltime=0:30:00
-$> export OMP_NUM_THREADS=$(cat $OAR_NODEFILE| wc -l)
--->
 
 * Check the set variable `$OMP_NUM_THREADS`. Which value do you expect?
 
@@ -194,16 +188,11 @@ $> icc -qopenmp -xhost -Wall -O2 src/hello_openmp.c -o bin/hello_openmp
 
 * Execute the generated binaries multiple times. What do you notice?
 * Exit your interactive session (`exit` or `CTRL-D`)
-* Prepare a launcher script (use your favorite editor) to execute this application in batch mode.
+* Prepare a launcher script (use your favorite editor) to execute this application in batch mode -- see [pthreads/OpenMP template  Launcher](https://hpc-docs.uni.lu/slurm/launchers/#pthreadsopenmp-launcher)
 
 ```bash
-############### iris cluster (slurm) ###############
 $> sbatch ./launcher.OpenMP.sh
 ```
-<!--
-############### gaia/chaos clusters (OAR) ###############
-$> oarsub -S ./launcher.OpenMP.sh
--->
 
 Repeat the above procedure on a more serious computation: a naive matrix multiplication  using OpenMP, those source code is located in `src/matrix_mult_openmp.c`
 
@@ -232,29 +221,9 @@ $> ./launcher.OpenMP.sh foss matrix_mult_openmp
 Passive jobs examples:
 
 ```bash
-############### iris cluster (slurm) ###############
 $> sbatch ./launcher.OpenMP.sh foss  matrix_mult_openmp
 $> sbatch ./launcher.OpenMP.sh intel matrix_mult_openmp
 ```
-<!--
-############### gaia/chaos clusters (OAR) ###############
-# Arguments of the launcher script to tests
-$> cat > openmp-args.txt <<EOF
-foss
-intel
-foss matrix_mult_openmp
-intel matrix_mult_openmp
-EOF
-
-$> oarsub -S ./launcher.OpenMP.sh --array-param-file openmp-args.txt
-[ADMISSION RULE] Modify resource description with type and ibpool constraints
-Simple array job submission is used
-OAR_JOB_ID=4357646
-OAR_JOB_ID=4357647
-OAR_JOB_ID=4357648
-OAR_JOB_ID=4357649
-OAR_ARRAY_ID=4357646
--->
 
 Check the elapsed time: what do you notice ?
 
@@ -275,17 +244,17 @@ Now you can reserve the nodes and set `OMP_NUM_THREADS`:
 * Reserve an interactive job to launch 12 OpenMP threads (for 1 hour)
 
 ```bash
-############### iris cluster (slurm) ###############
-(access-iris)$> salloc -p interactive --ntasks-per-node=1 -c 12 -t 1:00:00
-$> export OMP_NUM_THREADS=${SLURM_CPUS_PER_TASK}
+(access)$> si --ntasks-per-node=1 -c 12 -t 1:00:00
+$> export OMP_NUM_THREADS=${SLURM_CPUS_PER_TASK:-1}
 ```
+
 <!--
 ############### gaia/chaos clusters (OAR) ###############
 (access-{gaia|chaos})$> oarsub -I -l nodes=1/core=12,walltime=1:00:00
 $> export OMP_NUM_THREADS=$(cat $OAR_NODEFILE| wc -l)
 -->
 
-* Open **another** terminal (or another `screen` window) to monitor the execution (see intructions on top).
+* Open **another** terminal (or another `tmux/screen` window) to monitor the execution (see intructions on top).
 
 * Execute the benchmark, for instance using the intel toolchain:
 
