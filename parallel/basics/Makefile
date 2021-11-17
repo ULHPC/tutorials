@@ -1,6 +1,6 @@
 ##################################################################################
 # Makefile - Configuration file for GNU make (http://www.gnu.org/software/make/)
-# Time-stamp: <Sun 2018-06-10 14:03 svarrette>
+# Time-stamp: <Wed 2021-11-17 16:03 svarrette>
 #
 # Copyright (c) 2013-2018 Sebastien Varrette <Sebastien.Varrette@uni.lu>
 #               http://varrette.gforge.uni.lu
@@ -14,26 +14,26 @@
 SHELL = /bin/bash
 
 CC      = gcc
-CFLAGS  = -g -Wall -Wextra -pedantic --std=c99 -O2
+CFLAGS  = -g -Wall -Wextra -pedantic  -O2
 # intel compiler flags -- see also
 #  https://software.intel.com/en-us/articles/step-by-step-optimizing-with-intel-c-compiler
 ICFLAGS = -g -Wall -xhost -O2
 
 SRC_DIR     = src
 BUILD_DIR   = bin
-
+CLUSTER     = $(shell echo ${ULHPC_CLUSTER})
 
 SRC     = $(wildcard $(SRC_DIR)/*.c)
 SRC_OMP = $(wildcard $(SRC_DIR)/*openmp*.c)
 #SRC_MPI = $(wildcard $(SRC_DIR)/*mpi*.c)
 
 TARGET = $(SRC:$(SRC_DIR)/%.c=%)
-TARGET_OMP       = $(SRC_OMP:$(SRC_DIR)/%.c=$(BUILD_DIR)/%)
-TARGET_OMP_INTEL = $(SRC_OMP:$(SRC_DIR)/%.c=$(BUILD_DIR)/intel_%)
+TARGET_OMP       = $(SRC_OMP:$(SRC_DIR)/%.c=$(BUILD_DIR)/$(CLUSTER)_%)
+TARGET_OMP_INTEL = $(SRC_OMP:$(SRC_DIR)/%.c=$(BUILD_DIR)/intel_$(CLUSTER)_%)
 
-TARGET_OPENMPI  = $(filter-out %openmp, $(addprefix $(BUILD_DIR)/openmpi_,  $(TARGET)))
-TARGET_INTEL    = $(filter-out %openmp, $(addprefix $(BUILD_DIR)/intel_,    $(TARGET)))
-TARGET_MVAPICH2 = $(filter-out %openmp, $(addprefix $(BUILD_DIR)/mvapich2_, $(TARGET)))
+TARGET_OPENMPI  = $(filter-out %openmp, $(addprefix $(BUILD_DIR)/openmpi_$(CLUSTER)_,  $(TARGET)))
+TARGET_INTEL    = $(filter-out %openmp, $(addprefix $(BUILD_DIR)/intel_$(CLUSTER)_,    $(TARGET)))
+TARGET_MVAPICH2 = $(filter-out %openmp, $(addprefix $(BUILD_DIR)/mvapich2_$(CLUSTER)_, $(TARGET)))
 TARGET_MPI      = $(TARGET_OPENMPI) $(TARGET_INTEL) # $(TARGET_MVAPICH2)
 
 TARGETS = $(TARGET_OMP) $(TARGET_OMP_INTEL) $(TARGET_MPI)
@@ -87,13 +87,13 @@ __build.omp: __build.omp.foss __build.omp.intel
 __build.omp.foss:  $(TARGET_OMP)
 __build.omp.intel: $(TARGET_OMP_INTEL)
 
-$(BUILD_DIR)/%_openmp: $(SRC_DIR)/%_openmp.c
+$(BUILD_DIR)/$(CLUSTER)_%_openmp: $(SRC_DIR)/%_openmp.c
 	@echo "==> OpenMP example build (from $<) with the foss toolchain"
 	. /etc/profile
 	module purge
 	module load toolchain/foss && $(CC) -fopenmp $(CFLAGS) $< -o $@
 
-$(BUILD_DIR)/intel_%_openmp: $(SRC_DIR)/%_openmp.c
+$(BUILD_DIR)/intel_$(CLUSTER)_%_openmp: $(SRC_DIR)/%_openmp.c
 	@echo "==> OpenMP example build (from $<) with the intel toolchain"
 	. /etc/profile
 	module purge
