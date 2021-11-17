@@ -57,6 +57,7 @@ Now **configure a dedicated directory `~/tutorials/openacc` for this session**
 
 #### Connect to Iris cluster and get an interactive GPU job
 
+See also [GPU jobs documentation](https://hpc-docs.uni.lu/jobs/gpu/).
 
 ```bash
 $ ssh iris-cluster   # The only cluster featuring GPU
