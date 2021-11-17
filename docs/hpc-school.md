@@ -1,4 +1,4 @@
-[![](https://hpc.uni.lu/images/logo/logo_hpc-shool2021.png)](https://hpc.uni.lu/education/hpcschool/)
+[![](https://hpc.uni.lu/assets/hpc-school/2021/11/logo_hpc-shool2021.png)](https://hpc.uni.lu/education/hpcschool/)
 
 * [Latest UL HPC School](https://hpc.uni.lu/education/hpcschool#program)
 
