@@ -29,7 +29,7 @@ The objective of this practical session is to guide you toward the effective man
 --------------------
 ## Pre-requisites ##
 
-Ensure you are able to [connect to the UL HPC clusters](https://hpc.uni.lu/users/docs/access.html).
+Ensure you are able to [connect to the UL HPC clusters](https://hpc-docs.uni.lu/connect/access/).
 In particular, recall that the `module` command **is not** available on the access frontends.
 
 If you have never configured [GNU Screen](http://www.gnu.org/software/screen/) before, and while not strictly mandatory, we advise you to rely on our customized configuration file for screen [`.screenrc`](https://github.com/ULHPC/dotfiles/blob/master/screen/.screenrc) available on [Github](https://github.com/ULHPC/dotfiles/blob/master/screen/.screenrc) and available on the access nodes under `/etc/dotfiles.d/screen/.screenrc`.

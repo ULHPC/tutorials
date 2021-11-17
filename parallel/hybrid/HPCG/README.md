@@ -1,6 +1,6 @@
 -*- mode: markdown; mode: visual-line; fill-column: 80 -*-
 
-Author: Valentin Plugaru <Valentin.Plugaru@uni.lu>  
+Author: Valentin Plugaru <Valentin.Plugaru@uni.lu>
 Copyright (c) 2015-2017 UL HPC Team  <hpc-sysadmins@uni.lu>
 
 ------------------------------------------------------
@@ -10,12 +10,12 @@ Copyright (c) 2015-2017 UL HPC Team  <hpc-sysadmins@uni.lu>
 
 
 The objective of this tutorial is to compile and run one of the newest HPC benchmarks, [High Performance Conjugate Gradients (HPCG)](http://www.hpcg-benchmark.org/), on top of the
-[UL HPC](http://hpc.uni.lu) platform.
+[UL HPC](https://hpc.uni.lu) platform.
 
 You can work in groups for this training, yet individual work is encouraged to ensure you understand and practice the usage of MPI programs on an HPC platform.
 If not yet done, you should consider completing the [OSU Micro-benchmark](../OSU_MicroBenchmarks/) and [HPL](../HPL/) tutorials.
 
-In all cases, ensure you are able to [connect to the UL HPC  clusters](https://hpc.uni.lu/users/docs/access.html).
+In all cases, ensure you are able to [connect to the UL HPC  clusters]((https://hpc-docs.uni.lu/connect/access/).
 
 
 ```bash

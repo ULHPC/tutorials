@@ -1,6 +1,6 @@
-These tutorials has been designed and implemented in the context of the [UL HPC](http://hpc.uni.lu) Platform of the [University of Luxembourg](http://www.uni.lu) by the [UL HPC Team](https://hpc.uni.lu/about/team.html#system-administrators), _i.e._
+These tutorials has been designed and implemented in the context of the [UL HPC](https://hpc.uni.lu) Platform of the [University of Luxembourg](http://www.uni.lu) by the [UL HPC Team](https://hpc.uni.lu/about/team), _i.e._
 
-* Dr. [Sébastien Varrette](https://varrette.gforge.uni.lu/), [UL HPC](http://hpc.uni.lu) Manager
+* Dr. [Sébastien Varrette](https://varrette.gforge.uni.lu/), [UL HPC](https://hpc.uni.lu) Manager
 * Dr. [Frederic Pinel](https://wwwen.uni.lu/recherche/fstc/computer_science_and_communications_research_unit/members/frederic_pinel_2)
 * Dr. [Emmanuel Kieffer](https://wwwen.uni.lu/recherche/fstc/computer_science_and_communications_research_unit/members/emmanuel_kieffer)
 * Dr. [Ezhilmathi Krishnasamy](https://wwwen.uni.lu/snt/people/ezhilmathi_krishnasamy)
