@@ -1,12 +1,12 @@
 ---
-title: "Reproducible science in R"
+title: "Reproducible pipeline in R"
 subtitle: "`r params$subtitle`"
 author: "`r params$author`"
 date: "`r params$date`"
 params:
-  title: "Reproducible science in R"
+  title: "Reproducible pipeline in R"
   subtitle: "with `targets`"
-  date: "2020-12-16"
+  date: "2021-11-19"
   author: "A. Ginolhac"
 output:
   xaringan::moon_reader:
@@ -58,11 +58,24 @@ htmltools::tagList(
   rmarkdown::html_dependency_font_awesome()
 )
 # use webcam, on/off with 'w' and press Shift + W to move the video to the next corner.
-xaringanExtra::use_webcam()
 xaringanExtra::use_share_again()
+xaringanExtra::use_search(show_icon = FALSE)
+xaringanExtra::use_scribble()
 Sys.getenv("TAR_ASK", FALSE)
 ```
 
+```{r, echo = FALSE}
+xaringanExtra::use_logo(
+  image_url = "img/00/logo_uni_elixir.png",
+  height = "30px",
+  position = xaringanExtra::css_position(bottom = "1em", left = "1em"),
+  link_url = "https://rworkshop.uni.lu/",
+  exclude_class = c("title-slide", "inverse", "hide_logo"))
+```
+
+```{r, echo = FALSE}
+xaringanExtra::use_progress_bar(location = "top", color = "#00A4E1")
+```
 
 class: title-slide
 
@@ -192,7 +205,7 @@ htmltools::img(src = "https://rworkshop.uni.lu/lectures/img/09/tidyverse_pkg_in_
 # If you wonder about `drake`
 
 
-- [`drake`](https://github.com/ropensci/drake), is the most used workflow manager for .Large[`R`]. 1,300 `r icon::fa_star()` on Github 
+- [`drake`](https://github.com/ropensci/drake), is the most used workflow manager for .Large[`R`]. 1,300 `r fontawesome::fa("star", fill = "gold")` on Github 
 
 .flex[
 .w-55.bg-washed-blue.b--blue.ba.bw2.br3.shadow-5.ph3.mt1.mr1[
