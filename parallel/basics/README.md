@@ -406,11 +406,10 @@ Repeat the above procedure on a more serious computation: a naive matrix multipl
 
 Adapt the launcher script to sustain both executions (MPI helloworld and matrix multiplication)
 
-_Note_: if you are lazy (or late), you can use the provided launcher script `runs/launcher.MPI.sh`.
+_Note_: if you are lazy (or late), you can use the provided launcher script [`scripts/launcher.MPI.sh`](https://github.com/ULHPC/tutorials/blob/devel/parallel/basics/runs/launcher.MPI.sh).
 
 
 ```bash
-$ cd runs
 $ ./scripts/launcher.MPI.sh -h
 NAME
   launcher.MPI.sh: Generic MPI launcher
@@ -448,8 +447,8 @@ $ ./scripts/launcher.MPI.sh intel ${ULHPC_CLUSTER}_matrix_mult_mpi
 Passive jobs examples:
 
 ```bash
-$ sbatch ./scripts/launcher.MPI.sh openmpi
-$ sbatch ./scripts/launcher.MPI.sh intel   ${ULHPC_CLUSTER}_matrix_mult_mpi
+$ sbatch --ntasks-per-node 128 ./scripts/launcher.MPI.sh openmpi
+$ sbatch --ntasks-per-node 128 ./scripts/launcher.MPI.sh intel   ${ULHPC_CLUSTER}_matrix_mult_mpi
 ```
 
 Check the elapsed time: what do you notice ?
@@ -530,20 +529,14 @@ $> cat src/hello_hybrid.c
 ######### OpenMPI
 $> module purge                # Safeguard
 $> module load mpi/OpenMPI
-$> mpicc -fopenmp -Wall -O2 src/hello_hybrid.c -o bin/openmpi_hello_hybrid
+$> mpicc -fopenmp -Wall -O2 src/hello_hybrid.c -o bin/openmpi_${ULHPC_CLUSTER}_hello_hybrid
 
 ######### Intel MPI
 $> module purge                # Safeguard
 $> module load toolchain/intel
-$> mpiicc -qopenmp -Wall -xhost -O2 src/hello_hybrid.c -o bin/intel_hello_hybrid
+$> mpiicc -qopenmp -Wall -xhost -O2 src/hello_hybrid.c -o bin/intel_${ULHPC_CLUSTER}_hello_hybrid
 
 ```
-<!--
-######### MVAPICH2
-$> module purge                # Safeguard
-$> module load mpi/MVAPICH2
-$> mpicc -f openmp -Wall -O2 src/hello_hybrid.c -o bin/mvapich2_hello_hybrid
--->
 
 * (__only__ if you have trouble to compile): `make hybrid`
 * Execute the generated binaries (see above tips)
@@ -551,70 +544,52 @@ $> mpicc -f openmp -Wall -O2 src/hello_hybrid.c -o bin/mvapich2_hello_hybrid
 * Adapt the MPI launcher to allow for batch jobs submissions over hybrid programs
 
 ```bash
-############### iris cluster (slurm) ###############
 $> sbatch ./launcher.hybrid.sh
 ```
-<!--
-############### gaia/chaos clusters (OAR) ###############
-$> oarsub -S ./launcher.hybrid.sh
--->
 
-_Note_: if you are lazy (or late), you can use the provided launcher script `runs/launcher.MPI.sh`.
+_Note_: if you are lazy (or late), you can use the provided launcher script [`runs/launcher.hybrid.sh`](https://github.com/ULHPC/tutorials/blob/devel/parallel/basics/runs/launcher.hybrid.sh).
 
 
 ```bash
-$> cd runs
-$> ./launcher.hybrid.sh -h
+$ ./scripts/launcher.hybrid.sh -h
 NAME
-  ./launcher.hybrid.sh -- Hybrid OpenMP+MPI launcher example
+  launcher.hybrid.sh: Generic Hybrid OpenMP+MPI launcher
+    Default APPDIR: /Users/svarrette/tutorials/OpenMP-MPI/basics/bin
+    Default APP: _hello_hybrid
+  Take the good habit to prefix the binary to execute with MPI suit used for
+  the build. Here the default Hybrid OpenMP+MPI application run would be
+        EXE=/Users/svarrette/tutorials/OpenMP-MPI/basics/bin/openmpi__hello_hybrid
+  which will be run as     srun -n $SLURM_NTASKS [...]
+
 USAGE
-  ./launcher.hybrid.sh {intel | openmpi} [app]
+  [sbatch] ./scripts/launcher.hybrid.sh [-n] {intel | openmpi | mvapich2} [app]
+  EXE=/path/to/hydridapp.exe [sbatch] ./scripts/launcher.hybrid.sh [-n] {intel | openmpi | mvapich2}
+
+OPTIONS:
+  -n --dry-run: Dry run mode
 
 Example:
-  ./launcher.hybrid.sh [openmpi]      run hybrid OpenMP+OpenMPI  on hello_hybrid
-  ./launcher.hybrid.sh intel          run hybrid OpenMP+IntelMPI on hello_hybrid
+  [sbatch] ./scripts/launcher.hybrid.sh                          # run hybrid OpenMPI build    openmpi_<cluster>_hello_hybrid
+  [sbatch] ./scripts/launcher.hybrid.sh intel                    # run hybrid Intel MPI build  intel_<cluster>_hello_hybrid
+  [sbatch] ./scripts/launcher.hybrid.sh openmpi matrix_mult      # run hybrid OpenMPI build    openmpi_matrix_mult
+  EXE=/Users/svarrette/bin/hpcg [sbatch] ./scripts/launcher.hybrid.sh intel # run hybrid intel build ~/bin/hpcg
 ```
 
-<!--
+Now you can execute it:
+
 ```bash
-$> cd runs
-$> ./launcher.hybrid.sh -h
-NAME
-  ./launcher.hybrid.sh -- Hybrid OpenMP+MPI launcher example
-USAGE
-  ./launcher.hybrid.sh {intel | openmpi | mvapich2 } [app]
-
-Example:
-  ./launcher.hybrid.sh [openmpi]      run hybrid OpenMP+OpenMPI  on hello_hybrid
-  ./launcher.hybrid.sh intel          run hybrid OpenMP+IntelMPI on hello_hybrid
-  ./launcher.hybrid.sh mvapich2       run hybrid OpenMP+MVAPICH2 on hello_hybrid
+$ ./scripts/launcher.hybrid.sh
+$ ./scripts/launcher.hybrid.sh intel
 ```
--->
 
 Passive jobs examples:
 
 ```bash
-############### iris cluster (slurm) ###############
-$> sbatch ./launcher.hybrid.sh
-$> sbatch ./launcher.hybrid.sh intel
+# On Aion, you need to adapt the default settings
+$> sbatch --ntasks-per-node 8 -c 16 ./scripts/launcher.hybrid.sh
+$> sbatch --ntasks-per-node 8 -c 16 ./scripts/launcher.hybrid.sh intel
 ```
-<!-- $> sbatch ./launcher.hybrid.sh mvapich2 -->
 
-
-<!--
-############### Gaia/chaos clusters (OAR) ###############
-# Arguments of the launcher script to tests
-$> cat > hybrid-args.txt <<EOF
-openmpi
-intel
-EOF
-$> oarsub -S ./launcher.hybrid.sh --array-param-file hybrid-args.txt
-[ADMISSION RULE] Modify resource description with type and ibpool constraints
-Simple array job submission is used
-OAR_JOB_ID=4357843
-OAR_JOB_ID=4357844
-OAR_ARRAY_ID=4357843
--->
 
 ----------------------------------------------------------------
 ## Code optimization tips for your OpenMP and/or MPI programs ##
