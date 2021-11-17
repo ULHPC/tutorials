@@ -4,7 +4,7 @@ pages:
 - Latest HPC School: 'hpc-school.md'
 - Setup:
   - Overview:       'setup/index.md'
-  - Pre-Requisites: 'setup/preliminaries.md' 
+  - Pre-Requisites: 'setup/preliminaries.md'
   - Clone and setup ULHPC Tutorials:   'setup/install.md'
 - First interactions with ULHPC:
   - The UNIX/Linux Shell:  'linux-shell/index.md'
@@ -46,7 +46,8 @@ pages:
 - GPU Programming:
   - Accelerating Applications with CUDA C/C++: 'cuda/index.md'
   - CUDA Convolution using GPU: 'cuda/exercises/convolution/index.md'
-  - Solving Laplace Equation on GPU with OpenACC: 'gpu/openacc/laplace/index.md' 
+  - Introduction to OpenACC: 'gpu/openacc/basics/index.md'
+  - Solving Laplace Equation on GPU with OpenACC: 'gpu/openacc/laplace/index.md'
 - Mathematics:
   - MATLAB: 'maths/matlab/basics/index.md'
   - MATLAB (advanced): 'maths/matlab/advanced/index.md'
