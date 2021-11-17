@@ -12,7 +12,7 @@ In particular, the latest version of these tutorials is available online:
 <http://ulhpc-tutorials.rtfd.io>
 
 The list of proposed tutorials is continuously evolving.
-They used on a regular basis during the [UL HPC School](http://hpc.uni.lu/hpc-school/) we organise.
+They used on a regular basis during the [UL HPC School](https://hpc.uni.lu/education/hpcschool) we organise.
 So far, the following tutorials are proposed:
 
 | **Category**            | **Description**                                                                                       | **Level**      |

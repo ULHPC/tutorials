@@ -4,7 +4,7 @@
 
 Copyright (c) 2014-2021 UL HPC Team  <hpc-sysadmins@uni.lu>
 
-Authors: Xavier Besseron, Maxime Schmitt, Sarah Peter, Sébastien Varrette
+Authors: Xavier Besseron, Maxime Schmitt, Sarah Peter, Sébastien Varrette and UL HPC Team <hpc-team@uni.lu>
 
 [![](https://github.com/ULHPC/tutorials/raw/devel/tools/easybuild/cover_slides.png)](https://github.com/ULHPC/tutorials/raw/devel/tools/easybuild/slides.pdf)
 
@@ -31,7 +31,8 @@ Finally the last part will cover [Easybuild usage on the ULHPC platform](https:/
 --------------------
 ## Pre-requisites ##
 
-Ensure you are able to [connect to the UL HPC clusters](https://hpc.uni.lu/users/docs/access.html).
+Ensure you are able to [connect to the UL HPC clusters](https://hpc-docs.uni.lu/connect/access/).
+
 In particular, recall that the `module` command **is not** available on the access frontends.
 
 If you have never configured [Tmux](https://github.com/tmux/tmux/wiki) or [GNU Screen](http://www.gnu.org/software/screen/) before, and while not strictly mandatory, we advise you to rely on these tools -- see ["HPC Management of Sequential and Embarrassingly Parallel Jobs"](../../sequential/basics/) tutorial.

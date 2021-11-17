@@ -6,7 +6,7 @@
 
 This page is part of the Getting started tutorial, and the follow-up of the "Overview" section.
 
-* [reference documentation](https://hpc.uni.lu/users/docs/slurm.html)
+* [reference documentation](https://hpc-docs.uni.lu/slurm/)
 
 ## The basics
 

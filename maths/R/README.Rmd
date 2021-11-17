@@ -24,7 +24,7 @@ library(tidyverse)
   <script>fitvids('.shareagain', {players: 'iframe'});</script>
 </div>
 
-Through this tutorial you will learn how to use R from your local machine or from one of the [UL HPC platform](http://hpc.uni.lu) clusters.
+Through this tutorial you will learn how to use R from your local machine or from one of the [UL HPC platform](https://hpc.uni.lu) clusters.
 Then, we will see how to organize and group data. Finally we will illustrate how R can benefit from multicore and cluster parallelization.
 
 Warning: this tutorial does not focus on the learning of R language but aims at showing you nice start-up tips.
@@ -70,7 +70,7 @@ Another [bookdown](https://bookdown.org/)'s book  is available for free: [R for 
 --------------------
 ## Pre-requisites ##
 
-Ensure you are able to [connect to the UL HPC clusters](https://hpc.uni.lu/users/docs/access.html)
+Ensure you are able to [connect to the UL HPC clusters](https://hpc-docs.uni.lu/connect/ssh/)
 
 **you MUST work on a computing node**
 
@@ -200,8 +200,8 @@ In the previous example we used `aggregate` for the **aggregation**, we could al
 
 
 ```{r}
-as.data.frame(cbind(cut = as.character(unique(diamonds$cut)), 
-                    avg_price = lapply(unique(diamonds$cut), 
+as.data.frame(cbind(cut = as.character(unique(diamonds$cut)),
+                    avg_price = lapply(unique(diamonds$cut),
                                        function(x) {
                                          mean(diamonds$price[which(diamonds$cut == x)])
                     })))

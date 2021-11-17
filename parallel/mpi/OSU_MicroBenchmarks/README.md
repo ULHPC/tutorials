@@ -12,9 +12,9 @@ The objective of this tutorial is to compile and run on of the [OSU micro-benchm
 
 You can work in groups for this training, yet individual work is encouraged to ensure you understand and practice the usage of MPI programs on an HPC platform.
 
-In all cases, ensure you are able to [connect to the UL HPC  clusters](https://hpc.uni.lu/users/docs/access.html).
+In all cases, ensure you are able to [connect to the UL HPC  clusters](https://hpc-docs.uni.lu/connect/access/).
 
-**Advanced users only**: rely on `screen` (see  [tutorial](http://support.suso.com/supki/Screen_tutorial) or the [UL HPC tutorial](https://hpc.uni.lu/users/docs/ScreenSessions.html) on the  frontend prior to running any `oarsub` or `srun/sbatch` command to be more resilient to disconnection.
+**Advanced users only**: rely on `screen` (see  [tutorial](http://support.suso.com/supki/Screen_tutorial) or the [UL HPC tutorial](https://ulhpc-tutorials.readthedocs.io/en/latest/linux-shell/#persistent-terminal-sessions-using-gnu-screen) on the frontend prior to running any `oarsub` or `srun/sbatch` command to be more resilient to disconnection.
 
 The latest version of this tutorial is available on [Github](https://github.com/ULHPC/tutorials/tree/devel/parallel/mpi/OSU_MicroBenchmarks).
 Finally, advanced MPI users might be interested to take a look at the [Intel Math Kernel Library Link Line Advisor](https://software.intel.com/en-us/articles/intel-mkl-link-line-advisor).
@@ -37,7 +37,7 @@ In this tutorial, we will build **version 5.5 of the [OSU micro-benchmarks](http
 
 > The bandwidth tests were carried out by having the sender sending out a fixed number (equal to the window size) of back-to-back messages to the receiver and then waiting for a reply from the receiver. The receiver sends the reply only after receiving all these messages. This process is repeated for several iterations and the bandwidth is calculated based on the elapsed time (from the time sender sends the first message until the time it receives the reply back from the receiver) and the number of bytes sent by the sender. The objective of this bandwidth test is to determine the maximum sustained date rate that can be achieved at the network level. Thus, non-blocking version of MPI functions (MPI_Isend and MPI_Irecv) were used in the test.
 
-The idea is to compare the different MPI implementations available on the [UL HPC platform](http://hpc.uni.lu).:
+The idea is to compare the different MPI implementations available on the [UL HPC platform](https://hpc.uni.lu).:
 
 * [Intel MPI](http://software.intel.com/en-us/intel-mpi-library/)
 * [OpenMPI](http://www.open-mpi.org/)

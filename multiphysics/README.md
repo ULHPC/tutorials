@@ -6,7 +6,7 @@
 
 [![](https://github.com/ULHPC/tutorials/raw/devel/multiphysics/cover_slides.png)](https://github.com/ULHPC/tutorials/raw/devel/multiphysics/slides.pdf)
 
-The objective of this session is to exemplify the execution of several common, parallel, Computational Physics, Chemistry & Engineering software on the [UL HPC](http://hpc.uni.lu) platform.
+The objective of this session is to exemplify the execution of several common, parallel, Computational Physics, Chemistry & Engineering software on the [UL HPC](https://hpc.uni.lu) platform.
 
 Targeted applications include:
 

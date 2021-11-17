@@ -8,7 +8,7 @@ Authors: Valentin Plugaru and Sarah Peter
 
 [![](https://github.com/ULHPC/tutorials/raw/devel/bio/basics/cover_slides.png)](https://github.com/ULHPC/tutorials/raw/devel/bio/basics/slides.pdf)
 
-The objective of this tutorial is to exemplify the execution of several Bioinformatics packages on top of the [UL HPC](http://hpc.uni.lu) platform.
+The objective of this tutorial is to exemplify the execution of several Bioinformatics packages on top of the [UL HPC](https://hpc.uni.lu) platform.
 
 The targeted applications are:
 
@@ -25,7 +25,7 @@ The tutorial will:
 
 ## Prerequisites
 
-When you look at the [software page](https://hpc.uni.lu/users/software/) you will notice that some of the applications are part of the *bioinfo* software set. The modules in this set are not visible by default. To use them within a job you have to do:
+When you look at the [software page](https://hpc-docs.uni.lu/software/) you will notice that some of the applications are part of the *bioinfo* software set. The modules in this set are not visible by default. To use them within a job you have to do:
 
 	(node)$> module use /opt/apps/resif/data/stable/bioinfo/modules/all
 

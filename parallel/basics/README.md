@@ -13,41 +13,14 @@ Thus you will be able to run:
 * ideally **parallel** (OpenMP, MPI, CUDA, OpenCL...) jobs
 * however if your workflow involves **serial** tasks/jobs, you must run them *efficiently*
 
-The objective of this tutorial is to show you how to run your MPI and/or OpenMP applications on top of the [UL HPC](https://hpc.uni.lu) platform.
+The objective of this tutorial is to show you how to run your OpenMP and/or [hybrid] MPI applications on top of the [UL HPC](https://hpc.uni.lu) platform.
+
+
 
 For all the executions we are going to perform in this tutorial, you probably want to monitor the parallel execution on one of the allocated nodes. To do that, and **assuming** you have reserved computing resources (see the `srun` <!-- / oarsub`--> commands of each section):
 
-* open **another** terminal (or another `screen` window) as you'll want to monitor the execution.
-* Connect to the allocated node:
-
-```bash
-### Access to ULHPC cluster (if not yet done)
-(laptop)$> ssh iris-cluster
-### Have an interactive job to launch 4 OpenMP threads (for 30 minutes)
-# ... either directly
-(access)$> si --ntasks-per-node=1 -c 4 -t 0:30:00
-# ... or using the HPC School reservation 'hpcschool'if needed  - use 'sinfo -T' to check if active and its name
-# (access)$> salloc -p interactive --reservation=hpcschool --ntasks-per-node=1 -c 4 -t 0:30:00
-(node)$>
-```
-<!--
-############### iris cluster (slurm)
-(access-iris)$> sq     # Check the allocated node
-(access-iris)$> ssh iris-XXX       # ADAPT accordingly
-
-############## gaia/chaos clusters (OAR)
-(access-{gaia|chaos})$> oarstat -u     # Collect the job ID
-(access-{gaia|chaos})$> oarsub -C <jobid>
--->
-
-* For passive job:
-
-```bash
-# Note: you may want/need to run it under the dedicated reservation set for the training event
-# using sbatch --reservation=[...]
-(access)$> sbatch ./launcher.OpenMP.sh 
-```
-
+* open **another** terminal (or another `tmux/screen` window  -- see ) as you'll want to monitor the execution.
+* Connect to the allocated node with `sjoin <jobid> <nodename)`
 * **For this new terminal/window**
     - run `htop`
         * press 'u' to filter by process owner, select your login
@@ -56,7 +29,7 @@ For all the executions we are going to perform in this tutorial, you probably wa
 --------------------
 ## Pre-requisites ##
 
-Ensure you are able to [connect to the UL HPC clusters](https://hpc.uni.lu/users/docs/access.html)
+Ensure you are able to [connect to the UL HPC clusters](https://hpc-docs.uni.lu/connect/access/).
 **For all tests and compilation, you MUST work on a computing node**
 
 You'll need to prepare the data sources required by this tutorial once connected
@@ -96,7 +69,7 @@ $> cd basics
 * A __thread__ of execution is the smallest unit of processing that can be scheduled by an operating system.
     - Threads exist within the resources of a _single_ process. Without the process, they cease to exist.
 * Typically, the number of threads match the number of machine processors/cores.
-    - _Reminder_: **[iris](https://hpc.uni.lu/systems/iris/#computing-capacity)**: 2x14 cores. <!-- **[gaia](https://hpc.uni.lu/systems/gaia/#computing-capacity)**: depends, but typically 2x6 cores -->
+    - _Reminder_: **[iris](https://hpc-docs.uni.lu/systems/iris/compute/)**: 2x14 cores.
     - However, the actual _use_ of threads is up to the application.
     - `OMP_NUM_THREADS` (if present) specifies _initially_ the _max_ number of threads;
         * you can use `omp_set_num_threads()` to override the value of `OMP_NUM_THREADS`;
@@ -357,7 +330,7 @@ In most MPI implementations,   a fixed set of processes is created at program in
 
 ### MPI implementations
 
-The [UL HPC platform](http://hpc.uni.lu) offers to you different MPI implementations:
+The [UL HPC platform](https://hpc.uni.lu) offers to you different MPI implementations:
 
 | MPI Suit                                                        | Version | `module load`...  | Compiler                    |
 |-----------------------------------------------------------------|---------|-------------------|-----------------------------|

@@ -4,7 +4,7 @@
 
      Copyright (c) 2013-2019 UL HPC Team  <hpc-sysadmins@uni.lu>
 
-The objective of this tutorial is to compile and run on of the reference HPC benchmarks, [HPL](http://www.netlib.org/benchmark/hpl/), on top of the [UL HPC](http://hpc.uni.lu) platform.
+The objective of this tutorial is to compile and run on of the reference HPC benchmarks, [HPL](http://www.netlib.org/benchmark/hpl/), on top of the [UL HPC](https://hpc.uni.lu) platform.
 
 You can work in groups for this training, yet individual work is encouraged to ensure you understand and practice the usage of MPI programs on an HPC platform.
 If not yet done, you should consider completing the following tutorials:
@@ -22,7 +22,7 @@ and expected performances
 --------------------
 ## Pre-requisites ##
 
-Ensure you are able to [connect to the UL HPC clusters](https://hpc.uni.lu/users/docs/access.html)
+Ensure you are able to [connect to the UL HPC clusters](https://hpc-docs.uni.lu/connect/access/).
 **For all tests and compilation, you MUST work on a computing node**
 
 You'll need to prepare the data sources required by this tutorial once connected
@@ -55,7 +55,7 @@ $> ln -s ~/git/github.com/ULHPC/tutorials/parallel/mpi/HPL ref.ulhpc.d
 $> ln -s ref.ulhpc.d/Makefile .     # symlink to the root Makefile
 ```
 
-**Advanced users only**: rely on `screen` (see  [tutorial](http://support.suso.com/supki/Screen_tutorial) or the [UL HPC tutorial](https://hpc.uni.lu/users/docs/ScreenSessions.html) on the  frontend prior to running any `srun/sbatch` command to be more resilient to disconnection.
+**Advanced users only**: rely on `screen` (see  [tutorial](http://support.suso.com/supki/Screen_tutorial) or the [UL HPC tutorial](https://ulhpc-tutorials.readthedocs.io/en/latest/linux-shell/#persistent-terminal-sessions-using-gnu-screen) on the frontend prior to running any `srun/sbatch` command to be more resilient to disconnection.
 
 Finally, be aware that the latest version of this tutorial is available on
 [Github](https://github.com/ULHPC/tutorials/tree/devel/parallel/mpi/HPL/) and on
@@ -96,7 +96,7 @@ HPL rely on an efficient implementation of the Basic Linear Algebra Subprograms 
 * [ATLAS](http://math-atlas.sourceforge.net/atlas_install/)
 * [GotoBlas](https://www.tacc.utexas.edu/research-development/tacc-software/gotoblas2/)
 
-The idea is to compare the different MPI and BLAS implementations available on the [UL HPC platform](http://hpc.uni.lu):
+The idea is to compare the different MPI and BLAS implementations available on the [UL HPC platform](https://hpc.uni.lu):
 
 * [Intel MPI](http://software.intel.com/en-us/intel-mpi-library/) and the Intel MKL
 * [OpenMPI](http://www.open-mpi.org/)
@@ -558,7 +558,7 @@ Of course, we made here a small test and optimizing the HPL parameters to get th
 
 Below are some plots obtained when benchmarking the `iris` cluster and seeking the best set of parameters across increasing number of nodes (see [this blog post](https://hpc.uni.lu/blog/2017/preliminary-performance-results-of-the-iris-cluster/))
 
-![](https://hpc.uni.lu/images/benchs/benchmark_HPL-iris_25N.png)
-![](https://hpc.uni.lu/images/benchs/benchmark_HPL-iris_50N.png)
-![](https://hpc.uni.lu/images/benchs/benchmark_HPL-iris_75N.png)
-![](https://hpc.uni.lu/images/benchs/benchmark_HPL-iris_100N.png)
+![](https://hpc.uni.lu/old/images/benchs/benchmark_HPL-iris_25N.png)
+![](https://hpc.uni.lu/old/images/benchs/benchmark_HPL-iris_50N.png)
+![](https://hpc.uni.lu/old/images/benchs/benchmark_HPL-iris_75N.png)
+![](https://hpc.uni.lu/old/images/benchs/benchmark_HPL-iris_100N.png)
