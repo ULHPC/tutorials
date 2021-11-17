@@ -31,7 +31,7 @@
 # Preparation 
 #### Access the slides and exercises
 
-* To keep the tutorial and hands on your local machine 
+* To keep the tutorial and exercise on your local machine 
 
 ```
 $> mkdir UHPC-School-2021
@@ -43,7 +43,7 @@ $> cd tutorials/gpu/openacc/OpenACC-Tutorial/ # for slides and README.md
 
 #### Connect to Iris cluster
 ```
-$> ssh -X iris-cluster 
+$> ssh -X iris-cluster // or ssh iris-cluster 
 //or 
 $>  ssh -p 8022 user@access-iris.uni.lu
 ```
@@ -138,14 +138,16 @@ $> module load compiler/PGI/19.10-GCC-8.3.0-2.32
 
 * OpenACC is supported by the Nvidia, [PGI](https://www.pgroup.com/index.htm), GCC, and [HPE Gray](https://buy.hpe.com/us/en/software/high-performance-computing-software/high-performance-computing-software/hpe-cray-programming-environment/p/1012707351) (only for FORTRAN) compilers
      - Now PGI is part of Nvidia, and it is available through [Nvidia HPC SDK](https://developer.nvidia.com/hpc-sdk)
-* Compute directives:
-     - parallel and kernel
-* Loop directive:
-     - loop
-* Data management directives:
-     - copyin and copyout
+* Compute constructs:
+     - parallel and kernel 
+* Loop constructs:
+     - loop, collapse, gang, worker, vector, etc,.
+* Data management clauses:
+     - copy, create, copyin, copyout, delete and present
 * Others:
-     - reduction 
+     - reduction, atomic, cache, etc,.
+* More information about the OpenACC directives can be found in [here](https://www.openacc.org/sites/default/files/inline-files/OpenACC_2_0_specification.pdf)
+
 
 #### Basic programming structure 
 
@@ -164,7 +166,7 @@ use openacc
 ~~~
 
 
-# Compute directives in OpenACC
+# Compute and loop constructs in OpenACC
 #### _kernels_ in C/C++
 
 ~~~ c
@@ -237,7 +239,7 @@ print_hello_world:
 ```
 > Note: this above example is to show you how to create the parallel region using _parallel_ and _kernels_ and it quite useful  when you have a multiple regions need to be prallelized. However, the above example has just one parallel region. 
 
-# _loop_ and _data management_ directive
+# _loop_ and _data management_ clauses
 
 #### for C/C++
 * Here we can consider simple vector addition example for the OpenACC _loop_ directive 
@@ -257,7 +259,7 @@ float * Vector_Addition               | float * Vector_Addition
 }                                     | }
 ~~~
 * The _loop_ will parallelize the _for_ loop plus also accommodate other OpenACC _clauses_, for example here _copyin_ and _copyput_.
-* The above example needs two vector needs to be copied to GPU and one vector needs to send the value back to CPU. 
+* The above example needs two vectors to be copied to GPU and one vector needs to send the value back to CPU. 
 * _copyin_ will create the memory on the GPU and transfer the data from CPU to GPU.
 * _copyout_ will create the memory on the GPU and and transfer the data from GPU to CPU.
 
@@ -287,7 +289,7 @@ end module Vector_Addition_Mod               | end module Vector_Addition_Mod
 
 * Now compile and run the above code as we did previously.  
 
-# _reduction_ directive in vector addition 
+# _reduction_ clause in vector addition 
 #### for C/C++
 
 ~~~ c
