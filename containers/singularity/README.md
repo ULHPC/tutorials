@@ -74,7 +74,7 @@
 </p>
 
 * **build environment**: your workstation (admin. required)
-* **production environmemnt**: [UL HPC clusters](https://hpc.uni.lu/systems/clusters.html)
+* **production environmemnt**: [UL HPC clusters](https://hpc-docs.uni.lu/systems/)
 
 Source: [Kurtzer GM, Sochat V, Bauer MW (2017) Singularity: Scientific containers for mobility of compute. PLoS ONE 12(5): e0177459](https://doi.org/10.1371/journal.pone.0177459)
 
