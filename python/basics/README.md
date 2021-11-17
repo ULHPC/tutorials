@@ -95,7 +95,7 @@ To run your script in a **passive** way, you should create a batch script to run
 * Create a `example1.sh` file under `tutorials/advanced/Python/example1/`.
 * Edit it by using your favorite editor (`vim`, `nano`, `emacs`...)
 * Add a shebang at the beginning (`#!/bin/bash -l`)
-* Add **#SBATCH** parameters (see [Slurm documentation](https://hpc.uni.lu/users/docs/slurm.html))
+* Add **#SBATCH** parameters (see [Slurm documentation](https://hpc-docs.uni.lu/slurm/))
   * `1` core
   * `example1` name
   * maximum `10m` walltime

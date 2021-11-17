@@ -69,7 +69,7 @@ $> cd basics
 * A __thread__ of execution is the smallest unit of processing that can be scheduled by an operating system.
     - Threads exist within the resources of a _single_ process. Without the process, they cease to exist.
 * Typically, the number of threads match the number of machine processors/cores.
-    - _Reminder_: **[iris](https://hpc.uni.lu/systems/iris/#computing-capacity)**: 2x14 cores. <!-- **[gaia](https://hpc.uni.lu/systems/gaia/#computing-capacity)**: depends, but typically 2x6 cores -->
+    - _Reminder_: **[iris](https://hpc-docs.uni.lu/systems/iris/compute/)**: 2x14 cores.
     - However, the actual _use_ of threads is up to the application.
     - `OMP_NUM_THREADS` (if present) specifies _initially_ the _max_ number of threads;
         * you can use `omp_set_num_threads()` to override the value of `OMP_NUM_THREADS`;

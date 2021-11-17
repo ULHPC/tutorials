@@ -25,7 +25,7 @@ The tutorial will:
 
 ## Prerequisites
 
-When you look at the [software page](https://hpc.uni.lu/users/software/) you will notice that some of the applications are part of the *bioinfo* software set. The modules in this set are not visible by default. To use them within a job you have to do:
+When you look at the [software page](https://hpc-docs.uni.lu/software/) you will notice that some of the applications are part of the *bioinfo* software set. The modules in this set are not visible by default. To use them within a job you have to do:
 
 	(node)$> module use /opt/apps/resif/data/stable/bioinfo/modules/all
 
