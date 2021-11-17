@@ -100,7 +100,7 @@ $> cd basics
 * Typically, the number of threads match the number of machine processors/cores -- see [Resource Allocation](https://hpc-docs.uni.lu/slurm/#specific-resource-allocation)
     - _Reminder_:
     **[aion](https://hpc-docs.uni.lu/systems/aion/compute/)** compute nodes **MUST** be seen as **8 (virtual) processors of 16 cores each**, even if physically the nodes are hosting 2 physical sockets of [AMD Epyc ROME 7H12](https://www.amd.com/en/products/cpu/amd-epyc-7h12) processors having 64 cores each (total: 128 cores per node).
-    **[iris](https://hpc-docs.uni.lu/systems/iris/compute/)**:  compute nodes typically hosts 2 physical processors of 14 cores each (total: 28 cores per nodes). The exception are the bigmem nodes (4 physical processors of 28 cores each, total 112 cores per nodes) is
+    **[iris](https://hpc-docs.uni.lu/systems/iris/compute/)**:  compute nodes typically hosts 2 physical processors of 14 cores each (total: 28 cores per nodes). The exception are the bigmem nodes (4 physical processors of 28 cores each, total 112 cores per nodes)
     - However, the actual _use_ of threads is up to the application.
     - `OMP_NUM_THREADS` (if present) specifies _initially_ the _max_ number of threads;
         * you can use `omp_set_num_threads()` to override the value of `OMP_NUM_THREADS`;
@@ -303,7 +303,7 @@ The goal of the Message Passing Interface is to establish a **portable**, **effi
 MPI is not an IEEE or ISO standard, but has in fact, become the "industry standard" for writing message passing programs on HPC platforms.
 
 * [Reference website](https://www.mpi-forum.org/): <https://www.mpi-forum.org/>
-* __Latest version: 3.1__ (June 2015) -- [specifications](https://www.mpi-forum.org/docs/mpi-3.1/mpi31-report.pdf)
+* __Latest version: 4.0__ (June 2021) -- [specifications](https://www.mpi-forum.org/docs/mpi-4.0/mpi40-report.pdf)
 * Below notes are adapted from [LLNL MPI tutorial](https://computing.llnl.gov/tutorials/mpi/)
 
 In the MPI programming model, a computation comprises one or more **processes** that communicate by calling library routines to send and receive messages to other processes.
@@ -469,91 +469,41 @@ Of course, you can have _hybrid_ code mixing MPI and OpenMP primitives.
 
 * You need to compile the code with the `-qopenmp` (with Intel MPI) or `-fopenmp` (for the other MPI suits) flags
 * You need to adapt the `OMP_NUM_THREADS` environment variable accordingly
-* __(Slurm only)__: you need to adapt the value `-c <N>` (or `--cpus-per-task <N>`) to set the number of OpenMP threads you wish to use per MPI process
-* You need to ensure the environment variable `OMP_NUM_THREADS` is shared across the nodes
-* (_Intel MPI only_) you probably want to set [`I_MPI_PIN_DOMAIN=omp`](https://software.intel.com/en-us/mpi-developer-reference-linux-interoperability-with-openmp-api)
-<!--*  **(OAR only)**: you have to take the following elements into account:
-    - You need to compute accurately the number of MPI processes per node `<PPN>` (in addition to the number of MPI processes) and pass it to `mpirun`
-        * OpenMPI:   `mpirun -npernode <PPN> -np <N>`
-        * Intel MPI: `mpirun -perhost <PPN>  -np <N>`
-      <!--  * MVAPICH2:  `mpirun -ppn <PPN>      -np <N>` -->
-    <!-- - You need to ensure the environment variable `OMP_NUM_THREADS` is shared across the nodes
-    - (_Intel MPI only_) you probably want to set [`I_MPI_PIN_DOMAIN=omp`](https://software.intel.com/en-us/mpi-developer-reference-linux-interoperability-with-openmp-api) -->
-   <!-- - (_MVAPICH2 only_) you probably want to set `MV2_ENABLE_AFFINITY=0` -->
+    - you need to adapt the value `-c <N>` (or `--cpus-per-task <N>`) to set the number of OpenMP threads you wish to use per MPI process
+    - try to inherit from the Slurm allocation (and provide a meaningfull default value): `export OMP_NUM_THREADS=${SLURM_CPUS_PER_TASK:-1}`
+* For best performances, you **MUST** align resource specs with physical NUMA characteristics -- see [ULHPC Technical documentation on Slurm Resource Allocation](https://hpc-docs.uni.lu/slurm/#specific-resource-allocation)
+    - **[aion](https://hpc-docs.uni.lu/systems/aion/compute/)** compute nodes **MUST** be seen as **8 (virtual) processors of 16 cores each**, even if physically the nodes are hosting 2 physical sockets of [AMD Epyc ROME 7H12](https://www.amd.com/en/products/cpu/amd-epyc-7h12) processors having 64 cores each (total: 128 cores per node).
+    - **[iris](https://hpc-docs.uni.lu/systems/iris/compute/)** compute nodes typically hosts 2 physical processors of 14 cores each (total: 28 cores per nodes). The exception are the bigmem nodes (4 physical processors of 28 cores each, total 112 cores per nodes).
 
-### Slurm launcher for OpenMP+MPI programs
+Other misc considerations:
+
+* You need to ensure the environment variable `OMP_NUM_THREADS` is shared across the nodes
+* (_Intel MPI only_) you probably want to set [`I_MPI_PIN_DOMAIN=omp`](https://www.intel.com/content/www/us/en/develop/documentation/mpi-developer-reference-linux/top/environment-variable-reference/process-pinning/interoperability-with-openmp-api.html)
+* Like any MPI execution, simply use for whatever MPI flavor you use:
+
+         srun -n $SLURM_NTASKS /path/to/hybrid [...]
+
+Thus a **minimal launcher for hybrid OpenMP/MPI** would _typically_ look like that -- see [Hybrid OpenMP+MPI template Launcher](https://hpc-docs.uni.lu/slurm/launchers/#hybrid-intel-mpiopenmp-launcher)
 
 ```bash
-#!/bin/bash -l
-#SBATCH -N 2                  # Use 2 nodes
-#SBATCH --ntasks-per-node=1   # Number of MPI process per node
-#SBATCH -c 4                  # Number of OpenMP threads per MPI process
+#!/bin/bash -l     # Multi-node hybrid application IntelMPI+OpenMP launcher
+#SBATCH -N 2
+#SBATCH --ntasks-per-node   8    # MPI processes per node - use 2 on iris
+#SBATCH --ntasks-per-socket 1    # MPI processes per [virtual] processor
+#SBATCH -c 16                    # OpenMP threads per MPI process - use 14 on iris
 #SBATCH --time=0-01:00:00
 #SBATCH -p batch
-#SBATCH --qos=normal
 
-export OMP_NUM_THREADS=${SLURM_CPUS_PER_TASK}
+print_error_and_exit() { echo "***ERROR*** $*"; exit 1; }
+module purge || print_error_and_exit "No 'module' command"
+module load mpi/OpenMPI   # or toolchain/intel
+export OMP_NUM_THREADS=${SLURM_CPUS_PER_TASK:-1}
+OPTS=$*
 
-# Load the intel toolchain and whatever MPI module you need
-module purge
-module load toolchain/intel    # or mpi/{OpenMPI} <!-- |MVAPICH2} -->
-# export I_MPI_PMI_LIBRARY=/usr/lib64/libpmi.so
-srun -n $SLURM_NTASKS /path/to/your/hybrid_program
+srun -n $SLURM_NTASKS /path/to/your/parallel-hybrid-app ${OPTS}
 ```
 
-<!--
-# Use the RESIF build modules of the UL HPC platform
-if [ -f  /etc/profile ]; then
-   .  /etc/profile
-fi
--->
-
-<!--
-### OAR launcher for OpenMP+MPI programs
-
-```bash
-#!/bin/bash -l
-#OAR -l nodes=2/core=4,walltime=1
-
-# Use the RESIF build modules of the UL HPC platform
-if [ -f  /etc/profile ]; then
-   .  /etc/profile
-fi
-
-export OMP_NUM_THREADS=$(cat $OAR_NODEFILE | uniq -c | head -n1 | awk '{print $1}')
-
-NTASKS=$(cat $OAR_NODEFILE | wc -l)
-NNODES=$(cat $OAR_NODEFILE | sort -u | wc -l)
-NCORES_PER_NODE=$(echo "${NTASKS}/${NNODES}" | bc)
-NPERNODE=$(echo "$NCORES_PER_NODE/$OMP_NUM_THREADS" | bc)
-NP=$(echo "$NTASKS/$OMP_NUM_THREADS" | bc)
-
-# Unique list of hostname for the machine file
-MACHINEFILE=hostfile_${OAR_JOBID}.txt;
-cat $OAR_NODEFILE | uniq > ${MACHINEFILE};
-
-### Load the intel toolchain and whatever MPI module you need
-module purge
-module load toolchain/intel    # or mpi/{OpenMPI|MVAPICH2}
-# ONLY on moonshot node that have no IB card: export I_MPI_FABRICS=tcp
-
-### Intel MPI
-mpirun -perhost ${NPERNODE:=1} -np ${NP} \
-       -genv OMP_NUM_THREADS=${OMP_NUM_THREADS} -genv I_MPI_PIN_DOMAIN=omp \
-       -hostfile $OAR_NODEFILE  path/to/hybrid_program
-
-### OpenMPI
-mpirun -npernode ${NPERNODE:=1} -np ${NP} \
-       -x OMP_NUM_THREADS -x PATH-x LD_LIBRARY_PATH \
-       -hostfile $OAR_NODEFILE  path/to/hybrid_program
-
-### MVAPICH2
-export MV2_ENABLE_AFFINITY=0
-mpirun -ppn ${NPERNODE:=1} -np ${NP} -genv OMP_NUM_THREADS=${OMP_NUM_THREADS} \
-       -launcher ssh -launcher-exec /usr/bin/oarsh \
-       -f $MACHINEFILE  path/to/hybrid_program
-```
--->
+In the above example, 2x8 = 16 MPI processes will be launched, each with 16 OpenMP threads (to match Aion configuration). **You will have to adapt it for running on Iris**.
 
 ### Hands-on: Hybrid OpenMP+MPI Helloworld
 
@@ -562,15 +512,9 @@ You can find in `src/hello_hybrid.c` the traditional OpenMP+MPI "Helloworld" exa
 * Reserve an interactive job to launch 2 MPI processes (1 per node), each composed of 4 OpenMP threads (for 30 minutes)
 
 ```bash
-############### iris cluster (slurm) ###############
-(access-iris)$> salloc -p interactive -N 2 --ntasks-per-node=1 -c 4 -t 0:30:00
-$> export OMP_NUM_THREADS=${SLURM_CPUS_PER_TASK}
+(access)$ si -N 2 --ntasks-per-node=1 -c 4 -t 0:30:00
+$ export OMP_NUM_THREADS=${SLURM_CPUS_PER_TASK:-1}
 ```
-<!--
-############### gaia/chaos clusters (OAR) ###############
-(access-{gaia|chaos})$> oarsub -I -l nodes=2/core=4,walltime=0:30:00
-$> export OMP_NUM_THREADS=$(cat $OAR_NODEFILE | uniq -c | head -n1 | awk '{print $1}')
--->
 
 * Check the set variable `$OMP_NUM_THREADS`. Which value do you expect?
 
