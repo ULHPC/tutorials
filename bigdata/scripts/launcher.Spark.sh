@@ -101,8 +101,8 @@ echo "Submission directory = ${SLURM_SUBMIT_DIR}"
 
 # Load local Spark module
 module purge || print_error_and_exit "Unable to find the 'module' command"
-module use $HOME/.local/easybuild/modules/all
-module load devel/Spark
+module use $HOME/.local/easybuild/${ULHPC_CLUSTER}/${RESIF_VERSION_PROD}/${RESIF_ARCH}/modules/all
+module load devel/Spark ||  print_error_and_exit "Cannot load properly devel/Spark"
 
 ### Spark configuration
 export SPARK_HOME=$EBROOTSPARK
