@@ -44,7 +44,7 @@ The **main objective** of this tutorial is to introduce for students of the HPC 
 
 This tutorial is based on the following content from the Internet:
 
-[0]: ./code "code"
+[0]: https://github.com/ULHPC/tutorials/tree/devel/gpu/opencl/code "code"
 [1]: https://programmerclick.com/article/47811146604/ "Tutorial: Simple start with OpenCL and C++" 
 [2]: https://www.khronos.org/registry/OpenCL/ "Khronos OpenCL Working Group. The OpenCL Specification (Oct. 2021)"
 [3]: https://www.eriksmistad.no/getting-started-with-opencl-and-gpu-computing/ "Smistad, E. Getting started with OpenCL and GPU Computing, Feb. 22, 2018 (Access on Oct. 28, 2021)."
