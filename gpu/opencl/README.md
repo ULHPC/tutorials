@@ -358,4 +358,4 @@ It is important to point out that this runtime error was returned using the NVID
 
 Extend the previous example so a vector `D` receives the sum of three other vectors, `A`,`B`, and `C`.
 
-Refer to the [code folder][0] for the solution. 
+Refer to the [code folder](https://github.com/ULHPC/tutorials/tree/devel/gpu/opencl/code) for the solution. 
