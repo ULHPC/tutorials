@@ -46,6 +46,7 @@ pages:
 - GPU Programming:
   - Accelerating Applications with CUDA C/C++: 'cuda/index.md'
   - CUDA Convolution using GPU: 'cuda/exercises/convolution/index.md'
+  - Introduction to OpenCL Programming: 'opencl/index.md'
   - Introduction to OpenACC: 'gpu/openacc/basics/index.md'
   - Solving Laplace Equation on GPU with OpenACC: 'gpu/openacc/laplace/index.md'
 - Mathematics:
@@ -71,7 +72,6 @@ pages:
    - Vagrant: 'virtualization/vagrant/index.md'
 - Misc:
   - Reproducible Research: 'misc/reproducible-research/index.md'
-#  - CUDA Programming: 'cuda/index.md'
 # - Advanced topics:
 #   - Advanced workflows on sequential jobs management: 'advanced/advanced_workflows/README.md'
 - Documentation (RTFD): 'rtfd.md'
