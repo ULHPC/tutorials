@@ -340,9 +340,9 @@ python -m scoop --hostfile $HOSTFILE -n ${SLURM_NTASKS} --python-interpreter=$SC
 Finally in order to execute this script (```launcher.sh```) on multiple cores and nodes, you can use the ```sbatch``` command. For example, ```sbatch --ntasks=31 --cpus-per-task=1 --time=00:10:00 -p batch launcher.sh 50``` will start the script with 31 cores allocated during 10 minutes to solve the rastrigin benchmark having 50 variables.
 
 
-** Remark ** The launcher below requests 10 tasks on 2 nodes with 1 cpu per task. This is **NOT** an efficient use of the hardware but only for educational purpose. Please always try to maximize nodes usage, i.e., 28 tasks max on iris, 128 max on aion or decrease and increase multithreading if possible. You may use  `--ntasks-per-nodes`or `--ntasks-per-socket` for this purpose. Please also refer to the [ULHPC documentation](https://hpc-docs.uni.lu/slurm/#specific-resource-allocation) for more details.
+** Remark ** The launcher requests 31 tasks with 1 cpu per task. This is **NOT** an efficient use of the hardware but only for educational purpose. Please always try to maximize nodes usage, i.e., 28 tasks max on iris, 128 max on aion or decrease and increase multithreading if possible. You may use  `--ntasks-per-nodes`or `--ntasks-per-socket` for this purpose. Please also refer to the [ULHPC documentation](https://hpc-docs.uni.lu/slurm/#specific-resource-allocation) for more details.
 
-After job completion, use [scp or rsync](https://hpc.uni.lu/users/docs/filetransfer.html) to retrieve your results on your laptop.
+After job completion, use [scp or rsync](https://hpc-docs.uni.lu/data/transfer/) to retrieve your results on your laptop.
 
 ## Next
 

@@ -7,5 +7,7 @@
 #SBATCH -p batch
 #SBATCH --qos=normal
 
+module load vis/gnuplot
+
 python example1.py
 gnuplot gnuplot/time_vs_array_size.gpi

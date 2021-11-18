@@ -12,7 +12,7 @@ In particular, the latest version of these tutorials is available online:
 <http://ulhpc-tutorials.rtfd.io>
 
 The list of proposed tutorials is continuously evolving.
-They used on a regular basis during the [UL HPC School](http://hpc.uni.lu/hpc-school/) we organise.
+They used on a regular basis during the [UL HPC School](https://hpc.uni.lu/education/hpcschool) we organise.
 So far, the following tutorials are proposed:
 
 | **Category**            | **Description**                                                                                       | **Level**      |
@@ -47,8 +47,10 @@ So far, the following tutorials are proposed:
 |                         | [Singularity with Infiniband](containers/singularity-inf/)                                            | advanced       |
 | _Virtualization_        | (OLD) [Create and reproduce work environments using Vagrant](advanced/Vagrant/)                       | intermediate   |
 |                         | [Deploying virtual machines with Vm5k on Grid'5000](advanced/vm5k/)                                   | intermediate   |
-| _GPU_                   | [Introduction to GPU programming with CUDA (C/C++)](cuda/)                                            | intermediate   |
+| _GPU Programming_       | [Introduction to GPU programming with CUDA (C/C++)](cuda/)                                            | intermediate   |
 |                         | [Image Convolution with GPU and CUDA](cuda/exercises/convolution/)                                    | intermediate   |
+|                         | [Introduction to OpenACC Programming Model (C/C++ and Fortran)](gpu/openacc/basics/)                  | intermediate       |
+|                         | [Solving the Laplace Equation on GPU with OpenAcc](gpu/openacc/laplace/)                              | intermediate   |
 | _Misc_                  | [Reproducible Research at the Cloud Era](misc/reproducible-research/)                                 | intermediate   |
 
 __List of contributors__

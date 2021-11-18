@@ -3,3 +3,4 @@ matplotlib
 dask-jobqueue
 graphviz
 xgboost
+jupyter

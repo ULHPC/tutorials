@@ -2,7 +2,7 @@
 
 Authors: Clément Parisot
 
-Copyright (c) 2018 UL HPC Team  -- see <http://hpc.uni.lu>
+Copyright (c) 2018 UL HPC Team  -- see <https://hpc.uni.lu>
 
 ---------------------------------------------------------
 # UL HPC Tutorial: [Advanced] Python : Use Jupyter notebook on UL HPC

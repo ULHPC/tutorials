@@ -74,7 +74,7 @@
 </p>
 
 * **build environment**: your workstation (admin. required)
-* **production environmemnt**: [UL HPC clusters](https://hpc.uni.lu/systems/clusters.html)
+* **production environmemnt**: [UL HPC clusters](https://hpc-docs.uni.lu/systems/)
 
 Source: [Kurtzer GM, Sochat V, Bauer MW (2017) Singularity: Scientific containers for mobility of compute. PLoS ONE 12(5): e0177459](https://doi.org/10.1371/journal.pone.0177459)
 
@@ -105,11 +105,10 @@ source ~/.bashrc
 * Download singularity [source](https://sylabs.io/guides/3.6/user-guide/quick_start.html#download)
 
 ```bash
-export VERSION=3.6.4
-export URL="https://github.com/sylabs/singularity/releases/download"
-wget "${URL}/v${VERSION}/singularity-${VERSION}.tar.gz"
-tar -xzf singularity-${VERSION}.tar.gz
+export VERSION="v3.6.4"
+git clone https://github.com/hpcng/singularity.git
 cd singularity
+git checkout ${VERSION}
 ```
 
 * Compiling singularity from source
@@ -233,7 +232,7 @@ Type "help", "copyright", "credits" or "license" for more information.
 sudo singularity build --sandbox \
      python_3.7.3-stretch docker://python:3.7.3-stretch
 sudo singularity exec --writable \
-     python_3.7.3-stretch/ pip3 install numpy nose test
+     python_3.7.3-stretch/ pip3 install numpy nose pytest hypothesis
 singularity exec python_3.7.3-stretch \
      python3 -c "import numpy; numpy.test()"
 ```
@@ -353,9 +352,10 @@ Stage: build
     export PORT=8889
     export LC_ALL=C
 %post
+    apt-get update
+    apt-get upgrade -y
     apt-get install -y software-properties-common
     add-apt-repository multiverse
-    apt-get update
     apt-get install -y python3 python3-pip python3-venv
     python3 -m pip install jupyter
 ```
@@ -523,9 +523,10 @@ Stage: build
     export LC_ALL=C
 
 %post
+    apt-get update
+    apt-get upgrade -y
     apt-get install -y software-properties-common
     add-apt-repository multiverse
-    apt-get update
     apt-get install -y python3 python3-pip python3-venv
     python3 -m pip install jupyter cgroup-utils
 
@@ -810,6 +811,8 @@ Stage: build
     export LC_ALL=C
 
 %post
+    apt-get update
+    apt-get upgrade -y
     python3 -m pip install virtualenv jupyter ipyparallel cgroup-utils
 
 %runscript

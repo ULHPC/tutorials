@@ -29,7 +29,7 @@ forks](https://img.shields.io/github/stars/ULHPC/tutorials.svg?style=social&labe
 </div>
 
 Through this tutorial you will learn how to use R from your local
-machine or from one of the [UL HPC platform](http://hpc.uni.lu)
+machine or from one of the [UL HPC platform](https://hpc.uni.lu)
 clusters. Then, we will see how to organize and group data. Finally we
 will illustrate how R can benefit from multicore and cluster
 parallelization.
@@ -94,7 +94,7 @@ Hadley Wickham
 ## Pre-requisites
 
 Ensure you are able to [connect to the UL HPC
-clusters](https://hpc.uni.lu/users/docs/access.html)
+clusters](https://hpc-docs.uni.lu/connect/access/).
 
 **you MUST work on a computing node**
 
@@ -270,8 +270,8 @@ In the previous example we used `aggregate` for the **aggregation**, we
 could also have used `lapply` (but in a more complex way):
 
 ``` r
-as.data.frame(cbind(cut = as.character(unique(diamonds$cut)), 
-                    avg_price = lapply(unique(diamonds$cut), 
+as.data.frame(cbind(cut = as.character(unique(diamonds$cut)),
+                    avg_price = lapply(unique(diamonds$cut),
                                        function(x) {
                                          mean(diamonds$price[which(diamonds$cut == x)])
                     })))
@@ -346,7 +346,7 @@ summary(m, relative = TRUE)
     ##   <bch:expr> <dbl>  <dbl>     <dbl>     <dbl>    <dbl>
     ## 1 LAPPLY      5.51   5.46      3.55      5.99     2.22
     ## 2 AGGREGATE  21.6   23.8       1         9.13     1.58
-    ## 3 DPLYR       2.67   2.84      6.47      1        1   
+    ## 3 DPLYR       2.67   2.84      6.47      1        1
     ## 4 DATATABLE   1      1        19.4       1.23     1.81
 
 -   plotting the benchmark

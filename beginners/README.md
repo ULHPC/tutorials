@@ -8,21 +8,21 @@
 
 
 This tutorial will guide you through your first steps on the
-[UL HPC platform](http://hpc.uni.lu).
+[UL HPC platform](https://hpc.uni.lu).
 
 Before proceeding:
 
-* make sure you have an account (if not, follow [this procedure](https://hpc.uni.lu/get_an_account)), and an SSH client.
-* take a look at the [quickstart guide](https://hpc.uni.lu/users/quickstart.html)
-* ensure you operate from a Linux / Mac environment. Most commands below assumes running in a Terminal in this context. If you're running Windows, you can use MobaXterm, Putty tools etc. as described [on this page](https://hpc.uni.lu/users/docs/access/access_windows.html) yet it's probably better that you familiarize "natively" with Linux-based environment by having a Linux Virtual Machine (consider for that [VirtualBox](https://www.virtualbox.org/)) or [Windows Subsystem for Linux](https://docs.microsoft.com/en-us/windows/wsl/install-win10).
+* make sure you have an account (if not, follow [this procedure](https://hpc-docs.uni.lu/accounts/)), and an SSH client.
+* take a look at the [Getting Started](https://hpc-docs.uni.lu/getting-started/)
+* Follow the ["Linux Shell" Tutorial](../linux-shell/)
 
-From a general perspective, the [Support page](https://hpc.uni.lu/users/docs/report_pbs.html) describes how to get help during your UL HPC usage.
+From a general perspective, the [Support page](https://hpc-docs.uni.lu/support/) describes how to get help during your UL HPC usage.
 
 **Convention**
 
 In the below tutorial, you'll proposed terminal commands where the prompt is denoted by `$>`.
 
-In general, we will prefix to precise the execution context (_i.e._ your laptop, a cluster frontend or a node). Remember that `#` character is a comment. Example:
+In general, we will prefix to precise the execution context (_i.e._ your laptop, a cluster access server or a node). Remember that `#` character is a comment. Example:
 
 		# This is a comment
 		$> hostname
@@ -34,13 +34,13 @@ In general, we will prefix to precise the execution context (_i.e._ your laptop,
 
 ## Platform overview.
 
-You can find a brief overview of the platform with key characterization numbers [on this page](https://hpc.uni.lu/systems/overview.html).
+You can find a brief overview of the platform with key characterization numbers [on this page](https://hpc-docs.uni.lu/systems/).
 
 The general organization of each cluster is depicted below:
 
-![UL HPC clusters general organization](https://hpc.uni.lu/images/overview/clusters_general_organization.png)
+![UL HPC clusters general organization](https://hpc.uni.lu/old/images/overview/clusters_general_organization.png)
 
-Details on this organization can be found [here](https://hpc.uni.lu/systems/clusters.html#clusters-organization)
+Details on this organization can be found [here](https://hpc-docs.uni.lu/systems/)
 
 
 ## Discovering, visualizing and reserving UL HPC resources
@@ -49,9 +49,8 @@ In the following sections, replace `<login>` in the proposed commands with you l
 
 ### Step 1: the working environment
 
-* [reference documentation](http://hpc.uni.lu/users/docs/env.html)
-
-After a successful login onto one of the access node (see [Cluster Access](https://hpc.uni.lu/users/docs/access.html)), you end into your personal homedir `$HOME` which is shared over GPFS between the access node and the computing nodes.
+* [reference documentation](https://hpc-docs.uni.lu/environment/)
+After a successful login onto one of the access node (see [Cluster Access](https://hpc-docs.uni.lu/connect/access/)), you end into your personal homedir `$HOME` which is shared over GPFS between the access node and the computing nodes.
 
 Otherwise, you have to be aware of at least two directories:
 
@@ -115,32 +114,30 @@ You can use the SLURM web interface for a visualization of the job scheduler sta
 
 ### Sample Usage on the UL HPC platform: Kernel compilation
 
-We will illustrate the usage of GNU screen by performing a compilation of a recent linux kernel.
+We will illustrate the usage of `tmux` by performing a compilation of a recent linux kernel.
 
-* start a new screen session
+* start a new tmux session
 
-        (access)$> screen
+        (access)$> tmux
 
-* rename the screen window "Frontend" (using `CTRL+a A`)
+* rename the screen window "Frontend" (using `CTRL+b ,`)
 
 * create a new window and rename it "Compile"
-* within this new window, start a new interactive job over 1 node and 2 cores for 4 hours
+* within this new window, start a new interactive job over 1 node and 2 cores for 2 hours
 
 		(access)$> si --time 2:00:0 -N 1 -c 2
 
-* detach from this screen (using `CTRL+a d`)
+* detach from this screen (using `CTRL+b d`)
 * kill your current SSH connection and your terminal
-* re-open your terminal and connect back to the cluster frontend
-* list your running screens:
+* re-open your terminal and connect back to the cluster access server
+* list your running tmux sessions:
 
-		(access)$> screen -ls
-		There is a screen on:
-			9143.pts-0.access	(05/04/2014 11:29:43 PM) (Detached)
-		1 Socket in /var/run/screen/S-svarrette.
+		(access)$> tmux ls
+		0: 1 windows (created Mon Nov 15 17:48:58 2021) [316x46]
 
 * re-attach your previous screen session
 
-		(access)$> screen -r      # OR screen -r 9143.pts-0.access (see above socket name)
+		(access)$> tmux a        # OR tmux attach-session -t 0:
 
 * in the "Compile" windows, go to the temporary directory and download the Linux kernel sources
 
@@ -157,7 +154,7 @@ We will illustrate the usage of GNU screen by performing a compilation of a rece
 		(node)$> make alldefconfig
 		(node)$> make 2>&1 | tee /dev/shm/PS1/kernel_compile.log
 
-* You can now detach from the screen and take a coffee
+* You can now detach from the tmux session and have a coffee
 
 The last compilation command make use of `tee`, a nice tool which read from standard input and write to standard output _and_ files. This permits to save in a log file the message written in the standard output.
 
@@ -166,7 +163,7 @@ The last compilation command make use of `tee`, a nice tool which read from stan
 **Question: why working in `/dev/shm` is more efficient?**
 
 
-* Reattach from time to time to your screen to see the status of the compilation
+* Reattach from time to time to your tmux session to see the status of the compilation
 * Your compilation is successful if it ends with the sequence:
 
 		[...]
@@ -194,4 +191,3 @@ The table below should convince you to always run `make` with the `-j` option wh
     * `free -m`
     * `uptime`
     * `ps aux`
-

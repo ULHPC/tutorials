@@ -1,5 +1,5 @@
 #! /bin/bash -l
-# Time-stamp: <Mon 2020-12-14 13:03 svarrette>
+# Time-stamp: <Wed 2021-11-17 18:30 svarrette>
 ###############################################################################
 # Default launcher for Hybrid OpenMP+MPI jobs
 # Usage:
@@ -17,8 +17,10 @@
 #SBATCH -N 2
 #SBATCH --ntasks-per-socket 1  # (ideally) ensure 1 MPI process per processor
 #SBATCH --ntasks-per-node 2    #           ensure consistency accordingly over the node
+#                              #           In particular, set to 8 on Aion
 #SBATCH -c 14                  # multithreading per task : -c --cpus-per-task <n> request
 #__________________________    #      (ideally) as many OpenMP threads as cores available
+#                              #      In particular, set to 16 on Aion
 #SBATCH -o logs/%x-%j.out      # log goes into logs/<jobname>-<jobid>.out
 mkdir -p logs
 
@@ -39,7 +41,7 @@ MODULE=mpi/OpenMPI
 ######################################################
 # /!\ ADAPT below variables to match your own settings
 APPDIR=${APPDIR:=${HOME}/tutorials/OpenMP-MPI/basics/bin}    # bin directory holding your MPI builds
-APP=${APP:=hello_hybrid}  # MPI application - OpenMPI/intel/... builds expected to be prefixed by
+APP=${APP:=${ULHPC_CLUSTER}_hello_hybrid}  # MPI application - OpenMPI/intel/... builds expected to be prefixed by
 #                                          openmpi_/intel_/<suit>_
 # Eventual options to be passed to the MPI program
 OPTS=
@@ -67,8 +69,8 @@ OPTIONS:
   -n --dry-run: Dry run mode
 
 Example:
-  [sbatch] $0                          # run hybrid OpenMPI build    openmpi_hello_hybrid
-  [sbatch] $0 intel                    # run hybrid Intel MPI build  intel_hello_hybrid
+  [sbatch] $0                          # run hybrid OpenMPI build    openmpi_<cluster>_hello_hybrid
+  [sbatch] $0 intel                    # run hybrid Intel MPI build  intel_<cluster>_hello_hybrid
   [sbatch] $0 openmpi matrix_mult      # run hybrid OpenMPI build    openmpi_matrix_mult
   EXE=$HOME/bin/hpcg [sbatch] $0 intel # run hybrid intel build ~/bin/hpcg
 EOF
@@ -95,9 +97,9 @@ export OMP_NUM_THREADS=${SLURM_CPUS_PER_TASK:-1}
 
 cat <<EOF
 # ==============================================================
-# => OpenMP+MPI run of '${APP}' with the ${SUITE} MPI suite
+# => OpenMP+MPI run of '$(basename ${EXE})' with the ${SUITE} MPI suite
 #    OMP_NUM_THREADS=${OMP_NUM_THREADS}
-#    ${SLURM_NTASKS:-1} MPI process(es)"
+#    ${SLURM_NTASKS:-1} MPI process(es)
 # ==============================================================
 EOF
 

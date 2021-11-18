@@ -7,6 +7,8 @@
 #SBATCH -p batch
 #SBATCH --qos=normal
 
+module load vis/gnuplot
+
 python example1.py
 # Activate virtualenv that contains numpy
 source numpy16/bin/activate

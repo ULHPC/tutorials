@@ -19,7 +19,7 @@ This tutorial will cover the following aspects of CUDA programming:
 --------------------
 ## Pre-requisites ##
 
-Ensure you are able to [connect to the UL HPC clusters](https://hpc.uni.lu/users/docs/access.html).
+Ensure you are able to [connect to the UL HPC clusters](https://hpc-docs.uni.lu/connect/access/).
 In particular, recall that the `module` command **is not** available on the access frontends.
 
 ```bash
@@ -125,6 +125,9 @@ git stash && git pull -r && git stash pop
 <br />
 
 ### Get an interactive GPU job
+
+See also [documentation](https://hpc-docs.uni.lu/jobs/gpu/)
+
 
 ```bash
 ### ... either directly - dedicate 1/4 of available cores to the management of GPU card

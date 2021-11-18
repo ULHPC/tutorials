@@ -1,3 +1,4 @@
+build*
 src/*.gz
 src/*.bz2
 plots/*.pdf

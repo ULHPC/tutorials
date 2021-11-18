@@ -16,7 +16,7 @@
 #define NCA MATSIZE        /* number of columns in matrix A */
 #define NCB MATSIZE        /* number of columns in matrix B */
 
-int main (int argc, char *argv[]) {
+int main () { //int argc, char *argv[]) {
   int tid, nthreads, i, j, k, chunk;
   double elapsed_time = 0.0;
   double  a[NRA][NCA],     /* matrix A to be multiplied */

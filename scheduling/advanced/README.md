@@ -8,7 +8,7 @@
 [![](cover_slides.png)](slides.pdf)
 
 The objective of this tutorial is to practice using the SLURM cluster
-workload manager in use on the UL HPC [iris cluster](https://hpc.uni.lu/systems/iris/).
+workload manager in use on the UL HPC [iris cluster](https://hpc-docs.uni.lu/systems/iris/).
 
 It's important that you read the [slides](https://github.com/ULHPC/tutorials/raw/devel/scheduling/advanced/slides.pdf) first.
 
