@@ -4,7 +4,7 @@
 
      Copyright (c) T. Carneiro, L. Koutsantonis, 2021 UL HPC Team <hpc-team@uni.lu>
 
-[![](https://github.com/ULHPC/tutorials/raw/devel/gpu/opencl/cover_slides.png)](https://github.com/ULHPC/tutorials/raw/devel/gpu/openacl/slides.pdf)
+[![](https://github.com/ULHPC/tutorials/raw/devel/gpu/opencl/cover_slides.png)](https://github.com/ULHPC/tutorials/raw/devel/gpu/opencl/slides.pdf)
 
 In the HPC school, the students had the opportunity to work with a higher-level heterogeneous programming model based on directives, called **OpenACC**. In this programming model, the parallelism is implicit, which means that the compiler is responsible for the parallelization, which might not work in all scenarios. However, OpenACC is a proprietary parallel programming model and it is supported by a limited set of devices, such as NVIDIA GPUs. 
 
