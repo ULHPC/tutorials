@@ -21,6 +21,7 @@
     background-color: #e4f0ff;
 }
 
+
 .slide-compact {
   line-height: 0.85rem;
 }
@@ -34,9 +35,9 @@
 }
 
 
-
 /* from https://stackoverflow.com/a/49018455/1395352 */
 .title-slide {
+  /*background-image: url(img/uni-logo.png); */
   background-repeat: no-repeat; /* Do not repeat the image */
   background-size: cover;
   background-color: white;
@@ -71,22 +72,8 @@
   font-size: 90%;
 }
 
-/* https://github.com/yihui/xaringan/wiki/Progressbar
-.remark-slide-number {
-  position: inherit;
-}
-.remark-slide-number .progress-bar-container {
-  position: absolute;
-  bottom: 0;
-  height: 4px;
-  display: block;
-  left: 0;
-  right: 0;
-}
-.remark-slide-number .progress-bar {
-  height: 100%;
-  background-color: blue;
-}*/
+/* Progress bar NOT IMPLEMENTED YET as we lost the numbers */
+/* https://github.com/yihui/xaringan/wiki/Progressbar */
 
 
 /* links are blue and not different from code: add underline

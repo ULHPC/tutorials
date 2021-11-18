@@ -1,10 +1,8 @@
 #! /bin/bash
-# Time-stamp: <Wed 2020-12-09 23:18 svarrette>
-#
-#        Copyright (c) 2020  S. Varrette and UL HPC Team <hpc-team@uni.lu>
-####################################################################################
-# suggest-easyconfigs - Suggest an easyconfig for a given ULHPC software set release
-####################################################################################
+# Time-stamp: <Mon 2021-09-06 09:26 svarrette>
+################################################################################
+# suggest-easyconfigs - Suggest an easyconfig for [past] software or pattern
+################################################################################
 # cosmetics
 BOLD="\033[1m"
 COLOR_RESET="\033[0m"
@@ -13,8 +11,8 @@ TOP_DIR="$(cd "$( dirname "${BASH_SOURCE[0]}" )" && git rev-parse --show-topleve
 CMD_PREFIX=
 MODE=
 SUMMARY_MODE=
-TOOLCHAIN_VERSION=2019b
-GCC_VERSION=8.3.0
+TOOLCHAIN_VERSION=${RESIF_VERSION_DEVEL:2020b}
+GCC_VERSION=9.3.0
 
 # Software lists
 MODULES_AVAILABLE=
@@ -28,32 +26,40 @@ print_error_and_exit() { error $*; exit 1; }
 usage() {
     cat <<EOF
 NAME
-  $(basename $0): Suggest easyconfig(s) for a given ULHPC software set
-  release (Default: ${TOOLCHAIN_VERSION})
+  $(basename $0): Suggest a easyconfig(s) for past software sets or pattern
+  passed as argument
 
 USAGE
-  $(basename $0) <pattern> # search for <pattern>
+  $0 [-v <version] <pattern> # search for <pattern>
 
 OPTIONS
   -n --dry-run:     Dry run mode
-  -m --module-list  List modules available
-  -s --summary      Summary mode
-  -v <VERSION>      Set version to test (Default: ${TOOLCHAIN_VERSION})
-
-EXAMPLE
-  $(basename $0)  CMake-3
-    [...]
-    Total:       68 entries
-    ... potential exact match for 2019b toolchain
-    CMake-3.15.3-GCCcore-8.3.0.eb
-    --> suggesting 'CMake-3.15.3-GCCcore-8.3.0.eb'
-
-  $(basename $0) -s ncurse zlib
-    ncurse: ncurses-6.1-GCCcore-8.3.0.eb
-    zlib: zlib-1.2.11-GCCcore-8.3.0.eb
+  -m --module-list: List modules available
+  -v VERSION:       Force search against toolchain version VERSION
 EOF
 }
 
+###
+# filter/classify list of software from those [module] available and the others
+##
+filter_software_list() {
+    [ -z "$1" ] && print_error_and_exit "[$FUNCNAME] missing software list argument"
+    local list="$*"
+    local filtered_list=""
+    # Pre-check: Lmod / Environment Module exists
+    command -v module >/dev/null || print_error_and_exit "'module' command Not Found"
+    [ -z "${MODULES_AVAILABLE}" ] && set_module_list
+    for sw in ${list}; do
+        module_present="$(echo ${MODULES_AVAILABLE} | grep ${sw})"
+        [ -n "${module_present}" ] && \
+            SW_AS_MODULE="${SW_AS_MODULE} $sw" || \
+                SW_NOT_AS_MODULE="${SW_NOT_AS_MODULE} $sw"
+    done
+    total_software=$(echo $list | wc -w)
+    avail_software=$(echo $SW_AS_MODULE | wc -w)
+    ratio=$(echo "${avail_software}*100/${total_software}" | bc -l)
+    printf "%s/%s = %.2f%% software available as modules\n" $avail_software $total_software $ratio
+}
 set_module_list() {
     MODULES_AVAILABLE=$(module  -t --redirect avail | tail -n +2 | cut -d '/' -f 2 | sort |  uniq )
 }
@@ -93,6 +99,7 @@ search_easyconfigs_for_toolchain() {
     [ -z "$1" ] && print_error_and_exit "[$FUNCNAME] missing pattern argument"
     local pattern=$1
     found=$(search_easyconfigs ${pattern} | egrep "${TOOLCHAIN_VERSION}|${GCC_VERSION}")
+    # TODO: filter also on cuda pattern for GPU search
     [ -z "${found}" ] && echo "None found" || echo $found | tr ' ' '\n'
 }
 
@@ -121,16 +128,14 @@ while [ $# -ge 1 ]; do
     shift
 done
 
-if [ -z "${PATTERN_LIST}" ]; then
-    [ -n "${SUMMARY_MODE}" ] && PATTERN_LIST=${OLD_SW_LIST} || \
-            print_error_and_exit "Empty pattern - see '$0 -h' for usage "
-fi
 command -v eb >/dev/null || print_error_and_exit "'eb' command Not Found -- source settings ?"
 
 case $TOOLCHAIN_VERSION in
     2019a) GCC_VERSION=8.2.0;;
     2019b) GCC_VERSION=8.3.0;;
     2020a) GCC_VERSION=9.3.0;;
+    2020b) GCC_VERSION=10.2.0;;
+    2021a) GCC_VERSION=10.3.0;;
     *) print_error_and_exit "Not supported toolchain version '${TOOLCHAIN_VERSION}'"
 esac
 # echo "PATTERN_LIST=${PATTERN_LIST}"
