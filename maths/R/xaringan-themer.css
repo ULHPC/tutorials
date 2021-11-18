@@ -15,7 +15,7 @@
  *    - xaringan wiki: https://github.com/yihui/xaringan/wiki
  *    - remarkjs wiki: https://github.com/gnab/remark/wiki
  *
- *  Version: 0.3.0
+ *  Version: 0.4.0
  *
  * ------------------------------------------------------- */
 @import url(https://fonts.googleapis.com/css?family=Roboto+Condensed:300,300i&display=swap);
@@ -31,15 +31,16 @@
   --text-font-base: sans-serif;
   --header-font-family: 'Roboto Condensed';
   --header-font-is-google: 1;
+  --header-font-family-fallback: Georgia, serif;
   --code-font-family: 'Fira Mono';
   --code-font-is-google: 1;
   --base-font-size: 20px;
-  --text-font-size: 0.95rem;
-  --code-font-size: 0.9rem;
+  --text-font-size: 0.9rem;
+  --code-font-size: 0.7rem;
   --code-inline-font-size: 1em;
   --header-h1-font-size: 2.1rem;
   --header-h2-font-size: 1.9rem;
-  --header-h3-font-size: 1.7rem;
+  --header-h3-font-size: 1.5rem;
 
   /* Colors */
   --text-color: #272822;
@@ -51,6 +52,7 @@
   --inverse-text-color: #FFFFFF;
   --inverse-background-color: #00A4E1;
   --inverse-header-color: #FFFFFF;
+  --inverse-link-color: #00A4E1;
   --title-slide-background-color: #00A4E1;
   --title-slide-text-color: #FFFFFF;
   --header-background-color: #00A4E1;
@@ -70,13 +72,13 @@ body {
   color: var(--text-color);
 }
 h1, h2, h3 {
-  font-family: var(--header-font-family);
+  font-family: var(--header-font-family), var(--header-font-family-fallback);
   font-weight: 600;
   color: var(--header-color);
 }
 .remark-slide-content {
   background-color: var(--background-color);
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   padding: 16px 64px 16px 64px;
   width: 100%;
   height: 100%;
@@ -103,9 +105,12 @@ h1, h2, h3 {
 .remark-slide-number {
   color: #00A4E1;
   opacity: 1;
-  font-size: 0.9em;
+  font-size: 0.9rem;
 }
-strong { color: var(--text-bold-color); }
+strong {
+  font-weight: bold;
+  color: var(--text-bold-color);
+}
 a, a > code {
   color: var(--link-color);
   text-decoration: none;
@@ -126,6 +131,9 @@ a, a > code {
 }
 .inverse h1, .inverse h2, .inverse h3 {
   color: var(--inverse-header-color);
+}
+.inverse a, .inverse a > code {
+  color: var(--inverse-link-color);
 }
 .title-slide, .title-slide h1, .title-slide h2, .title-slide h3 {
   color: var(--title-slide-text-color);
@@ -161,7 +169,7 @@ a, a > code {
   float: right;
   width: 47%;
 }
-.pull-right ~ * {
+.pull-right + * {
   clear: both;
 }
 img, video, iframe {

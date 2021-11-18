@@ -656,7 +656,7 @@ htmltools::img(src = "https://future.futureverse.org/reference/figures/logo.png"
 - Parallelization on .bold[HPC] using:
   + `tar_make_clustermq(workers = 3L)` ([`clustermq`](https://mschubert.github.io/clustermq/articles/userguide.html#configuration) by **Michael Schubert**)
   + `tar_make_future(workers = 3L)` ([`future`](https://future.futureverse.org/) by **Henrik Bengtsson**)
-
+- [.bold[Cloud]](https://books.ropensci.org/targets/cloud.html) computing in .bold[AWS] is also available
 - [.bold[Static] branching](https://books.ropensci.org/targets/static.html#when-to-use-static-branching)
 
 to get explicit branch names.
