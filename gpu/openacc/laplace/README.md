@@ -16,8 +16,7 @@
 Ensure you are able to [connect to the UL HPC cluster](https://hpc-docs.uni.lu/connect/access/).
 In particular, recall that the `module` command **is not** available on the access frontends.
 
-
-Access to ULHPC cluster  (here iris as it is the only one featuring GPU nodes):
+Access to the ULHPC [iris](https://hpc-docs.uni.lu/systems/iris/) cluster  (here it is the only one featuring GPU nodes):
 
 ```bash
 (laptop)$> ssh iris-cluster

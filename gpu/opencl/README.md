@@ -65,12 +65,13 @@ This tutorial is based on the following content from the Internet:
 
 # Connecting to a GPU-enable node on the Iris Cluster #
 
-Ensure you can [connect to the UL HPC clusters](https://hpc.uni.lu/users/docs/access.html).
+Ensure you can [connect to the UL HPC clusters](https://hpc-docs.uni.lu/connect/access/).
 In particular, recall that the `module` command **is not** available on the access frontends.
 
+Access to the ULHPC [iris](https://hpc-docs.uni.lu/systems/iris/) cluster  (here it is the only one featuring GPU nodes):
+
 ```bash
-### Access to ULHPC cluster - here iris
-(laptop)$>  ssh -p 8022 user@access-iris.uni.lu
+(laptop)$>  ssh iris-cluster 
 ```
 
 Now you'll need to pull the latest changes in your working copy of the [ULHPC/tutorials](https://github.com/ULHPC/tutorials) you should have cloned in `~/git/github.com/ULHPC/tutorials` (see ["preliminaries" tutorial](../../preliminaries/))
@@ -82,11 +83,8 @@ Now you'll need to pull the latest changes in your working copy of the [ULHPC/tu
 
 ## Accessing a GPU-equipped node of the Iris cluster
 
-To reserve a node with one GPU for interactive development, load the necessary modules, and save them for a quick restore.
-
-As usual, more information can be found in the [documentation][5].
-
-[5]: https://hpc.uni.lu/users/docs/gpu.html
+This practical session assumes that you reserve a node on `iris` with one GPU for interactive development.
+See [documentation](https://hpc-docs.uni.lu/jobs/gpu/)
 
 ```bash
 ### Have an interactive GPU job
@@ -96,8 +94,7 @@ As usual, more information can be found in the [documentation][5].
 # (access)$> si-gpu --reservation=hpcschool-gpu
 $ nvidia-smi
 ```
-
-Driver is loaded, but we still need to load the CUDA development kit.
+Driver is loaded, but we still need to load the CUDA development kit from the latest software set.
 
 ```bash
 $ resif-load-swset-devel
