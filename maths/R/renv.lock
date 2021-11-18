@@ -268,6 +268,13 @@
       "Repository": "CRAN",
       "Hash": "7bf6fbed7f00cae876901fd70c04f3a4"
     },
+    "future.callr": {
+      "Package": "future.callr",
+      "Version": "0.6.1",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "2777ddd75a7aff236990c98825144d0a"
+    },
     "gargle": {
       "Package": "gargle",
       "Version": "1.1.0",
@@ -282,26 +289,12 @@
       "Repository": "CRAN",
       "Hash": "3f6bcfb0ee5d671d9fd1893d2faa79cb"
     },
-    "gghighlight": {
-      "Package": "gghighlight",
-      "Version": "0.3.2",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Hash": "61128bb6f044710e5e0b164833e46533"
-    },
     "ggplot2": {
       "Package": "ggplot2",
       "Version": "3.3.5",
       "Source": "Repository",
       "Repository": "CRAN",
       "Hash": "d7566c471c7b17e095dd023b9ef155ad"
-    },
-    "ggrepel": {
-      "Package": "ggrepel",
-      "Version": "0.9.1",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Hash": "08ab869f37e6a7741a64ab9069bcb67d"
     },
     "globals": {
       "Package": "globals",
