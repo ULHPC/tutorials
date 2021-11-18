@@ -1,11 +1,10 @@
-[![By ULHPC](https://img.shields.io/badge/by-ULHPC-blue.svg)](https://hpc.uni.lu) [![Licence](https://img.shields.io/badge/license-GPL--3.0-blue.svg)](http://www.gnu.org/licenses/gpl-3.0.html) [![GitHub issues](https://img.shields.io/github/issues/ULHPC/tutorials.svg)](https://github.com/ULHPC/tutorials/issues/) [![](https://img.shields.io/badge/slides-PDF-red.svg)](https://github.com/ULHPC/tutorials/raw/devel/cuda/slides.pdf) [![Github](https://img.shields.io/badge/sources-github-green.svg)](https://github.com/ULHPC/tutorials/tree/devel/cuda/) [![Documentation Status](http://readthedocs.org/projects/ulhpc-tutorials/badge/?version=latest)](http://ulhpc-tutorials.readthedocs.io/en/latest/cuda/) [![GitHub forks](https://img.shields.io/github/stars/ULHPC/tutorials.svg?style=social&label=Star)](https://github.com/ULHPC/tutorials)
+[![By ULHPC](https://img.shields.io/badge/by-ULHPC-blue.svg)](https://hpc.uni.lu) [![Licence](https://img.shields.io/badge/license-GPL--3.0-blue.svg)](http://www.gnu.org/licenses/gpl-3.0.html) [![GitHub issues](https://img.shields.io/github/issues/ULHPC/tutorials.svg)](https://github.com/ULHPC/tutorials/issues/) [![](https://img.shields.io/badge/slides-PDF-red.svg)](https://github.com/ULHPC/tutorials/raw/devel/gpu/opencl/slides.pdf) [![Github](https://img.shields.io/badge/sources-github-green.svg)](https://github.com/ULHPC/tutorials/tree/devel/gpu/opencl/) [![Documentation Status](http://readthedocs.org/projects/ulhpc-tutorials/badge/?version=latest)](http://ulhpc-tutorials.readthedocs.io/en/latest/gpu/opencl/) [![GitHub forks](https://img.shields.io/github/stars/ULHPC/tutorials.svg?style=social&label=Star)](https://github.com/ULHPC/tutorials)
 
 # Introduction to OpenCL Programming (C/C++)
 
-     Copyright (c) T. Carneiro, L. Koutsantonis, 2013-2021 UL HPC Team <hpc-sysadmins@uni.lu>
+     Copyright (c) T. Carneiro, L. Koutsantonis, 2021 UL HPC Team <hpc-team@uni.lu>
 
-[![](./cover_slides.png)](./PS10b2.pdf)
-
+[![](https://github.com/ULHPC/tutorials/raw/devel/gpu/opencl/cover_slides.png)](https://github.com/ULHPC/tutorials/raw/devel/gpu/openacl/slides.pdf)
 
 In the HPC school, the students had the opportunity to work with a higher-level heterogeneous programming model based on directives, called **OpenACC**. In this programming model, the parallelism is implicit, which means that the compiler is responsible for the parallelization, which might not work in all scenarios. However, OpenACC is a proprietary parallel programming model and it is supported by a limited set of devices, such as NVIDIA GPUs. 
 
