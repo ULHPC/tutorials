@@ -23,7 +23,7 @@ forks](https://img.shields.io/github/stars/ULHPC/tutorials.svg?style=social&labe
 
 <div class="shareagain" style="min-width:300px;margin:1em auto;">
 
-<iframe src="PS11_targets.html" width="768" height="432" style="border:2px solid currentColor;" loading="lazy" allowfullscreen></iframe>
+<iframe src="PS11_targets.html" width="750" height="421" style="border:2px solid currentColor;" loading="lazy" allowfullscreen></iframe>
 <script>fitvids('.shareagain', {players: 'iframe'});</script>
 
 </div>
@@ -53,7 +53,7 @@ clusters](https://hpc-docs.uni.lu/connect/ssh/)
 
 ``` bash
 # /!\ FOR ALL YOUR COMPILING BUSINESS, ENSURE YOU WORK ON A COMPUTING NODE
-(access-iris)$> si -c 2
+(access-iris)$> si -c 2 -t 1:00:00
 ```
 
 ### Optional: On your local machine
@@ -70,12 +70,25 @@ graphical IDE.
 module load lang/R
 ```
 
+We also need `pandoc`, supplied in RStudio but not on HPC.
+
+We fetch the binary and copied in our own `~/bin` that should be
+included in your `PATH`.
+
+``` bash
+wget -qO- https://github.com/jgm/pandoc/releases/download/2.16.1/pandoc-2.16.1-linux-amd64.tar.gz | tar xfz - 
+mkdir -p ~/bin/
+cp cp pandoc-2.16.1/bin/pandoc ~/bin/
+```
+
+### Cloning
+
 1.  If you haven’t cloned the
     [`tutorials`](https://github.com/ULHPC/tutorials) repository, do it
-    with `git clone git@github.com:ULHPC/tutorials.git`
+    with `git clone https://github.com/ULHPC/tutorials.git`
 
 2.  In your cloned [`tutorials`](https://github.com/ULHPC/tutorials)
-    repository, `cd maths/R`
+    repository, `cd tutorials/maths/R`
 
 3.  Open a R session `jdoe@localhost:~$ R` or create a New Project in
     RStudio
@@ -87,11 +100,31 @@ to synchronize the practical packages with yours. Having a dedicated
 library project allows to retrieve a certain specific set without
 messing other projects
 
+Of note, the `.Rprofile` is detected when `R` is started in the
+`tutorials/maths/R` folder and should see automatic boostraping of
+`renv`:
+
+``` r
+# Bootstrapping renv 0.14.0 --------------------------------------------------
+* Downloading renv 0.14.0 ... OK (downloaded source)
+* Installing renv 0.14.0 ... Done!
+* Successfully installed and loaded renv 0.14.0.
+* Project '/mnt/lscratch/users/aginolhac/tutorials/maths/R' loaded. [renv 0.14.0]
+* The project library is out of sync with the lockfile.
+* Use `renv::restore()` to install packages recorded in the lockfile.
+Warning message:
+Project requested R version '4.1.0' but '4.0.5' is currently being used
+```
+
+Otherwise:
+
 4.  Install `renv`
 
 ``` r
 install.packages("renv")
 ```
+
+Then, restore the package list locally:
 
 5.  Restore the packages set for this practical
 
@@ -99,7 +132,31 @@ install.packages("renv")
 renv::restore()
 ```
 
-6.  Run `targets` for the **gapminder** example
+The list is prompted:
+
+``` r
+[...]
+# GitHub =============================
+- tarchetypes      [* -> ropensci/tarchetypes@main]
+- targets          [* -> ropensci/targets@main]
+
+Do you want to proceed? [y/N]: 
+```
+
+Enter `y` and wait (takes 5 to 10 minutes)
+
+The packages will be copied in a local cache, shared across projects. So
+the same package installed in another folder is only linked, saving a
+lot of time while preserving the enclosed packages environments.
+
+It takes time but who is really using R with `base` only?
+
+6.  Run `targets` for the **datasauRus** example
+
+Either knitr in RStudio the file `datasauRus.Rmd` or run
+`rmarkdown::render("datasauRus.Rmd")` in a console.
+
+7.  Run `targets` for the **gapminder** example
 
 Either knitr in RStudio the file `gapminder.Rmd` or run
 `rmarkdown::render("gapminder.Rmd")` in a console.
@@ -107,9 +164,9 @@ Either knitr in RStudio the file `gapminder.Rmd` or run
 -   `gapminder.html` document both the pipeline description and run
 -   `report_gap.html` was dynamically rendered
 
-6bis. Try to set the multi-process on using `future`
+7bis. Try to set the multi-process on using `future`
 
-Uncomment the lines
+Un-comment the lines
 
 ``` r
 library(future)

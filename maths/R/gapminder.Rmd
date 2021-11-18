@@ -22,9 +22,9 @@ options(tidyverse.quiet = TRUE)
 tar_option_set(packages = c("dplyr", "ggplot2", "readr", "tidyr", "purrr"))
 
 gap_lm <- function(.data) {
-  mutate(.data, year1950 = year - 1952) |>
-    ungroup() |>
-    nest(data = -c(country, continent)) |>
+  mutate(.data, year1950 = year - 1952) %>%
+    ungroup() %>%
+    nest(data = -c(country, continent)) %>%
     mutate(model = map(data, ~ lm(lifeExp ~ year1950, data = .x)))
 }
 
