@@ -13,6 +13,7 @@ output:
     css: ["xaringan-themer.css", "slides.css"]
     seal: false # disable title slide
     self_contained: false
+    always_allow_html: true
     nature:
       ratio: '16:9' # default 4:3
       highlightStyle: tomorrow-night-blue
@@ -20,10 +21,12 @@ output:
       countIncrementalSlides: false
       highlightLines: true
 ---
+class: title-slide
 
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(warning = FALSE, comment = '')
 library(dplyr)
+library(fontawesome)
 library(xaringan)  
 library(xaringanthemer)# gadenbuie/xaringanthemer
 library(xaringanExtra) # gadenbuie/xaringanExtra
@@ -32,15 +35,16 @@ library(ggplot2)
 # theme from Gaben Buie
 style_mono_accent(
   base_color = "#00A4E1", # LU blue flag
-  text_font_size = "0.95rem",
-  code_font_size = "0.9rem",
+  text_font_size = "0.9rem",
+  code_font_size = "0.7rem",
   header_h1_font_size = "2.1rem",
   header_h2_font_size = "1.9rem",
-  header_h3_font_size = "1.7rem",
+  header_h3_font_size = "1.5rem",
   header_font_google = google_font("Roboto Condensed"),
   text_font_google   = google_font("Roboto Condensed", "300", "300i"),
   code_font_google   = google_font("Fira Mono")
 )
+xaringanExtra::use_xaringan_extra(c("tile_view", "tachyons", "logo"))
 # bring in tachyons https://roperzh.github.io/tachyons-cheatsheet/
 xaringanExtra::use_tachyons()
 # tile view when press 't'
@@ -55,18 +59,17 @@ htmltools::tagList(
   rmarkdown::html_dependency_font_awesome()
 )
 # use webcam, on/off with 'w' and press Shift + W to move the video to the next corner.
-xaringanExtra::use_share_again()
 xaringanExtra::use_search(show_icon = FALSE)
+xaringanExtra::use_share_again()
 xaringanExtra::use_scribble()
-Sys.getenv("TAR_ASK", FALSE)
 ```
 
 ```{r, echo = FALSE}
 xaringanExtra::use_logo(
-  image_url = "img/00/logo_uni_elixir.png",
-  height = "30px",
+  image_url = "img/logo_hpc-shool2021.png",
+  height = "60px",
   position = xaringanExtra::css_position(bottom = "1em", left = "1em"),
-  link_url = "https://rworkshop.uni.lu/",
+  link_url = "https://ulhpc-tutorials.readthedocs.io/en/latest/",
   exclude_class = c("title-slide", "inverse", "hide_logo"))
 ```
 
@@ -74,59 +77,73 @@ xaringanExtra::use_logo(
 xaringanExtra::use_progress_bar(location = "top", color = "#00A4E1")
 ```
 
-class: title-slide
-
 # `r params$title`
 
 ## `r params$subtitle`
 
 .center[<img src="img/logo_targets.png" width="100px"/>]
 
-### `r params$author` | HPC School | `r params$date`
+
+## HPC SChool 2021 PS11: R session
+
+### `r params$author`
+
+### DLSM University of Luxembourg
 
 
 ```{r, echo = FALSE}
-htmltools::img(src = "img/hpc150x150.png",
-               style = "height:150px;position: absolute;bottom: 5em;right: 44%;")
+htmltools::img(src = "https://raw.githubusercontent.com/ULHPC/documents/master/roll-ups/ULHPC-RollUp.png",
+               style = "height:550px;position: absolute;bottom: 1em;left: 1em;")
 ```
 
 ```{r, echo = FALSE}
-# uni logo on all slides, position top right
-xaringanExtra::use_logo(
-  image_url = "https://github.com/ULHPC/documents/blob/master/logos/logo_hpc-shool2021.png",
-  width = "50px",
-  height = "50px",
-  position = xaringanExtra::css_position(bottom = "1em", left = "1em"),
-  link_url = "https://ulhpc-tutorials.readthedocs.io/en/latest/hpc-school/",
-  exclude_class = c("title-slide", "inverse", "hide_logo"))
+htmltools::img(src = "img/logo_hpc-shool2021.png",
+               style = "height:150px;position: absolute;bottom: 1em;right: 1em;")
 ```
 
 ---
 
 ## Introduction to R
 
-.Large[Not the scope of this session from the previous sessions]
-
---
-
-.Large[But an introduction to `targets`, a Make-like workflow manager for .bold[`R`]]
+.Large[Not the scope of this session]
 
 .pull-left[
-- Beginner user, check out [this lecture](https://rworkshop.uni.lu/lectures/lecture01_intro.html#10)
+.Large[.bold[Beginner] user, check out [this lecture](https://rworkshop.uni.lu/lectures/lecture01_intro.html#10)]
+
 ![](img/intro_p9.png)
 ]
 
 .pull-right[
-- Advanced user, interested in programming, check out [this lecture](https://rworkshop.uni.lu/lectures/lecture12_tidyeval.html)
+.Large[.bold[Advanced] user, interested in programming, check out [this lecture](https://rworkshop.uni.lu/lectures/lecture12_tidyeval.html)]
+
 ![](img/lecture_tidyeval.png)
 ]
 
----
 
-## About this lecture
+---
+class: middle, center, inverse
+
+
+# targets
+
+## a Make-like workflow manager for `r fontawesome::fa("r-project", height = "30px")`
+
 
 ```{r, echo = FALSE}
-htmltools::img(src = "img/logo_targets.png",
+htmltools::img(src = "https://docs.ropensci.org/targets/reference/figures/logo.png",
+               style = "height:150px")
+```
+```{r, echo = FALSE}
+htmltools::img(src = "https://docs.ropensci.org/tarchetypes/reference/figures/logo.png",
+               style = "height:150px")
+```
+
+---
+
+# targets and companion package tarchetypes
+
+```{r, echo = FALSE}
+htmltools::img(src = "https://docs.ropensci.org/targets/reference/figures/logo.png",
                style = "height:150px;position: absolute;top: 1em;right: 1em;")
 ```
 ```{r, echo = FALSE}
@@ -138,101 +155,46 @@ htmltools::img(src = "https://docs.ropensci.org/tarchetypes/reference/figures/lo
   .w-10[
   ]
   .w-70.bg-washed-green.b--green.ba.bw2.br3.shadow-5.ph3.mt3.mr1[
-  .large[.bbox[Learning objectives]]
+  .large[.bbox[A workflow manager for R]]
 
-.right[<img src="img/kt.png" class="float-img"/>]
 .large[
-- Why a workflow manager is saving you time and stress
+- Saving you time and stress
 - Understand how it is implemented in `targets`
-    + folder structure
-    + define your `targets`
-    + connect `targets` to create the **dependencies**
-    + check **dependencies** with `visnetwork`
-    + embrace **dynamic** branching
-    + run **only** what needs to be executed
-    + bundle **dependencies** in a Rmarkdown document with [`tar_render()`](https://wlandau.github.io/tarchetypes/reference/tar_render.html)
-    + increase reproducibility with the package manager [`renv`](https://rstudio.github.io/renv/articles/renv.html)
-- Practice on a dataset, running > 100 linear models in the [`tidyverse`](https://www.tidyverse.org/) framework
+    + Define your `targets`
+    + Connect `targets` to create the **dependencies** `r fontawesome::fa("project-diagram")`
+    + Check **dependencies** with `visnetwork`
+    + Embrace **dynamic** branching `r fontawesome::fa("code-branch")`
+    + Run **only** what needs to be executed
+    + Bundle **dependencies** in a Rmarkdown document with [`tar_render()`](https://wlandau.github.io/tarchetypes/reference/tar_render.html)
+    + Increase reproducibility with the package manager [`renv`](https://rstudio.github.io/renv/articles/renv.html)
+- Example with RNA-seq data from .bold[Wendkouni Nadège MINOUNGOU]
 ]]]
 
-
-
-
 ---
 
-## Tidyverse set of packages
-
-
-```{r, echo = FALSE}
-htmltools::img(src = "img/logo_tidyverse.png",
-               style = "height:150px;position: absolute;top: 1em;right: 1em;")
-```
-
-```{r, echo = FALSE}
-htmltools::img(src = "https://rworkshop.uni.lu/lectures/img/img/news_tidyverse_pkg_in_processes.png",
-               style = "  display:block;margin-left: auto;margin-right: auto;height:500px;")
-```
-
----
-
-# If you wonder about `drake`
-
-
-- [`drake`](https://github.com/ropensci/drake), is the most used workflow manager for .Large[`R`]. 1,300 `r fontawesome::fa("star", fill = "gold")` on Github 
-
-.flex[
-.w-55.bg-washed-blue.b--blue.ba.bw2.br3.shadow-5.ph3.mt1.mr1[
-.large[.ybox[Rationale for [rewriting from scratch](https://wlandau.github.io/targets/articles/need.html)]]
-
-- `drake` is still an excellent choice for pipeline management, but it has permanent user-side limitations.
-- `targets` was created to overcome these limitations and create a smoother user experience.
-- Stronger guardrails by design.
-- A friendlier, lighter, more transparent data management system.
-- Show which functions are up to date.
-- More flexible dynamic branching.
-- Improved parallel efficiency.
-- Designed for custom user-side metaprogramming (`tarchetypes`/`stantargets`).
-
-.footnote[Source: targets [slides](https://wlandau.github.io/nyhackr2020/#40) W. Landau. NY Meetup hackR]
-]
-
-
-```{r, eval=FALSE}
-install.packages("targets")
-```
-
-- [Debugging!](https://wlandau.github.io/targets-manual/practice.html#debugging) with [workspaces](https://wlandau.github.io/targets/reference/tar_workspace.html) (wishing this exists in `snakemake`)
-
-]]
-
----
-
-## Folder structure
+# Folder structure
 
 ```{r, echo = FALSE}
 htmltools::img(src = "https://raw.githubusercontent.com/rstudio/renv/master/man/figures/logo.svg",
-               style = "height:150px;position: absolute;top: 1em;right: 1em;")
+               style = "height:160px;position: absolute;top: 1em;right: 1em;")
 ```
 ```{r, echo = FALSE}
 htmltools::img(src = "https://camo.githubusercontent.com/f10a96951d85f43abc67d46bafd97d302deb9daf8490082fe339b9292c75072a/68747470733a2f2f626f6f6b646f776e2e6f72672f79696875692f726d61726b646f776e2f696d616765732f6865782d726d61726b646f776e2e706e67",
-               style = "height:150px;position: absolute;top: 10em;right: 1em;")
+               style = "height:150px;position: absolute;top: 10em;right: 1.6em;")
 ```
+
 ```{r, echo = FALSE}
 htmltools::img(src = "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d0/RStudio_logo_flat.svg/1200px-RStudio_logo_flat.svg.png",
-               style = "height:100px;position: absolute;top: 18em;right: 1em;")
+               style = "height:70px;position: absolute;top: 18em;right: 1em;")
 ```
 ```{r, echo = FALSE}
 htmltools::img(src = "https://git-scm.com/images/logos/logomark-black@2x.png",
-               style = "height:150px;position: absolute;top: 23em;right: 1em;")
+               style = "height:120px;position: absolute;top: 22em;right: 2em;")
 ```
 
-
-
-.large[
 .left-column[
 ```{r, eval = FALSE}
 ├── .git/
-├── run.R
 ├── _targets.R #<<
 ├── _targets/
 ├── Repro.Rproj
@@ -248,606 +210,523 @@ htmltools::img(src = "https://git-scm.com/images/logos/logomark-black@2x.png",
 ]
 
 .right-column[
-- with [`renv`](https://rstudio.github.io/renv/)
-- `_targets.R` is the only mandatory file
-- use a `R` sub-folder for functions, gets closer to a `R` package
-- a `run.R` file for [custom building](#custom_build) in RStudio
-- `chmod +x run.R` in the **Terminal** for execution rights
-- `Rmd` file allows to gather results in a report
-- in a RStudio project
-- version tracked with `git`
-]
-]
 
----
-
-## Main file `_targets.R`
-
-
-.pull-left[
-```{r, eval = FALSE}
-# Beginning of _targets.R
-library(targets)
-source("R/functions.R")
-options(tidyverse.quiet = TRUE)
-tar_option_set(
-  packages = c("dplyr")
-)
-# Pipeline description
-tar_pipeline(
-  tar_target(a, 1:3),
-  tar_target(b, a + 1,
-             pattern = map(a))
-)
-```
-
-]
-
-.pull-right[
 .large[
-- add `library(tarchetypes)` for extra-utilities
-- optional helpers like silencing `tidyverse` loading
-- declare packages that will be loaded by default
-- each `target` can have their own additional lib calls (avoid loading for nothing)
-- using bar names of targets, create the dependencies
-- `pattern = map()` creates dynamic branching
+- With [`renv`](https://rstudio.github.io/renv/). Snapshot your package environment (and restore! 😌)
+- `_targets.R` is the only mandatory file
+- Use a `R` sub-folder for functions, gets closer to a `r fontawesome::fa("r-project")` package
+- In a RStudio project
+- Version tracked with `r fontawesome::fa("git-square")`
+- `Rmarkdown` file allows to gather results in a report
+- Optional: an executable `run.sh` allows to use Build Tools in RStudio
 
-#### Guardrails
 
-- all targets are fresh R processes
-- `_targets.R` must be at the project root
+.Large[Targets Markdown]
+.large[
+Bundle `globals` and `pipeline` inside a **Rmarkdown** document.
+
+- Makes development easier
+- Documentation can be embedded
+- `targets` engine recognizes by `knitr` and takes care of writing all `r fontawesome::fa("r-project")` scripts
 ]
 ]
-
----
-
-## Formats, Patterns, Iterations
-
-
-.pull-left[
-#### Formats
-
-- `"rds"`: default
-- `"qs"`: faster binary objects (see [`qs::qsave()`](https://rdrr.io/pkg/qs/man/qsave.html))
-- `"fst"`: amazing speed for `data.frame`, (see [`fst::write_fst()`](http://www.fstpackage.org/reference/write_fst.html))
-- `"fst_dt"`: same for `data.table` objects
-- `"fst_tbl"`: same for `tibbles` objects
-- `"keras"`
-- `"torch"`
-- `"url"`: automatic Last-Modified time stamp check
-- `"file"`: automatic hashing check
-- `"aws_rds/aws_file"`: for AWS S3 cloud
-]
-
-.pull-right[
-#### Patterns
-
-- `map()`: iterate over one or more targets in sequence.
-- `cross()`: iterate over combinations of slices of targets.
-- `head()`: restrict branching to the first few elements.
-- `tail()`: restrict branching to the last few elements.
-- `sample()`: restrict branching to a random subset of elements.
-
-#### Iterations
-
-- `"vector"`: using [`vctrs`](https://vctrs.r-lib.org/)
-- `"list"`: less strict than `vctrs::vec_c()`
-- `"group"`:handy for `dplyr::group_by()` tibble
-
-.footnote[Source: [W. Landau, NYhackr](https://wlandau.github.io/nyhackr2020/#52)] and `tar_target` [reference page](https://wlandau.github.io/targets/reference/tar_target.html)
 ]
 
 ---
 
-# Toy example
-
-.pull-left[
-
-```{r toy, eval=FALSE}
-library(targets)
-tar_pipeline(
-  tar_target(a, 1:3),
-  tar_target(b, a + 1,
-             pattern = map(a))
-)
-# graph dependency BEFORE tar_make()
-tar_visnetwork()
-# run the pipeline
-tar_make()
-#> ● run target a
-#> ● run branch b_0a91b2ed
-#> ● run branch b_847c5ae2
-#> ● run branch b_1619f1a0
-
-# read a target content
-tar_read(b_0a91b2ed)
-#> [1] 2
-```
-.center[![](img/graph1.png)]
-]
-
---
-
-.pull-right[
-#### re-run with `tar_make()`: all skipped
-```{r, eval=FALSE}
-tar_make()
-#> ✓ skip target a
-#> ✓ skip branch b_0a91b2ed
-#> ✓ skip branch b_847c5ae2
-#> ✓ skip branch b_1619f1a0
-#> ✓ Already up to date.
-tar_read(b_0a91b2ed)
-#> [1] 2
-# graph dependency AFTER tar_make()
-tar_visnetwork()
-```
-
-.center[![](img/graph2.png)]
-]
-
-
----
-
-# Toy example
-
-.pull-left[
-#### Add one element to `a`, `r icon::fa("arrow-circle-right")` one more `b` branch
-```{r, eval=FALSE}
-tar_pipeline(
-  tar_target(a, 1:4), #<<
-  tar_target(b, a + 1,
-             pattern = map(a))
-)
-tar_make()
-#> ● run target a
-#> ✓ skip branch b_0a91b2ed
-#> ✓ skip branch b_847c5ae2
-#> ✓ skip branch b_1619f1a0
-#> ● run branch b_9401bbb6
-```
-]
-
---
-
-.pull-right[
-#### change `b` `r icon::fa("arrow-circle-right")` all branches re-run
-```{r, eval=FALSE}
-tar_pipeline(
-  tar_target(a, 1:4),
-  tar_target(b, a + 2, #<<
-             pattern = map(a))
-)
-tar_make()
-#> ✓ skip target a
-#> ● run branch b_0a91b2ed
-#> ● run branch b_847c5ae2
-#> ● run branch b_1619f1a0
-#> ● run branch b_9401bbb6
-tar_read(b_0a91b2ed)
-#> [1] 3
-```
-]
-
----
-
-# Toy parallelism, using `future`
+# `renv` features
 
 ```{r, echo = FALSE}
-htmltools::img(src = "https://raw.githubusercontent.com/HenrikBengtsson/future/develop/man/figures/logo.png",
+htmltools::img(src = "https://raw.githubusercontent.com/rstudio/renv/master/man/figures/logo.svg",
+               style = "height:140px;position: absolute;top: 1em;right: 1em;")
+```
+
+.pull-left[
+- `hydrate()` parses your code and finds library calls
+- `install()` from .bold[CRAN] with dependencies (also from `r fontawesome::fa(name = "github", fill = "orange")`)
+- `snapshot()` registers changes, hashes and origin
+- `restore()` to a certain point in time
+
+```r
+> renv::snapshot()
+The following package(s) will be updated in the lockfile:
+
+# CRAN ===============================
+- RcppParallel   [5.0.2 -> 5.0.3]
+- cli            [2.3.0 -> 2.3.1]
+- pkgload        [1.1.0 -> 1.2.0]
+- tint           [0.1.3 -> *]
+
+# GitHub =============================
+- targets        [ropensci/targets@main: 598d7a23 -> bdc1b29c]
+
+Do you want to proceed? [y/N]: 
+```
+
+
+]
+
+--
+
+.pull-right[
+`renv.lock` file after a `snapshot`
+
+```
+  "R": {
+    "Version": "4.0.3",
+    "Repositories": [
+      {
+        "Name": "CRAN",
+        "URL": "https://cloud.r-project.org"
+      }
+    ]
+  },
+  "Bioconductor": {
+    "Version": "3.12"
+  },
+  "Packages": {
+    "AnnotationDbi": {
+      "Package": "AnnotationDbi",
+      "Version": "1.52.0",
+      "Source": "Bioconductor",
+      "Hash": "ca5106b296b3aa6af713ce197be547c1"
+    },
+    "BH": {
+      "Package": "BH",
+      "Version": "1.75.0-0",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "e4c04affc2cac20c8fec18385cd14691"
+    },
+    "targets": {
+      "Package": "targets",
+      "Version": "0.1.0.9000",
+      "Source": "GitHub",
+      "RemoteType": "github",
+      "RemoteUsername": "ropensci",
+      "RemoteRepo": "targets",
+      "RemoteRef": "main",
+      "RemoteSha": "598d7a23661d4c760209c7991bf10584eadcf7c8",
+      "RemoteHost": "api.github.com",
+      "Hash": "ee66061fd5c757ec600071965d457818"
+    },
+    [...]
+```
+
+]
+
+
+
+---
+
+#Example with RNA-seq data across 3 cell lines
+
+### PCA shows that differences between cells .bold.red[`>>`] biological effect (roman numbers)
+
+```{r, echo = FALSE}
+htmltools::img(src = "img/targets_pca.png",
+               style = "float:right;height:400px;")
+```
+
+--
+
+### Solution: Split counts and metadata for each cell
+
+.Large[Do we copy code 3 times?]
+
+---
+
+# Define targets = explicit dependencies
+
+```{r, echo = FALSE}
+htmltools::img(src = "https://docs.ropensci.org/targets/reference/figures/logo.png",
+               style = "height:120px;position: absolute;top: 1em;right: 1em;")
+```
+
+.pull-left[
+### `_targets.R`, define 4 targets
+
+Last `target` depends on the **3** upstreams
+
+```{r, eval=FALSE}
+library(targets)
+source("R/functions.R")
+source("R/plotting.R")
+
+list(
+  tar_target(cells, c("HepG2", "HuH7", "Hep3B")),#<<
+  tar_qs(dds, read_rds(here::here("data", "all.rds")),#<<
+         packages = "DESeq2"),
+  tar_fst_tbl(annotation, gtf_to_tbl(here::here("data", #<<
+                                                "gencode.v36.annotation.gtf")),
+              packages = c("tibble", "rtracklayer")),
+  tar_qs(sub_dds, subset_dds(dds, #<<
+                             filter(annotation, type == "gene"),
+                             .cell = cells),
+         pattern = map(cells), # dynamic branching
+         packages = c("DESeq2", "tidyverse"))
+[...]
+)
+```
+
+]
+
+--
+
+.pull-right[
+.bold[Dynamic branching] makes dependencies easier to read.
+
+.large[
+> .orange.bold[Of course, someone has to write for loops, it doesn't have to be you]
+
+.tr[
+— _.bold[Jenny Bryan]_]]
+
+![](img/targets_outdated.png)
+
+
+]
+
+.footnote[Figure from `tar_visnetwork()`]
+
+---
+class: hide_logo
+
+# Running targets
+
+```{r, echo = FALSE}
+htmltools::img(src = "https://docs.ropensci.org/targets/reference/figures/logo.png",
+               style = "height:120px;position: absolute;top: 1em;right: 1em;")
+```
+
+.pull-left[
+```
+● run target annotation
+● run target cells
+● run target dds
+● run branch sub_dds_3078b1e0
+         condition time_h
+HepG2_I1   control      0
+HepG2_I2      HIL6      2
+using pre-existing size factors
+estimating dispersions
+gene-wise dispersion estimates: 2 workers
+mean-dispersion relationship
+final dispersion estimates, fitting model and testing: 2 workers
+● run branch sub_dds_d05c5da7
+        condition time_h
+HuH7_I1   control      0
+HuH7_I2      HIL6      2
+using pre-existing size factors
+estimating dispersions
+gene-wise dispersion estimates: 2 workers
+mean-dispersion relationship
+final dispersion estimates, fitting model and testing: 2 workers
+● run branch sub_dds_c60d7096
+         condition time_h
+Hep3B_I1   control      0
+Hep3B_I2      HIL6      2
+using pre-existing size factors
+estimating dispersions
+gene-wise dispersion estimates: 2 workers
+mean-dispersion relationship
+final dispersion estimates, fitting model and testing: 2 workers
+● end pipeline
+```
+]
+
+--
+
+.pull-right[
+.Large[Options to display time and object sizes]
+![](img/targets_dag_done.png)
+]
+
+---
+
+# Re-running
+
+```{r, echo = FALSE}
+htmltools::img(src = "https://docs.ropensci.org/targets/reference/figures/logo.png",
+               style = "height:120px;position: absolute;top: 1em;right: 1em;")
+```
+
+
+.pull-left[
+```
+✓ skip target annotation
+✓ skip target cells
+✓ skip target dds
+✓ skip branch sub_dds_3078b1e0
+✓ skip branch sub_dds_d05c5da7
+✓ skip branch sub_dds_c60d7096
+✓ skip pipeline
+```
+
+.Large[All good, nothing to be done ✔️.
+
+Actually `targets` tracks all objects and so functions
+
+A more complete dependency graph shows .bold[functions]
+]
+]
+
+--
+
+.pull-right[
+
+![](img/targets_dag.png)
+
+.Large[Let's add the PCA per cell type now]
+]
+
+
+---
+class: hide_logo
+
+# PCA, add 4 targets
+
+```{r, echo = FALSE}
+htmltools::img(src = "https://docs.ropensci.org/targets/reference/figures/logo.png",
+               style = "height:120px;position: absolute;top: 1em;right: 1em;")
+```
+
+.pull-left[
+### Smaller targets avoid unnecessary re-running steps
+```{r, eval = FALSE}
+[...]
+tar_target(rcounts, vst(sub_dds, blind = TRUE),
+           pattern = map(sub_dds),
+           packages = c("DESeq2")),
+tar_target(pca_df, pca_meta(rcounts),
+           pattern = map(rcounts),
+           packages = c("DESeq2", "tidyr", "dplyr")),
+tar_target(pca_cell, tibble(cell = cells,
+                            pca = list(plot_pca_meta(pca_df))),
+           pattern = map(cells, pca_df),
+           packages = c("ggplot2", "tibble"))
+[...]
+```
+
+.large[
+.bold[Translate into]:
+
+- For every cell data, compute regularized counts (`vst`: variance stabilization)
+- For every regularized counts, compute PCA (`df`: data.frame, _i. e_ a table)
+- For every cell names / PCA tables, plot PCA in a table for easier labeling
+
+]
+
+]
+
+--
+
+.pull-right[
+
+![](img/targets_dag_undone.png)
+
+]
+
+---
+
+# PCA results
+
+
+.flex[
+.w-33.b--green.ba.bw2.br3.shadow-5.ph4.mt2.mr2[
+### Running
+
+<video width="310" height="340">
+<source src="https://biostat2.uni.lu/practicals/data/targets_pca.mp4" type="video/mp4">
+</video>
+
+]
+.w-33.b--green.ba.bw2.br3.shadow-5.ph4.mt2.mr2[
+### Awesome feature: load results IN a Rmarkdown document
+
+.green.bold[Separate] `code` from content
+
+![](img/targets_tar_read.png)
+
+]
+.w-33.b--green.ba.bw2.br3.shadow-5.ph4.mt2[
+### How to display a plot
+![](img/targets_pca_hep3b.png)
+]]
+
+
+---
+
+# The full picture
+
+### Adding step by step 
+
+### desired analyses
+
+#### Whole analysis takes 24 minutes and 4.54 seconds
+
+.large[
+> .orange.bold[Of course, someone has to</br>remember the dependencies, </br>it doesn't have to be you]
+
+.tl[
+— _could be William Landau via .bold[Jenny Bryan]_]]
+
+
+```{r, echo = FALSE}
+htmltools::img(src = "https://docs.ropensci.org/targets/reference/figures/logo.png",
+               style = "height:120px;position: absolute;top: 1em;right: 1em;")
+```
+
+```{r, echo = FALSE}
+htmltools::img(src = "img/targets_dag_full.png",
+               style = "position: absolute;top: 4em;right: 10em;height:600px")
+```
+
+
+---
+
+# Is it worth the effort?
+
+--
+
+.left-column[
+
+.huge.bold.green[Yes]
+
+.Large[
+#### For you
+
+- Autonomy
+- Skills
+- _Free_ time
+- Confidence over results
+- Reproducibility
+- Fun 🥳
+]
+]
+
+--
+
+.right-column[
+### Better project design
+
+.Large[Thinking at what is a [good `targets`](https://books.ropensci.org/targets/targets.html#what-a-target-should-do) helps tremendously the coding]
+
+>1. Are large enough to subtract a decent amount of runtime when skipped.
+2. Are small enough that some targets can be skipped even if others need to run.
+3. Invoke no side effects (tar_target(format = "file") can save files.)
+4.Return a single value that is
+    + Easy to understand and introspect.
+    + Meaningful to the project [...]
+
+.tr[.bold[William Landau]]
+
+### Reproducibility
+
+.bold[Both] thanks to .bold[`targets`] and `renv` via `git`
+```r
+> renv::history()
+   commit         author_date      committer_date                                    subject
+1e8dd2278 2021-02-23 15:29:57 2021-02-23 15:29:57             reformat creating config files
+24c1222db 2021-02-15 17:07:01 2021-02-15 17:07:01    highlight gene type in the DEG patterns
+326c8a726 2021-02-04 16:16:38 2021-02-04 16:16:38 cluster LRT genes by they dynamic patterns
+4c6791796 2021-01-26 13:08:15 2021-01-26 13:08:15      gene types in upset plots for lengths
+5865ee70b 2021-01-21 16:36:48 2021-01-21 16:37:08                            add upset plots
+[...]
+```
+
+
+
+]
+
+
+---
+
+# Scalability and parallelization
+
+```{r, echo = FALSE}
+htmltools::img(src = "https://future.futureverse.org/reference/figures/logo.png",
+               style = "height:120px;position: absolute;top: 1em;right: 1em;")
+```
+
+.pull-left[
+
+.large[
+- Scale-up with .bold[dynamic] branching
+- Parallelization on .bold[HPC] using:
+  + `tar_make_clustermq(workers = 3L)` ([`clustermq`](https://mschubert.github.io/clustermq/articles/userguide.html#configuration) by **Michael Schubert**)
+  + `tar_make_future(workers = 3L)` ([`future`](https://future.futureverse.org/) by **Henrik Bengtsson**)
+
+- [.bold[Static] branching](https://books.ropensci.org/targets/static.html#when-to-use-static-branching)
+
+to get explicit branch names.
+]
+]
+
+.pull-right[
+</br></br>
+![](https://wlandau.github.io/bayes-lund-2021/images/pipeline_graph.png)
+
+.footnote[Source: .bold[William Landau]: talk at [Bayes Lund](https://wlandau.github.io/bayes-lund-2021/#8)]
+]
+
+---
+
+# Reports as Rmarkdown documents
+
+```{r, echo = FALSE}
+htmltools::img(src = "https://github.com/wlandau.png",
                style = "height:150px;position: absolute;top: 1em;right: 1em;")
 ```
 
-.pull-left[
-#### [`future`](https://github.com/HenrikBengtsson/future) by [Henrik Bengtsson](https://github.com/HenrikBengtsson/) is available. Only one worker
-```{r toy_parallel, eval=FALSE}
-library(future) #<<
-plan(multisession) #<<
-tar_pipeline(
-  tar_target(a, 1:3),
-  tar_target(b, {
-    # fake a long process
-    Sys.sleep(5)
-    a + 1
-  },
-  pattern = map(a))
-)
-system.time(tar_make_future(workers = 1L))
-#> ● run target a
-#> ● run branch b_0a91b2ed
-#> ● run branch b_847c5ae2
-#> ● run branch b_1619f1a0
-#>   user  system elapsed 
-#>  2.156   0.284  20.807
-```
-]
+.left-column[
 
---
+`targets`, written by [William Landau](https://wlandau.github.io/) (pictured), is flexible, robust and still allows for a customized report.
 
-.pull-right[
-#### with 3 workers
-```{r, eval = FALSE}
-library(future)
-plan(multisession)
-tar_pipeline(
-  tar_target(a, 1:3),
-  tar_target(b, {
-    # fake a long process
-    Sys.sleep(5)
-    a + 1
-  },
-  pattern = map(a))
-)
-system.time(tar_make_future(workers = 3L)) #<<
-#> ● run target a
-#> ● run branch b_0a91b2ed
-#> ● run branch b_847c5ae2
-#> ● run branch b_1619f1a0
-#>    user  system elapsed 
-#>   2.126   0.164  12.920 
-```
-]
+All computing is done only when needed, and code is away from writing content.
 
-.Large.center[Still overhead, but individual target can be parallelised (`deployment` / `resources` args)]
+Pipelines can now also be a **Rmd**!
 
---
-
-.Large.center.red[Deploy only heavy computation .bold[remotely] possible with [`clustermq`](https://wlandau.github.io/targets-manual/hpc.html#clustermq). TBD]
-
----
-name: custom_build
-
-# Custom Build in RStudio
-
-.pull-left[
-`run.R` is essentially a call to `tar_make()` as seen below:
-
-```{r, eval=FALSE}
-#!/usr/bin/env Rscript
-
-targets::tar_make()
-```
-
-- `chmod +x run.R` in the **Terminal** for execution rights
-
-#### Then specified in RStudio project building option:
-![](img/custom_make.png)
-]
-
---
-
-.pull-right[
-#### Example (also nice to use the keyboard shortcut)
-![](img/custom_build.png)
+Once `knitted` the report can be sent to the inquirer.
 
 ]
 
 
----
-class: inverse, middle, center
+### Targets Markdown
 
-# A more realistic example
+New in `targets` > **0.6**. Instructions at [William bookdown](https://books.ropensci.org/targets/markdown.html)
+
+Test it as the Rmd template (and excellent [video](https://www.youtube.com/watch?v=FODSavXGjYg) from R Lille meetup by **Landau**):
+
+.center[![](https://books.ropensci.org/targets/man/figures/target_markdown.png)]
 
 ---
 
-# Linear modelling on the [`gapminder`](https://cran.r-project.org/web/packages/gapminder/index.html) dataset
+# Bonus: watch the pipeline running live 🍿
 
-
-.pull-left[
-#### 142 countries, 12 yearly observations of 3 parameters
 ```{r, echo = FALSE}
-library(gapminder)
-gapminder %>%
-  slice_head(n = 3) %>%
-  huxtable::as_hux() %>% 
-  huxtable::theme_striped()
+htmltools::img(src = "https://docs.ropensci.org/targets/reference/figures/logo.png",
+               style = "height:120px;position: absolute;top: 1em;right: 1em;")
 ```
-.center.huge[...]
+
 ```{r, echo = FALSE}
-library(gapminder)
-gapminder %>%
-  slice_tail(n = 3) %>%
-  huxtable::as_hux() %>% 
-  huxtable::theme_striped(header_cols = FALSE)
+htmltools::img(src = "https://raw.githubusercontent.com/rstudio/shiny/master/man/figures/logo.png",
+               style = "height:120px;position: absolute;top: 1em;right: 7em;")
 ```
-]
-
---
-
-.pull-right[
-```{r, echo = FALSE}
-gapminder %>% 
-  ggplot(aes(x = year, y = lifeExp, group = country)) +
-  geom_line(alpha = .3) +
-  theme_xaringan()
-```
-
-]
-
-
----
-class: center, middle
-name: practical
-
-.flex[
-.w-50.pv2.ph3.mt2.ml7[
- .huge[.bbox[`r icon::fa("flask", size = 3)` Now practical session `r icon::fa("keyboard", size = 4)`]]] 
-]
-
----
-
-## Aim: life expectancy explained by time for each country
 
 .left-column[
-- `gapminder` as `tsv` URL (Jenny Bryan)
-- download the file
-- read `tsv` as `tibble`
-- group by `country`
-- run 142 linear models
-- extract 142 $r^2$
-- bundle results in a `Rmarkdown`
-- snake plots the $r^2$
-
-.footnote[dependency graph from `tar_glimpse()`]
-
+- `targets` events watched live 🎞
+- Here, after changing a threshold in the LRT step
+- `branches` can be monitored too
+- 2 videos joined as I fixed an .red.bold[error] at 1'42"
+- Option to display functions (unset here)
 ]
-
 .right-column[
+### `tar_watch()` shiny app from `targets`
 
-![](img/gp_glimpse.png)
-.center[![](img/gp_snake.png)]
-]
-
-
-
----
-
-## Step1: set-up and data URL 
-
-.pull-left[
-#### Set-up
-
-- Create an RStudio project
-- install `tidyverse`, `fst`, `rmarkdown`, `visNetwork`
-- install `targets`, `tarchetypes` (slide 6)
-- `run.R` and custom build (slide 13)
-- Create an empty file `R/functions.R`
-- Create a `_targets.R` file with (copy icon on top right corner) `r icon::fa("arrow-circle-right", size = 2)`
-]
-
-.pull-right[
-```{r, eval = FALSE}
-library(targets)
-library(tarchetypes)
-source("R/functions.R")
-options(tidyverse.quiet = TRUE)
-# necessary packages to load in isolated R sessions
-tar_option_set(packages = c("tidyverse", "fst"))
-# Define the pipeline
-tar_pipeline(
-  tar_url(gp_url, "https://raw.githubusercontent.com/jennybc/gapminder/master/inst/extdata/gapminder.tsv")
-)
-```
-
-- Build
-- check that the target is correct:
-```{r, eval=FALSE}
-tar_read(gp_url)
-#> [1] "https://raw.githubusercontent.com/jennybc/gapminder/master/inst/extdata/gapminder.tsv"
-```
-
-
-]
-
----
-
-## Step 2: download and load the file
-
-.pull-left[
-- `download.file()` does not return anything.
-- we need a filename, so create a wrapper `download_file()`
-    + format is `file`, tsv will be tracked
-- load the file with `readr::read_tsv()`
-    + format is `tibble` via `fst` super fast
-- run the pipeline
-    + `gp_url` should be skipped
-    + `tar_read(gp)` should return a `tibble`
-]
-
---
-
-.pull-right[
-#### lines for `R/functions.R`
-```{r, eval=FALSE}
-#' wrap download.file to return the filename
-download_file <- function(url, out) {
-  download.file(url, out, quiet = TRUE)
-  out
-}
-```
-
-#### lines for `_targets.R`
-```{r, eval=FALSE}
-tar_file(gp_file, download_file(gp_url, "gapminder.tsv")),
-tar_fst_tbl(gp, read_tsv(gp_file, col_types = cols())),
-```
-
-]
-
----
-
-## Step 3: Group by country
-
-.pull-left[
-- `dplyr::group_by()` by continent and country
-    + pipe to `tar_group()` which create extra column
-    + specify `iteration = "group"`
-]
-
---
-
-.pull-right[
-```{r, eval=FALSE}
-tar_fst_tbl(gp_grp,
-            group_by(gp, continent, country) %>%
-              tar_group(),
-            # tell downstream targets about the grouping
-            iteration = "group")
-```
-
-- don't forget the .bold[comma] between targets. 
-- run the Build
-]
-
----
-
-## Step 4: run the models
-
-.pull-left[
-- add a function to wrap `lm`
-- add the target `models`
-    + pattern is map over the countries
-    + specify `iteration = "list"`
-]
-
---
-
-.pull-right[
-#### lines for `R/functions.R`
-```{r, eval=FALSE}
-#' linear model on country, lifeExp explained by year1950
-#' so we get meaningful intercept
-ml_lifeExp <- function(.data) {
-  gp <- mutate(.data, year1950 = year - 1950)
-  lm(lifeExp ~ year1950, data = gp)
-}
-```
-#### lines for `_targets.R`
-```{r, eval=FALSE}
-tar_target(models,
-           ml_lifeExp(gp_grp),
-           pattern = map(gp_grp),
-           # lm is complex, combine in a list
-           iteration = "list")
-```
-
-- run `tar_visnetwork(labels = "branches")`, 142 expected
-- run the Build, should see 142 branches 
-]
-
----
-
-## Step 5: extract $r^2$ from models
-
-.pull-left[
-- add a function to extract  $r^2$
-- add the target `r2`
-    + pattern is map over the models
-    + specify `iteration = "vector"`
-]
-
---
-
-.pull-right[
-#### lines for `R/functions.R`
-```{r, eval=FALSE}
-#' extract r.square from lm object
-extract_r2 <- function(model) {
-  summary(model)$r.squared
-}
-```
-#### lines for `_targets.R`
-```{r, eval=FALSE}
-  tar_target(r2,
-             extract_r2(models),
-             pattern = map(models),
-             # now vector is enough
-             iteration = "vector")
-```
-
-- run `tar_visnetwork(labels = "branches")`, 142 expected
-- run the Build, should see 142 branches for r2
-]
-
----
-
-## Step 6: add the report
-
-.pull-left[
-- edit the `report.Rmd`
-- add the special target `tar_render()`
-]
-
---
-
-.pull-right[
-#### lines for `report.Rmd`
-```
----
-title: "gapminder report"
-author: "your name"
-date: "2020-12-16"
-output: html_document
----
-
-## Gapminder Data
-
-we used the URL `r knitr::inline_expr('targets::tar_read(gp_url)')`
-```
-
-#### lines for `_targets.R`
-
-```{r, eval=FALSE}
-tar_render(report, "report.Rmd")
-```
-
-- run `tar_visnetwork(labels = "branches")`
-- run the Build
-]
-
----
-
-# Step 7: more code to the report
-
-.pull-left[
-#### Combine gapminder and $r^2$ by `tar_group`
-```{r, eval = FALSE}
-tar_read(gp_grp) %>% 
-  group_by(continent, country, tar_group) %>% 
-  tidyr::nest() %>% 
-  ungroup() %>%
-  inner_join(tibble(rsq = tar_read(r2),
-                    tar_group = seq_len(length(tar_read(r2))))) -> gp_r2
-gp_r2
-#> Joining, by = "tar_group"
-#> # A tibble: 142 x 5
-#>    country     continent tar_group data                rsq
-#>    <chr>       <chr>         <int> <list>            <dbl>
-#>  1 Afghanistan Asia             78 <tibble [12 × 4]> 0.948
-#>  2 Albania     Europe          111 <tibble [12 × 4]> 0.911
-#>  3 Algeria     Africa            1 <tibble [12 × 4]> 0.985
-#>  4 Angola      Africa            2 <tibble [12 × 4]> 0.888
-#>  5 Argentina   Americas         53 <tibble [12 × 4]> 0.996
-```
-]
-
---
-
-.pull-right[
-#### Snake plot
-```{r, eval = FALSE}
-gp_r2 %>% 
-  ggplot(aes(x = rsq, y = forcats::fct_reorder(country, rsq))) +
-  geom_point(aes(colour = continent)) +
-  labs(y = NULL,
-       x = "r squared") +
-  theme_classic(18) +
-  theme(legend.position = c(0.2, 0.7),
-        axis.text.y = element_blank(),
-        axis.ticks.y = element_blank())
-```
-
-.center[![](img/gp_snake.png)]
+<video>
+<source src="https://biostat2.uni.lu/practicals/data/tar_watch.mp4" type="video/mp4">
+</video>
 
 ]
 
@@ -856,49 +735,56 @@ gp_r2 %>%
 # Before we stop
 
 .flex[
-.w-50.bg-washed-green.b--green.ba.bw2.br3.shadow-5.ph3.mt2.ml1[
-.large[.gbox[You learned to:]
+.w-50.bg-washed-green.b--green.ba.bw2.br3.shadow-5.ph3.mt1.mr1[
+.large[.gbox[Highlights]
 
-- apprehend `targets`
-- discover the advantages of workflow managers
-- Makefile-like approach and project design
+ * `targets`: a Makefile-like approach for project design
+     + dependencies manager
+     + re-run only what's needed
 ]]
-.w-50.bg-washed-blue.b--blue.ba.bw2.br3.shadow-5.ph3.mt2.ml2[
-.large[.bbox[Acknowledgments  🙏 👏]]
-
-* [William Landau](https://github.com/wlandau) obviously
-* [Eric Koncina](https://github.com/koncina) early adopter of `targets`
-* [Hadley Wickham](https://github.com/hadley)
-* [Henrik Bengtsson](https://github.com/HenrikBengtsson/)
+.w-50.bg-washed-green.b--green.ba.bw2.br3.shadow-5.ph3.mt1.ml1[
+.large[.bbox[Acknowledgments  🙏 👏]
+* **Eric Koncina** early adopter of `targets`
+* **Wendkouni N. Minoungou** for the RNA-seq data
+* [**William Landau**](https://github.com/wlandau) main developer of `targets`
 * [Xie Yihui](https://github.com/yihui) and [Garrick Aden-Buie](https://github.com/gadenbuie) for [`xarigan`](https://github.com/yihui/xaringan)/[`xaringanExtra`](https://github.com/gadenbuie/xaringanExtra)
 * [Jennifer Bryan](https://github.com/jennybc)
+]
 ]]
 .flex[
-.w-50.bg-washed-green.b--green.ba.bw2.br3.shadow-5.ph3.mt2.ml1[
-.large[.ybox[Further reading `r icon::fa("book")`]]
-
-- [`targets` manual](https://wlandau.github.io/targets-manual) by William Landau
-- [`targets` reference](https://wlandau.github.io/targets/) by William Landau
-- [`tarchetypes` reference](https://wlandau.github.io/tarchetypes/) by William Landau
-- [NY Open Statistical Meeup, Dec 2020, targets presentation](https://youtu.be/Gqn7Xn4d5NI) by William Landau
+.w-50.bg-washed-green.b--green.ba.bw2.br3.shadow-5.ph3.mt1.mr1[
+.large[.ybox[Further reading `r fontawesome::fa("book")`]]
+- [Main website](https://docs.ropensci.org/targets/)
+- [Targetopia](https://wlandau.github.io/targetopia/) **Landau** universe of targets-derived
+- [Video](https://www.youtube.com/watch?v=FODSavXGjYg) from R Lille meetup by **William Landau**. June 2021 45''
+- [Video](https://www.youtube.com/watch?v=odcBA4ETLn8) from Bayes Lund by **William Landau**. October 2021
+- [Documentation](https://books.ropensci.org/targets/) as bookdown by **Landau**
 ]
 .w-50.pv2.ph3.mt2.ml1[
-.Large[.bbox[Thank you for your attention!]]
+.huge[.bbox[Thank you for your attention!]]
 
-.Large[.gbox[4-days Rworkshop in May 2021]]
-```{r, echo = FALSE}
-htmltools::img(src = "https://rworkshop.uni.lu/img/logo-rworkshop.png",
-               style = "float:right;height:80px;")
-```
-- [Elixir-LU event](https://elixir-luxembourg.org/events/2021_05_06_rtidyverse)
-- 6th - 11th May
 ]]
-
-
 
 ```{r, echo = FALSE}
 knitr::knit_exit()
 ```
+
+
+```{r, eval = FALSE}
+tar_reprex(
+  pipeline = {
+    list(
+      tar_target(data, data.frame(x = sample.int(1e3))),
+      tar_target(summary, mean(data$x, na.rm = TRUE))
+    )
+  },
+  run = {
+    tar_visnetwork()
+    tar_make()
+  }
+)
+```
+
 
 
 ```{r, eval=FALSE}
@@ -913,7 +799,7 @@ tar_dir({
     #clustermq.template = "slurm.tmpl" # if using your own template
     library(future)
     plan(multisession)
-    tar_pipeline(
+    list(
       tar_target(a, 1:3),
       tar_target(b, {
         Sys.sleep(5)
