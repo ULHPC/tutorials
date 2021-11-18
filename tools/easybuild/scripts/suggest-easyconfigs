@@ -1,5 +1,5 @@
 #! /bin/bash
-# Time-stamp: <Mon 2021-09-06 09:26 svarrette>
+# Time-stamp: <Thu 2021-11-18 20:48 svarrette>
 ################################################################################
 # suggest-easyconfigs - Suggest an easyconfig for [past] software or pattern
 ################################################################################
@@ -11,7 +11,7 @@ TOP_DIR="$(cd "$( dirname "${BASH_SOURCE[0]}" )" && git rev-parse --show-topleve
 CMD_PREFIX=
 MODE=
 SUMMARY_MODE=
-TOOLCHAIN_VERSION=${RESIF_VERSION_DEVEL:2020b}
+TOOLCHAIN_VERSION=${RESIF_VERSION_DEVEL:=2020b}
 GCC_VERSION=9.3.0
 
 # Software lists
