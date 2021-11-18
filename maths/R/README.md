@@ -53,7 +53,7 @@ clusters](https://hpc-docs.uni.lu/connect/ssh/)
 
 ``` bash
 # /!\ FOR ALL YOUR COMPILING BUSINESS, ENSURE YOU WORK ON A COMPUTING NODE
-(access-iris)$> si -c 2
+(access-iris)$> si -c 2 -t 1:00:00
 ```
 
 ### Optional: On your local machine
@@ -69,6 +69,19 @@ graphical IDE.
 ``` bash
 module load lang/R
 ```
+
+We also need `pandoc`, supplied in RStudio but not on HPC.
+
+We fetch the binary and copied in our own `~/bin` that should be
+included in your `PATH`.
+
+``` bash
+wget -qO- https://github.com/jgm/pandoc/releases/download/2.16.1/pandoc-2.16.1-linux-amd64.tar.gz | tar xfz - 
+mkdir -p ~/bin/
+cp cp pandoc-2.16.1/bin/pandoc ~/bin/
+```
+
+### Cloning
 
 1.  If you haven’t cloned the
     [`tutorials`](https://github.com/ULHPC/tutorials) repository, do it
@@ -122,19 +135,21 @@ renv::restore()
 The list is prompted:
 
 ``` r
+[...]
 # GitHub =============================
 - tarchetypes      [* -> ropensci/tarchetypes@main]
 - targets          [* -> ropensci/targets@main]
-- xaringanExtra    [* -> gadenbuie/xaringanExtra@main]
 
 Do you want to proceed? [y/N]: 
 ```
 
-Enter `y` and wait ()
+Enter `y` and wait (takes 5 to 10 minutes)
 
 The packages will be copied in a local cache, shared across projects. So
 the same package installed in another folder is only linked, saving a
 lot of time while preserving the enclosed packages environments.
+
+It takes time but who is really using R with `base` only?
 
 6.  Run `targets` for the **datasauRus** example
 
