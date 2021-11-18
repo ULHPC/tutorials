@@ -1,0 +1,97 @@
+---
+title: "Gapminder report"
+author: "A. Ginolhac"
+date: "2021-11-19"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(targets)
+```
+
+## Dataset  
+
+
+- From an independent Swedish foundation
+- [R package](https://github.com/jennybc/gapminder) by [Jenny Bryan!](https://github.com/jennybc)
+- Install from CRAN: `gapminder`
+
+### Hans Rosling 
+
+- Fundamentally optimistic
+- Great [talk](https://www.ted.com/talks/hans_rosling_shows_the_best_stats_you_ve_ever_seen)
+
+
+## Read data
+
+
+```{r}
+tar_read(gap)
+```
+
+# Linear regression: Life Expectency explained by time
+
+## Only one branch 
+
+```{r}
+tar_read(r2, branches = 2)
+```
+
+## Aggregation is automatic
+
+Using [`vctrs`](https://vctrs.r-lib.org/)
+
+![](https://vctrs.r-lib.org/reference/figures/logo.png)
+
+```{r}
+tar_read(r2)
+```
+# Explanatory plots
+
+`tar_load()` is an alternative to `tar_read()` and loads the object in the **Global Env**, assigning the `target` name.
+
+```{r}
+tar_load(r2)
+```
+
+
+## Snake plot
+
+```{r}
+r2 %>% 
+  ggplot(aes(x = rsquare, y = forcats::fct_reorder(country, rsquare))) +
+  geom_point(aes(colour = continent)) +
+  labs(y = NULL,
+       x = "r squared") +
+  theme_classic(18) +
+  theme(legend.position = c(0.2, 0.7),
+        axis.text.y = element_blank(),
+        axis.ticks.y = element_blank())
+```
+
+
+## Summary plot by  Hadley Wickham
+
+From his [lecture on Youtube](https://www.youtube.com/watch?v=rz3_FDVt9eg)
+
+```{r}
+tar_read(r2_coeff) %>%
+  unnest(tidy) %>%
+  select(continent, country, rsquare, term, estimate) %>%
+  pivot_wider(names_from = term,
+              values_from = estimate) %>%
+  ggplot(aes(x = `(Intercept)`, y = year1950)) +
+  geom_point(aes(colour = continent,
+                 size = rsquare)) +
+  geom_smooth(se = FALSE,
+              method = "loess",
+              formula = "y ~ x") +
+  scale_size_area() +
+  labs(x = "Life expectancy (1950)",
+       y = "Yearly improvement") +
+  theme_minimal(18)
+```
+
+
+
