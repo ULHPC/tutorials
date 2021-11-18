@@ -1,5 +1,5 @@
 ---
-title: "report"
+title: "Gapminder report"
 author: "A. Ginolhac"
 date: "2021-11-19"
 output: html_document
@@ -10,12 +10,27 @@ knitr::opts_chunk$set(echo = TRUE)
 library(targets)
 ```
 
-## read data
+## Dataset  
+
+
+- From an independent Swedish foundation
+- [R package](https://github.com/jennybc/gapminder) by [Jenny Bryan!](https://github.com/jennybc)
+- Install from CRAN: `gapminder`
+
+### Hans Rosling 
+
+- Fundamentally optimistic
+- Great [talk](https://www.ted.com/talks/hans_rosling_shows_the_best_stats_you_ve_ever_seen)
+
+
+## Read data
 
 
 ```{r}
 tar_read(gap)
 ```
+
+# Linear regression: Life Expectency explained by time
 
 ## Only one branch 
 

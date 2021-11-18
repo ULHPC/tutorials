@@ -5,22 +5,21 @@ title: "Target Markdown"
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
 library(targets)
+# Specify the project thanks to 
 Sys.setenv(TAR_PROJECT = "gapminder")
 ```
 
 Target Markdown is a powerful R Markdown interface for reproducible analysis pipelines, and the chapter at https://books.ropensci.org/targets/markdown.html walks through it in detail. This R Markdown report the example from the chapter. Try it out in both interactive and non-interactive modes, either by running the code chunks in different ways or setting the `tar_interactive` chunk option.
 
-```{r}
-```
+# Gapminder
 
-
-# Globals
+## Globals
 
 We first define some global options/functions common to all targets. The function below plots a histogram of ozone concentrations, and our histogram target will need it.
 
 ```{targets example-globals, tar_globals = TRUE}
 options(tidyverse.quiet = TRUE)
-tar_option_set(packages = c("dplyr", "ggplot2", "readr", "tidyr"))
+tar_option_set(packages = c("dplyr", "ggplot2", "readr", "tidyr", "purrr"))
 
 gap_lm <- function(.data) {
   mutate(.data, year1950 = year - 1952) |>
@@ -36,18 +35,35 @@ extract_r2 <- function(.data) {
 }
 ```
 
-# Targets
+## Targets
 
 Combine more than one with `list()`
 
+
+A lot of format are available.
+
+- `tarchetypes::tar_file()` will hash the file and keep track of its checksum
+- `tar_fst_tbl()` uses [**fst**](http://www.fstpackage.org/fst/)
+
 ```{targets gapminder}
+library(tarchetypes)
+
+# Un comment 3 lines for future usage
+#library(future)
+#library(future.callr)
+#plan(callr)
+
+
 list(
-  tar_target(gap, gapminder, packages = "gapminder"),
-  tarchetypes::tar_group_by(gap_by, gap, continent, country),
-  #tar_target(group, gap_by, pattern = map(gap_by)),
-  tar_target(model, gap_lm(gap_by), pattern = map(gap_by),
+  tar_file(gap_file, "gapminder.tsv"),
+  # fst is Fast Serialization Table
+  tar_fst_tbl(gap, read_tsv(gap_file), packages = "readr"),
+  tar_group_by(gap_by, gap, continent, country),
+  tar_target(model, gap_lm(gap_by), 
+             pattern = map(gap_by),
              iteration = "group"),
-  tar_target(r2, extract_r2(model), pattern = map(model),
+  tar_target(r2, extract_r2(model), 
+             pattern = map(model),
              packages = c("dplyr", "broom", "purrr")),
   tar_target(r2_coeff, mutate(r2, tidy = map(model, tidy)),
              packages = c("dplyr", "broom", "purrr"))
@@ -57,10 +73,10 @@ list(
 The report is also a `target`, so rendering is triggered by any upstream dependencies found thanks to `tar_read()` calls
 
 ```{targets render_report}
-tarchetypes::tar_render(report, "report_gap.Rmd")
+tar_render(report, "report_gap.Rmd")
 ```
 
-# Pipeline
+## Pipeline
 
 ### Direct Acyclic Graph
 
@@ -73,10 +89,13 @@ tar_visnetwork()
 ### Run what needs to be
 
 ```{r}
-tar_make(reporter = "summary")
+tar_make(reporter = "verbose_positives")
+
+#future make:
+#tar_make_future(workers = 2)
 ```
 
-`reporter = "summary"` to avoid to see :
+`reporter = "verbose"` will print 142 lines like:
 
 ```
 [...]
@@ -96,4 +115,10 @@ tar_make(reporter = "summary")
 tar_visnetwork()
 ```
 
+
+
+
+```{r, eval = FALSE}
+tar_make_future(workers = 2)
+```
 
