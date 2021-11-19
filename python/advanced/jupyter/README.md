@@ -99,18 +99,8 @@ At the end of the command, you should see a link like this:
 [I 17:45:05.757 NotebookApp] Use Control-C to stop this server and shut down all kernels (twice to skip confirmation).
 ```
 
-Now we need to create an SSH tunneling in order to access this URL on your laptop. We will forward every local requests made on your localhost address of your laptop the cluster. The simpliest way to do so is to type this command if your are on Linux:
+Now you can access with FoxyProxy the notebook. 
 
-```bash
-ssh -NL 8888:<IP OF YOUR NODE>:8888 iris-cluster
-# In my example, my command will be: ssh -NL 8888:172.17.6.55:8888 iris-cluster
-```
-
-Then, by accessing to your local port 8888 on the localhost address 127.0.0.1, you should see the Python notebook.
-
-[http://127.0.0.1:8888/](http://127.0.0.1:8888/).
-
-If you haven't chosen a password to protect your notebook, please append the token to the URL before accessing your Notebook.
 
 # Run our first notebook
 
