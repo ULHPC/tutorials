@@ -79,7 +79,7 @@ $ mkdir src
 $ cd src
 # Download the latest version
 $ export OSU_VERSION=5.8     # Just to abstract from the version to download
-$ wget --no-check-certificate http://mvapich.cse.ohio-state.edu/download/mvapich/osu-micro-benchmarks-${OSU_VERSION}.tar.gz
+$ wget --no-check-certificate http://mvapich.cse.ohio-state.edu/download/mvapich/osu-micro-benchmarks-${OSU_VERSION}.tgz
 $ tar xf osu-micro-benchmarks-${OSU_VERSION}.tar.gz
 $ cd osu-micro-benchmarks-${OSU_VERSION}
 ```
