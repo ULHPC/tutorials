@@ -3,7 +3,7 @@
 
 # Big Data Applications (batch, stream, hybrid)
 
-     Copyright (c) 2013-2021 UL HPC Team  <hpc-team@uni.lu>
+     Copyright (c) 2013-2021 S. Varrette and UL HPC Team  <hpc-team@uni.lu>
 
 [![](https://github.com/ULHPC/tutorials/raw/devel/bigdata/cover_slides.png)](https://github.com/ULHPC/tutorials/raw/devel/bigdata/slides.pdf)
 
