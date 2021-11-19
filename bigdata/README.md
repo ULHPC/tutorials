@@ -479,6 +479,8 @@ Then make a new reservation across multiple full nodes:
 ```bash
 # If not yet done, go to the appropriate directory
 $ cd ~/tutorials/bigdata
+# Play with -N to scale as you wish (or not) - below allocation is optimizing Aion compute nodes
+#              on iris: use '-N <N> --ntasks-per-node 2 -c 14'
 # You'll likely need to reserve less nodes to satisfy all demands ;(
 $ salloc -N 2 --ntasks-per-node 8 -c 16 --exclusive # --reservation=hpcschool
 $ source settings/default.sh
