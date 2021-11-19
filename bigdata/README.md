@@ -498,7 +498,7 @@ url: spark://aion-0003:7077
 Web UI: http://aion-0003:8082
 
 ===========================================
-============ 24 Spark Workers ==============
+============ 16 Spark Workers ==============
 ===========================================
 export SPARK_HOME=$EBROOTSPARK
 export MASTER_URL=spark://aion-0003:7077

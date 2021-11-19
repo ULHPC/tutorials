@@ -2,9 +2,9 @@
 
 # UL HPC Tutorial: Use Jupyter notebook on UL HPC
 
-      Copyright (c) 2020  UL HPC Team <hpc-team@uni.lu>
+      Copyright (c) 2021  UL HPC Team <hpc-team@uni.lu>
 
-Authors: Clément Parisot (updated by Frédéric Pinel)
+Authors: Clément Parisot (updated by Frédéric Pinel and Sébastien Varrette)
 
 
 [![](https://github.com/ULHPC/tutorials/raw/devel/python/advanced/cover_slides.png)](https://github.com/ULHPC/tutorials/raw/devel/python/advanced/tutorial_python_advanced.pdf)
@@ -14,8 +14,10 @@ Python is a high-level interpreted language widely used in research. It lets you
 # Reserve a node
 
 ```bash
-si
-# or si-gpu
+ssh [aion,iris]-cluster    # connect to the cluster
+# Once on the clusters, ask for a interactive job (here for 1h)
+si --time=01:00:00
+# OR si-gpu --time=01:00:00 if a GPU is needed
 ```
 
 # Load Python and install required modules in a virtualenv
@@ -23,26 +25,12 @@ si
 If you have never used virtualenv before, please have a look at [Python1 tutorial](http://ulhpc-tutorials.readthedocs.io/en/latest/python/basics/).
 
 ```bash
-# Load your prefered version of Python
-
-# Optional: you can choose the soon-to-be released 2019b software set:
-unset MODULEPATH
-# For broadwell processor nodes:
-module use /opt/apps/resif/iris/2019b/broadwell/modules/all
-# OR for skylake processor nodes:
-module use /opt/apps/resif/iris/2019b/skylake/modules/all
-# OR for skylake/GPU nodes:
-module use /opt/apps/resif/iris/2019b/gpu/modules/all
-# ELSE, keep the current software set (nothing required, but actual python versions vary)
-
-module load lang/Python/3.7.2-GCCcore-8.2.0   # optionally: 2019b skylake, lang/Python/3.7.4-GCCcore-8.3.0
-# Create a new virtualenv
-git clone https://github.com/ULHPC/tutorials
-cd tutorials/python/advanced/jupyter/
-pip install --user virtualenv
-PATH=$PATH:$HOME/.local/bin
-virtualenv venv
-source venv/bin/activate
+# load your prefered **3.x** version of Python - 2.7 DEPRECACTED
+module load lang/Python/3.8.6-GCCcore-10.2.0   # Load default python
+# create virtual environment - distinguish between clusters
+python -m venv venv_${ULHPC_CLUSTER}
+# Note: You may want to centralize your virtualenvs under '~/venv/<name>_${ULHPC_CLUSTER}'
+source venv_${ULHPC_CLUSTER}/bin/activate
 ```
 
 Now we need to install all the modules needed. They are listed in the requirements.txt at the root of our tutorial directory. Here is the list of essentials ones:
@@ -77,7 +65,8 @@ In order to access to all the modules we have installed inside your Notebook, we
 To do so, let's use `ipykernel`.
 
 ```bash
-python -m ipykernel install --user --name=venv # The "venv" name here is to give your kernel a name and it will install it in your $HOME path. If a similarly named kernel exists, it will be overwritten.
+ python -m ipykernel install --user --name venv_${ULHPC_CLUSTER}
+# The "venv" name here is to give your kernel a name and it will install it in your $HOME path. If a similarly named kernel exists, it will be overwritten.
 # In case you would like your kernel to be installed into your active conda environment (<YOURCONDAPATH-PREFIX>/miniconda3/envs/jupyter_env/share/jupyter/kernels/), use the command below. This may be preferred as it encapsulates everything into a single environment, but would deviate from the virtualenv-based configuration above more than necessary for this tutorial.
 #python -m ipykernel install --sys-prefix --name 'mylocalkernel'
 # A completely custom specification of the path is *discouraged* as the resulting warning about the path not being in the "default" places and might hence not be found is very real. This means that the kernel can not be selected from the "New" dialog in the Jupyter interface. S. a. https://scipy-ipython.readthedocs.io/en/latest/install/kernel_install.html#kernels-for-different-environments for further information.
@@ -97,7 +86,7 @@ To make things easier, we will protect our Notebook with a password. You have ju
 #cd tutorials/python/advanced/jupyter # Only needed if you do not follow from above
 jupyter notebook --generate-config
 jupyter notebook password
-jupyter notebook --ip $(ip addr show em1 | grep 'inet ' | awk '{print $2}' | cut -d/ -f1) --no-browser
+jupyter notebook --ip $(ip addr | egrep '172\.17|21'| grep 'inet ' | awk '{print $2}' | cut -d/ -f1) --no-browser
 ```
 
 At the end of the command, you should see a link like this:
