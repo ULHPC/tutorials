@@ -1,4 +1,4 @@
-Introduction to R
+Reproducible pipelines in R
 ================
 
 [![By
