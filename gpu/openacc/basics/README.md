@@ -335,3 +335,5 @@ end module Vector_Addition_Mod               |   end subroutine Vector_Addition
 ~~~
 * _reduction_ _clause_ is needed when we want to sum the array or any counting inside the parallel region; this will increase the performance and avoid the error in the total sum.
 * The above example shows how to use them in C/C++ and FORTRAN languages.
+
+# !If you are interested to follow up more about CUDA and OpenACC programming, please go to:[MOOC course: GPU programming for scientific computing and beyond](https://www.futurelearn.com/courses/gpu-programming-scientific-computing)!
