@@ -6,7 +6,7 @@
 
 [![](https://github.com/ULHPC/tutorials/raw/devel/multiphysics/cover_slides.png)](https://github.com/ULHPC/tutorials/raw/devel/multiphysics/slides.pdf)
 
-The objective of this session is to exemplify the execution of several common, parallel, Computational Physics, Chemistry & Engineering software on the [UL HPC](http://hpc.uni.lu) platform.
+The objective of this session is to exemplify the execution of several common, parallel, Computational Physics, Chemistry & Engineering software on the [UL HPC](https://hpc.uni.lu) platform.
 
 Targeted applications include:
 
@@ -46,7 +46,7 @@ Note: you can check out either the instructions for the OAR scheduler (gaia and 
 
 First of all, we will submit on the iris cluster an interactive job with 2 tasks on each of 2 compute nodes for 1 hour.
 
-       (iris-frontend)$> srun -p interactive -N 2 --ntasks-per-node 2 --pty bash -i
+       (iris-frontend)$> si -N 2 --ntasks-per-node 2
        (node)$>
 
 The SLURM scheduler provides several environment variables once we are inside a job, check them out with

@@ -13,15 +13,18 @@
 #SBATCH --exclusive
 #SBATCH -d singleton
 #SBATCH -m cyclic
-#SBATCH -C skylake
-#
-#SBATCH --array=1-55
+
+# only for Iris
+##SBATCH -C skylake
 #
 # Ensure process affinity is disabled
 export SLURM_CPU_BIND=none
 hosts=$(srun bash -c hostname)
 echo $hosts
-NB_WORKERS=$SLURM_ARRAY_TASK_ID
+
+# change number of workers here
+NB_WORKERS=20
+
 echo $NB_WORKERS
 python -m scoop --hosts $hosts -n $NB_WORKERS pi_calc.py $NB_WORKERS
 

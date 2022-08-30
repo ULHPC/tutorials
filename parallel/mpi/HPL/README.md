@@ -1,16 +1,13 @@
-[![By ULHPC](https://img.shields.io/badge/by-ULHPC-blue.svg)](https://hpc.uni.lu) [![Licence](https://img.shields.io/badge/license-GPL--3.0-blue.svg)](http://www.gnu.org/licenses/gpl-3.0.html) [![GitHub issues](https://img.shields.io/github/issues/ULHPC/tutorials.svg)](https://github.com/ULHPC/tutorials/issues/) [![Github](https://img.shields.io/badge/sources-github-green.svg)](https://github.com/ULHPC/tutorials/tree/devel/parallel/mpi/HPL/) [![Documentation Status](http://readthedocs.org/projects/ulhpc-tutorials/badge/?version=latest)](http://ulhpc-tutorials.readthedocs.io/en/latest/parallel/mpi/HPL/) [![GitHub forks](https://img.shields.io/github/stars/ULHPC/tutorials.svg?style=social&label=Star)](https://github.com/ULHPC/tutorials)
+[![By ULHPC](https://img.shields.io/badge/by-ULHPC-blue.svg)](https://hpc.uni.lu) [![Licence](https://img.shields.io/badge/license-GPL--3.0-blue.svg)](http://www.gnu.org/licenses/gpl-3.0.html) [![GitHub issues](https://img.shields.io/github/issues/ULHPC/tutorials.svg)](https://github.com/ULHPC/tutorials/issues/) [![](https://img.shields.io/badge/slides-PDF-red.svg)](https://github.com/ULHPC/tutorials/raw/devel/parallel/basics/slides.pdf) [![Github](https://img.shields.io/badge/sources-github-green.svg)](https://github.com/ULHPC/tutorials/tree/devel/parallel/mpi/HPL/) [![Documentation Status](http://readthedocs.org/projects/ulhpc-tutorials/badge/?version=latest)](http://ulhpc-tutorials.readthedocs.io/en/latest/parallel/mpi/HPL/) [![GitHub forks](https://img.shields.io/github/stars/ULHPC/tutorials.svg?style=social&label=Star)](https://github.com/ULHPC/tutorials)
 
 # High-Performance Linpack (HPL) benchmarking on UL HPC platform
 
-     Copyright (c) 2013-2019 UL HPC Team  <hpc-sysadmins@uni.lu>
+     Copyright (c) 2013-2021 UL HPC Team  <hpc-sysadmins@uni.lu>
 
-The objective of this tutorial is to compile and run on of the reference HPC benchmarks, [HPL](http://www.netlib.org/benchmark/hpl/), on top of the [UL HPC](http://hpc.uni.lu) platform.
+The objective of this tutorial is to compile and run on of the reference HPC benchmarks, [HPL](http://www.netlib.org/benchmark/hpl/), on top of the [UL HPC](https://hpc.uni.lu) platform.
+Kindly ensure your followed the ["Scalable Science and Parallel computations with OpenMP/MPI" tutorial](../../basics/)
 
-You can work in groups for this training, yet individual work is encouraged to ensure you understand and practice the usage of MPI programs on an HPC platform.
-If not yet done, you should consider completing the following tutorials:
-
-1. [Parallel computations with OpenMP/MPI](../../basics/) covering the basics for OpenMP, MPI or Hybrid OpenMP+MPI runs
-2. [OSU Micro-benchmark](../OSU_MicroBenchmarks/)
+The latest version of this tutorial is available on [Github](https://github.com/ULHPC/tutorials/tree/devel/parallel/mpi/HPL/) and on <http://ulhpc-tutorials.readthedocs.io/en/latest/parallel/mpi/HPL/>
 
 __Resources__
 
@@ -22,56 +19,37 @@ and expected performances
 --------------------
 ## Pre-requisites ##
 
-Ensure you are able to [connect to the UL HPC clusters](https://hpc.uni.lu/users/docs/access.html)
-**For all tests and compilation, you MUST work on a computing node**
-
-You'll need to prepare the data sources required by this tutorial once connected
+If not yet done, you'll need to pull the latest changes in your working copy of the [ULHPC/tutorials](https://github.com/ULHPC/tutorials) you should have cloned in `~/git/github.com/ULHPC/tutorials` (see ["preliminaries" tutorial](../../preliminaries/))
 
 ``` bash
-### ONLY if not yet done: setup the tutorials repo
-# See http://ulhpc-tutorials.rtfd.io/en/latest/setup/install/
-$> mkdir -p ~/git/github.com/ULHPC
-$> cd ~/git/github.com/ULHPC
-$> git clone https://github.com/ULHPC/tutorials.git
-$> cd tutorials
-$> make setup          # Initiate git submodules etc...
+(access)$ cd ~/git/github.com/ULHPC/tutorials
+(access)$ git pull
 ```
 
-If you previously cloned this repository, you probably want to collected the latest commits using:
+Now **configure a dedicated directory `~/tutorials/HPL` for this session**
 
 ``` bash
-$> cd ~/git/github.com/ULHPC/tutorials
-$> git pull     # OR (better)
-$> make up
+(access)$ mkdir -p ~/tutorials/HPL
+(access)$ cd ~/tutorials/HPL
+# create a symbolic link to the top reference material
+(access)$ ln -s ~/git/github.com/ULHPC/tutorials/parallel/mpi/HPL ref.d
+# create other convenient symlinks
+(access)$ ln -s ref.d/Makefile .     # symlink to the root Makefile
 ```
 
-Now you can prepare a dedicated directory to work on this tutorial:
-
-```bash
-$> mkdir -p ~/tutorials/HPL
-$> cd ~/tutorials/HPL
-# Keep a symbolic link 'ref.ulhpc.d' to the reference tutorial
-$> ln -s ~/git/github.com/ULHPC/tutorials/parallel/mpi/HPL ref.ulhpc.d
-$> ln -s ref.ulhpc.d/Makefile .     # symlink to the root Makefile
-```
-
-**Advanced users only**: rely on `screen` (see  [tutorial](http://support.suso.com/supki/Screen_tutorial) or the [UL HPC tutorial](https://hpc.uni.lu/users/docs/ScreenSessions.html) on the  frontend prior to running any `srun/sbatch` command to be more resilient to disconnection.
-
-Finally, be aware that the latest version of this tutorial is available on
-[Github](https://github.com/ULHPC/tutorials/tree/devel/parallel/mpi/HPL/) and on
-
-<http://ulhpc-tutorials.readthedocs.io/en/latest/parallel/mpi/HPL/>
+**Advanced users** (_eventually_ yet __strongly__ recommended), create a [Tmux](https://github.com/tmux/tmux/wiki) session (see [Tmux cheat sheet](https://tmuxcheatsheet.com/) and [tutorial](https://www.howtogeek.com/671422/how-to-use-tmux-on-linux-and-why-its-better-than-screen/)) or [GNU Screen](http://www.gnu.org/software/screen/) session you can recover later. See also ["Getting Started" tutorial ](../../beginners/).
 
 
 #### Theoretical Peak Performance R<sub>peak</sub>
 
-The ULHPC computing nodes feature the following types of processors (see also `/etc/motd` on the access node):
+The ULHPC computing nodes on [aion](https://hpc-docs.uni.lu/systems/aion/compute/#processors-performance) or [iris](https://hpc-docs.uni.lu/systems/iris/compute/#processors-performance) feature the following types of processors (see also `/etc/motd` on the access node):
 
-| Vendor | Model                          | #cores | TDP  | Freq.  | AVX512 Freq | Nodes                    | R<sub>peak</sub> |
-|--------|--------------------------------|--------|------|--------|-------------|--------------------------|------------------|
-| Intel  | Xeon E5-2680v4 (broadwell)     |     14 | 120W | 2.4Ghz | n/a         | `iris-[001-108]`         | 537,6  GFlops    |
-| Intel  | Xeon Gold 6132 (skylake)       |     14 | 140W | 2.6GHz | 2.3 GHz     | `iris-[109-186,191-196]` | 1030,4 GFlops    |
-| Intel  | Xeon Platinum 8180M  (skylake) |     28 | 205W | 2.5GHz | 2.3 GHz     | `iris-[187-190]`         | 2060,8 GFlops    |
+| Cluster | Vendor | Model                          | #cores | TDP  | Freq.   | AVX512 Freq | Nodes                    | R<sub>peak</sub> | R<sub>peak</sub> |
+|---------|--------|--------------------------------|--------|------|---------|-------------|--------------------------|------------------|------------------|
+| Aion    | AMD    | AMD Epyc ROME 7H12             |     64 | 280W | 2.6 GHz | n/a         | `aion-[0001-0318]`       | 2.66   TF        | 2.13 TF          |
+| Iris    | Intel  | Xeon E5-2680v4 (broadwell)     |     14 | 120W | 2.4Ghz  | n/a         | `iris-[001-108]`         | 0.538  TF        | 0.46 TF          |
+| Iris    | Intel  | Xeon Gold 6132 (skylake)       |     14 | 140W | 2.6GHz  | 2.3 GHz     | `iris-[109-186,191-196]` | 1.03   TF        | 0.88 TF          |
+| Iris    | Intel  | Xeon Platinum 8180M  (skylake) |     28 | 205W | 2.5GHz  | 2.3 GHz     | `iris-[187-190]`         | 2.06   TF        | 1.75 TF          |
 
 Computing the theoretical peak performance of these processors is done using the following formulae:
 
@@ -82,6 +60,7 @@ Knowing that:
 * Broadwell processors (`iris-[001-108]` nodes) carry on 16 DP ops/cycle and supports AVX2/FMA3.
 * Skylake   processors (`iris-[109-196]` nodes) belongs to the Gold or Platinum family and thus have two AVX512 units, thus they are capable of performing 32 Double Precision (DP) Flops/cycle. From the [reference Intel documentation](
 https://www.intel.com/content/dam/www/public/us/en/documents/specification-updates/xeon-scalable-spec-update.pdf), it is possible to extract for the featured model the AVX-512 Turbo Frequency (i.e., the maximum core frequency in turbo mode) in place of the base non-AVX core frequency that can be used to compute the peak performance (see Fig. 3 p.14).
+* AMD Epyc processors carry on 16 Double Precision (DP) ops/cycle.
 
 HPL permits to measure the **effective** R<sub>max</sub> performance (as opposed to the above **peak** performance R<sub>peak</sub>).
 The ratio R<sub>max</sub>/R<sub>peak</sub> corresponds to the _HPL efficiency_.
@@ -96,11 +75,10 @@ HPL rely on an efficient implementation of the Basic Linear Algebra Subprograms 
 * [ATLAS](http://math-atlas.sourceforge.net/atlas_install/)
 * [GotoBlas](https://www.tacc.utexas.edu/research-development/tacc-software/gotoblas2/)
 
-The idea is to compare the different MPI and BLAS implementations available on the [UL HPC platform](http://hpc.uni.lu):
+The idea is to compare the different MPI and BLAS implementations:
 
 * [Intel MPI](http://software.intel.com/en-us/intel-mpi-library/) and the Intel MKL
 * [OpenMPI](http://www.open-mpi.org/)
-* [MVAPICH2](http://mvapich.cse.ohio-state.edu/overview/) (MPI-3 over OpenFabrics-IB, Omni-Path, OpenFabrics-iWARP, PSM, and TCP/IP)
 * [ATLAS](http://math-atlas.sourceforge.net/atlas_install/)
 * [GotoBlas](https://www.tacc.utexas.edu/research-development/tacc-software/gotoblas2/)
 
@@ -113,23 +91,23 @@ As a bonus, comparison with the reference HPL binary compiled as part of the `to
 In the working directory `~/tutorials/HPL`, fetch and uncompress the latest version of the [HPL](http://www.netlib.org/benchmark/hpl/) benchmark (_i.e._ **version 2.3** at the time of writing).
 
 ```bash
-$> cd ~/tutorials/HPL
-$> mkdir src
+$ cd ~/tutorials/HPL
+$ mkdir src
 # Download the sources
-$> cd src
+$ cd src
 # Download the latest version
-$> export HPL_VERSION=2.3
-$> wget --no-check-certificate http://www.netlib.org/benchmark/hpl/hpl-${HPL_VERSION}.tar.gz
-$> tar xvzf hpl-${HPL_VERSION}.tar.gz
-$> cd  hpl-${HPL_VERSION}
+$ export HPL_VERSION=2.3
+$ wget --no-check-certificate http://www.netlib.org/benchmark/hpl/hpl-${HPL_VERSION}.tar.gz
+$ tar xvzf hpl-${HPL_VERSION}.tar.gz
+$ cd  hpl-${HPL_VERSION}
 ```
 
 _Alternatively_, you can use the following command to fetch and uncompress the HPL sources:
 
 ``` bash
-$> cd ~/tutorials/HPL
-$> make fetch
-$> make uncompress
+$ cd ~/tutorials/HPL
+$ make fetch
+$ make uncompress
 ```
 
 --------------------------------
@@ -138,80 +116,46 @@ $> make uncompress
 We are first going to use the [Intel Cluster Toolkit Compiler Edition](http://software.intel.com/en-us/intel-cluster-toolkit-compiler/), which provides Intel C/C++ and Fortran compilers, Intel MPI.
 
 ```bash
-$> cd ~/tutorials/HPL
+$ cd ~/tutorials/HPL
 # Copy the provided Make.intel64
-$> cp ref.ulhpc.d/src/Make.intel64 src/
+$ cp ref.d/src/Make.intel64 src/
 ```
 
 Now you can reserve an interactive job for the compilation **from the access** server:
 
 ``` bash
 # Quickly get one interactive job for 1h
-$> si -N 2 --ntasks-per-node 2
+$ si -N 2 --ntasks-per-node 2
 # OR get one interactive (totalling 2*2 MPI processes) on broadwell-based nodes
-$> srun -N 2 -p batch -C broadwell -N 2 --ntasks-per-node  2 --pty bash
+$ si -C broadwell -N2 --ntasks-per-node 2
 # OR get one interactive (totalling 2*2 MPI processes) on skylake-based nodes
-$> srun -N 2 -p batch -C skylake -N 2 --ntasks-per-node  2 --pty bash
+$ si -C skylake -N2 --ntasks-per-node 2
 ```
 
 Now that you are on a computing node, you can load the appropriate module  for Intel MKL and Intel MPI suite, i.e. `toolchain/intel`:
 
-
 ``` bash
 # Load the appropriate module
-$> module load toolchain/intel
-$> module list
-Currently Loaded Modules:
-Currently Loaded Modules:
-  1) compiler/GCCcore/6.4.0
-  2) tools/binutils/2.28-GCCcore-6.4.0
-  3) compiler/icc/2018.1.163-GCC-6.4.0-2.28
-  4) compiler/ifort/2018.1.163-GCC-6.4.0-2.28
-  5) toolchain/iccifort/2018.1.163-GCC-6.4.0-2.28
-  6) mpi/impi/2018.1.163-iccifort-2018.1.163-GCC-6.4.0-2.28
-  7) toolchain/iimpi/2018a
-  8) numlib/imkl/2018.1.163-iimpi-2018a
-  9) toolchain/intel/2018a
+$ module load toolchain/intel
+$ module list
 ```
 
-Eventually, if you want to load the development branch of the modules provided on the UL HPC platform, proceed as follows:
-
-``` bash
-$> module purge
-$> module load swenv/default-env/devel
-Module warning: The development software environment is not guaranteed to be stable!
-$> module load toolchain/intel
-$> module list
-Currently Loaded Modules:
-  1) swenv/default-env/devel
-  2) compiler/GCCcore/8.2.0
-  3) lib/zlib/1.2.11-GCCcore-8.2.0
-  4) tools/binutils/2.31.1-GCCcore-8.2.0
-  5) compiler/icc/2019.1.144-GCC-8.2.0-2.31.1
-  6) compiler/ifort/2019.1.144-GCC-8.2.0-2.31.1
-  7) toolchain/iccifort/2019.1.144-GCC-8.2.0-2.31.1
-  8) mpi/impi/2018.4.274-iccifort-2019.1.144-GCC-8.2.0-2.31.1
-  9) toolchain/iimpi/2019a
- 10) numlib/imkl/2019.1.144-iimpi-2019a
- 11) toolchain/intel/2019a
-```
-
-You notice that Intel MKL is now loaded.
+Intel MKL is now loaded.
 
 Read the `INSTALL` file under `src/hpl-2.3`. In particular, you'll have to edit and adapt a new makefile `Make.intel64` (inspired from `setup/Make.Linux_Intel64` typically) and provided to you provided to you on [Github](https://raw.githubusercontent.com/ULHPC/tutorials/devel/parallel/mpi/HPL/src/hpl-2.3/Make.intel64) for that purpose.
 
 ```bash
-$> cd src/hpl-2.3
-$> cp ../Make.intel64 .
+cd src/hpl-2.3
+cp ../Make.intel64 .
 # OR (if the above command fails)
-$> cp ~/git/github.com/ULHPC/tutorials/parallel/mpi/HPL/src/Make.intel64  Make.intel64
+# cp ~/git/github.com/ULHPC/tutorials/parallel/mpi/HPL/src/Make.intel64  Make.intel64
 # Automatically adapt at least the TOPdir variable to the current directory $(pwd),
 # thus it SHOULD be run from 'src/hpl-2.3'
-$> sed -i \
-   -e "s#^[[:space:]]*TOPdir[[:space:]]*=[[:space:]]*.*#TOPdir = $(pwd)#" \
-   Make.intel64
+sed -i \
+  -e "s#^[[:space:]]*TOPdir[[:space:]]*=[[:space:]]*.*#TOPdir = $(pwd)#" \
+  Make.intel64
 # Check the difference:
-$> diff -ru ../Make.intel64 Make.intel64
+$ diff -ru ../Make.intel64 Make.intel64
 --- ../Make.intel64     2019-11-19 23:43:26.668794000 +0100
 +++ Make.intel64        2019-11-20 00:33:21.077914972 +0100
 @@ -68,7 +68,7 @@
@@ -301,7 +245,7 @@ Once compiled, ensure you are able to run it (you will need at least 4 MPI proce
 $> cd ~/tutorials/HPL/src/hpl-2.3/bin/intel64
 $> cat HPL.dat      # Default (dummy) HPL.dat  input file
 
-# On Slurm cluster (iris), store the output logs into a text file -- see tee
+# On Slurm cluster, store the output logs into a text file -- see tee
 $> srun -n $SLURM_NTASKS ./xhpl | tee test_run.logs
 ```
 
@@ -332,7 +276,7 @@ $> exit
 
 $> cd ~/tutorials/HPL
 # Create symlink to the scripts directory
-$> ln -s ref.ulhpc.d/scripts .
+$> ln -s ref.d/scripts .
 # Create a logs/ directory to store the Slurm logs
 $> mkdir logs
 
@@ -350,7 +294,7 @@ We will place them in a separate directory (`runs/`) as it will host the outcome
 ```bash
 $> cd ~/tutorials/HPL
 $> mkdir -p runs/{broadwell,skylake}/{1N,2N}/{MPI,Hybrid}/    # Prepare the specific run directory
-$> cp ref.ulhpc.d/
+$> cp ref.d/
 ```
 
 We are indeed going to run HPL in two different contexts:
@@ -529,7 +473,7 @@ Now you should create an input `HPL.dat` file within the `runs/<arch>/<N>N/<mode
 
 ```bash
 $> cd ~/tutorials/HPL/runs
-$> cp ../ref.ulhpc.d/HPL.dat .
+$> cp ../ref.d/HPL.dat .
 $> ll
 total 0
 -rw-r--r--. 1 svarrette clusterusers 1.5K Jun 12 15:38 HPL.dat
@@ -558,7 +502,7 @@ Of course, we made here a small test and optimizing the HPL parameters to get th
 
 Below are some plots obtained when benchmarking the `iris` cluster and seeking the best set of parameters across increasing number of nodes (see [this blog post](https://hpc.uni.lu/blog/2017/preliminary-performance-results-of-the-iris-cluster/))
 
-![](https://hpc.uni.lu/images/benchs/benchmark_HPL-iris_25N.png)
-![](https://hpc.uni.lu/images/benchs/benchmark_HPL-iris_50N.png)
-![](https://hpc.uni.lu/images/benchs/benchmark_HPL-iris_75N.png)
-![](https://hpc.uni.lu/images/benchs/benchmark_HPL-iris_100N.png)
+![](https://hpc.uni.lu/old/images/benchs/benchmark_HPL-iris_25N.png)
+![](https://hpc.uni.lu/old/images/benchs/benchmark_HPL-iris_50N.png)
+![](https://hpc.uni.lu/old/images/benchs/benchmark_HPL-iris_75N.png)
+![](https://hpc.uni.lu/old/images/benchs/benchmark_HPL-iris_100N.png)

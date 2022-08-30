@@ -7,7 +7,7 @@
 
 [![](cover_slides.png)](slides.pdf)
 
-This tutorial demonstrates how to develop and run on the [UL HPC](http://hpc.uni.lu) platform a deep learning application using the Tensorflow framework.
+This tutorial demonstrates how to develop and run on the [UL HPC](https://hpc.uni.lu) platform a deep learning application using the Tensorflow framework.
 
 The scope of this tutorial is *single* node execution, multi-CPU and multi-GPU.
 Another tutorial covers multi-node execution.
@@ -15,7 +15,7 @@ Another tutorial covers multi-node execution.
 --------------------
 ## Pre-requisites ##
 
-Ensure you are able to [connect to the UL HPC clusters](https://hpc.uni.lu/users/docs/access.html)
+Ensure you are able to [connect to the UL HPC clusters](https://hpc-docs.uni.lu/connect/access/).
 **For all tests and compilation, you MUST work on a computing node**
 
 This hands-on is **not** a tutorial on Deep Learning (DL).
@@ -35,7 +35,7 @@ To configure the environment, we only need one core of one node.
 Request such resource from the iris-cluster:
 ```bash
 []$ ssh iris-cluster
-[]$ srun -n1 -c1 -pinteractive --pty bash -i
+[]$ si -n1 -c1
 []$ # Inspect your resources, several ways:
 []$ scontrol show job $SLURM_JOB_ID
 []$ sj $SLURM_JOB_ID  # alias for the above
@@ -48,7 +48,7 @@ Our working environment will consist of:
 
 - Python 3,
 - CUDA toolkit for the GPU tests,
-- Tensorflow, both for CPU and GPU. 
+- Tensorflow, both for CPU and GPU.
 
 Tensorflow comes in different versions for CPU and GPU.
 We install both, and will select the correct one (matching the reserved node) before running the code.
@@ -63,7 +63,7 @@ If you have never used virtualenv before, please have a look at [Python1 tutoria
 ```
 To quickly recover our configuration, when developing interactively, we can save a module configuration:
 ```bash
-[]$ # Save the module in a specific module list named 'tf': 
+[]$ # Save the module in a specific module list named 'tf':
 []$ module save tf
 []$ module purge
 []$ module restore tf
@@ -109,7 +109,7 @@ In case of exception when unpickling the training data, apply a patch [`imdb.pat
 ```
 Apply the patch:
 ```bash
-(tfcpu) []$ cp imdb.patch $VIRTUAL_ENV  
+(tfcpu) []$ cp imdb.patch $VIRTUAL_ENV
 (tfcpu) []$ cd $VIRTUAL_ENV
 (tfcpu) []$ patch -p0 <imdb.patch
 ```
@@ -147,12 +147,12 @@ If Python is not already loaded:
 If your virtual environment is not available, activate it:
 ```bash
 []$ source ~/venv/tfcpu/bin/activate
-(tfcpu) []$ 
+(tfcpu) []$
 ```
 
 ### Tensorflow example model
 
-Head to the 
+Head to the
 [TensorFlow text classification tutorial](https://www.tensorflow.org/tutorials/keras/basic_text_classification)
 and follow the steps there to assemble a Tensorflow application.
 
@@ -165,13 +165,13 @@ Here, we will execute the functioning program developed above on a GPU node, int
 Request such resource from the iris-cluster:
 ```bash
 []$ ssh iris-cluster
-[]$ srun -n1 -c1 --gres=gpu:1 -pgpu --pty bash -i
+[]$ si-gpu -G 1 -n1 -c1
 ```
 Load the modules, and the choose the proper python environment:
 ```bash
 []$ module restore tf
 []$ source ~/venv/tfgpu/bin/activate
-(tfgpu) []$ 
+(tfgpu) []$
 ```
 Run the *same* tensorflow tutorial program that was developed under the CPU node.
 
@@ -206,4 +206,3 @@ Adjust the script for the GPU node.
 (See [tfgpu.sh](./tfgpu.sh) for one example)
 
 What happens if you change the resources assigned to this job? (number of cores, number of GPUs)
-

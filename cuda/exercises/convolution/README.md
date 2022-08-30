@@ -19,7 +19,7 @@ This tutorial will cover the following aspects of CUDA programming:
 --------------------
 ## Pre-requisites ##
 
-Ensure you are able to [connect to the UL HPC clusters](https://hpc.uni.lu/users/docs/access.html).
+Ensure you are able to [connect to the UL HPC clusters](https://hpc-docs.uni.lu/connect/access/).
 In particular, recall that the `module` command **is not** available on the access frontends.
 
 ```bash
@@ -126,14 +126,17 @@ git stash && git pull -r && git stash pop
 
 ### Get an interactive GPU job
 
+See also [documentation](https://hpc-docs.uni.lu/jobs/gpu/)
+
+
 ```bash
 ### ... either directly - dedicate 1/4 of available cores to the management of GPU card
 $> si-gpu -c7
 # /!\ warning: append -G 1 to really reserve a GPU
-# srun -p interactive --qos debug -C gpu -c7 -G 1 --mem-per-cpu 27000 --pty bash
+# salloc -p interactive --qos debug -C gpu -c7 -G 1 --mem-per-cpu 27000
 
 ### ... or using the HPC School reservation 'hpcschool-gpu'
-srun --reservation=hpcschool-gpu -p gpu --ntasks-per-node 1 -c7 -G 1 --pty bash
+salloc --reservation=hpcschool-gpu -p interactive -C gpu --ntasks-per-node 1 -c7 -G 1
 
 ### Load the required modules
 module load system/CUDA
@@ -358,7 +361,7 @@ ssh -D 1080 iris-cluster
 ```
  Reserve a single node  interactively:
 ```bash
-srun -p gpu -n1 -c1 --gres=gpu:1 --pty bash -i
+si-gpu
 ```
 
  Prepare virtual environment for the notebook:

@@ -30,7 +30,7 @@ This practical session will be organized as follows:
 * Asynchronous control of Parallel Applications (TP)
 * Type Transformation (TP)
 
-While TotalView is available on the [UL HPC Platform](http://hpc.uni.lu), the specific exercises proposed have been embedded into a Virtual Machine (VM) you will need to setup to run this practical session.
+While TotalView is available on the [UL HPC Platform](https://hpc.uni.lu), the specific exercises proposed have been embedded into a Virtual Machine (VM) you will need to setup to run this practical session.
 
 ## Pre-Requisites
 

@@ -1,5 +1,5 @@
 #!/bin/bash -l
-# Time-stamp: <Sat 2020-12-12 14:37 svarrette>
+# Time-stamp: <Mon 2021-11-15 21:43 svarrette>
 ################################################################################
 # Slurm launcher for embarrassingly parallel problems combining srun and GNU
 # parallel within a single node to runs multiple times the command ${TASK}
@@ -23,7 +23,7 @@
 #SBATCH --partition=batch
 #__________________________
 #SBATCH -N 1
-#SBATCH --ntasks-per-node 28
+#SBATCH --ntasks-per-node 28   # Optimized for 1 full node of iris
 #SBATCH -c 1                   # multithreading per task : -c --cpus-per-task <n> request
 #__________________________
 #SBATCH -o logs/%x-%j.out      # log goes into logs/<jobname>-<jobid>.out

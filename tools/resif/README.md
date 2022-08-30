@@ -27,7 +27,7 @@ The latest version of this document can be found on [Github](https://github.com/
 
 Before starting this tutorial, please make sure you are on a compute node of Gaia/Chaos and not on the access node. To get resources on a compute node, use the following command:
 `(access)$> oarsub -I -l core=1,walltime=1:00:00`
-(for more details about this command and the node reservation process on the clusters, please referer to the [ULHPC documentation](https://hpc.uni.lu/users/docs/oar.html).)
+(for more details about this command and the node reservation process on the clusters, please refer to the [ULHPC documentation](https://hpc.uni.lu/users/docs/oar.html).)
 
 Using the software available on the UL HPC platform is done through [Lmod](https://www.tacc.utexas.edu/research-development/tacc-projects/lmod) which provide a `module` command that we review in the following section.
 Lmod allows us to provide a multitude of applications and libraries in multiple versions. These tools use special files named "modules" that define ways to manage environment variables such as PATH, LD_LIBRARY_PATH and MANPATH, enabling the easy loading and unloading of application/library profiles and their dependencies.

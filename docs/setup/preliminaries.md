@@ -14,7 +14,7 @@ Kindly create in advance the various accounts for the **cloud services** we migh
 
 ## UL HPC account
 
-You need to have an account on our platform. See <https://hpc.uni.lu/users/get_an_account.html>
+You need to have an account on our platform. See <https://hpc-docs.uni.lu/accounts/>
 
 ## Software List
 
@@ -26,7 +26,7 @@ The following software should be installed, depending on your running platform. 
 | Mac OS        | [iTerm2](https://www.iterm2.com/)                                                               | enhanced Terminal                                       |                     |
 | Windows       | [Chocolatey](https://chocolatey.org/)                                                           | Package Manager for Windows                             | `choco install ...` |
 | Windows       | [Windows Subsystem for Linux](https://docs.microsoft.com/en-us/windows/wsl/install-win10) (WSL) | Emulation-like translation of Linux kernel system calls |                     |
-| Windows       | [Ubuntu over WSL](https://www.microsoft.com/en-us/p/ubuntu/9nblggh4msv6)                        | Linux Ubuntu on Windows                                 |                     |
+| Windows       | [Ubuntu over WSL](https://www.microsoft.com/en-us/p/ubuntu/9nblggh4msv6)                        | Linux Ubuntu on Windows (recommended)                   |                     |
 | Windows       | [Windows Terminal](https://github.com/microsoft/terminal)                                       |                                                         |                     |
 | Windows       | [MobaXTERM](https://mobaxterm.mobatek.net/)                                                     | Terminal with tabbed SSH client                         |                     |
 | Windows       | [SourceTree](https://www.sourcetreeapp.com/)                                                    | _(optional)_ enhanced git GUI                           |                     |
@@ -41,8 +41,28 @@ Follow the below **custom** instructions depending on your running platform and 
 
 #### Chocolatey: The Package Manager for Windows
 
-Follow Installation instructions on <https://chocolatey.org/> - install in an **administrator** PowerShell.
+Follow Installation instructions on <https://chocolatey.org/> - install it as an **administrator** PowerShell.
 You'll probably need to reboot your laptop.
+
+__Chocolatey Installation__
+
+With PowerShell, you must ensure Get-ExecutionPolicy is not Restricted.
+
+- Right click on the Windows starting boutton and choose Windows PowerShell
+
+- Run these three commands
+
+```bash
+Get-ExecutionPolicy
+### if it returns  Restricted then go to the next step
+Set-ExecutionPolicy AllSigned   ## or Set-ExecutionPolicy Bypass -Scope Process
+Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
+```
+- Then use __chocolatey__ to install a software
+
+```bash
+choco.exe install virtualbox
+```
 
 #### WSL and Ubuntu over Windows
 
@@ -68,7 +88,7 @@ Then  __Enable the Developer mode__
 - In Start Menu: select "Developers Settings"
 - Turn on Developer Mode
 
-Now you can **Intall Ubuntu within the [Microsoft Store](https://aka.ms/wslstore)**
+Now you can **Install Ubuntu within the [Microsoft Store](https://aka.ms/wslstore)**
 
 ![](https://docs.microsoft.com/en-us/windows/wsl/media/store.png)
 
@@ -94,9 +114,12 @@ You will need to enable by default the good font (top left window icon / Propert
 #### Microsoft Terminal
 
 You probably want to install then  [Windows Terminal](https://github.com/microsoft/terminal)
+It offers the ability to use multiple shell environment in one terminal.
 
-* Install the [Windows Terminal from the Microsoft Store](https://aka.ms/terminal).
+* Install the [Windows Terminal from the Microsoft Store](https://aka.ms/terminal). [Other useful link](https://ohmyposh.dev/docs/windows)
 * Install the [Cascadia Code PL](https://github.com/microsoft/cascadia-code/releases) font
+* Install the [Meslo LGM NF](https://ohmyposh.dev/docs/fonts) font
+* [Other useful link](https://ohmyposh.dev/docs/windows)
 
 
 __Changing the Powershell prompt__
@@ -106,7 +129,8 @@ Install posh-git and oh-my-posh:
 ```bash
 Install-Module posh-git -Scope CurrentUser
 Install-Module oh-my-posh -Scope CurrentUser
-Set-Theme Paradox
+Install-Module -Name PSReadLine -Scoope CurrentUser -Force -SkipPublisherCheck 
+Set-PoshPrompt -Theme Agnoster
 ```
 If you get an error message "Running scripts is disabled on this system", you have to change the PowerShell execution policy which doesn't allow to run scripts:
 
@@ -120,16 +144,29 @@ To make these changes permanent, append the following lines in the Powershell pr
 ```bash
 Import-Module posh-git
 Import-Module oh-my-posh
-Set-Theme Paradox
+Set-PoshPrompt -Theme Agnoster
 ```
 
-You will also need to enable the [Cascadia Code PL](https://github.com/microsoft/cascadia-code/releases) font by addin into the Windows Terminal Parameters the following lines in the `settings.json` files under the default
+You will also need to enable the [Cascadia Code PL](https://github.com/microsoft/cascadia-code/releases) font by adding into the Windows Terminal Parameters the following lines in the `settings.json` files under the default
 
 ```json
 "defaults":
 {
-  // SETTINGS TO APPLY TO ALL PROFILES
-  "fontFace": "Cascadia Code PL",
+    "font": 
+            {
+                "face": "MesloLGM NF"
+            }
+        },
+        "list": 
+        [
+            {
+                "commandline": "powershell.exe",
+                "guid": "{61c54bbd-c2c6-5271-96e7-009a87ff44bf}",
+                "hidden": false,
+                "name": "Windows PowerShell"
+                "fontFace": "MesloLGM NF",
+            },
+        ]
 },
 ```
 
@@ -138,8 +175,8 @@ You will also need to enable the [Cascadia Code PL](https://github.com/microsoft
 Now you can install MobaXterm using [chocolatey]( https://chocolatey.org/) (within an _administrator_ Powershell -- You may need to enable the appropriate powerline font by defaults in the Properties of the Administrator Powershell):
 
 ```bash
-$> choco.exe install mobaxterm          # Enhanced X11 Terminal for Windows
-$> choco.exe install vcxsrv
+$ choco.exe install mobaxterm          # Enhanced X11 Terminal for Windows
+$ choco.exe install vcxsrv
 ```
 
 Alternatively, you can consider using [VcXsrv](https://sourceforge.net/projects/vcxsrv/) as an X-server yet our training sessions will assume you rely on MobaXterm.
@@ -179,11 +216,11 @@ You probably want to install the following editors/IDE:
 Then, while most of the below software are covered in the trainings, if you want a fast setup, once you have Chocolatey installed, run the following within an _administrator_ Powershell:
 
 ~~~bash
-$> choco.exe install git gitflow-avh    # (newer) Git stuff
-$> choco.exe install mobaxterm          # Enhanced X11 Terminal for Windows
-$> choco.exe install virtualbox         # install virtualbox -- see https://www.virtualbox.org/
-$> choco.exe install vagrant            # install Vagrant    -- see https://www.vagrantup.com/downloads.html
-$> choco.exe install docker-desktop     # install Docker -- https://docs.docker.com/engine/installation/mac/
+$ choco.exe install git gitflow-avh    # (newer) Git stuff
+$ choco.exe install mobaxterm          # Enhanced X11 Terminal for Windows
+$ choco.exe install virtualbox         # install virtualbox -- see https://www.virtualbox.org/
+$ choco.exe install vagrant            # install Vagrant    -- see https://www.vagrantup.com/downloads.html
+$ choco.exe install docker-desktop     # install Docker -- https://docs.docker.com/engine/installation/mac/
 ~~~
 
 #### Update to WSL 2
@@ -199,23 +236,23 @@ Enable-WindowsOptionalFeature -Online -FeatureName VirtualMachinePlatform
 Then you can get the list of your WSL systems and convert them as follows:
 
 ```bash
-$> wsl -l -v
+$ wsl -l -v
   NAME     STATE     VERSION
 * Ubuntu   Stopped   1
 # Convert -- Adapt the Distribution name accordinaly
-$> wsl --set-version Ubuntu 2
+$ wsl --set-version Ubuntu 2
 ```
 
 For setting all future distributions to use WSL 2, you will need to use the following command:
 
 ```bash
-$> wsl --set-default-version 2
+$ wsl --set-default-version 2
 ```
 
 Finally, verify that your changes worked:
 
 ```bash
-$> wsl -l -v    # OR wsl --list --verbose
+$ wsl -l -v    # OR wsl --list --verbose
   NAME     STATE     VERSION
 * Ubuntu   Stopped   2
 ```
@@ -230,16 +267,16 @@ Install [iterm2](https://iterm2.com/) and [Homebrew](https://brew.sh/)
 Once you have [Homebrew](http://brew.sh/) installed:
 
 ~~~bash
-$> brew install git-core git-flow    # (newer) Git stuff
-$> brew install mkdocs               # (optional) install mkdocs
-$> brew install pyenv pyenv-virtualenv direnv # see https://varrette.gforge.uni.lu/tutorials/pyenv.html
-$> brew install virtualbox      # install virtualbox -- see https://www.virtualbox.org/
-$> brew install vagrant         # install Vagrant    -- see https://www.vagrantup.com/downloads.html
-$> brew install vagrant-manager # see http://vagrantmanager.com/
-$> brew install docker          # install Docker -- https://docs.docker.com/engine/installation/mac/
+$ brew install git git-flow    # (newer) Git stuff
+$ brew install mkdocs               # (optional) install mkdocs
+$ brew install pyenv pyenv-virtualenv direnv # see https://varrette.gforge.uni.lu/tutorials/pyenv.html
+$ brew install virtualbox      # install virtualbox -- see https://www.virtualbox.org/
+$ brew install vagrant         # install Vagrant    -- see https://www.vagrantup.com/downloads.html
+$ brew install vagrant-manager # see http://vagrantmanager.com/
+$ brew install docker          # install Docker -- https://docs.docker.com/engine/installation/mac/
 # Note that you probably want to install Firefox, Chrome etc. with brew
-$> brew install firefox
-$> brew install google-chrome
+$ brew install firefox
+$ brew install google-chrome
 ~~~
 
 _Note_: later on, you might wish to use the following shell function to update the software installed using [Homebrew](http://brew.sh/).
@@ -259,9 +296,9 @@ bup () {
 
 ~~~bash
 # Adapt the package names (and package manager) in case you are using another Linux distribution.
-$> sudo apt-get update
-$> sudo apt-get install git git-flow build-essential
-$> sudo apt-get install rubygems virtualbox vagrant virtualbox-dkms
+$ sudo apt-get update
+$ sudo apt-get install git git-flow build-essential
+$ sudo apt-get install rubygems virtualbox vagrant virtualbox-dkms
 ~~~
 
 For [Docker](https://docker.com/), choose your distribution from https://docs.docker.com/engine/installation/linux/
@@ -299,11 +336,11 @@ __Git__:
 (Eventually) Make yourself known to Git
 
 ~~~bash
-$> git config –-global user.name  "Firstname LastName"              # Adapt accordingly
-$> git config –-global user.email "Firstname.LastName@domain.org"   # Adapt with your mail
+$ git config –-global user.name  "Firstname LastName"              # Adapt accordingly
+$ git config –-global user.email "Firstname.LastName@domain.org"   # Adapt with your mail
 # Eventually, if you have a GPG key, use the public key to sign your commits/tags
-$> git config --global user.helper osxkeychain       # Only on Mac OS
-$> git config --global user.signingkey <fingerprint> # Ex: git config --global user.signingkey 5D08BCDD4F156AD7
+$ git config --global user.helper osxkeychain       # Only on Mac OS
+$ git config --global user.signingkey <fingerprint> # Ex: git config --global user.signingkey 5D08BCDD4F156AD7
 # you can get your key fingerprint (prefixed by 0x) with 'gpg -K --fingerprint | grep sec'
 ~~~
 
@@ -316,7 +353,7 @@ __Vagrant__
 Ensure that vagrant is running and has the appropriate plugins from the command line
 
 ```bash
-$> vagrant --version
+$ vagrant --version
 Vagrant 2.2.13
 ```
 
@@ -325,7 +362,7 @@ __Docker (only required for containers tutorials)__
 Launch the `Docker` app and then check that the [Docker](https://www.docker.com/) works:
 
 ~~~bash
-$> docker info
+$ docker info
 Containers: 9
  Running: 0
  Paused: 0
@@ -338,7 +375,7 @@ Server Version: 18.03.1-ce
 *  Pull the docker containers we might need for the concerned tutorial
 
 ~~~bash
-$> docker pull centos
+$ docker pull centos
 ~~~
 
 * Login onto you [Docker hub account](https://hub.docker.com/) (take note of your Docker Hub ID and password).

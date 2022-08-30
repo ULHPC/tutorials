@@ -1,11 +1,10 @@
 #!/bin/bash -l
-# Time-stamp: <Fri 2018-11-23 16:17 svarrette>
+# Time-stamp: <Wed 2021-11-17 19:31 svarrette>
 ################################################################################
 # build.OSU - Build OSU Micro-benchmarks
 ################################################################################
 # set -e
 #SBATCH --partition=batch
-#SBATCH --qos normal
 #SBATCH --time=00:20:00
 #SBATCH --nodes 1
 #SBATCH --ntasks-per-node=1
@@ -16,6 +15,7 @@ if [ -f  /etc/profile ]; then
 fi
 
 ### Default mode
+BENCH=OSU
 MODE='openmpi'
 
 STARTDIR="$(pwd)"
@@ -31,15 +31,30 @@ else
 fi
 
 
-OSU_VERSION=5.5
-OSU_SRCDIR=
-#TOP_SRCDIR="${TOP_SRCDIR}/src/osu-micro-benchmarks-${OSU_VERSION}"
+VERSION="5.8"
+SRCDIR=
+
+#TOP_SRCDIR="${TOP_SRCDIR}/src/osu-micro-benchmarks-${VERSION}"
 
 ######################
 print_error_and_exit() {
     echo "*** ERROR *** $*"
     exit 1
 }
+usage() {
+    cat <<EOF
+NAME
+  $(basename $0): Build MVAPICH OSU ${VERSION}
+	https://mvapich.cse.ohio-state.edu/benchmarks/
+
+USAGE
+  $0 {openmpi | intel }
+
+  This will build everything under build.<mpisuit>
+
+EOF
+}
+
 
 ############################################
 ################# Let's go #################
@@ -49,20 +64,19 @@ print_error_and_exit() {
 # Check for command-line options
 while [ $# -ge 1 ]; do
     case $1 in
-        -v | --version | --osu-version)
-            shift;
-            OSU_VERSION=$1;;
-        -d | --srcdir)
-            shift;
-            OSU_SRCDIR=$1;;
-        openmpi | mvapich2 | intel | ictce)
-            MODE=$1;;
+	-h | --help) usage; exit 0;;
+        -v | --version) shift; VERSION="$1";;
+        -t | --topdir)  shift; TOP_SRCDIR=$1;;
+        -s | --srcdir)  shift; SRCDIR=$1;;
+        openmpi | intel)       MODE=$1;;
+        *) print_error_and_exit "unrecognized option $1"
     esac
     shift
 done
 
-[ -z "${OSU_SRCDIR}" ]   && OSU_SRCDIR="${TOP_SRCDIR}/src/osu-micro-benchmarks-${OSU_VERSION}"
-[ ! -d "${OSU_SRCDIR}" ] && print_error_and_exit "unable to find the OSU source directory" && exit 1
+[ -z "${SRCDIR}" ]   && SRCDIR="${TOP_SRCDIR}/src/osu-micro-benchmarks-${VERSION}"
+echo "${SRCDIR}"
+[ ! -d "${SRCDIR}" ] && print_error_and_exit "unable to find the OSU source directory" && exit 1
 
 build_dir=${TOP_SRCDIR}/build.${MODE}
 if [ ! -d "${build_dir}" ]; then
@@ -73,7 +87,6 @@ fi
 case ${MODE} in
     openmpi)  CCopt="CC=mpicc";  MODULE=mpi/OpenMPI;;
     mvapich*) CCopt="CC=mpicc";  MODULE=mpi/MVAPICH2;;
-    ictce)    CCopt="CC=mpiicc"; MODULE=toolchain/ictce;;
     intel)    CCopt="CC=mpiicc CXX=mpiicpc"; MODULE=toolchain/intel;;
 esac
 
@@ -83,9 +96,9 @@ module load ${MODULE}
 module list
 
 if [ -d "${build_dir}" ]; then
-    echo "=> installing OSU Micro-benchmarks with ${MODULE} in ${build_dir}"
+    echo "=> installing OSU Micro-benchmarks ${VERSION} with ${MODULE} in ${build_dir}"
     cd ${build_dir}
-    ${OSU_SRCDIR}/configure ${CCopt} CFLAGS=-I${OSU_SRCDIR}/util --prefix=$(pwd)
+    ${SRCDIR}/configure ${CCopt} CFLAGS=-I${SRCDIR}/util --prefix=$(pwd)
     make && make install
     cd -
 fi

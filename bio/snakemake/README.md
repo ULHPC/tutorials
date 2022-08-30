@@ -540,7 +540,7 @@ Quit your current job and start a new one with more cores to test the multithrea
 
 ```bash
 (node)$> exit
-(access)$> srun --cpu-bind=none -p interactive -t 0-0:15:0 -N 1 -c 6 --ntasks-per-node=1 --pty bash -i
+(access)$> srun --cpu-bind=none -p interactive -t 0-0:15:0 -N 1 -c 6 --ntasks-per-node=1
 (node)$> conda activate bioinfo_tutorial
 (node)$> cd $SCRATCH/bioinfo_tutorial
 ```
@@ -607,7 +607,8 @@ as long as the software you use only does multithreading or doesn't scale at all
 
 Make sure you quit your job and run the following from the access node.
 
-Now we need to map the variables defined in `cluster.yaml` to the command-line parameters of `sbatch`. Check the documentation on the [HPC website](https://hpc.uni.lu/users/docs/slurm.html#basic-usage-commands) for details about the parameters.
+Now we need to map the variables defined in `cluster.yaml` to the command-line parameters of `sbatch`. Check the documentation on the [HPC website](https://hpc-docs.uni.lu/slurm/) for details about the parameters.
+
 
 The meaning of the option `-j` changes when running in cluster mode to denote the maximum number of simultaneous jobs.
 
@@ -644,7 +645,7 @@ Now that we have completed the workflow, let's have a look at the results.
 
 For visualisation, [download IGV](http://software.broadinstitute.org/software/igv/download), or use any other genome browser of your choice.
 
-To copy the results from the cluster to your laptop, run the following in a local terminal (Linux and MacOS) or a MobaXterm local session (Windows) and replace `<your_username>` with your ULHPC user login. For alternative ways to transfer files, see the [documentation on the HPC website](https://hpc.uni.lu/users/docs/filetransfer.html). Pay attention in which directory you are, so you can find the files again.
+To copy the results from the cluster to your laptop, run the following in a local terminal (Linux and MacOS) or a MobaXterm local session (Windows) and replace `<your_username>` with your ULHPC user login. For alternative ways to transfer files, see the [documentation on the HPC website](https://hpc-docs.uni.lu/data/transfer/). Pay attention in which directory you are, so you can find the files again.
 
 ```bash
 (laptop)$> mkdir bioinfo_tutorial

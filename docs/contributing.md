@@ -71,20 +71,57 @@ The objective of this tutorial is to cover XXX, in particular:
 --------------------
 ## Pre-requisites ##
 
-Ensure you are able to [connect to the UL HPC clusters](https://hpc.uni.lu/users/docs/access.html)
-**For all tests and compilation with Easybuild, you MUST work on a computing node**
+Ensure you are able to [connect to the UL HPC clusters](https://hpc-docs.uni.lu/connect/access/)
+In particular, recall that the `module` command **is not** available on the access frontends.
 
-~~~bash
-# /!\ FOR ALL YOUR COMPILING BUSINESS, ENSURE YOU WORK ON A COMPUTING NODE
-# Have an interactive job
-############### iris cluster (slurm) ###############
-(access-iris)$> si -n 2 -t 2:00:00        # 2h interactive reservation
-# OR (long version)
-(access-iris)$> srun -p interactive -n 2 -t 2:00:00 --pty bash
+Now you'll need to pull the latest changes in your working copy of the [ULHPC/tutorials](https://github.com/ULHPC/tutorials) you should have cloned in `~/git/github.com/ULHPC/tutorials` (see ["preliminaries" tutorial](../../preliminaries/))
 
-############### gaia/chaos clusters (OAR) ###############
-(access-{gaia|chaos})$> oarsub -I -l nodes=1/core=2,walltime=2
-~~~
+``` bash
+(access)$> cd ~/git/github.com/ULHPC/tutorials
+(access)$> git pull
+```
+
+Now **configure a dedicated directory `~/tutorials/<topic>` for this session**
+
+``` bash
+# return to your home
+(access)$> mkdir -p ~/tutorials/<topic>
+(access)$> cd ~/tutorials/<topic>
+# create a symbolic link to the reference material
+(access)$> ln -s ~/git/github.com/ULHPC/tutorials/<path> ref.d
+```
+
+**Advanced users** (_eventually_ yet __strongly__ recommended), create a [Tmux](https://github.com/tmux/tmux/wiki) session (see [Tmux cheat sheet](https://tmuxcheatsheet.com/) and [tutorial](https://www.howtogeek.com/671422/how-to-use-tmux-on-linux-and-why-its-better-than-screen/)) or [GNU Screen](http://www.gnu.org/software/screen/) session you can recover later. See also ["Getting Started" tutorial ](../../beginners/).
+
+``` bash
+# /!\ Advanced (but recommended) best-practice:
+#     Always work within a TMux or GNU Screen session named '<topic>' (Adapt accordingly)
+(access-aion)$> tmux new -s HPC-school   # Tmux
+(access-iris)$> screen -S HPC-school     # GNU Screen
+#  TMux     | GNU Screen | Action
+# ----------|------------|----------------------------------------------
+#  CTRL+b c | CTRL+a c   | (create) creates a new Screen window. The default Screen number is zero.
+#  CTRL+b n | CTRL+a n   | (next) switches to the next window.
+#  CTRL+b p | CTRL+a p   | (prev) switches to the previous window.
+#  CTRL+b , | CTRL+a A   | (title) rename the current window
+#  CTRL+b d | CTRL+a d   | (detach) detaches from a Screen -
+# Once detached:
+#   tmux ls  | screen -ls : list available screen
+#   tmux att | screen -x  : reattach to a past screen
+```
+
+Let's get an interactive jobs:
+
+```bash
+### Access to ULHPC cluster (if not yet done)
+(laptop)$> ssh aion-cluster    # or iris-cluster
+### Have an interactive job
+# ... either directly
+(access)$> si [...]
+# ... or using the HPC School reservation 'hpcschool'if needed  - use 'sinfo -T' to check if active and its name
+# (access)$> si --reservation=hpcschool [...]
+(node)$>
+```
 
 -----------------
 ## Objective 1 ##

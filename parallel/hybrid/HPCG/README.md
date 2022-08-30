@@ -1,6 +1,6 @@
 -*- mode: markdown; mode: visual-line; fill-column: 80 -*-
 
-Author: Valentin Plugaru <Valentin.Plugaru@uni.lu>  
+Author: Valentin Plugaru <Valentin.Plugaru@uni.lu>
 Copyright (c) 2015-2017 UL HPC Team  <hpc-sysadmins@uni.lu>
 
 ------------------------------------------------------
@@ -10,23 +10,23 @@ Copyright (c) 2015-2017 UL HPC Team  <hpc-sysadmins@uni.lu>
 
 
 The objective of this tutorial is to compile and run one of the newest HPC benchmarks, [High Performance Conjugate Gradients (HPCG)](http://www.hpcg-benchmark.org/), on top of the
-[UL HPC](http://hpc.uni.lu) platform.
+[UL HPC](https://hpc.uni.lu) platform.
 
 You can work in groups for this training, yet individual work is encouraged to ensure you understand and practice the usage of MPI programs on an HPC platform.
 If not yet done, you should consider completing the [OSU Micro-benchmark](../OSU_MicroBenchmarks/) and [HPL](../HPL/) tutorials.
 
-In all cases, ensure you are able to [connect to the UL HPC  clusters](https://hpc.uni.lu/users/docs/access.html).
+In all cases, ensure you are able to [connect to the UL HPC  clusters]((https://hpc-docs.uni.lu/connect/access/).
 
 
 ```bash
 # /!\ FOR ALL YOUR COMPILING BUSINESS, ENSURE YOU WORK ON A (at least half) COMPUTING NODE
 # Have an interactive job
 (access)$> si -n 14                                      # iris
-(access)$> srun -p interactive --qos debug -n 14 --pty bash  # iris (long version)
+(access)$> salloc -p interactive --qos debug -n 14       # iris (long version)
 (access)$> oarsub -I -l enclosure=1/nodes=1,walltime=4   # chaos / gaia
 ```
 
-**Advanced users only**: rely on `screen` (see  [tutorial](http://support.suso.com/supki/Screen_tutorial) or the [UL HPC tutorial](https://hpc.uni.lu/users/docs/ScreenSessions.html) on the  frontend prior to running any `oarsub` or `srun/sbatch` command to be more resilient to disconnection.
+**Advanced users only**: rely on `screen` (see  [tutorial](http://support.suso.com/supki/Screen_tutorial) or the [UL HPC tutorial](https://ulhpc-tutorials.readthedocs.io/en/latest/linux-shell/#persistent-terminal-sessions-using-gnu-screen) on the frontend prior to running any `oarsub` or `srun/sbatch` command to be more resilient to disconnection.
 
 The latest version of this tutorial is available on [Github](https://github.com/ULHPC/tutorials/tree/devel/advanced/HPCG).
 Finally, advanced MPI users might be interested to take a look at the [Intel Math Kernel Library Link Line Advisor](https://software.intel.com/en-us/articles/intel-mkl-link-line-advisor).

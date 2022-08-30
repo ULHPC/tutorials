@@ -1,0 +1,179 @@
+---
+title: "Datasaurus with targets"
+author: "Aurelien Ginolhac"
+date: '2021-11-19'
+output: html_document
+---
+
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(targets)
+library(dplyr)
+library(ggplot2)
+# Specify the project thanks to 
+Sys.setenv(TAR_PROJECT = "datasaurus")
+```
+
+By default each **target** is run inside a fresh R session (using `callr`) and thus no packages are loaded.
+You can specify them for each or use a global 
+
+
+This guided practical will demonstrate that the **tidyverse** allows to compute summary statistics and visualize datasets efficiently.
+This dataset is already stored in a **tidy** `tibble`, cleaning steps will come in future practicals.
+
+## `datasauRus` package
+
+
+**targets** has its own machinery that `knitr` ([>= v1.34](https://github.com/yihui/knitr/releases/tag/v1.34)) now recognizes the `targets` keyword.
+
+`tar_interactive` populates the **Global Env** if set to `TRUE`.
+
+If executed, or during the knitting process, the `_targets_r` folder is created/updated with R script corresponding to the chunk name. Here `_targets_r/data.R` will contain the code in the chunk.
+
+
+`tar_url()` will check if the data was updated since last visit
+
+```{targets data, tar_interactive = FALSE}
+library(tarchetypes)
+library(dplyr)
+tar_url(ds_file, "https://raw.githubusercontent.com/lockedata/datasauRus/master/inst/extdata/DatasaurusDozen.tsv")
+```
+
+Now, a new script `_targets_r/read_data.R` is created. Both will be read by the main `_targets.R` that **Targets markdown** creates if absent.
+
+```{targets read_data, tar_interactive = FALSE}
+tar_target(ds, read_tsv(ds_file), packages = "readr")
+```
+
+`tar_simple` sets to `TRUE` allows to create a **targets** with the chunk name.
+
+
+##### Reuse the above command, and now colored by the `dataset` column
+
+```{targets first_plot, tar_simple = TRUE}
+library(ggplot2)
+ggplot(ds) + 
+  aes(x, y, colour = dataset) +
+  geom_point()
+```
+
+Rest of the plotting targets are written altogether. And are bundled using `list()`
+
+```{targets plotting}
+list(
+  tar_target(dino, ds %>%
+               filter(dataset == "dino") %>%
+               ggplot() +
+               aes(x, y) +
+               geom_point(), 
+             packages = "ggplot2"),
+  tar_target(all_facets,
+             ds %>%
+               ggplot(aes(x = x, y = y, colour = dataset)) +
+               geom_point() +
+               facet_wrap(~ dataset, ncol = 3),
+             packages = "ggplot2")
+)
+```
+
+```{r}
+tar_visnetwork()
+```
+
+
+```{r}
+tar_make()
+```
+
+
+```{r}
+tar_visnetwork()
+```
+
+
+## Explore the dataset
+
+
+```{r, echo = FALSE}
+tar_read(ds) 
+```
+
+
+`tar_load()` will read the target object and name it with its name, populating the **Global Env**
+
+```{r}
+tar_load(ds)
+```
+
+
+## Check summary statistics per dataset
+
+##### Compute both mean and standard deviation (sd) in one go using `across()`
+
+
+```{r}
+ds %>%
+  group_by(dataset) %>%
+  # across works with first on which columns and second on what to perform on selection
+  # 2 possibilities to select columns
+  # summarise(across(where(is.double), list(mean = mean, sd = sd)))
+  # by default in 1.0.5, grouped variables are excluded from across
+  # summarise(across(everything(), list(mean = mean, sd = sd)))
+  summarise(across(c(x, y), list(mean = mean, sd = sd)))
+```
+
+
+all mean and sd are the same for the 13 datasets
+
+
+## Plot the _datasauRus_
+
+```{r, fig.height = 8, fig.asp = 1, solution = TRUE}
+tar_read(first_plot)
+```
+
+
+
+##### Facet all datasets
+
+```{r, solution = TRUE}
+tar_read(all_facets)
+```
+
+
+##### Tweak the theme and use the `theme_void` and remove the legend
+
+```{r, fig.height = 8, fig.asp = 1}
+tar_read(all_facets) +
+  theme_void()
+```
+
+##### Are the datasets actually that similar?
+
+
+No ;) We were fooled by the summary stats
+
+
+
+## Animation
+
+Plots can be animated, see for example what can be done with [`gganimate`](https://gganimate.com/).
+Instead of panels, **states** are made across `datasets` and **transitions** smoothed with an afterglow effect.
+
+
+![](https://i.imgur.com/51GcnEp.png)
+
+
+## Conclusion
+
+> Never trust summary statistics alone; always visualize your data | Alberto Cairo
+
+**Authors**
+
+- Alberto Cairo, (creator)
+- Justin Matejka
+- George Fitzmaurice
+- Lucy McGowan
+
+from this [post](https://itsalocke.com/datasaurus-now-cran/)

@@ -1,0 +1,6 @@
+dask[complete]
+matplotlib
+dask-jobqueue
+graphviz
+xgboost
+jupyter

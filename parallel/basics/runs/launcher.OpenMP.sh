@@ -1,5 +1,5 @@
 #! /bin/bash -l
-# Time-stamp: <Mon 2020-12-14 12:44 svarrette>
+# Time-stamp: <Wed 2021-11-17 18:29 svarrette>
 ################################################################################
 # Default launcher for OpenMP jobs
 # Usage:
@@ -19,6 +19,7 @@
 #SBATCH --ntasks-per-node 1    #
 #SBATCH -c 28                  # multithreading per task : -c --cpus-per-task <n> request
 #__________________________    #      (ideally) as many OpenMP threads as cores available
+#                              #  In particular, set to 128 on Aion
 #SBATCH -o logs/%x-%j.out      # log goes into logs/<jobname>-<jobid>.out
 mkdir -p logs
 
@@ -38,7 +39,7 @@ MODULE=toolchain/foss
 ######################################################
 # /!\ ADAPT below variables to match your own settings
 APPDIR=${APPDIR:=${HOME}/tutorials/OpenMP-MPI/basics/bin}    # bin directory holding your OpenMP builds
-APP=${APP:=hello_openmp}     # OpenMP application - intel builds expected to be prefixed by intel_<APP>
+APP=${APP:=${ULHPC_CLUSTER}_hello_openmp}     # OpenMP application - intel builds expected to be prefixed by intel_<APP>
 # Eventual options to be passed to the MPI program
 OPTS=
 
@@ -67,8 +68,8 @@ OPTIONS:
   -n --dry-run: Dry run mode
 
 Example:
-  [sbatch] $0                          # run FOSS  build   hello_openmp
-  [sbatch] $0 intel                    # run intel build   intel_hello_openmp
+  [sbatch] $0                          # run FOSS  build   <cluster>_hello_openmp
+  [sbatch] $0 intel                    # run intel build   intel_<cluster>_hello_openmp
   [sbatch] $0 foss matrix_mult_openmp  # run FOSS  build   matrix_mult_openmp
   EXE=$HOME/bin/datarace [sbatch] $0 intel # run intel build  ~/bin/datarace
 EOF
@@ -95,7 +96,7 @@ export OMP_NUM_THREADS=${SLURM_CPUS_PER_TASK:-1}
 
 cat <<EOF
 # ==============================================================
-# => OpenMP run of '${APP}' with ${MODULE}
+# => OpenMP run of '$(basename ${EXE})' with ${MODULE}
 #    OMP_NUM_THREADS=${OMP_NUM_THREADS}
 # ==============================================================
 EOF

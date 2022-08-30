@@ -7,7 +7,7 @@
 
 [![](https://github.com/ULHPC/tutorials/raw/devel/deep_learning/scalable/cover_slides.png)](https://github.com/ULHPC/tutorials/raw/devel/deep_learning/scalable/slides.pdf)
 
-The objective of this tutorial is to practice running Horovod (and Keras/TensorFlow) on the UL HPC [iris cluster](https://hpc.uni.lu/systems/iris/).
+The objective of this tutorial is to practice running Horovod (and Keras/TensorFlow) on the UL HPC [iris cluster](https://hpc-docs.uni.lu/systems/iris/).
 
 It's important that you read the [slides](https://github.com/ULHPC/tutorials/blob/devel/deep_learning/scalable/slides.pdf?raw=true) first.
 
@@ -59,7 +59,7 @@ horovodrun -np $SLURM_NTASKS \
 
 For this part we will use the (excellent) [SC18 Tutorial: Deep Learning At Scale](https://github.com/NERSC/sc18-dl-tutorial).
 
-You will need to `git clone https://github.com/NERSC/sc18-dl-tutorial` on the Iris cluster (preferrably under your $SCRATCH).
+You will need to `git clone https://github.com/NERSC/sc18-dl-tutorial` on the Iris cluster (preferably under your $SCRATCH).
 Then we will need to adapt its input configuration files under `configs` and the launcher `scripts`.
 
 You will find under the current (UL HPC) [tutorial's repository ](https://github.com/ULHPC/tutorials/tree/devel/deep_learning/scalable) customized files to be used for the Iris cluster:

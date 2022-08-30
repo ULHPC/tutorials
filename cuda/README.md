@@ -28,7 +28,7 @@ More information can be obtained from [the guide][1].
 --------------------
 ## Pre-requisites ##
 
-Ensure you are able to [connect to the UL HPC clusters](https://hpc.uni.lu/users/docs/access.html).
+Ensure you are able to [connect to the UL HPC clusters](https://hpc-docs.uni.lu/connect/access/).
 In particular, recall that the `module` command **is not** available on the access frontends.
 
 ```bash
@@ -54,14 +54,14 @@ Reserve a node with one GPU for interactive development, load the necessary modu
 
 As usual, more information can be found in the [documentation][4].
 
-[4]: https://hpc.uni.lu/users/docs/gpu.html
+[4]: https://hpc-docs.uni.lu/jobs/gpu/
 
 ```bash
 ### Have an interactive GPU job
 # ... either directly
 (access)$> si-gpu
 # ... or using the HPC School reservation 'hpcschool-gpu' if needed  - use 'sinfo -T' to check if active and its name
-# (access)$> srun -p gpu -G 1 --reservation=hpcschool-gpu --pty bash -i
+# (access)$> si-gpu --reservation=hpcschool-gpu
 $ nvidia-smi
 $ nvcc  # ?
 ```
@@ -101,9 +101,6 @@ $ module save cuda  # save our environment
 $ module purge
 $ module restore cuda
 ```
-
-Note: you can compile CUDA applications on a node without GPU, using the same modules.
-You will not however be able to execute them.
 
 In case there is not enough GPU cards available, you can submit passive jobs, using `sbatch`.
 Below is an example `sbatch` file, to remote compile, run and profile a source file:

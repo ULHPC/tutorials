@@ -1,5 +1,5 @@
 #! /bin/bash -l
-# Time-stamp: <Mon 2020-12-14 13:05 svarrette>
+# Time-stamp: <Wed 2021-11-17 18:30 svarrette>
 ###############################################################################
 # Default launcher for MPI jobs
 # Usage:
@@ -16,6 +16,7 @@
 #__________________________
 #SBATCH -N 2
 #SBATCH --ntasks-per-node 28   # (ideally) as many MPI process as cores available
+#                              #    In particular, set to 128 on Aion
 #SBATCH -c 1                   # multithreading per task : -c --cpus-per-task <n> request
 #__________________________
 #SBATCH -o logs/%x-%j.out      # log goes into logs/<jobname>-<jobid>.out
@@ -38,7 +39,7 @@ MODULE=mpi/OpenMPI
 ######################################################
 # /!\ ADAPT below variables to match your own settings
 APPDIR=${APPDIR:=${HOME}/tutorials/OpenMP-MPI/basics/bin}    # bin directory holding your MPI builds
-APP=${APP:=hello_mpi}  # MPI application - OpenMPI/intel/... builds expected to be prefixed by
+APP=${APP:=${ULHPC_CLUSTER}_hello_mpi}  # MPI application - OpenMPI/intel/... builds expected to be prefixed by
 #                                          openmpi_/intel_/<suit>_
 # Eventual options to be passed to the MPI program
 OPTS=
@@ -65,8 +66,8 @@ OPTIONS:
   -n --dry-run: Dry run mode
 
 Example:
-  [sbatch] $0                          # run OpenMPI build    openmpi_hello_mpi
-  [sbatch] $0 intel                    # run Intel MPI build  intel_hello_mpi
+  [sbatch] $0                          # run OpenMPI build    openmpi_<cluster>_hello_mpi
+  [sbatch] $0 intel                    # run Intel MPI build  intel_<cluster>_hello_mpi
   [sbatch] $0 openmpi matrix_mult_mpi  # run OpenMPI build    openmpi_matrix_mult_mpi
   EXE=$HOME/bin/xhpl [sbatch] $0 intel # run intel build  ~/bin/xhpl
 EOF
@@ -78,7 +79,7 @@ while [ $# -ge 1 ]; do
         -h | --help) usage; exit 0;;
         -n | --noop | --dry-run) CMD_PREFIX=echo;;
         intel*   | --intel*)   SUITE='intel';    MODULE=toolchain/intel;;
-        openmpi* | --openmpi*) SUITE='openmpi';  MODULE=mpi/OpenMPI;;
+        foss | openmpi* | --openmpi*) SUITE='openmpi';  MODULE=mpi/OpenMPI;;
         mvapich* | --mvapich*) SUITE='mvapich2'; MODULE=mpi/MVAPICH2;;
         *) APP=$1; shift; OPTS=$*; break;;
     esac
@@ -91,7 +92,7 @@ done
 
 cat <<EOF
 # ==============================================================
-# => MPI run of '${APP}' with the ${SUITE} MPI suite
+# => MPI run of '$(basename ${EXE})' with the ${SUITE} MPI suite
 # ==============================================================
 EOF
 
