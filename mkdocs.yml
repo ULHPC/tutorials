@@ -26,6 +26,7 @@ pages:
 - Sequential/Embarrassingly parallel jobs:
   - Overview: 'sequential/basics/index.md'
   - GNU Parallel: 'sequential/gnu-parallel/index.md'
+  - Advanced Parallel-Slurm: 'sequential/manytasks-manynodes/index.md'
 - Serial Tasks in Action:
   - Overview: 'sequential/examples/index.md'
   - Example/Object Recognition: 'sequential/examples/object_recognition.md'
