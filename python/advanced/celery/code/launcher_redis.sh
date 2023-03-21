@@ -8,7 +8,7 @@
 # with last 3 digits corresponding to $SLURM_JOB_ID
 PORT=$(($SLURM_JOB_ID % 1000 + 64000))
 # IP of the node
-REDIS_SERVER_IP=$(facter ipaddress)
+REDIS_SERVER_IP=$(hostname -i)
 # Retrieve password in redis config file
 PASSWORD=$(grep '^requirepass' ./redis.conf | sed 's/requirepass \(.*\)/\1/g')
 
