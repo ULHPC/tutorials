@@ -41,7 +41,8 @@ ulimit -u 10000
 
 echo "Spawning ${SLURM_NTASKS_PER_NODE} parallel worker on ${SLURM_NNODES} nodes"
 echo "Nodes: ${SLURM_NODELIST}"
-echo "Each parallel worker can execute ${SLURM_CPUS_PER_TASK} independant tasks" 
+echo "Each parallel worker can execute ${SLURM_CPUS_PER_TASK} independant tasks"
+export SRUN_CPUS_PER_TASK=${SLURM_CPUS_PER_TASK}
 srun --no-kill --wait=0 parallel_worker.sh $*
 ```
 * The option `--exclusive` has been added to be sure that we do not share the node with another job. 

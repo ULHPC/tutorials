@@ -209,6 +209,8 @@ esac
 module purge || print_error_and_exit "Unable to find the 'module' command -- Not on a node?"
 module load ${MODULE}
 
+export SRUN_CPUS_PER_TASK=${SLURM_CPUS_PER_TASK}
+
 echo "APPDIR = ${APPDIR}"
 echo "APPs   = ${APPs[@]}"
 

@@ -103,6 +103,7 @@ module list
 start=$(date +%s)
 echo "### Starting timestamp (s): ${start}"
 
+export SRUN_CPUS_PER_TASK=${SLURM_CPUS_PER_TASK}
 ${CMD_PREFIX} srun -n ${SLURM_NTASKS:-1} ${EXE} ${OPTS}
 
 end=$(date +%s)
