@@ -18,11 +18,10 @@ NBCORES_TASK=1
 SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 SCRIPT_NAME="$(basename "${BASH_SOURCE[0]}")"
 HOSTNAME=$(hostname)
-LOGS_DIR="${SCRIPT_DIR}/logs/Worker${SLURM_NODEID}"
+LOGS_DIR="${SCRIPT_DIR}/logs.${TIMESTAMP}/Worker${SLURM_NODEID}"
 SCRIPT_MAINLOG="${LOGS_DIR}/${SCRIPT_NAME//sh/log}"
 RESUME='n'
 PARALLEL="parallel --delay 0.2 -j $((SLURM_CPUS_PER_TASK / NBCORES_TASK)) --joblog ${SCRIPT_MAINLOG} "
-TIMESTAMP=$(date +"%Y%m%d-%H%M%S")
 TASKFILE=""
 NTASKS=""
 
@@ -51,15 +50,6 @@ else
 fi
 
 echo "Starting worker initialisation on $(hostname)"
-
-# Every worker clean its own log directory
-if [[ -d ${LOGS_DIR} ]] && [[ ${RESUME} == 'n' ]];then
-    echo "Create archive from old results  ${LOGS_DIR}"
-    tar -zcvf "${LOGS_DIR}-${TIMESTAMP}.tar.gz" ${LOGS_DIR}
-    echo "Cleaning ${LOGS_DIR}"
-    find ${LOGS_DIR} -mindepth 1 -print -delete
-fi
-
 echo "Create logs directory if not existing"
 mkdir -p ${LOGS_DIR}
 
