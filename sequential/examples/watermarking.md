@@ -91,7 +91,7 @@ Use one of these commands according to the cluster you have used:
     (yourmachine)$> rsync -avz iris-cluster:/scratch/users/<LOGIN>/PS2/images .
 
 
-**Question**: which nodes are you using, identify your nodes with the command `sacct` or Slurmweb
+**Question**: which nodes are you using, identify your nodes with the command `sacct`
 
 --------------
 ## Conclusion
