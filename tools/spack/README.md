@@ -646,8 +646,4 @@ That is all for now :)
 
 ### Spack environments
 
-## TODO notes
-
-* Works well for openmpi@4.1.5 (same command as for openmpi@4.0.5)
-* With fabrics=ofi,ucx works too (same command as for openmpi@4.0.5)
 
