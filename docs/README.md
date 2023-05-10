@@ -28,6 +28,7 @@ So far, the following tutorials are proposed:
 |                         | [Distributing embarrassingly parallel tasks GNU Parallel](sequential/gnu-parallel/)                   | intermediate   |
 | _Scheduling_            | [Advanced scheduling with SLURM](scheduling/advanced/)                                                | intermediate   |
 | _Software Management_   | [HPC Software Building: optimizing and complementing the ULHPC software set](tools/easybuild/)        | beginners      |
+|                         | [The Spack package manager for supercomputers](tools/spack/)                                          | beginners      |
 | _Data Management_       | [Data Management on UL HPC Facility](data/)                                                           | beginners      |
 | _Debuging & Profiling_  | [Know Your Bugs: Weapons for Efficient Debugging](debugging/basics/)                                  | intermediate   |
 |                         | [Advanced debugging on the UL HPC platform](debugging/advanced/)                                      | intermediate   |

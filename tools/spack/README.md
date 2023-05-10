@@ -118,7 +118,24 @@ Some of [Spack's features](https://spack.readthedocs.io/en/latest/features.html#
 5. Creating packages is easy
 6. Virtual environments
 
-In this tutorial, we will only conver package installation with custom versions and dependencies.
+* In this tutorial, we will only consider package installation with custom versions and dependencies. Before starting, we will configure spack to use `/dev/shm` as build directory to improve compilation performance. 
+* In order to do it, please open `${SPACK_ROOT}/etc/spack/defaults/config.yaml` with you favorite text editor, e.g., vim, emacs, nano.
+* Go to the `build_cache` section (~ line 69) and :
+  - add first `- /dev/shm/$user/spack-stage`
+  - comment `- $user_cache_path/stage`
+
+Now, Spack will try to use `/dev/shm` as first build cache directory. You should see something like this:
+
+```yaml
+  build_stage:
+    - /dev/shm/$user/spack-stage
+    - $tempdir/$user/spack-stage
+  #  - $user_cache_path/stage
+  # - $spack/var/spack/stage
+```
+
+Last check, use the command `spack config get config | grep "\/dev\/shm" ` to ensure that the configuration has been updated accordingly. 
+
 
 ### Part 1: Custom versions and configurations
 
@@ -517,7 +534,7 @@ mou7cd5     zlib@1.2.13+optimize+pic+shared build_system=makefile
 The installation is not destructive. Each version has its own hash value displayed on the first column.
 
 
-## Interaction with Scheduler (slurm)
+### Part 2: Interaction with Schedulers (slurm)
 
 [Slurm](https://slurm.schedmd.com/) is the ULHPC supported batch scheduler, this package should **never** be installed by spack. The ULHPC's slurm has been built with pmix and both tools should be external dependencies for spack. 
 
@@ -530,30 +547,40 @@ In order to add slurm and pmix as externals dependencies, please use the follow 
 ```bash
 cat << EOF >> $SPACK_ROOT/etc/spack/packages.yaml
 packages:
-  slurm: 
-    buildable: false
-    variants: +pmix sysconfdir=/opt/slurm/etc
-    externals:
-    - spec: slurm@22.05.5 variants: +pmix sysconfdir=/opt/slurm/etc
-      prefix: /usr
-  pmix: 
-    buildable: false
-    externals:
-    - spec: pmix@4.2.3a 
-      prefix: /usr
+    slurm:
+        externals:
+        - spec: slurm@22.05.5
+          prefix: /usr
+        buildable: False
+    libevent:
+        externals:
+        - spec: libevent@2.1.8
+          prefix: /usr
+        buildable: False
+    pmix:
+        externals:
+        - spec: pmix@4.2.3 
+          prefix: /usr
+        buildable: False
+    hwloc:
+        externals:
+        - spec: hwloc@2.2.0
+          prefix: /usr
+        buildable: False
 EOF
 ```
 
 Now, let's try to install openmpi with slurm support.
 
 ```bash
-(node)$ spack install -j128 openmpi fabrics=ofi schedulers=slurm ^pmix@4.2.3a
+(node)$ spack install -j128 openmpi@4.0.5 +pmi schedulers=slurm  ^pmix@4.2.3 ^hwloc@2.2.0
 (node)$ spack find -vpl openmpi
 ```
 Let's try if the slurm support works properly.
 
 
 ```bash
+cat << EOF >> launcher_osu.sh
 #!/bin/bash -l
 #SBATCH --job-name=mpi_job_test      # Job name
 #SBATCH --cpus-per-task=1            # Number of cores per MPI task
@@ -563,52 +590,64 @@ Let's try if the slurm support works properly.
 #SBATCH --exclusive
 #SBATCH -p batch
 
-export SRUN_CPUS_PER_TASK=${SLURM_CPUS_PER_TASK}
+export SRUN_CPUS_PER_TASK=\${SLURM_CPUS_PER_TASK}
 OSU_VERSION="7.1-1"
-OSU_ARCHIVE="osu-micro-benchmarks-${OSU_VERSION}.tar.gz"
-OSU_URL="https://mvapich.cse.ohio-state.edu/download/mvapich/${OSU_ARCHIVE}"
+OSU_ARCHIVE="osu-micro-benchmarks-\${OSU_VERSION}.tar.gz"
+OSU_URL="https://mvapich.cse.ohio-state.edu/download/mvapich/\${OSU_ARCHIVE}"
 
-if [[ ! -f ${OSU_ARCHIVE} ]];then 
+if [[ ! -f \${OSU_ARCHIVE} ]];then 
     wget https://mvapich.cse.ohio-state.edu/download/mvapich/osu-micro-benchmarks-7.1-1.tar.gz
-    tar -xvf ${OSU_ARCHIVE} 
+    tar -xvf \${OSU_ARCHIVE} 
 fi
 
-# We use the hash since we have multiple openmpi with the same version
+# We use the hash since we could have different variants of the same openmpi version
+# Adapt with your hash version
 spack load /xgcbqft
 
 # cd into the extracted folder 
-cd ${OSU_ARCHIVE//.tar.gz/}
+cd \${OSU_ARCHIVE//.tar.gz/}
 
 # configure
-./configure CC=$(which mpicc) CXX=$(which mpicxx)
+./configure CC=\$(which mpicc) CXX=\$(which mpicxx)
 make
 cd ..
 
-srun  ${OSU_ARCHIVE//.tar.gz/}/c/mpi/collective/blocking/osu_alltoall
+srun  \${OSU_ARCHIVE//.tar.gz/}/c/mpi/collective/blocking/osu_alltoall
+EOF
 ```
 
+* Start the previous script with the following command `sbatch launcher_osu.sh`  
 
-
-https://gchp.readthedocs.io/en/13.1.0/supplement/spack.html
-
-## Installing software from build cache
-
-The Binary or Build Caches let you install  packages based upon an existing installation, rather than having to recompile it from source. As Spack stores all the provenance information already, you can be sure you're getting a build with the correct compiler, optimization flags and every dependency.
-
-Let's add a mirror the [Extreme-scale Scientific Software Stack (E4S)](https://e4s-project.github.io/)
+You should see something like this
 
 ```bash
-(node)$ spack mirror add E4S https://cache.e4s.io
-(node)$ spack buildcache keys --install --trust
-(node)$ spack install --cache-only hdf5
+[...]
+# OSU MPI All-to-All Personalized Exchange Latency Test v7.1
+# Datatype: MPI_CHAR.
+# Size       Avg Latency(us)
+1                     478.18
+2                     699.57
+4                    1048.96
+8                    1858.79
+16                   3638.70
+32                   7154.35
+64                  14922.24
+128                 31227.27
+256                 70394.74
 ```
 
+That is all for now :)
+
+## Reference
+
+* [Spack documentation](https://spack.readthedocs.io/en/latest/index.html#)
+* [Reference for the slurm support](https://gchp.readthedocs.io/en/13.1.0/supplement/spack.html)
 
 
+### Spack environments
 
+## TODO notes
 
-
-
-
-
+* Works well for openmpi@4.1.5 (same command as for openmpi@4.0.5)
+* With fabrics=ofi,ucx works too (same command as for openmpi@4.0.5)
 

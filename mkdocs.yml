@@ -15,6 +15,7 @@ pages:
   - Using software modules: 'tools/cli/modules.md'
 - Tools / Software management:
   - Easybuild: 'tools/easybuild/index.md'
+  - Spack: 'tools/spack/index.md'
 #  - RESIF:     'tools/resif/index.md'
 - Data Management: 'data/index.md'
 - Scheduling:
