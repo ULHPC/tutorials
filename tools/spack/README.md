@@ -781,12 +781,7 @@ When you activate a spack environment, all packages are automatically loaded and
   - `spack.yaml`: holds the environment configuration (abstract specs to install)
   - `spack.lock`: generated during concretization (full concrete specs)
 
-The two files represent two fundamental concepts:
-
-spack.yaml: abstract specs and configuration to install; and
-spack.lock: all fully concrete specs.
-
-* You can use both file to transfer your software environement to another one.
+* You can use both files to transfer your software environement to another one.
 
 ```bash
 # Copy configuration from the myenv environment
