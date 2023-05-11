@@ -293,7 +293,6 @@ Seq     Host    Starttime       JobRuntime      Send    Receive Exitval Signal  
 300     :       1683798216.000     601.000      0       0       0       0       srun  --exclusive -n1 -c 1 --cpu-bind=cores ./task.sh > /home/users/ekieffer/parallel-srun/logs.20230511T112250/task.sh.log.300
 ```
 
-* Each parallel worker has its own joblog
 * Suppose that some job tasks failed. You can resume the job using the following command: `sbatch slurm_parallel_launcher_single_node.sh -n 300 -r "logs.20230511T112250" "./task.sh`
 
 ## Embarrassingly [GNU] parallel tasks across multiples nodes
