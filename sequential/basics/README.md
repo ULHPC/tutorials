@@ -1,30 +1,23 @@
-[![By ULHPC](https://img.shields.io/badge/by-ULHPC-blue.svg)](https://hpc.uni.lu) [![Licence](https://img.shields.io/badge/license-GPL--3.0-blue.svg)](http://www.gnu.org/licenses/gpl-3.0.html) [![GitHub issues](https://img.shields.io/github/issues/ULHPC/tutorials.svg)](https://github.com/ULHPC/tutorials/issues/) [![](https://img.shields.io/badge/slides-PDF-red.svg)](https://github.com/ULHPC/tutorials/raw/devel/sequential/basics/slides.pdf) [![Github](https://img.shields.io/badge/sources-github-green.svg)](https://github.com/ULHPC/tutorials/tree/devel/sequential/basics/) [![Documentation Status](http://readthedocs.org/projects/ulhpc-tutorials/badge/?version=latest)](http://ulhpc-tutorials.readthedocs.io/en/latest/sequential/basics/) [![GitHub forks](https://img.shields.io/github/stars/ULHPC/tutorials.svg?style=social&label=Star)](https://github.com/ULHPC/tutorials)
+[![By ULHPC](https://img.shields.io/badge/by-ULHPC-blue.svg)](https://hpc.uni.lu) [![Licence](https://img.shields.io/badge/license-GPL--3.0-blue.svg)](http://www.gnu.org/licenses/gpl-3.0.html) [![GitHub issues](https://img.shields.io/github/issues/ULHPC/tutorials.svg)](https://github.com/ULHPC/tutorials/issues/) [![Github](https://img.shields.io/badge/sources-github-green.svg)](https://github.com/ULHPC/tutorials/tree/devel/sequential/basics/) [![Documentation Status](http://readthedocs.org/projects/ulhpc-tutorials/badge/?version=latest)](http://ulhpc-tutorials.readthedocs.io/en/latest/sequential/basics/) [![GitHub forks](https://img.shields.io/github/stars/ULHPC/tutorials.svg?style=social&label=Star)](https://github.com/ULHPC/tutorials)
 
 # HPC Management of Sequential and Embarrassingly Parallel Jobs
 
-     Copyright (c) 2020-2021 S. Varrette and UL HPC Team <hpc-team@uni.lu>
+     Copyright (c) 2020-2023 E. Kieffer, S. Varrette and UL HPC Team <hpc-team@uni.lu>
 
-[![](https://github.com/ULHPC/tutorials/raw/devel/sequential/basics/cover_slides.png)](https://github.com/ULHPC/tutorials/raw/devel/sequential/basics/slides.pdf)
 
-For many users, the reason to consider (or being encouraged) to offload their computing executions on a (remote) HPC or Cloud facility is tied to the limits reached by their computing devices (laptop or workstation).
-It is generally motivated by time constraints:
+Embarrassingly parallel jobs, also known as "perfectly parallel" or "pleasingly parallel" jobs, refer to computational tasks that can be easily divided into smaller, independent sub-tasks that can be executed simultaneously without any need for communication or interaction between them. This makes them ideal for parallel computing, where multiple processors or computing units can work on separate sub-tasks at the same time, leading to significant performance improvements.
 
-> "_My computations take several hours/days to complete. On an HPC, it will last a few minutes, no?_"
+The term "embarrassingly parallel" is used because these problems are considered relatively simple to parallelize, compared to other computational problems that require complex coordination or communication between processors.
 
-or search-space explorations:
+Examples of embarrassingly parallel jobs include:
 
-> "_I need to check my application against a **huge** number of input pieces (files) - it worked on a few of them locally but takes ages for a single check. How to proceed on HPC?_"
+1. Monte Carlo simulations: Many independent runs can be executed concurrently, with each simulation using different random numbers or initial conditions.
+2. Image or video processing: Each frame or section of an image can be processed independently, such as applying filters or transformations.
+3. Parameter sweeps: Running a computational model with varying parameter values, where each combination of parameters is independent of the others.
+4. Data mining: Analyzing large datasets by breaking them into smaller chunks and processing them concurrently.
+5. Brute-force search: Trying out all possible solutions to a problem, where each possible solution can be tested independently.
 
-For a large majority of you, these questions arise when executing programs that you traditionally run on your laptop or workstation and which consists in:
-
-* a (well-known) application installed on your system, iterated over multiple input conditions configured by specific command-line arguments / configuration files
-* a compiled program (C, C++, Java, Go etc.), iterated over multiple input conditions
-* your favorite R or python (custom) development scripts, iterated again over multiple input conditions
-
-**Be aware that in most of the cases, these applications are inherently SERIAL**: These are **able to use only one core** when executed.
-You thus deal with what is often call a _Bag of (independent) tasks_, also referred to as **embarrassingly parallel tasks**.
-The objective of this practical session is to guide you toward the effective management of such tasks in a way that optimize both the resource allocation and the completion time.
-
+Embarrassingly parallel jobs are well-suited for distributed computing environments, such as clusters, grids, or cloud computing, where multiple computing resources can be leveraged to process the sub-tasks in parallel, significantly reducing the overall time to completion.
 
 --------------------
 ## Pre-requisites ##
@@ -32,270 +25,30 @@ The objective of this practical session is to guide you toward the effective man
 Ensure you are able to [connect to the UL HPC clusters](https://hpc-docs.uni.lu/connect/access/).
 In particular, recall that the `module` command **is not** available on the access frontends.
 
-If you have never configured [GNU Screen](http://www.gnu.org/software/screen/) before, and while not strictly mandatory, we advise you to rely on our customized configuration file for screen [`.screenrc`](https://github.com/ULHPC/dotfiles/blob/master/screen/.screenrc) available on [Github](https://github.com/ULHPC/dotfiles/blob/master/screen/.screenrc) and available on the access nodes under `/etc/dotfiles.d/screen/.screenrc`.
-Otherwise, on Aion and more recent systems, **Prefer [Tmux](https://github.com/tmux/tmux/wiki)** -- see [Tmux cheat sheet](https://tmuxcheatsheet.com/) and [tutorial](https://www.howtogeek.com/671422/how-to-use-tmux-on-linux-and-why-its-better-than-screen/).
-You may even want to use the [tmux-powerline](https://powerline.readthedocs.io/) by creating the file `~/.tmux.conf` mentioned below
 
-```bash
-### Access to ULHPC cluster - here aion
-(laptop)$> ssh aion-cluster
-# /!\ Advanced (but recommended) best-practice:
-#    always work within an Tmux (aion) or GNU Screen (iris only) session named
-#    with 'tmux new -s <topic>' OR (with screen) 'screen -S <topic>' (Adapt accordingly)
-# IIF not yet done, copy ULHPC .screenrc in your home
-(access)$> cp /etc/dotfiles.d/screen/.screenrc ~/
-# IIF not yet done, copy ULHPC .tmux.conf in your home
-(access)$> cp /etc/dotfiles.d/tmux/.tmux.conf ~/
-```
+## Bad approaches
 
-Now you'll need to pull the latest changes in your working copy of the [ULHPC/tutorials](https://github.com/ULHPC/tutorials) you should have cloned in `~/git/github.com/ULHPC/tutorials` (see ["preliminaries" tutorial](../../preliminaries/))
-
-``` bash
-(access)$> cd ~/git/github.com/ULHPC/tutorials
-(access)$> git pull
-```
-
-Now **configure a dedicated directory `~/tutorials/sequential` for this session**
-
-``` bash
-# return to your home
-(access)$> mkdir -p ~/tutorials/sequential
-(access)$> cd ~/tutorials/sequential
-# create a symbolic link to the reference material
-(access)$> ln -s ~/git/github.com/ULHPC/tutorials/sequential/basics ref.d
-```
-
-**Advanced users** (_eventually_ yet __strongly__ recommended), create a [Tmux](https://github.com/tmux/tmux/wiki) session (see [Tmux cheat sheet](https://tmuxcheatsheet.com/) and [tutorial](https://www.howtogeek.com/671422/how-to-use-tmux-on-linux-and-why-its-better-than-screen/)) or [GNU Screen](http://www.gnu.org/software/screen/) session you can recover later. See also ["Getting Started" tutorial ](../../beginners/).
-
-``` bash
-# /!\ Advanced (but recommended) best-practice:
-#     Always work within a TMux or GNU Screen session named '<topic>' (Adapt accordingly)
-(access-aion)$> tmux new -s HPC-school   # Tmux
-(access-iris)$> screen -S HPC-school     # GNU Screen
-#  TMux     | GNU Screen | Action
-# ----------|------------|----------------------------------------------
-#  CTRL+b c | CTRL+a c   | (create) creates a new Screen window. The default Screen number is zero.
-#  CTRL+b n | CTRL+a n   | (next) switches to the next window.
-#  CTRL+b p | CTRL+a p   | (prev) switches to the previous window.
-#  CTRL+b , | CTRL+a A   | (title) rename the current window
-#  CTRL+b d | CTRL+a d   | (detach) detaches from a Screen -
-# Once detached:
-#   tmux ls  | screen -ls : list available screen
-#   tmux att | screen -x  : reattach to a past screen
-```
-
-## A sample "Stress Me!" parameter exploration
-
-In this sample scenario, we will mimic the exploration of integer parameters within a continuous range `[1..n]` for serial (1-core) tasks lasting different amount time (here ranging ranging from 1 to n seconds). This is very typical: your serial application is likely to take more or less time depending on its execution context (typically controlled by command line arguments).
-To keep it simple, we will assume the n=30 by default.
-
-You will use a script, `scripts/run_stressme`, to reproduce a configurable amount of  stress on the system set for a certain amount of time (by default: 20s) passed as parameter using the '[stress](https://linux.die.net/man/1/stress)' command.
-For instance, we would like to conduct the following executions:
-
-``` bash
-run_stressme 1     # execution time: 1s
-run_stressme 2     # execution time: 2s
-run_stressme 3     # execution time: 3s
-run_stressme 4     # execution time: 4s
-run_stressme 5     # execution time: 5s
-[...]
-run_stressme 27    # execution time: 27s
-run_stressme 28    # execution time: 28s
-run_stressme 29    # execution time: 29s
-run_stressme 30    # execution time: 30s
-```
-
-Running this job campaign **sequentially** (one after the other on the same core) would take approximatively **465s**.
-The below table wrap up the sequential times required for the completion of the job campaign depending on the number of `run_stressme` tasks, and the _theoretical_ optimal time corresponding to the _slowest_ task to complete when using an infinite number of computing resources.
-
-| n = Number of tasks | Expected Seq. time to complete | Optimal time |
-|---------------------|--------------------------------|--------------|
-| 1                   | 1s                             | 1s           |
-| 10                  | 55s      (~1 min)              | 10s          |
-| __30 (default)__    | __465s     (7 min 45s)__       | __30s__      |
-| 100                 | 5050s    (1h 24 min 10s)       | 100s         |
-
-
-The objective is of course to optimize the time required to conclude this exploration
-
-
-### Single task run (interactive)
-
-Let's first test this command in an interactive jobs:
-
-```bash
-### Access to ULHPC cluster (if not yet done)
-(laptop)$> ssh aion-cluster
-### Have an interactive job
-# ... either directly
-(access)$> si
-# ... or using the HPC School reservation 'hpcschool'if needed  - use 'sinfo -T' to check if active and its name
-# (access)$> si --reservation=hpcschool
-(node)$>
-```
-
-In another terminal (or another screen tab/windows), connect to that job and run `htop`
-
-``` bash
-# check your running job
-(access)$> sq
-# squeue -u $(whoami)
-   JOBID PARTIT       QOS                 NAME       USER NODE  CPUS ST         TIME    TIME_LEFT PRIORITY NODELIST(REASON)
- 2171206  [...]
-# Connect to your running job, identified by its Job ID
-(access)$> sjoin 2171206     # /!\ ADAPT job ID accordingly, use <TAB> to have it autocatically completed
-(node)$> htop # view of all processes
-#               F5: tree view
-#               u <name>: filter by process of <name>
-#               q: quit
-```
-Note that you have **only one core** reserved by default in a interactive job: you may thus see activities on the other cores via `htop`, they are corresponding to processes run by the other users. Note that you can use the `--exclusive`  flag upon reservation to request en exclusive access to a full node.
-
-Now execute the `run_stressme` command in the first terminal/windows to see its effect on the processor load:
-
-``` bash
-# Run directly
-(node)$> ~/git/github.com/ULHPC/tutorials/sequential/basics/scripts/run_stressme
-#  /usr/bin/stress -c 1 -t 20
-stress: info: [59918] dispatching hogs: 1 cpu, 0 io, 0 vm, 0 hdd
-stress: info: [59918] successful run completed in 20s
-
-# Now let's create a convenient path to the scripts under the dedicated directory
-# used for this session
-(node)$> cd ~/tutorials/sequential
-# create a symbolic link to the script directory
-(node)$> ln -s ref.d/scripts .    # <-- don't forget the trailing '.'  means 'here'
-(node)$> ls scripts/run_stressme      # should not fail
-scripts/run_stressme
-(node)$> ./scripts/run_stressme
-stress: info: [59918] dispatching hogs: 1 cpu, 0 io, 0 vm, 0 hdd
-stress: info: [59918] successful run completed in 20s
-# Exit the job
-(node)$> exit    # OR CTRL-D
-(access)$>
-```
-
-Exit `htop` in its terminal (press 'q' to exit) and press `CTRL-D` to disconnect to return to the access server.
-Quit the interactive job by pressing `CTRL-D` to disconnect to return to the access server.
-
-
-## A First launcher (1 job, 1 task on one core)
-
-We will create a first "_launcher_ script", responsible to perform a single task over 1 core.
-We will copy the default template provided by the ULHPC team for such usage, [`launcher.serial.sh`](scripts/launcher.serial.sh).
-
-```bash
-(access)$> cd ~/tutorials/sequential # if not yet done
-(access)$> cp ~/git/github.com/ULHPC/tutorials/sequential/basics/scripts/launcher.serial.sh .   # <- trailing '.' means 'here
-(access)$> mv launcher.serial.sh launcher.stressme-serial.sh
-```
-
-Use your favorite editor (`nano`, `vim` etc) to edit it as follows:
-
-```diff
---- ~/git/github.com/ULHPC/tutorials/sequential/basics/scripts/launcher.stressme-serial.sh 2020-12-10 16:25:24.564580000 +0100
-+++ launcher.stressme-serial.sh 2020-12-10 17:02:16.847752000 +0100
- #! /bin/bash -l
- ############################################################################
- # Default launcher for serial (one core) tasks
- ############################################################################
--###SBATCH -J Serial-jobname
-+#SBATCH -J StressMe-single
-@@ -32,7 +32,7 @@
- # /!\ ADAPT TASK variable accordingly
- # Absolute path to the (serial) task to be executed i.e. your favorite
- # Java/C/C++/Ruby/Perl/Python/R/whatever program to be run
--TASK=${TASK:=${HOME}/bin/app.exe}
-+TASK=${TASK:=${HOME}/tutorials/sequential/scripts/run_stressme}
-```
-
-Let's test it in an interactive job:
-
-```bash
-### Have an interactive job
-# ... either directly
-(access)$> si
-# ... or using the HPC School reservation 'hpcschool'if needed  - use 'sinfo -T' to check if active and its name
-# (access)$> si --reservation=hpcschool
-
-# check usage
-(node)$> ./launcher.stressme-serial.sh -h
-
-### DRY-RUN
-(node)$> ./launcher.stressme-serial.sh -n
-### Starting timestamp (s): 1607616148
-/home/users/<login>/tutorials/sequential/scripts/run_stressme
-### Ending timestamp (s): 1607616148"
-# Elapsed time (s): 0
-
-### REAL test
-(node)$> ./launcher.stressme-serial.sh
-### Starting timestamp (s): 1607616167
-#  /usr/bin/stress -c 1 -t 20
-stress: info: [64361] dispatching hogs: 1 cpu, 0 io, 0 vm, 0 hdd
-stress: info: [64361] successful run completed in 20s
-### Ending timestamp (s): 1607616187"
-# Elapsed time (s): 20
-```
-
-_Hint_: for the lazy persons, you can define on the fly the `TASK` variable as follows:
-
-```bash
-### DRY-RUN
-(node)$> TASK=$(pwd)/scripts/run_stressme ./scripts/launcher.serial.sh -n
-### Starting timestamp (s): 1607616148
-/home/users/<login>/tutorials/sequential/scripts/run_stressme
-### Ending timestamp (s): 1607616148"
-# Elapsed time (s): 0
-
-### REAL test
-(node)$> TASK=$(pwd)/scripts/run_stressme ./scripts/launcher.serial.sh
-### Starting timestamp (s): 1607616500
-#  /usr/bin/stress -c 1 -t 20
-stress: info: [103707] dispatching hogs: 1 cpu, 0 io, 0 vm, 0 hdd
-stress: info: [103707] successful run completed in 20s
-### Ending timestamp (s): 1607616520"
-# Elapsed time (s): 20
-```
-
-Quit your interactive job (exit or `CTRL+D`) and submit it as a passive job:
-
-``` bash
-# Note: you may want/need to run it under the dedicated reservation set for the training event
-# using sbatch --reservation=[...]
-(access)$> sbatch ./launcher.stressme-serial.sh
-```
-
-_Hint_: still for the lazy persons, just run:
-
-``` bash
-# Note: you may want/need to run it under the dedicated reservation set for the training event
-# using [...] sbatch --reservation=[...]
-#    TASK=$(pwd)/scripts/run_stressme  sbatch ./scripts/launcher.serial.sh
-```
-
-## Embarrassingly parallel parameter exploration
-
-Now that we dispose of a launcher able to execute our individual _task_, we can consider the exploration campaign consisting of testing our task over 30 parameters `{1..30}`.
-
-### First VERY BAD idea: For loop on sbatch or Job arrays
+### Job Arrays
 
 **One legitimate naive way would be to perform N tasks (N=30) which can be obtained by submitting N=30 jobs**, typically through a `for [...] sbatch [...]` loop or [job Arrays](https://slurm.schedmd.com/job_array.html), a mechanism for submitting and managing collections of similar jobs quickly and easily.
-This works of course but this is **generally against best-practices** (and basically every time you consider this approach, and except in a very few case, a `for [...] sbatch [...]` loop is probably a bad idea). Indeed:
+
+This works of course but this is **generally against best-practices** (and basically every time you consider this approach, and except in a very few case, a `for [...] sbatch [...]` loop is probably a bad idea). 
+Indeed:
     - **to complete N (serial) tasks, you need to submit N jobs that could be spread on up to N different nodes**.
          * this induces an **non-necessary overload of the scheduler** for (generally) very short tasks
          * you will likely wait (sometimes very long time) to have all your jobs completed
-    - Node coverage is sub-optimal
+         * All these jobs will compete for a limited resource
+    - **Node coverage is sub-optimal**
          * your serial jobs can be spread on **up to N different nodes**
-    Imagine expanding the job campaign to 1000 or 10000 test cases if not more, you risk to degrade significantly the HPC environment (the scheduler will likely have trouble to manage so many short-live jobs).
+Imagine expanding the job campaign to 1000 or 10000 test cases if not more, you risk to degrade significantly the HPC environment (**the scheduler will likely have trouble to manage so many short-live jobs**).
 
 To prevent this behaviour, **We have thus limit the number of jobs allowed per user**  (see `sqos`).
 The objective is to invite you _gently_ to **regroup your tasks per node** in order to better exploit their many-core configuration (28 cores on `iris`, 128 on `aion`).
 
-So you should favor a single jobs (for a full node) and use it to schedule _inside_ it your embarrassingly parallel exploration tasks. It will be both more efficient and faster to schedule.
+So you should favor a single job running on a full node and use it to schedule _inside_ your independent tasks.  It will be both more efficient and faster to schedule as your tasks will not compete with other users
 
 _Note on [Job Arrays](https://slurm.schedmd.com/job_array.html)_ support in Slurm:
-all jobs must have the same initial options (e.g. size, time limit, etc.) and you can limit the number of simultaneous jobs by specifying the array index values using the `--array` or `-a` option of the `sbatch` command. You **SHOULD** set the maximum number of simultaneously running tasks from the job array  using a "%" separator -- typically match the number of cores per node (28 on `iris`, 128 on `aion`). For example `--array=0-100%28" will limit the number of simultaneously running tasks from this job array to 28.
+All jobs must have the same initial options (e.g. size, time limit, etc.) and you can limit the number of simultaneous jobs by specifying the array index values using the `--array` or `-a` option of the `sbatch` command. You **SHOULD** set the maximum number of simultaneously running tasks from the job array  using a "%" separator -- typically match the number of cores per node (28 on `iris`, 128 on `aion`). For example `--array=0-100%28" will limit the number of simultaneously running tasks from this job array to 28.
 Job arrays will have several additional environment variable set:
 
 * `$SLURM_ARRAY_JOB_ID`     will be set to the first job ID of the array
@@ -311,7 +64,8 @@ To avoid this behaviour to repeat, **we drastically reduce the capabilities of j
 
 _In short_, **Don't use job arrays!!!**: you can do better with [GNU Parallel](http://www.gnu.org/software/parallel/)
 
-### Second VERY BAD idea: Fork [bomb] for loop
+
+### For loops inside the job allocation
 
 So you are encouraged to aggregate several serial tasks within a single job to better exploit the many-core configuration of each nodes (28 or 128 cores per node) - this would clearly be beneficial compared to you laptop that probably have "_only_" 4 cores.
 One natural way of doing so would be to aggregate these tasks within a single slurm launcher, start them in the background (i.e. as child processes) by using the ampersand `&` after a Bash command, and the `wait` command to restrict the number of simultaneous tasks:
@@ -331,323 +85,221 @@ The ampersand `&` spawns the command `srun -n1 --exclusive -c 1 --cpu-bind=cores
 The propose check to run the `wait` command allows to execute your bag of tasks by groups of 28 (or 128) to match the hardware configuration of ULHPC nodes. In generic terms, you wish to target `${SLURM_NTASKS_PER_NODE}` (if set) or the output of `nproc --all` (28 on iris, 128 on aion) process to be forked assuming you use a full node.
 **This approach is nevertheless sub-optimal**: each bag of tasks is waiting for the longest one to complete before the next one is executed. That why you should favor the [GNU Parallel](http://www.gnu.org/software/parallel/) approach proposed on the sequel.
 
-
-----------------------------------------------------------------
-## Best launcher based on GNU Parallel (1 job, 1 node, N tasks)
+## Using GNU Parallel
 
 ![](https://www.gnu.org/software/parallel/logo-gray+black300.png)
 
 [GNU Parallel](http://www.gnu.org/software/parallel/) is a tool for executing tasks in parallel, typically on a single machine. When coupled with the Slurm command `srun`, parallel becomes a powerful way of distributing a set of embarrassingly parallel tasks amongst a number of workers. This is particularly useful when the number of tasks is significantly larger than the number of available workers (i.e. `$SLURM_NTASKS`), and each tasks is independent of the others.
 
-**Follow now our [GNU Parallel tutorial](../gnu-parallel/) to become more accustomed with the special (complex) syntax of this tool.** In particular, you **MUST** run this tutorial over a more recent version of GNU Parallel (20211022) instead of the default system version.
+**Follow now our [GNU Parallel tutorial](../gnu-parallel/) to become more accustomed with the special (complex) syntax of this tool.**
 
-To illustrate the advantages of this approach, we will use the generic GNU parallel launcher script designed by the UL HPC Team **[`scripts/launcher.parallel.sh`](https://github.com/ULHPC/tutorials/blob/devel/sequential/basics/scripts/launcher.parallel.sh)**. This file of proposed with optimized default slurm settings for each cluster, i.e. `scripts/launcher.parallel.{iris,aion}.sh` - use the most appropriate one (you can use the global variable `$ULHPC_CLUSTER` for that)
 
-```diff
---- launcher.parallel.aion.sh	2021-11-15 21:43:53.000000000 +0100
-+++ launcher.parallel.iris.sh	2021-11-15 21:43:54.000000000 +0100
-@@ -23,7 +23,7 @@
- #SBATCH --partition=batch
- #__________________________
- #SBATCH -N 1
--#SBATCH --ntasks-per-node 128  # Optimized for 1 full node of aion
-+#SBATCH --ntasks-per-node 28   # Optimized for 1 full node of iris
- #SBATCH -c 1                   # multithreading per task : -c --cpus-per-task <n> request
-```
-
-First copy this script template and **make it your FINAL launcher for stressme**:
 
 ```bash
-(access)$> cd ~/tutorials/sequential # if not yet done
-(access)$> cp ~/git/github.com/ULHPC/tutorials/sequential/basics/scripts/launcher.parallel.${ULHPC_CLUSTER}.sh .   # <- trailing '.' means 'here
-(access)$> mv launcher.parallel.${ULHPC_CLUSTER}.sh launcher.stressme.${ULHPC_CLUSTER}.sh
-(access)$> ln -s launcher.stressme.${ULHPC_CLUSTER}.sh launcher.stressme.sh    # symlink to default launcher.
+#!/bin/bash -l
+#SBATCH --time=02:00:00
+#SBATCH --partition=batch
+#SBATCH --nodes=1
+#SBATCH --exclusive
+#SBATCH --mem=0
+#SBATCH --ntasks-per-node=128
+#SBATCH --cpus-per-task=1
+
+
+# Just useful check
+print_error_and_exit() { echo "***ERROR*** $*"; exit 1; }
+hash parallel 2>/dev/null && test $? -eq 0 || print_error_and_exit "Parallel is not installed on the system"
+
+# Increase the user process limit.
+ulimit -u 10000
+
+echo "Node: ${SLURM_NODELIST}"
+echo "Executing ${SLURM_NTASKS} independant tasks at the same time"
+export TIMESTAMP=$(date +"%Y%m%dT%H%M%S")
+
+
+# the --exclusive to srun makes srun use distinct CPUs for each job step
+# -N1 -n1 single task with ${SLURM_CPUS_PER_TASK} cores
+SRUN="srun  --exclusive -n1 -c ${SLURM_CPUS_PER_TASK:=1} --cpu-bind=cores"
+
+HOSTNAME=$(hostname)
+LOGS="logs.${TIMESTAMP}"
+RESUME=""
+TASKFILE=""
+NTASKS=""
+
+
+#=======================
+# Get Optional arguments
+#=======================
+while [ $# -ge 1 ]; do
+    case $1 in
+        -r | --resume)           shift; LOGS=$1; RESUME=" --resume ";;
+        -n | --ntasks)           shift; NTASKS="$1"                            ;;
+        -* | --*)                echo "[Warning] Invalid option $1"          ;;
+        *)                       break                                       ;;
+    esac
+    shift
+done
+
+#=======================
+# Get Mandatory  Options
+#=======================
+
+if [[ "$#" < 1 ]]; then
+    print_error_and_exit "No tasks defined"
+else
+    TASKFILE="$1"
+    TASKFILE_DIR=$(cd "$(dirname "${TASKFILE}")" && pwd)
+    TASKFILE_NAME="$(basename "${TASKFILE}")"
+fi
+
+echo "Starting parallel worker initialisation on $(hostname)"
+
+#=======================
+# Set logs for resuming
+#=======================
+
+LOGS_DIR="${TASKFILE_DIR}/${LOGS}"
+TASKFILE_MAINLOG="${LOGS_DIR}/${TASKFILE_NAME//sh/log}"
+PARALLEL="parallel --delay 0.2 -j ${SLURM_NTASKS} --joblog ${TASKFILE_MAINLOG} ${RESUME}"
+
+
+echo "Create logs directory if not existing"
+mkdir -p ${LOGS_DIR}
+
+if [[ -z ${NTASKS} ]];then
+    cat ${TASKFILE} |                                      \
+    awk -v NNODE="$SLURM_NNODES" -v NODEID="$SLURM_NODEID" \
+    'NR % NNODE == NODEID' |                               \
+    ${PARALLEL} "${SRUN} {1} > ${LOGS_DIR}/$(basename ${TASKFILE}).log.{%}"
+else
+    echo  "$(seq 1 ${NTASKS})" |                             \
+    awk -v NNODE="$SLURM_NNODES" -v NODEID="$SLURM_NODEID" \
+    'NR % NNODE == NODEID' |                               \
+    ${PARALLEL} "${SRUN} ${TASKFILE} > ${LOGS_DIR}/$(basename ${TASKFILE}).log.{1}"
+fi
 ```
 
-Use your favorite editor (`nano`, `vim` etc) to edit it as follows:
+* The option `--exclusive` has been added to be sure that we do not share the node with another job. 
+* The option `--mem=0` ensures that all memory will be available
+* **Note**: Even if the previous options were missing, the `--ntasks-per-node` and `--cpus-per-task` options would ensure that all memory and cores are allocated to our job. In some situation, you may not need all cores but all the memory. Therefore I kept `--mem=0` and `--exclusive`. 
 
-```diff
---- scripts/launcher.parallel.${ULHPC_CLUSTER}.sh   2021-11-12 14:28:56.978642778 +0100
-+++ launcher.stressme.sh           2021-11-12 14:31:14.432175130 +0100
-@@ -55,9 +55,9 @@
- ### /!\ ADAPT TASK and TASKLIST[FILE] variables accordingly
- # Absolute path to the (serial) task to be executed i.e. your favorite
- # Java/C/C++/Ruby/Perl/Python/R/whatever program to be run
--TASK=${TASK:=${HOME}/bin/app.exe}
-+TASK=${TASK:=${HOME}/tutorials/sequential/scripts/run_stressme}
- # Default task list, here {1..8} is a shell expansion interpreted as 1 2... 8
--TASKLIST="{1..8}"
-+TASKLIST="{1..30}"
- # TASKLISTFILE=path/to/input_file
- # If non-empty, used as input source over TASKLIST.
- TASKLISTFILE=
-```
+* Parallel is really a fantastic tool that offers the possibility to record all performed tasks into a joblog
+* This is extremely useful in the case you underestimate the walltime associated to your allocation because you can resume from the last unfinished job using this joblog
+* In this `slurm_parallel_launcher_single_node.sh` script, we propose to the user:
+    - Either to repeat a task `--tasks` time
+    - Or to provide a taskfile in which each line defines a command/app and its parameters
 
-So not far from what you did form the basic first launcher.
+## Applications
 
-### Interactive test of ULHPC GNU Parallel launcher (exclusive job required)
+### Stress test on the Aion cluster
 
-You can test this launcher within an **exclusive** interactive job (otherwise the internal calls to `srun --exclusive` will conflict with the default settings of interactive jobs)
+* Among the tools to stress CPU and Memory, we have:
+    - stress: a simple workload generator for POSIX systems
+    - stress-ng: an updated version of stress tool with more features (CPU compute, cache thrastring, Drive stress, etc...)
 
-``` bash
-### Have an **exclusive** interactive job for 4 (embarrassingly parallel) tasks
-# DON'T forget the exclusive flag for interactive tests of GNU parallel with our launcher
-# ... either directly
-(access)$> si --ntasks-per-node 4 --exclusive
-# ... or using the HPC School reservation 'hpcschool'if needed  - use 'sinfo -T' to check if active and its name
-# (access)$> srun --reservation=hpcschool --ntasks-per-node 4 --exclusive  --pty bash
-```
-
-As before, in another terminal (or another screen tab/windows), connect to that job and run `htop`.
-Now you can make some tests:
+* To install stress-ng, please clone the following [repository](https://github.com/ColinIanKing/stress-ng) 
+* Follow the code chunk below to install it in the `${HOME}/.local` folder
 
 ```bash
-# check usage
-(node)$> ./launcher.stressme.sh -h   # read [tf] manual, press Q to quit
+$user@aion-XXXX> git clone https://github.com/ColinIanKing/stress-ng
+$user@aion-XXXX> cd stress-ng
+$user@aion-XXXX> make 
+$user@aion-XXXX> ln -s $(pwd)/stress-ng ~/.local/bin/
+```
 
-################ DRY-RUN
-(node)$> ./launcher.stressme.sh -n
-### Starting timestamp (s): 1607707840
-parallel --delay .2 -j 4 --joblog logs/state.parallel.log --resume  srun  --exclusive -n1 -c 1 --cpu-bind=cores /home/users/svarrette/tutorials/sequential/scripts/run_stressme {1} ::: 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30
-### Ending timestamp (s): 1607707840"
-# Elapsed time (s): 0
+* Let's now create a task script `task.sh` which stresses a single core
 
-Beware that the GNU parallel option --resume makes it read the log file set by
---joblog (i.e. logs/state*.log) to figure out the last unfinished task (due to the
-fact that the slurm job has been stopped due to failure or by hitting a walltime
-limit) and continue from there.
-In particular, if you need to rerun this GNU Parallel job, be sure to delete the
-logfile logs/state*.parallel.log or it will think it has already finished!
+```bash
+#!/bin/bash -l
 
-############### TEST mode - parallel echo mode (always important to do before running effectively the commands)
-(node)$> ./launcher.stressme.sh -t
-### Starting timestamp (s): 1607708018
-srun --exclusive -n1 -c 1 --cpu-bind=cores /home/users/svarrette/tutorials/sequential/scripts/run_stressme 1
-srun --exclusive -n1 -c 1 --cpu-bind=cores /home/users/svarrette/tutorials/sequential/scripts/run_stressme 2
-srun --exclusive -n1 -c 1 --cpu-bind=cores /home/users/svarrette/tutorials/sequential/scripts/run_stressme 3
+# $PARALLEL_SEQ is a special variable from GNU parallel. It gives the
+# number of the job in the sequence.
+#
+# Here we print the sleep time, host name, and the date and time.
+echo "Task ${PARALLEL_SEQ}  started on host:$(hostname) date:$(date)"
+echo "Stress test on 1 core"
+${HOME}/.local/bin/stress-ng --cpu 1 --timeout 600s --metrics-brief
+```
+* Copy-paste the `task.sh` script to the current directory
+* Now, submit a job with `sbatch slurm_parallel_launcher_single_node.sh -n 300 "./task.sh"`
+* You can join your allocation using `srun --jobid <jobid> --overlap -w <node> --pty bash -i` and monitor the cpu usage
+
+<style>
+figcaption {
+    text-align:center;
+}
+
+.page {
+    padding-right: 0
+}
+</style>
+
+<figure  class="align-center">
+  <a id="task"><img src="./images/Pused1.png" alt=""></a>
+  <figcaption> Parallel is submitting tasks to be executed in parallel on different cores </figcaption>
+</figure>
+
+<figure  class="align-center">
+  <a id="task"><img src="./images/Pused2.png" alt=""></a>
+  <figcaption> Almost done </figcaption>
+</figure>
+
+
+<figure  class="align-center">
+  <a id="task"><img src="./images/Pused3.png" alt=""></a>
+  <figcaption> Now all cores are occupied </figcaption>
+</figure>
+
+* The script contains also a mechanism to backup and clean a `log.timestamp` directory in which each task output is stored 
+
+```bash
+logs.20230511T112250
+├── task.log
+├── task.sh.log.1
+├── task.sh.log.10
+├── task.sh.log.100
+├── task.sh.log.101
+├── task.sh.log.102
+├── task.sh.log.103
+├── task.sh.log.104
+├── task.sh.log.105
 [...]
-srun --exclusive -n1 -c 1 --cpu-bind=cores /home/users/svarrette/tutorials/sequential/scripts/run_stressme 27
-srun --exclusive -n1 -c 1 --cpu-bind=cores /home/users/svarrette/tutorials/sequential/scripts/run_stressme 28
-srun --exclusive -n1 -c 1 --cpu-bind=cores /home/users/svarrette/tutorials/sequential/scripts/run_stressme 29
-srun --exclusive -n1 -c 1 --cpu-bind=cores /home/users/svarrette/tutorials/sequential/scripts/run_stressme 30
-### Ending timestamp (s): 1607708024"
-# Elapsed time (s): 6
+├── task.sh.log.93
+├── task.sh.log.94
+├── task.sh.log.95
+├── task.sh.log.96
+├── task.sh.log.97
+├── task.sh.log.98
+└── task.sh.log.99
+```
 
-Beware that the GNU parallel option --resume makes it read the log file set by
---joblog (i.e. logs/state*.log) to figure out the last unfinished task (due to the
-fact that the slurm job has been stopped due to failure or by hitting a walltime
-limit) and continue from there.
-In particular, if you need to rerun this GNU Parallel job, be sure to delete the
-logfile logs/state*.parallel.log or it will think it has already finished!
-/!\ WARNING: Test mode - removing sate file
 
-############## REAL run
-(node)$> ./launcher.stressme.sh
-### Starting timestamp (s): 1607708111
-#  /usr/bin/stress -c 1 -t 1
-stress: info: [127447] dispatching hogs: 1 cpu, 0 io, 0 vm, 0 hdd
-stress: info: [127447] successful run completed in 1s
-#  /usr/bin/stress -c 1 -t 2
-stress: info: [127439] dispatching hogs: 1 cpu, 0 io, 0 vm, 0 hdd
-stress: info: [127439] successful run completed in 2s
+```bash
+cat logs.20230511T112250/task.log
+Seq     Host    Starttime       JobRuntime      Send    Receive Exitval Signal  Command
+1       :       1683796970.000     601.000      0       0       0       0       srun  --exclusive -n1 -c 1 --cpu-bind=cores ./task.sh > /home/users/ekieffer/parallel-srun/logs.20230511T112250/task.sh.log.1
+2       :       1683796971.000     600.000      0       0       0       0       srun  --exclusive -n1 -c 1 --cpu-bind=cores ./task.sh > /home/users/ekieffer/parallel-srun/logs.20230511T112250/task.sh.log.2
+3       :       1683796972.000     600.000      0       0       0       0       srun  --exclusive -n1 -c 1 --cpu-bind=cores ./task.sh > /home/users/ekieffer/parallel-srun/logs.20230511T112250/task.sh.log.3
+4       :       1683796973.000     600.000      0       0       0       0       srun  --exclusive -n1 -c 1 --cpu-bind=cores ./task.sh > /home/users/ekieffer/parallel-srun/logs.20230511T112250/task.sh.log.4
+5       :       1683796974.000     600.000      0       0       0       0       srun  --exclusive -n1 -c 1 --cpu-bind=cores ./task.sh > /home/users/ekieffer/parallel-srun/logs.20230511T112250/task.sh.log.5
+6       :       1683796975.000     600.000      0       0       0       0       srun  --exclusive -n1 -c 1 --cpu-bind=cores ./task.sh > /home/users/ekieffer/parallel-srun/logs.20230511T112250/task.sh.log.6
+7       :       1683796976.000     600.000      0       0       0       0       srun  --exclusive -n1 -c 1 --cpu-bind=cores ./task.sh > /home/users/ekieffer/parallel-srun/logs.20230511T112250/task.sh.log.7
 [...]
-#  /usr/bin/stress -c 1 -t 29
-stress: info: [128239] dispatching hogs: 1 cpu, 0 io, 0 vm, 0 hdd
-stress: info: [128239] successful run completed in 29s
-#  /usr/bin/stress -c 1 -t 30
-stress: info: [128276] dispatching hogs: 1 cpu, 0 io, 0 vm, 0 hdd
-stress: info: [128276] successful run completed in 30s
-### Ending timestamp (s): 1607708243"
-# Elapsed time (s): 132
-
-Beware that the GNU parallel option --resume makes it read the log file set by
---joblog (i.e. logs/state*.log) to figure out the last unfinished task (due to the
-fact that the slurm job has been stopped due to failure or by hitting a walltime
-limit) and continue from there.
-In particular, if you need to rerun this GNU Parallel job, be sure to delete the
-logfile logs/state*.parallel.log or it will think it has already finished!
+297     :       1683798213.000     601.000      0       0       0       0       srun  --exclusive -n1 -c 1 --cpu-bind=cores ./task.sh > /home/users/ekieffer/parallel-srun/logs.20230511T112250/task.sh.log.297
+298     :       1683798214.000     601.000      0       0       0       0       srun  --exclusive -n1 -c 1 --cpu-bind=cores ./task.sh > /home/users/ekieffer/parallel-srun/logs.20230511T112250/task.sh.log.298
+299     :       1683798215.000     601.000      0       0       0       0       srun  --exclusive -n1 -c 1 --cpu-bind=cores ./task.sh > /home/users/ekieffer/parallel-srun/logs.20230511T112250/task.sh.log.299
+300     :       1683798216.000     601.000      0       0       0       0       srun  --exclusive -n1 -c 1 --cpu-bind=cores ./task.sh > /home/users/ekieffer/parallel-srun/logs.20230511T112250/task.sh.log.300
 ```
 
-A quick look in parallel on `htop` report in the second terminal/screen windows demonstrate the usage of only 4 cores as expressed in the slurm job (`--ntasks-per-node 4`). Below image was taken when executing on iris.
-
-![](images/screenshot_htop_gnu_parallel_j4_interactive.png)
-
-**IMPORTANT** as highlighted by the ULHPC script: Beware that the GNU parallel option `--resume` makes it read the log file set by `--joblog` (i.e. `logs/state*.log`) to figure out the last unfinished task (due to the fact that the slurm job has been stopped due to failure or by hitting a walltime
-limit) and continue from there.
-In particular, as we now want to rerun the **same** GNU Parallel job, be sure to delete the
-logfile `logs/state*.parallel.log` or your passive job will likely do nothing as it will think it has already finished!
-
-``` bash
-(node)$> rm logs/state.parallel.log
-```
-
-You can even test on another set of parameters without changing your script:
-
-``` bash
-# BEWARE of placing the range within surrounding double quotes!!!
-(node)$> ./launcher.stressme.sh -n "{1..10}"   # Dry-run
-(node)$> ./launcher.stressme.sh -t "{1..10}"   # Test
-(node)$> ./launcher.stressme.sh "{1..10}"      # Real run
-(node)$> rm logs/state.parallel.log
-```
-To avoid cleaning the joblog file, you may want to _exceptionally_ set it to `/dev/null` using the `--joblog` option also supported by our script.
-
-### Passive job submission
-
-Now that you have validated the expected behavior of the launcher script (you may want to test on higher number of tasks per node: GNU parallel will just adapt without any change to the launcher script), it's time to go for a passive run at full capacity.
-
-Exit `htop` in its terminal (press 'q' to exit) and press `CTRL-D` to disconnect to return to the access server.
-Quit your interactive job (exit or `CTRL+D`) and submit it as a passive job:
-
-``` bash
-# Exit the interactive job
-(node)$> exit    # OR CTRL-D
-### IFF not yet done: remove logs/state.parallel.log
-(node)$> rm logs/state.parallel.log
-
-# Note: you may want/need to run it under the dedicated reservation set for the training event
-# using sbatch --reservation=[...]
-(access)$> sbatch ./launcher.stressme.sh # --joblog /dev/null
-```
-
-_Hint_: for the lazy persons, you can still define on the fly the `TASK` variable as follows:
-
-``` bash
-(access)$> TASK=$(pwd)/scripts/run_stressme sbatch ./scripts/launcher.parallel.sh
-```
-
-A quick look in parallel on `htop` report (`sq` then `sjoin <JOBID>` then `htop`)  in the second terminal/screen windows demonstrate the expected usage optimizing the full node.
-As there are "only" 30 parameters tested by default and that the launcher is configured with 28 tasks per node, the time you open `htop` you will likely _not_ see all cores used.
-Yet you can repeat the experience for 100 `run_stressme` tasks quite conveniently, **without** changing the launcher script:
-
-``` bash
-# Remove the state log
-(access)$> rm logs/state.parallel.log
-# Note: you may want/need to run it under the dedicated reservation set for the training event
-# using sbatch --reservation=[...]
-# BEWARE of placing the range within surrounding double quotes!!!
-#    --joblog option used **exceptionnally** to disable resume option
-(access)$> sbatch ./launcher.stressme.sh --joblog /dev/null "{1..100}"
-```
-
-In this case, you can be reassured on your htop usage (here sampled on iris)
-
-![](images/screenshot_htop_gnu_parallel_j28.png)
-
-_Note_: if you use the default (old) version of `parallel` (GNU parallel 20160222 or 2019), you may occasionally witness a single core that seems inactive. This is a bug inherent to that version (tied to the controlling process) corrected in more recent version.
-
-Repeat with 10 tasks
-
-``` bash
-# Note: you may want/need to run it under the dedicated reservation set for the training event
-# using sbatch --reservation=[...]
-# BEWARE of placing the range within surrounding double quotes!!!
-(access)$> sbatch ./launcher.stressme.sh --joblog /dev/null "{1..10}"
-```
-
-And let's collect the aggregated statistics from these 3 jobs (adapt job ID accordingly):
-
-``` bash
-(access)$> slist 2175717,2175719,2175721 -X
-# sacct -j 2175717,2175719,2175721 --format User,JobID,Jobname%30,partition,state,time,elapsed,MaxRss,MaxVMSize,nnodes,ncpus,nodelist,AveCPU,ConsumedEnergyRaw -X
-     User        JobID                        JobName  Partition      State  Timelimit    Elapsed     MaxRSS  MaxVMSize   NNodes      NCPUS        NodeList     AveCPU ConsumedEnergyRaw
---------- ------------ ------------------------------ ---------- ---------- ---------- ---------- ---------- ---------- -------- ---------- --------------- ---------- -----------------
-svarrette 2175717                         GnuParallel      batch  COMPLETED   01:00:00   00:00:13                              1         28        iris-117                         2430
-svarrette 2175719                         GnuParallel      batch  COMPLETED   01:00:00   00:00:36                              1         28        iris-117                         9311
-svarrette 2175721                         GnuParallel      batch  COMPLETED   01:00:00   00:03:57                              1         28        iris-117                        70702
-[...]
-```
-
-Compared to the serial ampersand approach, we have thus **obtained a significant improvement in time efficiency** for the same node occupancy (1  single node allocated):
-
-* for 30 tasks: **92% improvement** compared to the sequential run.
-* for 100 tasks: **95% improvement** compared to the sequential run.
-
-
+* Each parallel worker has its own joblog
+* Suppose that some job tasks failed. You can resume the job using the following command: `sbatch slurm_parallel_launcher_single_node.sh -n 300 -r "logs.20230511T112250" "./task.sh`
 
 ## Embarrassingly [GNU] parallel tasks across multiples nodes
 
 [GNU Parallel](http://www.gnu.org/software/parallel/) supports the distribution of tasks to multiple compute nodes using ssh connections, _i.e._ via the the `--sshloginfile <filename>` or `--sshlogin` options.
 
-However, **Scaling Parallel with `--sshlogin[file]` is Not Recommended**
-Though this allows work to be balance between multiple nodes, past experience suggests that scaling is much less effective. And as the typical usage of GNU parallel includes embarrassingly parallel tasks, there is no real justification to go across multiples nodes with a single job.
-For instance, let's assume you wish to explore the parameters `{1..1000}`, you can divide your search space in (for instance) 5 sub domains and dedicated one GnuParallel job (exploiting a full node) for each subdomain as follows:
-
-``` bash
-(access)$> sbatch ./launcher.stressme.sh --joblog logs/state.1.parallel.log "{1..200}"
-(access)$> sbatch ./launcher.stressme.sh --joblog logs/state.2.parallel.log "{201..400}"
-(access)$> sbatch ./launcher.stressme.sh --joblog logs/state.3.parallel.log "{401..600}"
-(access)$> sbatch ./launcher.stressme.sh --joblog logs/state.4.parallel.log "{601..800}"
-(access)$> sbatch ./launcher.stressme.sh --joblog logs/state.5.parallel.log "{801..1000}"
-```
-
-Each of these jobs will cover (independently) the subdomain.
-Note that you **MUST** set different joblog files to avoid collusion -- you can use the `--joblog` option supported by our launcher.
-
-Finally, if you would need to scale to more than 5 such jobs, you are encouraged to use the [job dependency mechanism](https://slurm.schedmd.com/sbatch.html) implemented by Slurm to limit the number of concurrent running nodes.
-This can be easily achieved with the `singleton` dependency (option `-d` of sbatch)  and carefully selected job names (option `-J` of sbatch):
-
-> `-d, --dependency=singleton`: This job can begin execution **after any previously launched jobs sharing the same job name and user have terminated**. In other words, only one job by that name and owned by that user can be running or suspended at any point in time.
-
-This would permit to restrict the number of concurrent jobs (leaving more resources for others)
-For example, to explore `{1..2000}` (and more generally `{$min..$max}`), without exceeding concurrent running on more than 4 nodes (i.e. within a "tunnel" of 4 nodes max), you could proceed as follows:
-
-``` bash
-# Abstract search space parameters
-min=1
-max=2000
-chunksize=200
-for i in $(seq $min $chunksize $max); do
-    ${CMD_PREFIX} sbatch \
-                  -J ${JOBNAME}_$(($i/$chunksize%${MAXNODES})) --dependency singleton \
-                  ${LAUNCHER} --joblog log/state.${i}.parallel.log  "{$i..$((i+$chunksize))}";
-done
-```
-
-A sample submission script [`scripts/submit_stressme_multinode`](scripts/submit_stressme_multinode) is proposed to illustrate this concept:
-
-```bash
-(access)$> ./scripts/submit_stressme_multinode -h
-Usage: submit_stressme_multinode [-x] [-N MAXNODES]
-    Sample submision script across multiple nodes
-    Execution won t spread on more than 4 nodes (singleton dependency)
-      -x --execute         really submit the jobs with sbatch
-      -N --nodes MAXNODES  set max. nodes
-
-# Target restriction to 4 running nodes max
-(access)$> ./scripts/submit_stressme_multinode
-sbatch -J StressMe_0 --dependency singleton launcher.stressme.sh --joblog logs/state.1.parallel.log {1..201}
-sbatch -J StressMe_1 --dependency singleton launcher.stressme.sh --joblog logs/state.201.parallel.log {201..401}
-sbatch -J StressMe_2 --dependency singleton launcher.stressme.sh --joblog logs/state.401.parallel.log {401..601}
-sbatch -J StressMe_3 --dependency singleton launcher.stressme.sh --joblog logs/state.601.parallel.log {601..801}
-sbatch -J StressMe_0 --dependency singleton launcher.stressme.sh --joblog logs/state.801.parallel.log {801..1001}
-
-
-# Target restriction to 2 running nodes max
-(access)$> ./scripts/submit_stressme_multinode -N 2
-sbatch -J StressMe_0 --dependency singleton launcher.stressme.sh --joblog logs/state.1.parallel.log {1..201}
-sbatch -J StressMe_1 --dependency singleton launcher.stressme.sh --joblog logs/state.201.parallel.log {201..401}
-sbatch -J StressMe_0 --dependency singleton launcher.stressme.sh --joblog logs/state.401.parallel.log {401..601}
-sbatch -J StressMe_1 --dependency singleton launcher.stressme.sh --joblog logs/state.601.parallel.log {601..801}
-sbatch -J StressMe_0 --dependency singleton launcher.stressme.sh --joblog logs/state.801.parallel.log {801..1001}
-```
-
-Now if you execute it, you will see only two running jobs and thus nodes (the other jobs are waiting for the dependency to be met)
-
-```bash
-(access)$> ./scripts/submit_stressme_multinode -N 2 -x
-Submitted batch job 2175778
-Submitted batch job 2175779
-Submitted batch job 2175780
-Submitted batch job 2175781
-Submitted batch job 2175782
-
-(access)$> sq
-# squeue -u svarrette
-   JOBID PARTIT    QOS        NAME  NODE  CPUS ST  TIME TIME_LEFT NODELIST(REASON)
- 2175780  batch normal  StressMe_0     1    28 PD  0:00   1:00:00 (Dependency)
- 2175781  batch normal  StressMe_1     1    28 PD  0:00   1:00:00 (Dependency)
- 2175782  batch normal  StressMe_0     1    28 PD  0:00   1:00:00 (Dependency)
- 2175779  batch normal  StressMe_1     1    28  R  0:02     59:58 iris-064
- 2175778  batch normal  StressMe_0     1    28  R  0:05     59:55 iris-047
-```
+However, **Scaling Parallel with `--sshlogin[file]` is Not Recommended** Though this allows work to be balance between multiple nodes, past experience suggests that scaling is much less effective. 
+Additionnaly, [GNU Parallel](http://www.gnu.org/software/parallel/) can cause some issues regarding the way it spawns tasks across nodes. Indeed, GNU Parallel uses internally the `ssh` command and don't use slurm. The notion of job steps is therefore lost which can lead to a bad job cleanup.
+To overcome this issue, you may follow the [Many Tasks — Many Node Allocations using Slurm and GNU Parallel](../manytasks-manynodes/index.md).
