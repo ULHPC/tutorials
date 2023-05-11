@@ -646,4 +646,197 @@ That is all for now :)
 
 ### Spack environments
 
+Spack environments are a feature of the Spack package manager, which is an open-source tool for managing software installations and dependencies on HPC (High-Performance Computing) systems, clusters, and other Unix-based environments. Spack environments provide a way to describe, reproduce, and manage sets of packages and their dependencies in a single, self-contained configuration.
+
+Spack environments have the following key features:
+
+1. Isolation: Environments create isolated spaces where packages and their dependencies can be installed without interfering with each other or the global Spack installation.
+
+2. Reproducibility: Environments can be defined using a YAML configuration file (spack.yaml or spack.lock), which lists the desired packages and their versions. This makes it easy to share and reproduce software installations across different systems or users.
+
+3. Flexibility: Users can create multiple environments to manage different sets of packages or software stacks for different projects or tasks.
+
+4. Version control: The configuration files can be placed under version control, enabling tracking of changes, collaboration, and easy rollback to previous configurations if needed.
+
+5. Integration: Spack environments can be integrated with other tools and workflows, such as continuous integration systems, containerization tools, or job schedulers in HPC environments.
+
+In summary, Spack environments provide a convenient and flexible way to manage software installations and dependencies, enhancing productivity and collaboration in research and development, particularly in the HPC community.
+
+If you have followed the beginning of this tutorial, you should already have some spack packages:
+
+```bash
+(node)$ spack find
+-- linux-rhel8-zen / gcc@=8.5.0 ---------------------------------
+autoconf@2.69                ca-certificates-mozilla@2023-01-10  krb5@1.20.1           libtool@2.4.7     openmpi@4.0.5   parallel@20220522  slurm@22.05.5       zlib@1.2.13
+autoconf-archive@2023.02.20  diffutils@3.9                       libedit@3.1-20210216  libxcrypt@4.4.33  openmpi@4.0.5   perl@5.36.0        slurm@22.05.5       zstd@1.5.5
+automake@1.16.5              gdbm@1.23                           libfabric@1.18.0      libxml2@2.10.3    openmpi@4.1.5   pigz@2.7           tar@1.34
+berkeley-db@18.1.40          gettext@0.21.1                      libiconv@1.17         m4@1.4.19         openmpi@4.1.5   pkgconf@1.8.0      ucx@1.14.0
+bison@3.8.2                  gmake@4.4.1                         libpciaccess@0.17     ncurses@6.4       openssh@9.3p1   pmix@4.2.3         util-macros@1.19.3
+bzip2@1.0.8                  hwloc@2.2.0                         libsigsegv@2.14       numactl@2.0.14    openssl@1.1.1t  readline@8.2       xz@5.4.1
+==> 44 installed packages
+```
+
+* Let's create now an isolated environement
+
+```bash
+(node)$ spack env create myenv
+(node)$ spack env list
+==> 1 environments
+    myenv
+```
+
+An environment is similar as a virtualized Spack instance used to collect and aggregate package installations for a specific project. The concept is very close to virtual environments in python.
+
+The `myenv`environment can be now activated using the following spack command: `spack env activate -p myproject`. Using `-p` option will add the activated environment name to your prompt.
+
+* You can check in which environment you are located using `spack env status`
+* If you try now `spack find`, you should not see any installed packages. 
+
+Let's try now to install some packages...
+
+```bash
+(node)$ spack install zlib
+==> Error: Cannot install 'zlib' because no matching specs are in the current environment. You can add specs to the environment with 'spack add zlib', or as part of the install command with 'spack install --add zlib'
+```
+In order to install packages, you need first to add specs. Internally, spack will queue the specs to be installed together. Let's add other packages to our environment:
+
+```bash
+(node)$ spack add tcl 
+==> Adding tcl to environment myenv
+(node)$ spack add eigen
+==> Adding eigen to environment myenv
+# Now we can install the packages
+(node)$ spack install
+==> Concretized tcl
+ -   l5ue6gx  tcl@=8.6.12%gcc@=8.5.0 build_system=autotools arch=linux-rhel8-zen
+[+]  426hs7t      ^zlib@=1.2.13%gcc@=8.5.0+optimize+pic+shared build_system=makefile arch=linux-rhel8-zen
+
+==> Concretized eigen
+ -   g3mjusn  eigen@=3.4.0%gcc@=8.5.0~ipo build_system=cmake build_type=RelWithDebInfo generator=make arch=linux-rhel8-zen
+ -   3zmanxo      ^cmake@=3.26.3%gcc@=8.5.0~doc+ncurses+ownlibs~qt build_system=generic build_type=Release arch=linux-rhel8-zen
+[+]  3qm6oyl          ^ncurses@=6.4%gcc@=8.5.0~symlinks+termlib abi=none build_system=autotools arch=linux-rhel8-zen
+[+]  vr36zlh              ^pkgconf@=1.8.0%gcc@=8.5.0 build_system=autotools arch=linux-rhel8-zen
+[+]  fd7rnqx          ^openssl@=1.1.1t%gcc@=8.5.0~docs~shared build_system=generic certs=mozilla arch=linux-rhel8-zen
+[+]  fhqdfoi              ^ca-certificates-mozilla@=2023-01-10%gcc@=8.5.0 build_system=generic arch=linux-rhel8-zen
+[+]  yvgdvqo              ^perl@=5.36.0%gcc@=8.5.0+cpanm+open+shared+threads build_system=generic arch=linux-rhel8-zen
+[+]  uw5w4yh                  ^berkeley-db@=18.1.40%gcc@=8.5.0+cxx~docs+stl build_system=autotools patches=26090f4,b231fcc arch=linux-rhel8-zen
+[+]  ymcs7ce                  ^bzip2@=1.0.8%gcc@=8.5.0~debug~pic+shared build_system=generic arch=linux-rhel8-zen
+[+]  eoimqmc                      ^diffutils@=3.9%gcc@=8.5.0 build_system=autotools arch=linux-rhel8-zen
+[+]  wv3hjx4                          ^libiconv@=1.17%gcc@=8.5.0 build_system=autotools libs=shared,static arch=linux-rhel8-zen
+[+]  seklrqi                  ^gdbm@=1.23%gcc@=8.5.0 build_system=autotools arch=linux-rhel8-zen
+[+]  zgvmdyi                      ^readline@=8.2%gcc@=8.5.0 build_system=autotools patches=bbf97f1 arch=linux-rhel8-zen
+[+]  426hs7t              ^zlib@=1.2.13%gcc@=8.5.0+optimize+pic+shared build_system=makefile arch=linux-rhel8-zen
+[+]  nin2wpc      ^gmake@=4.4.1%gcc@=8.5.0~guile build_system=autotools arch=linux-rhel8-zen
+
+[+] /mnt/irisgpfs/users/ekieffer/.spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/zlib-1.2.13-426hs7tsxcfpebed5uqlogma32dbuvj5
+[+] /mnt/irisgpfs/users/ekieffer/.spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/ncurses-6.4-3qm6oylywjcvizw7xyqbkxg33vqtgppp
+[+] /mnt/irisgpfs/users/ekieffer/.spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/gmake-4.4.1-nin2wpcxfbi5jfu56hh2zah4giapsll7
+==> Installing tcl-8.6.12-l5ue6gxjdrpsoix4fdn6sgcl3bma6qaj
+==> No binary for tcl-8.6.12-l5ue6gxjdrpsoix4fdn6sgcl3bma6qaj found: installing from source
+==> Fetching https://mirror.spack.io/_source-cache/archive/26/26c995dd0f167e48b11961d891ee555f680c175f7173ff8cb829f4ebcde4c1a6.tar.gz
+==> No patches needed for tcl
+==> tcl: Executing phase: 'autoreconf'
+==> tcl: Executing phase: 'configure'
+==> tcl: Executing phase: 'build'
+==> tcl: Executing phase: 'install'
+==> tcl: Successfully installed tcl-8.6.12-l5ue6gxjdrpsoix4fdn6sgcl3bma6qaj
+  Stage: 1.38s.  Autoreconf: 0.00s.  Configure: 5.56s.  Build: 46.11s.  Install: 4.96s.  Total: 58.11s
+[+] /mnt/irisgpfs/users/ekieffer/.spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/tcl-8.6.12-l5ue6gxjdrpsoix4fdn6sgcl3bma6qaj
+[+] /mnt/irisgpfs/users/ekieffer/.spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/openssl-1.1.1t-fd7rnqxs5w7u6hdple4jdxobefeceevs
+==> Installing cmake-3.26.3-3zmanxoso62q3bnzejrlnmpna4gas4bk
+==> No binary for cmake-3.26.3-3zmanxoso62q3bnzejrlnmpna4gas4bk found: installing from source
+==> Fetching https://github.com/Kitware/CMake/releases/download/v3.26.3/cmake-3.26.3.tar.gz
+==> No patches needed for cmake
+==> cmake: Executing phase: 'bootstrap'
+==> cmake: Executing phase: 'build'
+==> cmake: Executing phase: 'install'
+==> cmake: Successfully installed cmake-3.26.3-3zmanxoso62q3bnzejrlnmpna4gas4bk
+  Stage: 3.11s.  Bootstrap: 55.36s.  Build: 56.02s.  Install: 4.00s.  Total: 1m 58.79s
+[+] /mnt/irisgpfs/users/ekieffer/.spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/cmake-3.26.3-3zmanxoso62q3bnzejrlnmpna4gas4bk
+==> Installing eigen-3.4.0-g3mjusnpkiwnt2xu4fhhv4szbocwdfym
+==> No binary for eigen-3.4.0-g3mjusnpkiwnt2xu4fhhv4szbocwdfym found: installing from source
+==> Fetching https://mirror.spack.io/_source-cache/archive/85/8586084f71f9bde545ee7fa6d00288b264a2b7ac3607b974e54d13e7162c1c72.tar.gz
+==> No patches needed for eigen
+==> eigen: Executing phase: 'cmake'
+==> eigen: Executing phase: 'build'
+==> eigen: Executing phase: 'install'
+==> eigen: Successfully installed eigen-3.4.0-g3mjusnpkiwnt2xu4fhhv4szbocwdfym
+  Stage: 1.09s.  Cmake: 6.13s.  Build: 0.23s.  Install: 0.85s.  Total: 8.44s
+[+] /mnt/irisgpfs/users/ekieffer/.spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/eigen-3.4.0-g3mjusnpkiwnt2xu4fhhv4szbocwdfym
+==> Updating view at /mnt/irisgpfs/users/ekieffer/.spack/var/spack/environments/myenv/.spack-env/view
+```
+
+When you activate a spack environment, all packages are automatically loaded and accessible. You do not need to call `spack load`.
+
+"**When you install packages into an environment, they are, by default, linked into a single prefix, or view. Activating the environment with spack env activate results in subdirectories from the view being added to PATH, MANPATH, CMAKE_PREFIX_PATH, and other environment variables. This makes the environment easier to use.**"
+
+```bash
+(node)$ which tclsh
+/mnt/irisgpfs/users/ekieffer/.spack/var/spack/environments/myenv/.spack-env/view/bin/tclsh
+```
+
+* In order to remove a package, use `spack uninstall --remove <package>`.
+
+* The contents of environments is tracked by two files: 
+  - `spack.yaml`: holds the environment configuration (abstract specs to install)
+  - `spack.lock`: generated during concretization (full concrete specs)
+
+The two files represent two fundamental concepts:
+
+spack.yaml: abstract specs and configuration to install; and
+spack.lock: all fully concrete specs.
+
+* You can use both file to transfer your software environement to another one.
+
+```bash
+# Copy configuration from the myenv environment
+(node)$ cp ${SPACK_ROOT}/var/spack/environments/myenv/spack.yaml .
+# Create a new environment from the configuration file
+(node)$ spack env create myenv2 spack.yaml
+(node)$ spack env activate myenv2
+# Installing software ... What do you observe ?
+(node)$ spack install
+==> Concretized tcl
+[+]  l5ue6gx  tcl@=8.6.12%gcc@=8.5.0 build_system=autotools arch=linux-rhel8-zen
+[+]  426hs7t      ^zlib@=1.2.13%gcc@=8.5.0+optimize+pic+shared build_system=makefile arch=linux-rhel8-zen
+
+==> Concretized eigen
+[+]  g3mjusn  eigen@=3.4.0%gcc@=8.5.0~ipo build_system=cmake build_type=RelWithDebInfo generator=make arch=linux-rhel8-zen
+[+]  3zmanxo      ^cmake@=3.26.3%gcc@=8.5.0~doc+ncurses+ownlibs~qt build_system=generic build_type=Release arch=linux-rhel8-zen
+[+]  3qm6oyl          ^ncurses@=6.4%gcc@=8.5.0~symlinks+termlib abi=none build_system=autotools arch=linux-rhel8-zen
+[+]  vr36zlh              ^pkgconf@=1.8.0%gcc@=8.5.0 build_system=autotools arch=linux-rhel8-zen
+[+]  fd7rnqx          ^openssl@=1.1.1t%gcc@=8.5.0~docs~shared build_system=generic certs=mozilla arch=linux-rhel8-zen
+[+]  fhqdfoi              ^ca-certificates-mozilla@=2023-01-10%gcc@=8.5.0 build_system=generic arch=linux-rhel8-zen
+[+]  yvgdvqo              ^perl@=5.36.0%gcc@=8.5.0+cpanm+open+shared+threads build_system=generic arch=linux-rhel8-zen
+[+]  uw5w4yh                  ^berkeley-db@=18.1.40%gcc@=8.5.0+cxx~docs+stl build_system=autotools patches=26090f4,b231fcc arch=linux-rhel8-zen
+[+]  ymcs7ce                  ^bzip2@=1.0.8%gcc@=8.5.0~debug~pic+shared build_system=generic arch=linux-rhel8-zen
+[+]  eoimqmc                      ^diffutils@=3.9%gcc@=8.5.0 build_system=autotools arch=linux-rhel8-zen
+[+]  wv3hjx4                          ^libiconv@=1.17%gcc@=8.5.0 build_system=autotools libs=shared,static arch=linux-rhel8-zen
+[+]  seklrqi                  ^gdbm@=1.23%gcc@=8.5.0 build_system=autotools arch=linux-rhel8-zen
+[+]  zgvmdyi                      ^readline@=8.2%gcc@=8.5.0 build_system=autotools patches=bbf97f1 arch=linux-rhel8-zen
+[+]  426hs7t              ^zlib@=1.2.13%gcc@=8.5.0+optimize+pic+shared build_system=makefile arch=linux-rhel8-zen
+[+]  nin2wpc      ^gmake@=4.4.1%gcc@=8.5.0~guile build_system=autotools arch=linux-rhel8-zen
+
+==> All of the packages are already installed
+==> Updating view at /mnt/irisgpfs/users/ekieffer/.spack/var/spack/environments/myenv2/.spack-env/view
+
+# To deactivate
+(node)$ spack env deactivate
+```
+* We can modify packages from an environment without affecting other environments. Environments only link to those existing installations.
+
+For more details on Spack, please refer to the [official documentation](https://spack.readthedocs.io/en/latest/). 
+
+
+
+
+
+
+
+
+
+
+
+
+
 
