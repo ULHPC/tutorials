@@ -508,7 +508,7 @@ load_local_easybuild "2022b"
 # double-check the EASYBUILD_PREFIX
 echo ${EASYBUILD_PREFIX}
 # install easybuild
-python3 -m pip install easybuild==4.7.1
+python3 -m pip install easybuild==4.7.1 --user
 # double-check the installed version
 eb --version
 ```
