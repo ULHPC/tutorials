@@ -53,6 +53,14 @@ CUDNN:
 NCCL:
 /work/projects/ulhpc-tutorials/PS10-Horovod/soft/nccl/
 
+Installing Horovod with NCCL:
+```console
+HOROVOD_GPU_OPERATIONS=NCCL`
+HOROVOD_NCCL_INCLUDE=$HOROVOD_NCCL_INCLUDE
+HOROVOD_NCCL_LIB=$HOROVOD_NCCL_LIB
+pip install --no-cache-dir --force-reinstall horovod
+```
+
 ### Checking Horovod
 
 ```console
