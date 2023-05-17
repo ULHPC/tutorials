@@ -15,11 +15,11 @@ This approach is particularly beneficial for deep learning models that require l
 Horovod website : https://horovod.readthedocs.io/en/stable/
 
 
-By using Horovod, you can attempt to accelerate the distributed training time $$T$$ compared to 1 accelerator taking $$G$$ seconds. 
+By using Horovod, you can attempt to accelerate the distributed training time *T* compared to 1 accelerator taking *G* seconds. 
 
-We expect $$T < G$$ but it is not always the case.
+We expect *T < G* but it is not always the case.
 
-$$T$$ can be theoretically estimated with $$T=G/W+C$$, with $$W$$ the number of workers, and $$C$$ the communiction time. Often, the communication reduces the scalability of the training and the batch size is inversely proportional to the  communication time.
+*T* can be theoretically estimated with *T=G/W+C*, with *W* the number of workers, and *C* the communiction time. Often, the communication reduces the scalability of the training and the batch size is inversely proportional to the  communication time.
 
 
 
@@ -110,18 +110,17 @@ The proposed codes contains those 7 block of codes
 Bonus : You can add some “hooks” (or “callbacks”) for adding features to your code but they come with a speed overheads: including verbosity, regular validation metric computing, regular checkpointing, learning rate scheduling with loss plateau detection, … 
 
 ## Code
-[Tensorflow/Keras ULHPC example](tensorflow_horovod.py)
+[Tensorflow/Keras ULHPC example](app/tensorflow_horovod.py)
 
-[Torch ULHPC example](torch_horovod.py)
+[Torch ULHPC example](app/torch_horovod.py)
 
 [Horovod official examples](https://github.com/horovod/horovod/tree/master/examples)
 
 
 ## Output
 
-[Tensorflow/Keras ULHPC example](tensorflow_horovod.py)
 
-We launch the code with **1 GPU**
+We launch tensorflow2 code with **1 GPU**
 
 ```console
 (base) 255 [ppochelu@iris-195 app](3120312 1N/T/1CN)$ mpirun -n 1 python tensorflow_horovod.py
@@ -132,7 +131,7 @@ Loss:  1.7116930484771729  accuracy:  0.4459134638309479
 ```
 
 
-We launch the code with **2 GPUs**
+Now with **2 GPUs**
 
 ```console
 (base) 130 [ppochelu@iris-192 app](3120466 1N/T/1CN)$ mpirun -n 2 python tensorflow_horovod.py
@@ -148,7 +147,7 @@ Loss:  1.3958407640457153  accuracy:  0.5354567170143127
 
 
 
-Same thing with PyTorch **1 GPU**:
+Now PyTorch code with **1 GPU**:
 
 ```console
 (base) 0 [ppochelu@iris-195 app](3120453 1N/T/1CN)$ mpirun -n 1 python pytorch_horovod.py
@@ -158,7 +157,7 @@ Epoch: 4 141 sec.
 Loss:  -0.7153724431991577  accuracy:  0.7164999842643738
 ```
 
-Same thing with PyTorch **2 GPUs**:
+Now **2 GPUs**:
 ```console
 base) 0 [ppochelu@iris-195 app](3120453 1N/T/1CN)$ mpirun -n 2 python pytorch_horovod.py
 [...]
