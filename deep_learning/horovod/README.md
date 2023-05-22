@@ -1,43 +1,41 @@
 AI is full of computing challenges:
 * Indepedant training of multiple experiments
-* Training at scale (this tutorial)
+
+* Training at scale 1 model (this tutorial)
+
 * Deploying predictions
-* Input data processing at scale
+
+* Big Data processing at scale
 
 # Horovod
 
-Horovod is an efficient framework for scaling training that utilizes the Ring All-Reduce protocol. Unlike approaches that use a centralized memory for aggregating and broadcasting weights' updates during stochastic gradient descent (SGD) computations, Horovod takes advantage of the computing machine's communication links, such as NVLink, to maximize performance.
-
-In the Ring All-Reduce protocol, each accelerator in the distributed system is responsible for receiving and broadcasting a portion of the gradients. This decentralized approach eliminates the bottleneck of a single accelerator handling all the communication, allowing for more efficient utilization of resources. By maximizing the communication links within a computing machine, Horovod reduces communication overhead and improves training throughput.
-
-This approach is particularly beneficial for deep learning models that require large-scale distributed training across multiple GPUs and machines. Horovod seamlessly integrates with popular modern deep learning frameworks like Keras2, TensorFlow2, PyTorch2, making it easy to incorporate into existing workflows.
+Horovod is a framework for scaling training baed on the Ring All-Reduce protocol. Unlike approaches that use a centralized memory for aggregating and broadcasting weights' updates during stochastic gradient descent (SGD) computations, Horovod takes advantage of the computing machine's communication links, such as NVLink, to maximize performance. Horovod seamlessly integrates with popular modern deep learning frameworks like Keras2, TensorFlow2, PyTorch2, making it easy to incorporate into existing workflows.
 
 Horovod website : https://horovod.readthedocs.io/en/stable/
 
 
-By using Horovod, you can attempt to accelerate the distributed training time $$T$$ compared to 1 accelerator taking $$G$$ seconds. 
+By using Horovod, you can attempt to accelerate the distributed training time $$T$$ compared to the time for a singke accelerator $$G$$. However, communication can reduce scalability, and the batch size is often inversely proportional to the communication time.
 
-We expect $$T < G$$ but it is not always the case.
 
-$$T$$ can be theoretically estimated with $$T=G/W+C$$, with $$W$$ the number of workers, and $$C$$ the communiction time. Often, the communication reduces the scalability of the training and the batch size is inversely proportional to the  communication time.
+The theoretical estimation for $$T$$ is $$T=G/W+C(W)$$, with $$W$$ the number of workers, and $$C$$ the communiction time between workers.
 
 
 
 
 ## Pre-requiste
-Iit is assumed you already use a modern one like Tensorflow2 or PyTorch2 and you are comfortable with Python too. You also have Deep Learning notions too, you know what that a batch affects training convergence, you know what is a loss function, an optimizer.
+Iit is assumed you already use a modern deep learning framework like Tensorflow2 or PyTorch2.
 
 
 ## Installation
 
 ULHPC team propose either to load a previously installed or you can install it yourself. 
 
-### Loaded installation
+### CASE (1) - Loaded installation
 ```console
 source /work/projects/ulhpc-tutorials/PS10-Horovod/env.sh
 ```
 
-### Install it yourself
+### CASE (2) - Install it yourself
 
 Before installing Horovod you need to install system dependencies: MPI, CUDA, CUDNN, NCCL. All of them requires matching versions :)
 
@@ -84,22 +82,25 @@ Check if your deep learning framework is checked, MPI and NCCL.
 ## HPC/AI methodology
 
 To assess how your workload can benefit from using Horovod, it is recommended to perform one of the following analyses:
+
 * **Strong Scalability Analysis**. It consists in fixing the AI workload behaviour (Batch size, model, ...) and scaling the number of machine. By increasing the computational resources while maintaining the other workload characteristics, you can observe the impact of scaling on the training speed.
+
 * **Weak Scalability Analysis**. It consists in fixing a number of AI-accelerator (e.g, 4) and scale a characteristic of the AI workload, such as the number of layers. This analysis helps understand how a parameter affects the accuracy, scalability and speed of the workload when varying a specific aspect.
 
 ## Horovod typical code
 
 The proposed codes contains those 7 block of codes
-1. Initalizing the Horvod object (containing communication primitives)
-1. Adaptating the batch to the global_bath_size and the number of workers
-1. Pinning AI-accelerator to workers
-1. Creating generators which will transfer asynchronously and efficiently data samples Disk->RAM->VRAM. The transfer between I/O to RAM is refered as "shard" and from the RAM to the VRAM the "local batch".
-1. Building the Neural Network
-1. Training it
+1. **Initalizing Horvod**. The Horovod object it is generally named "hvd". It contains collective communication primitives and callbacks.
+1. **Adaptating the local_batch** according the desired global_bath_size and the number of workers
+1. **Pinning AI-accelerator** to workers in a bijective way
+1. **Creating data generators** which will transfer asynchronously and efficiently data samples Disk->RAM->VRAM. The transfer between I/O to RAM is a "shard" and from the RAM to the VRAM the "local batch".
+1. **Building the neural network** in each GPU VRAM
+1. **Training** it
 1. Evaluating it (time & accuracy)
 
 
-Bonus : You can add some “hooks” (or “callbacks”) for adding features to your code but they come with a speed overheads: including verbosity, regular validation metric computing, regular checkpointing, learning rate scheduling with loss plateau detection, … 
+Bonus : You can add some features (e.g, Horovod callbacks) for adding more features to your code but they come with a speed overheads. Example: verbosity, monitoring the validation metric, regular checkpointing after each epoch, learning rate scheduling with loss plateau detection, ...
+
 
 ## Code
 [Tensorflow/Keras ULHPC example](tensorflow_horovod.py)
@@ -168,6 +169,6 @@ Bigger batch reduce the communication need. If your are facing scalability issue
 
 * Large Batch Size (LBS) such as >1024 may hurts the convergence, for mitigating this: 
     *  Learning Rate scheduling. This can help compensate for the challenges posed by larger batch sizes and aid in achieving better convergence.
-    *  Adam optimizer offers better experimental results than SGD. The adaptive nature of the Adam optimizer can help alleviate some of the convergence issues associated with LBS. https://medium.com/mini-distill/effect-of-batch-size-on-training-dynamics-21c14f7a716e
-    *  Re-thinking the neural network architecture for scalability https://proceedings.neurips.cc/paper/2018/file/e7c573c14a09b84f6b7782ce3965f335-Paper.pdf
+    *  Adam optimizer offers better experimental results than SGD. The adaptive nature of the Adam optimizer can help alleviate some of the convergence issues associated with LBS. (https://medium.com/mini-distill/effect-of-batch-size-on-training-dynamics-21c14f7a716e)
+    *  Adapting the neural network architecture for scalability. For example, some suggest that wider model can scale better: (https://proceedings.neurips.cc/paper/2018/file/e7c573c14a09b84f6b7782ce3965f335-Paper.pdf)
 
