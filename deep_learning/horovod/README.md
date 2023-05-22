@@ -23,7 +23,7 @@ The theoretical estimation for $$T$$ is $$T=G/W+C(W)$$, with $$W$$ the number of
 
 
 ## Pre-requiste
-Iit is assumed you already use a modern deep learning framework like Tensorflow2 or PyTorch2.
+It is assumed you already use a modern deep learning framework like Tensorflow2 or PyTorch2.
 
 
 ## Installation
@@ -50,6 +50,14 @@ CUDNN:
 
 NCCL:
 /work/projects/ulhpc-tutorials/PS10-Horovod/soft/nccl/
+
+Installing Horovod with NCCL:
+```console
+HOROVOD_GPU_OPERATIONS=NCCL`
+HOROVOD_NCCL_INCLUDE=$HOROVOD_NCCL_INCLUDE
+HOROVOD_NCCL_LIB=$HOROVOD_NCCL_LIB
+pip install --no-cache-dir --force-reinstall horovod
+```
 
 ### Checking Horovod
 
@@ -102,7 +110,6 @@ The proposed codes contains those 7 block of codes
 Bonus : You can add some features (e.g, Horovod callbacks) for adding more features to your code but they come with a speed overheads. Example: verbosity, monitoring the validation metric, regular checkpointing after each epoch, learning rate scheduling with loss plateau detection, ...
 
 
-## Code
 [Tensorflow/Keras ULHPC example](tensorflow_horovod.py)
 
 [Torch ULHPC example](torch_horovod.py)
@@ -114,7 +121,8 @@ Bonus : You can add some features (e.g, Horovod callbacks) for adding more featu
 
 [Tensorflow/Keras ULHPC example](tensorflow_horovod.py)
 
-We launch the code with **1 GPU**
+
+We run tensorflow2 code with **1 GPU**:
 
 ```console
 (base) 255 [ppochelu@iris-195 app](3120312 1N/T/1CN)$ mpirun -n 1 python tensorflow_horovod.py
@@ -125,7 +133,7 @@ Loss:  1.7116930484771729  accuracy:  0.4459134638309479
 ```
 
 
-We launch the code with **2 GPUs**
+We run the code with **2 GPUs**:
 
 ```console
 (base) 130 [ppochelu@iris-192 app](3120466 1N/T/1CN)$ mpirun -n 2 python tensorflow_horovod.py
@@ -141,7 +149,7 @@ Loss:  1.3958407640457153  accuracy:  0.5354567170143127
 
 
 
-Same thing with PyTorch **1 GPU**:
+We run PyTorch2 code with **1 GPU**:
 
 ```console
 (base) 0 [ppochelu@iris-195 app](3120453 1N/T/1CN)$ mpirun -n 1 python pytorch_horovod.py
@@ -151,7 +159,7 @@ Epoch: 4 141 sec.
 Loss:  -0.7153724431991577  accuracy:  0.7164999842643738
 ```
 
-Same thing with PyTorch **2 GPUs**:
+We  run PyTorch2 code with **2 GPUs**:
 ```console
 base) 0 [ppochelu@iris-195 app](3120453 1N/T/1CN)$ mpirun -n 2 python pytorch_horovod.py
 [...]
