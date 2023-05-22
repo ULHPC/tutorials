@@ -10,7 +10,7 @@ AI is full of computing challenges:
 
 # Horovod
 
-Horovod is a framework for scaling training baed on the Ring All-Reduce protocol. Unlike approaches that use a centralized memory for aggregating and broadcasting weights' updates during stochastic gradient descent (SGD) computations, Horovod takes advantage of the computing machine's communication links, such as NVLink, to maximize performance. Horovod seamlessly integrates with popular modern deep learning frameworks like Keras2, TensorFlow2, PyTorch2, making it easy to incorporate into existing workflows.
+Horovod is a framework for scaling training based on the Ring All-Reduce protocol. Unlike approaches that use a centralized memory for aggregating and broadcasting weights' updates during stochastic gradient descent (SGD) computations, Horovod takes advantage of the computing machine's communication links, such as NVLink, to maximize performance. Horovod integrates with popular modern deep learning frameworks like Keras2, TensorFlow2, PyTorch2, with a few code changes making it easy to incorporate into existing workflows.
 
 [Horovod website](https://horovod.readthedocs.io/en/stable/)
 
@@ -113,7 +113,7 @@ Bonus : You can add some features (e.g, Horovod callbacks) for adding more featu
 
 [ULHPC Tensorflow/Keras code example](app/tensorflow_horovod.py)
 
-[ULHPC Torch code example](app/torch_horovod.py)
+[ULHPC Torch code example](app/pytorch_horovod.py)
 
 [Official Horovod code examples](https://github.com/horovod/horovod/tree/master/examples)
 
