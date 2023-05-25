@@ -1,29 +1,12 @@
      Copyright (c) 2013-2023 P. Pochelu and UL HPC Team  <hpc-sysadmins@uni.lu>
 
-AI is full of computing challenges:
-
-* Indepedant training of multiple experiments
-
-* Training at scale 1 model (this tutorial)
-
-* Deploying predictions
-
-* Big Data processing at scale
-
 # Horovod
 
-Horovod is a framework for scaling training based on the Ring All-Reduce protocol. Unlike approaches that use a centralized memory for aggregating and broadcasting weights' updates during stochastic gradient descent (SGD) computations, Horovod takes advantage of the computing machine's communication links, such as NVLink, to maximize performance. Horovod integrates with popular modern deep learning frameworks like Keras2, TensorFlow2, PyTorch2, with a few code changes making it easy to incorporate into existing workflows.
+Horovod ([website](https://horovod.readthedocs.io/en/stable/)) is a framework for scaling training based on the Ring All-Reduce protocol. Unlike approaches that use a centralized memory for aggregating and broadcasting weights' updates during stochastic gradient descent (SGD) computations, Horovod takes advantage of the computing machine's communication links, such as NVLink, to maximize performance. Horovod integrates with popular modern deep learning frameworks like Keras2, TensorFlow2, PyTorch2, with a few code changes making it easy to incorporate into existing workflows.
 
-[Horovod website](https://horovod.readthedocs.io/en/stable/)
-
-
-By using Horovod, you can attempt to accelerate the distributed training time *T* compared to the time for a singke accelerator *G*. However, communication can reduce scalability, and the batch size is often inversely proportional to the communication time.
-
+By using Horovod, you can attempt to accelerate the distributed training time *T* compared to the time for a single accelerator *G*. However, communication can reduce scalability, and the batch size is often inversely proportional to the communication time.
 
 The theoretical estimation for *T* is *T=G/W+C(W)*, with *W* the number of workers, and *C* the communiction time between workers.
-
-
-
 
 ## Pre-requiste
 It is assumed you already use a modern deep learning framework like Tensorflow2 or PyTorch2.
@@ -33,23 +16,23 @@ It is assumed you already use a modern deep learning framework like Tensorflow2 
 
 ULHPC team propose either to load a previously installed or you can install it yourself. 
 
-Loaded installation:
-```console
+Pre-installed approach:
+
+```Bash
 source /work/projects/ulhpc-tutorials/PS10-Horovod/env.sh
 ```
 
 We strongly recommend to use the provided environment. However, if you want to install it yourself, we provide help in the appendix 1.
 
+The following command ensures that you can now use Horovod:
 
-### Checking Horovod
-
-```console
+```Bash
 horovodrun --check-build
 ```
 
-Should produce
+The command should produce the following output:
 
-```console
+```Bash
 Available Frameworks:
     [X] TensorFlow
     [X] PyTorch
@@ -67,7 +50,7 @@ Available Tensor Operations:
     [X] Gloo
 ```
 
-Check if your deep learning framework is checked, MPI and NCCL.
+Ensures that the deep learning framework you wish to use is checked, along with MPI and NCCL.
 
 ## HPC/AI methodology
 
@@ -79,7 +62,8 @@ To assess how your workload can benefit from using Horovod, it is recommended to
 
 ## Horovod typical code
 
-The proposed codes contains those 7 block of codes
+The proposed codes contains the following blocks of codes:
+
 1. **Initalizing Horvod**. The Horovod object it is generally named "hvd". It contains collective communication primitives and callbacks.
 1. **Adaptating the local_batch** according the desired global_bath_size and the number of workers
 1. **Pinning AI-accelerator** to workers in a bijective way
@@ -87,7 +71,6 @@ The proposed codes contains those 7 block of codes
 1. **Building the neural network** in each GPU VRAM
 1. **Training** it
 1. Evaluating it (time & accuracy)
-
 
 Bonus : You can add some features (e.g, Horovod callbacks) for adding more features to your code but they come with a speed overheads. Example: verbosity, monitoring the validation metric, regular checkpointing after each epoch, learning rate scheduling with loss plateau detection, ...
 
@@ -99,23 +82,24 @@ Bonus : You can add some features (e.g, Horovod callbacks) for adding more featu
 [Official Horovod code examples](https://github.com/horovod/horovod/tree/master/examples)
 
 
-## Output
+## Examples
 
-We run tensorflow2 code with **1 GPU**:
+### Tensorflow2
 
-```console
-(base) 255 [ppochelu@iris-195 app](3120312 1N/T/1CN)$ mpirun -n 1 python tensorflow_horovod.py
+Running tensorflow2 code with **1 GPU**:
+
+```Bash
+$ mpirun -n 1 python tensorflow_horovod.py
 [...]
 Epoch 4/4
 195/195 - 147s - loss: 0.1119 - 147s/epoch - 753ms/step
 Loss:  1.7116930484771729  accuracy:  0.4459134638309479
 ```
 
+Running tensorflow2 code with **2 GPUs**:
 
-We run the code with **2 GPUs**:
-
-```console
-(base) 130 [ppochelu@iris-192 app](3120466 1N/T/1CN)$ mpirun -n 2 python tensorflow_horovod.py
+```Bash
+$ mpirun -n 2 python tensorflow_horovod.py
 [...]
 Epoch 4/4
 Epoch 4/4
@@ -125,22 +109,25 @@ Loss:  1.3920882940292358  accuracy:  0.5380609035491943
 Loss:  1.3958407640457153  accuracy:  0.5354567170143127
 ```
 
+ADD A COMMENT ABOUT THE RESULTS
+proposal:
+In this particular case, both the accuracy and the training time are improved by using 2 GPUs.
 
+### PyTorch2
 
+Running PyTorch2 code with **1 GPU**:
 
-We run PyTorch2 code with **1 GPU**:
-
-```console
-(base) 0 [ppochelu@iris-195 app](3120453 1N/T/1CN)$ mpirun -n 1 python pytorch_horovod.py
-MPI startup(): Warning: I_MPI_PMI_LIBRARY will be ignored since the hydra process manager was found
+```Bash
+$ mpirun -n 1 python pytorch_horovod.py
 [...]
 Epoch: 4 141 sec.
 Loss:  -0.7153724431991577  accuracy:  0.7164999842643738
 ```
 
-We  run PyTorch2 code with **2 GPUs**:
-```console
-base) 0 [ppochelu@iris-195 app](3120453 1N/T/1CN)$ mpirun -n 2 python pytorch_horovod.py
+Running PyTorch2 code with **2 GPUs**:
+
+```Bash
+$ mpirun -n 2 python pytorch_horovod.py
 [...]
 Epoch: 4 85 sec.
 Loss:  -0.6600856781005859  accuracy:  0.6620000004768372
@@ -148,7 +135,7 @@ Epoch: 4 85 sec.
 Loss:  -0.6600856781005859  accuracy:  0.6620000004768372
 ```
 
-We see the prediction quality are similar around 70% +/- 4% but 2 GPUs is 141/85=1.65 times faster.
+The prediction quality remains similar (around 70% +/- 4%) however the training time with 2 GPUs is 1.65 times faster.
 
 ## Going further towards scalability
 
@@ -160,8 +147,7 @@ Bigger batch reduce the communication need. If your are facing scalability issue
     *  Adapting the neural network architecture for scalability. For example, some suggest that wider model can scale better: [L Chen et al 2018](https://proceedings.neurips.cc/paper/2018/file/e7c573c14a09b84f6b7782ce3965f335-Paper.pdf)
 
 
-## Appendix
-
+## Appendixes 
 
 ### Appendix 1: Install Horovod yourself
 
@@ -171,7 +157,7 @@ There are some already installed software for helping you in the horovod install
 
 The provided script sets up the environment variables required for installing Horovod's dependencies. 
 
-```console
+```Bash
 HPCAI_ROOT="/work/projects/ulhpc-tutorials/PS10-Horovod/"
 
 # MPI, CUDA, and compilers
@@ -206,32 +192,32 @@ HOROVOD_WITH_MPI=1
 export XLA_FLAGS=--xla_gpu_cuda_data_dir=/opt/apps/resif/iris-rhel8/2020b/gpu/software/CUDAcore/11.1.1/
 ```
 
-
-
 Now let's install Horovod with NCCL (1 single command):
-```console
+```Bash
 HOROVOD_GPU_OPERATIONS=NCCL HOROVOD_NCCL_INCLUDE=$HOROVOD_NCCL_INCLUDE HOROVOD_NCCL_LIB=$HOROVOD_NCCL_LIB pip install --no-cache-dir --force-reinstall horovod
 ```
 
 ### Checking Horovod
 
-```console
+The following command ensures that you can now use Horovod:
+
+```Bash
 horovodrun --check-build
 ```
 
-Should produce
+The command should produce the following output:
 
-```console
+```Bash
 Available Frameworks:
     [X] TensorFlow
     [X] PyTorch
     [ ] MXNet
 
-    Available Controllers:
+Available Controllers:
     [X] MPI
     [X] Gloo
 
-    Available Tensor Operations:
+Available Tensor Operations:
     [X] NCCL
     [ ] DDL
     [ ] CCL
@@ -239,8 +225,7 @@ Available Frameworks:
     [X] Gloo
 ```
 
-Check if your deep learning framework is checked, MPI and NCCL.
-
+Ensures that the deep learning framework you wish to use is checked, along with MPI and NCCL.
 
 ### Appendix 2: 
 
