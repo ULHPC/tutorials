@@ -32,34 +32,13 @@ Iit is assumed you already use a modern one like Tensorflow2 or PyTorch2 and you
 
 ULHPC team propose either to load a previously installed or you can install it yourself. 
 
-### Loaded installation
+Loaded installation:
 ```console
 source /work/projects/ulhpc-tutorials/PS10-Horovod/env.sh
 ```
 
-### Install it yourself
+We strongly recommend to use the provided environment. However, if you want to install it yourself, we provide help in the appendix 1.
 
-Before installing Horovod you need to install system dependencies: MPI, CUDA, CUDNN, NCCL. All of them requires matching versions :)
-
-There are some already installed software for helping you in the horovod installation quest:
-
-Loading MPI and CUDA:
-```console
-module load toolchain/intel
-```
-CUDNN:
-/work/projects/ulhpc-tutorials/PS10-Horovod/soft/cudnn/
-
-NCCL:
-/work/projects/ulhpc-tutorials/PS10-Horovod/soft/nccl/
-
-Installing Horovod with NCCL:
-```console
-HOROVOD_GPU_OPERATIONS=NCCL`
-HOROVOD_NCCL_INCLUDE=$HOROVOD_NCCL_INCLUDE
-HOROVOD_NCCL_LIB=$HOROVOD_NCCL_LIB
-pip install --no-cache-dir --force-reinstall horovod
-```
 
 ### Checking Horovod
 
@@ -107,7 +86,7 @@ The proposed codes contains those 7 block of codes
 1. Evaluating it (time & accuracy)
 
 
-Bonus : You can add some “hooks” (or “callbacks”) for adding features to your code but they come with a speed overheads: including verbosity, regular validation metric computing, regular checkpointing, learning rate scheduling with loss plateau detection, … 
+Bonus : You can add some callbacks for adding features to your code but they come with a speed overheads: including verbosity, regular validation metric computing, regular checkpointing, learning rate scheduling with loss plateau detection, … 
 
 ## Code
 [Tensorflow/Keras ULHPC example](app/tensorflow_horovod.py)
@@ -177,4 +156,99 @@ Bigger batch reduce the communication need. If your are facing scalability issue
     *  Learning Rate scheduling. This can help compensate for the challenges posed by larger batch sizes and aid in achieving better convergence.
     *  Adam optimizer offers better experimental results than SGD. The adaptive nature of the Adam optimizer can help alleviate some of the convergence issues associated with LBS. https://medium.com/mini-distill/effect-of-batch-size-on-training-dynamics-21c14f7a716e
     *  Re-thinking the neural network architecture for scalability https://proceedings.neurips.cc/paper/2018/file/e7c573c14a09b84f6b7782ce3965f335-Paper.pdf
+
+
+## Appendix
+
+
+### Appendix 1: Install Horovod yourself
+
+Before installing Horovod you need to get dependendices: MPI, CUDA, CUDNN, NCCL. All of them requires matching versions :)
+
+There are some already installed software for helping you in the horovod installation quest.
+
+The provided script sets up the environment variables required for installing Horovod's dependencies. 
+
+```console
+HPCAI_ROOT="/work/projects/ulhpc-tutorials/PS10-Horovod/"
+
+# MPI, CUDA, and compilers
+module load toolchain/intelcuda
+
+# CUDNN
+export CUDNN_PATH=${HPCAI_ROOT}/soft/cudnn/install/cudnn-linux-x86_64-8.8.1.3_cuda11-archive
+export LD_LIBRARY_PATH=${CUDNN_PATH}/lib/:${LD_LIBRARY_PATH}
+export CPATH=${CUDNN_PATH}/include/:${CPATH}
+
+# NCCL
+NCCL_DEBUG=INFO # allow to check if NCCL is active
+# NCCL_ROOT=${HPCAI_ROOT}/miniconda/install/miniconda/lib/python3.10/site-packages/nvidia/nccl/ #nccl also present there
+NCCL_ROOT=/work/projects/ulhpc-tutorials/PS10-Horovod/soft/nccl/install/nccl_2.17.1-1+cuda11.0_x86_64/
+NCCL_INCLUDE_DIR=${NCCL_ROOT}/include/
+NCCL_LIBRARY=${NCCL_ROOT}/lib/
+
+LD_LIBRARY_PATH=${NCCL_ROOT}/lib/:${LD_LIBRARY_PATH}
+CPATH=${NCCL_ROOT}/include/:${CPATH}
+
+HOROVOD_NCCL_HOME=${NCCL_ROOT}
+HOROVOD_NCCL_INCLUDE=${NCCL_ROOT}/include/
+HOROVOD_NCCL_LIB=${NCCL_ROOT}/lib/
+
+# HOROVOD
+HOROVOD_GPU_OPERATIONS=NCCL
+HOROVOD_WITH_TENSORFLOW=1
+HOROVOD_WITH_PYTORCH=1
+HOROVOD_WITH_MPI=1
+
+# GIVE XLA CUDA PATH
+export XLA_FLAGS=--xla_gpu_cuda_data_dir=/opt/apps/resif/iris-rhel8/2020b/gpu/software/CUDAcore/11.1.1/
+```
+
+
+
+Now let's install Horovod with NCCL (1 single command):
+```console
+HOROVOD_GPU_OPERATIONS=NCCL HOROVOD_NCCL_INCLUDE=$HOROVOD_NCCL_INCLUDE HOROVOD_NCCL_LIB=$HOROVOD_NCCL_LIB pip install --no-cache-dir --force-reinstall horovod
+```
+
+### Checking Horovod
+
+```console
+horovodrun --check-build
+```
+
+Should produce
+
+```console
+Available Frameworks:
+    [X] TensorFlow
+    [X] PyTorch
+    [ ] MXNet
+
+    Available Controllers:
+    [X] MPI
+    [X] Gloo
+
+    Available Tensor Operations:
+    [X] NCCL
+    [ ] DDL
+    [ ] CCL
+    [X] MPI
+    [X] Gloo
+```
+
+Check if your deep learning framework is checked, MPI and NCCL.
+
+
+### Appendix 2: 
+
+Bigger batch reduce the communication need. If your are facing scalability issue increase the batch size.
+
+* Large Batch Size (LBS) such as >1024 may hurts the convergence, for mitigating this:
+    *  Learning Rate scheduling. This can help compensate for the challenges posed by larger batch sizes and aid in achieving better convergence.
+    *  Adam optimizer offers better experimental results than SGD. The adaptive nature of the Adam optimizer can help alleviate some of the convergence issues associated with LBS. https://medium.com/mini-distill/effect-of-batch-size-on-training-dynamics-21c14f7a716e
+    *  Re-thinking the neural network architecture for scalability https://proceedings.neurips.cc/paper/2018/file/e7c573c14a09b84f6b7782ce3965f335-Paper.pdf
+
+
+
 
