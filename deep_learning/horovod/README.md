@@ -1,3 +1,5 @@
+     Copyright (c) 2013-2023 P. Pochelu and UL HPC Team  <hpc-sysadmins@uni.lu>
+
 AI is full of computing challenges:
 
 * Indepedant training of multiple experiments
