@@ -136,6 +136,7 @@ print_error_and_exit() { echo "***ERROR*** $*"; exit 1; }
 module purge || print_error_and_exit "No 'module' command"
 module load toolchain/foss    # or toolchain/intel
 
+export SRUN_CPUS_PER_TASK=${SLURM_CPUS_PER_TASK}
 export OMP_NUM_THREADS=${SLURM_CPUS_PER_TASK:-1}
 OPTS=$*
 

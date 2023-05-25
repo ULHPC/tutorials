@@ -13,27 +13,37 @@ In particular, the latest version of these tutorials is available online:
 
 The list of proposed tutorials is continuously evolving.
 They used on a regular basis during the [UL HPC School](https://hpc.uni.lu/education/hpcschool) we organise.
+
+[![ULHPC School](https://img.shields.io/badge/event-ULHPC--School--2021-green)](hpc-school.md)
+
 So far, the following tutorials are proposed:
 
 | **Category**            | **Description**                                                                                       | **Level**      |
 | :----------:            | ----------------------------------------------------------------------------                          | -------------- |
-| _Basic_                 | [Getting Started on the UL HPC platform](beginners/)                                                  | beginners      |
+|                         | [Pre-requisites and Setup instructions](setup/preliminaries/)                                         | beginners      |
+| _Basic_                 | [Introduction to UNIX/Linux Shell and Command lines](linux-shell/)                                    | beginners      |
+|                         | [Getting Started on the UL HPC platform](beginners/)                                                  | beginners      |
 |                         | [Monitoring & Profiling I: why, what, how, where to look](basic/monitoring/)                          | beginners      |
-|                         | [HPC workflow with sequential jobs](basic/sequential_jobs/)                                           | beginners      |
+|                         | [HPC Management of Sequential and Embarrassingly Parallel Jobs](sequential/basics/)                   | beginners      |
+|                         | [Distributing embarrassingly parallel tasks GNU Parallel](sequential/gnu-parallel/)                   | intermediate   |
 | _Scheduling_            | [Advanced scheduling with SLURM](scheduling/advanced/)                                                | intermediate   |
-| _Software Management_   | [Building [custom] software with EasyBuild](tools/easybuild/)                                         | beginners      |
+| _Software Management_   | [HPC Software Building: optimizing and complementing the ULHPC software set](tools/easybuild/)        | beginners      |
+|                         | [The Spack package manager for supercomputers](tools/spack/)                                          | beginners      |
+| _Data Management_       | [Data Management on UL HPC Facility](data/)                                                           | beginners      |
 | _Debuging & Profiling_  | [Know Your Bugs: Weapons for Efficient Debugging](debugging/basics/)                                  | intermediate   |
 |                         | [Advanced debugging on the UL HPC platform](debugging/advanced/)                                      | intermediate   |
 |                         | (OLD) [Unified profiling and debugging with Allinea](advanced/Allinea/)                               | intermediate   |
 |                         | (OLD) [Direct,  Reverse and parallel Memory debugging with TotalView](advanced/TotalView/)            | intermediate   |
-| _MPI_                   | [Scalable Science I (Basics - OpenMP/MPI jobs)](parallel/basics/)                                     | intermediate   |
+| _MPI_                   | [Scalable Science and Parallel computations with OpenMP/MPI](parallel/basics/)                        | intermediate   |
 |                         | [OSU Micro-Benchmarks](parallel/mpi/OSU_MicroBenchmarks/)                                             | intermediate   |
 |                         | [High-Performance Linpack (HPL) benchmarking on UL HPC platform](parallel/mpi/HPL/)                   | intermediate   |
 |                         | [HPCG benchmarking on UL HPC platform](parallel/hybrid/HPCG/)                                         | intermediate   |
-| _Python_                | [(Advanced) Prototyping with Python](python/basics/)                                                  | beginners      |
-|                         | [(Advanced) Python: Use Jupyter notebook on UL HPC](python/advanced/jupyter-celery)                   | intermediate   |
+| _Python_                | [Prototyping with Python](python/basics/)                                                             | beginners      |
+|                         | [Python: Use Jupyter notebook on UL HPC](python/advanced/jupyter)                                     | intermediate   |
+|                         | [Use Python Celery on UL HPC](python/advanced/celery/)                                                | advanced       |
+|                         | [Scalable computing with Dask](python/advanced/dask-ml/)                                              | advanced       |
 |                         | [Parallel machine learning with scikit-learn](python/advanced/scikit-learn)                           | intermediate   |
-|                         | [Parallel evolutionary computing](python/advanced/scoop-deap)                                         | intermediate   |
+|                         | [Parallel evolutionary computing with Scoop/Deap](python/advanced/scoop-deap)                         | intermediate   |
 | _Mathematics_           | [MATLAB (interactive, passive and sequential jobs)](maths/matlab/basics/)                             | intermediate   |
 |                         | [Advanced MATLAB execution: checkpointing and parallel jobs](maths/matlab/advanced/)                  | advanced       |
 |                         | [R / Statictical Computing](maths/R/)                                                                 | intermediate   |
@@ -48,10 +58,10 @@ So far, the following tutorials are proposed:
 | _Virtualization_        | (OLD) [Create and reproduce work environments using Vagrant](advanced/Vagrant/)                       | intermediate   |
 |                         | [Deploying virtual machines with Vm5k on Grid'5000](advanced/vm5k/)                                   | intermediate   |
 | _GPU Programming_       | [Introduction to GPU programming with CUDA (C/C++)](cuda/)                                            | intermediate   |
-|                         | [Image Convolution with GPU and CUDA](cuda/exercises/convolution/)                                    | intermediate   |
+|                         | [Image Convolution with GPU and CUDA](cuda/exercises/convolution/)                                    | advanced       |
 |                         | [Introduction to OpenCL](gpu/opencl/)                                                                 | intermediate   |
 |                         | [Introduction to OpenACC Programming Model (C/C++ and Fortran)](gpu/openacc/basics/)                  | intermediate   |
-|                         | [Solving the Laplace Equation on GPU with OpenAcc](gpu/openacc/laplace/)                              | intermediate   |
+|                         | [Solving the Laplace Equation on GPU with OpenAcc](gpu/openacc/laplace/)                              | advanced       |
 | _Misc_                  | [Reproducible Research at the Cloud Era](misc/reproducible-research/)                                 | intermediate   |
 
 __List of contributors__

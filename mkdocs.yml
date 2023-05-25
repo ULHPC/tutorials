@@ -15,6 +15,7 @@ pages:
   - Using software modules: 'tools/cli/modules.md'
 - Tools / Software management:
   - Easybuild: 'tools/easybuild/index.md'
+  - Spack: 'tools/spack/index.md'
 #  - RESIF:     'tools/resif/index.md'
 - Data Management: 'data/index.md'
 - Scheduling:
@@ -26,6 +27,7 @@ pages:
 - Sequential/Embarrassingly parallel jobs:
   - Overview: 'sequential/basics/index.md'
   - GNU Parallel: 'sequential/gnu-parallel/index.md'
+  - Advanced Parallel-Slurm: 'sequential/manytasks-manynodes/index.md'
 - Serial Tasks in Action:
   - Overview: 'sequential/examples/index.md'
   - Example/Object Recognition: 'sequential/examples/object_recognition.md'

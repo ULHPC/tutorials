@@ -2,7 +2,7 @@
 
 # Data Management on UL HPC Facility
 
-     Copyright (c) 2020 UL HPC Team <hpc-sysadmins@uni.lu>
+     Copyright (c) 2020-2021 UL HPC Team <hpc-sysadmins@uni.lu>
 
 Author: Sarah Peter
 
@@ -290,9 +290,14 @@ To use gocryptfs on the HPC platform you need to do the following steps:
    - `dir`, which will present (on demand) the unencrypted view (let’s call it *view*)
 
 ```bash
-(node)$> cd $SCRATCH/data_management
+(node)$> cd
+(node)$> mkdir data_management
+(node)$> cd data_management
 (node)$> mkdir dir.crypt dir
 ```
+
+**NOTE**:
+Currently gocryptfs does not work well on the Lustre filesystem (`$SCRATCH`). You need to specify the additional option `-noprealloc` to use it on Lustre. It works well on SpectrumScale/GPFS (`$HOME` and project directories), though.
 
 #### 3. Initialize the *crypt* folder with a password
 

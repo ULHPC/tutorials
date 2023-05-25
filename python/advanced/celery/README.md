@@ -33,7 +33,7 @@ make
 Let's create a configuration file for redis-server with the following options:
 
 * port where the server is listening (default one): 6379
-* ip address of the server: we will listen on the main ethernet interface of the node. You can retrieve the IP address with this command `facter ipaddress` or by checking the output of `ip addr show dev em1`.
+* ip address of the server: we will listen on the main ethernet interface of the node. You can retrieve the IP address with this command `hostname -i` or by checking the output of `ip addr show dev eno1`.
 * we will protect the access to the node with a password to ensure that other experiments doesn't interact with us.
 
 Which gives us the following config file:
@@ -54,7 +54,7 @@ We will run our redis server on a different port number for each run by using th
 
 ```bash
 si -J redis-server
-./src/redis-server $HOME/celery/redis/redis.conf --port $(($SLURM_JOB_ID % 1000 + 64000)) --bind $(facter ipaddress)
+./src/redis-server $HOME/celery/redis/redis.conf --port $(($SLURM_JOB_ID % 1000 + 64000)) --bind $(hostname -i)
 ```
 
 You should have the following output:
@@ -195,7 +195,7 @@ cd celery
 module load lang/Python/3.6.0
 virtualenv venv
 source venv/bin/activate
-celery -A ulhpccelery flower --address="$(facter ipaddress)"
+celery -A ulhpccelery flower --address="$(hostname -i)"
 ```
 
 Now, directly access to the web interface of the node (after a tunnel redirection): http://172.17.6.55:5555/

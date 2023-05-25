@@ -78,7 +78,7 @@ included in your `PATH`.
 ``` bash
 wget -qO- https://github.com/jgm/pandoc/releases/download/2.16.1/pandoc-2.16.1-linux-amd64.tar.gz | tar xfz - 
 mkdir -p ~/bin/
-cp cp pandoc-2.16.1/bin/pandoc ~/bin/
+cp pandoc-2.16.1/bin/pandoc ~/bin/
 ```
 
 ### Cloning

@@ -6,6 +6,9 @@
 #SBATCH -p batch
 #SBATCH --qos=normal
 
+# Explicit cpus-per-task to srun
+export SRUN_CPUS_PER_TASK=${SLURM_CPUS_PER_TASK}
+
 # Load Gurobi 
 module load math/Gurobi/8.1.1-intel-2018a-Python-3.6.4
 

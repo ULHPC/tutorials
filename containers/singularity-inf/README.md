@@ -348,8 +348,8 @@ sudo singularity build kera.sif keraUbuntu1804/
 
 module load tools/Singularity
 
-hostName="$(facter hostname)-ib0"
-IP=$(facter ipaddress_ib0)
+hostName="$(hostname -s)-ib0"
+IP=$(getent hosts $hostName | awk '{print $1}')
 echo "On your laptop: ssh -p 8022 -NL 8889:$hostName:8889 ${USER}@access-iris.uni.lu"
 
 echo "SLURM_JOBID  = ${SLURM_JOBID}"
@@ -413,7 +413,7 @@ EOF
 chmod +x ${KERA_BROKER_LAUNCHER}
 
 # Start the KerA brokers; pass coordinator hostname as param  service ; for srun: --bind /etc/init.d/
-srun --exclusive -N 3 -n 3 --ntasks-per-node=1 -l -o $HOME/broker-$(facter hostname).out \
+srun --exclusive -N 3 -n 3 --ntasks-per-node=1 -l -o $HOME/broker-$(hostname -s).out \
  ${KERA_BROKER_LAUNCHER} ${hostName} &
 
 sleep 900s
