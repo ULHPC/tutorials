@@ -8,18 +8,18 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 [![By ULHPC](https://img.shields.io/badge/by-ULHPC-blue.svg)](https://hpc.uni.lu) [![Licence](https://img.shields.io/badge/license-GPL--3.0-blue.svg)](http://www.gnu.org/licenses/gpl-3.0.html)
-[![GitHub issues](https://img.shields.io/github/issues/ULHPC/tutorials.svg)](https://github.com/ULHPC/tutorials/issues/) [![](https://img.shields.io/badge/slides-PDF-red.svg)](https://github.com/ULHPC/tutorials/raw/devel/maths/R/PS11_targets.pdf) [![Github](https://img.shields.io/badge/sources-github-green.svg)](https://github.com/ULHPC/tutorials/tree/devel/maths/R/) [![Documentation Status](http://readthedocs.org/projects/ulhpc-tutorials/badge/?version=latest)](http://ulhpc-tutorials.readthedocs.io/en/latest/maths/R/) [![GitHub forks](https://img.shields.io/github/stars/ULHPC/tutorials.svg?style=social&label=Star)](https://github.com/ULHPC/tutorials)
+[![GitHub issues](https://img.shields.io/github/issues/ULHPC/tutorials.svg)](https://github.com/ULHPC/tutorials/issues/) [![](https://img.shields.io/badge/slides-PDF-red.svg)](https://github.com/ULHPC/tutorials/raw/devel/maths/R/PS9_targets.pdf) [![Github](https://img.shields.io/badge/sources-github-green.svg)](https://github.com/ULHPC/tutorials/tree/devel/maths/R/) [![Documentation Status](http://readthedocs.org/projects/ulhpc-tutorials/badge/?version=latest)](http://ulhpc-tutorials.readthedocs.io/en/latest/maths/R/) [![GitHub forks](https://img.shields.io/github/stars/ULHPC/tutorials.svg?style=social&label=Star)](https://github.com/ULHPC/tutorials)
 
 ---
 
 # R Tutorial
 
-      Copyright (c) 2013-2021 Aurelien Ginolhac, UL HPC Team  <hpc-sysadmins@uni.lu>
+      Copyright (c) 2013-2023 Aurelien Ginolhac, UL HPC Team  <hpc-sysadmins@uni.lu>
 
-[![](https://github.com/ULHPC/tutorials/raw/devel/maths/R/img/cover_slides.png)](https://ulhpc-tutorials.readthedocs.io/en/latest/maths/R/PS11_targets.html)
+[![](https://github.com/ULHPC/tutorials/raw/devel/maths/R/img/cover_slides.png)](https://ulhpc-tutorials.readthedocs.io/en/latest/maths/R/PS9_targets.html)
 
 <div class="shareagain" style="min-width:300px;margin:1em auto;">
-  <iframe src="PS11_targets.html" width="750" height="421" style="border:2px solid currentColor;" loading="lazy" allowfullscreen></iframe>
+  <iframe src="PS9_targets.html" width="750" height="421" style="border:2px solid currentColor;" loading="lazy" allowfullscreen></iframe>
   <script>fitvids('.shareagain', {players: 'iframe'});</script>
 </div>
 
@@ -42,7 +42,7 @@ Ensure you are able to [connect to the UL HPC clusters](https://hpc-docs.uni.lu/
 
 ```{bash, eval = FALSE}
 # /!\ FOR ALL YOUR COMPILING BUSINESS, ENSURE YOU WORK ON A COMPUTING NODE
-(access-iris)$> si -c 2 -t 1:00:00
+(access-aion)$> si -c 2 -t 1:00:00
 ```
 
 ### Optional: On your local machine
