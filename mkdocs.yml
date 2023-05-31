@@ -25,9 +25,9 @@ pages:
   - Efficient Debugging:     'debugging/basics/index.md'
   - Performance engineering: 'debugging/advanced/index.md'
 - Sequential/Embarrassingly parallel jobs:
-  - Overview: 'sequential/basics/index.md'
   - GNU Parallel: 'sequential/gnu-parallel/index.md'
-  - Advanced Parallel-Slurm: 'sequential/manytasks-manynodes/index.md'
+  - Parallel-Slurm: 'sequential/basics/index.md'
+  - Beyond a single node: 'sequential/manytasks-manynodes/index.md'
 - Serial Tasks in Action:
   - Overview: 'sequential/examples/index.md'
   - Example/Object Recognition: 'sequential/examples/object_recognition.md'
