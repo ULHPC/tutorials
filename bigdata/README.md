@@ -953,7 +953,7 @@ echo "Ready Stopping SparkHDFS instances"
 
 ```
 
-* Now you can deploy Spark and HDFS with one command.
+* Now you can deploy Spark and HDFS with one command. Before that, under your $HOME directory we have to install Spark and Hadoop config directories.
 
 ```bash
 Login to Iris/Aion
