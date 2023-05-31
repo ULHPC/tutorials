@@ -586,3 +586,378 @@ with Spark. Here are some links you might find useful to go further:
 
 * [Using Spark with GPFS on the ACCRE Cluster](https://bigdata-vandy.github.io/using-spark-with-gpfs/)
 * [ARIS notes on Spark](http://doc.aris.grnet.gr/software/spark/)
+
+-----------------------------------------------
+## Deployment of Spark and HDFS with Singularity ##
+
+This tutorial will build a Singularity container with Apache Spark, Hadoop HDFS and Java. We will deploy a Big Data cluster running Singularity through Slurm over Iris or Aion on CPU-only nodes.
+
+### Step 1: Required software
+
+* Create a virtual machine with Ubuntu 18.04 and having Docker and Singularity installed.
+* This project will leverage the following scripts: `scripts/Dockerfile` and its `scripts/docker-entry-point.sh`
+
+### Step 2: Create the docker container
+
+* Clean and create the Spark+Hadoop+Java Docker container that will be later used by Singularity
+
+```bash
+sudo docker system prune -a
+sudo docker build . --tag sparkhdfs
+```
+
+* The Dockerfile contains steps to install Apache Spark, Hadoop and JDK11:
+
+```bash
+# Start from a base image
+FROM ubuntu:18.04 AS builder
+
+# Avoid prompts with tzdata
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Set the working directory in the container
+WORKDIR /usr/local
+
+# Update Ubuntu Software repository
+RUN apt-get update
+RUN apt-get install -y curl unzip zip
+
+# Install wget
+RUN apt-get install -y wget
+
+# Download Apache Hadoop
+RUN wget https://downloads.apache.org/hadoop/core/hadoop-3.3.5/hadoop-3.3.5.tar.gz
+RUN tar xvf hadoop-3.3.5.tar.gz 
+RUN mv hadoop-3.3.5 hadoop
+
+# Download Apache Spark
+RUN wget https://dlcdn.apache.org/spark/spark-3.4.0/spark-3.4.0-bin-hadoop3.tgz
+RUN tar xvf spark-3.4.0-bin-hadoop3.tgz
+RUN mv spark-3.4.0-bin-hadoop3 spark
+
+# Final stage
+FROM ubuntu:18.04
+
+COPY --from=builder \
+/usr/local/hadoop /opt/hadoop
+
+# Set environment variables for Hadoop
+ENV HADOOP_HOME=/opt/hadoop
+ENV PATH=$PATH:$HADOOP_HOME/bin:$HADOOP_HOME/sbin
+
+COPY --from=builder \
+/usr/local/spark /opt/spark
+
+# Set environment variables for Spark
+ENV SPARK_HOME=/opt/spark
+ENV PATH=$PATH:$SPARK_HOME/bin:$SPARK_HOME/sbin
+
+# Install ssh and JDK11
+RUN apt-get update && apt-get install -y openssh-server ca-certificates-java openjdk-11-jdk
+ENV JAVA_HOME="/usr/lib/jvm/java-11-openjdk-amd64"
+
+RUN ssh-keygen -t rsa -f /root/.ssh/id_rsa -q -P ""
+RUN cat /root/.ssh/id_rsa.pub >> /root/.ssh/authorized_keys
+RUN chmod 0600 /root/.ssh/authorized_keys
+RUN echo "PermitRootLogin yes" >> /etc/ssh/sshd_config && \
+    echo "PubkeyAuthentication yes" >> /etc/ssh/sshd_config && \
+    echo "StrictHostKeyChecking no" >> /etc/ssh/ssh_config
+
+# Copy the docker-entrypoint.sh script into the Docker image
+COPY ./docker-entrypoint.sh /
+
+# Set the entrypoint script to run when the container starts
+ENTRYPOINT ["/docker-entrypoint.sh"]
+
+# Expose the necessary ports
+EXPOSE 50070 8080 7078 22 9000 8020
+### DONE
+```
+
+* The docker-entrypoint.sh will later be used when running the Singularity container through Slurm.
+
+```bash
+#!/bin/bash
+set -e
+
+case "$1" in
+    sh|bash)
+        set -- "$@"
+        exec "$@"
+    ;;
+    sparkMaster)
+        shift
+        echo "Running Spark Master on `hostname` ${SLURM_PROCID}"
+        /opt/spark/sbin/start-master.sh "$@" 1>$HOME/sparkMaster.out 2>&1 &
+        status=$?
+        if [ $status -ne 0 ]; then
+            echo "Failed to start Spark Master: $status"
+            exit $status
+        fi
+
+        exec tail -f $(ls -Art $HOME/sparkMaster.out | tail -n 1)
+    ;;
+    sparkWorker)
+        shift
+        /opt/spark/sbin/start-worker.sh "$@" 1>$HOME/sworker-${SLURM_PROCID}.out 2>&1 &
+        status=$?
+        if [ $status -ne 0 ]; then
+            echo "Failed to start Spark worker: $status"
+            exit $status
+        fi
+
+        exec tail -f $(ls -Art $HOME/sworker-${SLURM_PROCID}.out | tail -n 1)
+    ;;
+    sparkHDFSNamenode)
+        shift
+        echo "Running HDFS Namenode on `hostname` ${SLURM_PROCID}"
+        /opt/hadoop/bin/hdfs namenode -format
+        echo "Done format"
+        /opt/hadoop/bin/hdfs --daemon start namenode "$@" 1>$HOME/hdfsNamenode.out 2>&1 &
+
+        status=$?
+        if [ $status -ne 0 ]; then
+            echo "Failed to start HDFS Namenode: $status"
+            exit $status
+        fi
+
+        exec tail -f $(ls -Art $HOME/hdfsNamenode.out | tail -n 1)
+    ;;
+    sparkHDFSDatanode)
+        shift
+        echo "Running HDFS datanode on `hostname` ${SLURM_PROCID}"
+        /opt/hadoop/bin/hdfs --daemon start datanode "$@" 1>$HOME/hdfsDatanode-${SLURM_PROCID}.out 2>&1 &
+
+        status=$?
+        if [ $status -ne 0 ]; then
+            echo "Failed to start HDFS datanode: $status"
+            exit $status
+        fi
+
+        exec tail -f $(ls -Art $HOME/hdfsDatanode-${SLURM_PROCID}.out | tail -n 1)
+    ;;
+esac
+
+```
+
+### Step 3: Create the singularity container
+
+* Either directly create the sparkhdfs.sif Singularity container, or use a sandbox to eventually modify/add before exporting to sif format. The sandbox is useful to further customize the Singularity container (e.g., modifying its docker-entry-point.sh).
+
+```bash
+#directly create a singularity container
+sudo singularity build sparkhdfs.sif docker-daemon://sparkhdfs:latest
+#create the sandbox directory from existing docker sparkhdfs container, then create the sparkhdfs.sif
+sudo singularity build --sandbox sparkhdfs docker-daemon://sparkhdfs:latest
+sudo singularity build sparkhdfs.sif sparkhdfs/
+```
+
+### Step 4: Create a script to deploy Spark and HDFS
+
+* The following script runSparkHDFS.sh runs singularity sparkhdfs.sif container for deploying the Spark standalone cluster (one Master and two workers) and the Hadoop HDFS Namenode and Datanodes.
+* You should further customize this script (e.g., time, resources etc.)
+* This script assumes that under your $HOME directory there are two subdirectories installed for spark and hadoop configuration files.
+
+```bash
+#!/bin/bash -l
+#SBATCH -J SparkHDFS
+#SBATCH -N 3 # Nodes
+#SBATCH -n 3 # Tasks
+#SBATCH --ntasks-per-node=1
+#SBATCH --mem=16GB
+#SBATCH -c 16 # Cores assigned to each task
+#SBATCH --time=0-00:59:00
+#SBATCH -p batch
+#SBATCH --qos=normal
+#SBATCH --mail-user=first.lastname@uni.lu
+#SBATCH --mail-type=BEGIN,END
+
+module load tools/Singularity
+
+hostName="`hostname`"
+echo "hostname=$hostName"
+
+#save it for future job refs
+myhostname="`hostname`"
+rm coordinatorNode
+touch  coordinatorNode
+cat > coordinatorNode << EOF
+$myhostname
+EOF
+
+#create Spark configs
+SPARK_CONF=${HOME}/spark/conf/spark-defaults.conf
+cat > ${SPARK_CONF} << EOF
+
+# Master settings
+spark.master spark://$hostName:7078
+
+# Memory settings
+spark.driver.memory 2g
+spark.executor.memory 12g
+
+# Cores settings
+spark.executor.cores 8
+spark.cores.max 16
+
+# Network settings
+spark.driver.host $hostName
+
+# Other settings
+spark.logConf true
+
+EOF
+
+SPARK_ENVSH=${HOME}/spark/conf/spark-env.sh
+cat > ${SPARK_ENVSH} << EOF
+#!/usr/bin/env bash
+
+SPARK_MASTER_HOST="$hostName"
+SPARK_MASTER_PORT="7078"
+SPARK_HOME="/opt/spark"
+HADOOP_HOME="/opt/hadoop"
+
+EOF
+
+SPARK_L4J=${HOME}/spark/conf/log4j.properties
+cat > ${SPARK_L4J} << EOF
+# Set everything to be logged to the console
+log4j.rootCategory=DEBUG, console
+log4j.appender.console=org.apache.log4j.ConsoleAppender
+log4j.appender.console.target=System.err
+log4j.appender.console.layout=org.apache.log4j.PatternLayout
+log4j.appender.console.layout.ConversionPattern=%d{yy/MM/dd HH:mm:ss} %p %c{1}: %m%n
+
+# Settings to quiet third party logs that are too verbose
+log4j.logger.org.spark_project.jetty=ERROR
+log4j.logger.org.spark_project.jetty.util.component.AbstractLifeCycle=ERROR
+log4j.logger.org.apache.spark.repl.SparkIMain$exprTyper=INFO
+log4j.logger.org.apache.spark.repl.SparkILoop$SparkILoopInterpreter=INFO
+EOF
+
+### create HDFS config
+HDFS_SITE=${HOME}/hadoop/etc/hadoop/hdfs-site.xml
+cat > ${HDFS_SITE} << EOF
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+
+<configuration>
+  <property>
+    <name>dfs.replication</name>
+    <value>1</value>
+  </property>
+
+  <property>
+    <name>dfs.namenode.name.dir</name>
+    <value>/tmp/hadoop/hdfs/name</value>
+  </property>
+
+  <property>
+   <name>dfs.datanode.data.dir</name>
+   <value>/tmp/hadoop/hdfs/data</value>
+  </property>
+
+</configuration>
+
+EOF
+
+HDFS_CORESITE=${HOME}/hadoop/etc/hadoop/core-site.xml
+cat > ${HDFS_SITE} << EOF
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+
+<configuration>
+  <property>
+  <name>fs.defaultFS</name>
+  <value>hdfs://$hostName:9000</value>
+  </property>
+
+</configuration>
+
+EOF
+
+###
+
+# Create a launcher script for SparkMaster and hdfsNamenode
+#Once started, the Spark master will print out a spark://HOST:PORT to be used for submitting jobs
+
+SPARKM_LAUNCHER=${HOME}/spark-start-master-${SLURM_JOBID}.sh
+echo " - create SparkMaster and hdfsNamenode launcher script '${SPARKM_LAUNCHER}'"
+cat << 'EOF' > ${SPARKM_LAUNCHER}
+#!/bin/bash
+
+echo "I am ${SLURM_PROCID} running on:"
+hostname
+
+#we are going to share an instance for Spark master and HDFS namenode
+singularity instance start --bind $HOME/hadoop/logs:/opt/hadoop/logs,$HOME/hadoop/etc/hadoop:/opt/hadoop/etc/hadoop,$HOME/spark/conf:/opt/spark/conf,$HOME/spark/logs:/opt/spark/logs,$HOME/spark/work:/opt/spark/work \
+ sparkhdfs.sif shinst
+
+singularity run --bind $HOME/hadoop/logs:/opt/hadoop/logs,$HOME/hadoop/etc/hadoop:/opt/hadoop/etc/hadoop instance://shinst \
+  sparkHDFSNamenode 2>&1 &
+
+singularity run --bind $HOME/spark/conf:/opt/spark/conf,$HOME/spark/logs:/opt/spark/logs,$HOME/spark/work:/opt/spark/work instance://shinst \
+  sparkMaster
+
+
+#the following example works for running without instance only the Spark Master
+#singularity run --bind $HOME/spark/conf:/opt/spark/conf,$HOME/spark/logs:/opt/spark/logs,$HOME/spark/work:/opt/spark/work sparkhdfs.sif \
+# sparkMaster
+
+EOF
+chmod +x ${SPARKM_LAUNCHER}
+
+srun --exclusive -N 1 -n 1 -c 16 --ntasks-per-node=1 -l -o $HOME/SparkMaster-`hostname`.out \
+ ${SPARKM_LAUNCHER} &
+
+export SPARKMASTER="spark://$hostName:7078"
+
+echo "Starting Spark workers and HDFS datanodes"
+
+SPARK_LAUNCHER=${HOME}/spark-start-workers-${SLURM_JOBID}.sh
+echo " - create Spark workers and HDFS datanodes launcher script '${SPARK_LAUNCHER}'"
+cat << 'EOF' > ${SPARK_LAUNCHER}
+#!/bin/bash
+
+echo "I am ${SLURM_PROCID} running on:"
+hostname
+
+#we are going to share an instance for Spark workers and HDFS datanodes
+singularity instance start --bind $HOME/hadoop/logs:/opt/hadoop/logs,$HOME/hadoop/etc/hadoop:/opt/hadoop/etc/hadoop,$HOME/spark/conf:/opt/spark/conf,$HOME/spark/logs:/opt/spark/logs,$HOME/spark/work:/opt/spark/work \
+ sparkhdfs.sif shinst
+
+singularity run --bind $HOME/hadoop/logs:/opt/hadoop/logs,$HOME/hadoop/etc/hadoop:/opt/hadoop/etc/hadoop instance://shinst \
+  sparkHDFSDatanode 2>&1 &
+
+singularity run --bind $HOME/spark/conf:/opt/spark/conf,$HOME/spark/logs:/opt/spark/logs,$HOME/spark/work:/opt/spark/work instance://shinst \
+  sparkWorker $SPARKMASTER -c 8 -m 12G
+
+
+#the following without instance only Spark worker
+#singularity run --bind $HOME/spark/conf:/opt/spark/conf,$HOME/spark/logs:/opt/spark/logs,$HOME/spark/work:/opt/spark/work sparkhdfs.sif \
+# sparkWorker $SPARKMASTER -c 8 -m 8G 
+
+EOF
+chmod +x ${SPARK_LAUNCHER}
+
+srun --exclusive -N 2 -n 2 -c 16 --ntasks-per-node=1 -l -o $HOME/SparkWorkers-`hostname`.out \
+ ${SPARK_LAUNCHER} &
+
+pid=$!
+sleep 3600s
+wait $pid
+
+echo $HOME
+
+echo "Ready Stopping SparkHDFS instances"
+
+```
+
+* Now you can deploy Spark and HDFS with one command.
+
+```bash
+Login to Iris/Aion
+sbatch runSparkHDFS.sh
+```
+
+### Step 5: How the output looks
