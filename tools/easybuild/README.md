@@ -475,6 +475,8 @@ Suppose also that we need the last easybuild version, i.e., v4.7.1.
 In order to avoid your local version to collide with the module one, we suggest you to install the newest easybuild inside a virtualenv as follows:
 
 ```bash
+# Purge all loaded modules
+module purge
 # use the system python and install Easybuild
 export EB_PYTHON=$(which python3)
 # load local easybuild version
