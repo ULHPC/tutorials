@@ -696,7 +696,7 @@ WARNING: Found existing checksums in parallel-20230422-GCCcore-12.2.0.eb, overwr
 == Temporary directory /tmp/eb-ed9gqepv has been removed.
 ```
 
-Before updating the checksums inside the eb file, Easybuild creates a backup. We are now able to display a diff between the original and the new eb files.
+Before updating the checksums inside the eb file, Easybuild creates a backup. We are now able to display a diff between the original and the new eb files with the following command `diff -u --color parallel-20220722-GCCcore-11.3.0.eb parallel-20230422-GCCcore-12.2.0.eb`.
 
 
 
