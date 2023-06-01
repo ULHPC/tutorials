@@ -540,7 +540,7 @@ The installation is not destructive. Each version has its own hash value display
 
 Why is it so important ?
 
-If you don't specify to Spack the scheduler, you will **NOT** benefit from the slurm support to start distributed jobs. You will need to use the legacy approach, i.e., mpirun -np ${SLURM_NTASKS} --hostfile hosts.
+If you don't specify to Spack the scheduler, you will **NOT** benefit from the slurm support to start distributed jobs. You will need to use the legacy approach, i.e.,`mpirun -np ${SLURM_NTASKS} --hostfile hosts`.
 
 In order to add slurm and pmix as externals dependencies, please use the follow bash script.
 
