@@ -301,7 +301,7 @@ Since we start we a fresh installation, we will need to install everything, i.e,
 The ouput of the `spec` can be quite complex to read but is really exhaustive. You see all compilations options as well as the architecture and the compiler versions. There is no notion of toolchains (see for [Easybuild](http://easybuild.readthedocs.io/)).
 Spack automatically detects the architecture. You can explicitely obtain it with the command `spack arch`, i.e., on Aion you will get linux-rhel8-zen.
 
-Spack will also rely the system gcc compiler, i.e., gcc-8.5.0, to install all packages. You may want to have a newer compiler. Let's gcc 12.2.0 ...
+Spack will also rely the system gcc compiler, i.e., gcc-8.5.0, to install all packages. You may want to have a newer compiler. Let's say gcc 12.2.0 ...
 In order to list all compilers seen by Spack, just use the command `spack compilers`.
 
 ```bash
