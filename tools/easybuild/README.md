@@ -571,7 +571,7 @@ For instance, let's consider the most recent version, i.e., 20230422, of the [GN
 
 It is not available as module, so let's build it.
 
-First let's check for available easyconfigs recipy if one exist for the expected version:
+First let's check for available easyconfigs recipies if one exist for the expected version:
 
 ```
 (node)$> eb -S parallel
