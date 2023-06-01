@@ -43,10 +43,10 @@ Now **configure a dedicated directory `~/tutorials/easybuild` for this session**
 
 ``` bash
 # return to your home
-(access)$> mkdir -p ~/tutorials/easybuild
+(access)$> mkdir -p ~/tutorials/
 (access)$> cd ~/tutorials/easybuild
 # create a symbolic link to the reference material
-(access)$> ln -s ~/git/github.com/ULHPC/tutorials/tools/easybuild ref.d
+(access)$> ln -s ~/git/github.com/ULHPC/tutorials/tools/easybuild easybuild
 ```
 
 **For all tests and compilation with Easybuild, you MUST work on a computing node.**
