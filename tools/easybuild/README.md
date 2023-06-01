@@ -285,32 +285,6 @@ What is important for the installation of Easybuild are the following variables:
 
 ### Local Easybuild configuration
 
-Follow the instructions from the [ULHPC technical documentation](https://hpc-docs.uni.lu/environment/easybuild/) to adapt you custom build to cluster, the toolchain version and the architecture as done in RESIF3 by editing with your favorite editor (`nano`, `vim` etc. your `~/.bashrc`
-
-``` bash
-# EASYBUILD_PREFIX: [basedir]/<cluster>/<environment>/<arch>
-# Ex: Default EASYBUILD_PREFIX in your home - Adapt to project directory if needed
-_EB_PREFIX=$HOME/.local/easybuild
-# ... eventually complemented with cluster
-[ -n "${ULHPC_CLUSTER}" ] && _EB_PREFIX="${_EB_PREFIX}/${ULHPC_CLUSTER}"
-# ... eventually complemented with software set version
-_EB_PREFIX="${_EB_PREFIX}/${RESIF_VERSION_PROD}"
-# ... eventually complemented with arch
-[ -n "${RESIF_ARCH}" ] && _EB_PREFIX="${_EB_PREFIX}/${RESIF_ARCH}"
-export EASYBUILD_PREFIX="${_EB_PREFIX}"
-export MODULEPATH=${EASYBUILD_PREFIX}/modules/all
-```
-
-Save the changed, Source the configuration and check that you now have the expected value for `EASYBUILD_PREFIX`:
-
-``` bash
-$ echo $EASYBUILD_PREFIX
-/home/users/ekieffer/.local/easybuild     # Default value
-$ source ~/.bashrc
-$ echo $EASYBUILD_PREFIX
-/home/users/ekieffer/.local/easybuild/aion/2020b/epyc
-```
-
 If you prefer to extend/complement the ULHPC software set while taking into account the cluster `$ULHPC_CLUSTER` ("iris" or "aion"), the toolchain version `<version>` (Ex: 2019b, 2020b etc.) and eventually the architecture `<arch>`.
 In that case, you can use the following helper function defined at `/etc/profile.d/ulhpc_resif.sh`:
 
