@@ -2,7 +2,7 @@
 
 # Introduction to OpenACC Programming Model (C/C++ and Fortran)
 
-     Copyright (c) E. Krishnasamy, 2013-2021 UL HPC Team <hpc-sysadmins@uni.lu>
+     Copyright (c) E. Krishnasamy, 2013-2023 UL HPC Team <hpc-sysadmins@uni.lu>
 
 [![](https://github.com/ULHPC/tutorials/raw/devel/gpu/openacc/basics/cover_slides.png)](https://github.com/ULHPC/tutorials/raw/devel/gpu/openacc/basics/slides.pdf)
 
@@ -25,7 +25,7 @@
 
 > ***NOTE***: this lecture is limited to just 45 min, it only covers very basic tutorial about OpenACC.
   To know more about (from basic to advanced) CUDA programming and OpenACC programming model,
-  please refer to __PRACE MOOC__ ***GPU Programming for Scientific Computing and Beyond - Dr. Ezhilmathi Krishnasamy***
+  please refer to __PRACE MOOC__ ***GPU Programming for Scientific Computing and Beyond - Dr. Ezhilmathi Krishnasamy and Prof. Pascal Bouvry***
 
 
 --------------------
@@ -64,11 +64,11 @@ $ ssh iris-cluster   # The only cluster featuring GPU
 $ si-gpu -G 1 --ntasks-per-node 1 -c 7 -t 00:30:00   # (eventually) --reservation=hpcschool-gpu
 ```
 
-#### Load the OpenACC compiler (PGI)
+#### Load the OpenACC compiler (Nvidia HPC SDK)
 
 ```
-$> module spider pgi
-$> module load compiler/PGI/19.10-GCC-8.3.0-2.32
+$> module spider nvhpc
+$> module load compiler/NVHPC/21.2
 ```
 
 # Difference between CPU and GPU
@@ -184,12 +184,12 @@ void Print_Hello_World()            | void Print_Hello_World()
 ~~~
 
 
-* compilation: ```pgcc -fast -Minfo=all -ta=tesla -acc Hello_World.c```
+* compilation: ```nvc -fast -Minfo=all -ta=tesla -acc Hello_World.c```
       - The compiler will already give much info; what do you see?
 
 
 ```
-$> pgcc -fast -Minfo=all -ta=tesla -acc Hello_World.c
+$> nvc -fast -Minfo=all -ta=tesla -acc Hello_World.c
 Print_Hello_World:
       6, Loop not vectorized/parallelized: contains call
 main:
@@ -198,7 +198,7 @@ main:
 ```
 * Now add either _kernels_ or _parallel_ directives to vectorize/parallelize the loop
 ```
-$> pgcc -fast -Minfo=all -ta=tesla -acc  Hello_World_OpenACC.c
+$> nvc -fast -Minfo=all -ta=tesla -acc  Hello_World_OpenACC.c
 
 print_hello_world:
       6, Loop is parallelizable
@@ -225,14 +225,14 @@ end subroutine Print_Hello_World   | end subroutine Print_Hello_World
 
 * Compile the _Hello_World.f90_ and compiler tells us that the loop is not vectorized/parallelized.
 ```
-$> pgfortran -fast -Minfo=all -ta=tesla -acc Hello_World.f90
+$> nvfortran -fast -Minfo=all -ta=tesla -acc Hello_World.f90
 
 print_hello_world:
       5, Loop not vectorized/parallelized: contains call
 ```
 * Now run the _Hello_World_OpenACC.f90_ either using _kernels_ or _parallel_ and we can already notice that loop is vectorized/parallelized.
 ```
-$> pgfortran -fast -Minfo=all -ta=tesla -acc  Hello_World_OpenACC.f90
+$> nvfortran -fast -Minfo=all -ta=tesla -acc  Hello_World_OpenACC.f90
 
 print_hello_world:
       6, Loop is parallelizable
