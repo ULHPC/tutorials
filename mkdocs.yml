@@ -67,8 +67,9 @@ pages:
 - Machine and Deep Learning:
   - Machine and Deep Learning workflows: 'deep_learning/basics/index.md'
   - Scalable Deep Learning: 'deep_learning/scalable/index.md'
+  - Distributed Deep Learning with Horovod: 'deep_learning/horovod/index.md'
 - Containers:
-  - Singularity: 'containers/hpc-school/index.md'
+  - Reproducibility and HPC Containers : 'containers/ULHPC-containers/index.md'
   - Singularity: 'containers/singularity/index.md'
   - Singularity-Infiniband: 'containers/singularity-inf/index.md'
 - Virtualization:
