@@ -295,7 +295,7 @@ end module Vector_Addition_Mod               | end module Vector_Addition_Mod
 
 # _reduction_ clause in dot product
 
-![](./dot_product.png){align=center width=250}
+![](./dot_product.png)
 
 #### for C/C++
 
