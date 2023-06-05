@@ -23,7 +23,7 @@
 
 ### Important: PRACE MOOC
 
-> ***NOTE***: this lecture is limited to just 45 min, it only covers very basic tutorial about OpenACC.
+> ***NOTE***: this lecture is limited to just 45 min; it only a covers very basic tutorial about OpenACC.
   To know more about (from basic to advanced) CUDA programming and OpenACC programming model,
   please refer to __PRACE MOOC__ ***GPU Programming for Scientific Computing and Beyond - Dr. Ezhilmathi Krishnasamy and Prof. Pascal Bouvry***
 
@@ -74,14 +74,14 @@ $> module load compiler/NVHPC/21.2
 # Difference between CPU and GPU
 #### CPU vs GPU
 
-* CPU frequency is higher compared to GPU
-* But GPU can run many threads in parallel compared to CPU
-* On the GPU, the cores are grouped and called "Streaming Multiprocessor - SM"
-* Even on the Nvidia GPU, it has a "Tensor Process Unit - TPU" to handle the AI/ML
-  computations in an optimized way
-* GPUs are based on the "Single Instruction Multiple Threads"
-* Threads are executed in a group on the GPU, typically they have 32 threads
-  This is called "warps" on the Nividia GPU and "wavefronts" on the AMD GPU
+* A CPU frequency is higher compared to a GPU.
+* But a GPU can run many threads in parallel compared to a CPU.
+* On a GPU, the cores are grouped and called "Streaming Multiprocessor - SM".
+* Even the Nvidia GPU has a "Tensor Process Unit - TPU" to handle the AI/ML
+  computations in an optimized way.
+* GPUs are based on the "Single Instruction Multiple Threads".
+* Threads are executed in a group on the GPU; typically they have 32 threads.
+  This is called "warps" on the Nvidia GPU and "wavefronts" on the AMD GPU.
 
 
 #### CPU vs GPU
@@ -96,9 +96,9 @@ $> module load compiler/NVHPC/21.2
 #### How GPUs are used for computations
 
 * Step 1: application preparation, initialize the memories on both CPU and GPU
-* Step 2: transfer the data to GPU
-* Step 3: do the computation on the GPU
-* Step 4: transfer the data back to the CPU
+* Step 2: transfer the data to a GPU
+* Step 3: do the computation on a GPU
+* Step 4: transfer the data back to a CPU
 * Step 5: finalize the application and delete the memories on both CPU and GPU
 
 ![](./Nvidia-cpu-gpu-parallel.png)
@@ -107,7 +107,7 @@ $> module load compiler/NVHPC/21.2
 #### Few points about OpenACC
 
 * OpenACC is not GPU programming
-* OpenACC is expressing the parallelism in your code
+* OpenACC is expressing the parallelism in your existing code
 * OpenACC can be used in both Nvidia and AMD GPUs
 * “OpenACC will enable programmers to easily develop portable applications that maximize
   the performance and power efficiency benefits of the hybrid CPU/GPU architecture of
@@ -116,7 +116,7 @@ $> module load compiler/NVHPC/21.2
 * “OpenACC is a technically impressive initiative brought together by members of the
   OpenMP Working Group on Accelerators, as well as many others. We look forward to
   releasing a version of this proposal in the next release of OpenMP.”
-      - Michael Wong, CEO OpenMP Directives Board
+      - Michael Wong, CEO of OpenMP Directives Board
 
 
 #### Ways to accelerate applications on the GPU
@@ -136,7 +136,7 @@ $> module load compiler/NVHPC/21.2
       - CUDA, OpenCL, etc.
 
 
-#### Compilers and directives (only few of them listed in here)
+#### Compilers and directives (only a few of them are listed here)
 
 * OpenACC is supported by the Nvidia, [PGI](https://www.pgroup.com/index.htm), GCC, and [HPE Gray](https://buy.hpe.com/us/en/software/high-performance-computing-software/high-performance-computing-software/hpe-cray-programming-environment/p/1012707351) (only for FORTRAN) compilers
      - Now PGI is part of Nvidia, and it is available through [Nvidia HPC SDK](https://developer.nvidia.com/hpc-sdk)
@@ -160,13 +160,14 @@ $> module load compiler/NVHPC/21.2
         #include "openacc.h"
         #pragma acc <directive> [clauses [[,] clause] . . .] new-line
         <code>
-	```
+        ```
+        
     === "FORTRAN"
         ```
         use openacc
         !$acc <directive> [clauses [[,] clause] . . .]
         <code>
-	```
+        ```
 
 # Compute and loop constructs in OpenACC
 #### _kernels_ in C/C++
@@ -191,7 +192,7 @@ void Print_Hello_World()            | void Print_Hello_World()
 ```
 $> nvc -fast -Minfo=all -ta=tesla -acc Hello_World.c
 Print_Hello_World:
-      6, Loop not vectorized/parallelized: contains call
+      6, Loop not parallelized: contains call
 main:
      14, Print_Hello_World inlined, size=4 (inline) file Hello_World.c (5)
            6, Loop not vectorized/parallelized: contains call
@@ -206,7 +207,7 @@ print_hello_world:
           6, !$acc loop gang, vector(32) ! blockidx%x threadidx%x
 
 ```
-* As we can see above the loop is vectorized!.
+* As we can see above the loop is parallelized!.
 
 
 #### _kernels_ in FORTRAN
@@ -223,7 +224,7 @@ subroutine Print_Hello_World()     | subroutine Print_Hello_World()
 end subroutine Print_Hello_World   | end subroutine Print_Hello_World
 ~~~
 
-* Compile the _Hello_World.f90_ and compiler tells us that the loop is not vectorized/parallelized.
+* Compile the _Hello_World.f90_ and compiler tells us that the loop is not parallelized.
 ```
 $> nvfortran -fast -Minfo=all -ta=tesla -acc Hello_World.f90
 
@@ -239,7 +240,7 @@ print_hello_world:
          Generating Tesla code
           6, !$acc loop gang, vector(32) ! blockidx%x threadidx%x
 ```
-> Note: this above example is to show you how to create the parallel region using _parallel_ and _kernels_ and it quite useful  when you have a multiple regions need to be prallelized. However, the above example has just one parallel region.
+> Note: this above example shows you how to create the parallel region using _parallel_ and _kernels_. It is quite useful when multiple regions need to be parallelized. However, the above example has just one parallel region.
 
 # _loop_ and _data management_ clauses
 
@@ -263,7 +264,7 @@ float * Vector_Addition               | float * Vector_Addition
 * The _loop_ will parallelize the _for_ loop plus also accommodate other OpenACC _clauses_, for example here _copyin_ and _copyput_.
 * The above example needs two vectors to be copied to GPU and one vector needs to send the value back to CPU.
 * _copyin_ will create the memory on the GPU and transfer the data from CPU to GPU.
-* _copyout_ will create the memory on the GPU and and transfer the data from GPU to CPU.
+* _copyout_ will create the memory on the GPU and transfer the data from GPU to CPU.
 
 #### for FORTRAN
 
@@ -336,4 +337,4 @@ end module Vector_Addition_Mod               |   end subroutine Vector_Addition
 * _reduction_ _clause_ is needed when we want to sum the array or any counting inside the parallel region; this will increase the performance and avoid the error in the total sum.
 * The above example shows how to use them in C/C++ and FORTRAN languages.
 
-# !If you are interested to follow up more about CUDA and OpenACC programming, please go to:[MOOC course: GPU programming for scientific computing and beyond](https://www.futurelearn.com/courses/gpu-programming-scientific-computing)!
+# !To follow up more about CUDA and OpenACC programming, please visit:[MOOC course: GPU programming for scientific computing and beyond](https://www.futurelearn.com/courses/gpu-programming-scientific-computing)!
