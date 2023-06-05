@@ -153,21 +153,20 @@ $> module load compiler/NVHPC/21.2
 
 #### Basic programming structure
 
-??? Info "Time measuring"
+~~~c
+// C/C++
+#include "openacc.h"
+#pragma acc <directive> [clauses [[,] clause] . . .] new-line
+<code>
+~~~
 
-    === "C/C++"
-        ```c
-        #include "openacc.h"
-        #pragma acc <directive> [clauses [[,] clause] . . .] new-line
-        <code>
-        ```
-        
-    === "FORTRAN"
-        ```
-        use openacc
-        !$acc <directive> [clauses [[,] clause] . . .]
-        <code>
-        ```
+~~~fortran
+!! Fortran
+use openacc
+!$acc <directive> [clauses [[,] clause] . . .]
+<code>
+~~~
+
 
 # Compute and loop constructs in OpenACC
 #### _kernels_ in C/C++
