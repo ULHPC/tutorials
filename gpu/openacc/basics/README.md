@@ -246,6 +246,8 @@ print_hello_world:
 #### for C/C++
 * Here we can consider simple vector addition example for the OpenACC _loop_ directive
 
+![](./vector_add.png)
+
 ~~~ c
 // Vector_Addition.c                  | // Vector_Addition_OpenACC.c
 float * Vector_Addition               | float * Vector_Addition
@@ -291,7 +293,10 @@ end module Vector_Addition_Mod               | end module Vector_Addition_Mod
 
 * Now compile and run the above code as we did previously.
 
-# _reduction_ clause in vector addition
+# _reduction_ clause in dot product
+
+![](./dot_product.png){align=center width=250}
+
 #### for C/C++
 
 ~~~ c
