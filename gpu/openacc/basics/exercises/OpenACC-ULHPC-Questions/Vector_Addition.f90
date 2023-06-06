@@ -1,4 +1,4 @@
-!! Author: Ezhilmathi Krishnasamy (ezhilmathi.krishnasamy@uni.lu)
+!! Authour: Ezhilmathi Krishnasamy (ezhilmathi.krishnasamy@uni.lu)
 
 module Vector_Addition_Mod  
   implicit none 
@@ -8,10 +8,13 @@ contains
     real(8), intent(in), dimension(:) :: a
     real(8), intent(in), dimension(:) :: b
     real(8), intent(out), dimension(:) :: c
+    real(8)::sum=0
     integer :: i, n
     do i = 1, n
        c(i) = a(i) + b(i)
+       sum = sum+c(i)
     end do
+    print*, sum
   end subroutine Vector_Addition
 end module Vector_Addition_Mod
 

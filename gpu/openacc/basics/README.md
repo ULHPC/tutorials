@@ -251,7 +251,8 @@ print_hello_world:
 ~~~ c
 // Vector_Addition.c                  | // Vector_Addition_OpenACC.c
 float * Vector_Addition               | float * Vector_Addition
-(float *a, float *b, float *c, int n) | (float *a, float *b, float *c, int n)
+(float *restrict a, float *restrict b,| (float *restrict a, float *restrict b, 
+float *restrict c, int n)             | float *restrict c, int n)
 {                                     | {
                                       | #pragma acc kernels loop
                                       | copyin(a[:n], b[0:n]) copyout(c[0:n])
@@ -302,7 +303,8 @@ end module Vector_Addition_Mod               | end module Vector_Addition_Mod
 ~~~ c
 // Vector_Addition.c                  | // Vector_Addition_OpenACC.c
 float * Vector_Addition               | float * Vector_Addition
-(float *a, float *b, float *c, int n) | (float *a, float *b, float *c, int n)
+(float *restrict a, float *restrict b,| (float *restrict a, float *restrict b, 
+float *restrict c, int n)             | float *restrict c, int n)
 {                                     | { float sum=0;
                                       | #pragma acc kernels loop
                                       | reduction(+:sum) copyin(a[:n], b[0:n]) copyout(c[0:n])

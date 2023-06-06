@@ -1,20 +1,23 @@
-// Author:Ezhilmathi Krishnasamy (ezhilmathi.krishnasamy@uni.lu)
+// Authour: Ezhilmathi Krishnasamy (ezhilmathi.krishnasamy@uni.lu)
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
 #include <assert.h>
 #include <time.h>
+#include <openacc.h>
 
 #define MAX_ERR 1e-6
 
 // function that adds two vector 
-void Vector_Addition(float *a, float *b, float *c, int n) 
+void Vector_Addition(float *restrict a, float *restrict b, float *restrict c, int n) 
 {
-  for(int i = 0; i < n; i ++)
-    {
-      c[i] = a[i] + b[i];
-    }
+  // INTRODUCE THE COMPUTE CONSTRUCTS AND DATA MANAGEMENT CLAUSES 
+#pragma acc ......................?????
+    for(int i = 0; i < n; i ++)
+      {
+	c[i] = a[i] + b[i];
+      }
 }
 
 int main()
@@ -38,17 +41,17 @@ int main()
       a[i] = 1.0f;
       b[i] = 2.0f;
     }
-    
+  
   // Executing Vector Addition funtion 
   Vector_Addition(a, b, c, N);
-  
+      
   // Verification
   for(int i = 0; i < N; i++)
     {
       assert(fabs(c[i] - (a[i] + b[i])) < MAX_ERR);
     }
   printf("PASSED\n");
-    
+  
   // Deallocate host memory
   free(a); 
   free(b); 

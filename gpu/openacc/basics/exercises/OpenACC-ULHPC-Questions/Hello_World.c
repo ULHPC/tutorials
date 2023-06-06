@@ -1,4 +1,4 @@
-// Author: Ezhilmathi Krishnasamy (ezhilmathi.krishnasamy@uni.lu)
+// Authour: Ezhilmathi Krishnasamy (ezhilmathi.krishnasamy@uni.lu)
 
 #include <stdio.h>              
 void Print_Hello_World()    

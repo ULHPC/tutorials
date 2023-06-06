@@ -1,4 +1,4 @@
-// Author: Ezhilmathi Krishnasamy (ezhilmathi.krishnasamy@uni.lu)
+// Authour: Ezhilmathi Krishnasamy (ezhilmathi.krishnasamy@uni.lu)
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -10,14 +10,14 @@
 #define MAX_ERR 1e-6
 
 // function that adds two vector 
-void Vector_Addition(float *a, float *b, float *restrict c, int n) 
+void Vector_Addition(float *a, float *b, float *c, int n, float sum) 
 {
-  float sum;
-#pragma acc kernels loop reduction(+:sum) copyin(a[0:n], b[0:n]) copyout(c[0:n]) copy(sum)
+  //  float sum=0.0;
+#pragma acc kernels loop reduction(+:sum) copyin(a[0:n], b[0:n]) copyout(c[0:n], sum) 
   for(int i = 0; i < n; i ++)
     {
       c[i] = a[i] + b[i];
-      sum+=c[i];
+      sum += c[i];
     }
   printf("sum is %f \n", sum);
 }
@@ -30,13 +30,12 @@ int main()
   scanf("%d",&N);
 
   // Initialize the memory on the host
-  float *a, *b, *c;       
+  float *a, *b, *c, sum;       
   
   // Allocate host memory
   a = (float*)malloc(sizeof(float) * N);
   b = (float*)malloc(sizeof(float) * N);
   c = (float*)malloc(sizeof(float) * N);
-
   
   // Initialize host arrays
   for(int i = 0; i < N; i++)
@@ -46,8 +45,8 @@ int main()
     }
     
   // Executing Vector Addition funtion 
-  Vector_Addition(a, b, c, N);
-
+  Vector_Addition(a, b, c, N, sum);
+  printf("sum is %f \n", sum);
     
   // Verification
   for(int i = 0; i < N; i++)
@@ -55,6 +54,7 @@ int main()
       assert(fabs(c[i] - (a[i] + b[i])) < MAX_ERR);
     }
   printf("PASSED\n");
+
 
   // Deallocate host memory
   free(a); 
