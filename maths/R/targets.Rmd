@@ -12,7 +12,7 @@ output:
   xaringan::moon_reader:
     css: ["xaringan-themer.css", "slides.css"]
     seal: false # disable title slide
-    self_contained: false
+    self_contained: true
     always_allow_html: true
     nature:
       ratio: '16:9' # default 4:3
@@ -322,6 +322,7 @@ list(
 ```
 
 ``` r
+# after tar_make()
 tar_crew()
 #> # A tibble: 10 × 5
 #>    controller    worker launches seconds targets
@@ -358,6 +359,7 @@ list(
 ```
 
 ``` r
+# after tar_make()
 tar_crew()
 #> # A tibble: 10 × 5
 #>    controller    worker launches seconds targets
@@ -416,6 +418,9 @@ ds_fun_linear:
 ds_dynamic:
   store: _ds_2
   script: _targets_ds_2.R
+ds_dynamic_crew:
+  store: _ds_2_crew
+  script: _targets_ds_2_crew.R
 ds_static:
   store: _ds_3
   script: _targets_ds_3.R
@@ -648,7 +653,7 @@ wrap_plots(tar_read(plots)) +
 
 # Static branching, with dynamic inside
 
-Dynamic branch names are not meaningful, just hashes
+### Dynamic branch names are not meaningful, just hashes
 
 .pull-left[
 #### Multi-folders input data
@@ -680,7 +685,7 @@ others
 .pull-right[
 #### Dynamic within static, best of both worlds
 
-More difficult to write with `tar_map()` (see [example](https://gitlab.lcsb.uni.lu/aurelien.ginolhac/targets_demos/-/blob/main/_targets_ds_3.R))
+More difficult to write with `tar_map()` (see [example](https://gitlab.lcsb.uni.lu/aurelien.ginolhac/targets_demos/-/blob/hpc/_targets_ds_3.R))
 
 But meaningful names and combine when needed:
 ![](img/targets_dag_static.png)
@@ -695,7 +700,7 @@ class: hide_logo
 # Parallel static branches and combine
 
 .pull-left[
-#### From [`_targets_ds_3.R`](https://gitlab.lcsb.uni.lu/aurelien.ginolhac/targets_demos/-/blob/main/_targets_ds_3.R), static branches:
+#### From [`_targets_ds_3.R`](https://gitlab.lcsb.uni.lu/aurelien.ginolhac/targets_demos/-/blob/hpc/_targets_ds_3.R), static branches:
 
 ``` r
 # Static branching with dynamic branching inside
@@ -1178,11 +1183,11 @@ htmltools::img(src = "https://raw.githubusercontent.com/rstudio/shiny/master/man
 .flex[
 .w-50.bg-washed-green.b--green.ba.bw2.br3.shadow-5.ph3.mt2.mr1[
 .large[.ybox[Further reading `r fontawesome::fa("book")`]]
-- [Main website](https://docs.ropensci.org/targets/)
+- [Documentation](https://books.ropensci.org/targets/) as bookdown by **Landau**
+- [Distributed computing](https://books.ropensci.org/targets/crew.html) using [`{crew}`](https://wlandau.github.io/crew/)
 - [Targetopia](https://wlandau.github.io/targetopia/packages.html) **Landau** universe of targets-derived (stan/jags)
 - [Video](https://www.youtube.com/watch?v=FODSavXGjYg) from R Lille meetup by **William Landau**. June 2021 45''
 - [Video](https://www.youtube.com/watch?v=odcBA4ETLn8) from Bayes Lund by **William Landau**. October 2021
-- [Documentation](https://books.ropensci.org/targets/) as bookdown by **Landau**
 ]
 .w-50.pv2.ph3.mt2.ml1[
 .huge[.bbox[Thank you for your attention!  
