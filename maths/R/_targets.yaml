@@ -1,6 +1,0 @@
-gapminder:
-  store: _tar_gapminder
-  script: _tar_gapminder.R
-datasaurus:
-  store: _tar_ds
-  script: _tar_ds.R

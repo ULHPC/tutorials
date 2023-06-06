@@ -15,7 +15,7 @@
  *    - xaringan wiki: https://github.com/yihui/xaringan/wiki
  *    - remarkjs wiki: https://github.com/gnab/remark/wiki
  *
- *  Version: 0.4.0
+ *  Version: 0.4.2
  *
  * ------------------------------------------------------- */
 @import url(https://fonts.googleapis.com/css?family=Roboto+Condensed:300,300i&display=swap);
@@ -190,7 +190,9 @@ blockquote {
 th, td {
   padding: 5px;
 }
-.remark-slide thead, .remark-slide tfoot, .remark-slide tr:nth-child(even) {
+.remark-slide table:not(.table-unshaded) thead,
+.remark-slide table:not(.table-unshaded) tfoot,
+.remark-slide table:not(.table-unshaded) tr:nth-child(even) {
   background: #CCECF9;
 }
 table.dataTable tbody {
@@ -211,6 +213,36 @@ table.dataTable.hover tbody tr:hover, table.dataTable.display tbody tr:hover {
 }
 .dataTables_wrapper .dataTables_paginate .paginate_button {
   color: var(--text-color) !important;
+}
+
+/* Horizontal alignment of code blocks */
+.remark-slide-content.left pre,
+.remark-slide-content.center pre,
+.remark-slide-content.right pre {
+  text-align: start;
+  width: max-content;
+  max-width: 100%;
+}
+.remark-slide-content.left pre,
+.remark-slide-content.right pre {
+  min-width: 50%;
+  min-width: min(40ch, 100%);
+}
+.remark-slide-content.center pre {
+  min-width: 66%;
+  min-width: min(50ch, 100%);
+}
+.remark-slide-content.left pre {
+  margin-left: unset;
+  margin-right: auto;
+}
+.remark-slide-content.center pre {
+  margin-left: auto;
+  margin-right: auto;
+}
+.remark-slide-content.right pre {
+  margin-left: auto;
+  margin-right: unset;
 }
 
 /* Slide Header Background for h1 elements */
