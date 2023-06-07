@@ -1,3 +1,5 @@
+// Copyright 2023 Pierre Talbot
+
 #include "utility.hpp"
 #include <string>
 
