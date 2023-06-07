@@ -23,7 +23,7 @@
 
 ### Important: PRACE MOOC
 
-> ***NOTE***: this lecture is limited to just 45 min; it only a covers very basic tutorial about OpenACC.
+> ***NOTE***: This lecture is limited to just 45 min; it only a covers from basics to intermediate tutorial about OpenACC.
   To know more about (from basic to advanced) CUDA programming and OpenACC programming model,
   please refer to __PRACE MOOC__ ***GPU Programming for Scientific Computing and Beyond - Dr. Ezhilmathi Krishnasamy and Prof. Pascal Bouvry***
 
@@ -62,6 +62,7 @@ See also [GPU jobs documentation](https://hpc-docs.uni.lu/jobs/gpu/).
 ```bash
 $ ssh iris-cluster   # The only cluster featuring GPU
 $ si-gpu -G 1 --ntasks-per-node 1 -c 7 -t 00:30:00   # (eventually) --reservation=hpcschool-gpu
+$ si-gpu -G 1 --reservation=hpcschool-gpu -N 1 -c 14 -t 01:00:00 
 ```
 
 #### Load the OpenACC compiler (Nvidia HPC SDK)
@@ -184,12 +185,12 @@ void Print_Hello_World()            | void Print_Hello_World()
 ~~~
 
 
-* compilation: ```nvc -fast -Minfo=all -ta=tesla -acc Hello_World.c```
+* compilation: ```nvc -fast -Minfo=all -acc=gpu -gpu=cc70 Hello_World.c```
       - The compiler will already give much info; what do you see?
 
 
 ```
-$> nvc -fast -Minfo=all -ta=tesla -acc Hello_World.c
+$> nvc -fast -Minfo=all -acc=gpu -gpu=cc70 Hello_World.c
 Print_Hello_World:
       6, Loop not parallelized: contains call
 main:
@@ -198,7 +199,7 @@ main:
 ```
 * Now add either _kernels_ or _parallel_ directives to vectorize/parallelize the loop
 ```
-$> nvc -fast -Minfo=all -ta=tesla -acc  Hello_World_OpenACC.c
+$> nvc -fast -Minfo=all -acc=gpu -gpu=cc70 Hello_World_OpenACC.c
 
 print_hello_world:
       6, Loop is parallelizable
@@ -225,14 +226,14 @@ end subroutine Print_Hello_World   | end subroutine Print_Hello_World
 
 * Compile the _Hello_World.f90_ and compiler tells us that the loop is not parallelized.
 ```
-$> nvfortran -fast -Minfo=all -ta=tesla -acc Hello_World.f90
+$> nvfortran -fast -Minfo=all -acc=gpu -gpu=cc70 Hello_World.f90
 
 print_hello_world:
       5, Loop not vectorized/parallelized: contains call
 ```
 * Now run the _Hello_World_OpenACC.f90_ either using _kernels_ or _parallel_ and we can already notice that loop is vectorized/parallelized.
 ```
-$> nvfortran -fast -Minfo=all -ta=tesla -acc  Hello_World_OpenACC.f90
+$> nvfortran -fast -Minfo=all -acc=gpu -gpu=cc70 Hello_World_OpenACC.f90
 
 print_hello_world:
       6, Loop is parallelizable
@@ -263,7 +264,7 @@ float *restrict c, int n)             | float *restrict c, int n)
   return c;                           |
 }                                     | }
 ~~~
-* The _loop_ will parallelize the _for_ loop plus also accommodate other OpenACC _clauses_, for example here _copyin_ and _copyput_.
+* The _loop_ will parallelize the _for_ loop plus also accommodate other OpenACC _clauses_, for example here _copyin_ and _copyout_.
 * The above example needs two vectors to be copied to GPU and one vector needs to send the value back to CPU.
 * _copyin_ will create the memory on the GPU and transfer the data from CPU to GPU.
 * _copyout_ will create the memory on the GPU and transfer the data from GPU to CPU.
@@ -296,11 +297,29 @@ end module Vector_Addition_Mod               | end module Vector_Addition_Mod
 
 # _reduction_ clause in dot product
 
-![](./dot_product.png)
+![](./1_HjcZkViYtPKg-Wm2o7DFDg.png)
 
 #### for C/C++
 
 ~~~ c
+// Matrix_Multiplication.c
+for(int row = 0; row < width ; ++row)           // Matrix_Multiplication_OpenACC.c
+    {                                           | pragma acc kernels loop collapse(2)                      
+      for(int col = 0; col < width ; ++col)     |                        reduction(+:sum)                      
+        {                                       |   for(int row = 0; row < width ; ++row)                     
+          sum=0;                                |      {                    
+          for(int i = 0; i < width ; ++i)       |        for(int col = 0; col < width ; ++col)                     
+            {                                   |          {                     
+              sum += a[row*width+i]             |            sum=0;
+                   * b[i*width+col];            |            for(int i = 0; i < width ; ++i)    
+            }                                   |              {                     
+          c[row*width+col] = sum;               |                sum += a[row*width+i]                     
+        }                                       |                     * b[i*width+col];                     
+    }                                           |              }
+                                                |            c[row*width+col] = sum;
+                                                |          }
+                                                |      }                                
+=======
 // Vector_Addition.c                  | // Vector_Addition_OpenACC.c
 float * Vector_Addition               | float * Vector_Addition
 (float *restrict a, float *restrict b,| (float *restrict a, float *restrict b, 
@@ -316,31 +335,35 @@ float *restrict c, int n)             | float *restrict c, int n)
 }                                     | }
 ~~~
 
+
 #### for FORTRAN
 
 ~~~ fortran
-
-!! Vector_Addition.f90                       | !! Vector_Addition_Reducion_OpenACC.f90
-module Vector_Addition_Mod                   | module Vector_Addition_Mod
-  implicit none                              |   implicit none
-contains                                     | contains
-  subroutine Vector_Addition(a, b, c, n)     |   subroutine Vector_Addition(a, b, c, n)
-    !! Input vectors                         |     !! Input vectors
-    real(8), intent(in), dimension(:) :: a   |     real(8), intent(in), dimension(:) :: a, b
-    real(8), intent(in), dimension(:) :: b   |     real(8):: sum=0
-    real(8), intent(out), dimension(:) :: c  |     real(8), intent(out), dimension(:) :: c
-    integer :: i, n                          |     integer :: i, n
-                                             |     !$acc kernels loop reduction(+:sum)
-                                             |      copyin(a(1:n), b(1:n)) copyout(c(1:n))
-    do i = 1, n                              |     do i = 1, n
-       c(i) = a(i) + b(i)                    |        c(i) = a(i) + b(i)
-    end do                                   |        sum = c(i)
-                                             |     end do
-  end subroutine Vector_Addition             |     !$acc end kernels
-end module Vector_Addition_Mod               |   end subroutine Vector_Addition
-                                               end module Vector_Addition_Mod
+!! Matrix_Multiplication.f90                 |!! Matrix_Multiplication_OpenACC.f90
+    do row = 0, width-1                      |   !$acc loop collapse(2) reduction(+:sum)
+       do col = 0, width-1                   |   do row = 0, width-1
+          sum=0                              |      do col = 0, width-1                           
+          do i = 0, width-1                  |         sum=0                           
+             sum = sum + (a((row*width)+i+1) |         do i = 0, width-1
+                       * b((i*width)+col+1)) |            sum = sum + (a((row*width)+i+1)  
+          enddo                              |                      * b((i*width)+col+1))                        
+          c(row*width+col+1) = sum           |         enddo                        
+       enddo                                 |         c(row*width+col+1) = sum
+    enddo                                    |      enddo
+                                             |   enddo 
+                                             |   !$acc end loop 
 ~~~
+
 * _reduction_ _clause_ is needed when we want to sum the array or any counting inside the parallel region; this will increase the performance and avoid the error in the total sum.
 * The above example shows how to use them in C/C++ and FORTRAN languages.
+
+#### Practical session:
+
+* Try simple `Hello_World_OpenACC.c` and `Hello_World_OpenACC.f90` with OpenACC parallel constructs; and try to understand what compiler producing.
+* Do simple `Vector_Addition_OpenACC.c` and `Vector_Addition_OpenACC.f90` with OpenACC parallel constructs and use data clauses for data management. 
+* Similarly, try `Vector_Addition_OpenACC.c` and `Vector_Addition_OpenACC.f90` with parallel OpenACC parallel constructs and use data clauses for data management. And include thread clauses for creating threads. 
+* Finally, do `Matrix_Multiplication_OpenACC.c` and `Matrix_Multiplication_OpenACC.f90` and use reduction clause along with parallel constructs and data management clauses. 
+* Similarly include the thread blocks for `Matrix_Multiplication_OpenACC.c` and `Matrix_Multiplication_OpenACC.f90`.
+
 
 # !To follow up more about CUDA and OpenACC programming, please visit:[MOOC course: GPU programming for scientific computing and beyond](https://www.futurelearn.com/courses/gpu-programming-scientific-computing)!
