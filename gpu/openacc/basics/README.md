@@ -4,7 +4,7 @@
 
      Copyright (c) E. Krishnasamy, 2013-2023 UL HPC Team <hpc-sysadmins@uni.lu>
 
-[![](https://github.com/ULHPC/tutorials/raw/devel/gpu/openacc/basics/cover_slides.png)](https://github.com/ULHPC/tutorials/raw/devel/gpu/openacc/basics/slides.pdf)
+[![](https://github.com/ULHPC/tutorials/raw/devel/gpu/openacc/basics/OpenACC-Front-Page.png)](https://github.com/ULHPC/tutorials/raw/devel/gpu/openacc/basics/Training_OpenACC.pdf)
 
 # Objectives
 
