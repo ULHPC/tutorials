@@ -46,6 +46,7 @@ pages:
   - Scoop-Deap: 'python/advanced/scoop-deap/index.md'
   - Dask-ML: 'python/advanced/dask-ml/index.md'
 - GPU Programming:
+  - Introduction to CUDA C/C++ (2023): 'gpu/cuda2023/index.md'
   - Accelerating Applications with CUDA C/C++: 'cuda/index.md'
   - CUDA Convolution using GPU: 'cuda/exercises/convolution/index.md'
   - Introduction to OpenCL Programming: 'gpu/opencl/index.md'

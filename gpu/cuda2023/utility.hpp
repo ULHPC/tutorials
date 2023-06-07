@@ -1,8 +1,13 @@
+// Copyright 2023 Pierre Talbot
+
 #include <cstdio>
 #include <random>
 #include <chrono>
 #include <iostream>
 #include <algorithm>
+
+#ifndef UTILITY_HPP
+#define UTILITY_HPP
 
 #define CUDIE(result) { \
   cudaError_t e = (result); \
@@ -70,7 +75,7 @@ void deallocate_gpu_distances(int** gpu_distances, size_t n) {
   cudaFree(gpu_distances);
 }
 
-/** This benchmark the time taken by the function `f` by executing it 1 time first for warm-up, then 10 times in a row, then dividing the result by 10.
+/** Benchmarks the time taken by the function `f` by executing it 1 time first for warm-up, then 10 times in a row, then dividing the result by 10.
  * It returns the duration in milliseconds. */
 template<class F>
 long benchmark_ms(F&& f) {
@@ -91,3 +96,4 @@ long benchmark_one_ms(F&& f) {
   return std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() / 10;
 }
 
+#endif

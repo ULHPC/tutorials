@@ -1,3 +1,5 @@
+// Copyright 2023 Pierre Talbot
+
 #include <cstdio>
 
 __global__ void hello_world() {

@@ -3,16 +3,35 @@
 #include "../utility.hpp"
 #include <string>
 
+__forceinline__ __device__ int dim2D(int x, int y, int n) {
+  return x * n + y;
+}
+
 __global__ void floyd_warshall_gpu(int** d, size_t n) {
+  // Copy the matrix into the shared memory.
+  extern __shared__ int d2[];
+  for(int i = 0; i < n; ++i) {
+    for(int j = threadIdx.x; j < n; j += blockDim.x) {
+      d2[dim2D(i, j, n)] = d[i][j];
+    }
+  }
+  __syncthreads();
+  // Compute on the shared memory.
   for(int k = 0; k < n; ++k) {
     for(int i = 0; i < n; ++i) {
       for(int j = threadIdx.x; j < n; j += blockDim.x) {
-        if(d[i][j] > d[i][k] + d[k][j]) {
-          d[i][j] = d[i][k] + d[k][j];
+        if(d2[dim2D(i,j,n)] > d2[dim2D(i,k,n)] + d2[dim2D(k,j,n)]) {
+          d2[dim2D(i,j,n)] = d2[dim2D(i,k,n)] + d2[dim2D(k,j,n)];
         }
       }
     }
     __syncthreads();
+  }
+  // Copy the matrix back to the global memory.
+  for(int i = 0; i < n; ++i) {
+    for(int j = threadIdx.x; j < n; j += blockDim.x) {
+      d[i][j] = d2[dim2D(i, j, n)];
+    }
   }
 }
 
@@ -50,7 +69,7 @@ int main(int argc, char** argv) {
 
   // III. Running Floyd Warshall on GPU (single block of size `threads_per_block`).
   long gpu_ms = benchmark_one_ms([&]{
-    floyd_warshall_gpu<<<1, threads_per_block>>>(gpu_distances, n);
+    floyd_warshall_gpu<<<1, threads_per_block, n * n * sizeof(int)>>>(gpu_distances, n);
     CUDIE(cudaDeviceSynchronize());
   });
   std::cout << "GPU: " << gpu_ms << " ms" << std::endl;
