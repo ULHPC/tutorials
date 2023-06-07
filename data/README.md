@@ -2,7 +2,7 @@
 
 # Data Management on UL HPC Facility
 
-     Copyright (c) 2020-2021 UL HPC Team <hpc-sysadmins@uni.lu>
+     Copyright (c) 2020-2023 UL HPC Team <hpc-sysadmins@uni.lu>
 
 Author: Sarah Peter
 
