@@ -1,6 +1,6 @@
 // Copyright 2023 Pierre Talbot
 
-#include "floyd_util.hpp"
+#include "utility.hpp"
 #include <string>
 
 void floyd_warshall_cpu(std::vector<std::vector<int>>& d) {
