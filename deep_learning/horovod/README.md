@@ -2,6 +2,9 @@
 
 # Horovod
 
+[![](cover_slides.png)](slides.pdf)
+
+
 Horovod ([website](https://horovod.readthedocs.io/en/stable/)) is a framework for scaling training based on the Ring All-Reduce protocol. Unlike approaches that use a centralized memory for aggregating and broadcasting weights' updates during stochastic gradient descent (SGD) computations, Horovod takes advantage of the computing machine's communication links, such as NVLink, to maximize performance. Horovod integrates with popular modern deep learning frameworks like Keras2, TensorFlow2, PyTorch2, with a few code changes making it easy to incorporate into existing workflows.
 
 By using Horovod, you can attempt to accelerate the distributed training time *T* compared to the time for a single accelerator *G*. However, communication can reduce scalability, and the batch size is often inversely proportional to the communication time.
@@ -52,13 +55,15 @@ Available Tensor Operations:
 
 Ensures that the deep learning framework you wish to use is checked, along with MPI and NCCL.
 
-## HPC/AI methodology
+<!-- 
+# HPC/AI methodology
 
 To assess how your workload can benefit from using Horovod, it is recommended to perform one of the following analyses:
 
 * **Strong Scalability Analysis**. It consists in fixing the AI workload behaviour (Batch size, model, ...) and scaling the number of machine. By increasing the computational resources while maintaining the other workload characteristics, you can observe the impact of scaling on the training speed.
 
 * **Weak Scalability Analysis**. It consists in fixing a number of AI-accelerator (e.g, 4) and scale a characteristic of the AI workload, such as the number of layers. This analysis helps understand how a parameter affects the accuracy, scalability and speed of the workload when varying a specific aspect.
+-->
 
 ## Horovod typical code
 
@@ -74,6 +79,9 @@ The proposed codes contains the following blocks of codes:
 
 Bonus : You can add some features (e.g, Horovod callbacks) for adding more features to your code but they come with a speed overheads. Example: verbosity, monitoring the validation metric, regular checkpointing after each epoch, learning rate scheduling with loss plateau detection, ...
 
+Proposed code samples:
+
+[Test code for checking horovod initialization](app/test_horovod.py)
 
 [ULHPC Tensorflow/Keras code example](app/tensorflow_horovod.py)
 
@@ -81,6 +89,31 @@ Bonus : You can add some features (e.g, Horovod callbacks) for adding more featu
 
 [Official Horovod code examples](https://github.com/horovod/horovod/tree/master/examples)
 
+## Testing multi-node multi-GPU Horovod
+
+For testing large-scale training we launch test_horovod.py on 2 nodes, each node containing 4 GPUs
+
+Script multinode-multigpu-test.sh:
+```Bash
+#!/bin/sh –l
+#SBATCH -c 2              # 2 CPU-core for each process
+#SBATCH -N 2              # 2 nodes
+#SBATCH -p gpu
+#SBATCH --gpus-per-node 4 # Each process is associated to each GPU
+#SBATCH -t 30
+#SBATCH --export=ALL
+
+mpirun -n 8 python test_horovod.py
+```
+
+```Bash
+sbatch multinode-multigpu-test.sh
+```
+
+The SLURM output may looklike
+```Bash
+
+```
 
 ## Examples
 
@@ -109,9 +142,7 @@ Loss:  1.3920882940292358  accuracy:  0.5380609035491943
 Loss:  1.3958407640457153  accuracy:  0.5354567170143127
 ```
 
-ADD A COMMENT ABOUT THE RESULTS
-proposal:
-In this particular case, both the accuracy and the training time are improved by using 2 GPUs.
+The training time are improved by using 2 GPUs compared to 1.
 
 ### PyTorch2
 
