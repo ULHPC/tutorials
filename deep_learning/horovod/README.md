@@ -95,24 +95,35 @@ For testing large-scale training we launch test_horovod.py on 2 nodes, each node
 
 Script multinode-multigpu-test.sh:
 ```Bash
-#!/bin/sh –l
+#!/bin/sh -l
 #SBATCH -c 2              # 2 CPU-core for each process
 #SBATCH -N 2              # 2 nodes
 #SBATCH -p gpu
-#SBATCH --gpus-per-node 4 # Each process is associated to each GPU
+#SBATCH --gpus-per-node 3 # Each process will see 3 GPUs
 #SBATCH -t 30
 #SBATCH --export=ALL
 
-mpirun -n 8 python test_horovod.py
+mpirun -n 6 python test_horovod.py
 ```
 
 ```Bash
 sbatch multinode-multigpu-test.sh
 ```
 
-The SLURM output may looklike
+The SLURM correctly output:
 ```Bash
-
+List of TF visible physical GPUs :  [PhysicalDevice(name='/physical_device:GPU:0', device_type='GPU'), PhysicalDevice(name='/physical_device:GPU:1', device_type='GPU'), PhysicalDevice(name='/physical_device:GPU:2', device_type='GPU')]
+MPI_size = 6, MPI_rank = 0, MPI_local_size = 3,  MPI_local_rank = 0 platform = iris-179
+List of TF visible physical GPUs :  [PhysicalDevice(name='/physical_device:GPU:0', device_type='GPU'), PhysicalDevice(name='/physical_device:GPU:1', device_type='GPU'), PhysicalDevice(name='/physical_device:GPU:2', device_type='GPU')]
+MPI_size = 6, MPI_rank = 1, MPI_local_size = 3,  MPI_local_rank = 0 platform = iris-180
+List of TF visible physical GPUs :  [PhysicalDevice(name='/physical_device:GPU:0', device_type='GPU'), PhysicalDevice(name='/physical_device:GPU:1', device_type='GPU'), PhysicalDevice(name='/physical_device:GPU:2', device_type='GPU')]
+MPI_size = 6, MPI_rank = 2, MPI_local_size = 3,  MPI_local_rank = 1 platform = iris-179
+List of TF visible physical GPUs :  [PhysicalDevice(name='/physical_device:GPU:0', device_type='GPU'), PhysicalDevice(name='/physical_device:GPU:1', device_type='GPU'), PhysicalDevice(name='/physical_device:GPU:2', device_type='GPU')]
+MPI_size = 6, MPI_rank = 4, MPI_local_size = 3,  MPI_local_rank = 2 platform = iris-179
+List of TF visible physical GPUs :  [PhysicalDevice(name='/physical_device:GPU:0', device_type='GPU'), PhysicalDevice(name='/physical_device:GPU:1', device_type='GPU'), PhysicalDevice(name='/physical_device:GPU:2', device_type='GPU')]
+MPI_size = 6, MPI_rank = 3, MPI_local_size = 3,  MPI_local_rank = 1 platform = iris-180
+List of TF visible physical GPUs :  [PhysicalDevice(name='/physical_device:GPU:0', device_type='GPU'), PhysicalDevice(name='/physical_device:GPU:1', device_type='GPU'), PhysicalDevice(name='/physical_device:GPU:2', device_type='GPU')]
+MPI_size = 6, MPI_rank = 5, MPI_local_size = 3,  MPI_local_rank = 2 platform = iris-180
 ```
 
 ## Examples
@@ -178,7 +189,7 @@ Bigger batch reduce the communication need. If your are facing scalability issue
     *  Adapting the neural network architecture for scalability. For example, some suggest that wider model can scale better: [L Chen et al 2018](https://proceedings.neurips.cc/paper/2018/file/e7c573c14a09b84f6b7782ce3965f335-Paper.pdf)
 
 
-## Appendixes 
+## Appendices 
 
 ### Appendix 1: Install Horovod yourself
 
