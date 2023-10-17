@@ -24,10 +24,12 @@ So far, the following tutorials are proposed:
 | _Basic_                 | [Introduction to UNIX/Linux Shell and Command lines](linux-shell/)                                    | beginners      |
 |                         | [Getting Started on the UL HPC platform](beginners/)                                                  | beginners      |
 |                         | [Monitoring & Profiling I: why, what, how, where to look](basic/monitoring/)                          | beginners      |
+| _Emb. Parallel Jobs_    | [GNU Parallel](sequential/gnu-parallel/)                                                              | beginners      |
 |                         | [HPC Management of Sequential and Embarrassingly Parallel Jobs](sequential/basics/)                   | beginners      |
-|                         | [Distributing embarrassingly parallel tasks GNU Parallel](sequential/gnu-parallel/)                   | intermediate   |
+|                         | [Many Tasks — Many Node Allocations using Slurm and GNU Parallel](sequential/manytasks-manynodes/)    | intermediate   |
 | _Scheduling_            | [Advanced scheduling with SLURM](scheduling/advanced/)                                                | intermediate   |
 | _Software Management_   | [HPC Software Building: optimizing and complementing the ULHPC software set](tools/easybuild/)        | beginners      |
+|                         | [The Spack package manager for supercomputers](tools/spack/)                                          | beginners      |
 | _Data Management_       | [Data Management on UL HPC Facility](data/)                                                           | beginners      |
 | _Debuging & Profiling_  | [Know Your Bugs: Weapons for Efficient Debugging](debugging/basics/)                                  | intermediate   |
 |                         | [Advanced debugging on the UL HPC platform](debugging/advanced/)                                      | intermediate   |
@@ -52,8 +54,10 @@ So far, the following tutorials are proposed:
 | _CFD/MD/Chemistry_      | [Scalable Science II (Advanced - Computational Physics, Chemistry & Engineering apps)](multiphysics/) | advanced       |
 | _Big Data_              | [Running Big Data Application using Apache Hadoop and Spark ](bigdata/)                               | intermediate   |
 | _Machine/Deep Learning_ | [Machine and Deep learning workflows](deep_learning/)                                                 | intermediate   |
-| _Containers_            | [HPC Containers with Singularity](containers/singularity/)                                            | advanced       |
+|                         | [Distributed Deep Learning with Horovod](deep_learning/horovod/)                                      | intermediate   |
+| _Containers_            | [Singularity](containers/singularity/)                                                                | advanced       |
 |                         | [Singularity with Infiniband](containers/singularity-inf/)                                            | advanced       |
+|                         | [Reproducibility and HPC Containers ](containers/ULHPC-containers/)                                   | advanced       |
 | _Virtualization_        | (OLD) [Create and reproduce work environments using Vagrant](advanced/Vagrant/)                       | intermediate   |
 |                         | [Deploying virtual machines with Vm5k on Grid'5000](advanced/vm5k/)                                   | intermediate   |
 | _GPU Programming_       | [Introduction to GPU programming with CUDA (C/C++)](cuda/)                                            | intermediate   |

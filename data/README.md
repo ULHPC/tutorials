@@ -2,7 +2,7 @@
 
 # Data Management on UL HPC Facility
 
-     Copyright (c) 2020-2021 UL HPC Team <hpc-sysadmins@uni.lu>
+     Copyright (c) 2020-2023 UL HPC Team <hpc-sysadmins@uni.lu>
 
 Author: Sarah Peter
 
@@ -209,21 +209,27 @@ This will create the encrypted file `message.txt.gpg` next to the unencrypted fi
 You can decrypt the file  with the following command:
 
 ```bash
+(node)$> gpg -o message.txt -d message.txt.gpg
+gpg: AES encrypted data
+gpg: encrypted with 1 passphrase
+```
+
+With older versions of GPG you might see some output telling you that the file was encrypted with [CAST5](https://en.wikipedia.org/wiki/CAST-128) and a warning that it was not integrity protected.
+
+```bash
 (node)$> gpg message.txt.gpg
 gpg: CAST5 encrypted data
 gpg: encrypted with 1 passphrase
 gpg: WARNING: message was not integrity protected
 ```
 
-You will see some output telling you that the file was encrypted with [CAST5](https://en.wikipedia.org/wiki/CAST-128) and a warning that it was not integrity protected.
-
-To avoid that warning and since CAST5 is an older algorithm, let us encrypt the file with a newer and stronger algorithm:
+To avoid that warning and since CAST5 is an older algorithm, you can encrypt the file with a newer and stronger algorithm:
 
 ```bash
 (node)$> rm message.txt.gpg
 (node)$> gpg --cipher-algo AES256 -c message.txt
 (node)$> rm message.txt
-(node)$> gpg message.txt.gpg
+(node)$> gpg -o message.txt -d message.txt.gpg
 gpg: AES256 encrypted data
 gpg: encrypted with 1 passphrase
 ```

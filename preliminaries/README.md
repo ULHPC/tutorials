@@ -110,7 +110,7 @@ Your SSH keys might use one of the following algorithms:
 To generate an RSA SSH keys **of 4096-bit length**, just use the `ssh-keygen` command as follows:
 
 ```bash
-(laptop)$> ssh-keygen -t rsa -b 4096 -o -a 100
+(laptop)$> ssh-keygen -t rsa -b 4096 -a 100
 Generating public/private rsa key pair.
 Enter file in which to save the key (/home/user/.ssh/id_rsa):
 Enter passphrase (empty for no passphrase):
@@ -155,7 +155,7 @@ Ensure the access rights are correct on the generated keys using the ' `ls -l` '
 Repeat the procedure to generate a
 
 ```bash
-(laptop)$> ssh-keygen -t ed25519 -o -a 100
+(laptop)$> ssh-keygen -t ed25519 -a 100
 [...]
 $> ls -l ~/.ssh/id_*
 -rw------- 1 username groupname 751 Mar  1 20:16 /home/username/.ssh/id_rsa

@@ -14,4 +14,6 @@ ulimit -u 10000
 echo "Spawning ${SLURM_NTASKS_PER_NODE} parallel worker on ${SLURM_NNODES} nodes"
 echo "Nodes: ${SLURM_NODELIST}"
 echo "Each parallel worker can execute ${SLURM_CPUS_PER_TASK} independant tasks" 
-srun --no-kill --wait=0 parallel_worker.sh $*
+export SRUN_CPUS_PER_TASK=${SLURM_CPUS_PER_TASK}
+export TIMESTAMP=$(date +"%Y%m%dT%H%M%S")
+srun --no-kill --wait=0 $*

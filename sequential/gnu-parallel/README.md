@@ -8,10 +8,8 @@
 
 [GNU Parallel](http://www.gnu.org/software/parallel/) is a tool for executing tasks in parallel, typically on a single machine. **When coupled with the Slurm command `srun`, parallel becomes a powerful way of distributing a set of tasks amongst a number of workers**. This is particularly useful when the number of tasks is significantly larger than the number of available workers (i.e. `$SLURM_NTASKS`), and each tasks is independent of the others.
 
-This tutorial is part of the practical session "[HPC Management of Sequential and Embarrassingly Parallel Jobs](https://ulhpc-tutorials.readthedocs.io/en/latest/sequential/basics/)". See the [associated slides](https://github.com/ULHPC/tutorials/raw/devel/sequential/basics/slides.pdf).
 
-
-## Installation
+## Prerequisites
 
 The `parallel` command is available at the system level across the ULHPC clusters, yet under a relatively old version:
 
@@ -23,86 +21,135 @@ GNU parallel 20190922
 [...]
 ```
 
-You may want to build the up-to-date version. The process is quite straight-forward and we will illustrate this process using the  [GNU Stow](https://www.gnu.org/software/stow/) utility which is quite useful for keeping track of system-wide and per-user installations of software built from source, as `parallel` in this case. [GNU Stow manual](https://www.gnu.org/software/stow/manual/stow.html#Introduction) - [tutorial](https://linuxconfig.org/how-to-use-gnu-stow-to-manage-programs-installed-from-source-and-dotfiles)
+If you want to build a more recent version. The process is quite straight-forward and we will illustrate this process Easybuild (see the [Easybuild tutorial](../../tools/easybuild/)  and [Spack tutorial](../../tools/spack/)). 
 
-Prepare the installation directories within your HOME, together with the _stowdir_:
+### With Easybuild
 
-``` bash
-### Access to ULHPC cluster if not yet done - here iris
-(laptop)$> ssh aion-cluster
-(access)$> cd      # go to your HOME
-(access)$> mkdir -p bin include lib share/{doc,man} src
-# create stowdir
-(access)$> mkdir stow
+* We are going to extend the current software set to avoid recompiling a toolchain
+* The parallel version will be built using GCC-10.2.0
+
+```bash
+(node)$ resif-load-home-swset-prod
+# Check where it will be installed
+(node)$ echo $MODULEPATH
+# Loading Easybuild
+(node)$ module load tools/EasyBuild
+(node)$ eb -S parallel
+eb -S parallel
+== found valid index for /opt/apps/resif/aion/2020b/epyc/software/EasyBuild/4.5.4/easybuild/easyconfigs, so using it...
+CFGS1=/opt/apps/resif/aion/2020b/epyc/software/EasyBuild/4.5.4/easybuild/easyconfigs
+ * $CFGS1/a/Amber/Amber-16-AT-17-fix_missing_do_parallel_in_checkrismunsupported.patch
+ * $CFGS1/a/Amber/Amber-18-AT-18_fix_missing_do_parallel_in_checkrismunsupported.patch
+ * $CFGS1/h/HPL/HPL_parallel-make.patch
+ * $CFGS1/i/ipyparallel/ipyparallel-6.2.2-foss-2018a-Python-3.6.4.eb
+ * $CFGS1/j/Judy/Judy-1.0.5_parallel-make.patch
+ * $CFGS1/n/NWChem/NWChem-6.3.revision2-parallelbuild.patch
+ * $CFGS1/n/NWChem/NWChem-6.5.revision26243-parallelbuild.patch
+ * $CFGS1/n/NWChem/NWChem-6.6.revision27746-parallelbuild.patch
+ * $CFGS1/n/netCDF/netCDF-4.3.2-parallel-HDF.patch
+ * $CFGS1/o/OpenSSL/OpenSSL-1.0.1i-fix_parallel_build-1.patch
+ * $CFGS1/o/OpenSSL/OpenSSL-1.0.1m_fix-parallel.patch
+ * $CFGS1/o/OpenSees/OpenSees-3.2.0-add_Makefile_def_parallel.patch
+ * $CFGS1/o/OpenSees/OpenSees-3.2.0-intel-2020a-Python-3.8.2-parallel.eb
+ * $CFGS1/p/ParallelIO/ParallelIO-2.2.2a-intel-2017a.eb
+ * $CFGS1/p/PyTorch/PyTorch-1.7.0_fix_test_DistributedDataParallel.patch
+ * $CFGS1/p/parallel-fastq-dump/parallel-fastq-dump-0.6.5-GCCcore-8.2.0-Python-3.7.2.eb
+ * $CFGS1/p/parallel-fastq-dump/parallel-fastq-dump-0.6.6-GCCcore-9.3.0-Python-3.8.2.eb
+ * $CFGS1/p/parallel/parallel-20141122-GCC-4.9.2.eb
+ * $CFGS1/p/parallel/parallel-20150322-GCC-4.9.2.eb
+ * $CFGS1/p/parallel/parallel-20150822-GCC-4.9.2.eb
+ * $CFGS1/p/parallel/parallel-20160622-foss-2016a.eb
+ * $CFGS1/p/parallel/parallel-20170822-intel-2017a.eb
+ * $CFGS1/p/parallel/parallel-20171022-intel-2017b.eb
+ * $CFGS1/p/parallel/parallel-20171122-foss-2017b.eb
+ * $CFGS1/p/parallel/parallel-20171122-intel-2017b.eb
+ * $CFGS1/p/parallel/parallel-20180422-intel-2018a.eb
+ * $CFGS1/p/parallel/parallel-20180822-foss-2018b.eb
+ * $CFGS1/p/parallel/parallel-20181222-intel-2018b.eb
+ * $CFGS1/p/parallel/parallel-20190222-GCCcore-7.3.0.eb
+ * $CFGS1/p/parallel/parallel-20190622-GCCcore-8.2.0.eb
+ * $CFGS1/p/parallel/parallel-20190922-GCCcore-8.3.0.eb
+ * $CFGS1/p/parallel/parallel-20200422-GCCcore-9.3.0.eb
+ * $CFGS1/p/parallel/parallel-20200522-GCCcore-9.3.0.eb
+ * $CFGS1/p/parallel/parallel-20210322-GCCcore-10.2.0.eb
+ * $CFGS1/p/parallel/parallel-20210622-GCCcore-10.3.0.eb
+ * $CFGS1/p/parallel/parallel-20210722-GCCcore-11.2.0.eb
+ * $CFGS1/r/R/DMCfun-1.3.0_fix-parallel-detect.patch
+ * $CFGS1/w/WRF/WRF_parallel_build_fix.patch
+ * $CFGS1/x/Xmipp/Xmipp-3.19.04-Apollo_add_missing_pthread_to_XmippParallel.patch
+
+Note: 7 matching archived easyconfig(s) found, use --consider-archived-easyconfigs to see them
 ```
 
-Get the latest stable sources of [GNU Parallel](https://www.gnu.org/software/parallel/) under `src` and compile them within an interactive job:
+* Let's install `$CFGS1/p/parallel/parallel-20210322-GCCcore-10.2.0.eb`
 
-``` bash
-(access)$> cd ~/src
-# Download the latest sources
-(access)$> wget http://ftp.gnu.org/gnu/parallel/parallel-latest.tar.bz2
-# Not strictly necessary, but help to keep track of time of action
-(access)$> mv parallel-latest.tar.bz2  parallel-latest-$(date +%F).tar.bz2
-# Uncompress
-(access)$> tar xf parallel-latest-$(date +%F).tar.bz2
-(access)$> cd parallel-20211022/
-### Have an interactive job for the compilation process
-# ... either directly
-(access)$> si
-# ... or using the HPC School reservation 'hpcschool' if needed  - use 'sinfo -T' to check if active and its name
-# (access)$> si --reservation=hpcschool
+```bash
+(node)$ eb parallel-20210322-GCCcore-10.2.0.eb -r 
+(node)$ module av parallel
+
+-------------------------------------------------------------------------------------------------------------------------- /home/users/ekieffer/.local/easybuild/aion/2020b/epyc/modules/all ---------------------------------------------------------------------------------------------------------------------------
+   tools/parallel/20210322-GCCcore-10.2.0
+
+If the avail list is too long consider trying:
+
+"module --default avail" or "ml -d av" to just list the default modules.
+"module overview" or "ml ov" to display the number of modules for each name.
+
+Use "module spider" to find all possible modules and extensions.
+Use "module keyword key1 key2 ..." to search for all possible modules matching any of the "keys".
 ```
 
-[GNU Parallel](https://www.gnu.org/software/parallel/) is one of the many software that can be build very easily through the [Autotools](https://www.gnu.org/software/automake/manual/html_node/Autotools-Introduction.html) build system _i.e_ `./configure; make; make install`.
-However, this process wants to install _by default_ the built software under `/usr/local` where you have **NO** rights to write files. So if you don't pay attention, the installation step will fail.
-To circumvent the problem:
+### With Spack
 
-* we will install `parallel` in `$HOME` (`--prefix` option)
-* more specifically, we will install the built software withing the stow directory, in a specific sub-directory that allow to specify the precise version generated.
+* If we don't have it installed, please follow first [the Spack tutorial](../../tools/spack/)
 
-Proceed as follows:
 
-``` bash
-(node)$> ./configure --prefix=$HOME/stow/parallel-20211022
-(node)$> make
-(node)$> make install
+```bash
+(node)$ spack list parallel
+aws-parallelcluster  intel-parallel-studio  parallel  parallel-netcdf  parallelio  parallelmergetree  perl-parallel-forkmanager  py-ipyparallel  py-pytest-parallel  r-biocparallel  r-doparallel  r-optimparallel  r-parallelly  r-parallelmap  r-rcppparallel
+==> 15 packages
+(node)$ spack versions parallel
+==> Safe versions (already checksummed):
+  20220522  20220422  20220322  20220222  20220122  20210922  20200822  20190222  20170322  20170122  20160422  20160322
+==> Remote versions (not yet checksummed):
+  20230422  20221222  20220822  20211122  20210622  20210222  20201022  20200522  20200122  20190922  20190522  20181222  20180822  20180422  20171222  20170822  20170422  20161022  20160622  20151222  20150822  20150422  20141122  20140722  20140322  20131122  20130722  20130222  20121022  20120522  20120122
+  20230322  20221122  20220722  20211022  20210522  20210122  20200922  20200422  20191222  20190822  20190422  20181122  20180722  20180322  20171122  20170722  20170222  20160922  20160522  20151122  20150722  20150322  20141022  20140622  20140222  20131022  20130622  20130122  20120822  20120422
+  20230222  20221022  20220622  20210822  20210422  20201222  20200722  20200322  20191122  20190722  20190322  20181022  20180622  20180222  20171022  20170622  20161222  20160822  20160222  20151022  20150622  20150222  20140922  20140522  20140122  20130922  20130522  20121222  20120722  20120322
+  20230122  20220922  20211222  20210722  20210322  20201122  20200622  20200222  20191022  20190622  20190122  20180922  20180522  20180122  20170922  20170522  20161122  20160722  20160122  20150922  20150522  20150122  20140822  20140422  20131222  20130822  20130422  20121122  20120622  20120222
 ```
 
-That's all folk.
-You can now use `stow` to enable this build:
+* The most recent and safe version is `20220522`
 
-``` bash
-(node)$> cd ~/stow
-(node)$> stow parallel-20211022
-# Check the result:
-(node)$> ll ~/bin/parallel
-lrwxrwxrwx. 1 svarrette clusterusers 38 Dec 12 14:50 /home/users/svarrette/bin/parallel -> ../stow/parallel-20211022/bin/parallel
-# As ~/bin is part of your PATH at one of the first position, now the command
-# 'parallel' is resolved as the newly built version
-(node)$> which parallel
-~/bin/parallel
-(node)$>  parallel --version
-GNU parallel 20211022   # In the unlikely case where you don't get the updated version, restart the bash session
-[...]
+```bash
+(node)$ spack install parallel@20220522
+[+] /mnt/irisgpfs/users/ekieffer/.spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/berkeley-db-18.1.40-uw5w4yhzzi2fatjzb72ipgdf3w657tle
+[+] /mnt/irisgpfs/users/ekieffer/.spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/bzip2-1.0.8-ymcs7cevgovcd3bc5iphzo5ztzv62jue
+[+] /mnt/irisgpfs/users/ekieffer/.spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/ncurses-6.4-3qm6oylywjcvizw7xyqbkxg33vqtgppp
+[+] /mnt/irisgpfs/users/ekieffer/.spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/zlib-1.2.13-426hs7tsxcfpebed5uqlogma32dbuvj5
+[+] /mnt/irisgpfs/users/ekieffer/.spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/readline-8.2-zgvmdyizb6g4ee2ozansvqkxvgbq6a6r
+[+] /mnt/irisgpfs/users/ekieffer/.spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/gdbm-1.23-seklrqiazmh54ts3tdx6fpnlobviw3ia
+[+] /mnt/irisgpfs/users/ekieffer/.spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/perl-5.36.0-yvgdvqozt46iimytfldxpjhxxao2gtdy
+==> Installing parallel-20220522-ediq6fzty3il5qc3frzlwn45szfvbhek
+==> No binary for parallel-20220522-ediq6fzty3il5qc3frzlwn45szfvbhek found: installing from source
+==> Fetching https://mirror.spack.io/_source-cache/archive/bb/bb6395f8d964e68f3bdb26a764d3c48b69bc5b759a92ac3ab2bd1895c7fa8c1f.tar.bz2
+==> No patches needed for parallel
+==> parallel: Executing phase: 'autoreconf'
+==> parallel: Executing phase: 'configure'
+==> parallel: Executing phase: 'build'
+==> parallel: Executing phase: 'install'
+==> parallel: Successfully installed parallel-20220522-ediq6fzty3il5qc3frzlwn45szfvbhek
+  Stage: 2.99s.  Autoreconf: 0.00s.  Configure: 1.20s.  Build: 0.02s.  Install: 0.60s.  Total: 4.90s
+[+] /mnt/irisgpfs/users/ekieffer/.spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/parallel-20220522-ediq6fzty3il5qc3frzlwn45szfvbhek
+(node)$ spack find -vpl parallel
+-- linux-rhel8-zen / gcc@=8.5.0 ---------------------------------
+ediq6fz parallel@20220522 build_system=autotools  /mnt/irisgpfs/users/ekieffer/.spack/opt/spack/linux-rhel8-zen/gcc-8.5.0/parallel-20220522-ediq6fzty3il5qc3frzlwn45szfvbhek
+==> 1 installed package
 ```
 
-At any moment of time, you can disable this build as follows:
 
-``` bash
-(node)$> cd ~/stow
-(node)$> stow -D parallel-20211022
-# Now the command 'parallel' is resolved to the system one
-# IGNORE the 'BUG in find_stowed_path?' message due to https://github.com/aspiers/stow/issues/65
-(node)$> ll ~/bin/parallel
-ls: cannot access /home/users/svarrette/bin/parallel: No such file or directory
-(node)$> which parallel
-/usr/bin/parallel
-(node)$> parallel --version     # you may need to source ~/.bashrc
-GNU parallel 20190922
-```
 
-You can quit your interactive job (CTRL-D)
+
+
 
 
 ## Discovering the `parallel` command
@@ -255,6 +302,4 @@ Let's manipulate the file content with parallel (prefer the `-a <filename>` synt
 /work/projects/bigdata_sets/OpenImages_V4/train/2db694eba4d4bb04.jpg 10
 ```
 
-The ULHPC team has designed a generic launcher for GNU parallel: see [`../basics/scripts/launcher.parallel.sh`](../basics/scripts/launcher.parallel.sh).
-
-Its usage is explicited in the [HPC Management of Sequential and Embarrassingly Parallel Jobs](../basics/) tutorials.
+The ULHPC team has designed a generic launcher for single node GNU parallel: see [`../basics/scripts/launcher.parallel.sh`](../basics/scripts/launcher.parallel.sh).

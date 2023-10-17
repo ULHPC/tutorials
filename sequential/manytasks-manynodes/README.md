@@ -41,8 +41,10 @@ ulimit -u 10000
 
 echo "Spawning ${SLURM_NTASKS_PER_NODE} parallel worker on ${SLURM_NNODES} nodes"
 echo "Nodes: ${SLURM_NODELIST}"
-echo "Each parallel worker can execute ${SLURM_CPUS_PER_TASK} independant tasks" 
-srun --no-kill --wait=0 parallel_worker.sh $*
+echo "Each parallel worker can execute ${SLURM_CPUS_PER_TASK} independant tasks"
+export SRUN_CPUS_PER_TASK=${SLURM_CPUS_PER_TASK}
+export TIMESTAMP=$(date +"%Y%m%dT%H%M%S")
+srun --no-kill --wait=0 $*
 ```
 * The option `--exclusive` has been added to be sure that we do not share the node with another job. 
 * The option `--mem=0` ensures that all memory will be available
@@ -56,7 +58,7 @@ We now need to define the script starting the parallel workers `parallel_worker.
 
 
 ```bash
-#!/bin/bash -l
+#!/usr/bin/bash -l
 
 print_error_and_exit() { echo "***ERROR*** $*"; exit 1; }
 
@@ -71,15 +73,13 @@ if [[ -z "${SLURM_NNODES}" ]]; then
     exit
 fi
 
+
 NBCORES_TASK=1
 SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 SCRIPT_NAME="$(basename "${BASH_SOURCE[0]}")"
 HOSTNAME=$(hostname)
-LOGS_DIR="${SCRIPT_DIR}/logs/Worker${SLURM_NODEID}"
-SCRIPT_MAINLOG="${LOGS_DIR}/${SCRIPT_NAME//sh/log}"
-RESUME='n'
-PARALLEL="parallel --delay 0.2 -j $((SLURM_CPUS_PER_TASK / NBCORES_TASK)) --joblog ${SCRIPT_MAINLOG} "
-TIMESTAMP=$(date +"%Y%m%d-%H%M%S")
+LOGS="logs.${TIMESTAMP}"
+RESUME=""
 TASKFILE=""
 NTASKS=""
 
@@ -89,7 +89,7 @@ NTASKS=""
 #=======================
 while [ $# -ge 1 ]; do
     case $1 in
-        -r | --resume)           PARALLEL="${PARALLEL} --resume "; RESUME='y';;
+        -r | --resume)           shift; LOGS=$1; RESUME=" --resume ";;
         -n | --ntasks)           shift; NTASKS="$1"                            ;;
         -* | --*)                echo "[Warning] Invalid option $1"          ;;
         *)                       break                                       ;;
@@ -109,13 +109,16 @@ fi
 
 echo "Starting worker initialisation on $(hostname)"
 
-# Every worker clean its own log directory
-if [[ -d ${LOGS_DIR} ]] && [[ ${RESUME} == 'n' ]];then
-    echo "Create archive from old results  ${LOGS_DIR}"
-    tar -zcvf "${LOGS_DIR}-${TIMESTAMP}.tar.gz" ${LOGS_DIR}
-    echo "Cleaning ${LOGS_DIR}"
-    find ${LOGS_DIR} -mindepth 1 -print -delete
-fi
+#=======================
+# Set logs for resuming
+#=======================
+
+LOGS_DIR="${SCRIPT_DIR}/${LOGS}/Worker${SLURM_NODEID}"
+SCRIPT_MAINLOG="${LOGS_DIR}/${SCRIPT_NAME//sh/log}"
+PARALLEL="parallel --delay 0.2 -j $((SLURM_CPUS_PER_TASK / NBCORES_TASK)) --joblog ${SCRIPT_MAINLOG} ${RESUME}"
+
+
+
 
 echo "Create logs directory if not existing"
 mkdir -p ${LOGS_DIR}
@@ -216,7 +219,7 @@ $user@aion-XXXX> ln -s $(pwd)/stress-ng ~/.local/bin/
 # Here we print the sleep time, host name, and the date and time.
 echo "Task ${PARALLEL_SEQ}  started on host:$(hostname) date:$(date)"
 echo "Stress test on 1 core"
-${HOME}/.local/bin/stress-ng --cpu 1 --timeout 60s --metrics-brief
+${HOME}/.local/bin/stress-ng --cpu 1 --timeout 600s --metrics-brief
 ```
 * Copy-paste the `task.sh` script to the current directory
 * Now, submit a job with `sbatch slurm_parallel_launcher.sh parallel_worker.sh -n 300 "./task.sh"
@@ -226,10 +229,10 @@ ${HOME}/.local/bin/stress-ng --cpu 1 --timeout 60s --metrics-brief
   <figcaption>Scheduled job</figcaption>
 </figure>
 
-* You can join your allocation using `srun --jobid <jobid> --overlap <node> --pty bash -i` and monitor the cpu usage
+* You can join your allocation using `srun --jobid <jobid> --overlap -w <node> --pty bash -i` and monitor the cpu usage
 * Here, as the ekieffer user, I can join
-    - the first allocated node with `srun --jobid 375186 --overlap aion-0192 --pty bash -i` 
-    - the second allocated node with `srun --jobid 375186 --overlap aion-0238 --pty bash -i` 
+    - the first allocated node with `srun --jobid 375186 --overlap -w aion-0192 --pty bash -i` 
+    - the second allocated node with `srun --jobid 375186 --overlap -w aion-0238 --pty bash -i` 
 
 
 <figure  class="align-center">

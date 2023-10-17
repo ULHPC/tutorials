@@ -88,6 +88,8 @@ while [ $# -ge 1 ]; do
     esac
     shift
 done
+# SRUN Setup
+export SRUN_CPUS_PER_TASK=${SLURM_CPUS_PER_TASK}
 # OpenMP Setup
 export OMP_NUM_THREADS=${SLURM_CPUS_PER_TASK:-1}
 

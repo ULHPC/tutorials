@@ -1,0 +1,40 @@
+Bootstrap: docker
+From: rocker/tidyverse:4.2.2
+
+# Build with:
+# singularity build --fakeroot r-targets.sif r-targets.def
+
+%environment
+    export LC_ALL=C
+    export LANGUAGE=en
+    export TZ="Europe/Luxembourg"
+    export LANG=C.UTF-8
+
+
+%files
+    renv.lock.prod /opt/renv.lock
+
+%post
+    apt-get update && apt-get install -y \
+        build-essential \
+        cmake libnng-dev \
+        libxml2-dev \
+        libsimde-dev \
+        libreadline-dev libpcre2-dev libpng-dev \
+        libglpk-dev \
+        libfreetype6-dev libpng-dev libtiff5-dev libjpeg-dev \
+        libfontconfig1-dev \
+        libcairo2-dev libmagick++-dev libpoppler-cpp-dev \
+        pandoc \
+        libharfbuzz-dev libfribidi-dev
+    echo "options(renv.config.pak.enabled = TRUE, download.file.method = 'libcurl', Ncpus = 4)" | tee /usr/local/lib/R/etc/Rprofile.site
+    Rscript -e 'install.packages("renv", repos = "https://packagemanager.posit.co/cran/__linux__/jammy/latest/")'
+    cd /opt
+    Rscript -e 'renv::restore(repos = c(CRAN = "https://packagemanager.posit.co/cran/__linux__/jammy/latest/"))'
+    # specific recent versions for mirai / crew / nanonext
+    Rscript -e 'install.packages(c("nanonext", "mirai"), repos = "https://shikokuchuo.r-universe.dev")'
+    Rscript -e 'install.packages(c("targets", "crew"), type = "source", repos = "https://packagemanager.posit.co/cran/__linux__/jammy/latest/")'
+
+%labels
+    Author aurelien.ginolhac@uni.lu
+    Version v0.0.1

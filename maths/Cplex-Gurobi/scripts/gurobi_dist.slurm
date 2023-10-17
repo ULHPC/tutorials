@@ -8,6 +8,9 @@
 #SBATCH --qos normal
 #SBATCH -o %x-%j.log
 
+# Explicit cpus-per-task to srun
+export SRUN_CPUS_PER_TASK=${SLURM_CPUS_PER_TASK}
+
 # Load personal modules
 mu
 # Load gurobi

@@ -98,6 +98,7 @@ echo "SLURM_JOB_NODELIST = ${SLURM_JOB_NODELIST}"
 echo "SLURM_NNODES = ${SLURM_NNODES}"
 echo "SLURM_NTASK  = ${SLURM_NTASKS}"
 echo "Submission directory = ${SLURM_SUBMIT_DIR}"
+export SRUN_CPUS_PER_TASK=${SLURM_CPUS_PER_TASK}
 
 # Load local Spark module
 module purge || print_error_and_exit "Unable to find the 'module' command"

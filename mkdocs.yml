@@ -15,6 +15,7 @@ pages:
   - Using software modules: 'tools/cli/modules.md'
 - Tools / Software management:
   - Easybuild: 'tools/easybuild/index.md'
+  - Spack: 'tools/spack/index.md'
 #  - RESIF:     'tools/resif/index.md'
 - Data Management: 'data/index.md'
 - Scheduling:
@@ -24,9 +25,9 @@ pages:
   - Efficient Debugging:     'debugging/basics/index.md'
   - Performance engineering: 'debugging/advanced/index.md'
 - Sequential/Embarrassingly parallel jobs:
-  - Overview: 'sequential/basics/index.md'
   - GNU Parallel: 'sequential/gnu-parallel/index.md'
-  - Advanced Parallel-Slurm: 'sequential/manytasks-manynodes/index.md'
+  - Parallel-Slurm: 'sequential/basics/index.md'
+  - Beyond a single node: 'sequential/manytasks-manynodes/index.md'
 - Serial Tasks in Action:
   - Overview: 'sequential/examples/index.md'
   - Example/Object Recognition: 'sequential/examples/object_recognition.md'
@@ -45,6 +46,7 @@ pages:
   - Scoop-Deap: 'python/advanced/scoop-deap/index.md'
   - Dask-ML: 'python/advanced/dask-ml/index.md'
 - GPU Programming:
+  - Introduction to CUDA C/C++ (2023): 'gpu/cuda2023/index.md'
   - Accelerating Applications with CUDA C/C++: 'cuda/index.md'
   - CUDA Convolution using GPU: 'cuda/exercises/convolution/index.md'
   - Introduction to OpenCL Programming: 'gpu/opencl/index.md'
@@ -66,7 +68,9 @@ pages:
 - Machine and Deep Learning:
   - Machine and Deep Learning workflows: 'deep_learning/basics/index.md'
   - Scalable Deep Learning: 'deep_learning/scalable/index.md'
+  - Distributed Deep Learning with Horovod: 'deep_learning/horovod/index.md'
 - Containers:
+  - Reproducibility and HPC Containers : 'containers/ULHPC-containers/index.md'
   - Singularity: 'containers/singularity/index.md'
   - Singularity-Infiniband: 'containers/singularity-inf/index.md'
 - Virtualization:

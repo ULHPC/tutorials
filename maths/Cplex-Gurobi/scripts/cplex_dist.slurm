@@ -6,6 +6,10 @@
 #SBATCH --time=0-01:00:00
 #SBATCH -p batch
 #SBATCH --qos=normal
+
+# Explicit cpus-per-task to srun
+export SRUN_CPUS_PER_TASK=${SLURM_CPUS_PER_TASK}
+
 module load math/CPLEX/12.8-foss-2018a
 
 # Some variables

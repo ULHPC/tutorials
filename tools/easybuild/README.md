@@ -4,11 +4,9 @@
 
 Copyright (c) 2014-2021 UL HPC Team  <hpc-sysadmins@uni.lu>
 
-Authors: Xavier Besseron, Maxime Schmitt, Sarah Peter, Sébastien Varrette and UL HPC Team <hpc-team@uni.lu>
+Authors: Emmanuel Kieffer, Sébastien Varrette and UL HPC Team <hpc-team@uni.lu>
 
-[![](https://github.com/ULHPC/tutorials/raw/devel/tools/easybuild/cover_slides.png)](https://github.com/ULHPC/tutorials/raw/devel/tools/easybuild/slides.pdf)
-
-The objective of this tutorial is to show how tools such as [EasyBuild](http://easybuild.readthedocs.io) or [stow](https://www.gnu.org/software/stow/)  can be used to ease, automate and script the build of software on the [UL HPC](https://hpc.uni.lu) platforms.
+The objective of this tutorial is to show how tools such as [EasyBuild](http://easybuild.readthedocs.io)  can be used to ease, automate and script the build of software on the [UL HPC](https://hpc.uni.lu) platforms.
 
 Indeed, as researchers involved in many cutting-edge and hot topics, you probably have access to many theoretical resources to understand the surrounding concepts. Yet it should _normally_ give you a wish to test the corresponding software.
 Traditionally, this part is rather time-consuming and frustrating, especially when the developers did not rely on a "regular" building framework such as [CMake](https://cmake.org/) or the [autotools](https://www.gnu.org/software/automake/manual/html_node/Autotools-Introduction.html) (_i.e._ with build instructions as `configure --prefix <path> && make && make install`).
@@ -23,8 +21,6 @@ Moreover, later on, you probably want to recover a system configuration matching
 For this second aspect, the solution came long time ago (in 1991) with the [Environment Modules](http://modules.sourceforge.net/ and [LMod](https://lmod.readthedocs.io/)
 We will cover it in the first part of this tutorial, also to discover the [ULHPC User Software set](https://hpc-docs.uni.lu/environment/modules/) in place.
 
-In a second part, installation using an old yet effective tool named [GNU stow](https://www.gnu.org/software/stow/) will be depicted.
-
 Finally the last part will cover [Easybuild usage on the ULHPC platform](https://hpc-docs.uni.lu/environment/easybuild/) to build and complete the existing software environment.
 
 
@@ -35,7 +31,6 @@ Ensure you are able to [connect to the UL HPC clusters](https://hpc-docs.uni.lu/
 
 In particular, recall that the `module` command **is not** available on the access frontends.
 
-If you have never configured [Tmux](https://github.com/tmux/tmux/wiki) or [GNU Screen](http://www.gnu.org/software/screen/) before, and while not strictly mandatory, we advise you to rely on these tools -- see ["HPC Management of Sequential and Embarrassingly Parallel Jobs"](../../sequential/basics/) tutorial.
 
 Now you'll need to pull the latest changes in your working copy of the [ULHPC/tutorials](https://github.com/ULHPC/tutorials) you should have cloned in `~/git/github.com/ULHPC/tutorials` (see ["preliminaries" tutorial](../../preliminaries/))
 
@@ -48,29 +43,10 @@ Now **configure a dedicated directory `~/tutorials/easybuild` for this session**
 
 ``` bash
 # return to your home
-(access)$> mkdir -p ~/tutorials/easybuild
+(access)$> mkdir -p ~/tutorials/
 (access)$> cd ~/tutorials/easybuild
 # create a symbolic link to the reference material
-(access)$> ln -s ~/git/github.com/ULHPC/tutorials/tools/easybuild ref.d
-```
-
-**Advanced users** (_eventually_ yet __strongly__ recommended), create a [Tmux](https://github.com/tmux/tmux/wiki) session (see [Tmux cheat sheet](https://tmuxcheatsheet.com/) and [tutorial](https://www.howtogeek.com/671422/how-to-use-tmux-on-linux-and-why-its-better-than-screen/)) or [GNU Screen](http://www.gnu.org/software/screen/) session you can recover later. See also ["Getting Started" tutorial ](../../beginners/).
-
-``` bash
-# /!\ Advanced (but recommended) best-practice:
-#     Always work within a TMux or GNU Screen session named '<topic>' (Adapt accordingly)
-(access-aion)$> tmux new -s HPC-school   # Tmux
-(access-iris)$> screen -S HPC-school     # GNU Screen
-#  TMux     | GNU Screen | Action
-# ----------|------------|----------------------------------------------
-#  CTRL+b c | CTRL+a c   | (create) creates a new Screen window. The default Screen number is zero.
-#  CTRL+b n | CTRL+a n   | (next) switches to the next window.
-#  CTRL+b p | CTRL+a p   | (prev) switches to the previous window.
-#  CTRL+b , | CTRL+a A   | (title) rename the current window
-#  CTRL+b d | CTRL+a d   | (detach) detaches from a Screen -
-# Once detached:
-#   tmux ls  | screen -ls : list available screen
-#   tmux att | screen -x  : reattach to a past screen
+(access)$> ln -s ~/git/github.com/ULHPC/tutorials/tools/easybuild easybuild
 ```
 
 **For all tests and compilation with Easybuild, you MUST work on a computing node.**
@@ -242,126 +218,13 @@ Before we continue, there are a set of local environmental variables defined on 
 |                                      |                                                              |                                                 |
 
 
-## Part 2: GNU Stow (Autotools software)
-
-That's somehow the OLD way yet still very effective way of managing locally built software.
-It was used to quickly build the latest version of the [`parallel`](https://www.gnu.org/software/parallel/) command in the ["GNU Parallel" Tutorial](../../sequential/gnu-parallel/).
-It assumes to understand the following concepts:
-
-* **stow directory** (`~/stow`): root directory which contains all the stow packages, each with their own private subtree.
-    - each subdirectory represents a stow package (`<name>-<version>-<cluster>` typically)
-* **stow package**: nothing more than a list of files and directories related to a specific software, managed as an entity.
-* **stow target directory**: the directory in which the package files must appear to be installed.
-    - By default the stow target directory is considered to be the one _above_ the directory in which stow is invoked from. This behaviour can be easily changed by using the `-t` option (short for `--target`), which allows us to specify an alternative directory.
-
-Stow permits to quickly install / uninstall a stow package as follows:
-
-```bash
-cd ~/stow
-stow <name>-<version>-<cluster>  # install / enable <name> package
-# [...]
-stow -D <name>-<version>-<cluster>  # uninstall / disable <name> package
-```
-
-You first need to setup your homedir to host stow packages:
-
-```bash
-$ cd      # go to your HOME
-$ mkdir -p bin include lib share/{doc,man} src
-# create stowdir
-$ mkdir stow
-```
-
-We are going to build and install 2 concurrent versions of a given software available on the ULHPC yet on an old version: [GNU parallel](https://www.gnu.org/software/parallel/).
-
-* build the lastest (up-to-date) version as in the ["GNU Parallel" Tutorial](../../sequential/gnu-parallel/).
-* build the version [20201222](https://ftp.gnu.org/gnu/parallel/) version
-
-Now that there are 2 clusters available for production, you are advised to rename stow packages to reflect the cluster on which it was built:
-
-```bash
-### Ex: building GNU parallel
-# check default (system) verison
-$ which parallel
-/usr/bin/parallel
-$ parallel --version
-GNU parallel 20190922
-
-# build latest version under ~/src/parallel/[...]
-$ mkdir -p ~/src/parallel
-$ cd ~/src/parallel
-# download latest version
-$ wget https://ftpmirror.gnu.org/parallel/parallel-latest.tar.bz2     # 20211022
-$ wget  https://ftpmirror.gnu.org/parallel/parallel-20201222.tar.bz2  # 20201222
-# uncompress
-$ tar xf parallel-latest.tar.bz2
-$ tar xf parallel-20201222.tar.bz2
-### Build into a stow package those name reflect the building cluster and/or arch
-#  Build latest version...
-$ cd parallel-20211022
-# abstracted/geeky form to make the prefix directory align to current top directory
-#                 if in doubt, use --prefix ~/stow/<name>-<version>-${ULHPC_CLUSTER}
-$ ./configure --prefix ~/stow/$(basename $(pwd))-${ULHPC_CLUSTER}
-$ make && make install
-# ... and intermediate one
-$ cd ../parallel-20201222
-$ ./configure --prefix ~/stow/$(basename $(pwd))-${ULHPC_CLUSTER}
-$ make && make install
-```
-
-Now you have 3 versions co-existing:
-
-* the system version `/usr/bin/parallel` (enabled)
-* the latest built one as a stow package `~/stow/parallel-20211222-${ULHPC_CLUSTER}/bin/parallel`
-* the intermediate built as a stow package `~/stow/parallel-20201222-${ULHPC_CLUSTER}/bin/parallel`
-
-You can quickly enable the latest version with stow:
-
-```
-$ cd ~/stow
-$ stow parallel-20211222-${ULHPC_CLUSTER}
-# check effect
-$ ll ~/bin/parallel
-lrwxrwxrwx 1 svarrette clusterusers 43 Nov 16 00:43 /home/users/svarrette/bin/parallel -> ../stow/parallel-20211022-aion/bin/parallel
-$ which parallel
-~/bin/parallel
-$ parallel --version
-GNU parallel 20211022
-```
-
-Imagine that you want to quickly check the intermediate version, with stow it's straightforward:
-
-```bash
-$ cd ~/stow
-# uninstall/disable stow package -- ignore the 'BUG in find_stowed_path?' message due to https://github.com/aspiers/stow/issues/65
-$ stow -D parallel-20211222-${ULHPC_CLUSTER}
-$ ll ~/bin/parallel
-ls: cannot access /home/users/svarrette/bin/parallel: No such file or directory
-$ which parallel
-/usr/bin/parallel
-$  parallel --version
-bash: /home/users/svarrette/bin/parallel: No such file or directory
-# occasional error -- refresh your path profile
-$ source ~/.profile
-$ parallel --version
-GNU parallel 20190922
-$ Enable intermediate version
-$ stow parallel-20201222-aion
-$ parallel --version
-GNU parallel 20201222
-```
-
-GNU stow is very useful for software relying on Autotools (`./configure [...]; make && make install`).
-Yet nowadays most software builds are way more complex and rely more and more on over building tools (`cmake`, `ninja`, internal scripts etc.).
-You would need a consistent workflow to build the software.
-That's where [EasyBuild](http://easybuild.readthedocs.io) comes into play.
 
 -----------------------
-## Part 3: Easybuild ##
+## Part 2: Easybuild ##
 
-[<img width='150px' src='http://easybuild.readthedocs.io/en/latest/_static/easybuild_logo_alpha.png'/>](https://easybuilders.github.io/easybuild/)
+[<img width='150px' src='https://easybuild.io/images/easybuild_logo_horizontal.png'/>](https://easybuilders.github.io/easybuild/)
 
-EasyBuild is a tool that allows to perform automated and reproducible compilation and installation of software. A large number of scientific software are supported (**[2506 supported software packages](http://easybuild.readthedocs.io/en/latest/version-specific/Supported_software.html)** in the last release 4.5.0) -- see also [What is EasyBuild?](http://easybuild.readthedocs.io/en/latest/Introduction.html)
+EasyBuild is a tool that allows to perform automated and reproducible compilation and installation of software. A large number of scientific software are supported (**[2995 supported software packages](http://easybuild.readthedocs.io/en/latest/version-specific/Supported_software.html)** in the last release 4.7.1) -- see also [What is EasyBuild?](http://easybuild.readthedocs.io/en/latest/Introduction.html)
 
 All builds and installations are performed at user level, so you don't need the admin (i.e. `root`) rights.
 The software are installed in your home directory under `$EASYBUILD_PREFIX` -- see <https://hpc-docs.uni.lu/environment/easybuild/>
@@ -373,34 +236,6 @@ The software are installed in your home directory under `$EASYBUILD_PREFIX` -- s
 
 * built software are placed under `${EASYBUILD_PREFIX}/software/`
 * modules install path `${EASYBUILD_PREFIX}/modules/all`
-
-### Local Easybuild configuration
-
-Follow the instructions from the [ULHPC technical documentation](https://hpc-docs.uni.lu/environment/easybuild/) to adapt you custom build to cluster, the toolchain version and the architecture as done in RESIF3 by editing with your favorite editor (`nano`, `vim` etc. your `~/.bashrc`
-
-``` bash
-# EASYBUILD_PREFIX: [basedir]/<cluster>/<environment>/<arch>
-# Ex: Default EASYBUILD_PREFIX in your home - Adapt to project directory if needed
-_EB_PREFIX=$HOME/.local/easybuild
-# ... eventually complemented with cluster
-[ -n "${ULHPC_CLUSTER}" ] && _EB_PREFIX="${_EB_PREFIX}/${ULHPC_CLUSTER}"
-# ... eventually complemented with software set version
-_EB_PREFIX="${_EB_PREFIX}/${RESIF_VERSION_PROD}"
-# ... eventually complemented with arch
-[ -n "${RESIF_ARCH}" ] && _EB_PREFIX="${_EB_PREFIX}/${RESIF_ARCH}"
-export EASYBUILD_PREFIX="${_EB_PREFIX}"
-export LOCAL_MODULES=${EASYBUILD_PREFIX}/modules/all
-```
-
-Save the changed, Source the configuration and check that you now have the expected value for `EASYBUILD_PREFIX`:
-
-``` bash
-$ echo $EASYBUILD_PREFIX
-/home/users/svarrette/.local/easybuild     # Default value
-$ source ~/.bashrc
-$ echo $EASYBUILD_PREFIX
-/home/users/svarrette/.local/easybuild/aion/2020b/epyc
-```
 
 ### Easybuild main concepts
 
@@ -436,8 +271,9 @@ Easybuild is provided to you as a software module.
 module load tools/EasyBuild
 ```
 
-In case you cant to install the latest version yourself, follow the
-* [the official instructions](http://easybuild.readthedocs.io/en/latest/Installation.html).
+In case you cant to install the latest version yourself, please follow [the official instructions](http://easybuild.readthedocs.io/en/latest/Installation.html).
+Nonetheless, we strongly recommand to use the provided module. 
+**Don't forget** to setup your local Easybuild configuration first.
 
 What is important for the installation of Easybuild are the following variables:
 
@@ -445,9 +281,50 @@ What is important for the installation of Easybuild are the following variables:
 * `EASYBUILD_MODULES_TOOL`: the type of [modules](http://modules.sourceforge.net/) tool you are using, _i.e._ `LMod` in this case
 * `EASYBUILD_MODULE_NAMING_SCHEME`: the way the software and modules should be organized (flat view or hierarchical) -- we're advising on `CategorizedModuleNamingScheme`
 
-**`/!\ IMPORTANT:`**  Recall that **you should be on a compute node to install [Easybuild]((http://easybuild.readthedocs.io)** (otherwise the checks of the `module` command availability will fail.)
+**`/!\ IMPORTANT:`**  Recall that **you should be on a compute node to install [Easybuild](http://easybuild.readthedocs.io)** (otherwise the checks of the `module` command availability will fail.)
 
-### Install a missing software
+### Local Easybuild configuration
+
+If you prefer to extend/complement the ULHPC software set while taking into account the cluster `$ULHPC_CLUSTER` ("iris" or "aion"), the toolchain version `<version>` (Ex: 2019b, 2020b etc.) and eventually the architecture `<arch>`.
+In that case, you can use the following helper function defined at `/etc/profile.d/ulhpc_resif.sh`:
+
+```bash
+    resif-load-home-swset-prod
+```
+The function sets all the Lmod and Easybuild variables to match the production software set:
+
+```bash
+resif-load-home-swset-prod 
+=> Set EASYBUILD_PREFIX to '/home/users/ekieffer/.local/easybuild/aion/2020b/epyc'
+=> Enabling local RESIF home environment  (under /home/users/ekieffer) against '2020b' software set
+   Current MODULEPATH=/home/users/ekieffer/.local/easybuild/aion/2020b/epyc/modules/all:/opt/apps/resif/aion/2020b/epyc/modules/all:/opt/apps/smc/modules/
+```
+
+
+For a shared project directory `<name>` located under `$PROJECTHOME/<name>`, you can use the following following helper scripts:
+```bash
+resif-load-project-swset-prod $PROJECTHOME/<name>
+```
+This function is very helpfull if you wish to share your custom software set with members of your group:
+
+```bash
+resif-load-project-swset-prod $PROJECTHOME/ulhpc-tutorials/
+=> Set EASYBUILD_PREFIX to '/work/projects//ulhpc-tutorials//easybuild/aion/2020b/epyc'
+=> Enabling local RESIF project environment  (under /work/projects//ulhpc-tutorials/) against '2020b' software set
+   Current MODULEPATH=/work/projects//ulhpc-tutorials//easybuild/aion/2020b/epyc/modules/all:/opt/apps/resif/aion/2020b/epyc/modules/all:/opt/apps/smc/modules/
+```
+
+
+
+Additonnaly the ULHPC provides multiple functions to help you switching between software sets.
+
+```bash
+ekieffer@aion-0262(723109 -> 1:14:37) resif-<TAB>
+resif-info                       resif-load-home-swset-legacy     resif-load-project-swset-devel   resif-load-project-swset-prod    resif-load-swset-legacy          resif-reset-swset
+resif-load-home-swset-devel      resif-load-home-swset-prod       resif-load-project-swset-legacy  resif-load-swset-devel           resif-load-swset-prod            
+```
+
+### Install a missing software by complementing the ULHPC software set
 
 Let's try to install the missing software
 
@@ -455,11 +332,14 @@ Let's try to install the missing software
 (node)$ module spider BCFtools   # Complementaty tool to SAMTools
 Lmod has detected the following error:  Unable to find: "BCFtools".
 
+# Use helper function to setup local easybuild configuration
+(node)$ resif-load-home-swset-prod 
 # Load Easybuild
 (node)$ module load tools/EasyBuild
 # Search for recipes for the missing software
 (node)$ eb -S BCFtools
-CFGS1=/opt/apps/resif/aion/2020b/epyc/software/EasyBuild/4.4.1/easybuild/easyconfigs
+== found valid index for /opt/apps/resif/aion/2020b/epyc/software/EasyBuild/4.5.4/easybuild/easyconfigs, so using it...
+CFGS1=/opt/apps/resif/aion/2020b/epyc/software/EasyBuild/4.5.4/easybuild/easyconfigs
  * $CFGS1/b/BCFtools/BCFtools-1.2_extHTSlib_Makefile.patch
  * $CFGS1/b/BCFtools/BCFtools-1.3-foss-2016a.eb
  * $CFGS1/b/BCFtools/BCFtools-1.3-intel-2016a.eb
@@ -479,6 +359,8 @@ CFGS1=/opt/apps/resif/aion/2020b/epyc/software/EasyBuild/4.4.1/easybuild/easycon
  * $CFGS1/b/BCFtools/BCFtools-1.11-GCC-10.2.0.eb
  * $CFGS1/b/BCFtools/BCFtools-1.12-GCC-9.3.0.eb
  * $CFGS1/b/BCFtools/BCFtools-1.12-GCC-10.2.0.eb
+ * $CFGS1/b/BCFtools/BCFtools-1.12-GCC-10.3.0.eb
+ * $CFGS1/b/BCFtools/BCFtools-1.14-GCC-11.2.0.eb
 ```
 
 From this list, you should select the version matching the target toolchain version -- see [ULHPC Toolchains and Software Set Versioning documentation](https://hpc-docs.uni.lu/environment/modules/#ulhpc-toolchains-and-software-set-versioning)
@@ -497,15 +379,15 @@ Let's try to review the missing dependencies from a dry-run :
 ``` bash
 # Select the one matching the target software set version
 (node)$ eb BCFtools-1.12-GCC-10.2.0.eb -Dr   # Dry-run
-== Temporary log file in case of crash /tmp/eb-73oGNP/easybuild-seaUIw.log
+== Temporary log file in case of crash /tmp/eb-xvjew6tq/easybuild-45mth_zy.log
+== found valid index for /opt/apps/resif/aion/2020b/epyc/software/EasyBuild/4.5.4/easybuild/easyconfigs, so using it...
+== found valid index for /opt/apps/resif/aion/2020b/epyc/software/EasyBuild/4.5.4/easybuild/easyconfigs, so using it...
 Dry run: printing build status of easyconfigs and dependencies
-CFGS=/opt/apps/resif/aion/2020b/epyc/software/EasyBuild/4.4.1/easybuild/easyconfigs
- * [x] $CFGS/m/M4/M4-1.4.18.eb (module: devel/M4/1.4.18)
- * [x] $CFGS/b/Bison/Bison-3.5.3.eb (module: lang/Bison/3.5.3)
- * [x] $CFGS/b/Bison/Bison-3.7.1.eb (module: lang/Bison/3.7.1)
- * [x] $CFGS/z/zlib/zlib-1.2.11.eb (module: lib/zlib/1.2.11)
- * [x] $CFGS/h/help2man/help2man-1.47.4.eb (module: tools/help2man/1.47.4)
+CFGS=/opt/apps/resif/aion/2020b/epyc/software/EasyBuild/4.5.4/easybuild/easyconfigs
+ * [ ] $CFGS/m/M4/M4-1.4.19.eb (module: devel/M4/1.4.19)
+ * [ ] $CFGS/b/Bison/Bison-3.8.2.eb (module: lang/Bison/3.8.2)
  * [x] $CFGS/f/flex/flex-2.6.4.eb (module: lang/flex/2.6.4)
+ * [x] $CFGS/z/zlib/zlib-1.2.11.eb (module: lib/zlib/1.2.11)
  * [x] $CFGS/b/binutils/binutils-2.35.eb (module: tools/binutils/2.35)
  * [x] $CFGS/g/GCCcore/GCCcore-10.2.0.eb (module: compiler/GCCcore/10.2.0)
  * [x] $CFGS/z/zlib/zlib-1.2.11-GCCcore-10.2.0.eb (module: lib/zlib/1.2.11-GCCcore-10.2.0)
@@ -523,6 +405,8 @@ CFGS=/opt/apps/resif/aion/2020b/epyc/software/EasyBuild/4.4.1/easybuild/easyconf
  * [x] $CFGS/g/GSL/GSL-2.6-GCC-10.2.0.eb (module: numlib/GSL/2.6-GCC-10.2.0)
  * [x] $CFGS/h/HTSlib/HTSlib-1.12-GCC-10.2.0.eb (module: bio/HTSlib/1.12-GCC-10.2.0)
  * [ ] $CFGS/b/BCFtools/BCFtools-1.12-GCC-10.2.0.eb (module: bio/BCFtools/1.12-GCC-10.2.0)
+== Temporary log file(s) /tmp/eb-xvjew6tq/easybuild-45mth_zy.log* have been removed.
+== Temporary directory /tmp/eb-xvjew6tq has been removed.
 ```
 Let's try to install it (remove the `-D`):
 
@@ -530,14 +414,7 @@ Let's try to install it (remove the `-D`):
 # Select the one matching the target software set version
 (node)$ eb BCFtools-1.12-GCC-10.2.0.eb -r
 ```
-
-Since you are going to use quite often the above command to use locally built modules and load easybuild, an alias `mu` is provided and can be used from now on. Use it **now**.
-
-```
-(node)$> mu
-(node)$> module avail     # OR 'ma'
-```
-Now you  should be able to check the installed software:
+From now on, you should be able to see the new module.
 
 ```bash
 (node)$  module spider BCF
@@ -569,128 +446,343 @@ Now you  should be able to check the installed software:
 **Tips**: When you load a module `<NAME>` generated by Easybuild, it is installed within the directory reported by the `$EBROOT<NAME>` variable.
 In the above case, you will find the generated binary in `${EBROOTBCFTOOLS}/`.
 
+### Install a missing software with a more recent toolchain
+
+The release of a new software set takes some time and you may wish to use [the last toolchain]( https://docs.easybuild.io/common-toolchains/#common_toolchains_update_cycle) provided by Easybuild.  
+
+Let's say we wish to install BCFtools with GCC-12.2.0 (which is part of foss-2022b). 
+
+First, you will need to add the following content to your `$HOME/.bashrc`. We recommend you to add it as a bash function to be able to switch between Easyconfig environement.
+
+``` bash
+load_local_easybuild(){
+# EASYBUILD_PREFIX: [basedir]/<cluster>/<environment>/<arch>
+# Ex: Default EASYBUILD_PREFIX in your home - Adapt to project directory if needed
+_VERSION="${1:-${RESIF_VERSION_PROD}}"
+_EB_PREFIX=$HOME/.local/easybuild
+# ... eventually complemented with cluster
+[ -n "${ULHPC_CLUSTER}" ] && _EB_PREFIX="${_EB_PREFIX}/${ULHPC_CLUSTER}"
+# ... eventually complemented with software set version
+_EB_PREFIX="${_EB_PREFIX}/${_VERSION}"
+# ... eventually complemented with arch
+[ -n "${RESIF_ARCH}" ] && _EB_PREFIX="${_EB_PREFIX}/${RESIF_ARCH}"
+export EASYBUILD_PREFIX="${_EB_PREFIX}"
+export LOCAL_MODULES=${EASYBUILD_PREFIX}/modules/all
+}
+```
+
+Suppose also that we need the last easybuild version, i.e., v4.7.1.
+In order to avoid your local version to collide with the module one, we suggest you to install the newest easybuild inside a virtualenv as follows:
+
+```bash
+# Purge all loaded modules
+module purge
+# use the system python and install Easybuild
+export EB_PYTHON=$(which python3)
+# load local easybuild version
+load_local_easybuild "2022b"
+# double-check the EASYBUILD_PREFIX
+echo ${EASYBUILD_PREFIX}
+# install easybuild
+python3 -m pip install easybuild==4.7.1 --user
+# double-check the installed version
+eb --version
+```
+Now, let's try to install BCFtools with GCC-12.2.0. Using the command `eb -S BCFtools`, we can check the existing versions as previsouly
+
+```bash
+# Search for recipes for the missing software
+(node)$ eb -S BCFtools
+== found valid index for /home/users/ekieffer/.local/easybuild/easyconfigs, so using it...
+CFGS1=/home/users/ekieffer/.local/easybuild/easyconfigs
+ * $CFGS1/b/BCFtools/BCFtools-1.2_extHTSlib_Makefile.patch
+ * $CFGS1/b/BCFtools/BCFtools-1.3-foss-2016a.eb
+ * $CFGS1/b/BCFtools/BCFtools-1.3-intel-2016a.eb
+ * $CFGS1/b/BCFtools/BCFtools-1.3.1-foss-2016b.eb
+ * $CFGS1/b/BCFtools/BCFtools-1.3_extHTSlib_Makefile.patch
+ * $CFGS1/b/BCFtools/BCFtools-1.6-foss-2016b.eb
+ * $CFGS1/b/BCFtools/BCFtools-1.6-foss-2017b.eb
+ * $CFGS1/b/BCFtools/BCFtools-1.6-intel-2017b.eb
+ * $CFGS1/b/BCFtools/BCFtools-1.8-GCC-6.4.0-2.28.eb
+ * $CFGS1/b/BCFtools/BCFtools-1.9-foss-2018a.eb
+ * $CFGS1/b/BCFtools/BCFtools-1.9-foss-2018b.eb
+ * $CFGS1/b/BCFtools/BCFtools-1.9-iccifort-2019.1.144-GCC-8.2.0-2.31.1.eb
+ * $CFGS1/b/BCFtools/BCFtools-1.9-intel-2018b.eb
+ * $CFGS1/b/BCFtools/BCFtools-1.10.2-GCC-8.3.0.eb
+ * $CFGS1/b/BCFtools/BCFtools-1.10.2-GCC-9.3.0.eb
+ * $CFGS1/b/BCFtools/BCFtools-1.10.2-iccifort-2019.5.281.eb
+ * $CFGS1/b/BCFtools/BCFtools-1.11-GCC-10.2.0.eb
+ * $CFGS1/b/BCFtools/BCFtools-1.12-GCC-9.3.0.eb
+ * $CFGS1/b/BCFtools/BCFtools-1.12-GCC-10.2.0.eb
+ * $CFGS1/b/BCFtools/BCFtools-1.12-GCC-10.3.0.eb
+ * $CFGS1/b/BCFtools/BCFtools-1.14-GCC-11.2.0.eb
+ * $CFGS1/b/BCFtools/BCFtools-1.15.1-GCC-11.3.0.eb
+ * $CFGS1/b/BCFtools/BCFtools-1.17-GCC-12.2.0.eb
+
+Note: 4 matching archived easyconfig(s) found, use --consider-archived-easyconfigs to see them
+```
+
+We are going to install `BCFtools-1.17-GCC-12.2.0.eb` but let's try with the dry-run option first. We should see that all dependencies are not satisfied.
+
+```bash
+eb -D BCFtools-1.17-GCC-12.2.0.eb -r
+== Temporary log file in case of crash /tmp/eb-xasu197x/easybuild-up2jaclx.log
+== found valid index for /home/users/ekieffer/.local/easybuild/easyconfigs, so using it...
+== found valid index for /home/users/ekieffer/.local/easybuild/easyconfigs, so using it...
+Dry run: printing build status of easyconfigs and dependencies
+CFGS=/home/users/ekieffer/.local/easybuild/easyconfigs
+ * [ ] $CFGS/m/M4/M4-1.4.19.eb (module: devel/M4/1.4.19)
+ * [ ] $CFGS/b/Bison/Bison-3.8.2.eb (module: lang/Bison/3.8.2)
+ * [ ] $CFGS/f/flex/flex-2.6.4.eb (module: lang/flex/2.6.4)
+ * [ ] $CFGS/z/zlib/zlib-1.2.12.eb (module: lib/zlib/1.2.12)
+ * [ ] $CFGS/b/binutils/binutils-2.39.eb (module: tools/binutils/2.39)
+ * [ ] $CFGS/g/GCCcore/GCCcore-12.2.0.eb (module: compiler/GCCcore/12.2.0)
+ * [ ] $CFGS/z/zlib/zlib-1.2.12-GCCcore-12.2.0.eb (module: lib/zlib/1.2.12-GCCcore-12.2.0)
+ * [ ] $CFGS/n/ncurses/ncurses-6.3.eb (module: devel/ncurses/6.3)
+ * [ ] $CFGS/g/gettext/gettext-0.21.1.eb (module: tools/gettext/0.21.1)
+ * [ ] $CFGS/h/help2man/help2man-1.49.2-GCCcore-12.2.0.eb (module: tools/help2man/1.49.2-GCCcore-12.2.0)
+ * [ ] $CFGS/m/M4/M4-1.4.19-GCCcore-12.2.0.eb (module: devel/M4/1.4.19-GCCcore-12.2.0)
+ * [ ] $CFGS/p/pkgconf/pkgconf-1.8.0.eb (module: devel/pkgconf/1.8.0)
+ * [ ] $CFGS/b/Bison/Bison-3.8.2-GCCcore-12.2.0.eb (module: lang/Bison/3.8.2-GCCcore-12.2.0)
+ * [ ] $CFGS/o/OpenSSL/OpenSSL-1.1.eb (module: system/OpenSSL/1.1)
+ * [ ] $CFGS/f/flex/flex-2.6.4-GCCcore-12.2.0.eb (module: lang/flex/2.6.4-GCCcore-12.2.0)
+ * [ ] $CFGS/b/binutils/binutils-2.39-GCCcore-12.2.0.eb (module: tools/binutils/2.39-GCCcore-12.2.0)
+ * [ ] $CFGS/c/cURL/cURL-7.86.0-GCCcore-12.2.0.eb (module: tools/cURL/7.86.0-GCCcore-12.2.0)
+ * [ ] $CFGS/g/GCC/GCC-12.2.0.eb (module: compiler/GCC/12.2.0)
+ * [ ] $CFGS/b/bzip2/bzip2-1.0.8-GCCcore-12.2.0.eb (module: tools/bzip2/1.0.8-GCCcore-12.2.0)
+ * [ ] $CFGS/x/XZ/XZ-5.2.7-GCCcore-12.2.0.eb (module: tools/XZ/5.2.7-GCCcore-12.2.0)
+ * [ ] $CFGS/g/GSL/GSL-2.7-GCC-12.2.0.eb (module: numlib/GSL/2.7-GCC-12.2.0)
+ * [ ] $CFGS/h/HTSlib/HTSlib-1.17-GCC-12.2.0.eb (module: bio/HTSlib/1.17-GCC-12.2.0)
+ * [ ] $CFGS/b/BCFtools/BCFtools-1.17-GCC-12.2.0.eb (module: bio/BCFtools/1.17-GCC-12.2.0)
+== Temporary log file(s) /tmp/eb-xasu197x/easybuild-up2jaclx.log* have been removed.
+== Temporary directory /tmp/eb-xasu197x has been removed.
+```
+
+
+Now, let's install it with `eb BCFtools-1.17-GCC-12.2.0.eb -r`. It takes a bit of time to complete since all dependencies need to be installed first.
+
 
 ### Build software using a customized EasyConfig file
 
 There are multiple ways to amend an EasyConfig file. Check the `--try-*` option flags for all the possibilities.
 
 Generally you want to do that when the up-to-date version of the software you want is **not** available as a recipy within Easybuild.
-For instance, a very popular building environment [CMake](https://blog.kitware.com/cmake-3-19-1-available-for-download/) has recently released a new version (3.19.1), which you want to give a try.
+For instance, let's consider the most recent version, i.e., 20230422, of the [GNU parallel](https://www.gnu.org/software/parallel/).
 
 It is not available as module, so let's build it.
 
-First let's check for available easyconfigs recipy if one exist for the expected version:
+First let's check for available easyconfigs recipies if one exist for the expected version:
 
 ```
-(node)$> eb -S Cmake-3
+(node)$> eb -S parallel
+== found valid index for /home/users/ekieffer/.local/easybuild/easyconfigs, so using it...
+CFGS1=/home/users/ekieffer/.local/easybuild/easyconfigs
 [...]
- * $CFGS2/c/CMake/CMake-3.12.1.eb
- * $CFGS2/c/CMake/CMake-3.15.3-GCCcore-8.3.0.eb
- * $CFGS2/c/CMake/CMake-3.15.3-fix-toc-flag.patch
- * $CFGS2/c/CMake/CMake-3.16.4-GCCcore-9.3.0.eb
- * $CFGS2/c/CMake/CMake-3.18.4-GCCcore-10.2.0.eb
-[...]
+ * $CFGS1/p/parallel/parallel-20141122-GCC-4.9.2.eb
+ * $CFGS1/p/parallel/parallel-20150322-GCC-4.9.2.eb
+ * $CFGS1/p/parallel/parallel-20150822-GCC-4.9.2.eb
+ * $CFGS1/p/parallel/parallel-20160622-foss-2016a.eb
+ * $CFGS1/p/parallel/parallel-20170822-intel-2017a.eb
+ * $CFGS1/p/parallel/parallel-20171022-intel-2017b.eb
+ * $CFGS1/p/parallel/parallel-20171122-foss-2017b.eb
+ * $CFGS1/p/parallel/parallel-20171122-intel-2017b.eb
+ * $CFGS1/p/parallel/parallel-20180422-intel-2018a.eb
+ * $CFGS1/p/parallel/parallel-20180822-foss-2018b.eb
+ * $CFGS1/p/parallel/parallel-20181222-intel-2018b.eb
+ * $CFGS1/p/parallel/parallel-20190222-GCCcore-7.3.0.eb
+ * $CFGS1/p/parallel/parallel-20190622-GCCcore-8.2.0.eb
+ * $CFGS1/p/parallel/parallel-20190922-GCCcore-8.3.0.eb
+ * $CFGS1/p/parallel/parallel-20200422-GCCcore-9.3.0.eb
+ * $CFGS1/p/parallel/parallel-20200522-GCCcore-9.3.0.eb
+ * $CFGS1/p/parallel/parallel-20210322-GCCcore-10.2.0.eb
+ * $CFGS1/p/parallel/parallel-20210622-GCCcore-10.3.0.eb
+ * $CFGS1/p/parallel/parallel-20210722-GCCcore-11.2.0.eb
+ * $CFGS1/p/parallel/parallel-20220722-GCCcore-11.3.0.eb
+ * $CFGS1/r/R/DMCfun-1.3.0_fix-parallel-detect.patch
+ * $CFGS1/w/WRF/WRF_parallel_build_fix.patch
+ * $CFGS1/x/Xmipp/Xmipp-3.19.04-Apollo_add_missing_pthread_to_XmippParallel.patch
+
+Note: 7 matching archived easyconfig(s) found, use --consider-archived-easyconfigs to see them
 ```
+As you can see, parallel-20220722-GCCcore-11.3.0.eb is a good candidate to start with. It is the most recent easybuild existing in the repository.
 
-You may want to reuse the helper script `./scripts/suggest-easyconfigs` to find the versions available (and detect the dependencies version to be place in the custom Easyconfig).
-
-We are going to reuse one of the latest EasyConfig available, for instance lets copy `$CFGS2/c/CMake/CMake-3.18.4-GCCcore-10.2.0.eb` as it was the most recent.
-We'll have to make it match the toolchain/compiler available by default in 2019b i.e. GCCcore-8.3.0.
+We are going to reuse one of the latest EasyConfig available, for instance lets copy `$CFGS1/p/parallel/parallel-20220722-GCCcore-11.3.0.eb` as it was the most recent.
+We'll have to make it match the toolchain/compiler available defined previously i.e. GCCcore-12.2.0.
 
 ```bash
 # Work in a dedicated directory
-(node)$> mkdir -p ~/software/CMake
-(node)$> cd ~/software/CMake
+(node)$> mkdir -p ~/software/parallel
+(node)$> cd ~/software/parallel
 
-(node)$> eb -S Cmake-3|less   # collect the definition of the CFGS2 variable
-(node)$> CFGS2=/Users/svarrette/git/github.com/ULHPC/easybuild-easyconfigs/easybuild/easyconfigs
-(node)$> cp $CFGS2/c/CMake/CMake-3.18.4-GCCcore-10.2.0.eb .
-# Adapt the filename with the target version and your default building environement - here 2019b software set
-(node)$> mv CMake-3.18.4-GCCcore-8.3.0.eb        # Adapt version suffix to the lastest realse
+# collect the definition of the CFGS1 variable
+(node)$> CFGS1=/home/users/ekieffer/.local/easybuild/easyconfigs
+(node)$> cp $CFGS1/p/parallel/parallel-20220722-GCCcore-11.3.0.eb .
+# Adapt the filename with the target version and your default building environement 
+(node)$> mv parallel-20220722-GCCcore-11.3.0.eb parallel-20230422-GCCcore-12.2.0.eb  
 ```
 
-You need to perform the following changes (here: version upgrade, adapted checksum)
-To find the appropriate version for the dependencies, use:
+Please open `parallel-20230422-GCCcore-12.2.0.eb` with your preferred editor (e.g., vim, nano, emacs). You should see the following:
+
+```python
+easyblock = 'ConfigureMake'
+
+name = 'parallel'
+version = '20220722'
+
+homepage = 'https://savannah.gnu.org/projects/parallel/'
+description = """parallel: Build and execute shell commands in parallel"""
+
+toolchain = {'name': 'GCCcore', 'version': '11.3.0'}
+
+source_urls = [GNU_SOURCE]
+sources = [SOURCELOWER_TAR_BZ2]
+checksums = ['0e4083ac0d850c434598c6dfbf98f3b6dd2cc932a3af9269eb1f9323e43af019']
+
+builddependencies = [('binutils', '2.38')]
+
+dependencies = [('Perl', '5.34.1')]
+
+sanity_check_paths = {
+    'files': ['bin/parallel'],
+    'dirs': []
+}
+
+sanity_check_commands = ["parallel --help"]
+
+moduleclass = 'tools'
+```
+We will need to update the following fields:
+
+* version
+* toolchain
+* builddependencies
+* dependencies
+
+Let's first update the (build)dependencies to match the new GCCcore-12.2.0.
+
+To find the appropriate version for the dependencies, we need to search the available versions for binutils and Perl regarding GCCcore-12.2.0.
 
 ``` bash
-# Summarize matchin versions for list of dependencies
-./scripts/suggest-easyconfigs -s ncurses zlib bzip2 cURL libarchive
-           ncurses: ncurses-6.1-GCCcore-8.3.0.eb
-              zlib: zlib-1.2.11-GCCcore-8.3.0.eb
-             bzip2: bzip2-1.0.8-GCCcore-8.3.0.eb
-              cURL: cURL-7.66.0-GCCcore-8.3.0.eb
-        libarchive: libarchive-3.4.3-GCCcore-10.2.0.eb
+# Searching binutils version
+eb -S binutils
+[...]
+* $CFGS1/b/binutils/binutils-2.39-GCCcore-12.2.0.eb
+[...]
+# Searching Perl version
+eb -S Perl
+[...]
+* $CFGS1/p/Perl/Perl-5.36.0-GCCcore-12.2.0.eb
+[...]
 ```
 
-
-```diff
---- CMake-3.18.4-GCCcore-10.2.0.eb	2020-12-09 22:33:12.375199000 +0100
-+++ CMake-3.19.1-GCCcore-8.3.0.eb	2020-12-09 22:42:40.238721000 +0100
-@@ -1,5 +1,5 @@
- name = 'CMake'
--version = '3.18.4'
-+version = '3.19.1'
-
- homepage = 'https://www.cmake.org'
-
-@@ -8,22 +8,22 @@
-  tools designed to build, test and package software.
- """
-
--toolchain = {'name': 'GCCcore', 'version': '10.2.0'}
-+toolchain = {'name': 'GCCcore', 'version': '8.3.0'}
-
- source_urls = ['https://www.cmake.org/files/v%(version_major_minor)s']
- sources = [SOURCELOWER_TAR_GZ]
--checksums = ['597c61358e6a92ecbfad42a9b5321ddd801fc7e7eca08441307c9138382d4f77']
-+checksums = ['1d266ea3a76ef650cdcf16c782a317cb4a7aa461617ee941e389cb48738a3aba']
-
- builddependencies = [
--    ('binutils', '2.35'),
-+    ('binutils', '2.32'),
- ]
-
- dependencies = [
--    ('ncurses', '6.2'),
-+    ('ncurses', '6.1'),
-     ('zlib', '1.2.11'),
-     ('bzip2', '1.0.8'),
--    ('cURL', '7.72.0'),
--    ('libarchive', '3.4.3'),
-+    ('cURL', '7.66.0'),
-+    ('libarchive', '3.4.0'),
-     # OS dependency should be preferred if the os version is more recent then this version,
-     # it's nice to have an up to date openssl for security reasons
-     # ('OpenSSL', '1.1.1h'),
-```
-
-libarchive will have also to be adapted.
-
-If the checksum is not provided on the [official software page](https://cmake.org/download/), you will need to compute it yourself by downloading the sources and collect the checksum:
+Once the version of all dependencies have been found, we are now able to update `parallel-20230422-GCCcore-12.2.0.eb`.
+Before diplaying the last diff between the old easybuild and the new one, we also need to updat the checksum. For this purpose, Easybuild implements a nice functionnality which injects directly the right checksum into the eb file.
 
 ```bash
-(laptop)$> sha256sum ~/Downloads/cmake-3.19.1.tar.gz
-1d266ea3a76ef650cdcf16c782a317cb4a7aa461617ee941e389cb48738a3aba  /Users/svarrette/Downloads/cmake-3.19.1.tar.gz
+# Injecting the checksum
+eb --inject-checksums='sha256'  --force parallel-20230422-GCCcore-12.2.0.eb
+== Temporary log file in case of crash /tmp/eb-ed9gqepv/easybuild-c1u3btwk.log
+== found valid index for /home/users/ekieffer/.local/easybuild/easyconfigs, so using it...
+== found valid index for /home/users/ekieffer/.local/easybuild/easyconfigs, so using it...
+== injecting sha256 checksums in /mnt/irisgpfs/users/ekieffer/software/parallel/parallel-20230422-GCCcore-12.2.0.eb
+== fetching sources & patches for parallel-20230422-GCCcore-12.2.0.eb...
+
+WARNING: Found existing checksums in parallel-20230422-GCCcore-12.2.0.eb, overwriting them (due to use of --force)...
+
+== backup of easyconfig file saved to /mnt/irisgpfs/users/ekieffer/software/parallel/parallel-20230422-GCCcore-12.2.0.eb.bak_20230503200710_3555416...
+== injecting sha256 checksums for sources & patches in parallel-20230422-GCCcore-12.2.0.eb...
+== * parallel-20230422.tar.bz2: 9106593d09dc4de0e094b7b14390a309d8fcb1d27104a53814d16937dcbae3c2
+== Temporary log file(s) /tmp/eb-ed9gqepv/easybuild-c1u3btwk.log* have been removed.
+== Temporary directory /tmp/eb-ed9gqepv has been removed.
+```
+
+Before updating the checksums inside the eb file, Easybuild creates a backup. We are now able to display a diff between the original and the new eb files with the following command `diff -u --color parallel-20220722-GCCcore-11.3.0.eb parallel-20230422-GCCcore-12.2.0.eb`.
+
+* You can also find the new easybuild recipy in the `.../tutorials/tools/easybuild/` folder.
+
+```diff
+--- parallel-20220722-GCCcore-11.3.0.eb 2023-05-03 20:01:58.538044000 +0200
++++ parallel-20230422-GCCcore-12.2.0.eb 2023-05-03 20:07:10.034852000 +0200
+@@ -1,20 +1,20 @@
+ easyblock = 'ConfigureMake'
+
+ name = 'parallel'
+-version = '20220722'
++version = '20230422'
+
+ homepage = 'https://savannah.gnu.org/projects/parallel/'
+ description = """parallel: Build and execute shell commands in parallel"""
+
+-toolchain = {'name': 'GCCcore', 'version': '11.3.0'}
++toolchain = {'name': 'GCCcore', 'version': '12.2.0'}
+
+ source_urls = [GNU_SOURCE]
+ sources = [SOURCELOWER_TAR_BZ2]
+-checksums = ['0e4083ac0d850c434598c6dfbf98f3b6dd2cc932a3af9269eb1f9323e43af019']
++checksums = ['9106593d09dc4de0e094b7b14390a309d8fcb1d27104a53814d16937dcbae3c2']
+
+-builddependencies = [('binutils', '2.38')]
++builddependencies = [('binutils', '2.39')]
+
+-dependencies = [('Perl', '5.34.1')]
++dependencies = [('Perl', '5.36.0')]
+
+ sanity_check_paths = {
+     'files': ['bin/parallel'],
+
 ```
 
 You can now build it
 
 ```bash
-(node)$> eb ./CMake-3.19.1-GCCcore-8.3.0.eb -Dr
-(node)$> eb ./CMake-3.19.1-GCCcore-8.3.0.eb -r
+(node)$> eb parallel-20230422-GCCcore-12.2.0.eb -Dr 
+== Temporary log file in case of crash /tmp/eb-j2gcfbzy/easybuild-2uaaamz_.log
+== found valid index for /home/users/ekieffer/.local/easybuild/easyconfigs, so using it...
+== found valid index for /home/users/ekieffer/.local/easybuild/easyconfigs, so using it...
+Dry run: printing build status of easyconfigs and dependencies
+ * [x] /home/users/ekieffer/.local/easybuild/easyconfigs/m/M4/M4-1.4.19.eb (module: devel/M4/1.4.19)
+ * [x] /home/users/ekieffer/.local/easybuild/easyconfigs/b/Bison/Bison-3.8.2.eb (module: lang/Bison/3.8.2)
+ * [x] /home/users/ekieffer/.local/easybuild/easyconfigs/f/flex/flex-2.6.4.eb (module: lang/flex/2.6.4)
+ * [x] /home/users/ekieffer/.local/easybuild/easyconfigs/z/zlib/zlib-1.2.12.eb (module: lib/zlib/1.2.12)
+ * [x] /home/users/ekieffer/.local/easybuild/easyconfigs/b/binutils/binutils-2.39.eb (module: tools/binutils/2.39)
+ * [x] /home/users/ekieffer/.local/easybuild/easyconfigs/g/GCCcore/GCCcore-12.2.0.eb (module: compiler/GCCcore/12.2.0)
+ * [x] /home/users/ekieffer/.local/easybuild/easyconfigs/z/zlib/zlib-1.2.12-GCCcore-12.2.0.eb (module: lib/zlib/1.2.12-GCCcore-12.2.0)
+ * [x] /home/users/ekieffer/.local/easybuild/easyconfigs/h/help2man/help2man-1.49.2-GCCcore-12.2.0.eb (module: tools/help2man/1.49.2-GCCcore-12.2.0)
+ * [x] /home/users/ekieffer/.local/easybuild/easyconfigs/m/M4/M4-1.4.19-GCCcore-12.2.0.eb (module: devel/M4/1.4.19-GCCcore-12.2.0)
+ * [x] /home/users/ekieffer/.local/easybuild/easyconfigs/b/Bison/Bison-3.8.2-GCCcore-12.2.0.eb (module: lang/Bison/3.8.2-GCCcore-12.2.0)
+ * [x] /home/users/ekieffer/.local/easybuild/easyconfigs/f/flex/flex-2.6.4-GCCcore-12.2.0.eb (module: lang/flex/2.6.4-GCCcore-12.2.0)
+ * [x] /home/users/ekieffer/.local/easybuild/easyconfigs/b/binutils/binutils-2.39-GCCcore-12.2.0.eb (module: tools/binutils/2.39-GCCcore-12.2.0)
+ * [ ] /home/users/ekieffer/.local/easybuild/easyconfigs/g/groff/groff-1.22.4-GCCcore-12.2.0.eb (module: tools/groff/1.22.4-GCCcore-12.2.0)
+ * [ ] /home/users/ekieffer/.local/easybuild/easyconfigs/e/expat/expat-2.4.9-GCCcore-12.2.0.eb (module: tools/expat/2.4.9-GCCcore-12.2.0)
+ * [ ] /home/users/ekieffer/.local/easybuild/easyconfigs/n/ncurses/ncurses-6.3-GCCcore-12.2.0.eb (module: devel/ncurses/6.3-GCCcore-12.2.0)
+ * [ ] /home/users/ekieffer/.local/easybuild/easyconfigs/l/libreadline/libreadline-8.2-GCCcore-12.2.0.eb (module: lib/libreadline/8.2-GCCcore-12.2.0)
+ * [x] /home/users/ekieffer/.local/easybuild/easyconfigs/p/pkgconf/pkgconf-1.8.0.eb (module: devel/pkgconf/1.8.0)
+ * [x] /home/users/ekieffer/.local/easybuild/easyconfigs/o/OpenSSL/OpenSSL-1.1.eb (module: system/OpenSSL/1.1)
+ * [ ] /home/users/ekieffer/.local/easybuild/easyconfigs/d/DB/DB-18.1.40-GCCcore-12.2.0.eb (module: tools/DB/18.1.40-GCCcore-12.2.0)
+ * [ ] /home/users/ekieffer/.local/easybuild/easyconfigs/p/Perl/Perl-5.36.0-GCCcore-12.2.0.eb (module: lang/Perl/5.36.0-GCCcore-12.2.0)
+ * [ ] /mnt/irisgpfs/users/ekieffer/software/parallel/parallel-20230422-GCCcore-12.2.0.eb (module: tools/parallel/20230422-GCCcore-12.2.0)
+== Temporary log file(s) /tmp/eb-j2gcfbzy/easybuild-2uaaamz_.log* have been removed.
+== Temporary directory /tmp/eb-j2gcfbzy has been removed.
+(node)$> eb parallel-20230422-GCCcore-12.2.0.eb -r
 ```
-
-**Note** you can follow the progress of the installation in a separate shell on the node:
-
-* (eventually) connect to the allocated node (using `ssh` or `oarsub -C <jobid>` depending on the cluster)
-* run `htop`
-    - press 'u' to filter by process owner, select your login
-    - press 'F5' to enable the tree view
 
 Check the result:
 
 ```bash
-(node)$> module av CMake
+(node)$> module av parallel
+
+------------------------------------------------------------------------------------ /home/users/ekieffer/.local/easybuild/aion/2022b/epyc/modules/all -------------------------------------------------------------------------------------
+   tools/parallel/20230422-GCCcore-12.2.0
+
+If the avail list is too long consider trying:
+
+"module --default avail" or "ml -d av" to just list the default modules.
+"module overview" or "ml ov" to display the number of modules for each name.
+
+Use "module spider" to find all possible modules and extensions.
+Use "module keyword key1 key2 ..." to search for all possible modules matching any of the "keys".
+
+
 ```
 
 That's all ;-)
