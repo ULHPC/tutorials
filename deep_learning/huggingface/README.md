@@ -558,7 +558,7 @@ Notice: 3D parallelism does not split the memory consumption inside a layers  bu
 Some HuggingFace LLM requires extra permission such as Meta's Llama2 LLM named `meta-llama/Llama-2-7b-hf`. To use them, you need to follow those steps:
 
 * 1 Create an account on https://huggingface.co/
-* Ask permission for a given LLM (example "meta-llama/Llama-2-7b-hf":  ) . You will receive notification from 24h to 48h.
+* Ask permission for a given LLM (example: https://huggingface.co/meta-llama/Llama-2-7b-hf ) . You will receive notification from 24h to 48h.
 * Generate a "read" token: https://huggingface.co/settings/tokens and copy the token.
 * Call the command: `huggingface-cli login --token <your_token_pasted>`
 
