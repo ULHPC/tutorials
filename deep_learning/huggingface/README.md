@@ -1,5 +1,7 @@
 
-Copyright (c) 2023 P. Pochelu and UL HPC Team  <hpc-sysadmins@uni.lu>
+Copyright (c) 2023 P. Pochelu <pierrick.pochelu@uni.lu> and UL HPC Team  <hpc-sysadmins@uni.lu>
+
+*Have questions or feedback? Your insights matter! Reach out to me at pierrick.pochelu@uni.lu*
 
 # HuggingFace powered with DeepSpeed on HPC
 
