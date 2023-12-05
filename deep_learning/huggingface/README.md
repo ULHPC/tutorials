@@ -11,12 +11,14 @@ Copyright (c) 2023 P. Pochelu and UL HPC Team  <hpc-sysadmins@uni.lu>
 **What is DeepSpeed ?**
 
 [DeepSpeed](https://www.deepspeed.ai/) is an open-source deep-learning optimization library developed by Microsoft. It is designed to improve the training efficiency and scale of large deep-learning models. DeepSpeed provides a set of capabilities, particularly an optimizer named Zero. Zero optimizer contains:
+
 * Data-parallelism: It splits the batch computing into smaller batches (named local batches), distributing these batches across multiple GPUs, and simultaneously training the model on each local batch to accelerate the training process.
 * CPU Offloading: During both the forward and backward steps, it smartly moves the current layer's computations to the GPU for speed, while keeping the other layers stored in the CPU to make use of its larger memory capacity. This allows handle models with billions of parameters that might exceed the GPU memory.
 * 16-bit arithmetic for faster computing, faster gradient communication between GPUs, and lower memory footprint.
 * List of other features: https://www.deepspeed.ai/docs/config-json/
 
 This tutorial is structured as follow:
+
 * Installation of Anaconda
 * Installationf of DeepSpeed, HuggingFace
 * HuggingFace+DeepSpeed code
@@ -512,6 +514,7 @@ Results with a combination of `cat` and `grep`:
 |     16 |                114 |       2 |    1,85 |    1,79 |
 
 Conclusion:
+
 * More GPUs decrease the number of computing time.
 * The loss changes when we use a different number of GPUs because the order of images isn't the same based on the number of GPUs during training.
 * We fixed arbitrary values, more in-depth analysis is required for maximizing convergence speed: learning rate scheduling, batch size, model size.
@@ -523,7 +526,8 @@ Conclusion:
 LLM consumes a lot of memory: model's parameters, features flowing through layers, optimizer information, ...  This is why some state-of-art LLM model does not fit entirely in the most advanced GPU memory.
 
 For enabling training model with billions of parameter the HuggingFace+DeepSpeed code, we perform 2 improvements:
-* Fix the batch_size per device to the minimum value which is 1 to minimize memory consumption
+
+* Fix the batch_size per device to the minimum value which is 1 to minimize memory consumption.
 * Enable DeepSpeed CPU offloading technics with `"offload_optimizer" and ``"offload_param"`.  
 
 ```bash
