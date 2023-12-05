@@ -4,27 +4,58 @@ Copyright (c) 2023 P. Pochelu and UL HPC Team  <hpc-sysadmins@uni.lu>
 # HuggingFace powered with DeepSpeed on HPC
 
 
+**What is HuggingFace ?**
 
-This tutorial provides:
-* Installation of Anaconda, HuggingFace, DeepSpeed
-* HuggingFace+DeepSpeed code and performance analysis
+[HuggingFace](https://huggingface.co/) is a company that provides a variety of open-source Transformers codes, particularly in the domain of Large Language Models (LLM). They are well-known for their huggingface Python package, which offers Transformers architecture codes, and pre-trained models for various tasks. Those codes allow us to build LLM and fine-tune them on custom applications, saving us the need to write complex PyTorch code or train them from scratch.
+
+**What is DeepSpeed ?**
+
+[DeepSpeed](https://www.deepspeed.ai/) is an open-source deep-learning optimization library developed by Microsoft. It is designed to improve the training efficiency and scale of large deep-learning models. DeepSpeed provides a set of capabilities, particularly an optimizer named Zero. Zero optimizer contains:
+* Data-parallelism: It splits the batch computing into smaller batches (named local batches), distributing these batches across multiple GPUs, and simultaneously training the model on each local batch to accelerate the training process.
+* CPU Offloading: During both the forward and backward steps, it smartly moves the current layer's computations to the GPU for speed, while keeping the other layers stored in the CPU to make use of its larger memory capacity. This allows handle models with billions of parameters that might exceed the GPU memory.
+* 16-bit arithmetic for faster computing, faster gradient communication between GPUs, and lower memory footprint.
+* List of other features: https://www.deepspeed.ai/docs/config-json/
+
+This tutorial is structured as follow:
+* Installation of Anaconda
+* Installationf of DeepSpeed, HuggingFace
+* HuggingFace+DeepSpeed code
+* Performance analysis
 
 This tutorial has been evaluated on Iris (ULHPC) and MeluXina (National HPC).
+
 ## Installation of Anaconda
 Please skip this if you have already Anaconda. Why using anaconda and not pip directly ? Because anaconda comes with `conda` command which makes it much easier the installation and maintenance of libraries such as CUDA, CUDNN, libaio...
 
-We document 2 installation procedure ways: using module, installing from source.
+We document 2 ways to install it: option a) using module, or option b) installing from source (more advanced).
 
-### Option A: Source installation
-
-#### Step 1 locate your HPC module:
-Installing yourself is not mandatory, you may also `module` utility on a computing node. `module spide conda` allows you to locate and give you the command to load miniconda.
+#### Step 1 - Option A: locate your HPC module:
+`module spider conda` allows you to locate and give you the command to load miniconda.
 
 Example on Iris:
+
 `module load lang/Anaconda3/2020.11`
 
-#### Step 2 Source Anaconda:
-Example:
+
+### Step 1 - Option B: install it yourself
+
+
+Installing it yourself allows to have a full control of your miniconda installation but note Anaconda may consume more than 35Go. 
+```bash
+wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
+```
+Then you can run the script:
+```bash
+chmod +x Miniconda3-latest-Linux-x86_64.sh
+./Miniconda3-latest-Linux-x86_64.sh
+```
+
+
+
+
+### Step 2: Source your environment
+
+**Please don't forget to update the path, example:**
 ```bash
 # >>> conda initialize >>>
 # !! Contents within this block are managed by 'conda init' !!
@@ -41,16 +72,20 @@ fi
 unset __conda_setup
 # <<< conda initialize <<<
 ```
-**Please don't forget to update the path**
+
 
 After this command your terminal invit should look like this:
+
 `(base) 0 [ppochelu@iris-169 ~](3291585 1N/T/1CN)$`
+
 Please note the **(base)** which confirm the success of the previous command block
-#### Step 3 Create the virtual environment:
+
+### Step 3: Create the virtual environment:
 Don't forget to do an anaconda virtual environment because you have not the right to update the main environment that the HPC administrators give you.
+
 `conda  create  -n  myenv`
 
-#### Step 4 Activate your virtualenvironment
+### Step 4: Activate your virtualenvironment
 Don't forget to activate your environment each time you will open a new terminal
 `conda activate myenv`
 
@@ -59,19 +94,6 @@ you should have something like this:
 `(myenv) 0 [ppochelu@iris-169 ~](3291585 1N/T/1CN)$`
 
 
-**Step1: Installing it in your user-space (any HPC)**:
-Installing it yourself allows to have a full control of your miniconda installation but note Anaconda may consume more than 35Go. 
-```bash
-wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
-```
-Then you can run the script:
-```bash
-chmod +x Miniconda3-latest-Linux-x86_64.sh
-./Miniconda3-latest-Linux-x86_64.sh
-```
-
-#### Step2: Source your installation
-Perform the step2 of the by correcting the path
 
 ## DeepSpeed installation
 DeepSpeed is not mandatory if you want to do LLM but allows you to exploit fully HPC witch is required for *really Large* Language Model.
@@ -201,11 +223,13 @@ export PDSH_RCMD_TYPE=ssh
 ```
 
 
-## HuggingFace+DeepSpeed
+## HuggingFace+DeepSpeed code
+
+First, we present a standard complete workflow for a Large Language Model (LLM) using HuggingFace, covering data loading, model training, and predictions. Next, we will modify this code to integrate HuggingFace with DeepSpeed, maximizing the utilization of High-Performance Computing (HPC) resources.
 
 ### Standard HuggingFace code
 
-The code is a complete example: data loading, tokenization, model training, predicting ...
+The code contains those steps: data loading, tokenization, fine-tuning, evaluation, saving/restoring and inference.
 
 Notice: we use opt-125m LLM, it is small LLM compared to others, making it ideal for the development phase and quick experiments. Afterwards, we could easily replace `"facebook/opt-125m"` string with bigger and more relevant LLM. The list of huggingFace LLM is foundable there: https://huggingface.co/models
 
@@ -489,6 +513,7 @@ Results with a combination of `cat` and `grep`:
 
 Conclusion:
 * More GPUs decrease the number of computing time.
+* The loss changes when we use a different number of GPUs because the order of images isn't the same based on the number of GPUs during training.
 * We fixed arbitrary values, more in-depth analysis is required for maximizing convergence speed: learning rate scheduling, batch size, model size.
 
 
@@ -499,7 +524,7 @@ LLM consumes a lot of memory: model's parameters, features flowing through layer
 
 For enabling training model with billions of parameter the HuggingFace+DeepSpeed code, we perform 2 improvements:
 * Fix the batch_size per device to the minimum value which is 1 to minimize memory consumption
-*  Enable DeepSpeed CPU offloading technics with `"offload_optimizer" and ``"offload_param"`.  The intuition is that the forward and backward phases are sequence of tensors operations, only a small portion of tensors perform the computing at the same time. Offloading dynamically the current layers in the GPU for faster computing, and store the other layers in the CPU for leveraging higher memory capability.
+* Enable DeepSpeed CPU offloading technics with `"offload_optimizer" and ``"offload_param"`.  
 
 ```bash
 model_name="facebook/opt-125m"
@@ -530,11 +555,10 @@ ds_config={
 Notice: 3D parallelism does not split the memory consumption inside a layers  but spread layers on GPU and CPU. This is why, when we have too big layer it can still crash memory.
 
 ## LLM with restricted access
-Some HuggingFace LLM requires extra permission.
+Some HuggingFace LLM requires extra permission such as Meta's Llama2 LLM named `meta-llama/Llama-2-7b-hf`. To use them, you need to follow those steps:
 
-For example the Meta's Llama2 LLM named `meta-llama/Llama-2-7b-hf`
 * 1 Create an account on https://huggingface.co/
-* Ask permission for a given LLM (example "llama-2-7b":  ) . You will receive notification from 24h to 48h.
+* Ask permission for a given LLM (example "meta-llama/Llama-2-7b-hf":  ) . You will receive notification from 24h to 48h.
 * Generate a "read" token: https://huggingface.co/settings/tokens and copy the token.
 * Call the command: `huggingface-cli login --token <your_token_pasted>`
 
