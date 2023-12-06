@@ -166,7 +166,7 @@ The [GNU Parallel](http://www.gnu.org/software/parallel/) syntax can be a little
         parallel	[-j N] [OPTIONS]	COMMAND	{} :::: TASKLIST.LST
 
 If your COMMAND embed a pipe stage, you have to escape the pipe symbol as follows `\|`.
-Let's make some tests. The `-j <N>` option permits to define the jobs per machine - in particular you may want to use `-j 1` to enable a sequential resolution of the parallel command
+Let's make some tests. The `-j <N>` option permits to define the jobs per machine - in particular you may want to use `-j 1` to enable a sequential resolution of the parallel command.
 
 In all cases, the `parallel` command is available at the system across the ULHPC clusters. Run it once.
 
