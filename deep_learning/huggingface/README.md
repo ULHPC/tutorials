@@ -566,12 +566,12 @@ Notice: 3D parallelism does not split the memory consumption inside a layers  bu
 ## LLM with restricted access
 Some HuggingFace LLM requires extra permission such as Meta's Llama2 LLM named `meta-llama/Llama-2-7b-hf`. To use them, you need to follow those steps:
 
-* 1 Create an account on https://huggingface.co/
-* Ask permission for a given LLM (example: https://huggingface.co/meta-llama/Llama-2-7b-hf ) . You will receive notification from 24h to 48h.
-* Generate a "read" token: https://huggingface.co/settings/tokens and copy the token.
-* Call the command: `huggingface-cli login --token <your_token_pasted>`
+1. Create an account on [https://huggingface.co/](https://huggingface.co/)
+2. Ask permission for a given LLM. Example: [https://huggingface.co/meta-llama/Llama-2-7b-hf](https://huggingface.co/meta-llama/Llama-2-7b-hf) . You will receive mail notification from 24h to 48h later.
+3. Generate a "read" token: [https://huggingface.co/settings/tokens](https://huggingface.co/settings/tokens) and copy the token.
+4. Call the command: `huggingface-cli login --token <your_token_pasted>`
 
-Change the Python code for calling the model you want. Example:
+Now you can access the model. You can change the first line of the provided code in this tutorial with the new LLM name:
 ```
 model_name="meta-llama/Llama-2-7b-hf"
 [...]
