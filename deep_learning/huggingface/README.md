@@ -186,8 +186,10 @@ which means Non Volatile Memory tensor compute capability are enabled.
 
 ### Installing HuggingFace
 
+The below command installs HuggingFace tranformers library with the optional DeepSpeed dependency
+```
 pip install huggingface[deepspeed]
-
+```
 
 ### PDSH
 
