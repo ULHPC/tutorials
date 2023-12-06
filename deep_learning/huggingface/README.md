@@ -231,7 +231,7 @@ export PDSH_RCMD_TYPE=ssh
 
 First, we present a standard complete workflow for a Large Language Model (LLM) using HuggingFace, covering data loading, model training, and predictions. Next, we will modify this code to integrate HuggingFace with DeepSpeed, maximizing the utilization of High-Performance Computing (HPC) resources.
 
-### Standard HuggingFace code
+### Mono-GPU HuggingFace code
 
 The code contains those steps: data loading, tokenization, fine-tuning, evaluation, saving/restoring and inference.
 
@@ -336,13 +336,15 @@ pred=generator(prompt)
 print(pred)
 ```
 
-## Code and Scripts
-Python code (LLM.py):
-The new block of code are highlight with arrows "<----- DeepSpeed"
-```bash
-import os
+## Multi-node multi-GPU DeepSpeed Code
 
-# PROCESSES CONFIG <-------------------
+Python code (LLM.py):
+The new block of code are highlight with comment ```"<----- DeepSpeed"```
+```bash
+model_name="facebook/opt-125m" # <--- select your LLM model
+
+# PROCESSES CONFIG <----- DeepSpeed
+import os
 pconfig=dict()
 pconfig["master_addr"] = os.getenv("MASTER_ADDR", "localhost")
 pconfig["master_port"] = int(os.getenv("MASTER_PORT", 9994))
@@ -386,11 +388,10 @@ data_collator = DataCollatorForLanguageModeling(tokenizer=tokenizer, mlm=False)
 
 # MODEL LOADING
 # ## Load OPT Model of 125m parameters
-model_name="facebook/opt-125m"
 from transformers import AutoModelForCausalLM
 model = AutoModelForCausalLM.from_pretrained(model_name)
 
-# MODEL TRAINING CONFIGURATION
+# MODEL TRAINING CONFIGURATION <----- DeepSpeed
 bs=16
 lbs=bs//pconfig["world_size"]
 ds_config={
@@ -420,7 +421,7 @@ training_args = TrainingArguments(
     learning_rate=1e-4,
     weight_decay=0.01,
     per_device_train_batch_size=lbs,
-    deepspeed=ds_config # <-------------- activate DeepSpeed
+    deepspeed=ds_config # <----- DeepSpeed
 )
 
 
