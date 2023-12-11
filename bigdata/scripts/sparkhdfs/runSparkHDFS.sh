@@ -24,6 +24,15 @@ cat > coordinatorNode << EOF
 $myhostname
 EOF
 
+###
+
+# Ensure that loging and work directories exist
+mkdir -p ${HOME}/sparkhdfs/hadoop/logs
+mkdir -p ${HOME}/sparkhdfs/hadoop/etc/hadoop
+mkdir -p ${HOME}/sparkhdfs/spark/logs
+mkdir -p ${HOME}/sparkhdfs/spark/conf
+mkdir -p ${HOME}/sparkhdfs/spark/work
+
 #create Spark configs
 SPARK_CONF=${HOME}/sparkhdfs/spark/conf/spark-defaults.conf
 cat > ${SPARK_CONF} << EOF
