@@ -18,7 +18,7 @@ echo "hostname=$hostName"
 
 #save it for future job refs
 myhostname="`hostname`"
-rm coordinatorNode
+rm -f coordinatorNode
 touch  coordinatorNode
 cat > coordinatorNode << EOF
 $myhostname
