@@ -1,12 +1,12 @@
-#!/bin/bash -l
-#SBATCH -J SparkHDFS
-#SBATCH -N 3 # Nodes
-#SBATCH -n 3 # Tasks
+#!/usr/bin/bash -l
+#SBATCH --job-name=SparkHDFS
+#SBATCH --nodes=3
+#SBATCH --ntasks=3
 #SBATCH --ntasks-per-node=1
 #SBATCH --mem=16GB
-#SBATCH -c 16 # Cores assigned to each task
+#SBATCH --cpus-per-task=16
 #SBATCH --time=0-00:59:00
-#SBATCH -p batch
+#SBATCH --partition=batch
 #SBATCH --qos=normal
 #SBATCH --mail-user=first.lastname@uni.lu
 #SBATCH --mail-type=BEGIN,END
