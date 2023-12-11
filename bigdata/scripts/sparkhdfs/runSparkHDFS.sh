@@ -3,8 +3,9 @@
 #SBATCH --nodes=3
 #SBATCH --ntasks=3
 #SBATCH --ntasks-per-node=1
-#SBATCH --mem=16GB
-#SBATCH --cpus-per-task=16
+#SBATCH --exclusive
+#SBATCH --mem=48GB
+#SBATCH --cpus-per-task=14
 #SBATCH --time=0-00:59:00
 #SBATCH --partition=batch
 #SBATCH --qos=normal
@@ -154,7 +155,7 @@ singularity run --bind $HOME/sparkhdfs/spark/conf:/opt/spark/conf,$HOME/sparkhdf
 EOF
 chmod +x ${SPARKM_LAUNCHER}
 
-srun --exclusive -N 1 -n 1 -c 16 --ntasks-per-node=1 -l -o $HOME/sparkhdfs/SparkMaster-`hostname`.out \
+srun --exclusive --nodes=1 --ntasks=1 --ntasks-per-node=1 --cpus-per-task=14 --label --output=$HOME/sparkhdfs/SparkMaster-`hostname`.out \
  ${SPARKM_LAUNCHER} &
 
 export SPARKMASTER="spark://$hostName:7078"
@@ -187,7 +188,7 @@ singularity run --bind $HOME/sparkhdfs/spark/conf:/opt/spark/conf,$HOME/sparkhdf
 EOF
 chmod +x ${SPARK_LAUNCHER}
 
-srun --exclusive -N 2 -n 2 -c 16 --ntasks-per-node=1 -l -o $HOME/sparkhdfs/SparkWorkers-`hostname`.out \
+srun --exclusive --nodes=2 --ntasks=2 --ntasks-per-node=1 --cpus-per-task=14 --label --output=$HOME/sparkhdfs/SparkWorkers-`hostname`.out \
  ${SPARK_LAUNCHER} &
 
 pid=$!
