@@ -15,14 +15,14 @@ RUN apt-get install -y curl unzip zip
 RUN apt-get install -y wget
 
 # Download Apache Hadoop
-RUN wget https://downloads.apache.org/hadoop/core/hadoop-3.3.5/hadoop-3.3.5.tar.gz
-RUN tar xvf hadoop-3.3.5.tar.gz 
-RUN mv hadoop-3.3.5 hadoop
+RUN wget https://dlcdn.apache.org/hadoop/core/hadoop-3.3.6/hadoop-3.3.6.tar.gz
+RUN tar xvf hadoop-3.3.6.tar.gz 
+RUN mv hadoop-3.3.6 hadoop
 
 # Download Apache Spark
-RUN wget https://dlcdn.apache.org/spark/spark-3.4.0/spark-3.4.0-bin-hadoop3.tgz
-RUN tar xvf spark-3.4.0-bin-hadoop3.tgz
-RUN mv spark-3.4.0-bin-hadoop3 spark
+RUN wget https://dlcdn.apache.org/spark/spark-3.5.0/spark-3.5.0-bin-hadoop3.tgz
+RUN tar xvf spark-3.5.0-bin-hadoop3.tgz
+RUN mv spark-3.5.0-bin-hadoop3 spark
 
 # Final stage
 FROM ubuntu:18.04

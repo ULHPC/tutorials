@@ -1,15 +1,17 @@
-#!/bin/bash -l
-#SBATCH -J SparkHDFS
-#SBATCH -N 3 # Nodes
-#SBATCH -n 3 # Tasks
+#!/usr/bin/bash -l
+#SBATCH --job-name=SparkHDFS
+#SBATCH --nodes=3
+#SBATCH --ntasks=3
 #SBATCH --ntasks-per-node=1
-#SBATCH --mem=16GB
-#SBATCH -c 16 # Cores assigned to each task
+#SBATCH --mem-per-cpu=2GB
+#SBATCH --cpus-per-task=4
 #SBATCH --time=0-00:59:00
-#SBATCH -p batch
+#SBATCH --partition=batch
 #SBATCH --qos=normal
 #SBATCH --mail-user=first.lastname@uni.lu
 #SBATCH --mail-type=BEGIN,END
+
+##SBATCH --exclusive
 
 module load tools/Singularity
 
@@ -18,14 +20,23 @@ echo "hostname=$hostName"
 
 #save it for future job refs
 myhostname="`hostname`"
-rm coordinatorNode
+rm -f coordinatorNode
 touch  coordinatorNode
 cat > coordinatorNode << EOF
 $myhostname
 EOF
 
+###
+
+# Ensure that loging and work directories exist
+mkdir -p ${HOME}/sparkhdfs/hadoop/logs
+mkdir -p ${HOME}/sparkhdfs/hadoop/etc/hadoop
+mkdir -p ${HOME}/sparkhdfs/spark/logs
+mkdir -p ${HOME}/sparkhdfs/spark/conf
+mkdir -p ${HOME}/sparkhdfs/spark/work
+
 #create Spark configs
-SPARK_CONF=${HOME}/spark/conf/spark-defaults.conf
+SPARK_CONF=${HOME}/sparkhdfs/spark/conf/spark-defaults.conf
 cat > ${SPARK_CONF} << EOF
 
 # Master settings
@@ -47,7 +58,7 @@ spark.logConf true
 
 EOF
 
-SPARK_ENVSH=${HOME}/spark/conf/spark-env.sh
+SPARK_ENVSH=${HOME}/sparkhdfs/spark/conf/spark-env.sh
 cat > ${SPARK_ENVSH} << EOF
 #!/usr/bin/env bash
 
@@ -58,7 +69,7 @@ HADOOP_HOME="/opt/hadoop"
 
 EOF
 
-SPARK_L4J=${HOME}/spark/conf/log4j.properties
+SPARK_L4J=${HOME}/sparkhdfs/spark/conf/log4j.properties
 cat > ${SPARK_L4J} << EOF
 # Set everything to be logged to the console
 log4j.rootCategory=DEBUG, console
@@ -75,7 +86,7 @@ log4j.logger.org.apache.spark.repl.SparkILoop$SparkILoopInterpreter=INFO
 EOF
 
 ### create HDFS config
-HDFS_SITE=${HOME}/hadoop/etc/hadoop/hdfs-site.xml
+HDFS_SITE=${HOME}/sparkhdfs/hadoop/etc/hadoop/hdfs-site.xml
 cat > ${HDFS_SITE} << EOF
 <?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
@@ -100,7 +111,7 @@ cat > ${HDFS_SITE} << EOF
 
 EOF
 
-HDFS_CORESITE=${HOME}/hadoop/etc/hadoop/core-site.xml
+HDFS_CORESITE=${HOME}/sparkhdfs/hadoop/etc/hadoop/core-site.xml
 cat > ${HDFS_CORESITE} << EOF
 <?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
@@ -120,7 +131,7 @@ EOF
 # Create a launcher script for SparkMaster and hdfsNamenode
 #Once started, the Spark master will print out a spark://HOST:PORT to be used for submitting jobs
 
-SPARKM_LAUNCHER=${HOME}/spark-start-master-${SLURM_JOBID}.sh
+SPARKM_LAUNCHER=${HOME}/sparkhdfs/spark-start-master-${SLURM_JOBID}.sh
 echo " - create SparkMaster and hdfsNamenode launcher script '${SPARKM_LAUNCHER}'"
 cat << 'EOF' > ${SPARKM_LAUNCHER}
 #!/bin/bash
@@ -129,30 +140,30 @@ echo "I am ${SLURM_PROCID} running on:"
 hostname
 
 #we are going to share an instance for Spark master and HDFS namenode
-singularity instance start --bind $HOME/hadoop/logs:/opt/hadoop/logs,$HOME/hadoop/etc/hadoop:/opt/hadoop/etc/hadoop,$HOME/spark/conf:/opt/spark/conf,$HOME/spark/logs:/opt/spark/logs,$HOME/spark/work:/opt/spark/work \
+singularity instance start --bind $HOME/sparkhdfs/hadoop/logs:/opt/hadoop/logs,$HOME/sparkhdfs/hadoop/etc/hadoop:/opt/hadoop/etc/hadoop,$HOME/sparkhdfs/spark/conf:/opt/spark/conf,$HOME/sparkhdfs/spark/logs:/opt/spark/logs,$HOME/sparkhdfs/spark/work:/opt/spark/work,$HOME/sparkhdfs:$HOME \
  sparkhdfs.sif shinst
 
-singularity run --bind $HOME/hadoop/logs:/opt/hadoop/logs,$HOME/hadoop/etc/hadoop:/opt/hadoop/etc/hadoop instance://shinst \
+singularity run --bind $HOME/sparkhdfs/hadoop/logs:/opt/hadoop/logs,$HOME/sparkhdfs/hadoop/etc/hadoop:/opt/hadoop/etc/hadoop,$HOME/sparkhdfs:$HOME instance://shinst \
   sparkHDFSNamenode 2>&1 &
 
-singularity run --bind $HOME/spark/conf:/opt/spark/conf,$HOME/spark/logs:/opt/spark/logs,$HOME/spark/work:/opt/spark/work instance://shinst \
+singularity run --bind $HOME/sparkhdfs/spark/conf:/opt/spark/conf,$HOME/sparkhdfs/spark/logs:/opt/spark/logs,$HOME/sparkhdfs/spark/work:/opt/spark/work,$HOME/sparkhdfs:$HOME instance://shinst \
   sparkMaster
 
 #the following example works for running without instance only the Spark Master
-#singularity run --bind $HOME/spark/conf:/opt/spark/conf,$HOME/spark/logs:/opt/spark/logs,$HOME/spark/work:/opt/spark/work sparkhdfs.sif \
+#singularity run --bind $HOME/sparkhdfs/spark/conf:/opt/spark/conf,$HOME/sparkhdfs/spark/logs:/opt/spark/logs,$HOME/sparkhdfs/spark/work:/opt/spark/work,$HOME/sparkhdfs:$HOME sparkhdfs.sif \
 # sparkMaster
 
 EOF
 chmod +x ${SPARKM_LAUNCHER}
 
-srun --exclusive -N 1 -n 1 -c 16 --ntasks-per-node=1 -l -o $HOME/SparkMaster-`hostname`.out \
+srun --exclusive --nodes=1 --ntasks=1 --ntasks-per-node=1 --cpus-per-task=4 --label --output=$HOME/sparkhdfs/SparkMaster-`hostname`.out \
  ${SPARKM_LAUNCHER} &
 
 export SPARKMASTER="spark://$hostName:7078"
 
 echo "Starting Spark workers and HDFS datanodes"
 
-SPARK_LAUNCHER=${HOME}/spark-start-workers-${SLURM_JOBID}.sh
+SPARK_LAUNCHER=${HOME}/sparkhdfs/spark-start-workers-${SLURM_JOBID}.sh
 echo " - create Spark workers and HDFS datanodes launcher script '${SPARK_LAUNCHER}'"
 cat << 'EOF' > ${SPARK_LAUNCHER}
 #!/bin/bash
@@ -161,31 +172,31 @@ echo "I am ${SLURM_PROCID} running on:"
 hostname
 
 #we are going to share an instance for Spark workers and HDFS datanodes
-singularity instance start --bind $HOME/hadoop/logs:/opt/hadoop/logs,$HOME/hadoop/etc/hadoop:/opt/hadoop/etc/hadoop,$HOME/spark/conf:/opt/spark/conf,$HOME/spark/logs:/opt/spark/logs,$HOME/spark/work:/opt/spark/work \
+singularity instance start --bind $HOME/sparkhdfs/hadoop/logs:/opt/hadoop/logs,$HOME/sparkhdfs/hadoop/etc/hadoop:/opt/hadoop/etc/hadoop,$HOME/sparkhdfs/spark/conf:/opt/spark/conf,$HOME/sparkhdfs/spark/logs:/opt/spark/logs,$HOME/sparkhdfs/spark/work:/opt/spark/work,$HOME/sparkhdfs:$HOME \
  sparkhdfs.sif shinst
 
-singularity run --bind $HOME/hadoop/logs:/opt/hadoop/logs,$HOME/hadoop/etc/hadoop:/opt/hadoop/etc/hadoop instance://shinst \
+singularity run --bind $HOME/sparkhdfs/hadoop/logs:/opt/hadoop/logs,$HOME/sparkhdfs/hadoop/etc/hadoop:/opt/hadoop/etc/hadoop,$HOME/sparkhdfs:$HOME instance://shinst \
   sparkHDFSDatanode 2>&1 &
 
-singularity run --bind $HOME/spark/conf:/opt/spark/conf,$HOME/spark/logs:/opt/spark/logs,$HOME/spark/work:/opt/spark/work instance://shinst \
+singularity run --bind $HOME/sparkhdfs/spark/conf:/opt/spark/conf,$HOME/sparkhdfs/spark/logs:/opt/spark/logs,$HOME/sparkhdfs/spark/work:/opt/spark/work,$HOME/sparkhdfs:$HOME instance://shinst \
   sparkWorker $SPARKMASTER -c 8 -m 12G
 
 
 #the following without instance only Spark worker
-#singularity run --bind $HOME/spark/conf:/opt/spark/conf,$HOME/spark/logs:/opt/spark/logs,$HOME/spark/work:/opt/spark/work sparkhdfs.sif \
+#singularity run --bind $HOME/sparkhdfs/spark/conf:/opt/spark/conf,$HOME/sparkhdfs/spark/logs:/opt/spark/logs,$HOME/sparkhdfs/spark/work:/opt/spark/work,$HOME/sparkhdfs:$HOME sparkhdfs.sif \
 # sparkWorker $SPARKMASTER -c 8 -m 8G 
 
 EOF
 chmod +x ${SPARK_LAUNCHER}
 
-srun --exclusive -N 2 -n 2 -c 16 --ntasks-per-node=1 -l -o $HOME/SparkWorkers-`hostname`.out \
+srun --exclusive --nodes=2 --ntasks=2 --ntasks-per-node=1 --cpus-per-task=4 --label --output=$HOME/sparkhdfs/SparkWorkers-`hostname`.out \
  ${SPARK_LAUNCHER} &
 
 pid=$!
 sleep 3600s
 wait $pid
 
-echo $HOME
+echo $HOME/sparkhdfs
 
 echo "Ready Stopping SparkHDFS instances"
 
