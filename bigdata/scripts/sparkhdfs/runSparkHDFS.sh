@@ -139,17 +139,17 @@ echo "I am ${SLURM_PROCID} running on:"
 hostname
 
 #we are going to share an instance for Spark master and HDFS namenode
-singularity instance start --bind $HOME/sparkhdfs/hadoop/logs:/opt/hadoop/logs,$HOME/sparkhdfs/hadoop/etc/hadoop:/opt/hadoop/etc/hadoop,$HOME/sparkhdfs/spark/conf:/opt/spark/conf,$HOME/sparkhdfs/spark/logs:/opt/spark/logs,$HOME/sparkhdfs/spark/work:/opt/spark/work \
+singularity instance start --bind $HOME/sparkhdfs/hadoop/logs:/opt/hadoop/logs,$HOME/sparkhdfs/hadoop/etc/hadoop:/opt/hadoop/etc/hadoop,$HOME/sparkhdfs/spark/conf:/opt/spark/conf,$HOME/sparkhdfs/spark/logs:/opt/spark/logs,$HOME/sparkhdfs/spark/work:/opt/spark/work,$HOME/sparkhdfs:$HOME \
  sparkhdfs.sif shinst
 
-singularity run --bind $HOME/sparkhdfs/hadoop/logs:/opt/hadoop/logs,$HOME/sparkhdfs/hadoop/etc/hadoop:/opt/hadoop/etc/hadoop instance://shinst \
+singularity run --bind $HOME/sparkhdfs/hadoop/logs:/opt/hadoop/logs,$HOME/sparkhdfs/hadoop/etc/hadoop:/opt/hadoop/etc/hadoop,$HOME/sparkhdfs:$HOME instance://shinst \
   sparkHDFSNamenode 2>&1 &
 
-singularity run --bind $HOME/sparkhdfs/spark/conf:/opt/spark/conf,$HOME/sparkhdfs/spark/logs:/opt/spark/logs,$HOME/sparkhdfs/spark/work:/opt/spark/work instance://shinst \
+singularity run --bind $HOME/sparkhdfs/spark/conf:/opt/spark/conf,$HOME/sparkhdfs/spark/logs:/opt/spark/logs,$HOME/sparkhdfs/spark/work:/opt/spark/work,$HOME/sparkhdfs:$HOME instance://shinst \
   sparkMaster
 
 #the following example works for running without instance only the Spark Master
-#singularity run --bind $HOME/sparkhdfs/spark/conf:/opt/spark/conf,$HOME/sparkhdfs/spark/logs:/opt/spark/logs,$HOME/sparkhdfs/spark/work:/opt/spark/work sparkhdfs.sif \
+#singularity run --bind $HOME/sparkhdfs/spark/conf:/opt/spark/conf,$HOME/sparkhdfs/spark/logs:/opt/spark/logs,$HOME/sparkhdfs/spark/work:/opt/spark/work,$HOME/sparkhdfs:$HOME sparkhdfs.sif \
 # sparkMaster
 
 EOF
@@ -171,18 +171,18 @@ echo "I am ${SLURM_PROCID} running on:"
 hostname
 
 #we are going to share an instance for Spark workers and HDFS datanodes
-singularity instance start --bind $HOME/sparkhdfs/hadoop/logs:/opt/hadoop/logs,$HOME/sparkhdfs/hadoop/etc/hadoop:/opt/hadoop/etc/hadoop,$HOME/sparkhdfs/spark/conf:/opt/spark/conf,$HOME/sparkhdfs/spark/logs:/opt/spark/logs,$HOME/sparkhdfs/spark/work:/opt/spark/work \
+singularity instance start --bind $HOME/sparkhdfs/hadoop/logs:/opt/hadoop/logs,$HOME/sparkhdfs/hadoop/etc/hadoop:/opt/hadoop/etc/hadoop,$HOME/sparkhdfs/spark/conf:/opt/spark/conf,$HOME/sparkhdfs/spark/logs:/opt/spark/logs,$HOME/sparkhdfs/spark/work:/opt/spark/work,$HOME/sparkhdfs:$HOME \
  sparkhdfs.sif shinst
 
-singularity run --bind $HOME/sparkhdfs/hadoop/logs:/opt/hadoop/logs,$HOME/sparkhdfs/hadoop/etc/hadoop:/opt/hadoop/etc/hadoop instance://shinst \
+singularity run --bind $HOME/sparkhdfs/hadoop/logs:/opt/hadoop/logs,$HOME/sparkhdfs/hadoop/etc/hadoop:/opt/hadoop/etc/hadoop,$HOME/sparkhdfs:$HOME instance://shinst \
   sparkHDFSDatanode 2>&1 &
 
-singularity run --bind $HOME/sparkhdfs/spark/conf:/opt/spark/conf,$HOME/sparkhdfs/spark/logs:/opt/spark/logs,$HOME/sparkhdfs/spark/work:/opt/spark/work instance://shinst \
+singularity run --bind $HOME/sparkhdfs/spark/conf:/opt/spark/conf,$HOME/sparkhdfs/spark/logs:/opt/spark/logs,$HOME/sparkhdfs/spark/work:/opt/spark/work,$HOME/sparkhdfs:$HOME instance://shinst \
   sparkWorker $SPARKMASTER -c 8 -m 12G
 
 
 #the following without instance only Spark worker
-#singularity run --bind $HOME/sparkhdfs/spark/conf:/opt/spark/conf,$HOME/sparkhdfs/spark/logs:/opt/spark/logs,$HOME/sparkhdfs/spark/work:/opt/spark/work sparkhdfs.sif \
+#singularity run --bind $HOME/sparkhdfs/spark/conf:/opt/spark/conf,$HOME/sparkhdfs/spark/logs:/opt/spark/logs,$HOME/sparkhdfs/spark/work:/opt/spark/work,$HOME/sparkhdfs:$HOME sparkhdfs.sif \
 # sparkWorker $SPARKMASTER -c 8 -m 8G 
 
 EOF
