@@ -43,7 +43,7 @@ Now **configure a dedicated directory `~/tutorials/easybuild` for this session**
 
 ``` bash
 # return to your home
-(access)$> mkdir -p ~/tutorials/
+(access)$> mkdir -p ~/tutorials/easybuild
 (access)$> cd ~/tutorials/easybuild
 # create a symbolic link to the reference material
 (access)$> ln -s ~/git/github.com/ULHPC/tutorials/tools/easybuild easybuild
@@ -191,7 +191,7 @@ where:
 
 * `<cluster>` depicts the name of the cluster (`iris` or `aion`). Stored as `$ULHPC_CLUSTER`.
 * `<version>` corresponds to the ULHPC Software set release (aligned with [Easybuid toolchains release](https://easybuild.readthedocs.io/en/master/Common-toolchains.html#component-versions-in-foss-toolchain)), _i.e._ `2019b`, `2020a` etc. It is stored as `$RESIF_VERSION_{PROD,DEVEL,LEGACY}`.
-* `<arch>` is a lower-case strings that categorize the CPU architecture of the build host, and permits to easyli identify optimized target architecture. It is stored as `$RESIF_ARCH`
+* `<arch>` is a lower-case strings that categorize the CPU architecture of the build host, and permits to easily identify optimized target architecture. It is stored as `$RESIF_ARCH`
     - On Intel nodes: `broadwell` (_default_), `skylake`
     - On AMD nodes: `epyc`
     - On GPU nodes: `gpu`
@@ -271,7 +271,7 @@ Easybuild is provided to you as a software module.
 module load tools/EasyBuild
 ```
 
-In case you cant to install the latest version yourself, please follow [the official instructions](http://easybuild.readthedocs.io/en/latest/Installation.html).
+In case you can't install the latest version yourself, please follow [the official instructions](http://easybuild.readthedocs.io/en/latest/Installation.html).
 Nonetheless, we strongly recommand to use the provided module. 
 **Don't forget** to setup your local Easybuild configuration first.
 
@@ -676,7 +676,7 @@ eb -S Perl
 ```
 
 Once the version of all dependencies have been found, we are now able to update `parallel-20230422-GCCcore-12.2.0.eb`.
-Before diplaying the last diff between the old easybuild and the new one, we also need to updat the checksum. For this purpose, Easybuild implements a nice functionnality which injects directly the right checksum into the eb file.
+Before diplaying the last diff between the old easybuild and the new one, we also need to update the checksum. For this purpose, Easybuild implements a nice functionnality which injects directly the right checksum into the eb file.
 
 ```bash
 # Injecting the checksum
