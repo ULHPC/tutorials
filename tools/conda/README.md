@@ -129,8 +129,8 @@ where you cam notice that the use of quotes is optional and only a single can be
 
 _Useful resources_
 
-1. [R Packages: A Beginner's Tutorial](https://www.datacamp.com/tutorial/r-packages-guide)
-2. [Efficient R programming: Efficient set-up](https://bookdown.org/csgillespie/efficientR/set-up.html)
+- [R Packages: A Beginner's Tutorial](https://www.datacamp.com/tutorial/r-packages-guide)
+- [Efficient R programming: Efficient set-up](https://bookdown.org/csgillespie/efficientR/set-up.html)
 
 #### Configuring installation paths in R
 
@@ -270,7 +270,7 @@ to install any missing packages.
 
 _Useful resources_
 
-1. [Official Packrat tutorial](https://rstudio.github.io/packrat/walkthrough.html)
+- [Official Packrat tutorial](https://rstudio.github.io/packrat/walkthrough.html)
 
 #### Issues with managing packages with the native R package managers
 
@@ -736,4 +736,4 @@ This workflow demonstrates the use of simple text files to store specifications,
 
 _Useful resources_
 
-1. [Micromamba User Guide: Specification files](https://mamba.readthedocs.io/en/latest/user_guide/micromamba.html#specification-files)
+- [Micromamba User Guide: Specification files](https://mamba.readthedocs.io/en/latest/user_guide/micromamba.html#specification-files)
