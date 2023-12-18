@@ -310,7 +310,7 @@ https://cran.r-project.org/doc/manuals/R-intro.pdf
 https://www.carc.usc.edu/user-information/user-guides/software-and-programming/singularity
 -->
 
-
+<!--
 ### Managing environments and packages with Conda
 
 [Conda](https://docs.conda.io/en/latest/) is an open source environment and package management system. With Conda you can create independent environments, where you can install applications such as python and R, together with any packages which will be used by these applications. The environments are independent, with the Conda package manager managing the binaries, resolving dependencies, and ensuring that software and package used in multiple environments are stored only once. In a typical setting, each user has their own installation of a Conda and a set of personal environments.
@@ -323,6 +323,7 @@ The architecture of R for instance, is a very clean example of this dichotomy be
 The distinction between environment and package managers is not always clear however. For instance virtual environments created by `venv` in Python set set environment variables when activated which Python uses to detect locally installed packages. For this reason, users have to source a script that modifies their environment. However, `venv` is not a full environment manager, as it cannot modify for instance the version of Python used.
 
 The additional complexity of mixing environment and package management offers some advantages. For instance, Packrat is a project environment tool for R. It is a pure package management tool, it does not modify the system environment. By Packrat design, R looks for locally installed packages in the project root directory only, so if you start a script in a subdirectory, packages installed with Packrat are not available! In contract, if you activate a `venv` environment, the Python packages installed in the environment are available everywhere.
+-->
 
 ## When a Conda environment is useful
 
@@ -338,8 +339,7 @@ For instance, assume that you have a project with R scripts that need some R pac
 
 In this case Packrat manages the packages of the project, and the system manages the environment, most importantly the version of R.
 
-??? info "Mixing environment and package management"
-	Some tools, especially in Python, partially mix the functionality of environment and package management. For instance, in a project with Python scripts where the packages are managed by `venv`, due to the design of Python some environment variables must be setup by `venv` so that Python can detect the local packages. For this reason, users have to activate a `venv` environment to access local packages, something not required by Packrat in R. However, `venv` is not a full environment manager as it cannot modify some important aspects of the environment, such as the Python installation.
+**Mixing environment and package management:** Some tools, especially in Python, partially mix the functionality of environment and package management. For instance, in a project with Python scripts where the packages are managed by `venv`, due to the design of Python some environment variables must be setup by `venv` so that Python can detect the local packages. For this reason, users have to activate a `venv` environment to access local packages, something not required by Packrat in R. However, `venv` is not a full environment manager as it cannot modify some important aspects of the environment, such as the Python installation.
 
 Conda environments are able to manage both the project environment, and the project packages. It is left to the user to chose what components they will mange with Conda and what with native tools. For instance, the user may choose to manage the R version with Conda and packages with Packrat.
 
@@ -347,9 +347,10 @@ Given that using Conda adds a layer of complexity in the management of your soft
 
 - The first case is when a software system is only available through Conda, and not as a module or container.
 - The second case is when there are multiple software systems in a project and it is more convenient to handle all project packages with a single tool instead of multiple native tools.
-
+<!--
 - The first reason is when the packages of a project require a version of a software system (e.g. R, Python, or Julia) that is not available through a module or a container. For instance, a Python package may require Python>=3.10.x but only version 3.8.x is available.
 - The second reason is when there are multiple software systems in a project (e.g. Python and R) and it is more convenient to handle all project packages with a single tool instead of multiple native tools. For instance a project with Python and R scripts needs both venv and Packrat to handle packages.
+-->
 
 ### Conda as an environment manager
 
@@ -385,8 +386,7 @@ A few concepts are necessary to start working with Conda. In brief, these are pa
 
 Package managers are the programs that install and manage the Conda environments. There are multiple package managers, such as [`conda`](https://docs.conda.io/projects/conda/en/stable/), [`mamba`](https://mamba.readthedocs.io/en/latest/user_guide/mamba.html), and [`micromamba`](https://mamba.readthedocs.io/en/latest/user_guide/micromamba.html).
 
-!!! important ""
-    The UL HPC centre supports the use of [`micromamba`](https://mamba.readthedocs.io/en/latest/user_guide/micromamba.html) for the creation and management of personal Conda environments.
+The UL HPC centre supports the use of [`micromamba`](https://mamba.readthedocs.io/en/latest/user_guide/micromamba.html) for the creation and management of personal Conda environments.
 
 ### Channels
 
@@ -417,8 +417,7 @@ The situation is similar for [Mamba](https://mamba.readthedocs.io/en/latest/inde
 
 The [Micromaba](https://mamba.readthedocs.io/en/latest/user_guide/micromamba.html) package manager is a minimal yet fairly complete implementation of the Conda interface in C++, that is shipped as a standalone executable. The package manager operates strictly on the user-space and thus it requires no special permissions are required to install packages. It maintains all its files in a couple of places, so uninstalling the package manager itself is also easy. Finally, the package manager is also lightweight and fast.
 
-!!! important ""
-    **UL HPC provides support only for the Micromamba package manager.**
+**UL HPC provides support only for the Micromamba package manager.**
 
 ### Installation
 
@@ -530,20 +529,21 @@ micromamba clean --all
 ```
 that opens up an interactive dialogue with details about the operations performed. You can follow the default option, unless you have manually edited any files in you package data directory (default location `${HOME}/micromamba`).
 
-??? info "Updating environments to remove old package versions"
-	As we create new environments, we often install the latest version of each package. However, if the environments are not updated regularly, we may end up with different versions of the same package across multiple environments. If we have the same version of a package installed in all environments, we can save space by removing unused older versions.
-	
-	To update a package across all environments, use the command
-	```bash
-	for e in $(micromamba env list | awk 'FNR>2 {print $1}'); do micromamba update --yes --name $e <package name>; done
-	```
-	and to update all packages across all environments
-	```bash
-	for e in $(micromamba env list | awk 'FNR>2 {print $1}'); do micromamba update --yes --name $e --all; done
-	```
-	where `FNR>2` removes the headers in the output of `micromamba env list`, and is thus sensitive to changes in the user interface of Micromamba.
-	
-	After updating packages, the `clean` command can be called to removed the data of unused older package versions.
+**Updating environments to remove old package versions**
+
+As we create new environments, we often install the latest version of each package. However, if the environments are not updated regularly, we may end up with different versions of the same package across multiple environments. If we have the same version of a package installed in all environments, we can save space by removing unused older versions.
+
+To update a package across all environments, use the command
+```bash
+for e in $(micromamba env list | awk 'FNR>2 {print $1}'); do micromamba update --yes --name $e <package name>; done
+```
+and to update all packages across all environments
+```bash
+for e in $(micromamba env list | awk 'FNR>2 {print $1}'); do micromamba update --yes --name $e --all; done
+```
+where `FNR>2` removes the headers in the output of `micromamba env list`, and is thus sensitive to changes in the user interface of Micromamba.
+
+After updating packages, the `clean` command can be called to removed the data of unused older package versions.
 
 _Sources_
 
@@ -565,8 +565,7 @@ Using an external packaging tool is possible because of the method that Conda us
 - each package must be managed by one tool, otherwise package components will get overwritten, and
 - packages installed by the package tool are specific to an environment and cannot be shared as with Conda, since components are installed directly and not with links.
 
-!!! important "Prefer Conda over external package managers"
-    Installing the same package in multiple environments with an external package tool consumes quotas in terms of [storage space and number of files](../../filesystems/quotas/#current-usage), so prefer Conda when possible. This is particularly important for the `inode` limit, since some packages install a large number of files, and the hard links used by Conda do not consume inodes or [disk space](https://stackoverflow.com/questions/55566419/why-are-packages-installed-rather-than-just-linked-to-a-specific-environment).
+**Prefer Conda over external package managers:** Installing the same package in multiple environments with an external package tool consumes quotas in terms of [storage space and number of files](../../filesystems/quotas/#current-usage), so prefer Conda when possible. This is particularly important for the `inode` limit, since some packages install a large number of files, and the hard links used by Conda do not consume inodes or [disk space](https://stackoverflow.com/questions/55566419/why-are-packages-installed-rather-than-just-linked-to-a-specific-environment).
 
 #### Pip
 
@@ -613,8 +612,7 @@ ${HOME}/micromamba/envs/mkdocs
 ```
 along side packages installed by `micromamba`. As a results, 'system-wide' installations with `pip` inside a Conda environment do not interfere with system packages.
 
-!!! warning "Do not install packages in Conda environments with pip as a user"
-    User installed packages (e.g.`pip install --user --upgrade mkdocs-minify-plugin`) are installed in the same directory for all environments, typically in `~/.local/`, and can interfere with other versions of the same package installed from other Conda environments.
+**Do not install packages in Conda environments with pip as a user:** User installed packages (e.g.`pip install --user --upgrade mkdocs-minify-plugin`) are installed in the same directory for all environments, typically in `~/.local/`, and can interfere with other versions of the same package installed from other Conda environments.
 
 #### Pkg
 
@@ -670,22 +668,23 @@ ${HOME}/micromamba/envs/julia/share
 ```
 if the default location for the Micromamba environment directory is used.
 
-??? info "Advanced management of package data"
-	Julia packages will consume [storage and number of files quota](../../filesystems/quotas/#current-usage). Pkg uses automatic garbage collection to cleanup packages that are no longer is use. In general you don't need to manage then package data, simply remove the package and its data will be deleted automatically after some time. However, when you exceed your quota you need to delete files immediately.
-	
-	The _immediate removal_ of the data of uninstalled packages can be forced with the command:
-	```julia
-	using Pkg
-	using Dates
-	Pkg.gc(;collect_delay=Dates.Day(0))
-	```
-	Make sure that the packages have been removed from all the environments that use them
-	
-	_Sources_: [Immediate package data clean up](https://discourse.julialang.org/t/packages-clean-up-general-julia-data-consumption/56198)
-
 _Useful resources_
 
 - [Pkg documentation](https://pkgdocs.julialang.org/v1/)
+
+**Advanced management of package data**
+
+Julia packages will consume [storage and number of files quota](../../filesystems/quotas/#current-usage). Pkg uses automatic garbage collection to cleanup packages that are no longer is use. In general you don't need to manage then package data, simply remove the package and its data will be deleted automatically after some time. However, when you exceed your quota you need to delete files immediately.
+
+The _immediate removal_ of the data of uninstalled packages can be forced with the command:
+```julia
+using Pkg
+using Dates
+Pkg.gc(;collect_delay=Dates.Day(0))
+```
+Make sure that the packages have been removed from all the environments that use them
+
+_Sources_: [Immediate package data clean up](https://discourse.julialang.org/t/packages-clean-up-general-julia-data-consumption/56198)
 
 ### Combining Conda with external environment management tools
 
@@ -693,8 +692,7 @@ Quite often it is required to create isolated environments using external tools.
 
 Installing and using in Conda environments tools that create isolated environments is relatively straight forward. Create an environment where only the required that tool is installed, and manage any subenvironments using the installed tool.
 
-!!! important "Create a different environment for each tool"
-    While this is not a requirement it is a good practice. For instance, `pipenv` and `poetry` used to and may still have conflicting dependencies; Conda detects the dependency and aborts the conflicting installation.
+**Create a different environment for each tool:** While this is not a requirement it is a good practice. For instance, `pipenv` and `poetry` used to and may still have conflicting dependencies; Conda detects the dependency and aborts the conflicting installation.
 
 #### Pipenv
 
