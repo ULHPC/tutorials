@@ -535,11 +535,11 @@ that opens up an interactive dialogue with details about the operations performe
 	
 	To update a package across all environments, use the command
 	```bash
-	for e in $(micromamba env list | awk 'FNR>2 {print $1}'); do micromamba update --name $e <package name>; done
+	for e in $(micromamba env list | awk 'FNR>2 {print $1}'); do micromamba update --yes --name $e <package name>; done
 	```
 	and to update all packages across all environments
 	```bash
-	for e in $(micromamba env list | awk 'FNR>2 {print $1}'); do micromamba update --name $e --all; done
+	for e in $(micromamba env list | awk 'FNR>2 {print $1}'); do micromamba update --yes --name $e --all; done
 	```
 	where `FNR>2` removes the headers in the output of `micromamba env list`, and is thus sensitive to changes in the user interface of Micromamba.
 	
