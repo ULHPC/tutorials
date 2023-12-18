@@ -1,5 +1,5 @@
 site_name: UL HPC Tutorials
-pages:
+nav:
 - Home: 'index.md'
 - Latest HPC School: 'hpc-school.md'
 - Setup:
@@ -16,6 +16,7 @@ pages:
 - Tools / Software management:
   - Easybuild: 'tools/easybuild/index.md'
   - Spack: 'tools/spack/index.md'
+  - Conda: 'tools/conda/index.md'
 #  - RESIF:     'tools/resif/index.md'
 - Data Management: 'data/index.md'
 - Scheduling:
