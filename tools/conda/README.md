@@ -717,3 +717,23 @@ and call
 micromamba update --all
 ```
 to update the single installed package. Inside the environment use `pipenv` as usual to create and manage project environments.
+
+## Exporting and importing environments
+
+You can export the specifications of an environment using the command:
+```bash
+micromaba env export --name <environment name>
+```
+By default the command prints to the standard output, but you can redirect the output to a file:
+```bash
+micromaba env export --name <environment name> > <environment name>.spec
+```
+To recreate an environment from a specification file, pass the file as argument to the create command with the `--file` flag:
+```
+micromamba env create --name <environment name> --file <environment name>.spec
+```
+This workflow demonstrates the use of simple text files to store specifications, but Micormamba supports various specification file types. All specification files are text files and can be version controlled.
+
+_Useful resources_
+
+1. [Micromamba User Guide: Specification files](https://mamba.readthedocs.io/en/latest/user_guide/micromamba.html#specification-files)
