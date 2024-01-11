@@ -532,7 +532,7 @@ micromamba deactivate
 
 _Useful scripting resources_
 
-- [Formatting submission scripts for R (and other systems)](../slurm/launchers.md#serial-task-script-launcher)
+- [Formatting submission scripts for R (and other systems)](https://hpc-docs.uni.lu/slurm/launchers/#serial-task-script-launcher)
 
 ### Exporting and importing environments
 
