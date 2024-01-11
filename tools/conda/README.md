@@ -25,20 +25,6 @@ The main focus of the tutorial is to provide how with the necessary resources so
 
 ---
 
-## Self management of work environments in UL HPC with Conda
-
-Software provided through the standard channels of [modules](modules.md) and [containers](../../containers/) are optimized for the ULHPC clusters to ensure their performance and stability. However, many software systems whose performance is not critical and are used by few users are not provided through the standard channels. Such software can still be installed locally by the users through an environment management system such as Conda.
-
-_Contact the ULHPC before installing any software with Conda_
-
-Prefer binaries provided through [modules](modules.md) or [containers](../../containers/). Conda installs generic binaries that may be suboptimal for the configuration of the ULHPC clusters. Furthermore, installing packages locally with Conda consumes quotas in your or your project's account in terms of [storage space and number of files](../../filesystems/quotas/#current-usage).
-
-Contact the ULHPC High Level Support Team in the [service portal](https://service.uni.lu/sp?id=index) [Home > Research > HPC > Software environment > Request expertise] to discuss possible options before installing any software.
-
-_TL;DR_
-
-If you need to install a whole software system (e.g. a version of Python) and not just a few packages, then install and use the [Micromamba package manager](conda.md#the-micromamba-package-manager).
-
 ## Environment management
 
 The environment of a software system can be categorized in 2 components,
@@ -325,6 +311,22 @@ https://cran.r-project.org/doc/manuals/R-intro.pdf
 https://www.carc.usc.edu/user-information/user-guides/software-and-programming/singularity
 -->
 
+## Self management of work environments in UL HPC with Conda
+
+Software provided through the standard channels of [modules](modules.md) and [containers](../../containers/) are optimized for the ULHPC clusters to ensure their performance and stability. However, many software systems whose performance is not critical and are used by few users are not provided through the standard channels. Such software can still be installed locally by the users through an environment management system such as Conda.
+
+_Contact the ULHPC before installing any software with Conda_
+
+Prefer binaries provided through [modules](modules.md) or [containers](../../containers/). Conda installs generic binaries that may be suboptimal for the configuration of the ULHPC clusters. Furthermore, installing packages locally with Conda consumes quotas in your or your project's account in terms of [storage space and number of files](../../filesystems/quotas/#current-usage).
+
+Contact the ULHPC High Level Support Team in the [service portal](https://service.uni.lu/sp?id=index) [Home > Research > HPC > Software environment > Request expertise] to discuss possible options before installing any software.
+
+_TL;DR_
+
+If you need to install a whole software system (e.g. a version of Python) and not just a few packages, then install and use the [Micromamba package manager](conda.md#the-micromamba-package-manager).
+
+### When a Conda environment is useful
+
 <!--
 ### Managing environments and packages with Conda
 
@@ -339,8 +341,6 @@ The distinction between environment and package managers is not always clear how
 
 The additional complexity of mixing environment and package management offers some advantages. For instance, Packrat is a project environment tool for R. It is a pure package management tool, it does not modify the system environment. By Packrat design, R looks for locally installed packages in the project root directory only, so if you start a script in a subdirectory, packages installed with Packrat are not available! In contract, if you activate a `venv` environment, the Python packages installed in the environment are available everywhere.
 -->
-
-## When a Conda environment is useful
 
 The environment of a project is composed by 2 components,
 
