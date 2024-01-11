@@ -534,6 +534,26 @@ _Useful scripting resources_
 
 - [Formatting submission scripts for R (and other systems)](../slurm/launchers.md#serial-task-script-launcher)
 
+### Exporting and importing environments
+
+You can export the specifications of an environment using the command:
+```bash
+micromaba env export --name <environment name>
+```
+By default the command prints to the standard output, but you can redirect the output to a file:
+```bash
+micromaba env export --name <environment name> > <environment name>.yaml
+```
+To recreate an environment from a specification file, pass the file as argument to the create command with the `--file` flag:
+```
+micromamba env create --name <environment name> --file <environment name>.yaml
+```
+This workflow demonstrates the use of simple text files to store specifications, but Micormamba supports various specification file types. All specification files are text files and can be version controlled.
+
+_Sources_
+
+- [Micromamba User Guide: Specification files](https://mamba.readthedocs.io/en/latest/user_guide/micromamba.html#specification-files)
+
 ### Cleaning up package data
 
 The Conda environment managers download and store a sizable amount of data to provided packages to the various environments. Even though the package data are shared between the various environments, they still consume space in your or your project's account. There are [limits in the storage space and number of files](../../filesystems/quotas/#current-usage) that are available to projects and users in the cluster. Since Conda packages are self managed, **you need to clean unused data yourself**.
@@ -733,22 +753,3 @@ micromamba update --all
 ```
 to update the single installed package. Inside the environment use `pipenv` as usual to create and manage project environments.
 
-## Exporting and importing environments
-
-You can export the specifications of an environment using the command:
-```bash
-micromaba env export --name <environment name>
-```
-By default the command prints to the standard output, but you can redirect the output to a file:
-```bash
-micromaba env export --name <environment name> > <environment name>.yaml
-```
-To recreate an environment from a specification file, pass the file as argument to the create command with the `--file` flag:
-```
-micromamba env create --name <environment name> --file <environment name>.yaml
-```
-This workflow demonstrates the use of simple text files to store specifications, but Micormamba supports various specification file types. All specification files are text files and can be version controlled.
-
-_Sources_
-
-- [Micromamba User Guide: Specification files](https://mamba.readthedocs.io/en/latest/user_guide/micromamba.html#specification-files)
