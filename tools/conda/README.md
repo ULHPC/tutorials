@@ -9,7 +9,7 @@
 [![](https://github.com/ULHPC/tutorials/raw/devel/path/to/cover_slides.png)](https://github.com/ULHPC/tutorials/raw/devel/path/to/slides.pdf)
 -->
 
-The objective of this tutorial is to cover package management of R, Python, and Julia projects. The users in this tutorial learn to:
+The objective of this tutorial is to cover package management in R, Python, and Julia projects. The users in this tutorial will learn to:
 
 - instal packages using the facilities available in R, Python, and Julia,
 - document and exchange environment setups for reproducibility,
@@ -25,45 +25,46 @@ The main focus of the tutorial is to provide how with the necessary resources so
 
 ---
 
-## Self management of work environments in UL HPC with Conda
-
-Software provided through the standard channels of [modules](modules.md) and [containers](../../containers/) are optimized for the ULHPC clusters to ensure their performance and stability. However, many software systems whose performance is not critical and are used by few users are not provided through the standard channels. Such software can still be installed locally by the users through an environment management system such as Conda.
-
-**Contact the ULHPC before installing any software with Conda**
-
-Prefer binaries provided through [modules](modules.md) or [containers](../../containers/). Conda installs generic binaries that may be suboptimal for the configuration of the ULHPC clusters. Furthermore, installing packages locally with Conda consumes quotas in your or your project's account in terms of [storage space and number of files](../../filesystems/quotas/#current-usage).
-
-Contact the ULHPC High Level Support Team in the [service portal](https://service.uni.lu/sp?id=index) [Home > Research > HPC > Software environment > Request expertise] to discuss possible options before installing any software.
-
-**TL;DR**
-
-If you need to install a whole software system (e.g. a version of Python) and not just a few packages, then install and use the [Micromamba package manager](conda.md#the-micromamba-package-manager).
-
 ## Environment management
 
-The environment of a software system can be categorized in 2 components, where the second is a subset of the first:
+The environment of a software system can be categorized in 2 components,
 
-- the _system_ comprising of installed software systems and environment settings, and
-- the _packages_ added to various software systems of the environment.
+- the _system_ comprising of installed software components and environment settings, and
+- the _packages_ added to various software components of the environment.
 
-_Environment management_ systems usually focus on the management of the system, installing software, setting environment variables and so on. _Package management_ systems on the other hand usually focus on managing the packages installed for some specific software. The distinction albeit useful is not always clear, and usually environment managers that can also manage the packages of some software systems.
+The system is a superset of the packages in the environment, however, it makes sense to consider them separately as many software components provide managers for the packages they use.
 
-Environment and package managers is a practical problem. Designs have been derived based on need. However, over time a few basic design principles have emerged that can be useful in understanding and using the various tools. Before we delve into more generic principles, we present a few representative cases as examples from which we latter derive generic conclusions.
+_Environment management_ systems usually focus on the management of the system, installing software, setting environment variables and so on. _Package management_ systems on the other hand usually focus on managing the packages installed for some specific software component. The distinction albeit useful is not always clear, and usually environment managers that can also manage the packages of some software systems.
+
+Environment and package management is a practical problem. Designs have been derived based on need. However, over time a few basic design principles have emerged that can be useful in understanding and using the various tools. Before we delve into more generic principles, we present a few representative cases as examples from which we latter derive generic conclusions.
+
+## Overview of environment and package management
+
+This overview discusses R and Python package management. These 2 software systems follow a somewhat different approach in the organization of their package management. R provides its own package management utilities that are strictly used for managing packages and avoid modifying the environment. On the other hand the package management utilities of Python often modify the environment as well. While the approach of R is much cleaner and easier to follow, the approach of Python significantly simplifies some package management operations. Conda further expands on the approach used by Python by seamlessly integrating the environment and package management.
+
+### Installing the R and Python software systems
+
+In the ULHPC systems, R and Python are provided as [modules](../cli/modules.md). In many Linux distributions R is provided as a [package](https://cran.r-project.org/). Python is also available as a package in many distributions, however, in many distributions Python is now a core package. Various other packages in the distribution depend on the Python core package, which implies that
+
+- the system is limited in the versions of Python shipped by the distribution, and
+- packages are managed only by the distribution package manager; using any external Python package manager can break the system!
+
+To avoid the limitations of the package manager of you distribution, you can always use an autonomous environment manager such as Conda to install the R and Python software systems. An additional advantage of using an environment manager is that you can use the exact same software distribution in your local machine, the HPC system, and any other computer.
 
 ### Managing packages in R
 
-The R program has a built-in package manager. In the ULHPC systems, R is provided as a module, and in many Linux distributions R is provided as a [package](https://cran.r-project.org/). Assuming that you have access to an installation of R, the R system contains 2 utilities that allow the installation of packages in 3 different modes. First there is the built-in package manager that can instal packages
+The R program has a built-in package manager. Assuming that you have access to an installation of R, the R system contains 2 utilities that allow the installation of packages in 3 different modes. First, there is the built-in package manager that can instal packages
 
 - in system wide accessible locations for packages that should be available to all users (requires elevated privileges), or
-- in user accessible location for packages that are accessible to the current user only.
+- in user specific location for packages that are accessible to the current user only.
 
-The default settings for the built-in package manager define the path where it looks for packages, but the search path can be extended by the user to include bespoke locations. Then the Packrat package manager installs packages
+There are default locations where the built-in package manager searches for packages. The user specific locations take precedence over system locations. The package manager search path can be extended by the user to include bespoke locations. There is also the Packrat package manager which installs packages
 
-- in project directories, where the package is available in an environment only within the project directory.
+- in project directories, with the packages being available in an environment isolated within the project directory.
 
 The Packrat package manager is available as an R package. When creating an environment within a project directory, the environment is activated automatically when starting R in the project directory (but not in its subdirectories due to the implementation of Packrat).
 
-In your local system you can install packages in any mode. In the HPC systems, you can only install packages in the user space, so you are limited to user and project wide installations. Nevertheless, the HPC installation of R includes a number of commonly used packages, such as `dbplyr` and `tidyverse`. You should check if the package you require is installed and that the installed version provides the functionality you need before installing any packages locally. Remember, local package installations consume space and inodes against personal or project quota.
+In your local system you can install packages in any mode. In the HPC systems, you can only install packages in the user accessible location, so you are limited to user and project wide installations. Nevertheless, the HPC installation of R includes a number of commonly used packages, such as `dbplyr` and `tidyverse`. You should check if the package you require is installed and that the installed version provides the functionality you need before installing any packages locally. Remember, local package installations consume space and inodes against personal or project quota.
 
 #### Installing R packages locally and globally
 
@@ -310,6 +311,22 @@ https://cran.r-project.org/doc/manuals/R-intro.pdf
 https://www.carc.usc.edu/user-information/user-guides/software-and-programming/singularity
 -->
 
+## Self management of work environments in UL HPC with Conda
+
+Software provided through the standard channels of [modules](modules.md) and [containers](../../containers/) are optimized for the ULHPC clusters to ensure their performance and stability. However, many software systems whose performance is not critical and are used by few users are not provided through the standard channels. Such software can still be installed locally by the users through an environment management system such as Conda.
+
+_Contact the ULHPC before installing any software with Conda_
+
+Prefer binaries provided through [modules](modules.md) or [containers](../../containers/). Conda installs generic binaries that may be suboptimal for the configuration of the ULHPC clusters. Furthermore, installing packages locally with Conda consumes quotas in your or your project's account in terms of [storage space and number of files](../../filesystems/quotas/#current-usage).
+
+Contact the ULHPC High Level Support Team in the [service portal](https://service.uni.lu/sp?id=index) [Home > Research > HPC > Software environment > Request expertise] to discuss possible options before installing any software.
+
+_TL;DR_
+
+If you need to install a whole software system (e.g. a version of Python) and not just a few packages, then install and use the [Micromamba package manager](conda.md#the-micromamba-package-manager).
+
+### When a Conda environment is useful
+
 <!--
 ### Managing environments and packages with Conda
 
@@ -324,8 +341,6 @@ The distinction between environment and package managers is not always clear how
 
 The additional complexity of mixing environment and package management offers some advantages. For instance, Packrat is a project environment tool for R. It is a pure package management tool, it does not modify the system environment. By Packrat design, R looks for locally installed packages in the project root directory only, so if you start a script in a subdirectory, packages installed with Packrat are not available! In contract, if you activate a `venv` environment, the Python packages installed in the environment are available everywhere.
 -->
-
-## When a Conda environment is useful
 
 The environment of a project is composed by 2 components,
 
@@ -517,7 +532,27 @@ micromamba deactivate
 
 _Useful scripting resources_
 
-- [Formatting submission scripts for R (and other systems)](../slurm/launchers.md#serial-task-script-launcher)
+- [Formatting submission scripts for R (and other systems)](https://hpc-docs.uni.lu/slurm/launchers/#serial-task-script-launcher)
+
+### Exporting and importing environments
+
+You can export the specifications of an environment using the command:
+```bash
+micromaba env export --name <environment name>
+```
+By default the command prints to the standard output, but you can redirect the output to a file:
+```bash
+micromaba env export --name <environment name> > <environment name>.yaml
+```
+To recreate an environment from a specification file, pass the file as argument to the create command with the `--file` flag:
+```
+micromamba env create --name <environment name> --file <environment name>.yaml
+```
+This workflow demonstrates the use of simple text files to store specifications, but Micormamba supports various specification file types. All specification files are text files and can be version controlled.
+
+_Sources_
+
+- [Micromamba User Guide: Specification files](https://mamba.readthedocs.io/en/latest/user_guide/micromamba.html#specification-files)
 
 ### Cleaning up package data
 
@@ -718,22 +753,3 @@ micromamba update --all
 ```
 to update the single installed package. Inside the environment use `pipenv` as usual to create and manage project environments.
 
-## Exporting and importing environments
-
-You can export the specifications of an environment using the command:
-```bash
-micromaba env export --name <environment name>
-```
-By default the command prints to the standard output, but you can redirect the output to a file:
-```bash
-micromaba env export --name <environment name> > <environment name>.spec
-```
-To recreate an environment from a specification file, pass the file as argument to the create command with the `--file` flag:
-```
-micromamba env create --name <environment name> --file <environment name>.spec
-```
-This workflow demonstrates the use of simple text files to store specifications, but Micormamba supports various specification file types. All specification files are text files and can be version controlled.
-
-_Useful resources_
-
-- [Micromamba User Guide: Specification files](https://mamba.readthedocs.io/en/latest/user_guide/micromamba.html#specification-files)
