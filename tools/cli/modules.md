@@ -205,7 +205,6 @@ In your home directory, create a file `mpi_broadcast.c` and copy the following s
         #include <stdio.h>
         #include <mpi.h>
         #include <unistd.h>
-        #include <time.h> /* for the work function only */
 
         int main (int argc, char *argv []) {
                char hostname[257];
