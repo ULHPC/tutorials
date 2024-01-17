@@ -182,16 +182,13 @@ compile the following program, using GNU C++ compiler (`g++` command), and the I
 
 ### Fortran
 
-**Question:** create a new file `helloworld.f` containing the following source code,
+**Question:** create a new file `helloworld.f90` containing the following source code,
 compile the following program, using the GNU Fortran compiler (`gfortran` command), and ICC (`ifort` command).
 
 
         program hello
            print *, "Hello, World!"
         end program hello
-
-
-Be careful, the 6 spaces at the beginning of each line are required
 
 
 
