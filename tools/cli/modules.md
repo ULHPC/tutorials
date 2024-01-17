@@ -23,9 +23,9 @@ By loading appropriate environment modules, the user can select:
 * libraries, e.g. the MPI library, or
 * other third party software packages.
 
-An exhaustive list of the available software is proposed [in this page](https://hpc.uni.lu/users/software/).
+An exhaustive list of the available software is proposed [in this page](https://hpc-docs.uni.lu/software/swsets/).
 
-On a node, using an interactive jobs, you can:
+On a node, using an interactive job, you can:
 
 * list all available softwares: `module avail`
 * search for one software: `module spider <search terms>`
@@ -182,16 +182,13 @@ compile the following program, using GNU C++ compiler (`g++` command), and the I
 
 ### Fortran
 
-**Question:** create a new file `helloworld.f` containing the following source code,
-compile the following program, using the GNU Fortran compiler (`gfortran` command), and ICC (`ifortran` command).
+**Question:** create a new file `helloworld.f90` containing the following source code,
+compile the following program, using the GNU Fortran compiler (`gfortran` command), and ICC (`ifort` command).
 
 
         program hello
            print *, "Hello, World!"
         end program hello
-
-
-Be careful, the 6 spaces at the beginning of each line are required
 
 
 
@@ -208,7 +205,6 @@ In your home directory, create a file `mpi_broadcast.c` and copy the following s
         #include <stdio.h>
         #include <mpi.h>
         #include <unistd.h>
-        #include <time.h> /* for the work function only */
 
         int main (int argc, char *argv []) {
                char hostname[257];
@@ -223,7 +219,7 @@ In your home directory, create a file `mpi_broadcast.c` and copy the following s
                if (!rank) {
                     bcast_value = 42;
                }
-               MPI_Bcast(&bcast_value,1 ,MPI_INT, 0, MPI_COMM_WORLD );
+               MPI_Bcast(&bcast_value, 1, MPI_INT, 0, MPI_COMM_WORLD);
                printf("%s\t- %d - %d - %d\n", hostname, rank, size, bcast_value);
                fflush(stdout);
 
@@ -238,7 +234,7 @@ Reserve 2 tasks of 1 core on two distinct nodes with Slurm
 
 Load a toolchain and compile the code using `mpicc`
 
-        (node)$> mpicc mpi_broadcast.c -o mpi_broadcast -lpthread
+        (node)$> mpicc mpi_broadcast.c -o mpi_broadcast
 
 With Slurm, you can use the `srun` command. Create an interactive job, with 2 nodes (`-N 2`), and at least 2 tasks (`-n 2`).
 

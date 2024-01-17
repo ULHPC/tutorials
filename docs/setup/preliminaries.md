@@ -8,7 +8,7 @@ _Note_: in the following instructions, terminal commands are prefixed by a virtu
 
 Kindly create in advance the various accounts for the **cloud services** we might use, _i.e._:
 
-* [Github](https://github.com/):
+* [Github](https://github.com/)
 * [Vagrant Cloud](https://vagrantcloud.com/)
 * [Docker Hub](https://hub.docker.com/)
 
