@@ -52,9 +52,286 @@ Environment and package management is a practical problem. Multiple systems have
 
 - The tutorial starts with an introduction to Conda, which is one of the most complete implementation of package and environment management. The Conda system architecture is described and an example of how a Conda system can be installed and used to manage environments and packages is presented.
 - Then, the project environment management and reproducibility functionalities of Conda are presented. Conda is used in a practical example to create a project environment, set up aspects of the system environment and install packages, and finally store the environment state and restore the environment in a new system.
-- Delving into how Conda implements environment and package management in systems and projects, some basic principles of system management emerge. A quick overview is then presented of how these principles are implemented in package and environment management systems for R, Python, and Julia.
+- Delving into how Conda implements environment and package management in systems and projects, some basic principles of system management emerge. A quick overview is presented of how these principles are implemented in package and environment management systems for R, Python, and Julia.
 - Finally, the integration of various package and environment management tools for R, Python, and Julia is discussed. Not all packages are available through Conda, so the combination of Conda with other package management tools in system or project environments is often required.
 
+---
+
+## A brief introduction to Conda
+
+A few concepts are necessary to start working with Conda. In brief, these are _package managers_ which are the programs used to create and manage environments, _channels_ which are the repositories that contain the packages from which environments are composed, and _distributions_ which are systems for shipping package managers.
+
+### Package managers
+
+Package managers are the programs that install and manage the Conda environments. There are multiple package managers, such as [`conda`](https://docs.conda.io/projects/conda/en/stable/), [`mamba`](https://mamba.readthedocs.io/en/latest/user_guide/mamba.html), and [`micromamba`](https://mamba.readthedocs.io/en/latest/user_guide/micromamba.html).
+
+The UL HPC centre supports the use of [`micromamba`](https://mamba.readthedocs.io/en/latest/user_guide/micromamba.html) for the creation and management of personal Conda environments.
+
+### Channels
+
+Conda [channels](https://docs.conda.io/projects/conda/en/latest/user-guide/concepts/channels.html#what-is-a-conda-channel) are the locations where packages are stored. There are also multiple channels, with some important channels being:
+
+- [`defaults`](https://repo.anaconda.com/pkgs/), the default channel,
+- [`anaconda`](https://anaconda.org/anaconda), a mirror of the default channel,
+- [`bioconda`](https://anaconda.org/bioconda), a distribution of bioinformatics software, and
+- [`conda-forge`](https://anaconda.org/conda-forge), a community-led collection of recipes, build infrastructure, and distributions for the conda package manager.
+
+The most useful channel that comes pre-installed in all distributions, is Conda-Forge. Channels are usually hosted in the [official Anaconda page](https://anaconda.org/), but in some rare occasions [custom channels](https://conda.io/projects/conda/en/latest/user-guide/tasks/create-custom-channels.html) may be used. For instance the [default channel](https://repo.anaconda.com/pkgs/) is hosted independently from the official Anaconda page. Many channels also maintain web pages with documentation both for their usage and for packages they distribute:
+
+- [Default Conda channel](https://docs.anaconda.com/free/anaconda/reference/default-repositories/)
+- [Bioconda](https://bioconda.github.io/)
+- [Conda-Forge](https://conda-forge.org/)
+
+### Distributions
+
+Quite often, the package manager is not distributed on its own, but with a set of packages that are required for the package manager to work, or even with some additional packages that required for most applications. For instance, the `conda` package manager is distributed with the Miniconda and Anaconda distributions. Miniconda contains the bare minimum packages for the `conda` package manager to work, and Anaconda contains multiple commonly used packages and a graphical user interface. The relation between these distributions and the package manager is depicted in the following diagram.
+
+[![](images/Miniconda-vs-Anaconda.jpg)](images/Miniconda-vs-Anaconda.jpg)
+
+The situation is similar for [Mamba](https://mamba.readthedocs.io/en/latest/index.html) distributions. These distributions are supported by [Conda-Forge](https://github.com/conda-forge/miniforge), and their default installation options set-up `conda-forge` as the default and only channel during installation. The `defaults` or its mirror `anaconda` must be explicitly added if required. The distribution using the [Mamba](https://mamba.readthedocs.io/en/latest/user_guide/mamba.html) package manager was originally distributed as Mambaforge and was [recently renamed](https://github.com/conda-forge/miniforge#whats-the-difference-between-mambaforge-and-miniforge) to Miniforge. Miniforge comes with a minimal set of python packages required by the Mamba package manager. The distribution using the [Micromamba](https://mamba.readthedocs.io/en/latest/user_guide/micromamba.html) package manager ships no accompanying packages, as Micromamba is a standalone executable with no dependencies. Micromamba is using [`libmamba`](https://mamba.readthedocs.io/en/latest/index.html), a C++ library implementing the Conda API.
+
+## The Micromamba package manager
+
+[![](https://mamba.readthedocs.io/en/latest/_static/logo.png){: style="width:200px; margin-right:10px; float: left;"}](https://mamba.readthedocs.io/en/latest/index.html)
+
+The [Micromaba](https://mamba.readthedocs.io/en/latest/user_guide/micromamba.html) package manager is a minimal yet fairly complete implementation of the Conda interface in C++, that is shipped as a standalone executable. The package manager operates strictly on the user-space and thus it requires no special permissions are required to install packages. It maintains all its files in a couple of places, so uninstalling the package manager itself is also easy. Finally, the package manager is also lightweight and fast.
+
+**UL HPC provides support only for the Micromamba package manager.**
+
+### Installation
+
+A complete guide regarding Micromamba installation can be found in the [official documentation](https://mamba.readthedocs.io/en/latest/micromamba-installation.html). To install micromamaba in the HPC clusters, log in to Aion or Iris. Working on a login node, run the installation script,
+```bash
+"${SHELL}" <(curl -L micro.mamba.pm/install.sh)
+``` 
+which will install the executable and setup the environment. There are 4 options to select during the installation of Micromamba:
+
+- The directory for the installation of the binary file:
+  ```
+  Micromamba binary folder? [~/.local/bin]
+  ```
+  Leave empty and press enter to select the default displayed within brackets. Your `.bashrc` script should include `~/.local/bin` in the `$PATH` by default.
+- The option to add to the environment autocomplete options for `micromamba`:
+  ```
+  Init shell (bash)? [Y/n]
+  ```
+  Press enter to select the default option `Y`. This will append a clearly marked section in the `.bashrc` shell. Do not forget to remove this section when uninstalling Micromamba.
+- The option to configure the channels by adding conda-forge:
+  ```
+  Configure conda-forge? [Y/n]
+  ```
+  Press enter to select the default option `Y`. This will setup the `~/.condarc` file with `conda-forge` as the default channel. Note that Mamba and Micromamba will not use the `defaults` channel if it is not present in `~/.condarc` like `conda`.
+- The option to select the directory where environment information and packages will be stored:
+  ```
+  Prefix location? [~/micromamba]
+  ```
+  Press enter to select the default option displayed within brackets.
+
+To setup the environment log-out and log-in again. Now you can use `micromamba`, including the auto-completion feature.
+
+### Managing environments
+
+As an example, the creation and use of an environment for R jobs is presented. The command,
+```bash
+micromamba create --name R-project
+```
+creates an environment named `R-project`. The environment is activated with the command
+```bash
+micromamba activate R-project
+```
+anywhere in the file system.
+
+Next, install the base R environment package that contains the R program, and any R packages required by the project. To install packages, first ensure that the `R-project` environment is active, and then install any package with the command
+```bash
+micromamba install <package_name>
+```
+all the required packages. Quite often, the channel name must also be specified:
+```bash
+micromamba install --chanell <chanell_name> <package_name>
+```
+Packages can be found by searching the [conda-forge channel](https://anaconda.org/conda-forge).
+
+For instance, the basic functionality of the R software environment is contained in the `r-base` package. Calling
+```bash
+micromamba install --channel conda-forge r-base
+```
+will install all the components required to run standalone R scripts. More involved scripts use functionality defined in various packages. The R packages are prepended with a prefix 'r-'. Thus, `plm` becomes `r-plm` and so on. After all the required packages have been installed, the environment is ready for use.
+
+Packages in the conda-forge channel come with instructions for their installation. Quite often the channel is specified in the installation instructions, `-c conda-forge` or `--channel conda-forge`. While the Micromamba installer sets-up `conda-forge` as the default channel, latter modification in `~/.condarc` may change the channel priority. Thus it is a good practice to explicitly specify the source channel when installing a package.
+
+After work in an environment is complete, deactivate the environment,
+```bash
+micromamba deactivate
+```
+to ensure that it does not interfere with any other operations. In contrast to [modules](modules.md), Conda is designed to operate with a single environment active at a time. Create one environment for each project, and Conda will ensure that any package that is shared between multiple environments is installed once.
+
+Micromamba supports almost all the subcommands of Conda. For more details see the [official documentation](https://mamba.readthedocs.io/en/latest/user_guide/micromamba.html).
+
+### Using environments in submission scripts
+
+Since all computationally heavy operations must be performed in compute nodes, Conda environments are also used in jobs submitted to the [queuing system](../slurm/index.md). Returning to the R example, a submission script running a single core R job can use the `R-project_name` environment as follows:
+```
+#SBATCH --job-name R-test-job
+#SBATCH --nodes 1
+#SBATCH --ntasks-per-node 1
+#SBATCH --cpus-per-task 1
+#SBATCH --time=0-02:00:00
+#SBATCH --partition batch
+#SBATCH --qos normal
+
+echo "Launched at $(date)"
+echo "Job ID: ${SLURM_JOBID}"
+echo "Node list: ${SLURM_NODELIST}"
+echo "Submit dir.: ${SLURM_SUBMIT_DIR}"
+echo "Numb. of cores: ${SLURM_CPUS_PER_TASK}"
+
+micromamba activate R-project
+
+export SRUN_CPUS_PER_TASK="${SLURM_CPUS_PER_TASK}"
+export OMP_NUM_THREADS=1
+srun Rscript --no-save --no-restore script.R
+
+micromamba deactivate
+```
+
+_Useful scripting resources_
+
+- [Formatting submission scripts for R (and other systems)](https://hpc-docs.uni.lu/slurm/launchers/#serial-task-script-launcher)
+
+### Exporting and importing environments
+
+You can export the specifications of an environment using the command:
+```
+$ micromaba env export --name <environment name>
+```
+By default the command prints to the standard output, but you can redirect the output to a file:
+```
+$ micromaba env export --name <environment name> > <environment name>.yaml
+```
+To recreate an environment from a specification file, pass the file as argument to the create command with the `--file` flag:
+```
+$ micromamba env create --name <environment name> --file <environment name>.yaml
+```
+This workflow demonstrates the use of simple text files to store specifications, but Micormamba supports various specification file types. All specification files are text files and can be version controlled.
+
+_Sources_
+
+- [Micromamba User Guide: Specification files](https://mamba.readthedocs.io/en/latest/user_guide/micromamba.html#specification-files)
+
+### Cleaning up package data
+
+The Conda environment managers download and store a sizable amount of data to provided packages to the various environments. Even though the package data are shared between the various environments, they still consume space in your or your project's account. There are [limits in the storage space and number of files](../../filesystems/quotas/#current-usage) that are available to projects and users in the cluster. Since Conda packages are self managed, **you need to clean unused data yourself**.
+
+There are two main sources of unused data, the compressed archives of the packages that Conda stores in its cache when downloading a package, and the data of removed packages. All unused data in Micromoamba can be removed with the command
+```bash
+micromamba clean --all
+```
+that opens up an interactive dialogue with details about the operations performed. You can follow the default option, unless you have manually edited any files in you package data directory (default location `${HOME}/micromamba`).
+
+**Updating environments to remove old package versions**
+
+As we create new environments, we often install the latest version of each package. However, if the environments are not updated regularly, we may end up with different versions of the same package across multiple environments. If we have the same version of a package installed in all environments, we can save space by removing unused older versions.
+
+To update a package across all environments, use the command
+```bash
+for e in $(micromamba env list | awk 'FNR>2 {print $1}'); do micromamba update --yes --name $e <package name>; done
+```
+and to update all packages across all environments
+```bash
+for e in $(micromamba env list | awk 'FNR>2 {print $1}'); do micromamba update --yes --name $e --all; done
+```
+where `FNR>2` removes the headers in the output of `micromamba env list`, and is thus sensitive to changes in the user interface of Micromamba.
+
+After updating packages, the `clean` command can be called to removed the data of unused older package versions.
+
+_Sources_
+
+- [Oficial Conda `clean` documentation](https://docs.conda.io/projects/conda/en/latest/commands/clean.html)
+- [Understanding Conda `clean`](https://stackoverflow.com/questions/51960539/where-does-conda-clean-remove-packages-from)
+
+---
+
+## Self management of work environments in UL HPC with Conda
+
+Software provided through the standard channels of [modules](modules.md) and [containers](../../containers/) are optimized for the ULHPC clusters to ensure their performance and stability. However, many software systems whose performance is not critical and are used by few users are not provided through the standard channels. Such software can still be installed locally by the users through an environment management system such as Conda.
+
+_Contact the ULHPC before installing any software with Conda_
+
+Prefer binaries provided through [modules](modules.md) or [containers](../../containers/). Conda installs generic binaries that may be suboptimal for the configuration of the ULHPC clusters. Furthermore, installing packages locally with Conda consumes quotas in your or your project's account in terms of [storage space and number of files](../../filesystems/quotas/#current-usage).
+
+Contact the ULHPC High Level Support Team in the [service portal](https://service.uni.lu/sp?id=index) [Home > Research > HPC > Software environment > Request expertise] to discuss possible options before installing any software.
+
+_TL;DR_
+
+If you need to install a whole software system (e.g. a version of Python) and not just a few packages, then install and use the [Micromamba package manager](conda.md#the-micromamba-package-manager).
+
+### When a Conda environment is useful
+
+<!--
+### Managing environments and packages with Conda
+
+[Conda](https://docs.conda.io/en/latest/) is an open source environment and package management system. With Conda you can create independent environments, where you can install applications such as python and R, together with any packages which will be used by these applications. The environments are independent, with the Conda package manager managing the binaries, resolving dependencies, and ensuring that software and package used in multiple environments are stored only once. In a typical setting, each user has their own installation of a Conda and a set of personal environments.
+
+The architecture of R for instance, is a very clean example of this dichotomy between system and package management. For instance, R can be installed in a Conda environment. The built-in package manager of R can then be used to install any packages. In such an arrangement,
+
+- Conda manages the system environment, most importantly R and any compilers used to compile R packages, and
+- the built-in package manager manages the installed R packages.
+
+The distinction between environment and package managers is not always clear however. For instance virtual environments created by `venv` in Python set set environment variables when activated which Python uses to detect locally installed packages. For this reason, users have to source a script that modifies their environment. However, `venv` is not a full environment manager, as it cannot modify for instance the version of Python used.
+
+The additional complexity of mixing environment and package management offers some advantages. For instance, Packrat is a project environment tool for R. It is a pure package management tool, it does not modify the system environment. By Packrat design, R looks for locally installed packages in the project root directory only, so if you start a script in a subdirectory, packages installed with Packrat are not available! In contract, if you activate a `venv` environment, the Python packages installed in the environment are available everywhere.
+-->
+
+The environment of a project is composed by 2 components,
+
+- the _system environment components_ such as software and environment variables, and
+- the _packages_ required by the various software systems of the environment.
+
+For instance, assume that you have a project with R scripts that need some R packages and you manage the project with Packrat. Then,
+
+- the installation of R and various environment variables are the project environment, and
+- the packages installed and managed with Packrat are the packages of the project.
+
+In this case Packrat manages the packages of the project, and the system manages the environment, most importantly the version of R.
+
+**Mixing environment and package management:** Some tools, especially in Python, partially mix the functionality of environment and package management. For instance, in a project with Python scripts where the packages are managed by `venv`, due to the design of Python some environment variables must be setup by `venv` so that Python can detect the local packages. For this reason, users have to activate a `venv` environment to access local packages, something not required by Packrat in R. However, `venv` is not a full environment manager as it cannot modify some important aspects of the environment, such as the Python installation.
+
+Conda environments are able to manage both the project environment, and the project packages. It is left to the user to chose what components they will mange with Conda and what with native tools. For instance, the user may choose to manage the R version with Conda and packages with Packrat.
+
+Given that using Conda adds a layer of complexity in the management of your software stack, there are 2 cases that justify the extra work of using Conda.
+
+- The first case is when a software system is only available through Conda, and not as a module or container.
+- The second case is when there are multiple software systems in a project and it is more convenient to handle all project packages with a single tool instead of multiple native tools.
+<!--
+- The first reason is when the packages of a project require a version of a software system (e.g. R, Python, or Julia) that is not available through a module or a container. For instance, a Python package may require Python>=3.10.x but only version 3.8.x is available.
+- The second reason is when there are multiple software systems in a project (e.g. Python and R) and it is more convenient to handle all project packages with a single tool instead of multiple native tools. For instance a project with Python and R scripts needs both venv and Packrat to handle packages.
+-->
+
+### Conda as an environment manager
+
+Conda is the preferred method to install software system when they are not available though the conventional channels of modules and containers. These are a few typical cases where you may consider using a Conda environment.
+
+- A software system is not available through modules or containers. In this case install the software system through Conda.
+- A software system is available, but not in a version required by a dependency. For instance, a Python package may require Python>=3.10.x but only version 3.8.x is available. In this case install the required version through Conda.
+- A dependency is available only through a native package manager, but the required package manager version is not supported by the environments offered through modules or containers. In this case setup the required environment with Conda.
+
+### Conda as a package manager
+
+Conda is a very capable package manager. A particular attractive feature of Julia is that it can handle dependencies from multiple software systems in the same environment. For instance in a project using Python and R and it can be more convenient to handle all project packages with Conda instead of multiple native tools, such as venv for Python and Packrat for R.
+
+If you plan to use Conda just to manage packages, you may also consider using a native package management tool. In some cases more packages are distributed with native tools.
+
+- In Julia all packages are distributed _only_ through the native package manager Pkg.
+- In Python most packages are distributed through Conda, but a few nice packages are available through the native package manager Pip only.
+- In R all packages are available through Conda; just append the prefix `r-` to the name of the package.
+
+Some native package mangers offer useful features, such as setting up isolated environments inside a project directory. Project environments automatically trace dependencies in a text file inside the project directory. This allow easy version control of the dependencies. Tools that offer automatic dependency logging include
+
+- Packrat for R,
+- venv (partially automated), pipenv, and poetry for Python, and
+- Pgk for Julia.
+
+Conda can log dependencies too. However, the process is manual, as Conda is not designed to maintain an environment inside a project directory.
 
 ## Overview of environment and package management
 
@@ -328,280 +605,6 @@ https://cran.r-project.org/doc/manuals/R-intro.pdf
 
 https://www.carc.usc.edu/user-information/user-guides/software-and-programming/singularity
 -->
-
-## Self management of work environments in UL HPC with Conda
-
-Software provided through the standard channels of [modules](modules.md) and [containers](../../containers/) are optimized for the ULHPC clusters to ensure their performance and stability. However, many software systems whose performance is not critical and are used by few users are not provided through the standard channels. Such software can still be installed locally by the users through an environment management system such as Conda.
-
-_Contact the ULHPC before installing any software with Conda_
-
-Prefer binaries provided through [modules](modules.md) or [containers](../../containers/). Conda installs generic binaries that may be suboptimal for the configuration of the ULHPC clusters. Furthermore, installing packages locally with Conda consumes quotas in your or your project's account in terms of [storage space and number of files](../../filesystems/quotas/#current-usage).
-
-Contact the ULHPC High Level Support Team in the [service portal](https://service.uni.lu/sp?id=index) [Home > Research > HPC > Software environment > Request expertise] to discuss possible options before installing any software.
-
-_TL;DR_
-
-If you need to install a whole software system (e.g. a version of Python) and not just a few packages, then install and use the [Micromamba package manager](conda.md#the-micromamba-package-manager).
-
-### When a Conda environment is useful
-
-<!--
-### Managing environments and packages with Conda
-
-[Conda](https://docs.conda.io/en/latest/) is an open source environment and package management system. With Conda you can create independent environments, where you can install applications such as python and R, together with any packages which will be used by these applications. The environments are independent, with the Conda package manager managing the binaries, resolving dependencies, and ensuring that software and package used in multiple environments are stored only once. In a typical setting, each user has their own installation of a Conda and a set of personal environments.
-
-The architecture of R for instance, is a very clean example of this dichotomy between system and package management. For instance, R can be installed in a Conda environment. The built-in package manager of R can then be used to install any packages. In such an arrangement,
-
-- Conda manages the system environment, most importantly R and any compilers used to compile R packages, and
-- the built-in package manager manages the installed R packages.
-
-The distinction between environment and package managers is not always clear however. For instance virtual environments created by `venv` in Python set set environment variables when activated which Python uses to detect locally installed packages. For this reason, users have to source a script that modifies their environment. However, `venv` is not a full environment manager, as it cannot modify for instance the version of Python used.
-
-The additional complexity of mixing environment and package management offers some advantages. For instance, Packrat is a project environment tool for R. It is a pure package management tool, it does not modify the system environment. By Packrat design, R looks for locally installed packages in the project root directory only, so if you start a script in a subdirectory, packages installed with Packrat are not available! In contract, if you activate a `venv` environment, the Python packages installed in the environment are available everywhere.
--->
-
-The environment of a project is composed by 2 components,
-
-- the _system environment components_ such as software and environment variables, and
-- the _packages_ required by the various software systems of the environment.
-
-For instance, assume that you have a project with R scripts that need some R packages and you manage the project with Packrat. Then,
-
-- the installation of R and various environment variables are the project environment, and
-- the packages installed and managed with Packrat are the packages of the project.
-
-In this case Packrat manages the packages of the project, and the system manages the environment, most importantly the version of R.
-
-**Mixing environment and package management:** Some tools, especially in Python, partially mix the functionality of environment and package management. For instance, in a project with Python scripts where the packages are managed by `venv`, due to the design of Python some environment variables must be setup by `venv` so that Python can detect the local packages. For this reason, users have to activate a `venv` environment to access local packages, something not required by Packrat in R. However, `venv` is not a full environment manager as it cannot modify some important aspects of the environment, such as the Python installation.
-
-Conda environments are able to manage both the project environment, and the project packages. It is left to the user to chose what components they will mange with Conda and what with native tools. For instance, the user may choose to manage the R version with Conda and packages with Packrat.
-
-Given that using Conda adds a layer of complexity in the management of your software stack, there are 2 cases that justify the extra work of using Conda.
-
-- The first case is when a software system is only available through Conda, and not as a module or container.
-- The second case is when there are multiple software systems in a project and it is more convenient to handle all project packages with a single tool instead of multiple native tools.
-<!--
-- The first reason is when the packages of a project require a version of a software system (e.g. R, Python, or Julia) that is not available through a module or a container. For instance, a Python package may require Python>=3.10.x but only version 3.8.x is available.
-- The second reason is when there are multiple software systems in a project (e.g. Python and R) and it is more convenient to handle all project packages with a single tool instead of multiple native tools. For instance a project with Python and R scripts needs both venv and Packrat to handle packages.
--->
-
-### Conda as an environment manager
-
-Conda is the preferred method to install software system when they are not available though the conventional channels of modules and containers. These are a few typical cases where you may consider using a Conda environment.
-
-- A software system is not available through modules or containers. In this case install the software system through Conda.
-- A software system is available, but not in a version required by a dependency. For instance, a Python package may require Python>=3.10.x but only version 3.8.x is available. In this case install the required version through Conda.
-- A dependency is available only through a native package manager, but the required package manager version is not supported by the environments offered through modules or containers. In this case setup the required environment with Conda.
-
-### Conda as a package manager
-
-Conda is a very capable package manager. A particular attractive feature of Julia is that it can handle dependencies from multiple software systems in the same environment. For instance in a project using Python and R and it can be more convenient to handle all project packages with Conda instead of multiple native tools, such as venv for Python and Packrat for R.
-
-If you plan to use Conda just to manage packages, you may also consider using a native package management tool. In some cases more packages are distributed with native tools.
-
-- In Julia all packages are distributed _only_ through the native package manager Pkg.
-- In Python most packages are distributed through Conda, but a few nice packages are available through the native package manager Pip only.
-- In R all packages are available through Conda; just append the prefix `r-` to the name of the package.
-
-Some native package mangers offer useful features, such as setting up isolated environments inside a project directory. Project environments automatically trace dependencies in a text file inside the project directory. This allow easy version control of the dependencies. Tools that offer automatic dependency logging include
-
-- Packrat for R,
-- venv (partially automated), pipenv, and poetry for Python, and
-- Pgk for Julia.
-
-Conda can log dependencies too. However, the process is manual, as Conda is not designed to maintain an environment inside a project directory.
-
-## A brief introduction to Conda
-
-A few concepts are necessary to start working with Conda. In brief, these are package managers which are the programs used to create and manage environments, channels which are the repositories that contain the packages from which environments are composed, and distributions which are methods for shipping package managers.
-
-### Package managers
-
-Package managers are the programs that install and manage the Conda environments. There are multiple package managers, such as [`conda`](https://docs.conda.io/projects/conda/en/stable/), [`mamba`](https://mamba.readthedocs.io/en/latest/user_guide/mamba.html), and [`micromamba`](https://mamba.readthedocs.io/en/latest/user_guide/micromamba.html).
-
-The UL HPC centre supports the use of [`micromamba`](https://mamba.readthedocs.io/en/latest/user_guide/micromamba.html) for the creation and management of personal Conda environments.
-
-### Channels
-
-Conda [channels](https://docs.conda.io/projects/conda/en/latest/user-guide/concepts/channels.html#what-is-a-conda-channel) are the locations where packages are stored. There are also multiple channels, with some important channels being:
-
-- [`defaults`](https://repo.anaconda.com/pkgs/), the default channel,
-- [`anaconda`](https://anaconda.org/anaconda), a mirror of the default channel,
-- [`bioconda`](https://anaconda.org/bioconda), a distribution of bioinformatics software, and
-- [`conda-forge`](https://anaconda.org/conda-forge), a community-led collection of recipes, build infrastructure, and distributions for the conda package manager.
-
-The most useful channel that comes pre-installed in all distributions, is Conda-Forge. Channels are usually hosted in the [official Anaconda page](https://anaconda.org/), but in some rare occasions [custom channels](https://conda.io/projects/conda/en/latest/user-guide/tasks/create-custom-channels.html) may be used. For instance the [default channel](https://repo.anaconda.com/pkgs/) is hosted independently from the official Anaconda page. Many channels also maintain web pages with documentation both for their usage and for packages they distribute:
-
-- [Default Conda channel](https://docs.anaconda.com/free/anaconda/reference/default-repositories/)
-- [Bioconda](https://bioconda.github.io/)
-- [Conda-Forge](https://conda-forge.org/)
-
-### Distributions
-
-Quite often, the package manager is not distributed on its own, but with a set of packages that are required for the package manager to work, or even with some additional packages that required for most applications. For instance, the `conda` package manager is distributed with the Miniconda and Anaconda distributions. Miniconda contains the bare minimum packages for the `conda` package manager to work, and Anaconda contains multiple commonly used packages and a graphical user interface. The relation between these distributions and the package manager is depicted in the following diagram.
-
-[![](images/Miniconda-vs-Anaconda.jpg)](images/Miniconda-vs-Anaconda.jpg)
-
-The situation is similar for [Mamba](https://mamba.readthedocs.io/en/latest/index.html) distributions. These distributions are supported by [Conda-Forge](https://github.com/conda-forge/miniforge), and their default installation options set-up `conda-forge` as the default and only channel during installation. The `defaults` or its mirror `anaconda` must be explicitly added if required. The distribution using the [Mamba](https://mamba.readthedocs.io/en/latest/user_guide/mamba.html) package manager was originally distributed as Mambaforge and was [recently renamed](https://github.com/conda-forge/miniforge#whats-the-difference-between-mambaforge-and-miniforge) to Miniforge. Miniforge comes with a minimal set of python packages required by the Mamba package manager. The distribution using the [Micromamba](https://mamba.readthedocs.io/en/latest/user_guide/micromamba.html) package manager ships no accompanying packages, as Micromamba is a standalone executable with no dependencies. Micromamba is using [`libmamba`](https://mamba.readthedocs.io/en/latest/index.html), a C++ library implementing the Conda API.
-
-## The Micromamba package manager
-
-[![](https://mamba.readthedocs.io/en/latest/_static/logo.png){: style="width:200px; margin-right:10px; float: left;"}](https://mamba.readthedocs.io/en/latest/index.html)
-
-The [Micromaba](https://mamba.readthedocs.io/en/latest/user_guide/micromamba.html) package manager is a minimal yet fairly complete implementation of the Conda interface in C++, that is shipped as a standalone executable. The package manager operates strictly on the user-space and thus it requires no special permissions are required to install packages. It maintains all its files in a couple of places, so uninstalling the package manager itself is also easy. Finally, the package manager is also lightweight and fast.
-
-**UL HPC provides support only for the Micromamba package manager.**
-
-### Installation
-
-A complete guide regarding Micromamba installation can be found in the [official documentation](https://mamba.readthedocs.io/en/latest/micromamba-installation.html). To install micromamaba in the HPC clusters, log in to Aion or Iris. Working on a login node, run the installation script,
-```bash
-"${SHELL}" <(curl -L micro.mamba.pm/install.sh)
-``` 
-which will install the executable and setup the environment. There are 4 options to select during the installation of Micromamba:
-
-- The directory for the installation of the binary file:
-  ```
-  Micromamba binary folder? [~/.local/bin]
-  ```
-  Leave empty and press enter to select the default displayed within brackets. Your `.bashrc` script should include `~/.local/bin` in the `$PATH` by default.
-- The option to add to the environment autocomplete options for `micromamba`:
-  ```
-  Init shell (bash)? [Y/n]
-  ```
-  Press enter to select the default option `Y`. This will append a clearly marked section in the `.bashrc` shell. Do not forget to remove this section when uninstalling Micromamba.
-- The option to configure the channels by adding conda-forge:
-  ```
-  Configure conda-forge? [Y/n]
-  ```
-  Press enter to select the default option `Y`. This will setup the `~/.condarc` file with `conda-forge` as the default channel. Note that Mamba and Micromamba will not use the `defaults` channel if it is not present in `~/.condarc` like `conda`.
-- The option to select the directory where environment information and packages will be stored:
-  ```
-  Prefix location? [~/micromamba]
-  ```
-  Press enter to select the default option displayed within brackets.
-
-To setup the environment log-out and log-in again. Now you can use `micromamba`, including the auto-completion feature.
-
-### Managing environments
-
-As an example, the creation and use of an environment for R jobs is presented. The command,
-```bash
-micromamba create --name R-project
-```
-creates an environment named `R-project`. The environment is activated with the command
-```bash
-micromamba activate R-project
-```
-anywhere in the file system.
-
-Next, install the base R environment package that contains the R program, and any R packages required by the project. To install packages, first ensure that the `R-project` environment is active, and then install any package with the command
-```bash
-micromamba install <package_name>
-```
-all the required packages. Quite often, the channel name must also be specified:
-```bash
-micromamba install --chanell <chanell_name> <package_name>
-```
-Packages can be found by searching the [conda-forge channel](https://anaconda.org/conda-forge).
-
-For instance, the basic functionality of the R software environment is contained in the `r-base` package. Calling
-```bash
-micromamba install --channel conda-forge r-base
-```
-will install all the components required to run standalone R scripts. More involved scripts use functionality defined in various packages. The R packages are prepended with a prefix 'r-'. Thus, `plm` becomes `r-plm` and so on. After all the required packages have been installed, the environment is ready for use.
-
-Packages in the conda-forge channel come with instructions for their installation. Quite often the channel is specified in the installation instructions, `-c conda-forge` or `--channel conda-forge`. While the Micromamba installer sets-up `conda-forge` as the default channel, latter modification in `~/.condarc` may change the channel priority. Thus it is a good practice to explicitly specify the source channel when installing a package.
-
-After work in an environment is complete, deactivate the environment,
-```bash
-micromamba deactivate
-```
-to ensure that it does not interfere with any other operations. In contrast to [modules](modules.md), Conda is designed to operate with a single environment active at a time. Create one environment for each project, and Conda will ensure that any package that is shared between multiple environments is installed once.
-
-Micromamba supports almost all the subcommands of Conda. For more details see the [official documentation](https://mamba.readthedocs.io/en/latest/user_guide/micromamba.html).
-
-### Using environments in submission scripts
-
-Since all computationally heavy operations must be performed in compute nodes, Conda environments are also used in jobs submitted to the [queuing system](../slurm/index.md). Returning to the R example, a submission script running a single core R job can use the `R-project_name` environment as follows:
-```
-#SBATCH --job-name R-test-job
-#SBATCH --nodes 1
-#SBATCH --ntasks-per-node 1
-#SBATCH --cpus-per-task 1
-#SBATCH --time=0-02:00:00
-#SBATCH --partition batch
-#SBATCH --qos normal
-
-echo "Launched at $(date)"
-echo "Job ID: ${SLURM_JOBID}"
-echo "Node list: ${SLURM_NODELIST}"
-echo "Submit dir.: ${SLURM_SUBMIT_DIR}"
-echo "Numb. of cores: ${SLURM_CPUS_PER_TASK}"
-
-micromamba activate R-project
-
-export SRUN_CPUS_PER_TASK="${SLURM_CPUS_PER_TASK}"
-export OMP_NUM_THREADS=1
-srun Rscript --no-save --no-restore script.R
-
-micromamba deactivate
-```
-
-_Useful scripting resources_
-
-- [Formatting submission scripts for R (and other systems)](https://hpc-docs.uni.lu/slurm/launchers/#serial-task-script-launcher)
-
-### Exporting and importing environments
-
-You can export the specifications of an environment using the command:
-```
-$ micromaba env export --name <environment name>
-```
-By default the command prints to the standard output, but you can redirect the output to a file:
-```
-$ micromaba env export --name <environment name> > <environment name>.yaml
-```
-To recreate an environment from a specification file, pass the file as argument to the create command with the `--file` flag:
-```
-$ micromamba env create --name <environment name> --file <environment name>.yaml
-```
-This workflow demonstrates the use of simple text files to store specifications, but Micormamba supports various specification file types. All specification files are text files and can be version controlled.
-
-_Sources_
-
-- [Micromamba User Guide: Specification files](https://mamba.readthedocs.io/en/latest/user_guide/micromamba.html#specification-files)
-
-### Cleaning up package data
-
-The Conda environment managers download and store a sizable amount of data to provided packages to the various environments. Even though the package data are shared between the various environments, they still consume space in your or your project's account. There are [limits in the storage space and number of files](../../filesystems/quotas/#current-usage) that are available to projects and users in the cluster. Since Conda packages are self managed, **you need to clean unused data yourself**.
-
-There are two main sources of unused data, the compressed archives of the packages that Conda stores in its cache when downloading a package, and the data of removed packages. All unused data in Micromoamba can be removed with the command
-```bash
-micromamba clean --all
-```
-that opens up an interactive dialogue with details about the operations performed. You can follow the default option, unless you have manually edited any files in you package data directory (default location `${HOME}/micromamba`).
-
-**Updating environments to remove old package versions**
-
-As we create new environments, we often install the latest version of each package. However, if the environments are not updated regularly, we may end up with different versions of the same package across multiple environments. If we have the same version of a package installed in all environments, we can save space by removing unused older versions.
-
-To update a package across all environments, use the command
-```bash
-for e in $(micromamba env list | awk 'FNR>2 {print $1}'); do micromamba update --yes --name $e <package name>; done
-```
-and to update all packages across all environments
-```bash
-for e in $(micromamba env list | awk 'FNR>2 {print $1}'); do micromamba update --yes --name $e --all; done
-```
-where `FNR>2` removes the headers in the output of `micromamba env list`, and is thus sensitive to changes in the user interface of Micromamba.
-
-After updating packages, the `clean` command can be called to removed the data of unused older package versions.
-
-_Sources_
-
-- [Oficial Conda `clean` documentation](https://docs.conda.io/projects/conda/en/latest/commands/clean.html)
-- [Understanding Conda `clean`](https://stackoverflow.com/questions/51960539/where-does-conda-clean-remove-packages-from)
 
 ## Combining Conda with other package and environment management tools
 
