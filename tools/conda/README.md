@@ -59,7 +59,7 @@ Environment and package management is a practical problem. Multiple systems have
 
 ## A brief introduction to Conda
 
-A few concepts are necessary to start working with Conda. In brief, these are _package managers_ which are the programs used to create and manage environments, _channels_ which are the repositories that contain the packages from which environments are composed, and _distributions_ which are systems for shipping package managers.
+You must be familiar with a few concepts to start working with Conda. In brief, these are _package managers_ which are the programs used to create and manage environments, _channels_ which are the repositories that contain the packages from which environments are composed, and _distributions_ which are systems for shipping package managers.
 
 ### Package managers
 
@@ -88,15 +88,15 @@ Quite often, the package manager is not distributed on its own, but with a set o
 
 [![](images/Miniconda-vs-Anaconda.jpg)](images/Miniconda-vs-Anaconda.jpg)
 
-The situation is similar for [Mamba](https://mamba.readthedocs.io/en/latest/index.html) distributions. These distributions are supported by [Conda-Forge](https://github.com/conda-forge/miniforge), and their default installation options set-up `conda-forge` as the default and only channel during installation. The `defaults` or its mirror `anaconda` must be explicitly added if required. The distribution using the [Mamba](https://mamba.readthedocs.io/en/latest/user_guide/mamba.html) package manager was originally distributed as Mambaforge and was [recently renamed](https://github.com/conda-forge/miniforge#whats-the-difference-between-mambaforge-and-miniforge) to Miniforge. Miniforge comes with a minimal set of python packages required by the Mamba package manager. The distribution using the [Micromamba](https://mamba.readthedocs.io/en/latest/user_guide/micromamba.html) package manager ships no accompanying packages, as Micromamba is a standalone executable with no dependencies. Micromamba is using [`libmamba`](https://mamba.readthedocs.io/en/latest/index.html), a C++ library implementing the Conda API.
+The situation is similar for [Mamba](https://mamba.readthedocs.io/en/latest/index.html) distributions. Mamba distributions are supported by [Conda-Forge](https://github.com/conda-forge/miniforge), and their default installation options set-up `conda-forge` as the default and only channel during installation. The `defaults` or its mirror `anaconda` must be explicitly added if required. The distribution using the [Mamba](https://mamba.readthedocs.io/en/latest/user_guide/mamba.html) package manager was originally distributed as Mambaforge and was [recently renamed](https://github.com/conda-forge/miniforge#whats-the-difference-between-mambaforge-and-miniforge) to Miniforge. Miniforge comes with a minimal set of python packages required by the Mamba package manager. The distribution using the [Micromamba](https://mamba.readthedocs.io/en/latest/user_guide/micromamba.html) package manager ships no accompanying packages, as Micromamba is a standalone executable with no dependencies. Micromamba is using [`libmamba`](https://mamba.readthedocs.io/en/latest/index.html), a C++ library implementing the Conda API.
 
 ## The Micromamba package manager
 
 [![](https://mamba.readthedocs.io/en/latest/_static/logo.png){: style="width:200px; margin-right:10px; float: left;"}](https://mamba.readthedocs.io/en/latest/index.html)
 
-The [Micromaba](https://mamba.readthedocs.io/en/latest/user_guide/micromamba.html) package manager is a minimal yet fairly complete implementation of the Conda interface in C++, that is shipped as a standalone executable. The package manager operates strictly on the user-space and thus it requires no special permissions are required to install packages. It maintains all its files in a couple of places, so uninstalling the package manager itself is also easy. Finally, the package manager is also lightweight and fast.
+The [Micromaba](https://mamba.readthedocs.io/en/latest/user_guide/micromamba.html) package manager is a minimal yet fairly complete implementation of the Conda interface in C++, which is shipped as a standalone executable. The package manager operates strictly on the user-space and thus it requires no special permissions to install packages. It maintains all its files in a couple of places, so uninstalling the package manager itself is also easy. Finally, the package manager is also lightweight and fast.
 
-**UL HPC provides support only for the Micromamba package manager.**
+UL HPC provides support _only_ for the Micromamba package manager.
 
 ### Installation
 
@@ -127,7 +127,7 @@ which will install the executable and setup the environment. There are 4 options
   ```
   Press enter to select the default option displayed within brackets.
 
-To setup the environment log-out and log-in again. Now you can use `micromamba`, including the auto-completion feature.
+To activate the new environment log-out and log-in again. You now can use `micromamba` in the login and compute nodes, including the auto-completion feature.
 
 ### Managing environments
 
