@@ -133,21 +133,21 @@ To setup the environment log-out and log-in again. Now you can use `micromamba`,
 
 As an example, the creation and use of an environment for R jobs is presented. The command,
 ```bash
-micromamba create --name R-project
+$ micromamba create --name R-project
 ```
 creates an environment named `R-project`. The environment is activated with the command
 ```bash
-micromamba activate R-project
+$ micromamba activate R-project
 ```
 anywhere in the file system.
 
 Next, install the base R environment package that contains the R program, and any R packages required by the project. To install packages, first ensure that the `R-project` environment is active, and then install any package with the command
 ```bash
-micromamba install <package_name>
+$ micromamba install <package_name>
 ```
 all the required packages. Quite often, the channel name must also be specified:
 ```bash
-micromamba install --chanell <chanell_name> <package_name>
+$ micromamba install --chanell <chanell_name> <package_name>
 ```
 Packages can be found by searching the [conda-forge channel](https://anaconda.org/conda-forge).
 
@@ -161,7 +161,7 @@ Packages in the conda-forge channel come with instructions for their installatio
 
 After work in an environment is complete, deactivate the environment,
 ```bash
-micromamba deactivate
+$ micromamba deactivate
 ```
 to ensure that it does not interfere with any other operations. In contrast to [modules](modules.md), Conda is designed to operate with a single environment active at a time. Create one environment for each project, and Conda will ensure that any package that is shared between multiple environments is installed once.
 
@@ -201,15 +201,15 @@ _Useful scripting resources_
 ### Exporting and importing environments
 
 You can export the specifications of an environment using the command:
-```
+```bash
 $ micromaba env export --name <environment name>
 ```
 By default the command prints to the standard output, but you can redirect the output to a file:
-```
+```bash
 $ micromaba env export --name <environment name> > <environment name>.yaml
 ```
 To recreate an environment from a specification file, pass the file as argument to the create command with the `--file` flag:
-```
+```bash
 $ micromamba env create --name <environment name> --file <environment name>.yaml
 ```
 This workflow demonstrates the use of simple text files to store specifications, but Micormamba supports various specification file types. All specification files are text files and can be version controlled.
