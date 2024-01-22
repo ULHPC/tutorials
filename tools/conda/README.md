@@ -555,16 +555,16 @@ _Useful scripting resources_
 ### Exporting and importing environments
 
 You can export the specifications of an environment using the command:
-```bash
-micromaba env export --name <environment name>
+```
+$ micromaba env export --name <environment name>
 ```
 By default the command prints to the standard output, but you can redirect the output to a file:
-```bash
-micromaba env export --name <environment name> > <environment name>.yaml
+```
+$ micromaba env export --name <environment name> > <environment name>.yaml
 ```
 To recreate an environment from a specification file, pass the file as argument to the create command with the `--file` flag:
 ```
-micromamba env create --name <environment name> --file <environment name>.yaml
+$ micromamba env create --name <environment name> --file <environment name>.yaml
 ```
 This workflow demonstrates the use of simple text files to store specifications, but Micormamba supports various specification file types. All specification files are text files and can be version controlled.
 
