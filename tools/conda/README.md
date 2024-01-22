@@ -1,6 +1,6 @@
 [![By ULHPC](https://img.shields.io/badge/by-ULHPC-blue.svg)](https://hpc.uni.lu) [![Licence](https://img.shields.io/badge/license-GPL--3.0-blue.svg)](http://www.gnu.org/licenses/gpl-3.0.html) [![GitHub issues](https://img.shields.io/github/issues/ULHPC/tutorials.svg)](https://github.com/ULHPC/tutorials/issues/) [![](https://img.shields.io/badge/slides-PDF-red.svg)](https://github.com/ULHPC/tutorials/raw/devel/path/to/slides.pdf) [![Github](https://img.shields.io/badge/sources-github-green.svg)](https://github.com/ULHPC/tutorials/tree/devel/path/to/) [![Documentation Status](http://readthedocs.org/projects/ulhpc-tutorials/badge/?version=latest)](http://ulhpc-tutorials.readthedocs.io/en/latest/path/to/) [![GitHub forks](https://img.shields.io/github/stars/ULHPC/tutorials.svg?style=social&label=Star)](https://github.com/ULHPC/tutorials)
 
-# Managing project environments with Conda
+# An introduction to project environment management with Conda
 
 > Copyright (c) 2023 UL HPC Team <hpc-sysadmins@uni.lu><br>
 > Author: Georgios Kafanas
@@ -36,7 +36,25 @@ The system is a superset of the packages in the environment, however, it makes s
 
 _Environment management_ systems usually focus on the management of the system, installing software, setting environment variables and so on. _Package management_ systems on the other hand usually focus on managing the packages installed for some specific software component. The distinction albeit useful is not always clear, and usually environment managers that can also manage the packages of some software systems.
 
-Environment and package management is a practical problem. Designs have been derived based on need. However, over time a few basic design principles have emerged that can be useful in understanding and using the various tools. Before we delve into more generic principles, we present a few representative cases as examples from which we latter derive generic conclusions.
+Furthermore, both _environment_ and _package_ management systems can be further subdivided according to the extend of the target environment. The management systems can target
+
+- the whole system, or
+- the environment within a single project directory.
+
+The tools providing project environment management always provide a method to store the environment setup in a file
+
+- which is stored in a format that can be version controlled, and
+- that can be used to recreate the environment.
+
+The _project environments_ are thus very useful to store a distribute research projects, since they automate the reproducibility of results significantly.
+
+Environment and package management is a practical problem. Multiple systems have been developed, with each system focussing on a few aspects of the problem. This tutorial aims to present the basic underlying principles of environment and package management systems, and to familiarize the reader with some of the most popular implementations.
+
+- The tutorial starts with an introduction to Conda, which is one of the most complete implementation of package and environment management. The Conda system architecture is described and an example of how a Conda system can be installed and used to manage environments and packages is presented.
+- Then, the project environment management and reproducibility functionalities of Conda are presented. Conda is used in a practical example to create a project environment, set up aspects of the system environment and install packages, and finally store the environment state and restore the environment in a new system.
+- Delving into how Conda implements environment and package management in systems and projects, some basic principles of system management emerge. A quick overview is then presented of how these principles are implemented in package and environment management systems for R, Python, and Julia.
+- Finally, the integration of various package and environment management tools for R, Python, and Julia is discussed. Not all packages are available through Conda, so the combination of Conda with other package management tools in system or project environments is often required.
+
 
 ## Overview of environment and package management
 
