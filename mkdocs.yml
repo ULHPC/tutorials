@@ -58,6 +58,7 @@ nav:
   - MATLAB (advanced): 'maths/matlab/advanced/index.md'
   - R - statistical computing: 'maths/R/index.md'
   - Cplex - Gurobi: 'maths/Cplex-Gurobi/index.md'
+  - An introduction to numerical methods with BLAS: 'maths/BLAS/index.md'
 - Bioinformatics:
   - Running bioinformatics software: 'bio/basics/index.md'
   - Bioinformatics workflows with snakemake and conda: 'bio/snakemake/index.md'
