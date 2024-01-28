@@ -15,6 +15,17 @@
 [![](https://github.com/ULHPC/tutorials/raw/devel/path/to/cover_slides.png)](https://github.com/ULHPC/tutorials/raw/devel/path/to/slides.pdf)
 -->
 
----
+This is tutorial is a succinct introduction to numerical methods using the BLAS library.
 
----
+## Resources
+
+- [Presentation](./presentation.pdf)
+- [Tutorial notes](.notes.pdf)
+
+## Source code repositories
+
+There are a few repositories with supporting material.
+
+- [A clone of the official Netlib LAPACK release](https://gitlab.uni.lu/hlst/seminars/blas/lapack): checkout the `blas-tutorial` tag for a configuration that installs the components relevant to the BLAS tutorial.
+- [A parser for Matrix Market Exchange Format files](https://gitlab.uni.lu/hlst/seminars/blas/matrix-market-exchange-formats): provides a library reading matrix files from the [Matrix Market](https://math.nist.gov/MatrixMarket/) collection of benchmark problems.
+- [Examples and exercises](https://gitlab.uni.lu/hlst/seminars/blas/blas-tutorial): a collection of programming problems covered during the tutorial.
