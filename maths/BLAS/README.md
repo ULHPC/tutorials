@@ -20,7 +20,7 @@ This is tutorial is a succinct introduction to numerical methods using the BLAS 
 ## Resources
 
 - [Presentation](./presentation.pdf)
-- [Tutorial notes](.notes.pdf)
+- [Tutorial notes](./notes.pdf)
 
 ## Source code repositories
 
