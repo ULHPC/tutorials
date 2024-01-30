@@ -102,15 +102,6 @@ It is interesting to identify the limiting factor of your job:
 
 This is covered in the other tutorial [Monitoring and profiling](https://ulhpc-tutorials.readthedocs.io/en/latest/basic/monitoring/)
 
-#### [SLURM Web](https://access-iris.uni.lu/slurm/)
-
-SLURM Web is a website that show the status of jobs and nodes with a nice graphical interface.
-
-You can use the SLURM web interface for a visualization of the job scheduler state (list and gantt chart visualization).
-
-![](images/slurmjoblist.png)
-
-![](images/slurmgantt.png)
 
 ### Sample Usage on the UL HPC platform: Kernel compilation
 
