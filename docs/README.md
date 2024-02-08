@@ -24,8 +24,9 @@ So far, the following tutorials are proposed:
 | _Basic_                 | [Introduction to UNIX/Linux Shell and Command lines](linux-shell/)                                    | beginners      |
 |                         | [Getting Started on the UL HPC platform](beginners/)                                                  | beginners      |
 |                         | [Monitoring & Profiling I: why, what, how, where to look](basic/monitoring/)                          | beginners      |
-| _Emb. Parallel Jobs_    | [GNU Parallel](sequential/manytasks-manynodes2/)                                                      | beginners      |
+| _Emb. Parallel Jobs_    | [GNU Parallel](sequential/gnu-parallel/)                                                              | beginners      |
 |                         | [HPC Management of Sequential and Embarrassingly Parallel Jobs](sequential/basics/)                   | beginners      |
+|                         | [Many Tasks — Many Node Allocations using Slurm and GNU Parallel](sequential/manytasks-manynodes/)    | intermediate   |
 | _Scheduling_            | [Advanced scheduling with SLURM](scheduling/advanced/)                                                | intermediate   |
 | _Software Management_   | [HPC Software Building: optimizing and complementing the ULHPC software set](tools/easybuild/)        | beginners      |
 |                         | [The Spack package manager for supercomputers](tools/spack/)                                          | beginners      |
