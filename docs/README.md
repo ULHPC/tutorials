@@ -65,6 +65,8 @@ So far, the following tutorials are proposed:
 |                         | [Introduction to OpenCL](gpu/opencl/)                                                                 | intermediate   |
 |                         | [Introduction to OpenACC Programming Model (C/C++ and Fortran)](gpu/openacc/basics/)                  | intermediate   |
 |                         | [Solving the Laplace Equation on GPU with OpenAcc](gpu/openacc/laplace/)                              | advanced       |
+| _IPU Programming_       | [Tensorflow on Graphcore IPU](experimental_hardware/graphcore_ipu/machine_learning/)                  | intermediate   |
+|                         | [C Poplar on IPU](experimental_hardware/graphcore_ipu/c_poplar/)                                      | intermediate   |
 | _Misc_                  | [Reproducible Research at the Cloud Era](misc/reproducible-research/)                                 | intermediate   |
 
 __List of contributors__
