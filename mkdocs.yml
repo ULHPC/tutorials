@@ -26,9 +26,10 @@ nav:
   - Efficient Debugging:     'debugging/basics/index.md'
   - Performance engineering: 'debugging/advanced/index.md'
 - Sequential/Embarrassingly parallel jobs:
-  - GNU Parallel: 'sequential/gnu-parallel/index.md'
-  - Parallel-Slurm: 'sequential/basics/index.md'
-  - Beyond a single node: 'sequential/manytasks-manynodes/index.md'
+  - Introduction to GNU Parallel: 'sequential/manytasks-manynodes2/index.md'
+  - GNU Parallel on a Single Node: 'sequential/gnu-parallel/index.md'
+  - GNU Parallel on Multiple Nodes: 'sequential/manytasks-manynodes/index.md'
+  - Choosing between Parallel-Slurm and GNU Parallel: 'sequential/basics/index.md'
 - Serial Tasks in Action:
   - Overview: 'sequential/examples/index.md'
   - Example/Object Recognition: 'sequential/examples/object_recognition.md'
