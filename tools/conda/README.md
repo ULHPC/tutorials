@@ -21,7 +21,7 @@ In this tutorial the users will learn to:
 ---
 ## Pre-requisites
 
-This tutorial focuses on generic aspects of package management. It is assumed that you have some basic knowledge of how to use packages in R or Python. The main package management framework used is Conda, although there will be mentions to tools native to R, Python, and Julia. You can use the techniques covered here both in your personal machine and on the UL HPC clusters. If you want to setup environments in the UL HPC clusters, please ensure that you are able to [connect](https://hpc-docs.uni.lu/connect/access/) first.
+This tutorial focuses on generic aspects of package management. It is assumed that you have some basic knowledge of how to use packages in R or Python. The main package management framework used is Conda, although there will be mentions to tools native to R, Python, and Julia. You can use the techniques covered here both in your personal machine and on the UL HPC clusters. If you would like to setup environments in the UL HPC clusters, please ensure that you are able to [connect](https://hpc-docs.uni.lu/connect/access/) first.
 
 ---
 ## A brief introduction to Conda
@@ -98,7 +98,7 @@ To activate the new environment log-out and log-in again. You now can use `micro
 
 ### Managing environments
 
-As an example, the creation and use of an environment for R jobs is presented. The command,
+As an example we consider the creation and use of an environment for R jobs. The command,
 ```bash
 $ micromamba create --name R-project
 ```
@@ -112,7 +112,7 @@ Next, install the base R environment package that contains the R program, and an
 ```bash
 $ micromamba install <package_name>
 ```
-all the required packages. Quite often, the channel name must also be specified:
+all the required packages. Quite often, the channel where Conda should first look for the package must also be specified:
 ```bash
 $ micromamba install --chanell <chanell_name> <package_name>
 ```
@@ -366,7 +366,7 @@ Conda is the preferred method to install software system when they are not avail
 
 ### Conda as a package manager
 
-Conda is a very capable package manager. A particular attractive feature of Julia is that it can handle dependencies from multiple software systems in the same environment. For instance in a project using Python and R and it can be more convenient to handle all project packages with Conda instead of multiple native tools, such as venv for Python and Packrat for R.
+Conda is a very capable package manager. A particular attractive feature of Conda is that it can handle dependencies from multiple software systems in the same environment. For instance in a project using Python and R and it can be more convenient to handle all project packages with Conda instead of multiple native tools, such as venv for Python and Packrat for R.
 
 If you plan to use Conda just to manage packages, you may also consider using a native package management tool. In some cases more packages are distributed with native tools.
 
