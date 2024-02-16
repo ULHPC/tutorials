@@ -14,16 +14,14 @@ The objective of this tutorial is to cover the basics of package management with
 In this tutorial the users will learn to:
 
 - use Conda environments to manage the software and package dependencies of projects,
-- document and exchange environment setups for reproducibility,
-- determine when using a Conda environment is beneficial for a project, and
+- document and exchange Conda environment setups for reproducibility,
+- determine which is the best environment management tool given the requirements of a project, and
 - instal packages using the facilities available in R, Python, and Julia when these packages are not available in Conda.
 
 ---
 ## Pre-requisites
 
-Ensure you are able to [connect to the UL HPC clusters](https://hpc-docs.uni.lu/connect/access/). This tutorial is not an introduction to R or Python. It is assumed that you have some basic knowledge of how to use packages in R or Python. The tutorial will present some advanced features of R and Python package management, such as how to separate environment, and how to source packages form multiple repositories. The creation and management of Conda environments will be covered in detail.
-
-The main focus of the tutorial is to provide how with the necessary resources so that you chose the most appropriate tool to manage your software environment in each application.
+This tutorial focuses on generic aspects of package management. It is assumed that you have some basic knowledge of how to use packages in R or Python. The main package management framework used is Conda, although there will be mentions to tools native to R, Python, and Julia. You can use the techniques covered here both in your personal machine and on the UL HPC clusters. If you want to setup environments in the UL HPC clusters, please ensure that you are able to [connect](https://hpc-docs.uni.lu/connect/access/) first.
 
 ---
 ## A brief introduction to Conda
