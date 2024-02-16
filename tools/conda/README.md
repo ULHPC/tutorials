@@ -136,7 +136,9 @@ Micromamba supports almost all the subcommands of Conda. For more details see th
 
 ### Using environments in submission scripts
 
-Since all computationally heavy operations must be performed in compute nodes, Conda environments are also used in jobs submitted to the [queuing system](../slurm/index.md). Returning to the R example, a submission script running a single core R job can use the `R-project_name` environment as follows:
+Since all computationally heavy operations must be performed in compute nodes, Conda environments are also used in jobs submitted to the [queuing system](../slurm/index.md). You can activate and deactivate environment in various sections of your script.
+
+Returning to the R example, a submission script running a single core R job can use the `R-project_name` environment as follows:
 ```
 #SBATCH --job-name R-test-job
 #SBATCH --nodes 1
@@ -160,6 +162,46 @@ srun Rscript --no-save --no-restore script.R
 
 micromamba deactivate
 ```
+
+Environment activations in Conda are stacked, and unlike modules, only one environment is active at a time with the rest being pushed down the stack. Consider the following script excerpt.
+```
+# Initialization code
+
+micromabma activate python-project
+
+# Code to run a simulation and generate output with Python
+
+micromabma activate R-project
+
+# Code to perform statistical analysis and ploting with R
+
+micromamba deactivate
+
+# Code to save data with Python
+```
+
+These script creates the following environment stack.
+
+```
+(base)
+|
+| # No software is available here
+|
++-(python-project) # micromabma activate python-project
+| |
+| | # Only Python is available here
+| |
+| +-(R-project) # micromabma activate R-project
+| | |
+| | | # Only R is available here
+| | |
+| +-+ # micromamba deactivate
+| |
+| | # Only Python is available here
+| |
+```
+
+We can see that the Python environment (`python-project`) remains in the stack while the R environment (`R-project`) is active, and will be broght forth as soon as the R environment is deactivated.
 
 _Useful scripting resources_
 
