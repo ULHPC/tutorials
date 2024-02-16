@@ -298,13 +298,6 @@ Environment and package management is a practical problem. We will see ho the id
 - an R project, and
 - a project that requires both Python and R software tools.
 
-Multiple systems have been developed, with each system focussing on a few aspects of the problem. This tutorial aims to present the basic underlying principles of environment and package management systems, and to familiarize the reader with some of the most popular implementations.
-
-- The tutorial starts with an introduction to Conda, which is one of the most complete implementation of package and environment management. The Conda system architecture is described and an example of how a Conda system can be installed and used to manage environments and packages is presented.
-- Then, the project environment management and reproducibility functionalities of Conda are presented. Conda is used in a practical example to create a project environment, set up aspects of the system environment and install packages, and finally store the environment state and restore the environment in a new system.
-- Delving into how Conda implements environment and package management in systems and projects, some basic principles of system management emerge. A quick overview is presented of how these principles are implemented in package and environment management systems for R, Python, and Julia.
-- Finally, the integration of various package and environment management tools for R, Python, and Julia is discussed. Not all packages are available through Conda, so the combination of Conda with other package management tools in system or project environments is often required.
-
 ---
 
 ## Self management of work environments in UL HPC with Conda
