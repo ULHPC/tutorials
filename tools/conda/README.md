@@ -26,42 +26,9 @@ Ensure you are able to [connect to the UL HPC clusters](https://hpc-docs.uni.lu/
 The main focus of the tutorial is to provide how with the necessary resources so that you chose the most appropriate tool to manage your software environment in each application.
 
 ---
-
-## Environment management
-
-The environment of a software system can be categorized in 2 components,
-
-- the _system_ comprising of installed software components and environment settings, and
-- the _packages_ added to various software components of the environment.
-
-The system is a superset of the packages in the environment, however, it makes sense to consider them separately as many software components provide managers for the packages they use.
-
-_Environment management_ systems usually focus on the management of the system, installing software, setting environment variables and so on. _Package management_ systems on the other hand usually focus on managing the packages installed for some specific software component. The distinction albeit useful is not always clear, and usually environment managers that can also manage the packages of some software systems.
-
-Furthermore, both _environment_ and _package_ management systems can be further subdivided according to the extend of the target environment. The management systems can target
-
-- the whole system, or
-- the environment within a single project directory.
-
-The tools providing project environment management always provide a method to store the environment setup in a file
-
-- which is stored in a format that can be version controlled, and
-- that can be used to recreate the environment.
-
-The _project environments_ are thus very useful to store a distribute research projects, since they automate the reproducibility of results significantly.
-
-Environment and package management is a practical problem. Multiple systems have been developed, with each system focussing on a few aspects of the problem. This tutorial aims to present the basic underlying principles of environment and package management systems, and to familiarize the reader with some of the most popular implementations.
-
-- The tutorial starts with an introduction to Conda, which is one of the most complete implementation of package and environment management. The Conda system architecture is described and an example of how a Conda system can be installed and used to manage environments and packages is presented.
-- Then, the project environment management and reproducibility functionalities of Conda are presented. Conda is used in a practical example to create a project environment, set up aspects of the system environment and install packages, and finally store the environment state and restore the environment in a new system.
-- Delving into how Conda implements environment and package management in systems and projects, some basic principles of system management emerge. A quick overview is presented of how these principles are implemented in package and environment management systems for R, Python, and Julia.
-- Finally, the integration of various package and environment management tools for R, Python, and Julia is discussed. Not all packages are available through Conda, so the combination of Conda with other package management tools in system or project environments is often required.
-
----
-
 ## A brief introduction to Conda
 
-You must be familiar with a few concepts to start working with Conda. In brief, these are _package managers_ which are the programs used to create and manage environments, _channels_ which are the repositories that contain the packages from which environments are composed, and _distributions_ which are systems for shipping package managers.
+You must be familiar with a few concepts to start working with Conda. In brief, these concepts are _package managers_ which are the programs used to create and manage environments, _channels_ which are the repositories that contain the packages from which environments are composed, and _distributions_ which are systems for shipping package managers.
 
 ### Package managers
 
@@ -250,6 +217,39 @@ _Sources_
 
 - [Oficial Conda `clean` documentation](https://docs.conda.io/projects/conda/en/latest/commands/clean.html)
 - [Understanding Conda `clean`](https://stackoverflow.com/questions/51960539/where-does-conda-clean-remove-packages-from)
+
+
+---
+
+## Environment management
+
+The environment of a software system can be categorized in 2 components,
+
+- the _system_ comprising of installed software components and environment settings, and
+- the _packages_ added to various software components of the environment.
+
+The system is a superset of the packages in the environment, however, it makes sense to consider them separately as many software components provide managers for the packages they use.
+
+_Environment management_ systems usually focus on the management of the system, installing software, setting environment variables and so on. _Package management_ systems on the other hand usually focus on managing the packages installed for some specific software component. The distinction albeit useful is not always clear, and usually environment managers that can also manage the packages of some software systems.
+
+Furthermore, both _environment_ and _package_ management systems can be further subdivided according to the extend of the target environment. The management systems can target
+
+- the whole system, or
+- the environment within a single project directory.
+
+The tools providing project environment management always provide a method to store the environment setup in a file
+
+- which is stored in a format that can be version controlled, and
+- that can be used to recreate the environment.
+
+The _project environments_ are thus very useful to store a distribute research projects, since they automate the reproducibility of results significantly.
+
+Environment and package management is a practical problem. Multiple systems have been developed, with each system focussing on a few aspects of the problem. This tutorial aims to present the basic underlying principles of environment and package management systems, and to familiarize the reader with some of the most popular implementations.
+
+- The tutorial starts with an introduction to Conda, which is one of the most complete implementation of package and environment management. The Conda system architecture is described and an example of how a Conda system can be installed and used to manage environments and packages is presented.
+- Then, the project environment management and reproducibility functionalities of Conda are presented. Conda is used in a practical example to create a project environment, set up aspects of the system environment and install packages, and finally store the environment state and restore the environment in a new system.
+- Delving into how Conda implements environment and package management in systems and projects, some basic principles of system management emerge. A quick overview is presented of how these principles are implemented in package and environment management systems for R, Python, and Julia.
+- Finally, the integration of various package and environment management tools for R, Python, and Julia is discussed. Not all packages are available through Conda, so the combination of Conda with other package management tools in system or project environments is often required.
 
 ---
 
