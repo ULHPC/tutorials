@@ -193,7 +193,7 @@ The Conda environment managers download and store a sizable amount of data to pr
 
 There are two main sources of unused data, the compressed archives of the packages that Conda stores in its cache when downloading a package, and the data of removed packages. All unused data in Micromoamba can be removed with the command
 ```bash
-micromamba clean --all
+micromamba clean --all --yes
 ```
 that opens up an interactive dialogue with details about the operations performed. You can follow the default option, unless you have manually edited any files in you package data directory (default location `${HOME}/micromamba`).
 
