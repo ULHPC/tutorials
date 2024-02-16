@@ -165,9 +165,16 @@ _Useful scripting resources_
 
 - [Formatting submission scripts for R (and other systems)](https://hpc-docs.uni.lu/slurm/launchers/#serial-task-script-launcher)
 
-### Exporting and importing environments
+### Exporting and importing environment specifications
 
-You can export the specifications of an environment using the command:
+An important feature of Conda is that it allows you to version control you environment specifications, and recreate the environment on demand.
+
+- A description of the software installed in the Conda environment can be exported on demand to a text file.
+- In turn, a specification file can be used to populate a new environment, in effect recreating the environment.
+
+The environment reproducibility is particularly important when you want to have reproducible results, like for instance in a scientific simulation. You can setup and test your application in your local machine, save the environment, and later load the environment in an HPC system, and be sure that the application will behave identically. Conda in the background will ensure that identical packages will be installed.
+
+In Micromaba, you can export the specifications of an environment using the command:
 ```bash
 $ micromaba env export --name <environment name>
 ```
@@ -179,7 +186,7 @@ To recreate an environment from a specification file, pass the file as argument 
 ```bash
 $ micromamba env create --name <environment name> --file <environment name>.yaml
 ```
-This workflow demonstrates the use of simple text files to store specifications, but Micormamba supports various specification file types. All specification files are text files and can be version controlled.
+This workflow demonstrates the use of simple text files to store specifications, but Micormamba supports various specification file types. All specification files are text files and can be version controlled with a tool such as Git.
 
 _Sources_
 
@@ -215,7 +222,6 @@ _Sources_
 
 - [Oficial Conda `clean` documentation](https://docs.conda.io/projects/conda/en/latest/commands/clean.html)
 - [Understanding Conda `clean`](https://stackoverflow.com/questions/51960539/where-does-conda-clean-remove-packages-from)
-
 
 ---
 
