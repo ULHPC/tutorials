@@ -9,12 +9,14 @@
 [![](https://github.com/ULHPC/tutorials/raw/devel/path/to/cover_slides.png)](https://github.com/ULHPC/tutorials/raw/devel/path/to/slides.pdf)
 -->
 
-The objective of this tutorial is to cover package management in R, Python, and Julia projects. The users in this tutorial will learn to:
+The objective of this tutorial is to cover the basics of package management with Conda. Conda environments can simultaneously install dependencies from multiple software distributions, such as Python and R. Package management systems native to distributions of Python, R, and Julia will also be covered to demonstrate how Conda can interface with such systems.
 
-- instal packages using the facilities available in R, Python, and Julia,
+In this tutorial the users will learn to:
+
+- use Conda environments to manage the software and package dependencies of projects,
 - document and exchange environment setups for reproducibility,
 - determine when using a Conda environment is beneficial for a project, and
-- use Conda environments to manage the software and package dependencies of projects.
+- instal packages using the facilities available in R, Python, and Julia when these packages are not available in Conda.
 
 ---
 ## Pre-requisites
