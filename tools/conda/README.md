@@ -148,13 +148,13 @@ Since all computationally heavy operations must be performed in compute nodes, C
 #SBATCH --partition batch
 #SBATCH --qos normal
 
+micromamba activate R-project
+
 echo "Launched at $(date)"
 echo "Job ID: ${SLURM_JOBID}"
 echo "Node list: ${SLURM_NODELIST}"
 echo "Submit dir.: ${SLURM_SUBMIT_DIR}"
 echo "Numb. of cores: ${SLURM_CPUS_PER_TASK}"
-
-micromamba activate R-project
 
 export SRUN_CPUS_PER_TASK="${SLURM_CPUS_PER_TASK}"
 export OMP_NUM_THREADS=1
