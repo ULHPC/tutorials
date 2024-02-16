@@ -274,23 +274,31 @@ The environment of a software system can be categorized in 2 components,
 - the _system_ comprising of installed software components and environment settings, and
 - the _packages_ added to various software components of the environment.
 
-The system is a superset of the packages in the environment, however, it makes sense to consider them separately as many software components provide managers for the packages they use.
+The system is a superset of the packages in the environment, however, it makes sense to consider them separately as many software distributions provide native managers for the packages they ship.
+
+[![](images/environment_management.png)](images/environment_management.png)
 
 _Environment management_ systems usually focus on the management of the system, installing software, setting environment variables and so on. _Package management_ systems on the other hand usually focus on managing the packages installed for some specific software component. The distinction albeit useful is not always clear, and usually environment managers that can also manage the packages of some software systems.
 
 Furthermore, both _environment_ and _package_ management systems can be further subdivided according to the extend of the target environment. The management systems can target
 
-- the whole system, or
-- the environment within a single project directory.
+- the whole system (_system environment management tools_), or
+- the environment within a single project directory (_project environment management tools_).
 
-The tools providing project environment management always provide a method to store the environment setup in a file
+All _project environment management tools_ and most _system environment management tools_ provide methods to
 
-- which is stored in a format that can be version controlled, and
-- that can be used to recreate the environment.
+- store the environment setup in a text file that can be version controlled, and
+- to recreate the environment from the description in the text file.
 
-The _project environments_ are thus very useful to store a distribute research projects, since they automate the reproducibility of results significantly.
+The _project environment management tools_ in particular often automate the function of updating the text file describing the environment. Thus project environments are very useful in storing a distributing research projects, since they automate the reproducibility of results significantly.
 
-Environment and package management is a practical problem. Multiple systems have been developed, with each system focussing on a few aspects of the problem. This tutorial aims to present the basic underlying principles of environment and package management systems, and to familiarize the reader with some of the most popular implementations.
+Environment and package management is a practical problem. We will see ho the ideas behind the environment management theory apply in some concrete examples, the management of
+
+- a Python project,
+- an R project, and
+- a project that requires both Python and R software tools.
+
+Multiple systems have been developed, with each system focussing on a few aspects of the problem. This tutorial aims to present the basic underlying principles of environment and package management systems, and to familiarize the reader with some of the most popular implementations.
 
 - The tutorial starts with an introduction to Conda, which is one of the most complete implementation of package and environment management. The Conda system architecture is described and an example of how a Conda system can be installed and used to manage environments and packages is presented.
 - Then, the project environment management and reproducibility functionalities of Conda are presented. Conda is used in a practical example to create a project environment, set up aspects of the system environment and install packages, and finally store the environment state and restore the environment in a new system.
