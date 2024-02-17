@@ -209,7 +209,7 @@ _Useful scripting resources_
 
 ### Exporting and importing environment specifications
 
-An important feature of Conda is that it allows you to version control you environment specifications, and recreate the environment on demand.
+An important feature of Conda is that it allows you to export and version control you environment specifications, and recreate the environment on demand.
 
 - A description of the software installed in the Conda environment can be exported on demand to a text file.
 - In turn, a specification file can be used to populate a new environment, in effect recreating the environment.
@@ -234,15 +234,35 @@ _Sources_
 
 - [Micromamba User Guide: Specification files](https://mamba.readthedocs.io/en/latest/user_guide/micromamba.html#specification-files)
 
-### Cleaning up package data
+## Self management of work environments in UL HPC with Conda
+
+Conda is one of the systems for providing software in UL HPC systems, along with [modules](modules.md) and [containers](../../containers/). When starting a new project it is important to select the appropriate system.
+
+### When a Conda environment is useful
+
+There are two particularly attractive features of Conda, the ease of installing new software and reproducibility. However, when Conda is superior to other software distribution methods?
+
+- **If your objective is reproducibility:** Conda and containers can both create reproducible environments, with descriptions of the environment exported and version controlled in text files. However, containers require significant amount of manual configuration (and the associated expertise) to perform well in a wide range of systems. If your aim is wide range and easy reproducibility Conda is the superior choice.
+
+- **If your objective is performance:** Conda provides precompiled executables. Even thought multiple configurations are supported, you will not always find an executable tailored to your target system. Modules and containers provided by UL UPC are optimized to ensure performance and stability in our systems, so prefer them.
+
+Many software systems whose performance is not critical and are used by relatively few users are not provided though the standard distribution channels of modules and containers. In such cases the only option is a user side installation with Conda or some similar environment management system.
+
+### Storage limitations in UL HPC
 
 The Conda environment managers download and store a sizable amount of data to provided packages to the various environments. Even though the package data are shared between the various environments, they still consume space in your or your project's account. There are [limits in the storage space and number of files](../../filesystems/quotas/#current-usage) that are available to projects and users in the cluster. Since Conda packages are self managed, **you need to clean unused data yourself**.
+
+We should note here that all methods of user side installation of software in UL HPC, such as user compiled modules, are affected from the same limitations in storage space.
+
+If you have any questions regarding software availability through various channels and how Conda can affect you storage quota, please contact the ULHPC High Level Support Team in the [service portal](https://service.uni.lu/sp?id=index) [Home > Research > HPC > Software environment > Request expertise].
+
+### Cleaning up package data
 
 There are two main sources of unused data, the compressed archives of the packages that Conda stores in its cache when downloading a package, and the data of removed packages. All unused data in Micromoamba can be removed with the command
 ```bash
 micromamba clean --all --yes
 ```
-that opens up an interactive dialogue with details about the operations performed. You can follow the default option, unless you have manually edited any files in you package data directory (default location `${HOME}/micromamba`).
+where the flag `--yes` suppresses an interactive dialogue with details about the operations performed. In general you can use the default options with `--yes`, unless you have manually edited any files in you package data directory (default location `${HOME}/micromamba`) and you would like to preserve your changes.
 
 **Updating environments to remove old package versions**
 
@@ -266,6 +286,77 @@ _Sources_
 - [Understanding Conda `clean`](https://stackoverflow.com/questions/51960539/where-does-conda-clean-remove-packages-from)
 
 ---
+
+
+There are a few
+
+Software provided through the standard channels of [modules](modules.md) and [containers](../../containers/) are optimized for the ULHPC clusters to ensure their performance and stability. However, many software systems whose performance is not critical and are used by few users are not provided through the standard channels. Such software can still be installed locally by the users through an environment management system such as Conda.
+
+_Contact the ULHPC before installing any software with Conda_
+
+Prefer binaries provided through [modules](modules.md) or [containers](../../containers/). Conda installs generic binaries that may be suboptimal for the configuration of the ULHPC clusters. Furthermore, installing packages locally with Conda consumes quotas in your or your project's account in terms of [storage space and number of files](../../filesystems/quotas/#current-usage).
+
+
+_TL;DR_
+
+If you need to install a whole software system (e.g. a version of Python) and not just a few packages, then install and use the [Micromamba package manager](conda.md#the-micromamba-package-manager).
+
+### When a Conda environment is useful
+
+
+The environment of a project is composed by 2 components,
+
+- the _system environment components_ such as software and environment variables, and
+- the _packages_ required by the various software systems of the environment.
+
+For instance, assume that you have a project with R scripts that need some R packages and you manage the project with Packrat. Then,
+
+- the installation of R and various environment variables are the project environment, and
+- the packages installed and managed with Packrat are the packages of the project.
+
+In this case Packrat manages the packages of the project, and the system manages the environment, most importantly the version of R.
+
+**Mixing environment and package management:** Some tools, especially in Python, partially mix the functionality of environment and package management. For instance, in a project with Python scripts where the packages are managed by `venv`, due to the design of Python some environment variables must be setup by `venv` so that Python can detect the local packages. For this reason, users have to activate a `venv` environment to access local packages, something not required by Packrat in R. However, `venv` is not a full environment manager as it cannot modify some important aspects of the environment, such as the Python installation.
+
+Conda environments are able to manage both the project environment, and the project packages. It is left to the user to chose what components they will mange with Conda and what with native tools. For instance, the user may choose to manage the R version with Conda and packages with Packrat.
+
+Given that using Conda adds a layer of complexity in the management of your software stack, there are 2 cases that justify the extra work of using Conda.
+
+- The first case is when a software system is only available through Conda, and not as a module or container.
+- The second case is when there are multiple software systems in a project and it is more convenient to handle all project packages with a single tool instead of multiple native tools.
+<!--
+- The first reason is when the packages of a project require a version of a software system (e.g. R, Python, or Julia) that is not available through a module or a container. For instance, a Python package may require Python>=3.10.x but only version 3.8.x is available.
+- The second reason is when there are multiple software systems in a project (e.g. Python and R) and it is more convenient to handle all project packages with a single tool instead of multiple native tools. For instance a project with Python and R scripts needs both venv and Packrat to handle packages.
+-->
+
+## Conda as an environment manager
+
+Conda is the preferred method to install software system when they are not available though the conventional channels of modules and containers. These are a few typical cases where you may consider using a Conda environment.
+
+- A software system is not available through modules or containers. In this case install the software system through Conda.
+- A software system is available, but not in a version required by a dependency. For instance, a Python package may require Python>=3.10.x but only version 3.8.x is available. In this case install the required version through Conda.
+- A dependency is available only through a native package manager, but the required package manager version is not supported by the environments offered through modules or containers. In this case setup the required environment with Conda.
+
+### Conda as a package manager
+
+Conda is a very capable package manager. A particular attractive feature of Conda is that it can handle dependencies from multiple software systems in the same environment. For instance in a project using Python and R and it can be more convenient to handle all project packages with Conda instead of multiple native tools, such as venv for Python and Packrat for R.
+
+If you plan to use Conda just to manage packages, you may also consider using a native package management tool. In some cases more packages are distributed with native tools.
+
+- In Julia all packages are distributed _only_ through the native package manager Pkg.
+- In Python most packages are distributed through Conda, but a few nice packages are available through the native package manager Pip only.
+- In R all packages are available through Conda; just append the prefix `r-` to the name of the package.
+
+Some native package mangers offer useful features, such as setting up isolated environments inside a project directory. Project environments automatically trace dependencies in a text file inside the project directory. This allow easy version control of the dependencies. Tools that offer automatic dependency logging include
+
+- Packrat for R,
+- venv (partially automated), pipenv, and poetry for Python, and
+- Pgk for Julia.
+
+Conda can log dependencies too. However, the process is manual, as Conda is not designed to maintain an environment inside a project directory.
+
+
+
 
 ## Environment management
 
@@ -300,87 +391,6 @@ Environment and package management is a practical problem. We will see ho the id
 
 ---
 
-## Self management of work environments in UL HPC with Conda
-
-Software provided through the standard channels of [modules](modules.md) and [containers](../../containers/) are optimized for the ULHPC clusters to ensure their performance and stability. However, many software systems whose performance is not critical and are used by few users are not provided through the standard channels. Such software can still be installed locally by the users through an environment management system such as Conda.
-
-_Contact the ULHPC before installing any software with Conda_
-
-Prefer binaries provided through [modules](modules.md) or [containers](../../containers/). Conda installs generic binaries that may be suboptimal for the configuration of the ULHPC clusters. Furthermore, installing packages locally with Conda consumes quotas in your or your project's account in terms of [storage space and number of files](../../filesystems/quotas/#current-usage).
-
-Contact the ULHPC High Level Support Team in the [service portal](https://service.uni.lu/sp?id=index) [Home > Research > HPC > Software environment > Request expertise] to discuss possible options before installing any software.
-
-_TL;DR_
-
-If you need to install a whole software system (e.g. a version of Python) and not just a few packages, then install and use the [Micromamba package manager](conda.md#the-micromamba-package-manager).
-
-### When a Conda environment is useful
-
-<!--
-### Managing environments and packages with Conda
-
-[Conda](https://docs.conda.io/en/latest/) is an open source environment and package management system. With Conda you can create independent environments, where you can install applications such as python and R, together with any packages which will be used by these applications. The environments are independent, with the Conda package manager managing the binaries, resolving dependencies, and ensuring that software and package used in multiple environments are stored only once. In a typical setting, each user has their own installation of a Conda and a set of personal environments.
-
-The architecture of R for instance, is a very clean example of this dichotomy between system and package management. For instance, R can be installed in a Conda environment. The built-in package manager of R can then be used to install any packages. In such an arrangement,
-
-- Conda manages the system environment, most importantly R and any compilers used to compile R packages, and
-- the built-in package manager manages the installed R packages.
-
-The distinction between environment and package managers is not always clear however. For instance virtual environments created by `venv` in Python set set environment variables when activated which Python uses to detect locally installed packages. For this reason, users have to source a script that modifies their environment. However, `venv` is not a full environment manager, as it cannot modify for instance the version of Python used.
-
-The additional complexity of mixing environment and package management offers some advantages. For instance, Packrat is a project environment tool for R. It is a pure package management tool, it does not modify the system environment. By Packrat design, R looks for locally installed packages in the project root directory only, so if you start a script in a subdirectory, packages installed with Packrat are not available! In contract, if you activate a `venv` environment, the Python packages installed in the environment are available everywhere.
--->
-
-The environment of a project is composed by 2 components,
-
-- the _system environment components_ such as software and environment variables, and
-- the _packages_ required by the various software systems of the environment.
-
-For instance, assume that you have a project with R scripts that need some R packages and you manage the project with Packrat. Then,
-
-- the installation of R and various environment variables are the project environment, and
-- the packages installed and managed with Packrat are the packages of the project.
-
-In this case Packrat manages the packages of the project, and the system manages the environment, most importantly the version of R.
-
-**Mixing environment and package management:** Some tools, especially in Python, partially mix the functionality of environment and package management. For instance, in a project with Python scripts where the packages are managed by `venv`, due to the design of Python some environment variables must be setup by `venv` so that Python can detect the local packages. For this reason, users have to activate a `venv` environment to access local packages, something not required by Packrat in R. However, `venv` is not a full environment manager as it cannot modify some important aspects of the environment, such as the Python installation.
-
-Conda environments are able to manage both the project environment, and the project packages. It is left to the user to chose what components they will mange with Conda and what with native tools. For instance, the user may choose to manage the R version with Conda and packages with Packrat.
-
-Given that using Conda adds a layer of complexity in the management of your software stack, there are 2 cases that justify the extra work of using Conda.
-
-- The first case is when a software system is only available through Conda, and not as a module or container.
-- The second case is when there are multiple software systems in a project and it is more convenient to handle all project packages with a single tool instead of multiple native tools.
-<!--
-- The first reason is when the packages of a project require a version of a software system (e.g. R, Python, or Julia) that is not available through a module or a container. For instance, a Python package may require Python>=3.10.x but only version 3.8.x is available.
-- The second reason is when there are multiple software systems in a project (e.g. Python and R) and it is more convenient to handle all project packages with a single tool instead of multiple native tools. For instance a project with Python and R scripts needs both venv and Packrat to handle packages.
--->
-
-### Conda as an environment manager
-
-Conda is the preferred method to install software system when they are not available though the conventional channels of modules and containers. These are a few typical cases where you may consider using a Conda environment.
-
-- A software system is not available through modules or containers. In this case install the software system through Conda.
-- A software system is available, but not in a version required by a dependency. For instance, a Python package may require Python>=3.10.x but only version 3.8.x is available. In this case install the required version through Conda.
-- A dependency is available only through a native package manager, but the required package manager version is not supported by the environments offered through modules or containers. In this case setup the required environment with Conda.
-
-### Conda as a package manager
-
-Conda is a very capable package manager. A particular attractive feature of Conda is that it can handle dependencies from multiple software systems in the same environment. For instance in a project using Python and R and it can be more convenient to handle all project packages with Conda instead of multiple native tools, such as venv for Python and Packrat for R.
-
-If you plan to use Conda just to manage packages, you may also consider using a native package management tool. In some cases more packages are distributed with native tools.
-
-- In Julia all packages are distributed _only_ through the native package manager Pkg.
-- In Python most packages are distributed through Conda, but a few nice packages are available through the native package manager Pip only.
-- In R all packages are available through Conda; just append the prefix `r-` to the name of the package.
-
-Some native package mangers offer useful features, such as setting up isolated environments inside a project directory. Project environments automatically trace dependencies in a text file inside the project directory. This allow easy version control of the dependencies. Tools that offer automatic dependency logging include
-
-- Packrat for R,
-- venv (partially automated), pipenv, and poetry for Python, and
-- Pgk for Julia.
-
-Conda can log dependencies too. However, the process is manual, as Conda is not designed to maintain an environment inside a project directory.
 
 ## Overview of environment and package management
 
