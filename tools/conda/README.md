@@ -287,19 +287,226 @@ _Sources_
 
 ---
 
+## Environment management
 
-There are a few
+The environment of a software system can be categorized in 2 components,
 
-Software provided through the standard channels of [modules](modules.md) and [containers](../../containers/) are optimized for the ULHPC clusters to ensure their performance and stability. However, many software systems whose performance is not critical and are used by few users are not provided through the standard channels. Such software can still be installed locally by the users through an environment management system such as Conda.
+- the _system_ comprising of installed software components and environment settings, and
+- the _packages_ added to various software components of the environment.
 
-_Contact the ULHPC before installing any software with Conda_
+The system is a superset of the packages in the environment, however, it makes sense to consider them separately as many software distributions provide native managers for the packages they ship.
 
-Prefer binaries provided through [modules](modules.md) or [containers](../../containers/). Conda installs generic binaries that may be suboptimal for the configuration of the ULHPC clusters. Furthermore, installing packages locally with Conda consumes quotas in your or your project's account in terms of [storage space and number of files](../../filesystems/quotas/#current-usage).
+[![](images/environment_management.png)](images/environment_management.png)
+
+_Environment management_ systems usually focus on the management of the system, installing software, setting environment variables and so on. _Package management_ systems on the other hand usually focus on managing the packages installed for some specific software component. The distinction albeit useful is not always clear, and usually environment managers that can also manage the packages of some software systems.
+
+Furthermore, both _environment_ and _package_ management systems can be further subdivided according to the extend of the target environment. The management systems can target
+
+- the whole system (_system environment management tools_), or
+- the environment within a single project directory (_project environment management tools_).
+
+All _project environment management tools_ and most _system environment management tools_ provide methods to
+
+- store the environment setup in a text file that can be version controlled, and
+- to recreate the environment from the description in the text file.
+
+The _project environment management tools_ in particular often automate the function of updating the text file describing the environment. Thus project environments are very useful in storing a distributing research projects, since they automate the reproducibility of results significantly.
+
+Environment and package management is a practical problem. We will see ho the ideas behind the environment management theory apply in some concrete examples, the management of
+
+- a Python project,
+- an R project, and
+- a project that requires both Python and R software tools.
+
+## Combining Conda with other package and environment management tools
+
+Conda can be used as an environment manager and combined with other package management tools to install packages. For instance, you can install Python in an environment with Conda, and manage packages in the environment with [PiPY](https://pip.pypa.io/en/stable/getting-started/), or create subenvironments with project package management tools such as [Virtualenv](https://virtualenv.pypa.io/en/latest/), [Pipenv](https://pipenv.pypa.io/en/latest) and [Poetry](https://python-poetry.org/). Let's see a few examples.
+
+### Software installation in Python environments
+
+Python packages are available through Conda channels. However, many channels, are only available through PyPI (the Python Package Index). You have 2 options regarding the installation of packaged from PyPI,
+
+- install directly in the Micromamba environments, or
+- install in an isolated "Python virtual environment" (`venv`).
+
+`add ReachabilityAnalysis, ModelingToolkit`
+
+#### Installing Conda inside a Micromamba environment
 
 
-_TL;DR_
 
-If you need to install a whole software system (e.g. a version of Python) and not just a few packages, then install and use the [Micromamba package manager](conda.md#the-micromamba-package-manager).
+
+## Combining Conda with other package and environment management tools
+
+It may be desirable to use Conda to manage environments but a different tool to manage packages, such as [`pip`](https://pip.pypa.io/en/stable/getting-started/).
+
+Conda integrates well with any such tool. Some of the most frequent cases are described bellow.
+
+### Managing packages with external tools
+
+Quite often a package that is required in an environment is not available through a Conda channel, but it is available through some other distribution channel, such as the [Python Package Index (PyPI)](https://pypi.org/). In these cases the only solution is to create a Conda environment and install the required packages with `pip` from the Python Package Index.
+
+Using an external packaging tool is possible because of the method that Conda uses to install packages. Conda installs package versions in a central directory (e.g. `~/micromamba/pkgs`). Any environment that requires a package links to the central directory with _hard links_. Links are added to the home directory (e.g. `~/micromamba/envs/R-project` for the `R-project` environment) of any environment that requires them. When using an external package tool, package components are installed in the same directory where Conda would install the corresponding link. Thus, external package management tools integrate seamlessly with Conda, with a couple of caveats:
+
+- each package must be managed by one tool, otherwise package components will get overwritten, and
+- packages installed by the package tool are specific to an environment and cannot be shared as with Conda, since components are installed directly and not with links.
+
+**Prefer Conda over external package managers:** Installing the same package in multiple environments with an external package tool consumes quotas in terms of [storage space and number of files](../../filesystems/quotas/#current-usage), so prefer Conda when possible. This is particularly important for the `inode` limit, since some packages install a large number of files, and the hard links used by Conda do not consume inodes or [disk space](https://stackoverflow.com/questions/55566419/why-are-packages-installed-rather-than-just-linked-to-a-specific-environment).
+
+#### Pip
+
+In this example `pip` is used to manage packages in a Conda environment with [MkDocs](https://www.mkdocs.org/) related packages. To install the packages, create an environment
+```bash
+micromamba env create --name mkdocs
+```
+activate the environment,
+```bash
+micromamba activate mkdocs
+```
+and install `pip`
+```bash
+micromamba install --channel conda-forge pip
+```
+which will be used to install the remaining packages.
+
+The `pip` will be the only package that will be managed with Conda. For instance, to update Pip activate the environment,
+```bash
+micromamba activate mkdocs
+```
+and run
+```bash
+micromaba update --all
+```
+to update all installed packaged (only `pip` in our case). All other packages are managed by `pip`.
+
+For instance, assume that a `mkdocs` project requires the following packages:
+
+- `mkdocs`
+- `mkdocs-minify-plugin`
+
+The package `mkdocs-minify-plugin` is less popular and thus is is not available though a Conda channel, but it is available in PyPI. To install it, activate the `mkdocs` environment
+```bash
+micromamba activate mkdocs
+```
+and install the required packages with `pip`
+```bash
+pip install --upgrade mkdocs mkdocs-minify-plugin
+```
+inside the environment. The packages will be installed inside a directory that `micromamba` created for the Conda environment, for instance
+```
+${HOME}/micromamba/envs/mkdocs
+```
+along side packages installed by `micromamba`. As a results, 'system-wide' installations with `pip` inside a Conda environment do not interfere with system packages.
+
+**Do not install packages in Conda environments with pip as a user:** User installed packages (e.g.`pip install --user --upgrade mkdocs-minify-plugin`) are installed in the same directory for all environments, typically in `~/.local/`, and can interfere with other versions of the same package installed from other Conda environments.
+
+#### Pkg
+
+The Julia programming language provides its own package and environment manager, Pkg. The package manager of Julia provides many useful capabilities and it is recommended that it is used with Julia projects. Details about the use of Pkg can be found in the official [documentation](https://pkgdocs.julialang.org/v1/).
+
+The Pkg package manager comes packages with Julia. Start by creating an environment,
+```bash
+mocromamba env create --name julia
+```
+activate the environment,
+```bash
+micromamba activate julia
+```
+and install Julia,
+```bash
+micromamba install --channel conda-forge julia
+```
+to start using Pkg.
+
+In order to install a Julia package, activate the Julia environment, and start an interactive REPL session,
+```bash
+$ julia
+julia>
+```
+by just calling `julia` without any input files.
+
+- Enter the Pkg package manager by pressing `]`.
+- Exit the package manager by clearing all the input from the line with backspace, and then pressing backspace one more time.
+
+In the package manager you can see the status of the current environment,
+```julia
+(@julia) pkg> status
+Status `~/micromamba/envs/julia/share/julia/environments/julia/Project.toml` (empty project)
+```
+add or remove packages,
+```julia
+(@julia) pkg> add Example
+(@julia) pkg> remove Example
+```
+update the packages in the environment,
+```julia
+(@julia) pkg> update
+```
+and perform many other operations, such as exporting and importing environments from plain text files which describe the environment setup, and pinning packages to specific versions. The Pkg package manager maintains a global environment, but also supports the creation and use of local environments that are used within a project directory. The use of local environments is highly recommended, please read the [documentation](https://pkgdocs.julialang.org/v1/environments/) for more information.
+
+After installing the Julia language in a Conda environment, the language distribution itself should be managed with `micromamba` and all packages in global or local environments with the Pkg package manager. To update Julia activate the Conda environment where Julia is stored and call
+```bash
+micromamba update julia
+```
+where as to update packages installed with Pgk use the `update` command of Pkg. The packages for local and global environments are stored in the Julia installation directory, typically
+```
+${HOME}/micromamba/envs/julia/share
+```
+if the default location for the Micromamba environment directory is used.
+
+_Useful resources_
+
+- [Pkg documentation](https://pkgdocs.julialang.org/v1/)
+
+**Advanced management of package data**
+
+Julia packages will consume [storage and number of files quota](../../filesystems/quotas/#current-usage). Pkg uses automatic garbage collection to cleanup packages that are no longer is use. In general you don't need to manage then package data, simply remove the package and its data will be deleted automatically after some time. However, when you exceed your quota you need to delete files immediately.
+
+The _immediate removal_ of the data of uninstalled packages can be forced with the command:
+```julia
+using Pkg
+using Dates
+Pkg.gc(;collect_delay=Dates.Day(0))
+```
+Make sure that the packages have been removed from all the environments that use them
+
+_Sources_: [Immediate package data clean up](https://discourse.julialang.org/t/packages-clean-up-general-julia-data-consumption/56198)
+
+### Combining Conda with external environment management tools
+
+Quite often it is required to create isolated environments using external tools. For instance, tools such as [`virtualenv`](https://virtualenv.pypa.io/en/latest/) can install and manage a Python distribution in a given directory and export and import environment descriptions from text files. This functionalities allows for instance the shipping of a description of the Python environment as part of a project. Higher level tools such as [`pipenv`](https://pipenv.pypa.io/en/latest) automate the process by managing the Python environment as part of a project directory. The description of the environment is stored in version controlled files, and the Python packages are stored in a non-tracked directory within the project directory. Some wholistic project management tools, such as [`poetry`](https://python-poetry.org/), further integrate the management of the Python environment withing the project management workflow.
+
+Installing and using in Conda environments tools that create isolated environments is relatively straight forward. Create an environment where only the required that tool is installed, and manage any subenvironments using the installed tool.
+
+**Create a different environment for each tool:** While this is not a requirement it is a good practice. For instance, `pipenv` and `poetry` used to and may still have conflicting dependencies; Conda detects the dependency and aborts the conflicting installation.
+
+#### Pipenv
+
+To demonstrate the usage of `pipenv`, create a Conda environment,
+```bash
+micromamba enc create --name pipenv
+```
+activate it
+```bash
+micromamba activate pipenv
+```
+and install the `pipenv` package
+```bash
+micromamba install --channel conda-forge pipenv
+```
+ as the only package in this environment. Now the `pipenv` is managed with Conda, for instance to update `pipenv` activate the environment
+```bash
+micromamba activate pipenv
+```
+and call
+```bash
+micromamba update --all
+```
+to update the single installed package. Inside the environment use `pipenv` as usual to create and manage project environments.
+
+
+
+---
 
 ### When a Conda environment is useful
 
@@ -358,38 +565,6 @@ Conda can log dependencies too. However, the process is manual, as Conda is not 
 
 
 
-## Environment management
-
-The environment of a software system can be categorized in 2 components,
-
-- the _system_ comprising of installed software components and environment settings, and
-- the _packages_ added to various software components of the environment.
-
-The system is a superset of the packages in the environment, however, it makes sense to consider them separately as many software distributions provide native managers for the packages they ship.
-
-[![](images/environment_management.png)](images/environment_management.png)
-
-_Environment management_ systems usually focus on the management of the system, installing software, setting environment variables and so on. _Package management_ systems on the other hand usually focus on managing the packages installed for some specific software component. The distinction albeit useful is not always clear, and usually environment managers that can also manage the packages of some software systems.
-
-Furthermore, both _environment_ and _package_ management systems can be further subdivided according to the extend of the target environment. The management systems can target
-
-- the whole system (_system environment management tools_), or
-- the environment within a single project directory (_project environment management tools_).
-
-All _project environment management tools_ and most _system environment management tools_ provide methods to
-
-- store the environment setup in a text file that can be version controlled, and
-- to recreate the environment from the description in the text file.
-
-The _project environment management tools_ in particular often automate the function of updating the text file describing the environment. Thus project environments are very useful in storing a distributing research projects, since they automate the reproducibility of results significantly.
-
-Environment and package management is a practical problem. We will see ho the ideas behind the environment management theory apply in some concrete examples, the management of
-
-- a Python project,
-- an R project, and
-- a project that requires both Python and R software tools.
-
----
 
 
 ## Overview of environment and package management
@@ -665,171 +840,4 @@ https://cran.r-project.org/doc/manuals/R-intro.pdf
 https://www.carc.usc.edu/user-information/user-guides/software-and-programming/singularity
 -->
 
-## Combining Conda with other package and environment management tools
-
-It may be desirable to use Conda to manage environments but a different tool to manage packages, such as [`pip`](https://pip.pypa.io/en/stable/getting-started/). Or subenvironments may need to be used inside a Conda environment, as for instance with tools for creating and managing isolated Python installation, such as [`virtualenv`](https://virtualenv.pypa.io/en/latest/), or with tools for integrating managed Python installations and packages in project directories, such as [Pipenv](https://pipenv.pypa.io/en/latest) and [Poetry](https://python-poetry.org/).
-
-Conda integrates well with any such tool. Some of the most frequent cases are described bellow.
-
-### Managing packages with external tools
-
-Quite often a package that is required in an environment is not available through a Conda channel, but it is available through some other distribution channel, such as the [Python Package Index (PyPI)](https://pypi.org/). In these cases the only solution is to create a Conda environment and install the required packages with `pip` from the Python Package Index.
-
-Using an external packaging tool is possible because of the method that Conda uses to install packages. Conda installs package versions in a central directory (e.g. `~/micromamba/pkgs`). Any environment that requires a package links to the central directory with _hard links_. Links are added to the home directory (e.g. `~/micromamba/envs/R-project` for the `R-project` environment) of any environment that requires them. When using an external package tool, package components are installed in the same directory where Conda would install the corresponding link. Thus, external package management tools integrate seamlessly with Conda, with a couple of caveats:
-
-- each package must be managed by one tool, otherwise package components will get overwritten, and
-- packages installed by the package tool are specific to an environment and cannot be shared as with Conda, since components are installed directly and not with links.
-
-**Prefer Conda over external package managers:** Installing the same package in multiple environments with an external package tool consumes quotas in terms of [storage space and number of files](../../filesystems/quotas/#current-usage), so prefer Conda when possible. This is particularly important for the `inode` limit, since some packages install a large number of files, and the hard links used by Conda do not consume inodes or [disk space](https://stackoverflow.com/questions/55566419/why-are-packages-installed-rather-than-just-linked-to-a-specific-environment).
-
-#### Pip
-
-In this example `pip` is used to manage packages in a Conda environment with [MkDocs](https://www.mkdocs.org/) related packages. To install the packages, create an environment
-```bash
-micromamba env create --name mkdocs
-```
-activate the environment,
-```bash
-micromamba activate mkdocs
-```
-and install `pip`
-```bash
-micromamba install --channel conda-forge pip
-```
-which will be used to install the remaining packages.
-
-The `pip` will be the only package that will be managed with Conda. For instance, to update Pip activate the environment,
-```bash
-micromamba activate mkdocs
-```
-and run
-```bash
-micromaba update --all
-```
-to update all installed packaged (only `pip` in our case). All other packages are managed by `pip`.
-
-For instance, assume that a `mkdocs` project requires the following packages:
-
-- `mkdocs`
-- `mkdocs-minify-plugin`
-
-The package `mkdocs-minify-plugin` is less popular and thus is is not available though a Conda channel, but it is available in PyPI. To install it, activate the `mkdocs` environment
-```bash
-micromamba activate mkdocs
-```
-and install the required packages with `pip`
-```bash
-pip install --upgrade mkdocs mkdocs-minify-plugin
-```
-inside the environment. The packages will be installed inside a directory that `micromamba` created for the Conda environment, for instance
-```
-${HOME}/micromamba/envs/mkdocs
-```
-along side packages installed by `micromamba`. As a results, 'system-wide' installations with `pip` inside a Conda environment do not interfere with system packages.
-
-**Do not install packages in Conda environments with pip as a user:** User installed packages (e.g.`pip install --user --upgrade mkdocs-minify-plugin`) are installed in the same directory for all environments, typically in `~/.local/`, and can interfere with other versions of the same package installed from other Conda environments.
-
-#### Pkg
-
-The Julia programming language provides its own package and environment manager, Pkg. The package manager of Julia provides many useful capabilities and it is recommended that it is used with Julia projects. Details about the use of Pkg can be found in the official [documentation](https://pkgdocs.julialang.org/v1/).
-
-The Pkg package manager comes packages with Julia. Start by creating an environment,
-```bash
-mocromamba env create --name julia
-```
-activate the environment,
-```bash
-micromamba activate julia
-```
-and install Julia,
-```bash
-micromamba install --channel conda-forge julia
-```
-to start using Pkg.
-
-In order to install a Julia package, activate the Julia environment, and start an interactive REPL session,
-```bash
-$ julia
-julia>
-```
-by just calling `julia` without any input files.
-
-- Enter the Pkg package manager by pressing `]`.
-- Exit the package manager by clearing all the input from the line with backspace, and then pressing backspace one more time.
-
-In the package manager you can see the status of the current environment,
-```julia
-(@julia) pkg> status
-Status `~/micromamba/envs/julia/share/julia/environments/julia/Project.toml` (empty project)
-```
-add or remove packages,
-```julia
-(@julia) pkg> add Example
-(@julia) pkg> remove Example
-```
-update the packages in the environment,
-```julia
-(@julia) pkg> update
-```
-and perform many other operations, such as exporting and importing environments from plain text files which describe the environment setup, and pinning packages to specific versions. The Pkg package manager maintains a global environment, but also supports the creation and use of local environments that are used within a project directory. The use of local environments is highly recommended, please read the [documentation](https://pkgdocs.julialang.org/v1/environments/) for more information.
-
-After installing the Julia language in a Conda environment, the language distribution itself should be managed with `micromamba` and all packages in global or local environments with the Pkg package manager. To update Julia activate the Conda environment where Julia is stored and call
-```bash
-micromamba update julia
-```
-where as to update packages installed with Pgk use the `update` command of Pkg. The packages for local and global environments are stored in the Julia installation directory, typically
-```
-${HOME}/micromamba/envs/julia/share
-```
-if the default location for the Micromamba environment directory is used.
-
-_Useful resources_
-
-- [Pkg documentation](https://pkgdocs.julialang.org/v1/)
-
-**Advanced management of package data**
-
-Julia packages will consume [storage and number of files quota](../../filesystems/quotas/#current-usage). Pkg uses automatic garbage collection to cleanup packages that are no longer is use. In general you don't need to manage then package data, simply remove the package and its data will be deleted automatically after some time. However, when you exceed your quota you need to delete files immediately.
-
-The _immediate removal_ of the data of uninstalled packages can be forced with the command:
-```julia
-using Pkg
-using Dates
-Pkg.gc(;collect_delay=Dates.Day(0))
-```
-Make sure that the packages have been removed from all the environments that use them
-
-_Sources_: [Immediate package data clean up](https://discourse.julialang.org/t/packages-clean-up-general-julia-data-consumption/56198)
-
-### Combining Conda with external environment management tools
-
-Quite often it is required to create isolated environments using external tools. For instance, tools such as [`virtualenv`](https://virtualenv.pypa.io/en/latest/) can install and manage a Python distribution in a given directory and export and import environment descriptions from text files. This functionalities allows for instance the shipping of a description of the Python environment as part of a project. Higher level tools such as [`pipenv`](https://pipenv.pypa.io/en/latest) automate the process by managing the Python environment as part of a project directory. The description of the environment is stored in version controlled files, and the Python packages are stored in a non-tracked directory within the project directory. Some wholistic project management tools, such as [`poetry`](https://python-poetry.org/), further integrate the management of the Python environment withing the project management workflow.
-
-Installing and using in Conda environments tools that create isolated environments is relatively straight forward. Create an environment where only the required that tool is installed, and manage any subenvironments using the installed tool.
-
-**Create a different environment for each tool:** While this is not a requirement it is a good practice. For instance, `pipenv` and `poetry` used to and may still have conflicting dependencies; Conda detects the dependency and aborts the conflicting installation.
-
-#### Pipenv
-
-To demonstrate the usage of `pipenv`, create a Conda environment,
-```bash
-micromamba enc create --name pipenv
-```
-activate it
-```bash
-micromamba activate pipenv
-```
-and install the `pipenv` package
-```bash
-micromamba install --channel conda-forge pipenv
-```
- as the only package in this environment. Now the `pipenv` is managed with Conda, for instance to update `pipenv` activate the environment
-```bash
-micromamba activate pipenv
-```
-and call
-```bash
-micromamba update --all
-```
-to update the single installed package. Inside the environment use `pipenv` as usual to create and manage project environments.
 
