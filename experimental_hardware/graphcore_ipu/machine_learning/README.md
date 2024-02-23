@@ -10,7 +10,7 @@ This programming tutorial for IPU is designed for developers looking to accelera
 
 The image below illustrates the difference of GPU (Tesla released in 2018) and IPU (released in 2017):
 
-![IPU GPU comparison](experimental_hardware/graphcore_ipu/machine_learning/CVbench_IPUGPU.png)
+![IPU GPU comparison](https://github.com/ULHPC/tutorials/experimental_hardware/graphcore_ipu/machine_learning/CVbench_IPUGPU.png)
 
 **Experimental settings:**
 
