@@ -78,6 +78,8 @@ nav:
   - Singularity-Infiniband: 'containers/singularity-inf/index.md'
 - Virtualization:
    - Vagrant: 'virtualization/vagrant/index.md'
+- Graphcore IPU:
+  - Machine Learning: 'experimental_hardware/graphcore_ipu/machine_learning/index.md'
 - Misc:
   - Reproducible Research: 'misc/reproducible-research/index.md'
 # - Advanced topics:
