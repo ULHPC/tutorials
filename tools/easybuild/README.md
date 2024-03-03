@@ -800,7 +800,7 @@ $> eb <filename>.eb --robot=$PWD:$EASYBUILD_ROBOT
 
 While modifying easyconfig recipes, the following commands can be handy:
 
-- `eb --available-module-tools`: List all available tools for installing and managing modules.
+- `eb --avail-module-tools`: List all available tools for installing and managing modules.
 - `eb --list-easyblocks`: List Python easyblock files available to execute an easybuild recipe. Select by setting the `easyblock` parameter in the recipe file. For example, setting `easyblock = CMakeMake` builds a recipe with Cmake+Make, and `easyblock = CMakeNinja` builds with CMake+Ninja.
 - `eb --avail-easyconfig-params --easyblock <block name>`: List the setting available for recipe files using the given easyblock.
 
