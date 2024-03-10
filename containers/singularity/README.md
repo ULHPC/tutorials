@@ -380,13 +380,13 @@ Stage: build
     file that uses all supported sections.
 ```
 
-Run those command on your laptop
+Run those command on your laptop. Please note `rsynch` may take a few minutes (250mo transfer).
 ```bash 
 sudo singularity build jupyter.sif jupyter.def
 rsync -avz jupyter.def iris-cluster:jupyter.sif # to the cluster
 
 ```
-Please note rsynch may take a few minutes (250mo transfer)
+
 
 * Next, we need to prepare a launcher ...
 
@@ -413,8 +413,9 @@ mkdir -p $IPYTHONDIR
 
 export IP_ADDRESS=$(hostname -I | awk '{print $1}')
 
-echo "On your laptop: ssh -J ${USER}@access-${ULHPC_CLUSTER}.uni.lu <node name> -NL 8889:${IP_ADDRESS}:8889"
-echo "Replace <node name> with the compute node name. Ex: aion-0085 or iris-0112
+echo "On your laptop: ssh -p 8022 -J ${USER}@access-${ULHPC_CLUSTER}.uni.lu ${USER}@<node-name> -NL 8889:localhost:8889"
+echo "Replace <node-name> with the compute node name received by slurm. Command squeue -u ${USER} to see it. Example: "aion-0085" or "iris-0112".
+
 ```bash    
 singularity instance start jupyter.sif jupyter
 singularity exec instance://jupyter jupyter \
@@ -458,7 +459,7 @@ if by mistake, you forgot to setup this password, have a look in the slurm-****.
 
 
 ```bash
-On your laptop: ssh -J ppochelu@aion-cluster ppochelu@aion-0085 -L 8889:localhost:8889
+On your laptop: ssh -p 8022 -J ppochelu@access-aion.uni.lu ppochelu@aion-0085 -L 8889:localhost:8889
 INFO:    instance started successfully
 [I 13:46:53.550 NotebookApp] Writing notebook server cookie secret to /home/users/ekieffer/jupyter_sing/2169124/jupyter_runtime/notebook_cookie_secret
 [I 13:46:53.916 NotebookApp] Serving notebooks from local directory: /home/users/ekieffer/singularity_tests
@@ -591,7 +592,8 @@ mkdir -p $IPYTHONDIR
 export IP_ADDRESS=$(hostname -I | awk '{print $1}')
 
 
-echo "On your laptop: ssh -p 8022 -NL 8889:${IP_ADDRESS}:8889 ${USER}@access-${ULHPC_CLUSTER}.uni.lu " 
+echo "On your laptop: ssh -p -J ${USER}@access-${ULHPC_CLUSTER}.uni.lu ${USER}@<node-name> -NL  8889:localhost:8889" 
+echo "Replace <node-name> with the compute node name received by slurm. Command squeue -u ${USER} to see it. Example: "aion-0085" or "iris-0112".
 
 singularity instance start jupyter.sif jupyter
 
@@ -663,8 +665,10 @@ IPCONTROLLER_SRUN="srun -w $(hostname) --exclusive -N 1 -n 1 -c 1 "
 IPENGINES_SRUN="srun --exclusive -n $((${SLURM_NTASKS}-2)) -c ${SLURM_CPUS_PER_TASK} "
 
 
-echo "On your laptop: ssh -p 8022 -NL 8889:${IP_ADDRESS}:8889 ${USER}@access-${ULHPC_CLUSTER}.uni.lu " 
+echo "On your laptop: ssh -p 8022 ${USER}@access-${ULHPC_CLUSTER}.uni.lu <node-name> -NL 8889:localhost:8889"
+echo "Replace <node-name> with the compute node name received by slurm. Command squeue -u ${USER} to see it. Example: "aion-0085" or "iris-0112".
 
+echo "
 if [ ! -d "$VENV" ];then
     ${JUPYTER_SRUN} -J "JUP: Create venv" singularity exec jupyter_parallel.sif python3 -m venv $VENV --system-site-packages
     # singularity run jupyter_parallel.sif $VENV "python3 -m pip install <your_packages>"
@@ -704,7 +708,7 @@ wait
 * When opening the job log (slurm-job_number.out), you should see when the engines start:
 
 ```bash
-On your laptop: ssh -p 8022 -NL 8889:172.17.6.57:8889 ekieffer@access-iris.uni.lu
+On your laptop: ssh -p 8022 -J ekieffer@access-iris.uni.lu ekieffer@iris-0057 -NL 8889:localhost:8889 
 INFO:    instance started successfully
 Sourcing /home/users/ekieffer/.envs/venv_parallel
 Installed kernelspec HPC_SCHOOL_ENV_IPYPARALLEL in /home/users/ekieffer/.envs/venv_parallel/share/jupyter/kernels/hpc_school_env_ipyparallel
@@ -878,7 +882,8 @@ export XDG_RUNTIME_DIR=""
 profile=job_${SLURM_JOB_ID}
 
 
-echo "On your laptop: ssh -p 8022 -NL 8889:${IP_ADDRESS}:8889 ${USER}@access-${ULHPC_CLUSTER}.uni.lu " 
+echo "On your laptop: ssh -p 8022 ${USER}@access-${ULHPC_CLUSTER}.uni.lu ${USER}@<node-name> -NL 8889:localhost:8889" 
+echo "Replace <node-name> with the compute node name received by slurm. Command squeue -u ${USER} to see it. Example: "aion-0085" or "iris-0112".
 
 if [ ! -d "$VENV" ];then
     # For some reasons, there is an issue with venv -- using virtualenv instead

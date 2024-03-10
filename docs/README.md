@@ -54,6 +54,7 @@ So far, the following tutorials are proposed:
 | _Big Data_              | [Running Big Data Application using Apache Hadoop and Spark ](bigdata/)                               | intermediate   |
 | _Machine/Deep Learning_ | [Machine and Deep learning workflows](deep_learning/)                                                 | intermediate   |
 |                         | [Distributed Deep Learning with Horovod](deep_learning/horovod/)                                      | intermediate   |
+|                         | [Distributed Large Language Model with HuggingFace and DeepSpeed](deep_learning/huggingface/)         | advanced       |
 | _Containers_            | [Singularity](containers/singularity/)                                                                | advanced       |
 |                         | [Singularity with Infiniband](containers/singularity-inf/)                                            | advanced       |
 |                         | [Reproducibility and HPC Containers ](containers/ULHPC-containers/)                                   | advanced       |
