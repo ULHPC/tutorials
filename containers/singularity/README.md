@@ -111,7 +111,7 @@ cd singularity
 git checkout ${VERSION}
 ```
 
-* Compiling singularity from source
+* Compiling and installing singularity from source
 
 ```bash
 ./mconfig && \
@@ -357,10 +357,7 @@ Stage: build
     apt-get install -y software-properties-common
     add-apt-repository multiverse
     apt-get install -y python3 python3-pip python3-venv
-    python3 -m pip install jupyter
-```
-
-```bash    
+    python3 -m pip install jupyter==1.0.0
 %runscript
     echo "Container was created $NOW"
     echo "Arguments received: $*"
@@ -383,11 +380,13 @@ Stage: build
     file that uses all supported sections.
 ```
 
+Run those command on your laptop
 ```bash 
 sudo singularity build jupyter.sif jupyter.def
 rsync -avz jupyter.def iris-cluster:jupyter.sif # to the cluster
 
 ```
+Please note rsynch may take a few minutes (250mo transfer)
 
 * Next, we need to prepare a launcher ...
 
@@ -414,10 +413,12 @@ mkdir -p $IPYTHONDIR
 
 export IP_ADDRESS=$(hostname -I | awk '{print $1}')
 
-echo "On your laptop: ssh -p 8022 -NL 8889:${IP_ADDRESS}:8889 ${USER}@access-${ULHPC_CLUSTER}.uni.lu " 
+echo "On your laptop: ssh -J ${USER}@access-${ULHPC_CLUSTER}.uni.lu <node name> -NL 8889:${IP_ADDRESS}:8889"
+echo "Replace <node name> with the compute node name. Ex: aion-0085 or iris-0112
+```bash    
 singularity instance start jupyter.sif jupyter
 singularity exec instance://jupyter jupyter \
-    notebook --ip ${IP_ADDRESS} --no-browser --port 8889 &
+    notebook --ip localhost --no-browser --port 8889 &
 pid=$!
 sleep 5s
 singularity exec instance://jupyter  jupyter notebook list
@@ -457,7 +458,7 @@ if by mistake, you forgot to setup this password, have a look in the slurm-****.
 
 
 ```bash
-On your laptop: ssh -p 8022 -NL 8889:172.17.6.75:8889 ekieffer@access-iris.uni.lu 
+On your laptop: ssh -J ppochelu@aion-cluster ppochelu@aion-0085 -L 8889:localhost:8889
 INFO:    instance started successfully
 [I 13:46:53.550 NotebookApp] Writing notebook server cookie secret to /home/users/ekieffer/jupyter_sing/2169124/jupyter_runtime/notebook_cookie_secret
 [I 13:46:53.916 NotebookApp] Serving notebooks from local directory: /home/users/ekieffer/singularity_tests
@@ -504,7 +505,7 @@ Jupyter provides you a token to connect to the notebook.
 * We will first apply some changes in our singularity definition file to activate the virtual environement 
 automatically when calling a command. For this purpose, we will use the `%runscript` header now.
 
-* We built a new sif image: jupyter_venv.if with the following definition:
+* We built a new sif image (jupyter.sif) with the following jupyter.def definition:
 
 ```bash
 Bootstrap: library
@@ -558,7 +559,7 @@ Stage: build
     supported sections.
 ```
 
-* On your laptop: `sudo singularity build jupyter_venv.sif jupter_venv.def`
+* On your laptop: `sudo singularity build jupyter.sif jupter.def`
 
 
 
@@ -592,7 +593,7 @@ export IP_ADDRESS=$(hostname -I | awk '{print $1}')
 
 echo "On your laptop: ssh -p 8022 -NL 8889:${IP_ADDRESS}:8889 ${USER}@access-${ULHPC_CLUSTER}.uni.lu " 
 
-singularity instance start jupyter_venv.sif jupyter
+singularity instance start jupyter.sif jupyter
 
 if [ ! -d "$VENV" ];then
     singularity exec instance://jupyter python3 -m venv $VENV --system-site-packages
@@ -603,7 +604,7 @@ fi
 
 
 
-singularity run instance://jupyter  $VENV "jupyter notebook --ip ${IP_ADDRESS} --no-browser --port 8889" &
+singularity run instance://jupyter  $VENV "jupyter notebook --ip localhost --no-browser --port 8889" &
 pid=$!
 sleep 5s
 singularity run instance://jupyter $VENV "jupyter notebook list"
@@ -619,7 +620,7 @@ singularity instance stop jupyter
 
 
 * The installation of the IPyParallel package should be done during the image generation
-* Copy-paste the jupyter_venv.def to jupyter_parallel.def 
+* Copy-paste the jupyter.def to jupyter_parallel.def 
 * Add in the `%post` section, `python3 -m pip install ipyparallel`
 
 
@@ -676,7 +677,7 @@ ${JUPYTER_SRUN} -J "JUP: Create profile" singularity run jupyter_parallel.sif $V
 # Enable IPython clusters tab in Jupyter notebook
 ${JUPYTER_SRUN} -J "JUP: add ipy ext" singularity run jupyter_parallel.sif $VENV "jupyter nbextension enable --py ipyparallel"
 
-${JUPYTER_SRUN} -J "JUP: Start jupyter notebook" singularity run jupyter_parallel.sif $VENV "jupyter notebook --ip ${IP_ADDRESS} --no-browser --port 8889" &
+${JUPYTER_SRUN} -J "JUP: Start jupyter notebook" singularity run jupyter_parallel.sif $VENV "jupyter notebook --ip localhost --no-browser --port 8889" &
 
 sleep 5s
 ${JUPYTER_SRUN}  -J "JUP: Get notebook list" singularity run jupyter_parallel.sif $VENV "jupyter notebook list"
@@ -893,7 +894,7 @@ singularity run --nv jupyter_parallel_cuda.sif $VENV "ipython profile create --p
 # Enable IPython clusters tab in Jupyter notebook
 singularity run --nv jupyter_parallel_cuda.sif $VENV "jupyter nbextension enable --py ipyparallel"
 
-singularity run --nv jupyter_parallel_cuda.sif $VENV "jupyter notebook --ip ${IP_ADDRESS} --no-browser --port 8889" &
+singularity run --nv jupyter_parallel_cuda.sif $VENV "jupyter notebook --ip localhost --no-browser --port 8889" &
 sleep 5s
 singularity run --nv jupyter_parallel_cuda.sif $VENV "jupyter notebook list"
 singularity run --nv jupyter_parallel_cuda.sif $VENV "jupyter --paths"
