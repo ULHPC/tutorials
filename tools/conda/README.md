@@ -242,6 +242,36 @@ _Sources_
 
 - [Micromamba User Guide: Specification files](https://mamba.readthedocs.io/en/latest/user_guide/micromamba.html#specification-files)
 
+### Example: Installing Jupyter and managing the dependencies of a notebook with Micromamba
+
+In this example we will create an environment, install Jupyter, and install all the dependencies for our notebooks with Micromamba. Start by creating an environment:
+```
+micromamba env create --name jupyter
+```
+Next, install Jupyter in the environment. Have a look at the page for [`jupyterlab`](https://anaconda.org/conda-forge/jupyterlab) in the conda-forge channel. To install it in your environment call:
+```
+micromamba install --name jupyter conda-forge::jupyterlab
+```
+Now activate the environment, create a working directory for your notebooks, and launch Jypyter:
+```
+micromamba activate jupyter
+mkdir ~/Documents/notebooks && cd ~/Documents/notebooks
+jupyter lab
+```
+If a webpage appears with the Jupyter lab, the installation worked succeeded!
+
+You may need some Python package in your Jupyter notebook. You can make packages available in your notebook by installing the appropriate package in the Conda environment. For instance, assume that you need `pandas` and `numpy`. Searching the conda-forge channel, we can find the package name and installation instruction. With the `jupyter` environment active, run the command:
+```
+micromamba install conda-forge::numpy conda-forge::pandas
+```
+You should no be able to import `numpy` and `pandas` in your notebook!
+
+After completing your work, close down the notebook with the command `C-c`, and deactivate the `jupyter` Conda environment:
+```
+micromamba deactive
+```
+You should now be in your normal operating system environment.
+
 ## Self management of work environments in UL HPC with Conda
 
 Conda is one of the systems for providing software in UL HPC systems, along with [modules](modules.md) and [containers](../../containers/). When starting a new project it is important to select the appropriate system.
