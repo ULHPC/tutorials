@@ -372,11 +372,7 @@ All _project environment management tools_ and most _system environment manageme
 
 The _project environment management tools_ in particular often automate the function of updating the text file describing the environment. Thus project environments are very useful in storing a distributing research projects, since they automate the reproducibility of results significantly.
 
-Environment and package management is a practical problem. We will see ho the ideas behind the environment management theory apply in some concrete examples, the management of
-
-- a Python project,
-- an R project, and
-- a project that requires both Python and R software tools.
+In some cases, environment management tools are combined with project management tools in a single program. Typical examples are `pipenv` and `poetry` in Python, and `packrat` in R. These tools install and manage an environment within a project directory. Project-environment management combinations always automate snapshot creation for the environment state and the recreation of the environment when initializing the project.
 
 ## Combining Conda with other package and environment management tools
 
