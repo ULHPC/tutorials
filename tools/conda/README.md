@@ -112,19 +112,27 @@ Next, install the base R environment package that contains the R program, and an
 ```bash
 $ micromamba install <package_name>
 ```
-all the required packages. Quite often, the channel where Conda should first look for the package must also be specified:
+all the required packages. Quite often, the channel where Conda should first look for the package must also be specified. Using the syntax
 ```bash
-$ micromamba install --chanell <chanell_name> <package_name>
+$ micromamba install --chanell <chanell_1> --channels <chanell_2> <package_name>
 ```
-Packages can be found by searching the [conda-forge channel](https://anaconda.org/conda-forge).
+channels are listed in a series of `--channel <channel_name>` entries and the channels are searched in the order they appear. Using the syntax
+```bash
+$ micromamba install <chanell>::<package_name>
+```
+packages are searched in the specified channel only. Available packages can be found by searching the [conda-forge channel](https://anaconda.org/conda-forge).
 
 For instance, the basic functionality of the R software environment is contained in the `r-base` package. Calling
 ```bash
 micromamba install --channel conda-forge r-base
 ```
+or
+```bash
+micromamba install conda-forge::r-base
+```
 will install all the components required to run standalone R scripts. More involved scripts use functionality defined in various packages. The R packages are prepended with a prefix 'r-'. Thus, `plm` becomes `r-plm` and so on. After all the required packages have been installed, the environment is ready for use.
 
-Packages in the conda-forge channel come with instructions for their installation. Quite often the channel is specified in the installation instructions, `-c conda-forge` or `--channel conda-forge`. While the Micromamba installer sets-up `conda-forge` as the default channel, latter modification in `~/.condarc` may change the channel priority. Thus it is a good practice to explicitly specify the source channel when installing a package.
+Packages in the conda-forge channel come with instructions for their installation. Quite often the channel is specified in the installation instructions, `conda-forge::<package name>` or even `-c conda-forge` or `--channel conda-forge`. While the Micromamba installer sets-up `conda-forge` as the default channel, latter modification in `~/.condarc` may change the channel priority. Thus it is a good practice to explicitly specify the source channel when installing a package.
 
 After work in an environment is complete, deactivate the environment,
 ```bash
