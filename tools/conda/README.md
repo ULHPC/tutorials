@@ -283,6 +283,30 @@ _Sources_
 - [Oficial Conda `clean` documentation](https://docs.conda.io/projects/conda/en/latest/commands/clean.html)
 - [Understanding Conda `clean`](https://stackoverflow.com/questions/51960539/where-does-conda-clean-remove-packages-from)
 
+### A note about internal workings of Conda
+
+In general, Conda packages are stored in a central directory, and hard links are created in the library directories of any environment that requires the package. Since hard links do not consume space and inodes, Conda is very efficient in its usage of storage space.
+
+Consider for instance the MPFR package used in some environment `gaussian_regression`. Looking into the Conda installation managed by Micromamba, these are the installed library files:
+```
+gkaf@ulhpc-laptop:~/micromamba$ ls -lahFi pkgs/mpfr-4.2.1-h9458935_0/lib/
+total 1.3M
+5286432 drwxr-xr-x 1 gkaf gkaf   94 Oct 25 13:59 ./
+5286426 drwxr-xr-x 1 gkaf gkaf   38 Oct 25 13:59 ../
+5286436 lrwxrwxrwx 1 gkaf gkaf   16 Oct 22 21:47 libmpfr.so -> libmpfr.so.6.2.1*
+5286441 lrwxrwxrwx 1 gkaf gkaf   16 Oct 22 21:47 libmpfr.so.6 -> libmpfr.so.6.2.1*
+5286433 -rwxrwxr-x 7 gkaf gkaf 1.3M Oct 22 21:47 libmpfr.so.6.2.1*
+5286442 drwxr-xr-x 1 gkaf gkaf   14 Oct 25 13:59 pkgconfig/
+```
+Looking into the libraries of the `gaussian_regression` environment, there is a hard link to the MPFR library:
+```
+gkaf@ulhpc-laptop:~/micromamba$ ls -lahFi envs/gaussian_regression/lib/libmpfr.so.6.2.1 
+5286433 -rwxrwxr-x 7 gkaf gkaf 1.3M Oct 22 21:47 envs/gaussian_regression/lib/libmpfr.so.6.2.1*
+```
+You can use the `-i` flag in `ls` to print the inode number of a file. Hard links have the same inode number, meaning that they are essentially the same file.
+
+Conda will not automatically check if the files in the `pkgs` directories must be removed. For instance, when you uninstall a package from an environment, when you delete an environment, or when a package is updated in an environment, only the hard link in the environment directory will change. The files in `pkgs` will remain even if they are no longer used in any environment. The relevant `clean` routines check which packages are actually used and remove the unused files.
+
 ---
 
 ## Environment management
