@@ -298,7 +298,7 @@ There are two main sources of unused data, compressed archives of packages that 
 ```bash
 micromamba clean --all --yes
 ```
-where the flag `--yes` suppresses an interactive dialogue with details about the operations performed. In general you can use the default options with `--yes`, unless you have manually edited any files in you package data directory (default location `${HOME}/micromamba`) and you would like to preserve your changes.
+where the flag `--yes` suppresses an interactive dialogue with details about the operations performed. In general you can use the default options with `--yes`, unless you have manually edited any files in you package data directory (default location `~/micromamba`) and you would like to preserve your changes.
 
 **Updating environments to remove old package versions**
 
@@ -777,12 +777,12 @@ key=value
 ```
 assignment pairs which are read by R, not proper bash code (adding an `export` modifier is a syntax error). There are 2 locations where startup files appear,
 
-- the home directory, `${HOME}/.Renviron` and `${HOME}/.Rprofile`, for user wide settings, and
+- the home directory, `~/.Renviron` and `~/.Rprofile`, for user wide settings, and
 - project directories for project wide settings.
 
-The definitions in project `.Rprofile` files override the user wide definitions in `${HOME}/.Rprofile`. The definitions in `.Renviron` files supersede the definitions in `${HOME}/.Renviron`, that is if the project has an environment file, the user wide definitions are ignored. Note that R is designed to source setup files at the directory where R starts, and any setup files in parent or descendent directories are ignored.
+The definitions in project `.Rprofile` files override the user wide definitions in `~/.Rprofile`. The definitions in `.Renviron` files supersede the definitions in `~/.Renviron`, that is if the project has an environment file, the user wide definitions are ignored. Note that R is designed to source setup files at the directory where R starts, and any setup files in parent or descendent directories are ignored.
 
-Both the profile and environment startup files can setup a user wide environment. For instance, to use an environment setup in the project directories of the UL HPC systems add in the user wide environment setup file, `${HOME}/.Renviron`, the entry
+Both the profile and environment startup files can setup a user wide environment. For instance, to use an environment setup in the project directories of the UL HPC systems add in the user wide environment setup file, `~/.Renviron`, the entry
 ```
 R_LIBS=${PROJECTHOME}<project name>/R-environment
 ```
