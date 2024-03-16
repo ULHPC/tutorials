@@ -372,11 +372,93 @@ All _project environment management tools_ and most _system environment manageme
 
 The _project environment management tools_ in particular often automate the function of updating the text file describing the environment. Thus project environments are very useful in storing a distributing research projects, since they automate the reproducibility of results significantly.
 
-In some cases, environment management tools are combined with project management tools in a single program. Typical examples are `pipenv` and `poetry` in Python, and `packrat` in R. These tools install and manage an environment within a project directory. Project-environment management combinations always automate snapshot creation for the environment state and the recreation of the environment when initializing the project.
+In some cases, environment management tools are combined with project management tools in a single program. Typical examples are `virtualenv`, `pipenv`, and `poetry` in Python, and `packrat` in R. These tools install and manage an environment within a project directory. Project-environment management combinations always automate snapshot creation for the environment state and the recreation of the environment when initializing the project.
 
-## Combining Conda with other package and environment management tools
+### Combining Conda with other package and environment management tools
 
-Conda can be used as an environment manager and combined with other package management tools to install packages. For instance, you can install Python in an environment with Conda, and manage packages in the environment with [PiPY](https://pip.pypa.io/en/stable/getting-started/), or create subenvironments with project package management tools such as [Virtualenv](https://virtualenv.pypa.io/en/latest/), [Pipenv](https://pipenv.pypa.io/en/latest) and [Poetry](https://python-poetry.org/). Let's see a few examples.
+Quite often Conda is used as the environment management framework and other tools are used for package management. There are a few reasons why you may want to manage packages with different tools.
+
+- You may want to use a project environment management tool. For instance, you may install Python with Cond and use project environments managed with [Virtualenv](https://virtualenv.pypa.io/en/latest/), [Pipenv](https://pipenv.pypa.io/en/latest) and [Poetry](https://python-poetry.org/). In the case of R you may install R with Conda and manage project environments with [Packrat](https://rstudio.github.io/packrat/). 
+
+- In some cases packages are not available through Conda, but they may be available through other source code or binary distributions. A typical example is Julia where packages are only available trough the [Pkg](https://pkgdocs.julialang.org/v1/) package manager.
+
+A list of case studies follows. In these case studies you can find how Conda and other package managers can be combined to install software.
+
+#### Combining Conda with `pip` to install a Python package
+
+Imagine that you want to create a `venv` environment and install some packages from PyPI. The official distribution of Python comes packaged with the `venv` module that can create a virtual environment of your choice with the command:
+```
+$ pytho -m venv <path_to_directory>
+```
+You can later activate the environment with
+```
+$ source <path_to_directory>/bin/activate
+```
+and deactivate with:
+```
+$ deactivate
+```
+However, this can be trickier that it seems!
+
+For instance in Debian, the system Python package, `python3`,  does not contain the `venv` module, but the module is distributed through the `python3-venv` package. You may want to avoid using the system package for a variety of reasons:
+
+- The PyPI package you want to install may require a version of Python that is not provided by your system.
+- You may be in a constrained system where installing a package such as `python3-venv` is not possible, either because you don't have the rights, or because you are working with some high performance computer where installing a package required installing the package in hundreds of machines.
+- You may not want to pollute your system installation. In accordance to the UNIX philosophy use the system ensures that your machine operates correctly, and use the Conda to run the latest application!
+
+
+
+#### Combining Conda with `pip` to install a Python source package
+
+Let's consider the installation of the [PySPQR](https://github.com/yig/PySPQR) module that wraps the SuiteSparseQR decomposition function for use with SciPy. Installing this software is challenging because
+
+- the PySPQR package is not available through Conda channels, and
+- installing PySPQR (`sparseqr`) directly in a `venv` fails. 
+
+
+The PySPQR package is a source code package and its installation in a `venv` requires linking with the [SuiteSparse](https://people.engr.tamu.edu/davis/suitesparse.html) library. We can install SparseSuite in our system (e.g. `apt-get install libsuitesparse-dev` in Debian), but we will avoid modifying system libraries and use a Conda environment instead.
+
+A Conda environment is a directory with packages where you can install anything you need with a compatible package manager like Micromamba. Create an environment with all the required dependencies:
+```
+$ micromamba env create --name python-suitesparse
+$ micromamba install conda-forge::python conda-forge::suitesparse --name python-suitesparse
+```
+
+The package `conda-forge::suitesparse` is effectively what `apt-get install libsuitesparse-dev` installs globally in a Deabian based system, but now it is only available in the Conda environment `python-suitesparse`.
+
+You are not going to use `python-suitesparse` directly though! You will use the Python installed in `python-suitesparse` to create a venv where you will install `sparseqr`.
+
+Create a venv with the Python of `python-suitesparse` like this:
+```
+$ micromamba run --name python-suitesparse python -m venv ~/environments/PySPQR
+```
+This will create a venv in `~/environments/PySPQR`, and since it is created with the python of the `python-suitesparse` Conda environment, SuiteSparse is now available inside the environment.
+
+Activate your new environment, and install `sparseqr` with any method you prefer, I have chosen to use the PyPI repo:
+```
+$ source ~/environments/PySPQR/bin/activate
+(PySPQR) $ pip install --upgrade setuptools sparseqr
+(PySPQR) $ python
+>>> import sparseqr
+```
+Note that `setuptools` is also required and must be installed manually in a venv since PySPQR is a source package.
+
+**N.B.** When installing source packages from PyPI ensure that `setuptools` is available in your environment. The `setuptools` library is used to package Python projects, and it is required by source packages to build the source code.
+
+After the first Python `import` command, your package should compile successfully. After that, the package should be available for import without the need to compile again.
+
+For future use activate the `venv` environment with
+```
+$ source ~/environments/PySPQR/bin/activate
+```
+and deactivate with
+```
+(PySPQR) $ deactivate
+```
+
+<!--
+
+Conda can be used as an environment manager and combined with other package management tools to install packages. For instance, you can install Python in an environment with Conda, and manage packages in the environment with [PiPY](https://pip.pypa.io/en/stable/getting-started/), or create subenvironments with project package management tools such as  Let's see a few examples.
 
 ### Software installation in Python environments
 
@@ -587,11 +669,14 @@ Given that using Conda adds a layer of complexity in the management of your soft
 
 - The first case is when a software system is only available through Conda, and not as a module or container.
 - The second case is when there are multiple software systems in a project and it is more convenient to handle all project packages with a single tool instead of multiple native tools.
+-->
+
 <!--
 - The first reason is when the packages of a project require a version of a software system (e.g. R, Python, or Julia) that is not available through a module or a container. For instance, a Python package may require Python>=3.10.x but only version 3.8.x is available.
 - The second reason is when there are multiple software systems in a project (e.g. Python and R) and it is more convenient to handle all project packages with a single tool instead of multiple native tools. For instance a project with Python and R scripts needs both venv and Packrat to handle packages.
 -->
 
+<!--
 ## Conda as an environment manager
 
 Conda is the preferred method to install software system when they are not available though the conventional channels of modules and containers. These are a few typical cases where you may consider using a Conda environment.
@@ -874,6 +959,8 @@ module load toolchain/foss
 as there are a few popular packages missing in the dependencies of R.
 
 However, if you want to avoid compiling packages from source, which can be quite time consuming, you can use binary distributions of R. These include the distributions provided though native package managers in various Linux distributions, like APT and YUM, as well as Conda package managers like Mamba.
+
+-->
 
 <!--
 You could use the scratch directories to install packages. However, the file system for the scratch directories is slow in handling small files. It is better if you use the scratch directory for scratch data, large files you upload temporarily for processing, and computation temporary and raw output.
