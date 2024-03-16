@@ -238,27 +238,25 @@ _Sources_
 
 Conda is one of the systems for providing software in UL HPC systems, along with [modules](modules.md) and [containers](../../containers/). When starting a new project it is important to select the appropriate system.
 
+Before installing any software yourself in user space you should contact the ULHPC High Level Support Team in the [service portal](https://service.uni.lu/sp?id=index) [Home > Research > HPC > Software environment > Request expertise] to check if we can install the software in our system. A system wide installation will not consume any of your storage quota, and it will be configured and tested to provide optimal efficiency.
+
 ### When a Conda environment is useful
 
-There are two particularly attractive features of Conda, the ease of installing new software and reproducibility. However, when Conda is superior to other software distribution methods?
+There are three aspects of environment management that you should consider when selecting the method with which you will manage your software.
 
-- **If your objective is reproducibility:** Conda and containers can both create reproducible environments, with descriptions of the environment exported and version controlled in text files. However, containers require significant amount of manual configuration (and the associated expertise) to perform well in a wide range of systems. If your aim is wide range and easy reproducibility Conda is the superior choice.
+- **Ease of use:** Many software systems whose performance is not critical and are used by relatively few users are not provided though the standard distribution channels of modules or containers. In such cases the easiest installation option is a user side installation with Conda or some similar package management system.
 
-- **If your objective is performance:** Conda provides precompiled executables. Even thought multiple configurations are supported, you will not always find an executable tailored to your target system. Modules and containers provided by UL UPC are optimized to ensure performance and stability in our systems, so prefer them.
+- **Reproducibility:** Conda and containers can both create reproducible environments, with descriptions of the environment exported and version controlled in text files. However, containers require significant amount of manual configuration to create a reproducible environment and to perform well in a wide range of systems. If your aim is an easily reproducible environment Conda is the superior choice.
 
-Many software systems whose performance is not critical and are used by relatively few users are not provided though the standard distribution channels of modules and containers. In such cases the only option is a user side installation with Conda or some similar environment management system.
+- **Performance:** Conda provides precompiled executables. Even thought multiple configurations are supported, you will not always find an executable tailored to your target system. Modules and containers provided by UL UPC are optimized to ensure performance and stability in our systems, so prefer them.
 
 ### Storage limitations in UL HPC
 
-The Conda environment managers download and store a sizable amount of data to provided packages to the various environments. Even though the package data are shared between the various environments, they still consume space in your or your project's account. There are [limits in the storage space and number of files](../../filesystems/quotas/#current-usage) that are available to projects and users in the cluster. Since Conda packages are self managed, **you need to clean unused data yourself**.
-
-We should note here that all methods of user side installation of software in UL HPC, such as user compiled modules, are affected from the same limitations in storage space.
-
-If you have any questions regarding software availability through various channels and how Conda can affect you storage quota, please contact the ULHPC High Level Support Team in the [service portal](https://service.uni.lu/sp?id=index) [Home > Research > HPC > Software environment > Request expertise].
+Regardless of installation method, _when you install software in user space you are using up your storage quota_. Conda environment managers download and store a sizable amount of data to provided packages to the various environments. Even though the package data are shared between the various environments, they still consume space in your or your project's account. There are [limits in the storage space and number of files](../../filesystems/quotas/#current-usage) that are available to projects and users in the cluster. Since Conda packages are self managed, _you need to clean unused data yourself_.
 
 ### Cleaning up package data
 
-There are two main sources of unused data, the compressed archives of the packages that Conda stores in its cache when downloading a package, and the data of removed packages. All unused data in Micromoamba can be removed with the command
+There are two main sources of unused data, compressed archives of packages that Conda stores in its cache when downloading a new package, and data of packages no longer used in any environment. All unused data in Micromoamba can be removed with the command
 ```bash
 micromamba clean --all --yes
 ```
