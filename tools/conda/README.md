@@ -347,7 +347,13 @@ Conda will not automatically check if the files in the `pkgs` directories must b
 
 ---
 
-## Environment management
+## Environment management best practices
+
+Environment management systems are diverse but support a simple common set of features, which are:
+
+- the ability to create and reproduce software environments,
+- isolation between environments and between each environment and the system, and
+- easy access to multiple sources of software packages.
 
 The environment of a software system can be categorized in 2 components,
 
@@ -370,9 +376,51 @@ All _project environment management tools_ and most _system environment manageme
 - store the environment setup in a text file that can be version controlled, and
 - to recreate the environment from the description in the text file.
 
-The _project environment management tools_ in particular often automate the function of updating the text file describing the environment. Thus project environments are very useful in storing a distributing research projects, since they automate the reproducibility of results significantly.
+The _project environment management tools_ in particular often automate the function of updating the text file describing the environment in order to automatically initialize the environment when initializing a new instance of the project. Thus project environments are very useful in storing a distributing research projects, since they automate the reproducibility of the project setup.
 
-In some cases, environment management tools are combined with project management tools in a single program. Typical examples are `virtualenv`, `pipenv`, and `poetry` in Python, and `packrat` in R. These tools install and manage an environment within a project directory. Project-environment management combinations always automate snapshot creation for the environment state and the recreation of the environment when initializing the project.
+The overarching theory for environment management tools such as Conda is simple. However, there are implementation details which affect how environment management tools are used. In the following section we present some case studies about practical issues you may encounter with few environment management tools. 
+
+### Using `pip` in a Linux system
+
+The official package installer for Python is [`pip`](https://pypi.org/project/pip/). You can use pip to install packages from the Python Package Index (PyPI) and other indexes. With `pip` you can install packages in 3 modes,
+
+- system-wide installation, where a package is available to all users,
+- user-wide installation, where a package are installed in a special directory in the user home directory and are available to the user only, and
+- environment installation where a package is only available inside the environment where it was installed.
+
+User-wide installations are a special case of environment installations, where a special environment for each user is loaded by default.
+
+Python is now part of many Linux distributions, such as [Debian](https://wiki.debian.org/Python). This means now that users cannot (or should not) install packages system-wide using `pip`. User-wide and `venv` environment installations are still possible though.
+
+To install a package user-wide use the command:
+```
+$ pip install --user <package_name>
+```
+To use a `venv` environment, first initialize the environment in some directory. The official distribution of Python comes packaged with the `venv` module that can create a virtual environment of your choice with the command:
+```
+$ pytho -m venv <path_to_directory>
+```
+You activate the environment with
+```
+$ source <path_to_directory>/bin/activate
+```
+and deactivate with:
+```
+$ deactivate
+```
+When the environment is active, you can install packages with the command:
+```
+$ pip install <package_name>
+```
+This is the same command installing packages system-wide, but because the environment is active the package is installed in the environment directory. However, this can be trickier that it seems!
+
+For instance in Debian, the system Python package, `python3`,  does not contain the `venv` module, but the module is distributed through the `python3-venv` package. You may want to avoid using the system package for a variety of reasons:
+
+- The PyPI package you want to install may require a version of Python that is not provided by your system.
+- You may be in a constrained system where installing a package such as `python3-venv` is not possible, either because you don't have the rights, or because you are working with some high performance computer where installing a package required installing the package in hundreds of machines.
+- You may not want to pollute your system installation. In accordance to the UNIX philosophy use the system ensures that your machine operates correctly, and use the Conda to run the latest application!
+
+The trick is to install Python in a Conda environment, and use the Python installed in the Conda environment to create the `venv` environment.
 
 ### Combining Conda with other package and environment management tools
 
@@ -386,27 +434,50 @@ A list of case studies follows. In these case studies you can find how Conda and
 
 #### Combining Conda with `pip` to install a Python package
 
-Imagine that you want to create a `venv` environment and install some packages from PyPI. The official distribution of Python comes packaged with the `venv` module that can create a virtual environment of your choice with the command:
+In this example `pip` is used to manage packages in a Conda environment with [MkDocs](https://www.mkdocs.org/) related packages. To install the packages, create an environment
+```bash
+micromamba env create --name mkdocs
 ```
-$ pytho -m venv <path_to_directory>
+activate the environment,
+```bash
+micromamba activate mkdocs
 ```
-You can later activate the environment with
+and install `pip`
+```bash
+micromamba install --channel conda-forge pip
 ```
-$ source <path_to_directory>/bin/activate
-```
-and deactivate with:
-```
-$ deactivate
-```
-However, this can be trickier that it seems!
+which will be used to install the remaining packages.
 
-For instance in Debian, the system Python package, `python3`,  does not contain the `venv` module, but the module is distributed through the `python3-venv` package. You may want to avoid using the system package for a variety of reasons:
+The `pip` will be the only package that will be managed with Conda. For instance, to update Pip activate the environment,
+```bash
+micromamba activate mkdocs
+```
+and run
+```bash
+micromaba update --all
+```
+to update all installed packaged (only `pip` in our case). All other packages are managed by `pip`.
 
-- The PyPI package you want to install may require a version of Python that is not provided by your system.
-- You may be in a constrained system where installing a package such as `python3-venv` is not possible, either because you don't have the rights, or because you are working with some high performance computer where installing a package required installing the package in hundreds of machines.
-- You may not want to pollute your system installation. In accordance to the UNIX philosophy use the system ensures that your machine operates correctly, and use the Conda to run the latest application!
+For instance, assume that a `mkdocs` project requires the following packages:
 
+- `mkdocs`
+- `mkdocs-minify-plugin`
 
+The package `mkdocs-minify-plugin` is less popular and thus is is not available though a Conda channel, but it is available in PyPI. To install it, activate the `mkdocs` environment
+```bash
+micromamba activate mkdocs
+```
+and install the required packages with `pip`
+```bash
+pip install --upgrade mkdocs mkdocs-minify-plugin
+```
+inside the environment. The packages will be installed inside a directory that `micromamba` created for the Conda environment, for instance
+```
+${HOME}/micromamba/envs/mkdocs
+```
+along side packages installed by `micromamba`. As a results, 'system-wide' installations with `pip` inside a Conda environment do not interfere with system packages.
+
+**Do not install packages in Conda environments with pip as a user:** User installed packages (e.g.`pip install --user --upgrade mkdocs-minify-plugin`) are installed in the same directory for all environments, typically in `~/.local/`, and can interfere with other versions of the same package installed from other Conda environments.
 
 #### Combining Conda with `pip` to install a Python source package
 
