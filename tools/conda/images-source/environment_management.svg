@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="80mm"
+   height="50mm"
+   viewBox="0 0 80 50"
+   version="1.1"
+   id="svg1"
+   inkscape:export-filename="environment_management.png"
+   inkscape:export-xdpi="383.53998"
+   inkscape:export-ydpi="383.53998"
+   inkscape:version="1.3.2 (091e20ef0f, 2023-11-25)"
+   sodipodi:docname="environment_management.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#505050"
+     bordercolor="#eeeeee"
+     borderopacity="1"
+     inkscape:showpageshadow="0"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#505050"
+     inkscape:document-units="mm"
+     inkscape:zoom="4.3010382"
+     inkscape:cx="113.11223"
+     inkscape:cy="114.73974"
+     inkscape:window-width="2560"
+     inkscape:window-height="1411"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="g6" />
+  <defs
+     id="defs1">
+    <rect
+       x="90.75087"
+       y="110.80812"
+       width="109.8217"
+       height="48.992317"
+       id="rect6" />
+    <rect
+       x="212.08083"
+       y="105.5472"
+       width="77.598572"
+       height="32.223133"
+       id="rect4" />
+    <rect
+       x="204.84708"
+       y="97.655823"
+       width="97.327019"
+       height="39.785706"
+       id="rect3" />
+    <rect
+       x="223.91789"
+       y="92.723709"
+       width="81.215446"
+       height="30.907904"
+       id="rect2" />
+  </defs>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <text
+       xml:space="preserve"
+       transform="scale(0.26458333)"
+       id="text1"
+       style="font-weight:100;font-size:21.3333px;font-family:Cantarell;-inkscape-font-specification:'Cantarell Thin';white-space:pre;shape-inside:url(#rect2);fill:none;stroke:#000000;stroke-width:5.66929;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:15;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
+    <text
+       xml:space="preserve"
+       transform="scale(0.26458333)"
+       id="text2"
+       style="font-weight:100;font-size:21.3333px;font-family:Cantarell;-inkscape-font-specification:'Cantarell Thin';white-space:pre;shape-inside:url(#rect3);fill:none;stroke:#000000;stroke-width:0;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:15;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
+    <g
+       id="g9"
+       transform="translate(-4.61084,-4.3498491)">
+      <g
+         id="g10"
+         transform="translate(-6.4377768,-12.962551)">
+        <g
+           id="g8">
+          <g
+             id="g7">
+            <rect
+               style="mix-blend-mode:normal;fill:none;stroke:#4256cb;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:15;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+               id="rect1"
+               width="66.191383"
+               height="41.338856"
+               x="16.541063"
+               y="21.984337" />
+          </g>
+          <text
+             xml:space="preserve"
+             transform="matrix(0.26458333,0,0,0.26458333,-36.973717,-4.3498494)"
+             id="text3"
+             style="font-weight:100;font-size:21.3333px;font-family:Cantarell;-inkscape-font-specification:'Cantarell Thin';white-space:pre;shape-inside:url(#rect4);fill:none;stroke:#000000;stroke-width:1.51181;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:15;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"><tspan
+               x="212.08008"
+               y="124.70445"
+               id="tspan2"><tspan
+                 style="fill:#ffffff"
+                 id="tspan1">System</tspan></tspan></text>
+        </g>
+      </g>
+      <g
+         id="g6"
+         transform="translate(13.049547,-12.788557)">
+        <rect
+           style="fill:none;fill-opacity:1;stroke:#4256cb;stroke-width:1.61666;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:15;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:0.752941"
+           id="rect5"
+           width="38.249012"
+           height="33.551174"
+           x="21.285591"
+           y="25.722439" />
+        <text
+           xml:space="preserve"
+           transform="matrix(0.26458333,0,0,0.26458333,-0.26099084,-1.7399397)"
+           id="text5"
+           style="font-weight:100;font-size:21.3333px;font-family:Cantarell;-inkscape-font-specification:'Cantarell Thin';white-space:pre;shape-inside:url(#rect6);fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:1.51181;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:15;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"><tspan
+             x="90.75"
+             y="129.96616"
+             id="tspan3">Packages</tspan></text>
+      </g>
+    </g>
+  </g>
+</svg>
