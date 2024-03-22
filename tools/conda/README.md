@@ -388,17 +388,17 @@ The official package installer for Python is [`pip`](https://pypi.org/project/pi
 - user-wide installation, where a package are installed in a special directory in the user home directory and are available to the user only, and
 - environment installation where a package is only available inside the environment where it was installed.
 
-User-wide installations are a special case of environment installations, where a special environment for each user is loaded by default.
-
 Python is now part of many Linux distributions, such as [Debian](https://wiki.debian.org/Python). This means now that users cannot (or should not) install packages system-wide using `pip`. User-wide and `venv` environment installations are still possible though.
 
 To install a package user-wide use the command:
 ```
 $ pip install --user <package_name>
 ```
-To use a `venv` environment, first initialize the environment in some directory. The official distribution of Python comes packaged with the `venv` module that can create a virtual environment of your choice with the command:
+User-wide installations install packages in a directory at the users home directory. Python searches for packages in the user installation path first. This packages are meant to be installed with the system Python and run without root privileges. Thus user-wide installation are more appropriate extend the system functionality for a single user.
+
+For most applications, functionality should be installed in a virtual environment. To use a `venv` environment, first initialize the environment in some directory. The official distribution of Python comes packaged with the `venv` module that can create a virtual environment with the command:
 ```
-$ pytho -m venv <path_to_directory>
+$ python -m venv <path_to_directory>
 ```
 You activate the environment with
 ```
@@ -412,15 +412,15 @@ When the environment is active, you can install packages with the command:
 ```
 $ pip install <package_name>
 ```
-This is the same command installing packages system-wide, but because the environment is active the package is installed in the environment directory. However, this can be trickier that it seems!
+This is the same command installing packages system-wide, but because the environment is active the package is installed in the environment directory. However, this can be trickier than it seems!
 
-For instance in Debian, the system Python package, `python3`,  does not contain the `venv` module, but the module is distributed through the `python3-venv` package. You may want to avoid using the system package for a variety of reasons:
+For instance in Debian, the system Python package, `python3`,  does not contain the `venv` module. The module is distributed through the `python3-venv` package. You may want to avoid using the system package for a variety of reasons:
 
 - The PyPI package you want to install may require a version of Python that is not provided by your system.
 - You may be in a constrained system where installing a package such as `python3-venv` is not possible, either because you don't have the rights, or because you are working with some high performance computer where installing a package required installing the package in hundreds of machines.
 - You may not want to pollute your system installation. In accordance to the UNIX philosophy use the system ensures that your machine operates correctly, and use the Conda to run the latest application!
 
-The trick is to install Python in a Conda environment, and use the Python installed in the Conda environment to create the `venv` environment.
+The trick is to install a version of Python in a Conda environment, and use the Python installed in the Conda environment to create `venv` environments.
 
 ### Combining Conda with other package and environment management tools
 
