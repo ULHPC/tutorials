@@ -380,7 +380,7 @@ The _project environment management tools_ in particular often automate the func
 
 The overarching theory for environment management tools such as Conda is simple. However, there are implementation details which affect how environment management tools are used. In the following section we present some case studies about practical issues you may encounter with few environment management tools. 
 
-### Using `pip` in a Linux system
+### Using `pip` for Python package management
 
 The official package installer for Python is [`pip`](https://pypi.org/project/pip/). You can use pip to install packages from the Python Package Index (PyPI) and other indexes. With `pip` you can install packages in 3 modes,
 
@@ -412,15 +412,86 @@ When the environment is active, you can install packages with the command:
 ```
 $ pip install <package_name>
 ```
-This is the same command installing packages system-wide, but because the environment is active the package is installed in the environment directory. However, this can be trickier than it seems!
+This is the same command installing packages system-wide, but because the environment is active the package is installed in the environment directory.
 
-For instance in Debian, the system Python package, `python3`,  does not contain the `venv` module. The module is distributed through the `python3-venv` package. You may want to avoid using the system package for a variety of reasons:
+The `pip` package manager also provides the functionality required to export environment setups in text files and recreate environments from a text file description of the environment setup. To export the environment, activate the environment and use the `freeze` command:
+```
+$ source <path_to_directory>/bin/activate
+(<environment name>) $ pip freeze > <environment name>.yml
+```
+To recreate the environment, create an empty environment,
+```
+python -m venv ~/environments/<environment name>
+```
+activate the environment,
+```
+source ~/environments/<environment name>/bin/activate
+```
+and install all the required packages from the requirement file:
+```
+(<environment name>) $ pip install --requirement /path/to/<environment name>.yml
+```
+
+When managing an environment, it is often required to upgrade a package to access new functionality or fix a bug. To upgrade a package with `pip`, simply install/reinstall the package with the `--upgrade` flag:
+```
+(<environment name>) $ pip install --upgrade <package name>
+```
+Note that in Python environments managed with `pip`, you have to update each package individually. Package management can thus be quote laborious, but there are some methods to speed up the process.
+
+With all the features that `pip` provides, it is a very attractive method for creating and managing environments. However, is often necessary even when you are managing your environments with `pip`!
+
+#### Creating a `venv` environment with Python installed in a Conda environment
+
+In most distributions `venv` comes packages together with python, however, in some distributions `venv` is provided as an independent package. In Debian for instance, the system Python package, `python3`,  does not contain the `venv` module. The module is distributed through the `python3-venv` package. You may want to avoid using the system package for a variety of reasons:
 
 - The PyPI package you want to install may require a version of Python that is not provided by your system.
 - You may be in a constrained system where installing a package such as `python3-venv` is not possible, either because you don't have the rights, or because you are working with some high performance computer where installing a package required installing the package in hundreds of machines.
 - You may not want to pollute your system installation. In accordance to the UNIX philosophy use the system ensures that your machine operates correctly, and use the Conda to run the latest application!
 
-The trick is to install a version of Python in a Conda environment, and use the Python installed in the Conda environment to create `venv` environments.
+The trick is to install a version of Python in a Conda environment, and use the Python installed in the Conda environment to create `venv` environments. Start by creating a python environment with the required version for python. For instance:
+```
+$ micromamba env create --name <environment name>-python
+$ micromamba install --name <environment name>-python conda-forge::python
+```
+The Python distribution from conda-forge comes with `venv` installed. Use `venv` to create your virtual environment:
+```
+$ micromamba run --name <environment name>-python python -m venv ~/environments/<environment name>
+```
+It is a good idea to use some standard location to install global environments; a good choice is some directory in your home directory such as:
+```
+~/environments
+```
+Now an environment has been installed with the required version of python.
+
+Any other tool requires the activation of the Conda environment before you are able to activate an environment created by an internal tool, such as `venv`. In fact, you can activate your `venv` as follows:
+```
+$ micromaba activate <environment name>-python
+(<environment name>-python) $ source ~/environments/<environment name>/bin/activate
+(<environment name>) (<environment name>-python) $
+```
+However, activating the Conda environment is redundant with a `venv` environment. Yow you can activate the environment simply with:
+```
+source ~/environments/<environment name>/bin/active
+(<environment name>) $
+```
+
+After creating a `venv` environment you no longer need to interact with the Conda environment, `<environment name>-python`, except for updating Python itself. This is because `pip` environments are completely isolated from the system, except for the Python executable. If you browse the environment definition file,
+```
+$ cat ~/environments/<environment name>/pyvenv.cfg
+home = /home/gkaf/micromamba/envs/<environment name>-python/bin
+include-system-site-packages = false
+version = 3.8.18
+```
+you can see that system package usage is disabled by default, with the option `include-system-site-packages = false`. Also, note that the binary directory of the Conda environment that provides the Python executable is noted in the `home` entry. This is important, as the only package that `pip` cannot install is python itself. The python executable is selected the environment is created with the command:
+```
+$ python -m venv ~/environments/<environment name>
+```
+In fact, listing the contents of `~/environments/<environment name>/bin`, there are the symbolic links
+```
+python -> /home/gkaf/micromamba/envs/<environmen name>-python/bin/python
+python3 -> python
+```
+that point to the Python installed in our Conda environment. Every other executable and library package installed in our environment, is installed locally, and as the options `include-system-site-packages = false` suggests, it will shadow any other package in the Conda environment.
 
 ### Combining Conda with other package and environment management tools
 
