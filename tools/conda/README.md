@@ -264,7 +264,7 @@ You may need some Python package in your Jupyter notebook. You can make packages
 ```
 micromamba install conda-forge::numpy conda-forge::pandas
 ```
-You should no be able to import `numpy` and `pandas` in your notebook!
+You should now be able to import `numpy` and `pandas` in your notebook!
 
 After completing your work, close down the notebook with the command `C-c`, and deactivate the `jupyter` Conda environment:
 ```
