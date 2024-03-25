@@ -918,8 +918,6 @@ zipp==3.17.0
 ```
 we can see that `pip` lists all the packages irrespective of whether they are installed in the environment of the system. _The advantage of using a `venv` however, is that any change made with `pip` will be local to the `venv` and will simply override without altering the Conda installation._
 
-**Do not install packages in Conda environments with pip as a user:** User installed packages (e.g.`pip install --user --upgrade mkdocs-minify-plugin`) are installed in the same directory for all environments, typically in `~/.local/`, and can interfere with other versions of the same package installed from other Conda environments.
-
 #### Combining Conda with `pip` to install a Python source package
 
 Let's consider the installation of the [PySPQR](https://github.com/yig/PySPQR) module that wraps the SuiteSparseQR decomposition function for use with SciPy. Installing this software is challenging because
