@@ -144,7 +144,7 @@ Micromamba supports almost all the subcommands of Conda. For more details see th
 
 ### Using environments in submission scripts
 
-Since all computationally heavy operations must be performed in compute nodes, Conda environments are also used in jobs submitted to the [queuing system](../slurm/index.md). You can activate and deactivate environment in various sections of your script.
+Since all computationally heavy operations must be performed in compute nodes, Conda environments are also used in jobs submitted to the [queuing system](https://hpc-docs.uni.lu/slurm/). You can activate and deactivate environment in various sections of your script.
 
 Returning to the R example, a submission script running a single core R job can use the `R-project_name` environment as follows:
 ```
