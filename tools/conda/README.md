@@ -380,6 +380,7 @@ The _project environment management tools_ in particular often automate the func
 
 The overarching theory for environment management tools such as Conda is simple. However, there are implementation details which affect how environment management tools are used. In the following section we present some case studies about practical issues you may encounter with few environment management tools. 
 
+
 ### Using `pip` for Python package management
 
 The official package installer for Python is [`pip`](https://pypi.org/project/pip/). You can use pip to install packages from the Python Package Index (PyPI) and other indexes. With `pip` you can install packages in 3 modes,
@@ -394,7 +395,11 @@ To install a package user-wide use the command:
 ```
 $ pip install --user <package_name>
 ```
-User-wide installations install packages in a directory at the users home directory. Python searches for packages in the user installation path first. This packages are meant to be installed with the system Python and run without root privileges. Thus user-wide installation are more appropriate extend the system functionality for a single user.
+User-wide installations install packages in a directory located at the home directory of the user. Python searches for packages in the user installation path first. This packages are meant to be installed with the system Python and run without root privileges. Thus user-wide installation is appropriate for packages that extend the system functionality for a single user.
+
+_User-wide installation is not not recommended for all but the system Python environment. User-wide installations rely on system packages, so if you install any package using a Conda environment the package will depend on the Conda environment. Thus, packages installed user-wide with a Conda environment will may be incompatible with the system environment or with any other Conda environment._
+
+#### Python `venv` virtual environments
 
 For most applications, functionality should be installed in a virtual environment. To use a `venv` environment, first initialize the environment in some directory. The official distribution of Python comes packaged with the `venv` module that can create a virtual environment with the command:
 ```
@@ -437,6 +442,11 @@ When managing an environment, it is often required to upgrade a package to acces
 (<environment name>) $ pip install --upgrade <package name>
 ```
 Note that in Python environments managed with `pip`, you have to update each package individually. Package management can thus be quote laborious, but there are some methods to speed up the process.
+
+Finally, to delete a virtual environment installation simply deactivate the environment and remove its directory. Thus, assuming that an environment was installed in `~/environments/<environment name>`, remove it with:
+```
+$ rm -r ~/environments/<environment name>
+```
 
 With all the features that `pip` provides, it is a very attractive method for creating and managing environments. However, is often necessary even when you are managing your environments with `pip`!
 
@@ -493,60 +503,420 @@ python3 -> python
 ```
 that point to the Python installed in our Conda environment. Every other executable and library package installed in our environment, is installed locally, and as the options `include-system-site-packages = false` suggests, it will shadow any other package in the Conda environment.
 
-### Combining Conda with other package and environment management tools
+#### Example: Installing Jupyter and managing the dependencies of a notebook with `pip`
 
-Quite often Conda is used as the environment management framework and other tools are used for package management. There are a few reasons why you may want to manage packages with different tools.
+In this example we create an environment, install Jupyter, and install all the dependencies for our notebooks with `pip`. Start by creating a Conda environment for the Python used in the `venv` environment:
+```
+micromamba env create --name jupyter-python
+```
+Next, install Python in the environment. Have a look at the page for [Python](https://anaconda.org/conda-forge/python) in the conda-forge channel. To install it in your environment call:
+```
+micromamba install --name jupyter-python conda-forge::python
+```
+Now use the python of the `jupyter-python` environment to create your `venv` environment. We use the `run` command of Conda to execute a single shot command:
+```
+micromamba run --name jupyter-python python -m venv ~/environments/jupyter
+```
+We are now ready to activate our `venv` environment and install our main dependencies:
+```
+$ source ~/environments/jupyter/bin/activate
+(jupyter) $ pip install jupyterlab
+```
+Now create a working directory for your notebooks, and launch Jupyter:
+```
+(jupyter) $ mkdir ~/Documents/notebooks && cd ~/Documents/notebooks
+(jupyter) $ jupyter lab
+```
+If a webpage appears with the Jupyter lab, the installation worked succeeded!
 
-- You may want to use a project environment management tool. For instance, you may install Python with Cond and use project environments managed with [Virtualenv](https://virtualenv.pypa.io/en/latest/), [Pipenv](https://pipenv.pypa.io/en/latest) and [Poetry](https://python-poetry.org/). In the case of R you may install R with Conda and manage project environments with [Packrat](https://rstudio.github.io/packrat/). 
+You may need some Python package in your Jupyter notebook. You can install new packages at your `venv` environment. For instance, assume that you need `pandas` and `numpy`. Activate the environment, and install the dependencies with the command:
+```
+(jupyter) $ pip install numpy pandas
+```
+You should now be able to import `numpy` and `pandas` in your notebook!
 
-- In some cases packages are not available through Conda, but they may be available through other source code or binary distributions. A typical example is Julia where packages are only available trough the [Pkg](https://pkgdocs.julialang.org/v1/) package manager.
+After completing your work, close down the notebook with the command `C-c`, and deactivate the `jupyter` environment:
+```
+(jupyter) $ deactivate
+```
+You should now be in your normal operating system environment.
+
+
+### Combining Conda with other package management tools
+
+In some cases Conda is used to manage the environment and other tools are used to install pacakges. There are a few reasons why you may want to manage packages with different tools.
+
+- You may want to use a project environment management tool. For instance, you may install Python with Conda and use project environments managed with [Virtualenv](https://virtualenv.pypa.io/en/latest/), [Pipenv](https://pipenv.pypa.io/en/latest) and [Poetry](https://python-poetry.org/). In the case of R you may install R with Conda and manage project environments with [Packrat](https://rstudio.github.io/packrat/). 
+
+- In some cases packages are not available through Conda, but they may be available through other source code or binary distributions. A typical example is Julia where packages are only available trough the [Pkg](https://pkgdocs.julialang.org/v1/) package manager. Similarly, many less popular packages are available through PyPI and can be installed with `pip`, but they are not available through a Conda channel.
 
 A list of case studies follows. In these case studies you can find how Conda and other package managers can be combined to install software.
 
-#### Combining Conda with `pip` to install a Python package
+#### Installing packages with `pip` in a Conda environment
 
-In this example `pip` is used to manage packages in a Conda environment with [MkDocs](https://www.mkdocs.org/) related packages. To install the packages, create an environment
-```bash
-micromamba env create --name mkdocs
-```
-activate the environment,
-```bash
-micromamba activate mkdocs
-```
-and install `pip`
-```bash
-micromamba install --channel conda-forge pip
-```
-which will be used to install the remaining packages.
+In this example Conda and `pip` are used to create an environment for working with with [MkDocs](https://www.mkdocs.org/). We assume that we want to work with a custom python distribution installed in a Conda environment and we want to install 2 packages,
 
-The `pip` will be the only package that will be managed with Conda. For instance, to update Pip activate the environment,
-```bash
-micromamba activate mkdocs
-```
-and run
-```bash
-micromaba update --all
-```
-to update all installed packaged (only `pip` in our case). All other packages are managed by `pip`.
+- `mkdocs`, and
+- `mkdocs-minify-plugin`.
 
-For instance, assume that a `mkdocs` project requires the following packages:
+While `mkdocs` is available though the conda-forge Conda channel, at the time of witting `mkdocs-minify-plugin` is only available through PyPI. At this point we have 3 options,
 
-- `mkdocs`
-- `mkdocs-minify-plugin`
+- install `mkdocs` and `mkdocs-minify-plugin` in a `venv` environment,
+- install `mkdocs` and `mkdocs-minify-plugin` in the Conda environment from PyPI with `pip`, or
+- install `mkdocs` in a Conda and `mkdocs-minify-plugin` with `pip`, by installing `mkdocs-minify-plugin` either
+    - directly in the Conda environment, or
+    - in a `venv` environment end enabling `venv` to include system packages to access `mkdocs`.
 
-The package `mkdocs-minify-plugin` is less popular and thus is is not available though a Conda channel, but it is available in PyPI. To install it, activate the `mkdocs` environment
+To begin with, create the base Conda environment which will provide the Python executable and related tools such as `pip` and `venv`.
 ```bash
-micromamba activate mkdocs
+micromamba env create --name mkdocs-python
 ```
-and install the required packages with `pip`
+Exporting the environment,
+```
+$ micromamba env export --name mkdocs-python
+name: mkdocs-python
+channels:
+dependencies:
+```
+we can see that the environment is empty. Start by installing Python:
 ```bash
-pip install --upgrade mkdocs mkdocs-minify-plugin
+micromamba install --name mkdocs-python conda-forge::python
 ```
-inside the environment. The packages will be installed inside a directory that `micromamba` created for the Conda environment, for instance
+Exporting the environment specifications,
 ```
-${HOME}/micromamba/envs/mkdocs
+$ micromamba env export --name mkdocs-python
+name: mkdocs-python
+channels:
+- conda-forge
+dependencies:
+- _libgcc_mutex=0.1=conda_forge
+- _openmp_mutex=4.5=2_gnu
+- bzip2=1.0.8=hd590300_5
+- ca-certificates=2024.2.2=hbcca054_0
+- ld_impl_linux-64=2.40=h41732ed_0
+- libexpat=2.6.2=h59595ed_0
+- libffi=3.4.2=h7f98852_5
+- libgcc-ng=13.2.0=h807b86a_5
+- libgomp=13.2.0=h807b86a_5
+- libnsl=2.0.1=hd590300_0
+- libsqlite=3.45.2=h2797004_0
+- libuuid=2.38.1=h0b41bf4_0
+- libxcrypt=4.4.36=hd590300_1
+- libzlib=1.2.13=hd590300_5
+- ncurses=6.4.20240210=h59595ed_0
+- openssl=3.2.1=hd590300_1
+- pip=24.0=pyhd8ed1ab_0
+- python=3.12.2=hab00c5b_0_cpython
+- readline=8.2=h8228510_1
+- setuptools=69.2.0=pyhd8ed1ab_0
+- tk=8.6.13=noxft_h4845f30_101
+- tzdata=2024a=h0c530f3_0
+- wheel=0.43.0=pyhd8ed1ab_0
+- xz=5.2.6=h166bdaf_0
 ```
-along side packages installed by `micromamba`. As a results, 'system-wide' installations with `pip` inside a Conda environment do not interfere with system packages.
+we can see that some version of `pip` (`pip=24.0=pyhd8ed1ab_0`) is installed, along with other packages.
+
+_In all cases we will use `pip`, the PyPI package manager, that comes packages with Python. Make sure that in each case you start with an empty environment with only Python installed._
+
+##### Installing all dependencies on a `venv` environment
+
+The simplest option is to install all the required packages in a `venv` virtual environment. Start by creating an environment with the `venv` module of the Python installed in the `mkdocs-python` environment:
+```bash
+micromamba run --name mkdocs-python python -m venv ~/environments/mkdocs
+```
+Activate the environment,
+```
+$ source ~/environment/mkdocs/bin/active
+```
+and export the environment specification,
+```
+(mkdocs) $ pip freeze
+```
+which should result in no output since we have not installed ant packages yet. Some infrastructure packages are installed in the environment by default, all installed packages can be printed with the command `pip list`,
+```
+(mkdocs) $ pip list --format=freeze
+pip==24.0
+```
+where the `--format` option selected ensures that the output if produced in a YAML file format. We can see that in the environment there is the `pip` package installed. Infrastructure packages are not version tracked as they are required only for `pip`, and not for packages provided by the environment.
+
+With the `venv` environment active, install the packages:
+```
+(mkdocs) $ pip install --upgrade mkdocs mkdocs-minify-plugin
+```
+Now the `pip freeze` command should print all the installed packages:
+```
+(mkdocs) $ pip freeze
+click==8.1.7
+csscompressor==0.9.5
+ghp-import==2.1.0
+htmlmin2==0.1.13
+Jinja2==3.1.3
+jsmin==3.0.1
+Markdown==3.6
+MarkupSafe==2.1.5
+mergedeep==1.3.4
+mkdocs==1.5.3
+mkdocs-minify-plugin==0.8.0
+packaging==24.0
+pathspec==0.12.1
+platformdirs==4.2.0
+python-dateutil==2.9.0.post0
+PyYAML==6.0.1
+pyyaml_env_tag==0.1
+six==1.16.0
+watchdog==4.0.0
+```
+Again, the only difference with the `pip list` command is that the package for `pip` is self is not listed.
+
+Overall, installing the  required packages in a separate `venv` virtual Python environment is the simplest solution. There is a distinction between the packages managed by the Conda package manager and `pip`, with Conda managing only the Python distribution, and `pip` managing the environment packages and the `pip` installation. However, this distinction comes at the cost of replicating package installations, as unlike Conda, package files are not share in `venv` virtual Python environments.
+
+##### Installing all dependencies from PyPI with `pip` on the Conda environment
+
+The `pip` package manager is in fact able to install packages directly on the Conda environment! When the Conda environment is active, the system environment for `pip` is the Conda environment. Activate the Conda environment, and list the packages with `pip`:
+```
+$ micromamba activate mkdocs-coda
+(mkdocs-conda) $ pip list --format=freeze
+pip==24.0 
+setuptools==69.2.0
+wheel==0.43.0
+```
+Note that we use the `list` command instead of the `freeze` command to export all packages. We observe that the packages
+
+- `pip`,
+- `setuptools`, and
+- `wheel`,
+
+are installed with the Conda package manager, and are also visible in the output of `micromamba env export`.
+
+_Do not mix package management tools!_ Packages installed with the Conda package manager should be managed with Conda, and package installed with `pip` should be managed with `pip`. All the packages listed so far are installed with the Conda package manager and should not be updated or otherwise altered with `pip`.
+
+Now install the `mkdocs` and `mkdocs-minify-plugin` with `pip` while the `mkdocs-conda` environment is active:
+```
+(mkdocs-conda) $ pip install --upgrade mkdocs mkdocs-minify-plugin
+```
+Now all the dependencies are installed in the Conda environment, and can be listed with:
+```
+(mkdocs-conda) $ pip list --format=freeze
+$ pip list --format=freeze
+click==8.1.7
+csscompressor==0.9.5
+ghp-import==2.1.0
+htmlmin2==0.1.13
+Jinja2==3.1.3
+jsmin==3.0.1
+Markdown==3.6
+MarkupSafe==2.1.5
+mergedeep==1.3.4
+mkdocs==1.5.3
+mkdocs-minify-plugin==0.8.0
+packaging==24.0
+pathspec==0.12.1
+pip==24.0
+platformdirs==4.2.0
+python-dateutil==2.9.0.post0
+PyYAML==6.0.1
+pyyaml_env_tag==0.1
+setuptools==69.2.0
+six==1.16.0
+watchdog==4.0.0
+wheel==0.43.0
+```
+
+Note that Conda is aware of which packages is meant to manage, listing the Conda packages
+```
+(mkdics-conda) $ micromamba env export --name mkdocs-conda
+name: mkdocs-conda
+channels:
+- conda-forge
+dependencies:
+- _libgcc_mutex=0.1=conda_forge
+- _openmp_mutex=4.5=2_gnu
+- bzip2=1.0.8=hd590300_5
+- ca-certificates=2024.2.2=hbcca054_0
+- ld_impl_linux-64=2.40=h41732ed_0
+- libexpat=2.6.2=h59595ed_0
+- libffi=3.4.2=h7f98852_5
+- libgcc-ng=13.2.0=h807b86a_5
+- libgomp=13.2.0=h807b86a_5
+- libnsl=2.0.1=hd590300_0
+- libsqlite=3.45.2=h2797004_0
+- libuuid=2.38.1=h0b41bf4_0
+- libxcrypt=4.4.36=hd590300_1
+- libzlib=1.2.13=hd590300_5
+- ncurses=6.4.20240210=h59595ed_0
+- openssl=3.2.1=hd590300_1
+- pip=24.0=pyhd8ed1ab_0
+- python=3.12.2=hab00c5b_0_cpython
+- readline=8.2=h8228510_1
+- setuptools=69.2.0=pyhd8ed1ab_0
+- tk=8.6.13=noxft_h4845f30_101
+- tzdata=2024a=h0c530f3_0
+- wheel=0.43.0=pyhd8ed1ab_0
+- xz=5.2.6=h166bdaf_0
+```
+we can see that the packages managed by Conda have not changed!
+
+Updating such a combined environment can be tricky. Start by updating all the Conda packages with
+```
+micromamba update --name mkdocs-conda --all
+```
+and then active the environment and update all the packages managed by `pip` one by one. Note that with the Conda environment active
+
+- packages that appear in the output of `micromamba env export` and `pip list --format=freeze` are managed by Conda, and
+- packages that appear in the output of `pip list --format=freeze` are managed by `pip`.
+
+Some Conda package managers integrate some function of the `pip` interface. For instance, recreating the same environment with official Conda package manager, `conda`, the packages exported are:
+```
+$ conda env export --name mkdocs-python
+name: mkdocs-python
+channels:
+  - conda-forge
+  - nodefaults
+dependencies:
+  - _libgcc_mutex=0.1=conda_forge
+  - _openmp_mutex=4.5=2_gnu
+  - bzip2=1.0.8=hd590300_5
+  - ca-certificates=2024.2.2=hbcca054_0
+  - ld_impl_linux-64=2.40=h41732ed_0
+  - libexpat=2.6.2=h59595ed_0
+  - libffi=3.4.2=h7f98852_5
+  - libgcc-ng=13.2.0=h807b86a_5
+  - libgomp=13.2.0=h807b86a_5
+  - libnsl=2.0.1=hd590300_0
+  - libsqlite=3.45.2=h2797004_0
+  - libuuid=2.38.1=h0b41bf4_0
+  - libxcrypt=4.4.36=hd590300_1
+  - libzlib=1.2.13=hd590300_5
+  - ncurses=6.4.20240210=h59595ed_0
+  - openssl=3.2.1=hd590300_1
+  - pip=24.0=pyhd8ed1ab_0
+  - python=3.12.2=hab00c5b_0_cpython
+  - readline=8.2=h8228510_1
+  - setuptools=69.2.0=pyhd8ed1ab_0
+  - tk=8.6.13=noxft_h4845f30_101
+  - tzdata=2024a=h0c530f3_0
+  - wheel=0.43.0=pyhd8ed1ab_0
+  - xz=5.2.6=h166bdaf_0
+  - pip:
+      - click==8.1.7
+      - csscompressor==0.9.5
+      - ghp-import==2.1.0
+      - htmlmin2==0.1.13
+      - jinja2==3.1.3
+      - jsmin==3.0.1
+      - markdown==3.6
+      - markupsafe==2.1.5
+      - mergedeep==1.3.4
+      - mkdocs==1.5.3
+      - mkdocs-minify-plugin==0.8.0
+      - packaging==24.0
+      - pathspec==0.12.1
+      - platformdirs==4.2.0
+      - python-dateutil==2.9.0.post0
+      - pyyaml==6.0.1
+      - pyyaml-env-tag==0.1
+      - six==1.16.0
+      - watchdog==4.0.0
+prefix: /home/gkaf/micromamba/envs/conda/envs/mkdocs-python
+```
+Note that in this output, `conda` package manager indicates correctly that the packages `pip`, `wheel`, and `setuptools` are managed by `conda`. Creating a clean environment with the resulting `YAML` file using the `--file` option will install the `pip` packages as well. Even though Micromamba does not support exporting the `pip` installed dependencies, it supports importing files with `pip` dependencies for compatibility.
+
+_Despite any integration that `conda` offers for exporting `pip` installed packages, it is still the responsibility of the user to ensure that packages are managed with the correct package manager._
+
+##### Mixing packages from Conda channels and PyPI
+
+The `mkdocs` package is quite popular and as a result it is available through the conda-forge Conda channel. At the time of writing, the package `mkdocs-minify-plugin` is only available though PyPI. Given that the version on `mkdocs` in conda-forge is compatible with the version of `mkdocs-minify-plugin` in PyPI, you may consider installing the `mkdocs` from conda-forge, and `mkdocs-minify-plugin` from PyPI.
+
+Start by creating an empty Conda environment for Python, and install Python:
+```
+$ micromamba create --name mkdocs-conda
+$ micromamba install --name mkdocs-conda conda-forge::python
+```
+Then, install `mkdocs` from the conda-forge channel in the `mkdocs-conda` environment:
+```
+$ micromamba install --name mkdocs-conda conda-forge::mkdocs
+```
+
+You have now installed `mkdocs` through the conda-forge channel in the Conda environment. There are now 2 options for installing `mkdocs-minify-plugin` from PyPI, you can install it
+
+- in the Conda environment from PyPI with `pip`, or
+- in an isolated `venv` virtual Python environment.
+
+The option of installing packages from PyPI in a Conda environment has already been discussed in the previous section. The most interesting option is installing `mkdocs-minify-plugin` in a `venv` that has access to the Conda environment package `mkdocs`.
+
+Create a `vanv` that has access to system packages with the command:
+```
+$ micromamba run --name mkdocs-conda python -m venv --system-site-packages ~/environments/mkdocs
+```
+The resulting configuration configuration file
+```
+$ cat ~/environments/mkdocs/pyvenv.cfg 
+home = /home/gkaf/micromamba/envs/mkdocs-conda/bin
+include-system-site-packages = true
+version = 3.12.2
+executable = /home/gkaf/micromamba/envs/mkdocs-conda/bin/python3.12
+command = /home/gkaf/micromamba/envs/mkdocs-conda/bin/python -m venv --system-site-packages /home/gkaf/environments/mkdocs
+```
+has the `include-system-site-packages` option enabled. Activate the environment and export the environment setup:
+```
+$ source ~/environments/mkdocs/bin/activate
+(mkdocs) $ pip freeze
+click @ file:///home/conda/feedstock_root/build_artifacts/click_1692311806742/work
+colorama @ file:///home/conda/feedstock_root/build_artifacts/colorama_1666700638685/work
+ghp-import @ file:///home/conda/feedstock_root/build_artifacts/ghp-import_1651585738538/work
+importlib_metadata @ file:///home/conda/feedstock_root/build_artifacts/importlib-metadata_1710971335535/work
+Jinja2 @ file:///home/conda/feedstock_root/build_artifacts/jinja2_1704966972576/work
+Markdown @ file:///home/conda/feedstock_root/build_artifacts/markdown_1710435156458/work
+MarkupSafe @ file:///home/conda/feedstock_root/build_artifacts/markupsafe_1706899920239/work
+mergedeep @ file:///home/conda/feedstock_root/build_artifacts/mergedeep_1612711302171/work
+mkdocs @ file:///home/conda/feedstock_root/build_artifacts/mkdocs_1695086541719/work
+packaging @ file:///home/conda/feedstock_root/build_artifacts/packaging_1710075952259/work
+pathspec @ file:///home/conda/feedstock_root/build_artifacts/pathspec_1702249949303/work
+platformdirs @ file:///home/conda/feedstock_root/build_artifacts/platformdirs_1706713388748/work
+python-dateutil @ file:///home/conda/feedstock_root/build_artifacts/python-dateutil_1709299778482/work
+PyYAML @ file:///home/conda/feedstock_root/build_artifacts/pyyaml_1695373450623/work
+pyyaml_env_tag @ file:///home/conda/feedstock_root/build_artifacts/pyyaml-env-tag_1624388951658/work
+setuptools==69.2.0
+six @ file:///home/conda/feedstock_root/build_artifacts/six_1620240208055/work
+typing_extensions @ file:///home/conda/feedstock_root/build_artifacts/typing_extensions_1708904622550/work
+watchdog @ file:///home/conda/feedstock_root/build_artifacts/watchdog_1707295114593/work
+wheel==0.43.0
+zipp @ file:///home/conda/feedstock_root/build_artifacts/zipp_1695255097490/work
+```
+The `freeze` command now list the packages that are provided by the environment and the packages that are provided by the system which in our case is our Conda environment.
+
+To recreate the environment from a YAML file with the environment specifications,
+
+- enable the `include-system-site-packages` option during the creation of the new environment, and
+- when installing the packages from the YAML file, ensure that all the dependences are located in the path mentioned in the specification file.
+
+Despite the face that the package manager exports the dependencies correctly, the user is still responsible for using the correct tool to manage the packages. Listing all the packages in the environment,
+```
+(mkdocs) $ pip list --format=freeze
+click==8.1.7
+colorama==0.4.6
+ghp-import==2.1.0
+importlib_metadata==7.1.0
+Jinja2==3.1.3
+Markdown==3.6
+MarkupSafe==2.1.5
+mergedeep==1.3.4
+mkdocs==1.5.3
+packaging==24.0
+pathspec==0.12.1
+pip==24.0
+platformdirs==4.2.0
+python-dateutil==2.9.0
+PyYAML==6.0.1
+pyyaml_env_tag==0.1
+setuptools==69.2.0
+six==1.16.0
+typing_extensions==4.10.0
+watchdog==4.0.0
+wheel==0.43.0
+zipp==3.17.0
+```
+we can see that `pip` lists all the packages irrespective of whether they are installed in the environment of the system. _The advantage of using a `venv` however, is that any change made with `pip` will be local to the `venv` and will simply override without altering the Conda installation._
 
 **Do not install packages in Conda environments with pip as a user:** User installed packages (e.g.`pip install --user --upgrade mkdocs-minify-plugin`) are installed in the same directory for all environments, typically in `~/.local/`, and can interfere with other versions of the same package installed from other Conda environments.
 
@@ -597,6 +967,252 @@ and deactivate with
 ```
 (PySPQR) $ deactivate
 ```
+
+### Managing packages in R
+
+The R program has a built-in package manager. Assuming that you have access to an installation of R, the R system contains 2 utilities that allow the installation of packages in 3 different modes. First, there is the built-in package manager that can instal packages
+
+- in system wide accessible locations for packages that should be available to all users (requires elevated privileges), or
+- in user specific location for packages that are accessible to the current user only.
+
+There are default locations where the built-in package manager searches for packages. The user specific locations take precedence over system locations. The package manager search path can be extended by the user to include bespoke locations. There is also the Packrat package manager which installs packages
+
+- in project directories, with the packages being available in an environment isolated within the project directory.
+
+The Packrat package manager is available as an R package. When creating an environment within a project directory, the environment is activated automatically when starting R in the project directory (but not in its subdirectories due to the implementation of Packrat).
+
+In your local system you can install packages in any mode. In the HPC systems, you can only install packages in the user accessible location, so you are limited to user and project wide installations. Nevertheless, the HPC installation of R includes a number of commonly used packages, such as `dbplyr` and `tidyverse`. You should check if the package you require is installed and that the installed version provides the functionality you need before installing any packages locally. Remember, local package installations consume space and inodes against personal or project quota.
+
+#### Installing R packages locally and globally
+
+Be default R installs packages system wide. When R detects that it does not have write access to the system directories it suggests installing packages for the current user only.
+
+Start and interactive session and then load the R module and start R:
+```bash
+$ module load lang/R
+$ R
+```
+You can list the directories where R is installing and looking for new packages using the function `.libPaths()`
+```R
+> .libPaths()
+[1] "/mnt/irisgpfs/apps/resif/aion/2020b/epyc/software/R/4.0.5-foss-2020b/lib64/R/library"
+```
+If you haven't installed any libraries, only the system path appears in the path where R is looking for libraries. Now, try installing for instance the Packrat package globally with the `install.packages` command.
+```R
+> install.packages(c("packrat"))
+Warning in install.packages(c("packrat")) :
+  'lib = "/mnt/irisgpfs/apps/resif/aion/2020b/epyc/software/R/4.0.5-foss-2020b/lib64/R/library"' is not writable
+Would you like to use a personal library instead? (yes/No/cancel) yes
+Would you like to create a personal library
+‘~/R/x86_64-pc-linux-gnu-library/4.0’
+to install packages into? (yes/No/cancel) yes
+--- Please select a CRAN mirror for use in this session ---
+Secure CRAN mirrors
+```
+Select any mirror apart from `1: 0-Cloud [https]`; usually mirrors closer to your physical location will provide better bandwidth. After selecting a mirror the download and installation of the package proceeds automatically.
+
+Note that after failing to install the package in the system directory, R creates an installation directory for the user in their home directory `~/R/x86_64-pc-linux-gnu-library/4.0` and installs the package for the user only. After the installation, you can check the path where R is looking for packages again.
+```R
+> .libPaths()
+[1] "/mnt/irisgpfs/users/<user name>/R/x86_64-pc-linux-gnu-library/4.0"
+[2] "/mnt/irisgpfs/apps/resif/aion/2020b/epyc/software/R/4.0.5-foss-2020b/lib64/R/library"
+```
+Now R will look for packages in the user directory first (`/mnt/irisgpfs` is another path for `/home` that appears in the `${HOME}` variable). Note by the naming convention that R uses when it creates the directory for installing user packages, you can have multiple minor versions of R installed, and their packages will not interfere with each other. For instance,
+
+- R version 4.0.5 installs packages in `~/R/x86_64-pc-linux-gnu-library/4.0`, and
+- R version 4.3.2 installs packages in `~/R/x86_64-pc-linux-gnu-library/4.3`.
+
+Some useful commands for managing packages are,
+
+- `installed.packages()` to list installed packages and various information regarding each package installation,
+- `old.packages()` to list outdated packages,
+- `update.packages()` to update installed packages, and
+- `remove.packages(c("packrat"))` to remove packages.
+
+To list the loaded packages, use the command
+```R
+search()
+```
+and to get a detailed description of the environment, use the command
+```R
+sessionInfo()
+```
+which provides information about the version of R, the OS, and loaded packages.
+
+To load a library that has been installed use the command `library`. For instance,
+```R
+library(packrat)
+```
+where you cam notice that the use of quotes is optional and only a single can be loaded at a time. The `library` function causes an error when the loading of a package fails, so R provides the function `require` which returns the status of the package loading operation in a return variable, and is design for use inside R functions.
+
+_Useful resources_
+
+- [R Packages: A Beginner's Tutorial](https://www.datacamp.com/tutorial/r-packages-guide)
+- [Efficient R programming: Efficient set-up](https://bookdown.org/csgillespie/efficientR/set-up.html)
+
+#### Configuring installation paths in R
+
+So far we have only used the default installation paths of R. However, in a local installation where the user has rights to install in the system directories (e.g. in a Conda environment with R) the user installation directory is not created automatically. Open an R session in an interactive session in the HPC cluster or in your personal machine. To get the location where user packages are installed call
+```R
+> Sys.getenv("R_LIBS_USER")
+[1] "/home/<user name>/R/x86_64-conda-linux-gnu-library/4.3"
+```
+which will print an environment variable, `R_LIBS_USER`, which is set by R and stores the default location for storing user packages. If you create the directory with
+```bash
+$ mkdir -p /home/<user name>/R/x86_64-conda-linux-gnu-library/4.3
+```
+then you can print the locations where R is searching for packages (after reloading R), and the default location should appear first in the list. For instance for o Conda installation of R using the Micromamba package manager, the paths printed are
+```R
+> .libPaths()
+[1] "/home/<user name>/R/x86_64-conda-linux-gnu-library/4.3"
+[2] "/home/<user name>/micromamba/envs/R/lib/R/library"
+```
+where R is installed in a Conda environment named `R` in the second entry of the search path.
+
+There are now multiple locations where packages are stored. The location used by default is the first in the list. Thus, after creating the default location for user installed packages, packages are installed by default in user wide mode. For instance, installing the Packrat package,
+```R
+> install.packages(c("packrat"))
+```
+listing the user installation directory
+```bash
+$ ls "/home/<user name>/R/x86_64-conda-linux-gnu-library/4.3"
+packrat
+```
+will show the directory with the installed Packrat package files. To install the package in a system wide installation, use the `lib`flag
+```R
+> install.packages(c("packrat"), lib="/home/<user name>/micromamba/envs/R/lib/R/library")
+```
+to specify the installation location. During loading, all directories in the path are searched consecutively until the package is located.
+
+The package installation paths can also be used to maintain multiple independent environments in R. For instance, you can maintain a personal environment and project environment for your research group. Lets consider the case where you want the create an environment in a project directory. First, create a directory for the R environment
+```bash
+$ mkdir -p "${PROJECTHOME}<project name>/R-environment"
+```
+where the variable `PROJECTHOME` is defined in the UL HPC system environment to point to the home of the project directories (and includes a trailing slash '/'). To install a package in the project environment, call the installation function with the appropriate `lib` argument
+```R
+> install.packages( c("packrat"), lib=paste0( Sys.getenv("PROJECTHOME"), "<project name>/", "R-environment" ) )
+```
+and follow the typical instructions. To load the package, you now must also specify the location of the library,
+```R
+> library( packrat, lib.loc=paste0( Sys.getenv("PROJECTHOME"), "<project name>/", "R-environment" ) )
+```
+similar to the installation. Environment options can be used to extent the library paths and avoid having to specify the library path in each command.
+
+A startup file mechanism is provided by R to set up user and project wide environment options. There are 2 kinds of file,
+
+- `.Renviron` files used to set-up environment variables for R, and
+- `.Rprofile` files used to run any R code during initialization.
+
+Note that `.Renviron` files are simply a list of
+```
+key=value
+```
+assignment pairs which are read by R, not proper bash code (adding an `export` modifier is a syntax error). There are 2 locations where startup files appear,
+
+- the home directory, `~/.Renviron` and `~/.Rprofile`, for user wide settings, and
+- project directories for project wide settings.
+
+The definitions in project `.Rprofile` files override the user wide definitions in `~/.Rprofile`. The definitions in `.Renviron` files supersede the definitions in `~/.Renviron`, that is if the project has an environment file, the user wide definitions are ignored. Note that R is designed to source setup files at the directory where R starts, and any setup files in parent or descendent directories are ignored.
+
+Both the profile and environment startup files can setup a user wide environment. For instance, to use an environment setup in the project directories of the UL HPC systems add in the user wide environment setup file, `~/.Renviron`, the entry
+```
+R_LIBS=${PROJECTHOME}<project name>/R-environment
+```
+and then reload R. The new library path is
+```R
+> .libPaths()
+[1] "/mnt/irisgpfs/projects/<project name>/R-environment"
+[2] "/mnt/irisgpfs/users/<user name>/R/x86_64-pc-linux-gnu-library/4.0"
+[3] "/mnt/irisgpfs/apps/resif/iris-rhel8/2020b/broadwell/software/R/4.0.5-foss-2020b/lib64/R/library"
+```
+assuming that all directories appearing in the path exist. Note that the setup file options precede any default options.
+
+We can also use startup files to setup project wide libraries. For instance, assume that we are working on a project in a directory named `project` and the R packages are stored in a subdirectory `R-environment`. We use a project profile, to still be able to use any library paths defined in the user wide environment file. Add in a file `project/.Rprofile` the following definitions,
+```R
+project_path <- paste0( getwd(), "/R-environment" )
+newpaths <- c( project_path, .libPaths() )
+.libPaths( newpaths )
+```
+and then start R in the `project` directory. The new library path is
+```R
+> .libPaths()
+[1] "/mnt/irisgpfs/users/<user name>/Documents/project/R-environment"
+[2] "/mnt/irisgpfs/projects/<project name>/R-environment"
+[3] "/mnt/irisgpfs/users/<user name>/R/x86_64-pc-linux-gnu-library/4.0"
+[4] "/mnt/irisgpfs/apps/resif/iris-rhel8/2020b/broadwell/software/R/4.0.5-foss-2020b/lib64/R/library"
+```
+were the local project settings override the user and system wide settings. This is effectively a local project environment.
+
+#### Installing packages in R project directories with Packrat
+
+The Packrat library is used to automate the creation and management of project based environments. Packrat also automates operations such as tracking the version of the packages installed in the environment with snapshots, and saving the snapshot information in a text file that can be version controlled. The R distribution available through the UL HPC modules has a fairly old version of Packrat, which nevertheless supports all the basic features. Packrat is a light package, so you can install a more modern version in a user wide mode or in some environment accessible to all the users of a UL HPC project.
+
+To initialize the project, for instance in the directory `~/Documents/project`, use the commands:
+```R
+library(packrat)
+packrat::init("~/Document/project")
+```
+The initialization command creates,
+- a directory `~/Document/project/packrat` to store the packages, and
+- a setup script `~/Document/project/.Rprofile` to initialize the project.
+Therefore, start R within the project directory `~/Document/packrat`, to activate the project environment. After initializing the project or whenever you start R in the project directory, the `packrat` directory and its subdirectories will be the only ones appearing in the library paths:
+```R
+> .libPaths()
+[1] "/mnt/irisgpfs/users/<user name>/Documents/project/packrat/lib/x86_64-pc-linux-gnu/4.0.5"    
+[2] "/mnt/irisgpfs/users/<user name>/Documents/project/packrat/lib-ext/x86_64-pc-linux-gnu/4.0.5"
+[3] "/mnt/irisgpfs/users/<user name>/Documents/project/packrat/lib-R/x86_64-pc-linux-gnu/4.0.5"
+```
+Execute all package operations as usual. For instance, to install the `plyr` package, use the command:
+```R
+> install.packages(c("plyr"))
+```
+All packages are stored in the `packrat` subdirectory of the project.
+
+Packrat stores the status of the project in the file `packrat/packrat.lock`. This file stores the precise package versions that were used to satisfy dependencies, including dependencies of dependencies, and should not be edited by hand. After any change in the installed packages run the command
+```R
+packrat::snapshot()
+```
+to update the file. You can use the command
+```R
+packrat::status()
+```
+to analyze the code in the project directory and get a report regarding the status of extraneous or missing packages. After running the `status` command, you can run
+```R
+packrat::clean()
+```
+to remove any unused packages. Finally, after restoring the `packrat/packrat.lock` file from a version control system, or if `status` detects a missing package, use the command
+```R
+packrat::restore()
+```
+to install any missing packages.
+
+_Useful resources_
+
+- [Official Packrat tutorial](https://rstudio.github.io/packrat/walkthrough.html)
+
+#### Issues with managing packages with the native R package managers
+
+The native package manager of R is quite potent, and there are packages such as Packrat that further extend its capabilities. However, there are some drawbacks in installing packages with the native tools. Consider for instance installing the `hdf5r` package, a package used to read and write binary files, that is quite popular in HPC engineering applications. The installation mode is not important for our demonstration purposes, but assume that you are performing a user wide installation.
+```R
+> install.packages(c("hdf5r"))
+```
+
+During the installation, you can see that R is compiling the package components. This can be advantageous is the compilation process is tailored to optimize the build for the underlying system configuration. If you use the module available in the UL HPC systems, it is configured to use the main components of the FOSS tool chain (you can see that by calling `module list` after loading R), so the compiled packages are well optimized.
+
+**N.B.** If you encounter any issues with missing packages load the whole FOSS tool chain module with the command,
+```bash
+module load toolchain/foss
+```
+as there are a few popular packages missing in the dependencies of R.
+
+However, if you want to avoid compiling packages from source, which can be quite time consuming, you can use binary distributions of R. These include the distributions provided though native package managers in various Linux distributions, like APT and YUM, as well as Conda package managers like Mamba.
+
+
+
+
+
+
+
 
 <!--
 
@@ -863,245 +1479,6 @@ In the ULHPC systems, R and Python are provided as [modules](../cli/modules.md).
 
 To avoid the limitations of the package manager of you distribution, you can always use an autonomous environment manager such as Conda to install the R and Python software systems. An additional advantage of using an environment manager is that you can use the exact same software distribution in your local machine, the HPC system, and any other computer.
 
-### Managing packages in R
-
-The R program has a built-in package manager. Assuming that you have access to an installation of R, the R system contains 2 utilities that allow the installation of packages in 3 different modes. First, there is the built-in package manager that can instal packages
-
-- in system wide accessible locations for packages that should be available to all users (requires elevated privileges), or
-- in user specific location for packages that are accessible to the current user only.
-
-There are default locations where the built-in package manager searches for packages. The user specific locations take precedence over system locations. The package manager search path can be extended by the user to include bespoke locations. There is also the Packrat package manager which installs packages
-
-- in project directories, with the packages being available in an environment isolated within the project directory.
-
-The Packrat package manager is available as an R package. When creating an environment within a project directory, the environment is activated automatically when starting R in the project directory (but not in its subdirectories due to the implementation of Packrat).
-
-In your local system you can install packages in any mode. In the HPC systems, you can only install packages in the user accessible location, so you are limited to user and project wide installations. Nevertheless, the HPC installation of R includes a number of commonly used packages, such as `dbplyr` and `tidyverse`. You should check if the package you require is installed and that the installed version provides the functionality you need before installing any packages locally. Remember, local package installations consume space and inodes against personal or project quota.
-
-#### Installing R packages locally and globally
-
-Be default R installs packages system wide. When R detects that it does not have write access to the system directories it suggests installing packages for the current user only.
-
-Start and interactive session and then load the R module and start R:
-```bash
-$ module load lang/R
-$ R
-```
-You can list the directories where R is installing and looking for new packages using the function `.libPaths()`
-```R
-> .libPaths()
-[1] "/mnt/irisgpfs/apps/resif/aion/2020b/epyc/software/R/4.0.5-foss-2020b/lib64/R/library"
-```
-If you haven't installed any libraries, only the system path appears in the path where R is looking for libraries. Now, try installing for instance the Packrat package globally with the `install.packages` command.
-```R
-> install.packages(c("packrat"))
-Warning in install.packages(c("packrat")) :
-  'lib = "/mnt/irisgpfs/apps/resif/aion/2020b/epyc/software/R/4.0.5-foss-2020b/lib64/R/library"' is not writable
-Would you like to use a personal library instead? (yes/No/cancel) yes
-Would you like to create a personal library
-‘~/R/x86_64-pc-linux-gnu-library/4.0’
-to install packages into? (yes/No/cancel) yes
---- Please select a CRAN mirror for use in this session ---
-Secure CRAN mirrors
-```
-Select any mirror apart from `1: 0-Cloud [https]`; usually mirrors closer to your physical location will provide better bandwidth. After selecting a mirror the download and installation of the package proceeds automatically.
-
-Note that after failing to install the package in the system directory, R creates an installation directory for the user in their home directory `~/R/x86_64-pc-linux-gnu-library/4.0` and installs the package for the user only. After the installation, you can check the path where R is looking for packages again.
-```R
-> .libPaths()
-[1] "/mnt/irisgpfs/users/<user name>/R/x86_64-pc-linux-gnu-library/4.0"
-[2] "/mnt/irisgpfs/apps/resif/aion/2020b/epyc/software/R/4.0.5-foss-2020b/lib64/R/library"
-```
-Now R will look for packages in the user directory first (`/mnt/irisgpfs` is another path for `/home` that appears in the `${HOME}` variable). Note by the naming convention that R uses when it creates the directory for installing user packages, you can have multiple minor versions of R installed, and their packages will not interfere with each other. For instance,
-
-- R version 4.0.5 installs packages in `~/R/x86_64-pc-linux-gnu-library/4.0`, and
-- R version 4.3.2 installs packages in `~/R/x86_64-pc-linux-gnu-library/4.3`.
-
-Some useful commands for managing packages are,
-
-- `installed.packages()` to list installed packages and various information regarding each package installation,
-- `old.packages()` to list outdated packages,
-- `update.packages()` to update installed packages, and
-- `remove.packages(c("packrat"))` to remove packages.
-
-To list the loaded packages, use the command
-```R
-search()
-```
-and to get a detailed description of the environment, use the command
-```R
-sessionInfo()
-```
-which provides information about the version of R, the OS, and loaded packages.
-
-To load a library that has been installed use the command `library`. For instance,
-```R
-library(packrat)
-```
-where you cam notice that the use of quotes is optional and only a single can be loaded at a time. The `library` function causes an error when the loading of a package fails, so R provides the function `require` which returns the status of the package loading operation in a return variable, and is design for use inside R functions.
-
-_Useful resources_
-
-- [R Packages: A Beginner's Tutorial](https://www.datacamp.com/tutorial/r-packages-guide)
-- [Efficient R programming: Efficient set-up](https://bookdown.org/csgillespie/efficientR/set-up.html)
-
-#### Configuring installation paths in R
-
-So far we have only used the default installation paths of R. However, in a local installation where the user has rights to install in the system directories (e.g. in a Conda environment with R) the user installation directory is not created automatically. Open an R session in an interactive session in the HPC cluster or in your personal machine. To get the location where user packages are installed call
-```R
-> Sys.getenv("R_LIBS_USER")
-[1] "/home/<user name>/R/x86_64-conda-linux-gnu-library/4.3"
-```
-which will print an environment variable, `R_LIBS_USER`, which is set by R and stores the default location for storing user packages. If you create the directory with
-```bash
-$ mkdir -p /home/<user name>/R/x86_64-conda-linux-gnu-library/4.3
-```
-then you can print the locations where R is searching for packages (after reloading R), and the default location should appear first in the list. For instance for o Conda installation of R using the Micromamba package manager, the paths printed are
-```R
-> .libPaths()
-[1] "/home/<user name>/R/x86_64-conda-linux-gnu-library/4.3"
-[2] "/home/<user name>/micromamba/envs/R/lib/R/library"
-```
-where R is installed in a Conda environment named `R` in the second entry of the search path.
-
-There are now multiple locations where packages are stored. The location used by default is the first in the list. Thus, after creating the default location for user installed packages, packages are installed by default in user wide mode. For instance, installing the Packrat package,
-```R
-> install.packages(c("packrat"))
-```
-listing the user installation directory
-```bash
-$ ls "/home/<user name>/R/x86_64-conda-linux-gnu-library/4.3"
-packrat
-```
-will show the directory with the installed Packrat package files. To install the package in a system wide installation, use the `lib`flag
-```R
-> install.packages(c("packrat"), lib="/home/<user name>/micromamba/envs/R/lib/R/library")
-```
-to specify the installation location. During loading, all directories in the path are searched consecutively until the package is located.
-
-The package installation paths can also be used to maintain multiple independent environments in R. For instance, you can maintain a personal environment and project environment for your research group. Lets consider the case where you want the create an environment in a project directory. First, create a directory for the R environment
-```bash
-$ mkdir -p "${PROJECTHOME}<project name>/R-environment"
-```
-where the variable `PROJECTHOME` is defined in the UL HPC system environment to point to the home of the project directories (and includes a trailing slash '/'). To install a package in the project environment, call the installation function with the appropriate `lib` argument
-```R
-> install.packages( c("packrat"), lib=paste0( Sys.getenv("PROJECTHOME"), "<project name>/", "R-environment" ) )
-```
-and follow the typical instructions. To load the package, you now must also specify the location of the library,
-```R
-> library( packrat, lib.loc=paste0( Sys.getenv("PROJECTHOME"), "<project name>/", "R-environment" ) )
-```
-similar to the installation. Environment options can be used to extent the library paths and avoid having to specify the library path in each command.
-
-A startup file mechanism is provided by R to set up user and project wide environment options. There are 2 kinds of file,
-
-- `.Renviron` files used to set-up environment variables for R, and
-- `.Rprofile` files used to run any R code during initialization.
-
-Note that `.Renviron` files are simply a list of
-```
-key=value
-```
-assignment pairs which are read by R, not proper bash code (adding an `export` modifier is a syntax error). There are 2 locations where startup files appear,
-
-- the home directory, `~/.Renviron` and `~/.Rprofile`, for user wide settings, and
-- project directories for project wide settings.
-
-The definitions in project `.Rprofile` files override the user wide definitions in `~/.Rprofile`. The definitions in `.Renviron` files supersede the definitions in `~/.Renviron`, that is if the project has an environment file, the user wide definitions are ignored. Note that R is designed to source setup files at the directory where R starts, and any setup files in parent or descendent directories are ignored.
-
-Both the profile and environment startup files can setup a user wide environment. For instance, to use an environment setup in the project directories of the UL HPC systems add in the user wide environment setup file, `~/.Renviron`, the entry
-```
-R_LIBS=${PROJECTHOME}<project name>/R-environment
-```
-and then reload R. The new library path is
-```R
-> .libPaths()
-[1] "/mnt/irisgpfs/projects/<project name>/R-environment"
-[2] "/mnt/irisgpfs/users/<user name>/R/x86_64-pc-linux-gnu-library/4.0"
-[3] "/mnt/irisgpfs/apps/resif/iris-rhel8/2020b/broadwell/software/R/4.0.5-foss-2020b/lib64/R/library"
-```
-assuming that all directories appearing in the path exist. Note that the setup file options precede any default options.
-
-We can also use startup files to setup project wide libraries. For instance, assume that we are working on a project in a directory named `project` and the R packages are stored in a subdirectory `R-environment`. We use a project profile, to still be able to use any library paths defined in the user wide environment file. Add in a file `project/.Rprofile` the following definitions,
-```R
-project_path <- paste0( getwd(), "/R-environment" )
-newpaths <- c( project_path, .libPaths() )
-.libPaths( newpaths )
-```
-and then start R in the `project` directory. The new library path is
-```R
-> .libPaths()
-[1] "/mnt/irisgpfs/users/<user name>/Documents/project/R-environment"
-[2] "/mnt/irisgpfs/projects/<project name>/R-environment"
-[3] "/mnt/irisgpfs/users/<user name>/R/x86_64-pc-linux-gnu-library/4.0"
-[4] "/mnt/irisgpfs/apps/resif/iris-rhel8/2020b/broadwell/software/R/4.0.5-foss-2020b/lib64/R/library"
-```
-were the local project settings override the user and system wide settings. This is effectively a local project environment.
-
-#### Installing packages in R project directories with Packrat
-
-The Packrat library is used to automate the creation and management of project based environments. Packrat also automates operations such as tracking the version of the packages installed in the environment with snapshots, and saving the snapshot information in a text file that can be version controlled. The R distribution available through the UL HPC modules has a fairly old version of Packrat, which nevertheless supports all the basic features. Packrat is a light package, so you can install a more modern version in a user wide mode or in some environment accessible to all the users of a UL HPC project.
-
-To initialize the project, for instance in the directory `~/Documents/project`, use the commands:
-```R
-library(packrat)
-packrat::init("~/Document/project")
-```
-The initialization command creates,
-- a directory `~/Document/project/packrat` to store the packages, and
-- a setup script `~/Document/project/.Rprofile` to initialize the project.
-Therefore, start R within the project directory `~/Document/packrat`, to activate the project environment. After initializing the project or whenever you start R in the project directory, the `packrat` directory and its subdirectories will be the only ones appearing in the library paths:
-```R
-> .libPaths()
-[1] "/mnt/irisgpfs/users/<user name>/Documents/project/packrat/lib/x86_64-pc-linux-gnu/4.0.5"    
-[2] "/mnt/irisgpfs/users/<user name>/Documents/project/packrat/lib-ext/x86_64-pc-linux-gnu/4.0.5"
-[3] "/mnt/irisgpfs/users/<user name>/Documents/project/packrat/lib-R/x86_64-pc-linux-gnu/4.0.5"
-```
-Execute all package operations as usual. For instance, to install the `plyr` package, use the command:
-```R
-> install.packages(c("plyr"))
-```
-All packages are stored in the `packrat` subdirectory of the project.
-
-Packrat stores the status of the project in the file `packrat/packrat.lock`. This file stores the precise package versions that were used to satisfy dependencies, including dependencies of dependencies, and should not be edited by hand. After any change in the installed packages run the command
-```R
-packrat::snapshot()
-```
-to update the file. You can use the command
-```R
-packrat::status()
-```
-to analyze the code in the project directory and get a report regarding the status of extraneous or missing packages. After running the `status` command, you can run
-```R
-packrat::clean()
-```
-to remove any unused packages. Finally, after restoring the `packrat/packrat.lock` file from a version control system, or if `status` detects a missing package, use the command
-```R
-packrat::restore()
-```
-to install any missing packages.
-
-_Useful resources_
-
-- [Official Packrat tutorial](https://rstudio.github.io/packrat/walkthrough.html)
-
-#### Issues with managing packages with the native R package managers
-
-The native package manager of R is quite potent, and there are packages such as Packrat that further extend its capabilities. However, there are some drawbacks in installing packages with the native tools. Consider for instance installing the `hdf5r` package, a package used to read and write binary files, that is quite popular in HPC engineering applications. The installation mode is not important for our demonstration purposes, but assume that you are performing a user wide installation.
-```R
-> install.packages(c("hdf5r"))
-```
-
-During the installation, you can see that R is compiling the package components. This can be advantageous is the compilation process is tailored to optimize the build for the underlying system configuration. If you use the module available in the UL HPC systems, it is configured to use the main components of the FOSS tool chain (you can see that by calling `module list` after loading R), so the compiled packages are well optimized.
-
-**N.B.** If you encounter any issues with missing packages load the whole FOSS tool chain module with the command,
-```bash
-module load toolchain/foss
-```
-as there are a few popular packages missing in the dependencies of R.
-
-However, if you want to avoid compiling packages from source, which can be quite time consuming, you can use binary distributions of R. These include the distributions provided though native package managers in various Linux distributions, like APT and YUM, as well as Conda package managers like Mamba.
-
 -->
 
 <!--
@@ -1125,4 +1502,15 @@ https://cran.r-project.org/doc/manuals/R-intro.pdf
 https://www.carc.usc.edu/user-information/user-guides/software-and-programming/singularity
 -->
 
+<!--
+TO DO:
+
+- `conda-mirror`: https://github.com/conda-incubator/conda-mirror
+- Creating custom channels: https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/create-custom-channels.html
+- Building conda packages from scratch: https://docs.conda.io/projects/conda-build/en/latest/user-guide/tutorials/build-pkgs.html
+
+Conda internals: Rpath using $ORIGIN
+
+https://stackoverflow.com/questions/42344932/how-to-include-correctly-wl-rpath-origin-linker-argument-in-a-makefile
+-->
 
