@@ -397,7 +397,7 @@ $ pip install --user <package_name>
 ```
 User-wide installations install packages in a directory located at the home directory of the user. Python searches for packages in the user installation path first. This packages are meant to be installed with the system Python and run without root privileges. Thus user-wide installation is appropriate for packages that extend the system functionality for a single user.
 
-_User-wide installation is not not recommended for all but the system Python environment. User-wide installations rely on system packages, so if you install any package using a Conda environment the package will depend on the Conda environment. Thus, packages installed user-wide with a Conda environment will may be incompatible with the system environment or with any other Conda environment._
+_User-wide installation is not recommended for all but the system Python environment. User-wide installations rely on system packages, so if you install any package using a Conda environment the package will depend on the Conda environment. Thus, packages installed user-wide with a Conda environment will may be incompatible with the system environment or with any other Conda environment._
 
 #### Python `venv` virtual environments
 
