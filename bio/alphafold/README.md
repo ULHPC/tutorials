@@ -32,11 +32,12 @@ You can list the files using the _tree_ command:
 
 	[clusteruser@access1 alphafold]$ tree -f
 	.
-	|-- ./fasta
-	|	|-- ./fasta/test.fasta
-	|-- ./launchers
-		|-- ./launchers/alphafold-cpu-launcher.sh
-		|-- ./launchers/alphafold-gpu-launcher.sh
+	├── ./fasta
+	│   └── ./fasta/test.fasta
+	└── ./launchers
+	    ├── ./launchers/alphafold-cpu-launcher.sh
+	    └── ./launchers/alphafold-gpu-launcher.sh
+
 
 - The fasta directory contains a sample sequence that we will use in the tutorial
 - the launchers directory contain slurm launchers targeting either aion for CPU processing or iris for GPU processing.
