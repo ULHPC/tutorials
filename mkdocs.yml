@@ -64,6 +64,7 @@ nav:
   - Running bioinformatics software: 'bio/basics/index.md'
   - Bioinformatics workflows with snakemake and conda: 'bio/snakemake/index.md'
   - Galaxy: 'bio/galaxy/index.md'
+  - Alphafold: 'bio/alphafold/index.md'
 - CFD/MD/Chemistry:
    - Advanced Parallel execution: 'multiphysics/index.md'
 - Big Data:
