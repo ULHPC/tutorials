@@ -100,7 +100,7 @@ library(xaringanExtra) # gadenbuie/xaringanExtra
 
 
 ```{r, echo = FALSE}
-htmltools::img(src = "https://raw.githubusercontent.com/ULHPC/documents/master/roll-ups/ULHPC-RollUp.png",
+htmltools::img(src = "https://raw.githubusercontent.com/ULHPC/tutorials/devel/maths/R/img/ULHPC-RollUp.png",
                style = "height:550px;position: absolute;bottom: 1em;left: 1em;")
 ```
 
