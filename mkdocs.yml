@@ -2,13 +2,19 @@ site_name: UL HPC Tutorials
 nav:
 - Home: 'index.md'
 - Latest HPC School: 'hpc-school.md'
+- First interactions with ULHPC:
+  - Essential concepts and pre-requisites: 'first-contact/concepts/index.md'
+  - First connection (Linux/MacOS/WSL):  'first-contact/connection/linux/index.md'
+  - First connection (MobaXterm):  'first-contact/connection/windows/index.md'
+  - The command line interface: 'first-contact/cli/index.md'
 - Setup:
   - Overview:       'setup/index.md'
   - Pre-Requisites: 'setup/preliminaries.md'
   - Clone and setup ULHPC Tutorials:   'setup/install.md'
-- First interactions with ULHPC:
-  - The UNIX/Linux Shell:  'linux-shell/index.md'
-  - SSH and OpenOnDemand: 'preliminaries/index.md'
+#old first contact
+#- First interactions with ULHPC:
+#  - The UNIX/Linux Shell:  'linux-shell/index.md'
+#  - SSH and OpenOnDemand: 'preliminaries/index.md'
 - Getting started:
   - Overview: 'beginners/index.md'
   - Job scheduling with SLURM: 'basic/scheduling/index.md'
