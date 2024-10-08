@@ -8,10 +8,10 @@ Be sure you fulfill the [prerequisites](../../concepts/index.md#prerequisites).
 
 ### What is an SSH key pair and why use it ?
 
-Confused by SSH keys, you can read a quick explanation [here](../../concepts/index.md#authenticating-on-the-clusters).  
-Do not forget to [secure](../../concepts/index.md##secure-your-ssh-key-pair) them properly.
+Confused by SSH keys? you can read a quick explanation [here](../../concepts/index.md#authenticating-on-the-clusters).  
+Do not forget to [secure](../../concepts/index.md#secure-your-ssh-key-pair) them properly.
 
-### How do I create my key pair1 ?
+### How do I create my key pair ?
 
 * Open your favorite terminal
 * Enter the following command: ```$ ssh-keygen -t ed25519 -a 100```
