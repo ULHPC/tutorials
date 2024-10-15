@@ -25,7 +25,7 @@ Do not forget to [secure](../../concepts/index.md#secure-your-ssh-key-pair) them
 
 Our identity manager is called IPA and is available [here](https://hpc-ipa.uni.lu).
 
-* Log in on IPA with your HPC credentials (the login you received in your account activation email, usually the first letter of you first name followed by your last name).
+* Log in on IPA with your HPC credentials (the login you received in your account activation email, usually the first letter of your first name followed by your last name).
 * Select Identity/Users
 * Select your login
 * On the right column, you can see a SSH public key section
@@ -153,6 +153,25 @@ Identity added: ~/.ssh/your-private-key (<login>@<hostname>)
 
 You should now be able to connect to both clusters without having to enter your password each time.
 
-## Going further
+### Troubleshooting
 
-You can a more advanced and complete SSH documentation on the [hpc-docs.uni.lu](https://hpc-docs.uni.lu/connect/ssh/) portal, including tunneling, port forwarding and troubleshooting.
+Here are common errors you might encounter and possible solutions. If nothing works, you can always open a ticket in the [HPC service now category](https://service.uni.lu/sp?id=sc_cat_item&sys_id=9c88bd8bdbb38090c15598f3db9619c1&sysparm_category=9c992749db8f84109aa59ee3db96196f).
+
+#### Connection timeout  
+You probably use an internet connection that filters out the 8022 port.  
+Try to use Eduroam or ethernet.
+#### No route to host  
+Check that there is no typo in your configuration.
+#### Permission denied  
+* You may have forgotten to copy your public key in IPA.
+* Check if you copy pasted correctly your key in IPA.
+* If you already had other SSH keys, ensure you use the correct key to connect.
+* Check that you updated your username in the ```.ssh/config``` file.
+
+## Step X: What is the next step?
+
+You are connected now but how do you actually use the HPC clusters?
+
+* If the terminal or commands like ```cd```, ```mkdir``` or ```rsync``` confuse you, there is a crash course on basic commandline usage [here](link).
+* If you know your way with the command line and can find the command to extract a .tar.bz2, you can continue and read about getting resources [here](link).
+* You can find a more advanced and complete SSH documentation on the [hpc-docs.uni.lu](https://hpc-docs.uni.lu/connect/ssh/) portal, including tunneling, port forwarding and troubleshooting.
