@@ -168,7 +168,7 @@ Check that there is no typo in your configuration.
 * If you already had other SSH keys, ensure you use the correct key to connect.
 * Check that you updated your username in the ```.ssh/config``` file.
 
-## Step X: What is the next step?
+## What is the next step?
 
 You are connected now but how do you actually use the HPC clusters?
 
