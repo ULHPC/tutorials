@@ -152,13 +152,13 @@ Tired of typing your passphrase at each connection?
 	![screenshot](./img/moba-save-pwd.png)
 
 * Moba will ask you for a master password. It will be used to encrypt the locally stored password of your SSH key.
-	* The better option security wise would be at every MobaXterm startup but for convenience (i.e. never), the first option is acceptable.
+	* A better option, security wise, would be 'at every MobaXterm startup' but for convenience sake, the first option is acceptable.
 	
 	![screenshot](./img/moba-master-pwd.png)
 
 * Your are now able to connect without password input while keeping your key safe.
 
-## Step 6: What is the next step?
+## What is the next step?
 
 You are connected now but how do you actually use the HPC clusters?
 
