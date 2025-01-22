@@ -1,4 +1,4 @@
-# First Connection (MobaXterm)
+# First Connection (Windows with MobaXterm)
 All of the following is meant to be run from your machine.
 
 ## Step 1: Install an configure MobaXterm

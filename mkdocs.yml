@@ -5,7 +5,7 @@ nav:
 - First interactions with ULHPC:
   - Essential concepts and pre-requisites: 'first-contact/concepts/index.md'
   - First connection (Linux/MacOS/WSL):  'first-contact/connection/linux/index.md'
-  - First connection (MobaXterm):  'first-contact/connection/windows/index.md'
+  - First connection (Windows):  'first-contact/connection/windows/index.md'
   - The command line interface: 'first-contact/cli/index.md'
 - Setup:
   - Overview:       'setup/index.md'
