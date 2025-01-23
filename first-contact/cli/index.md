@@ -111,14 +111,28 @@ $ myCommand input.txt output.txt
 $ myCommand output.txt input.txt
 ```
 
-#### Help! I am stuck
+### General tips and tricks
 
+#### Help, I am stuck!
 You typed a command and you are stuck without being able to use the terminal.
 
-* the command might take a long time or might be stuck
-	* try the *ctrl+c* combination which interrupts the currently running process
-* the command launched a text based interface
+* The command might take a long time or might be stuck
+	* Try the *ctrl+c* combination which interrupts the currently running process
+* The command launched a text based interface
 	* Usually, you can find on the screen a hint that gives you a key or a key combination you can input to leave. Usually *q* or *esc*.
+
+#### Autocompletion
+
+The *tab* key tries to autocomplete your current command.
+
+* Try typing the first few letters of a command then hit tab. The shell will either complete the command or provide a list of possibilities.
+* When writing the path to a file, tabbing provides a list of valid propositions.
+
+#### History
+
+* Using the up and down arrow keys allow you to go through recent commands you typed.
+* The **history** command presents you with the last 1000 commands you typed. Very useful if you forgot how you did something in the past.
+* **ctrl+r** allows you to search your history. Useful for long commands you type often.
 
 ### A little bit of help
 
