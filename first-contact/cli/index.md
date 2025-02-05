@@ -210,6 +210,91 @@ You can have a look at the solution [here](./soluce.md#help)
 
 ### The linux file system
 
+The Linux file system is a tree like structure. 
+
+Unlike windows, physical drives are not represented in the file system but are abstracted as mount points (i.e. directories). It means that multiple types of storage can be available under separate directories. As an example, our home directory storage is located under `/home/users` our scratch directory under `/scratch`. Those are two physically separate storage systems.
+
+The file system is standardized and heavily based on conventions. As an example: 
+
+* `/etc` contains configuration files
+* `/bin` contains binaries (executable programs)
+* `/home` contains the users home directories (personal spaces)
+
+You will also encounter the following notations:
+
+* `~` represents your home directory, your personal space. It is a shorthand for `/home/users/<your_user_name>`
+* `.` represents the curent directory
+* `..` represents the parent directory
+* `.foo` represents a hidden file or directory called 'foo'
+
+### Prepare your environment
+
+First, we should place ourselves in the right directory to ensure the following exercices make sense. If your followed the [prerequisites](#Prerequisites), connect to the cluster (iris or aion, it does not matter) with your favorite terminal emulator and  type (or copy/paste) the following command:
+
+```bash
+cd ~/hpc-school-for-beginners/CLI/
+```
+
+After pressing *return*, you should see the following prompt:
+
+```bash
+0 [<your_login>@access1 CLI]$
+```
+
+Your are ready to begin.
+
+### File system navigation related commands
+
+#### pwd
+
+`pwd` stands for **p**rint **w**orking **d**irectory, that is the directory in which your are currently located. It is very useful to locate yourself in the file system as the command prompt only displays the current directory and not the complete path.
+
+To use the command, simply type `pwd`. The system should output `/home/users/<your_login/hpc-school-for-beginners/CLI`.
+
+#### ls
+
+`ls` stands for **l**ist **d**irectory. It displays the content of a directory and accepts mutiple options and arguments.
+
+* If I type `ls`, it displays the content of the current directory.
+* Using the `-a` flag also shows hidden files and directories (the ones that start with a `.`).
+* Using the `-l` flag formats the output differently and shows more details abouth the files (permissions, ownership, modification date, ...).
+* Adding a *path* as an argument, lists the files and directories at this location.
+
+As an example, the following command `ls -la` will display
+
+``` bash
+drwx------. 5 <your_username> clusterusers 16384 Jan  6 11:43 .
+drwxr-xr-x. 6 <your_username> clusterusers   512 Jan  6 11:38 ..
+drwxr-xr-x. 2 <your_username> clusterusers   512 Jan  6 08:54 docs
+drwxr-xr-x. 2 <your_username> clusterusers   512 Jan  6 08:54 final_boss
+drwxr-xr-x. 7 <your_username> clusterusers   512 Jan  6 10:43 playground
+```
+
+We can see three directories; docs, final_boss and playground. We can also see the `.` and `..` directories which represent respectively the current and the parent directories.
+
+#### cd
+
+`cd` stands for **c**hange **d**irectory. This commands allows you to move through the file system.
+
+* `cd` with no further argument will send you to your home directory (`0 [<your_username>@access1 ~]$`).
+* `cd /some/path`. *cd* with an absolute path (a path that starts with a */*) will move you to this directory if it exists.
+* `cd some/path` or `cd ./some/path`. *cd* with a relative path (a path the starts in the current directory) will move you to this directory if it exists. 
+* `cd ..` will move you to the parent directory of your current location. `cd ../..` will move you two levels ups.
+
+Notes:
+* Relative paths can start with a `.` or directly by the name of a child directory. For the sake of clarity, prefer using the explicit `./` notation.
+* When typing a path, you can hit tab 
+	* once to autocomplete it if there is only one possible option
+	* twice to show the different possibilities if there are multiple options
+
+### Activity
+
+* Go to your home directory
+* From there go to hpc-school-for-beginners/CLI/playground
+* Go up a level and to the docs directory (in one command)
+
+The solution is [here](./soluce.md#fs).
+
 ## Executing programs and scripts
 
 ## File manipulation

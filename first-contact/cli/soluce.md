@@ -1,5 +1,13 @@
 # Solutions of cli exercises
 
+## Moving through the file system exercise {: #fs}
+
+* Type `cd`
+  * You should see `0 [<your_username>@access1 ~]$`. Note the `~` symbol in the prompt. It shows that you are in your home directory.
+* Type `cd ./hpc-school-for-beginners/CLI/playground/`
+  * You should see `0 [<your_username>@access1 playground]$`. Type `pwd` and you will see that you are in `/home/users/<your_username>/hpc-school-for-beginners/CLI/playground`
+* Type `cd ../docs`. You should see that are in the docs directory.
+
 
 ## Command help exercise {: #help}
 
