@@ -63,7 +63,7 @@
     - Containers for science, initially developed at LBNL
     - Not based on Docker, but can directly import/run Docker images
     - Also HPC oriented, diff. take to running MPI software than Shifter
-    - Provides an [Image Registry]{https://github.com/singularityhub/sregistry}
+    - Provides an [Image Registry](https://github.com/singularityhub/sregistry)
 
 
 ### Singularity in a nutshell
