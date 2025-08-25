@@ -302,4 +302,4 @@ Let's manipulate the file content with parallel (prefer the `-a <filename>` synt
 /work/projects/bigdata_sets/OpenImages_V4/train/2db694eba4d4bb04.jpg 10
 ```
 
-The ULHPC team has designed a generic launcher for single node GNU parallel: see [`../basics/scripts/launcher.parallel.sh`](../basics/scripts/launcher.parallel.sh).
+The ULHPC team has designed a generic launcher for single node GNU parallel: see [`launcher.parallel.sh`](../basics/scripts/advanced_scripts/launcher.parallel.sh).
